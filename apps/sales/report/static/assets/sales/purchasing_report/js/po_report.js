@@ -289,24 +289,24 @@ $(document).ready(function () {
                 for (const po of results[0]) {
                     let po_row = $(`
                         <tr class="po-row">
-                            <td class="border-1 text-primary fw-bold">
-                                <span class="badge badge-primary w-100">${po?.['code']}</span>
+                            <td class="text-primary fw-bold">
+                                <span class="badge badge-primary">${po?.['code']}</span>
+                                &nbsp;<span class="text-primary small">${po?.['title']}</span>
                             </td>
-                            <td class="border-1 text-primary fw-bold">${po?.['delivered_date'] ? moment(po?.['delivered_date']).format('DD/MM/YYYY') : ''}</td>
-                            <td class="border-1 text-primary fw-bold">${po?.['employee_inherit']?.['fullname']}</td>
-                            <td class="border-1 text-primary fw-bold">${po?.['supplier']?.['name']}</td>
-                            <td class="border-1 text-primary fw-bold"></td>
-                            <td class="border-1 text-primary fw-bold"></td>
-                            <td class="border-1 text-primary fw-bold sum_order_quantity"></td>
-                            <td class="border-1 text-primary fw-bold sum_received_quantity"></td>
-                            <td class="border-1 text-primary fw-bold sum_remaining_quantity"></td>
-                            <td class="border-1 text-primary fw-bold">
+                            <td class="text-primary fw-bold small">${po?.['delivered_date'] ? moment(po?.['delivered_date']).format('DD/MM/YYYY') : ''}</td>
+                            <td class="text-primary fw-bold small">${po?.['employee_inherit']?.['fullname']}</td>
+                            <td class="text-primary fw-bold small">${po?.['supplier']?.['name']}</td>
+                            <td class="text-primary" colspan="2"></td>
+                            <td class="text-primary fw-bold sum_order_quantity"></td>
+                            <td class="text-primary fw-bold sum_received_quantity"></td>
+                            <td class="text-primary fw-bold sum_remaining_quantity"></td>
+                            <td class="text-primary fw-bold">
                                 <span class="mask-money sum_order_value" data-init-money="0"></span>
                             </td>
-                            <td class="border-1 text-primary fw-bold">
+                            <td class="text-primary fw-bold">
                                 <span class="mask-money sum_received_value" data-init-money="0"></span>
                             </td>
-                            <td class="border-1 text-primary fw-bold">
+                            <td class="text-primary fw-bold">
                                 <span class="mask-money sum_remaining_value" data-init-money="0"></span>
                             </td>
                         </tr>
@@ -331,20 +331,18 @@ $(document).ready(function () {
                         sum_remaining_value += parseFloat(product?.['remaining_value'])
                         $table_po_report.find('tbody').append(`
                             <tr>
-                                <td class="border-1"></td>
-                                <td class="border-1"></td>
-                                <td class="border-1"></td>
-                                <td class="border-1"></td>
-                                <td class="border-1">
-                                    ${product?.['product']?.['title']}
+                                <td colspan="4"></td>
+                                <td>
+                                    <span class="badge badge-secondary badge-sm">${product?.['product']?.['code']}</span>
+                                    &nbsp;<span class="text-secondary">${product?.['product']?.['title']}</span>
                                 </td>
-                                <td class="border-1">${product?.['uom']?.['title']}</td>
-                                <td class="border-1">${product?.['order_quantity']}</td>
-                                <td class="border-1">${product?.['received_quantity']}</td>
-                                <td class="border-1">${product?.['remaining_quantity']}</td>
-                                <td class="border-1"><span class="mask-money" data-init-money="${product?.['order_value']}"></span></td>
-                                <td class="border-1"><span class="mask-money" data-init-money="${product?.['received_value']}"></span></td>
-                                <td class="border-1"><span class="mask-money" data-init-money="${product?.['remaining_value']}"></span></td>
+                                <td>${product?.['uom']?.['title']}</td>
+                                <td>${product?.['order_quantity']}</td>
+                                <td>${product?.['received_quantity']}</td>
+                                <td>${product?.['remaining_quantity']}</td>
+                                <td><span class="mask-money" data-init-money="${product?.['order_value']}"></span></td>
+                                <td><span class="mask-money" data-init-money="${product?.['received_value']}"></span></td>
+                                <td><span class="mask-money" data-init-money="${product?.['remaining_value']}"></span></td>
                             </tr>
                         `)
                     }

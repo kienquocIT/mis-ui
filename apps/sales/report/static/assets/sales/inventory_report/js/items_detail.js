@@ -154,26 +154,26 @@ $(document).ready(function () {
                         let cumulative_value = 0
                         items_detail_report_table_Ele.find('tbody').append(
                             `<tr style="background-color: #eaeaea">
-                                <td class="border-1 first-col-x">
+                                <td class="first-col-x border-1">
                                     <span class="badge badge-primary">${item?.['product']?.['code']}</span>
                                     <span class="text-primary small"><b>${item?.['product']?.['title']}</b></span>
                                 </td>
-                                <td class="border-1"><span class="text-primary small">${trans_script.attr('data-trans-we')}</span></td>
-                                <td class="border-1"></td>
+                                <td><span class="text-primary small">${trans_script.attr('data-trans-we')}</span></td>
+                                <td></td>
                                 <td hidden></td>
                                 <td hidden></td>
-                                <td class="border-1"></td>
-                                <td class="border-1"></td>
-                                <td class="border-1"></td>
-                                <td class="border-1"></td>
-                                <td class="border-1"></td>
-                                <td class="border-1"></td>
-                                <td class="border-1"></td>
-                                <td class="border-1"></td>
-                                <td class="border-1"></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                                 <td><span class="text-secondary ${item?.['product']?.['id']}-cumulative-quantity">0</span></td>
-                                <td class="border-1"><span class="text-secondary mask-money ${item?.['product']?.['id']}-cumulative-cost" data-init-money="0"></span></td>
-                                <td class="border-1"><span class="text-secondary mask-money ${item?.['product']?.['id']}-cumulative-value" data-init-money="0"></span></td>
+                                <td><span class="text-secondary mask-money ${item?.['product']?.['id']}-cumulative-cost" data-init-money="0"></span></td>
+                                <td><span class="text-secondary mask-money ${item?.['product']?.['id']}-cumulative-value" data-init-money="0"></span></td>
                             </tr>`
                         )
                         for (const stock_activity of item?.['stock_activities']) {
@@ -184,23 +184,23 @@ $(document).ready(function () {
                                     cumulative_value += stock_activity?.['ending_balance_value']
                                     items_detail_report_table_Ele.find('tbody').append(
                                         `<tr>
-                                            <td class="border-1 first-col"></td>
-                                            <td class="border-1"></td>
-                                            <td class="border-1"><span class="badge badge-sm badge-secondary mb-1">${stock_activity?.['warehouse_code']}</span>&nbsp;<span class="text-secondary">${stock_activity?.['warehouse_title']}</span></td>
-                                            <td class="border-1"></td>
+                                            <td class="first-col border-1"></td>
+                                            <td></td>
+                                            <td><span class="badge badge-sm badge-secondary mb-1">${stock_activity?.['warehouse_code']}</span>&nbsp;<span class="text-secondary">${stock_activity?.['warehouse_title']}</span></td>
+                                            <td></td>
                                             <td hidden></td>
                                             <td hidden></td>
-                                            <td class="border-1">${stock_type_label}</td>
-                                            <td class="border-1"></td>
-                                            <td class="border-1"></td>
-                                            <td class="border-1"></td>
-                                            <td class="border-1"></td>
-                                            <td class="border-1"></td>
-                                            <td class="border-1"></td>
-                                            <td class="border-1"></td>
-                                            <td class="border-1"><span>${stock_activity?.['opening_balance_quantity']}</span></td>
-                                            <td class="border-1"><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_cost']}"></span></td>
-                                            <td class="border-1"><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_value']}"></span></td>
+                                            <td>${stock_type_label}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td><span>${stock_activity?.['opening_balance_quantity']}</span></td>
+                                            <td><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_cost']}"></span></td>
+                                            <td><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_value']}"></span></td>
                                         </tr>`
                                     )
                                     for (const activity of stock_activity?.['data_stock_activity']) {
@@ -227,23 +227,23 @@ $(document).ready(function () {
                                             let stock_type_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                             items_detail_report_table_Ele.find('tbody').append(
                                                 `<tr>
-                                                    <td class="border-1 first-col"></td>
-                                                    <td class="border-1"></td>
-                                                    <td class="border-1"></td>
-                                                    <td class="border-1"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
-                                                    <td hidden></td>
-                                                    <td hidden></td>
-                                                    <td class="border-1">${stock_type_label}</td>
-                                                    <td class="border-1"><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
-                                                    <td class="bg-${text_color}-light-5"><span class="text-${text_color}">${activity?.['quantity']}</span></td>
-                                                    <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['cost']}"></span></td>
-                                                    <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['value']}"></span></td>
+                                                    <td class="first-col border-1"></td>
                                                     <td></td>
-                                                    <td class="border-1"></td>
-                                                    <td class="border-1"></td>
-                                                    <td class="border-1"><span">${activity?.['current_quantity']}</span></td>
-                                                    <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
-                                                    <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
+                                                    <td></td>
+                                                    <td><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
+                                                    <td hidden></td>
+                                                    <td hidden></td>
+                                                    <td>${stock_type_label}</td>
+                                                    <td><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
+                                                    <td><span class="text-${text_color}">${activity?.['quantity']}</span></td>
+                                                    <td><span class="mask-money text-${text_color}" data-init-money="${activity?.['cost']}"></span></td>
+                                                    <td><span class="mask-money text-${text_color}" data-init-money="${activity?.['value']}"></span></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td><span">${activity?.['current_quantity']}</span></td>
+                                                    <td><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
+                                                    <td><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
                                                 </tr>`
                                             )
                                         }
@@ -266,23 +266,23 @@ $(document).ready(function () {
                                             let stock_type_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                             items_detail_report_table_Ele.find('tbody').append(
                                                 `<tr>
-                                                    <td class="border-1 first-col"></td>
-                                                    <td class="border-1"></td>
-                                                    <td class="border-1"></td>
-                                                    <td class="border-1"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
-                                                    <td hidden></td>
-                                                    <td hidden></td>
-                                                    <td class="border-1">${stock_type_label}</td>
-                                                    <td class="border-1"><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
+                                                    <td class="first-col border-1"></td>
                                                     <td></td>
-                                                    <td class="border-1"></td>
-                                                    <td class="border-1"></td>
-                                                    <td class="bg-${text_color}-light-5"><span class="text-${text_color}">${activity?.['quantity']}</span></td>
-                                                    <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['cost']}"></span></td>
-                                                    <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['value']}"></span></td>
-                                                    <td class="border-1"><span>${activity?.['current_quantity']}</span></td>
-                                                    <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
-                                                    <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
+                                                    <td></td>
+                                                    <td><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
+                                                    <td hidden></td>
+                                                    <td hidden></td>
+                                                    <td>${stock_type_label}</td>
+                                                    <td><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td><span class="text-${text_color}">${activity?.['quantity']}</span></td>
+                                                    <td><span class="mask-money text-${text_color}" data-init-money="${activity?.['cost']}"></span></td>
+                                                    <td><span class="mask-money text-${text_color}" data-init-money="${activity?.['value']}"></span></td>
+                                                    <td><span>${activity?.['current_quantity']}</span></td>
+                                                    <td><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
+                                                    <td><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
                                                 </tr>`
                                             )
                                         }
@@ -295,23 +295,23 @@ $(document).ready(function () {
                                 cumulative_value += stock_activity?.['ending_balance_value']
                                 items_detail_report_table_Ele.find('tbody').append(
                                     `<tr>
-                                        <td class="border-1 first-col"></td>
-                                        <td class="border-1"></td>
-                                        <td class="border-1"><span class="badge badge-sm badge-secondary mb-1">${stock_activity?.['warehouse_code']}</span>&nbsp;<span class="text-secondary">${stock_activity?.['warehouse_title']}</span></td>
-                                        <td class="border-1"></td>
+                                        <td class="first-col border-1"></td>
+                                        <td></td>
+                                        <td><span class="badge badge-sm badge-secondary mb-1">${stock_activity?.['warehouse_code']}</span>&nbsp;<span class="text-secondary">${stock_activity?.['warehouse_title']}</span></td>
+                                        <td></td>
                                         <td hidden></td>
                                         <td hidden></td>
-                                        <td class="border-1">${stock_type_label}</td>
-                                        <td class="border-1"></td>
-                                        <td class="border-1"></td>
-                                        <td class="border-1"></td>
-                                        <td class="border-1"></td>
-                                        <td class="border-1"></td>
-                                        <td class="border-1"></td>
-                                        <td class="border-1"></td>
-                                        <td class="border-1"><span>${stock_activity?.['opening_balance_quantity']}</span></td>
-                                        <td class="border-1"><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_cost']}"></span></td>
-                                        <td class="border-1"><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_value']}"></span></td>
+                                        <td>${stock_type_label}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><span>${stock_activity?.['opening_balance_quantity']}</span></td>
+                                        <td><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_cost']}"></span></td>
+                                        <td><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_value']}"></span></td>
                                     </tr>`
                                 )
                                 for (const activity of stock_activity?.['data_stock_activity']) {
@@ -338,23 +338,23 @@ $(document).ready(function () {
                                         let stock_type_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                         items_detail_report_table_Ele.find('tbody').append(
                                             `<tr>
-                                                <td class="border-1 first-col"></td>
-                                                <td class="border-1"></td>
-                                                <td class="border-1"></td>
-                                                <td class="border-1"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
-                                                <td hidden></td>
-                                                <td hidden></td>
-                                                <td class="border-1">${stock_type_label}</td>
-                                                <td class="border-1"><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
-                                                <td class="bg-${text_color}-light-5"><span class="text-${text_color}">${activity?.['quantity']}</span></td>
-                                                <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['cost']}"></span></td>
-                                                <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['value']}"></span></td>
+                                                <td class="first-col border-1"></td>
                                                 <td></td>
-                                                <td class="border-1"></td>
-                                                <td class="border-1"></td>
-                                                <td class="border-1"><span>${activity?.['current_quantity']}</span></td>
-                                                <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
-                                                <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
+                                                <td></td>
+                                                <td><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
+                                                <td hidden></td>
+                                                <td hidden></td>
+                                                <td>${stock_type_label}</td>
+                                                <td><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
+                                                <td><span class="text-${text_color}">${activity?.['quantity']}</span></td>
+                                                <td><span class="mask-money text-${text_color}" data-init-money="${activity?.['cost']}"></span></td>
+                                                <td><span class="mask-money text-${text_color}" data-init-money="${activity?.['value']}"></span></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td><span>${activity?.['current_quantity']}</span></td>
+                                                <td><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
+                                                <td><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
                                             </tr>`
                                         )
                                     }
@@ -377,23 +377,23 @@ $(document).ready(function () {
                                         let stock_type_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                         items_detail_report_table_Ele.find('tbody').append(
                                             `<tr>
-                                                <td class="border-1 first-col"></td>
-                                                <td class="border-1"></td>
-                                                <td class="border-1"></td>
-                                                <td class="border-1"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
-                                                <td hidden></td>
-                                                <td hidden></td>
-                                                <td class="border-1">${stock_type_label}</td>
-                                                <td class="border-1"><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
+                                                <td class="first-col border-1"></td>
                                                 <td></td>
-                                                <td class="border-1"></td>
-                                                <td class="border-1"></td>
-                                                <td class="bg-${text_color}-light-5"><span class="text-${text_color}">${activity?.['quantity']}</span></td>
-                                                <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['cost']}"></span></td>
-                                                <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['value']}"></span></td>
-                                                <td class="border-1"><span>${activity?.['current_quantity']}</span></td>
-                                                <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
-                                                <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
+                                                <td></td>
+                                                <td><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
+                                                <td hidden></td>
+                                                <td hidden></td>
+                                                <td>${stock_type_label}</td>
+                                                <td><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td><span class="text-${text_color}">${activity?.['quantity']}</span></td>
+                                                <td><span class="mask-money text-${text_color}" data-init-money="${activity?.['cost']}"></span></td>
+                                                <td><span class="mask-money text-${text_color}" data-init-money="${activity?.['value']}"></span></td>
+                                                <td><span>${activity?.['current_quantity']}</span></td>
+                                                <td><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
+                                                <td><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
                                             </tr>`
                                         )
                                     }

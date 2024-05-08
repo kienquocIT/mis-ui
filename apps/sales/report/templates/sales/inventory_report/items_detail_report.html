@@ -6,7 +6,6 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <style>
         th {
-            color: white !important;
             font-size: medium !important;
         }
     </style>
@@ -20,15 +19,15 @@
             position: sticky;
             left: 0;
         }
-        thead .first-col {
-            background: #cbcbcb !important;
-            color: black !important;
+        thead th, thead .first-col {
+            background: #007D88 !important;
+            color: white !important;
         }
         tbody .first-col {
-            background-color: #fff;
+            background: white !important;
         }
         tbody .first-col-x {
-            background-color: #eaeaea;
+            background: #eaeaea;
         }
         .table-wrap {
             width: 100%;
@@ -146,24 +145,24 @@
                 <div class="table-wrap" style="max-height: 80vh">
                     <table class="table nowrap w-100 fixed_header" id="items_detail_report_table">
                         <thead class="row-fixed">
-                            <tr class="bg-gradient-primary">
-                                <th class="border-1 first-col">{% trans 'Product' %}</th>
-                                <th class="border-1">{% trans 'Valuation method' %}</th>
-                                <th class="border-1">{% trans 'Warehouse' %}</th>
-                                <th class="border-1">{% trans 'System date' %}</th>
-                                <th class="border-1" hidden>{% trans 'Posting date' %}</th>
-                                <th class="border-1" hidden>{% trans 'Document date' %}</th>
-                                <th class="border-1">{% trans 'Trans description' %}</th>
-                                <th class="border-1">{% trans 'Trans code' %}</th>
-                                <th class="border-1">{% trans 'In quantity' %}</th>
-                                <th class="border-1">{% trans 'In cost' %}</th>
-                                <th class="border-1">{% trans 'In value' %}</th>
-                                <th class="border-1">{% trans 'Out quantity' %}</th>
-                                <th class="border-1">{% trans 'Out cost' %}</th>
-                                <th class="border-1">{% trans 'Out value' %}</th>
-                                <th class="border-1">{% trans 'Cumulative quantity' %}</th>
-                                <th class="border-1">{% trans 'Cumulative cost' %}</th>
-                                <th class="border-1">{% trans 'Cumulative value' %}</th>
+                            <tr>
+                                <th class="first-col border-1">{% trans 'Product' %}</th>
+                                <th>{% trans 'Valuation method' %}</th>
+                                <th>{% trans 'Warehouse' %}</th>
+                                <th>{% trans 'System date' %}</th>
+                                <th hidden>{% trans 'Posting date' %}</th>
+                                <th hidden>{% trans 'Document date' %}</th>
+                                <th>{% trans 'Trans description' %}</th>
+                                <th>{% trans 'Trans code' %}</th>
+                                <th>{% trans 'In quantity' %}</th>
+                                <th>{% trans 'In cost' %}</th>
+                                <th>{% trans 'In value' %}</th>
+                                <th>{% trans 'Out quantity' %}</th>
+                                <th>{% trans 'Out cost' %}</th>
+                                <th>{% trans 'Out value' %}</th>
+                                <th>{% trans 'Cumulative quantity' %}</th>
+                                <th>{% trans 'Cumulative cost' %}</th>
+                                <th>{% trans 'Cumulative value' %}</th>
                             </tr>
                         </thead>
                         <tbody></tbody>

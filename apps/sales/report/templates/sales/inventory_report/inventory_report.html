@@ -20,29 +20,14 @@
             position: sticky;
             left: 0;
         }
-        .second-col-x {
-            min-width: 500px;
-            position: sticky;
-            left: 350px;
-        }
         thead .first-col {
-            background: #cbcbcb !important;
-            color: black !important;
-        }
-        thead .second-col {
             background: #cbcbcb !important;
             color: black !important;
         }
         tbody .first-col {
             background-color: #fff;
         }
-        tbody .second-col {
-            background-color: #fff;
-        }
         tbody .first-col-x {
-            background-color: #eaeaea;
-        }
-        tbody .second-col-x {
             background-color: #eaeaea;
         }
         .table-wrap {
@@ -63,10 +48,6 @@
         .table-wrap .fixed_header .first-col {
             position: sticky;
             left: 0;
-        }
-        .table-wrap .fixed_header .second-col {
-            position: sticky;
-            left: 350px;
         }
     </style>
 {% endblock %}
@@ -190,8 +171,7 @@
                     <table hidden class="table nowrap w-100 fixed_header" id="table-inventory-report">
                         <thead class="row-fixed">
                             <tr class="bg-gradient-primary">
-                                <th class="border-1 first-col" rowspan="3" colspan="3">{% trans 'Code' %}</th>
-                                <th class="border-1 second-col" rowspan="3" colspan="3">{% trans 'Name' %}</th>
+                                <th class="border-1 first-col" rowspan="3" colspan="3">{% trans 'Product' %}</th>
                                 <th class="border-1" rowspan="3" colspan="3">{% trans 'UoM' %}</th>
                                 <th class="border-1" colspan="2">{% trans 'OPENING' %}</th>
                                 <th class="border-1" colspan="2">{% trans 'INPUT' %}</th>
@@ -224,8 +204,7 @@
                     <table hidden class="table nowrap w-100 fixed_header" id="table-inventory-report-detail">
                         <thead class="row-fixed">
                             <tr class="bg-gradient-primary">
-                                <th class="border-1 first-col" rowspan="3" colspan="3">{% trans 'Code' %}</th>
-                                <th class="border-1 second-col" rowspan="3" colspan="3">{% trans 'Name' %}</th>
+                                <th class="border-1 first-col" rowspan="3" colspan="3">{% trans 'Product' %}</th>
                                 <th class="border-1" rowspan="3" colspan="3">{% trans 'UoM' %}</th>
                                 <th class="border-1" rowspan="3" colspan="3">{% trans 'Date' %}</th>
                                 <th class="border-1" rowspan="3" colspan="3">{% trans 'LOT' %}</th>

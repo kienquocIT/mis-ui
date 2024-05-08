@@ -154,11 +154,11 @@ $(document).ready(function () {
                         let cumulative_value = 0
                         items_detail_report_table_Ele.find('tbody').append(
                             `<tr style="background-color: #eaeaea">
-                                <td class="border-1 first-col-x"><span class="text-secondary">${item?.['product']?.['code']}</span></td>
-                                <td class="border-1 second-col-x">
-                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="${item?.['product']?.['description']}" class="text-secondary">${item?.['product']?.['title']}</span>
+                                <td class="border-1 first-col-x">
+                                    <span class="badge badge-primary">${item?.['product']?.['code']}</span>
+                                    <span class="text-primary small"><b>${item?.['product']?.['title']}</b></span>
                                 </td>
-                                <td class="border-1"><span class="text-secondary">${trans_script.attr('data-trans-we')}</span></td>
+                                <td class="border-1"><span class="text-primary small">${trans_script.attr('data-trans-we')}</span></td>
                                 <td class="border-1"></td>
                                 <td hidden></td>
                                 <td hidden></td>
@@ -185,7 +185,6 @@ $(document).ready(function () {
                                     items_detail_report_table_Ele.find('tbody').append(
                                         `<tr>
                                             <td class="border-1 first-col"></td>
-                                            <td class="border-1 second-col"></td>
                                             <td class="border-1"></td>
                                             <td class="border-1"><span class="badge badge-sm badge-secondary mb-1">${stock_activity?.['warehouse_code']}</span>&nbsp;<span class="text-secondary">${stock_activity?.['warehouse_title']}</span></td>
                                             <td class="border-1"></td>
@@ -229,7 +228,6 @@ $(document).ready(function () {
                                             items_detail_report_table_Ele.find('tbody').append(
                                                 `<tr>
                                                     <td class="border-1 first-col"></td>
-                                                    <td class="border-1 second-col"></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
@@ -269,7 +267,6 @@ $(document).ready(function () {
                                             items_detail_report_table_Ele.find('tbody').append(
                                                 `<tr>
                                                     <td class="border-1 first-col"></td>
-                                                    <td class="border-1 second-col"></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
@@ -299,7 +296,6 @@ $(document).ready(function () {
                                 items_detail_report_table_Ele.find('tbody').append(
                                     `<tr>
                                         <td class="border-1 first-col"></td>
-                                        <td class="border-1 second-col"></td>
                                         <td class="border-1"></td>
                                         <td class="border-1"><span class="badge badge-sm badge-secondary mb-1">${stock_activity?.['warehouse_code']}</span>&nbsp;<span class="text-secondary">${stock_activity?.['warehouse_title']}</span></td>
                                         <td class="border-1"></td>
@@ -343,7 +339,6 @@ $(document).ready(function () {
                                         items_detail_report_table_Ele.find('tbody').append(
                                             `<tr>
                                                 <td class="border-1 first-col"></td>
-                                                <td class="border-1 second-col"></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
@@ -383,7 +378,6 @@ $(document).ready(function () {
                                         items_detail_report_table_Ele.find('tbody').append(
                                             `<tr>
                                                 <td class="border-1 first-col"></td>
-                                                <td class="border-1 second-col"></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>

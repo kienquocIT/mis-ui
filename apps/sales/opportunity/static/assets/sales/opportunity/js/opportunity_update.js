@@ -1488,15 +1488,18 @@ $(document).ready(function () {
                         {
                             targets: 3,
                             render: (data, type, row) => {
-                                let sttTxt = JSON.parse($('#stt_sys').text())
-                                let sttData = [
-                                    "soft-light",
-                                    "soft-primary",
-                                    "soft-info",
-                                    "soft-success",
-                                    "soft-danger",
-                                ]
-                                return `<div class="row"><span class="badge badge-${sttData[row?.['doc_data']?.['system_status']]}">${sttTxt[row?.['doc_data']?.['system_status']][1]}</span></div>`;
+                                if (row?.['app_code']) {
+                                    let sttTxt = JSON.parse($('#stt_sys').text())
+                                    let sttData = [
+                                        "soft-light",
+                                        "soft-primary",
+                                        "soft-info",
+                                        "soft-success",
+                                        "soft-danger",
+                                    ]
+                                    return `<div class="row"><span class="badge badge-${sttData[row?.['doc_data']?.['system_status']]}">${sttTxt[row?.['doc_data']?.['system_status']][1]}</span></div>`;
+                                }
+                                return `<p>--</p>`;
                             }
                         },
                         {

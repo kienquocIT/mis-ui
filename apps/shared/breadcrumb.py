@@ -331,6 +331,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     REPORT_CUSTOMER_LIST_PAGE = BreadcrumbChildren(_('Customer report'), 'ReportCustomerList')
     REPORT_PIPELINE_LIST_PAGE = BreadcrumbChildren(_('Pipeline report'), 'ReportPipelineList')
     REPORT_CASHFLOW_LIST_PAGE = BreadcrumbChildren(_('Cashflow report'), 'ReportCashflowList')
+    REPORT_INVENTORY_LIST_PAGE = BreadcrumbChildren(_('Inventory Report'), 'ReportInventoryList')
+    REPORT_INVENTORY_DETAIL_LIST_PAGE = BreadcrumbChildren(_('Items Detail Report'), 'ReportInventoryDetailList')
+    REPORT_PURCHASING_LIST_PAGE = BreadcrumbChildren(_('Purchase order report'), 'PurchaseOrderReportList')
 
     GOODS_RETURN_LIST_PAGE = BreadcrumbChildren(_('Goods return list'), 'GoodsReturnList')
     GOODS_RETURN_CREATE_PAGE = BreadcrumbChildren(_('Goods return create'), 'GoodsReturnCreate')
@@ -771,6 +774,7 @@ class BreadcrumbView:
     GOODS_TRANSFER_LIST_PAGE = [BreadcrumbItem.GOODS_TRANSFER_LIST_PAGE]
     GOODS_TRANSFER_CREATE_PAGE = GOODS_TRANSFER_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     GOODS_TRANSFER_DETAIL_PAGE = GOODS_TRANSFER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    GOODS_TRANSFER_UPDATE_PAGE = GOODS_TRANSFER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     # Goods issue
     GOODS_ISSUE_LIST_PAGE = [BreadcrumbItem.GOODS_ISSUE_LIST_PAGE]
@@ -856,6 +860,15 @@ class BreadcrumbView:
     ]
     REPORT_CASHFLOW_LIST_PAGE = [
         BreadcrumbItem.REPORT_CASHFLOW_LIST_PAGE
+    ]
+    REPORT_INVENTORY_LIST_PAGE = [
+        BreadcrumbItem.REPORT_INVENTORY_LIST_PAGE
+    ]
+    REPORT_INVENTORY_DETAIL_LIST_PAGE = [
+        BreadcrumbItem.REPORT_INVENTORY_DETAIL_LIST_PAGE
+    ]
+    REPORT_PURCHASING_LIST_PAGE = [
+        BreadcrumbItem.REPORT_PURCHASING_LIST_PAGE
     ]
 
     GOODS_RETURN_LIST_PAGE = [BreadcrumbItem.GOODS_RETURN_LIST_PAGE]

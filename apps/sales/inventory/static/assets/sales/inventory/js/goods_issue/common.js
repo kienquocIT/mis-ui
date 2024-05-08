@@ -7,6 +7,7 @@ let select_detail_table_lot = $('#select-detail-table-lot')
 let select_detail_table_lot_done = $('#select-detail-table-lot-done')
 let amount_balance = $('#amount-balance')
 let IS_DETAIL = false
+let IS_UPDATE = false
 
 class GoodsIssueLoadPage {
     load() {
@@ -82,7 +83,7 @@ class GoodsIssueLoadPage {
         $(document).on('click', '.select-detail', function () {
             NOW_BTN = $(this)
             let disabled = ''
-            if (IS_DETAIL) {
+            if (IS_DETAIL || IS_UPDATE) {
                 disabled = 'disabled readonly'
             }
             if (NOW_BTN.attr('data-manage-type') === '2') { // sn
@@ -294,18 +295,17 @@ class GoodsIssueLoadPage {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('ia_product_list')) {
                         let product_list = data?.['ia_product_list'].filter(function (obj) {
-                            return (obj.book_quantity - obj.count) > 0;
+                            return obj.action_type === 1;
                         });
                         product_list.map(function (item) {
                             if (data_dict[item.id]) {
                                 item['action_status'] = false
                             }
-
                             if (!item.action_status) {
                                 data_dict[item.id] = item;
                                 item['description'] = item?.['product_mapped']?.['description'];
-                                item['subtotal'] = '';
-                                item['unit_cost'] = '';
+                                item['subtotal'] = parseFloat(item?.['unit_cost']) * (parseFloat(item?.['book_quantity']) - parseFloat(item?.['count']));
+                                item['unit_cost'] = item?.['unit_cost'];
                                 tableEle.DataTable().row.add(item).draw();
                                 tableEle.find('tbody tr').each(function () {
                                     if ($(this).find('.col-product').attr('data-manage-type') === '0') {
@@ -408,7 +408,7 @@ class GoodsIssueLoadPage {
                         data: 'unit_cost',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<input style="min-width: 250px" class="form-control mask-money col-unit-cost" value="${data}"/>`;
+                            return `<input disabled readonly style="min-width: 250px" class="form-control mask-money col-unit-cost" value="${data}"/>`;
                         },
                     },
                     {
@@ -645,7 +645,7 @@ class GoodsIssueLoadPage {
         return dataForm
     }
 
-    static loadGoodsIssueDetail(frmDetail, pk) {
+    static loadGoodsIssueDetail(frmDetail, pk, type='detail') {
         let url = frmDetail.data('url')
         let iaSelectEle = $('#box-select-ia');
         $.fn.callAjax2({
@@ -654,7 +654,8 @@ class GoodsIssueLoadPage {
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                IS_DETAIL = true;
+                IS_DETAIL = type === 'detail';
+                IS_UPDATE = type === 'update';
                 let detail = data?.['goods_issue_detail'];
                 WFRTControl.setWFRuntimeID(detail?.['workflow_runtime_id'])
                 $.fn.compareStatusShowPageAction(detail);
@@ -676,7 +677,6 @@ class GoodsIssueLoadPage {
     }
 
     static loadDtbProductPageDetail(data) {
-        console.log(data)
         if (!$.fn.DataTable.isDataTable('#dtbProductIA')) {
             let dtb = $('#dtbProductIA');
             dtb.DataTableDefault({
@@ -718,7 +718,7 @@ class GoodsIssueLoadPage {
                         data: 'unit_cost',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<input class="col-unit-cost form-control mask-money" value=${data}>`
+                            return `<input disabled readonly class="col-unit-cost form-control mask-money" value=${data}>`
                         },
                     }, {
                         data: 'subtotal',

@@ -1,70 +1,71 @@
-let urlEle = $('#url-factory');
-$(document).ready(function (){
-    function loadDtb() {
-        if (!$.fn.DataTable.isDataTable('#dtbGoodsTransfer')) {
-            let $table = $('#dtbGoodsTransfer')
-            let frm = new SetupFormSubmit($table);
-            $table.DataTableDefault({
+$(document).ready(function () {
+    function loadGoodsTransferList() {
+        if (!$.fn.DataTable.isDataTable('#goods_transfer_list_table')) {
+            let dtb = $('#goods_transfer_list_table');
+            let frm = new SetupFormSubmit(dtb);
+            dtb.DataTableDefault({
                 useDataServer: true,
+                rowIdx: true,
+                reloadCurrency: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
-                        if (data && resp.data.hasOwnProperty('goods_transfer_list')) {
+                        if (data) {
                             return resp.data['goods_transfer_list'] ? resp.data['goods_transfer_list'] : [];
                         }
-                        throw Error('Call data raise errors.')
+                        return [];
                     },
                 },
                 columns: [
                     {
+                        className: 'wrap-text w-5',
+                        render: () => {
+                            return ``;
+                        }
+                    },
+                    {
                         data: 'code',
-                        targets: 0,
-                        width: "10%",
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            let urlDetail = urlEle.data('url-detail').format_url_with_uuid(row.id);
-                            return `<a href="${urlDetail}"><span class="badge badge-primary">${data}</span></a>` + $x.fn.buttonLinkBlank(urlDetail);
+                            const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            return `<a href="${link}"><span class="badge badge-soft-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
                         data: 'title',
-                        targets: 1,
-                        width: "30%",
-                        render: (data) => {
-                            return `<p>${data}</p>`
-                        }
-                    },
-                    {
-                        data: 'goods_transfer_type',
-                        targets: 2,
-                        width: "20%",
-                        className: 'wrap-text',
-                        render: (data) => {
-                            return `<p>${data}</p>`
+                        className: 'wrap-text w-45',
+                        render: (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            return `<a href="${link}"><span class="text-primary"><b>${row.title}</b></span></a>`
                         }
                     },
                     {
                         data: 'date_transfer',
-                        targets: 3,
-                        width: "20%",
-                        className: 'wrap-text',
-                        render: (data) => {
-                            return `<p>${data}</p>`
+                        className: 'wrap-text w-30',
+                        render: (data, type, row) => {
+                            return moment(data.split(' ')[0]).format('DD/MM/YYYY')
                         }
                     },
                     {
                         data: 'system_status',
-                        targets: 4,
-                        width: "20%",
-                        className: 'wrap-text',
-                        render: (data) => {
-                            return `<p>${data}</p>`
+                        className: 'wrap-text w-10',
+                        render: (data, type, row) => {
+                            let color = [
+                                'badge-secondary',
+                                'badge-primary',
+                                'badge-indigo',
+                                'badge-success',
+                                'badge-danger'
+                            ]
+                            return `<span class="badge w-100 ${color[row?.['raw_system_status']]}">${data}</span>`
                         }
                     },
                 ],
             });
         }
     }
-    loadDtb();
+
+    loadGoodsTransferList();
 })

@@ -2,8 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-
-from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck
+from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck, SaleMsg
 
 
 class GoodsDetail(View):
@@ -35,4 +34,5 @@ class GoodsDetailAPI(APIView):
     )
     def post(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.UPDATE_GOODS_DETAIL_DATA_LIST).post(request.data)
+        resp.result['message'] = SaleMsg.GOODS_DETAIL_UPDATE
         return resp.auto_return(status_success=status.HTTP_201_CREATED)

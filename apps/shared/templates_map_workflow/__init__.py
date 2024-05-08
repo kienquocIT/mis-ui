@@ -4,6 +4,8 @@ from .cashoutflow_return_advance import RETURN_ADVANCE_DATA_MAP
 from .delivery_order_delivery import DELIVERY_DATA_MAP
 from .inventory_goods_receipt import GOODS_RECEIPT_DATA_MAP
 from .inventory_goods_issue import GOODS_ISSUE_DATA_MAP
+from .inventory_goods_transfer import GOODS_TRANSFER_DATA_MAP
+from .inventory_goods_return import GOODS_RETURN_DATA_MAP
 from .purchasing_purchase_order import PURCHASE_ORDER_DATA_MAP
 from .purchasing_purchase_request import PURCHASE_REQUEST_DATA_MAP
 from .quotation_quotation import QUOTATION_DATA_MAP
@@ -37,3 +39,5 @@ class InputMappingProperties:
     ASSET_DELIVERY_DATA_MAP = ASSET_DELIVERY_DATA_MAP
     ASSET_RETURN_DATA_MAP = ASSET_RETURN_DATA_MAP
     INVENTORY_GOODS_ISSUE = GOODS_ISSUE_DATA_MAP
+    INVENTORY_GOODS_TRANSFER = GOODS_TRANSFER_DATA_MAP
+    INVENTORY_GOODS_RETURN = GOODS_RETURN_DATA_MAP

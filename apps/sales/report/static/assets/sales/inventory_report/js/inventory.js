@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    const $btn_title = $('#btn-title')
     const current_period_Ele = $('#current_period')
     const items_select_Ele = $('#items_select')
     const warehouses_select_Ele = $('#warehouses_select')
@@ -153,6 +154,19 @@ $(document).ready(function () {
     }
     LoadWarehouseSelectBox(warehouses_select_Ele)
 
+    $('#btn-collapse').on('click', function () {
+        if ($btn_title.text() === $btn_title.attr('data-trans-show')) {
+            $btn_title.text($btn_title.attr('data-trans-hide'))
+            $(this).removeClass('btn-primary')
+            $(this).addClass('btn-soft-primary')
+        }
+        else {
+            $btn_title.text($btn_title.attr('data-trans-show'))
+            $(this).addClass('btn-primary')
+            $(this).removeClass('btn-soft-primary')
+        }
+    })
+
     $('#btn-view').on('click', function () {
         $('table thead').find('span').text('0')
         $('table thead').find('span').attr('data-init-money', 0)
@@ -186,6 +200,7 @@ $(document).ready(function () {
 
                 Promise.all([inventory_detail_list_ajax]).then(
                     (results) => {
+                        $('#btn-collapse').trigger('click')
                         table_inventory_report.find('tbody').html('')
                         let opening_sum_quantity = 0
                         let in_sum_quantity = 0
@@ -219,7 +234,9 @@ $(document).ready(function () {
                                         </tr>
                                     `)
                                     let detail_html = ``
+                                    let in_quantity_enough = 0
                                     for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
+                                        in_quantity_enough += activity?.['in_quantity'] ? parseFloat(activity?.['in_quantity']) : 0
                                         let bg_in = ''
                                         let bg_out = ''
                                         if (activity?.['trans_title'] === 'Goods receipt') {
@@ -237,14 +254,20 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Goods issue') {
                                             bg_out = 'bg-orange-light-5'
                                         }
+                                        if (activity?.['trans_title'] === 'Goods transfer (in)') {
+                                            bg_in = 'bg-purple-light-5 gtf-in'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods transfer (out)') {
+                                            bg_out = 'bg-purple-light-5 gtf-out'
+                                        }
                                         detail_html += `
                                             <tr>
                                                 <td class="border-1 first-col" colspan="3"><span></span></td>
                                                 <td class="border-1 second-col" colspan="3"><span></span></td>
                                                 <td class="border-1" colspan="3"><span></span></td>
-                                                <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
+                                                <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
                                                 <td class="border-1" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                                <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("YYYY-MM-DD") : ''}</span></td>
+                                                <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1 ${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>
@@ -256,8 +279,12 @@ $(document).ready(function () {
                                             </tr>
                                         `
                                     }
+                                    let no_info = ''
+                                    if (in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity'])) {
+                                        no_info = 'no-info'
+                                    }
                                     table_inventory_report.find('tbody').append(`
-                                        <tr>
+                                        <tr class="${no_info}">
                                             <td class="border-1 first-col" colspan="3"><span>${warehouse_activities?.['product']?.['code']}</span></td>
                                             <td class="border-1 second-col" colspan="3"><span>${warehouse_activities?.['product']?.['title']}</span></td>
                                             <td class="border-1" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
@@ -287,7 +314,9 @@ $(document).ready(function () {
                                 }
                                 else {
                                     let detail_html = ``
+                                    let in_quantity_enough = 0
                                     for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
+                                        in_quantity_enough += activity?.['in_quantity'] ? parseFloat(activity?.['in_quantity']) : 0
                                         let bg_in = ''
                                         let bg_out = ''
                                         if (activity?.['trans_title'] === 'Goods receipt') {
@@ -305,14 +334,20 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Goods issue') {
                                             bg_out = 'bg-orange-light-5'
                                         }
+                                        if (activity?.['trans_title'] === 'Goods transfer (in)') {
+                                            bg_in = 'bg-purple-light-5 gtf-in'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods transfer (out)') {
+                                            bg_out = 'bg-purple-light-5 gtf-out'
+                                        }
                                         detail_html += `
                                             <tr>
                                                 <td class="border-1 first-col" colspan="3"><span></span></td>
                                                 <td class="border-1 second-col" colspan="3"><span></span></td>
                                                 <td class="border-1" colspan="3"><span></span></td>
-                                                <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
+                                                <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
                                                 <td class="border-1" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                                <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("YYYY-MM-DD") : ''}</span></td>
+                                                <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1 ${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>
@@ -324,10 +359,13 @@ $(document).ready(function () {
                                             </tr>
                                         `
                                     }
-
+                                    let no_info = ''
+                                    if (in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity'])) {
+                                        no_info = 'no-info'
+                                    }
                                     let current_wh_row = table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`)
                                     current_wh_row.after(`
-                                        <tr>
+                                        <tr class="${no_info}">
                                             <td class="border-1 first-col" colspan="3"><span>${warehouse_activities?.['product']?.['code']}</span></td>
                                             <td class="border-1 second-col" colspan="3"><span>${warehouse_activities?.['product']?.['title']}</span></td>
                                             <td class="border-1" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
@@ -397,7 +435,9 @@ $(document).ready(function () {
                                             </tr>
                                         `)
                                         let detail_html = ``
+                                        let in_quantity_enough = 0
                                         for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
+                                            in_quantity_enough += activity?.['in_quantity'] ? parseFloat(activity?.['in_quantity']) : 0
                                             let bg_in = ''
                                             let bg_out = ''
                                             if (activity?.['trans_title'] === 'Goods receipt') {
@@ -414,9 +454,9 @@ $(document).ready(function () {
                                                     <td class="border-1 first-col" colspan="3"><span></span></td>
                                                     <td class="border-1 second-col" colspan="3"><span></span></td>
                                                     <td class="border-1" colspan="3"><span></span></td>
-                                                    <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
+                                                    <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
                                                     <td class="border-1" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                                    <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("YYYY-MM-DD") : ''}</span></td>
+                                                    <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1 ${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>
@@ -428,8 +468,12 @@ $(document).ready(function () {
                                                 </tr>
                                             `
                                         }
+                                        let no_info = ''
+                                        if (in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity'])) {
+                                            no_info = 'no-info'
+                                        }
                                         table_inventory_report.find('tbody').append(`
-                                            <tr>
+                                            <tr class="${no_info}">
                                                 <td class="border-1 first-col" colspan="3"><span>${warehouse_activities?.['product']?.['code']}</span></td>
                                                 <td class="border-1 second-col" colspan="3"><span>${warehouse_activities?.['product']?.['title']}</span></td>
                                                 <td class="border-1" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
@@ -459,7 +503,9 @@ $(document).ready(function () {
                                     }
                                     else {
                                         let detail_html = ``
+                                        let in_quantity_enough = 0
                                         for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
+                                            in_quantity_enough += activity?.['in_quantity'] ? parseFloat(activity?.['in_quantity']) : 0
                                             let bg_in = ''
                                             let bg_out = ''
                                             if (activity?.['in_quantity'] && activity?.['in_value']) {
@@ -473,9 +519,9 @@ $(document).ready(function () {
                                                     <td class="border-1 first-col" colspan="3"><span></span></td>
                                                     <td class="border-1 second-col" colspan="3"><span></span></td>
                                                     <td class="border-1" colspan="3"><span></span></td>
-                                                    <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
+                                                    <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
                                                     <td class="border-1" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                                    <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("YYYY-MM-DD") : ''}</span></td>
+                                                    <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1 ${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>
@@ -488,9 +534,13 @@ $(document).ready(function () {
                                             `
                                         }
 
+                                        let no_info = ''
+                                        if (in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity'])) {
+                                            no_info = 'no-info'
+                                        }
                                         let current_wh_row = table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`)
                                         current_wh_row.after(`
-                                            <tr>
+                                            <tr class="${no_info}">
                                                 <td class="border-1 first-col" colspan="3"><span>${warehouse_activities?.['product']?.['code']}</span></td>
                                                 <td class="border-1 second-col" colspan="3"><span>${warehouse_activities?.['product']?.['title']}</span></td>
                                                 <td class="border-1" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
@@ -545,6 +595,7 @@ $(document).ready(function () {
                             },
                             500
                         )
+                        MatchTooltip()
                     })
             }
             else {
@@ -580,6 +631,7 @@ $(document).ready(function () {
 
                 Promise.all([inventory_detail_list_ajax]).then(
                     (results) => {
+                        $('#btn-collapse').trigger('click')
                         table_inventory_report.find('tbody').html('')
                         let opening_sum_quantity = 0
                         let in_sum_quantity = 0
@@ -783,4 +835,49 @@ $(document).ready(function () {
             }
         }
     })
+    $('#btn-view').trigger('click')
+
+    function MatchTooltip() {
+        $('#table-inventory-report-detail').find('td').each(function () {
+            if ($(this).attr('class').includes('bg-primary-light-5')) {
+                $(this).attr('data-bs-toggle', 'tooltip')
+                $(this).attr('data-bs-placement', 'top')
+                $(this).attr('title', trans_script.attr('data-trans-grc'))
+            }
+            if ($(this).attr('class').includes('bg-blue-light-5')) {
+                $(this).attr('data-bs-toggle', 'tooltip')
+                $(this).attr('data-bs-placement', 'top')
+                $(this).attr('title', trans_script.attr('data-trans-grt'))
+            }
+            if ($(this).attr('class').includes('bg-danger-light-5')) {
+                $(this).attr('data-bs-toggle', 'tooltip')
+                $(this).attr('data-bs-placement', 'top')
+                $(this).attr('title', trans_script.attr('data-trans-dlvr'))
+            }
+            if ($(this).attr('class').includes('bg-green-light-5')) {
+                $(this).attr('data-bs-toggle', 'tooltip')
+                $(this).attr('data-bs-placement', 'top')
+                $(this).attr('title', `${trans_script.attr('data-trans-grc')} (IA)`)
+            }
+            if ($(this).attr('class').includes('bg-orange-light-5')) {
+                $(this).attr('data-bs-toggle', 'tooltip')
+                $(this).attr('data-bs-placement', 'top')
+                $(this).attr('title', trans_script.attr('data-trans-gis'))
+            }
+            if ($(this).attr('class').includes('bg-purple-light-5 gtf-in')) {
+                $(this).attr('data-bs-toggle', 'tooltip')
+                $(this).attr('data-bs-placement', 'top')
+                $(this).attr('title', `${trans_script.attr('data-trans-gtf')} (IN)`)
+            }
+            if ($(this).attr('class').includes('bg-purple-light-5 gtf-out')) {
+                $(this).attr('data-bs-toggle', 'tooltip')
+                $(this).attr('data-bs-placement', 'top')
+                $(this).attr('title', `${trans_script.attr('data-trans-gtf')} (OUT)`)
+            }
+        })
+        $('#table-inventory-report-detail').find('.no-info').each(function () {
+            $(this).find('td:eq(8) .in-quantity-span').addClass('required')
+            $(this).find('td:eq(8)').attr('data-bs-toggle', 'tooltip').attr('data-bs-placement', 'top').attr('title', trans_script.attr('data-trans-no-info'))
+        })
+    }
 })

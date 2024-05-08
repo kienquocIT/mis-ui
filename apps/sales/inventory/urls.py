@@ -13,7 +13,7 @@ from apps.sales.inventory.views import (
     GoodsDetail, GoodsDetailAPI
 )
 from apps.sales.inventory.views.goods_transfer import GoodsTransferList, GoodsTransferDetail, GoodsTransferCreate, \
-    GoodsTransferListAPI, GoodsTransferDetailAPI
+    GoodsTransferListAPI, GoodsTransferDetailAPI, GoodsTransferUpdate
 
 urlpatterns = [
     # good receipt
@@ -40,6 +40,7 @@ urlpatterns += [
     path('goods-transfer/list', GoodsTransferList.as_view(), name='GoodsTransferList'),
     path('goods-transfer/create', GoodsTransferCreate.as_view(), name='GoodsTransferCreate'),
     path('goods-transfer/detail/<str:pk>', GoodsTransferDetail.as_view(), name='GoodsTransferDetail'),
+    path('goods-transfer/update/<str:pk>', GoodsTransferUpdate.as_view(), name='GoodsTransferUpdate'),
     path('goods-transfer/list/api', GoodsTransferListAPI.as_view(), name='GoodsTransferListAPI'),
     path('goods-transfer/detail/api/<str:pk>', GoodsTransferDetailAPI.as_view(), name='GoodsTransferDetailAPI'),
 ]
@@ -59,9 +60,9 @@ urlpatterns += [
     path('goods-return/list', GoodsReturnList.as_view(), name='GoodsReturnList'),
     path('goods-return/create', GoodsReturnCreate.as_view(), name='GoodsReturnCreate'),
     path('goods-return/detail/<str:pk>', GoodsReturnDetail.as_view(), name='GoodsReturnDetail'),
+    path('goods-return/update/<str:pk>', GoodsReturnUpdate.as_view(), name='GoodsReturnUpdate'),
     path('goods-return/list/api', GoodsReturnListAPI.as_view(), name='GoodsReturnListAPI'),
     path('goods-return/detail/api/<str:pk>', GoodsReturnDetailAPI.as_view(), name='GoodsReturnDetailAPI'),
-    path('goods-return/update/<str:pk>', GoodsReturnUpdate.as_view(), name='GoodsReturnUpdate'),
     path('sale-orders-for-goods-return/list', SaleOrderListAPIForGoodsReturn.as_view(), name='SaleOrderListAPIForGoodsReturn'),
     path('deliveries/api', DeliveryListForGoodsReturnAPI.as_view(), name='DeliveryListForGoodsReturnAPI'),
     path('delivery-products/api/<str:pk>', DeliveryProductsForGoodsReturnAPI.as_view(), name='DeliveryProductsForGoodsReturnAPI'),

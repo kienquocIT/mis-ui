@@ -3138,7 +3138,7 @@ msgid "WareHouse List"
 msgstr "Danh sách kho"
 
 #
-msgid "Cash Outflow"
+msgid "Cashflow"
 msgstr "Dòng tiền"
 
 #
@@ -7297,6 +7297,110 @@ msgstr "Bạn cần chọn một tùy chọn!"
 #
 msgid "Lot number"
 msgstr "Số lô"
+
+#
+msgid "Select out warehouse"
+msgstr "Chọn kho xuất"
+
+#
+msgid "Select target warehouse"
+msgstr "Chọn kho đích"
+
+#
+msgid "Click the button besides input element to select (for serial/lot product) of enter number for default product."
+msgstr "Click vào nút bên cạnh ô nhập để lựa chọn chi tiết (cho sản phẩm serial/lot) hoặc nhập (cho sản phẩm mặc định)."
+
+#
+msgid "From warehouse"
+msgstr "Từ kho"
+
+#
+msgid "To warehouse"
+msgstr "Đến kho"
+
+#
+msgid "Stock quantity"
+msgstr "Số lượng tồn kho"
+
+#
+msgid "Click the button besides input element to see detail (for serial/lot product)."
+msgstr "Click vào nút bên cạnh ô nhập để xem chi tiết (cho sản phẩm serial/lot)."
+
+#
+msgid "Some Serials you selected are no longer in stock anymore."
+msgstr "Một số Serial bạn đã chọn không còn tồn tại trong kho nữa."
+
+#
+msgid "Lot available quantity now is < get quantity value OR Lot is empty now."
+msgstr "Số lượng khả dụng hiện tại đang < số lượng lấy HOẶC Lot hiện tại đang rỗng."
+
+#
+msgid "Inventory data has been changed."
+msgstr "Dữ liệu tồn kho đã bị thay đổi."
+
+#
+msgid "Have not done. Please finish in Goods Detail."
+msgstr "Chưa nhập xong. Hãy hoàn thành trong Chi tiết hàng"
+
+#
+msgid "Product type"
+msgstr "Loại sản phẩm"
+
+#
+msgid "Purchasing staff"
+msgstr "Nhân viên mua hàng"
+
+#
+msgid "Purchasing reports"
+msgstr "Báo cáo mua hàng"
+
+#
+msgid "Purchase order report"
+msgstr "Báo cáo theo đơn mua hàng"
+
+#
+msgid "Purchasing Code"
+msgstr "Mã phiếu mua hàng"
+
+#
+msgid "Order quantity"
+msgstr "Số lượng đặt hàng"
+
+#
+msgid "Received quantity"
+msgstr "SL đã nhận"
+
+#
+msgid "Remaining quantity"
+msgstr "SL còn lại"
+
+#
+msgid "Order value"
+msgstr "GT đơn hàng"
+
+#
+msgid "Received value"
+msgstr "GT đơn hàng đã nhận"
+
+#
+msgid "Remaining value"
+msgstr "GT đơn hàng còn lại"
+
+#
+msgid "WareHouses"
+msgstr "Các kho hàng"
+
+#
+msgid "AR Invoice"
+msgstr "Hoá đơn bán hàng"
+
+#
+msgid "AP Invoice"
+msgstr "Hoá đơn mua hàng"
+
+#
+msgid "Return to"
+msgstr "Trả về kho"
 
 #
 msgid "Reason for return"

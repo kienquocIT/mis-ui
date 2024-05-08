@@ -247,7 +247,7 @@ function LoadDate() {
 }
 
 function loadTableSelectDelivery() {
-    tableSelectDeliveryEle.DataTable().destroy()
+    tableSelectDeliveryEle.DataTable().clear().destroy()
     tableSelectDeliveryEle.DataTableDefault({
         dom: '',
         useDataServer: true,
@@ -261,7 +261,7 @@ function loadTableSelectDelivery() {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     selectDeliveryOffcanvasEle.offcanvas('show')
-                    // console.log(resp.data['delivery_list'])
+                    console.log(resp.data['delivery_list'])
                     return resp.data['delivery_list'];
                 }
                 return [];
@@ -288,10 +288,10 @@ function loadTableSelectDelivery() {
                 }
             },
             {
-                data: 'select',
+                data: '',
                 className: 'wrap-text text-center',
                 render: (data, type, row) => {
-                    let details = JSON.stringify(row.details)
+                    let details = JSON.stringify(row?.['details'])
                     return `<div class="form-check">
                                 <input data-id="${row.id}" type="radio" name="selected-delivery" class="form-check-input selected-delivery">
                                 <label class="form-check-label"></label>
@@ -1245,6 +1245,7 @@ class GoodsReturnHandle {
         frm.dataForm['note'] = $('#note').val()
 
         let data_item = JSON.parse(dataLineDetailTableScript.text())
+        frm.dataForm['data_item'] = data_item
 
         frm.dataForm['delivery'] = data_item[0]?.['delivery_id']
         frm.dataForm['product'] = data_item[0]?.['product_id']
@@ -1281,49 +1282,34 @@ class GoodsReturnHandle {
         }
         frm.dataForm['product_detail_list'] = product_detail_list
 
-        // frm.dataForm['system_status'] = 1;
-
         if (frm.dataForm['product_detail_list'].length === 0 ) {
             $.fn.notifyB({description: "No item in tab line detail"}, 'failure')
             return false
         }
 
         // console.log(frm.dataForm)
-        if (for_update) {
-            let pk = $.fn.getPkDetail();
-            return {
-                url: frmEle.attr('data-url-detail').format_url_with_uuid(pk),
-                method: frm.dataMethod,
-                data: frm.dataForm,
-                urlRedirect: frm.dataUrlRedirect,
-            };
-        }
-        return {
-            url: frm.dataUrl,
-            method: frm.dataMethod,
-            data: frm.dataForm,
-            urlRedirect: frm.dataUrlRedirect,
-        };
+        return frm
     }
 }
 
-function Disable() {
-    $('.form-control').prop('disabled', true).css({color: 'black'});
-    $('.form-select').prop('disabled', true).css({color: 'black'});
-    $('.select2').prop('disabled', true);
-    $('#collapse-area input').prop('disabled', true);
-    btnAddRowLineDetail.remove();
+function Disable(option) {
+    if (option === 'detail') {
+        $('.form-control').prop('disabled', true).css({color: 'black'});
+        $('.form-select').prop('disabled', true).css({color: 'black'});
+        $('.select2').prop('disabled', true);
+        $('#collapse-area input').prop('disabled', true);
+        btnAddRowLineDetail.remove();
+    }
 }
 
 function LoadDetailGoodsReturn(option) {
-    let pk = $.fn.getPkDetail()
-    let url_loaded = $('#frm_goods_return_detail').attr('data-url').replace(0, pk);
+    let url_loaded = option === 'detail' ? $('#frm_goods_return_detail').attr('data-url') : $('#frm_goods_return_update').attr('data-url')
     $.fn.callAjax(url_loaded, 'GET').then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                WFRTControl.setWFRuntimeID(data['good_return_detail']?.['good_return_detail']);
                 data = data['good_return_detail'];
+                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 
@@ -1342,7 +1328,7 @@ function LoadDetailGoodsReturn(option) {
                 } else if (data?.['data_detail'][0]?.['type'] === 0) {
                     loadTableDetailPageDefault([data])
                 }
-
+                dataLineDetailTableScript.text(JSON.stringify(data?.['data_item']))
                 new $x.cls.file($('#attachment')).init({
                     enable_edit: option !== 'detail',
                     data: data.attachment,

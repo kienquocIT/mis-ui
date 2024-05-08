@@ -360,6 +360,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WAREHOUSE_LIST_FOR_INVENTORY_ADJUSTMENT = StringUrl('saledata/warehouses-for-inventory-adjustment')
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
     WAREHOUSE_PRODUCT_LIST = StringUrl('saledata/warehouses-products')
+    WAREHOUSE_PRODUCT_LIST_FOR_GOODS_TRANSFER = StringUrl('saledata/warehouses-products-for-goods-transfer')
     WAREHOUSE_LOT_LIST = StringUrl('saledata/warehouses-lots')
     WAREHOUSE_SERIAL_LIST = StringUrl('saledata/warehouses-serials')
     WAREHOUSE_STOCK_PRODUCT = StringUrl('saledata/warehouses/check/{product_id}/{uom_id}')
@@ -520,6 +521,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     BALANCE_INIT_LIST = StringUrl('report/balance-init/list')
     REPORT_INVENTORY_LIST = StringUrl('report/inventory/list')
     REPORT_GENERAL_LIST = StringUrl('report/general/list')
+    PO_REPORT_LIST = StringUrl('report/po-report/list')
 
     # Final Acceptance
     FINAL_ACCEPTANCE_LIST = StringUrl('acceptance/final-acceptance/list')

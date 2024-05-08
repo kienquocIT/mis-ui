@@ -5,9 +5,6 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <style>
-        td:hover {
-            font-weight: bolder;
-        }
         th {
             color: white !important;
             font-size: medium !important;
@@ -29,10 +26,12 @@
             left: 200px;
         }
         thead .first-col {
-            background: #0095a4; !important;
+            background: #cbcbcb !important;
+            color: black !important;
         }
         thead .second-col {
-            background: #0095a4; !important;
+            background: #cbcbcb !important;
+            color: black !important;
         }
         tbody .first-col {
             background-color: #fff;
@@ -166,7 +165,7 @@
                 <div class="table-wrap" style="max-height: 80vh">
                     <table class="table nowrap w-100 fixed_header" id="items_detail_report_table">
                         <thead class="row-fixed">
-                            <tr style="background: #0095a4;">
+                            <tr class="bg-gradient-primary">
                                 <th class="border-1 first-col">{% trans 'Code' %}</th>
                                 <th class="border-1 second-col">{% trans 'Name' %}</th>
                                 <th class="border-1">{% trans 'Valuation method' %}</th>

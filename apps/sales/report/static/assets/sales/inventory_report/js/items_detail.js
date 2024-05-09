@@ -125,8 +125,8 @@ $(document).ready(function () {
         if (periodMonthEle.val()) {
             WindowControl.showLoading();
             let dataParam = {}
-            dataParam['sub_period_order'] = parseInt(periodMonthEle.val())
-            dataParam['period_mapped'] = periodEle.val()
+            dataParam['sub_period_order'] = periodMonthEle.val() ? parseInt(periodMonthEle.val()) : null
+            dataParam['period_mapped'] = periodEle.val() ? periodEle.val() : null
             dataParam['product_id_list'] = items_select_Ele.val().join(',')
             let inventory_detail_list_ajax = $.fn.callAjax2({
                 url: url_script.attr('data-url-inventory-detail-list'),

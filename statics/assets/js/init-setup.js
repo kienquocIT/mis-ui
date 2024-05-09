@@ -2210,24 +2210,27 @@ class WFRTControl {
     }
 
     static setupHTMLWFNonApply() {
-        return `<div class="card card-wth-progress mb-3">
-                    <div class="progress progress-bar-xs">
-                        <div class="progress-bar bg-red w-20" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <div class="card-body">
-                        <i class="fas fa-robot"></i>
-                        <p>${$.fn.transEle.attr('data-canceled-by-creator')}</p>
-                    </div>
-                </div>
-                <div class="card card-wth-progress">
-                    <div class="progress progress-bar-xs">
-                        <div class="progress-bar bg-success w-20" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <div class="card-body">
-                        <i class="fas fa-robot"></i>
-                        <p>${$.fn.transEle.attr('data-finish-wf-non-apply')}</p>
-                    </div>
-                </div>`;
+        return `<div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="hk-ribbon-type-1 start-touch">` + `<span>${$.fn.transEle.attr('data-node-completed')}</span></div>
+                                    <div class="card-body mt-5">
+                                    <div class="row mb-3">
+                                        <div class="d-flex">
+                                            <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
+                                            <small><p class="text-red">${$.fn.transEle.attr('data-canceled-by-creator')}</p></small>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="d-flex">
+                                            <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
+                                            <small><p class="text-success">${$.fn.transEle.attr('data-finish-wf-non-apply')}</p></small>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>`;
     }
 
     static setWFRuntimeID(runtime_id) {

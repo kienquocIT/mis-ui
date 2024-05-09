@@ -267,11 +267,11 @@ class MenusCRM:
         icon='<i class="fas fa-file-invoice-dollar"></i>',
     )
     AR_INVOICE = MenuCommon(
-        name='AR Invoice', code='id_menu_ar_invoice', view_name='ARInvoiceList',
+        name='AR invoice', code='id_menu_ar_invoice', view_name='ARInvoiceList',
         icon='<i class="bi bi-receipt"></i>',
     )
     SALE_ORDER = MenuCommon(
-        name='Sale Order', code='menu_sale_order_list', view_name='SaleOrderList',
+        name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',
         icon='<i class="fas fa-file-invoice"></i>',
     )
     FINAL_ACCEPTANCE = MenuCommon(
@@ -305,7 +305,7 @@ class MenusCRM:
         icon='<i class="bi bi-currency-exchange"></i>',
         child=[
             MenuCommon(
-                name='Advance Payment', code='id_menu_advance_payment', view_name='AdvancePaymentList',
+                name='Advance payment', code='id_menu_advance_payment', view_name='AdvancePaymentList',
                 icon='<i class="bi bi-piggy-bank-fill"></i>',
             ),
             MenuCommon(
@@ -313,13 +313,13 @@ class MenusCRM:
                 icon='<i class="bi bi-credit-card-fill"></i>',
             ),
             MenuCommon(
-                name='Return Advance', code='id_menu_return_advance', view_name='ReturnAdvanceList',
+                name='Return advance', code='id_menu_return_advance', view_name='ReturnAdvanceList',
                 icon='<i class="bi bi-piggy-bank"></i>',
             ),
         ],
     )
     SALE_ACTIVITIES = MenuCommon(
-        name='Sale Activities', code='menu_sale_activities', view_name='',
+        name='Sale activities', code='menu_sale_activities', view_name='',
         icon='<i class="bi bi-ui-checks-grid"></i>',
         child=[
             MenuCommon(
@@ -335,7 +335,7 @@ class MenusCRM:
                 icon='<i class="bi bi-person-workspace"></i>',
             ),
             MenuCommon(
-                name='Document For Customer', code='menu_opportunity_document',
+                name='Document for customer', code='menu_opportunity_document',
                 view_name='OpportunityDocumentList',
                 icon='<i class="bi bi-file-earmark"></i>',
             ),
@@ -358,7 +358,7 @@ class MenusPurchase:
         name='Purchasing', code='menu_purchase_activities', view_name='', icon='<i class="fas fa-cart-arrow-down"></i>',
         child=[
             MenuCommon(
-                name='Purchase Request',
+                name='Purchase request',
                 code='menu_purchase_request_list',
                 view_name='PurchaseRequestList',
                 icon='<i class="fas fa-file-upload"></i>',
@@ -380,7 +380,7 @@ class MenusPurchase:
                 icon='<i class="fas fa-file-contract"></i>',
             ),
             MenuCommon(
-                name='AP Invoice', code='id_menu_ap_invoice', view_name='APInvoiceList',
+                name='AP invoice', code='id_menu_ap_invoice', view_name='APInvoiceList',
                 icon='<i class="fas fa-file-invoice"></i>',
             )
         ],
@@ -472,22 +472,22 @@ class MenuEOffice:
         icon='<i class="fa-solid fa-business-time"></i>',
     )
     ASSET_TOOLS = MenuCommon(
-        name='Asset, Tools', code='menu_asset_tools', icon='<i class="fa-solid fa-pen-ruler"></i>',
+        name='Asset, tools', code='menu_asset_tools', icon='<i class="fa-solid fa-pen-ruler"></i>',
         child=[
             MenuCommon(
                 name='Provide request', code='menu_asset_provide', view_name='AssetToolsProvideRequestList',
                 icon='<i class="fa-solid fa-hand-holding"></i>',
             ),
             MenuCommon(
-                name='Asset, Tools delivery', code='menu_asset_delivery', view_name='AssetToolsDeliveryList',
+                name='Asset, tools delivery', code='menu_asset_delivery', view_name='AssetToolsDeliveryList',
                 icon='<i class="fa-solid fa-truck-fast"></i>',
             ),
             MenuCommon(
-                name='Asset, Tools list', code='menu_asset_list', view_name='AssetToolsList',
+                name='Asset, tools list', code='menu_asset_list', view_name='AssetToolsList',
                 icon='<i class="fa-solid fa-list"></i>',
             ),
             MenuCommon(
-                name='Asset, Tools return list', code='menu_asset_return', view_name='AssetToolsReturnList',
+                name='Asset, tools return list', code='menu_asset_return', view_name='AssetToolsReturnList',
                 icon='<i class="fa-solid fa-backward-fast"></i>',
             ),
         ]
@@ -565,13 +565,13 @@ class MenusReport:
         name='Inventory reports', code='menu_inventory_reports', view_name='', icon='<i class="fas fa-stream"></i>',
         child=[
             MenuCommon(
-                name='Inventory Report',
+                name='Inventory report',
                 code='menu_inventory_report',
                 view_name='ReportInventoryList',
                 icon='<i class="fas fa-cubes"></i>',
             ),
             MenuCommon(
-                name='Items Detail Report',
+                name='Items detail report',
                 code='menu_items_detail_report',
                 view_name='ReportInventoryDetailList',
                 icon='<i class="fas fa-cube"></i>',

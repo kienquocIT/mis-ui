@@ -7453,3 +7453,67 @@ msgstr "Nhập serial"
 #
 msgid "Input LOT"
 msgstr "Nhập LOT"
+
+#
+msgid "Purchase Request Config"
+msgstr "Cấu hình Yêu cầu mua hàng"
+
+#
+msgid "Expense Items"
+msgstr "Các loại chi phí"
+
+#
+msgid "Internal Labor Items"
+msgstr "Các loại chi phí nhân công"
+
+#
+msgid "Invoice form config"
+msgstr "Cấu hình Mẫu hoá đơn"
+
+#
+msgid "Advance payment"
+msgstr "Tạm ứng"
+
+#
+msgid "Return advance"
+msgstr "Hoàn ứng"
+
+#
+msgid "Sale activities"
+msgstr "Hoạt động bán hàng"
+
+#
+msgid "Document for customer"
+msgstr "Tài liệu"
+
+#
+msgid "AR invoice"
+msgstr "Hoá đơn bán hàng"
+
+#
+msgid "AP invoice"
+msgstr "Hoá đơn mua hàng"
+
+#
+msgid "Asset, tools"
+msgstr "Tài sản, Công cụ"
+
+#
+msgid "Asset, tools list"
+msgstr "Danh sách tài sản, công cụ"
+
+#
+msgid "Asset, tools delivery"
+msgstr "Yêu cầu bàn giao"
+
+#
+msgid "Asset, tools return list"
+msgstr "Danh sách thu hồi tài sản"
+
+#
+msgid "Inventory report"
+msgstr "Báo cáo tồn kho"
+
+#
+msgid "Items detail report"
+msgstr "Báo cáo chi tiết mặt hàng"

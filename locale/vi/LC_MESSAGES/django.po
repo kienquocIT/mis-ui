@@ -7401,3 +7401,19 @@ msgstr "Hoá đơn mua hàng"
 #
 msgid "Return to"
 msgstr "Trả về kho"
+
+#
+msgid "Balance initialization"
+msgstr "Khởi tạo số dư"
+
+#
+msgid "Add balance"
+msgstr "Thêm số dư"
+
+#
+msgid "Select warehouse"
+msgstr "Chọn kho"
+
+#
+msgid "Total value"
+msgstr "Tổng giá trị"

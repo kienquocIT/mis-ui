@@ -26,7 +26,7 @@ $(document).ready(function () {
                         dataSrc: function (resp) {
                             let data = $.fn.switcherResp(resp);
                             if (data && resp.data.hasOwnProperty('balance_init_list')) {
-                                console.log(resp.data['balance_init_list'])
+                                // console.log(resp.data['balance_init_list'])
                                 return resp.data['balance_init_list'] ? resp.data['balance_init_list'] : []
                             }
                             throw Error('Call data raise errors.')
@@ -66,7 +66,7 @@ $(document).ready(function () {
                         {
                             className: 'wrap-text text-right',
                             render: (data, type, row) => {
-                                return `<a href="#" class="text-secondary"><i class="far fa-trash-alt"></i></a>`;
+                                return ``;
                             }
                         },
                     ],

@@ -1387,11 +1387,11 @@ $(document).ready(function () {
                     'cashoutflow.returnadvance': transEle.attr('data-trans-return'),
                 }
                 let appMapBadge = {
-                    'quotation.quotation': "badge-soft-primary",
-                    'saleorder.saleorder': "badge-soft-success",
-                    'cashoutflow.advancepayment': "badge-soft-pink",
-                    'cashoutflow.payment': "badge-soft-violet",
-                    'cashoutflow.returnadvance': "badge-soft-purple",
+                    'quotation.quotation': "badge-primary badge-outline",
+                    'saleorder.saleorder': "badge-success badge-outline",
+                    'cashoutflow.advancepayment': "badge-pink badge-outline",
+                    'cashoutflow.payment': "badge-violet badge-outline",
+                    'cashoutflow.returnadvance': "badge-purple badge-outline",
                 }
                 let typeMapActivity = {
                     1: transEle.attr('data-trans-task'),
@@ -1400,11 +1400,11 @@ $(document).ready(function () {
                     4: transEle.attr('data-trans-meeting'),
                 }
                 let typeMapIcon = {
-                    0: `<i class="fas fa-file-alt"></i>`,
-                    1: `<i class="fas fa-tasks"></i>`,
-                    2: `<i class="fas fa-phone-alt"></i>`,
-                    3: `<i class="far fa-envelope"></i>`,
-                    4: `<i class="fas fa-users"></i>`,
+                    0: "fas fa-file-alt",
+                    1: "fas fa-tasks",
+                    2: "fas fa-phone-alt",
+                    3: "far fa-envelope",
+                    4: "fas fa-users",
                 }
                 $table.DataTable().clear().destroy()
                 $table.DataTableDefault({
@@ -1435,19 +1435,12 @@ $(document).ready(function () {
                             render: (data, type, row) => {
                                 if (row?.['log_type'] === 0) {
                                     if (row?.['app_code']) {
-                                        let status = ``;
-                                        if (row?.['app_code'] === 'quotation.quotation') {
-                                            if (opportunity_detail_data?.['quotation']?.['id'] === row?.['doc_id']) {
-                                                status = `<small class="text-green">${transEle.attr('data-trans-valid')}</small>`
-                                            } else {
-                                                status = `<small class="text-red">${transEle.attr('data-trans-invalid')}</small>`
-                                            }
-                                        }
-
-                                        return `<div class="d-flex justify-content-start">
-                                            <span class="badge ${appMapBadge[row?.['app_code']]} mr-2">${appMapTrans[row?.['app_code']]}</span>
-                                            ${status}
-                                        </div>`;
+                                        return `<span class="badge ${appMapBadge[row?.['app_code']]}">
+                                                    <span>
+                                                        <span class="icon"><span class="feather-icon"><small><i class="${typeMapIcon[row?.['log_type']]}"></i></small></span></span>
+                                                        ${appMapTrans[row?.['app_code']]}
+                                                    </span>
+                                                </span>`;
                                     }
                                 } else {
                                     let status = '';
@@ -1471,7 +1464,7 @@ $(document).ready(function () {
                                 if (row?.['log_type'] === 0) {
                                     if (row?.['app_code'] && row?.['doc_id']) {
                                         link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_id']);
-                                        title = row?.['title'];
+                                        title = row?.['doc_data']?.['title'];
                                         return `<a href="${link}" target="_blank"><p>${title}</p></a>`;
                                     } else {
                                         return `<p></p>`;
@@ -1495,7 +1488,18 @@ $(document).ready(function () {
                         {
                             targets: 3,
                             render: (data, type, row) => {
-                                return typeMapIcon[row?.['log_type']];
+                                if (row?.['app_code']) {
+                                    let sttTxt = JSON.parse($('#stt_sys').text())
+                                    let sttData = [
+                                        "soft-light",
+                                        "soft-primary",
+                                        "soft-info",
+                                        "soft-success",
+                                        "soft-danger",
+                                    ]
+                                    return `<div class="row"><span class="badge badge-${sttData[row?.['doc_data']?.['system_status']]}">${sttTxt[row?.['doc_data']?.['system_status']][1]}</span></div>`;
+                                }
+                                return `<p>--</p>`;
                             }
                         },
                         {

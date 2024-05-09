@@ -1081,10 +1081,10 @@ function dataTableActivity(data) {
                         'saleorder.saleorder': transEle.attr('data-sale-order'),
                     }
                     let appMapBadge = {
-                        'opportunity.opportunity': "badge-soft-sky",
-                        'opportunity.opportunitymeeting': "badge-soft-warning",
-                        'quotation.quotation': "badge-soft-primary",
-                        'saleorder.saleorder': "badge-soft-success",
+                        'opportunity.opportunity': "badge-indigo badge-outline",
+                        'opportunity.opportunitymeeting': "badge-warning badge-outline",
+                        'quotation.quotation': "badge-primary badge-outline",
+                        'saleorder.saleorder': "badge-success badge-outline",
                     }
                     let appMapIcon = {
                         'opportunity.opportunity': "far fa-lightbulb",
@@ -1092,12 +1092,6 @@ function dataTableActivity(data) {
                         'quotation.quotation': "fas fa-file-invoice-dollar",
                         'saleorder.saleorder': "fas fa-file-invoice",
                     }
-                    // return `<div class="row">
-                    //             <div class="d-flex">
-                    //                 <small><i class="${appMapIcon[row?.['app_code']]} mt-2 mr-2"></i></small>
-                    //                 <span class="badge ${appMapBadge[row?.['app_code']]}">${appMapTrans[row?.['app_code']]}</span>
-                    //             </div>
-                    //         </div>`;
                     return `<span class="badge ${appMapBadge[row?.['app_code']]}">
                                 <span>
                                     <span class="icon"><span class="feather-icon"><small><i class="${appMapIcon[row?.['app_code']]}"></i></small></span></span>

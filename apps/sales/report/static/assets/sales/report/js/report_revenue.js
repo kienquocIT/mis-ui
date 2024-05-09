@@ -286,9 +286,17 @@ $(function () {
             });
         }
 
-        $('#btn-collapse').click(function () {
-            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
-        });
+        function loadFilterShowMe(listData) {
+            let html = "";
+            for (let data of listData) {
+                html += `<div><small class="text-primary">${data}</small></div>`;
+            }
+            $('#card-filter-sm').html(html);
+        }
+
+        function loadFilterDate(listData) {
+            $('#card-filter-date').html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
+        }
 
         // load init
         function initData() {
@@ -321,6 +329,11 @@ $(function () {
         // mask money
         $.fn.initMaskMoney2();
 
+        // Prevent dropdown from closing when clicking inside the dropdown
+        $('.dropdown-menu').on('click', function (e) {
+            e.stopPropagation();
+        });
+
         // Events
         boxGroup.on('change', function() {
             loadBoxEmployee();
@@ -333,25 +346,37 @@ $(function () {
             loadTotal();
         });
 
-        btnView.on('click', function () {
+        $('#btn-apply-sm, #btn-apply-date').on('click', function () {
             let dataParams = {};
             dataParams['is_initial'] = false;
             dataParams['group_inherit__is_delete'] = false;
             dataParams['sale_order__system_status'] = 3;
-            if (boxGroup.val()) {
+            let listShowMe = [];
+            let listDate = [];
+            if (boxGroup.val() && boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
+                for (let text of boxGroup[0].innerText.split("\n")) {
+                    listShowMe.push(text);
+                }
             }
-            if (boxEmployee.val()) {
+            if (boxEmployee.val() && boxEmployee.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
+                for (let text of boxEmployee[0].innerText.split("\n")) {
+                    listShowMe.push(text);
+                }
             }
+            loadFilterShowMe(listShowMe);
             if (boxStart.val()) {
                 let dateStart = moment(boxStart.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
                 dataParams['date_approved__gte'] = formatStartDate(dateStart);
+                listDate.push(boxStart.val());
             }
             if (boxEnd.val()) {
                 let dateEnd = moment(boxEnd.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
                 dataParams['date_approved__lte'] = formatEndDate(dateEnd);
+                listDate.push(boxEnd.val());
             }
+            loadFilterDate(listDate);
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),

@@ -970,3 +970,7 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
     color: #fff;
 }
 /* -- Badge parent */
+
+.bg-soft-success {
+    background: #ebfcf5;
+}

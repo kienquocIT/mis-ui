@@ -47,7 +47,7 @@ $('#modal-OK-btn').on('click', function(event) {
                     'vendor_serial_number': '',
                     'serial_number': '',
                     'serial_id': '',
-                    'default_item_id': this_selected.attr('data-id'),
+                    'delivery_item_id': this_selected.attr('data-delivery-item-id'),
                     'product_id': this_selected.attr('data-product-id'),
                     'product_title': this_selected.attr('data-product-title'),
                     'product_code': this_selected.attr('data-product-code'),
@@ -113,6 +113,7 @@ $('#modal-OK-btn').on('click', function(event) {
                     'vendor_serial_number': '',
                     'serial_number': '',
                     'serial_id': '',
+                    'delivery_item_id': lot_data.attr('data-delivery-item-id'),
                     'product_id': product_id,
                     'product_title': product_title,
                     'product_code': product_code,
@@ -180,6 +181,7 @@ $('#modal-OK-btn').on('click', function(event) {
                     'vendor_serial_number': vendor_serial_number,
                     'serial_number': serial_number,
                     'serial_id': serial_id,
+                    'delivery_item_id': serial_data.attr('data-delivery-item-id'),
                     'product_id': product_id,
                     'product_title': product_title,
                     'product_code': product_code,
@@ -587,7 +589,7 @@ function loadTableSelectDetailProduct(datasource=[]) {
                     return `<div class="form-check">
                                 <input type="radio" name="selected-product" class="form-check-input selected-product"
                                         data-type="${row?.['product_general_traceability_method']}" 
-                                        data-id="${row?.['id']}"
+                                        data-delivery-item-id="${row?.['id']}"
                                         data-product-id="${row?.['product_data']?.['id']}"
                                         data-product-code="${row?.['product_data']?.['code']}"
                                         data-product-title="${row?.['product_data']?.['title']}"
@@ -631,9 +633,16 @@ function loadTableSelectProductSerial(datasource=[]) {
                 data: '',
                 className: 'wrap-text',
                 render: (data, type, row) => {
+                    let delivery_item_id = null
+                    tableDetailProductEle.find('.selected-product').each(function () {
+                        if ($(this).prop('checked')) {
+                            delivery_item_id = $(this).attr('data-delivery-item-id')
+                        }
+                    })
                     return `<span class="serial-data-span"
                                 data-delivery-id="${selected_delivery_id}"
                                 data-delivery-code="${selected_delivery_code}"
+                                data-delivery-item-id="${delivery_item_id}"
                                 data-serial-number="${row?.['serial_number']}"
                                 data-vendor-serial-number="${row?.['vendor_serial_number']}"
                                 data-serial-id="${row?.['serial_id']}"
@@ -709,9 +718,16 @@ function loadTableSelectProductLOT(datasource=[]) {
                 data: '',
                 className: 'wrap-text',
                 render: (data, type, row) => {
+                    let delivery_item_id = null
+                    tableDetailProductEle.find('.selected-product').each(function () {
+                        if ($(this).prop('checked')) {
+                            delivery_item_id = $(this).attr('data-delivery-item-id')
+                        }
+                    })
                     return `<span class="lot-data-span"
                                 data-delivery-id="${selected_delivery_id}"
                                 data-delivery-code="${selected_delivery_code}"
+                                data-delivery-item-id="${delivery_item_id}"
                                 data-lot-quantity="${row?.['lot_quantity']}"
                                 data-lot-number="${row?.['lot_number']}"
                                 data-lot-id="${row?.['lot_id']}"
@@ -1224,7 +1240,7 @@ class GoodsReturnHandle {
         if (data_item[0]?.['type'] === 0) {
             product_detail_list.push({
                 'type': 0,
-                'default_item_id': data_item[0]?.['default_item_id'],
+                'delivery_item_id': data_item[0]?.['delivery_item_id'],
                 'default_return_number': parseFloat(data_item[0]?.['is_return']),
                 'default_redelivery_number': parseFloat(data_item[0]?.['is_redelivery'])
             })
@@ -1233,6 +1249,7 @@ class GoodsReturnHandle {
             for (let item of data_item) {
                 product_detail_list.push({
                     'type': 1,
+                    'delivery_item_id': data_item[0]?.['delivery_item_id'],
                     'lot_no_id': item?.['lot_id'],
                     'lot_return_number': parseFloat(item?.['is_return']),
                     'lot_redelivery_number': parseFloat(item?.['is_redelivery'])
@@ -1243,6 +1260,7 @@ class GoodsReturnHandle {
             for (let item of data_item) {
                 product_detail_list.push({
                     'type': 2,
+                    'delivery_item_id': data_item[0]?.['delivery_item_id'],
                     'serial_no_id': item?.['serial_id'],
                     'is_return': item?.['is_return'],
                     'is_redelivery': item?.['is_redelivery']

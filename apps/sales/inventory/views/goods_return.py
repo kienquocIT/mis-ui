@@ -125,14 +125,3 @@ class DeliveryListForGoodsReturnAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST_FOR_GOODS_RETURN).get(params)
         return resp.auto_return(key_success='delivery_list')
-
-
-class DeliveryProductsForGoodsReturnAPI(APIView):
-    @mask_view(
-        login_require=True,
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_PRODUCTS_FOR_GOODS_RETURN.fill_key(pk=pk)).get()
-        return resp.auto_return(key_success='delivery_products_list')

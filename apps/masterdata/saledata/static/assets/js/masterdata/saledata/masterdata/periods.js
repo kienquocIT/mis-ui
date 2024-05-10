@@ -14,7 +14,7 @@ $(document).ready(function () {
 
     function get_option_for_sw_using_time(ele, fiscal_year, fiscal_month_start, selected) {
         ele.html(`<option value="0"></option>`)
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < new Date().getMonth(); i++) {
             let month = fiscal_month_start + i
             let year = fiscal_year
             if (month > 12) {

@@ -1932,7 +1932,7 @@ class WFRTControl {
         if (collabOutForm && collabOutForm.length > 0) {
             Swal.fire({
                 title: $.fn.transEle.attr('data-select-next-node-collab'),
-                html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
+                html: String(WFRTControl.setupHTMLSelectCollab(collabOutForm)),
                 allowOutsideClick: false,
                 showConfirmButton: true,
                 confirmButtonText: $.fn.transEle.attr('data-confirm'),
@@ -2128,7 +2128,7 @@ class WFRTControl {
             if ([1, 3].includes(_form.dataForm['system_status'])) {
                 Swal.fire({
                     title: $.fn.transEle.attr('data-select-next-node-collab'),
-                    html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
+                    html: String(WFRTControl.setupHTMLSelectCollab(collabOutForm)),
                     allowOutsideClick: false,
                     showConfirmButton: true,
                     confirmButtonText: $.fn.transEle.attr('data-confirm'),
@@ -2171,7 +2171,7 @@ class WFRTControl {
         }
     }
 
-    static setupHTMLCollabNextNode(collabOutForm) {
+    static setupHTMLSelectCollab(collabOutForm) {
         let htmlCustom = ``;
         for (let collab of collabOutForm) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
@@ -2209,25 +2209,34 @@ class WFRTControl {
         return htmlCustom;
     }
 
-    static setupHTMLWFNonApply() {
-        return `<div class="card card-wth-progress mb-3">
-                    <div class="progress progress-bar-xs">
-                        <div class="progress-bar bg-red w-20" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <div class="card-body">
-                        <i class="fas fa-robot"></i>
-                        <p>${$.fn.transEle.attr('data-canceled-by-creator')}</p>
-                    </div>
-                </div>
-                <div class="card card-wth-progress">
-                    <div class="progress progress-bar-xs">
-                        <div class="progress-bar bg-success w-20" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <div class="card-body">
-                        <i class="fas fa-robot"></i>
-                        <p>${$.fn.transEle.attr('data-finish-wf-non-apply')}</p>
-                    </div>
-                </div>`;
+    static setupHTMLNonWF(is_cancel = false) {
+        let htmlBody = "";
+        let htmlFinish = `<div class="row">
+                            <div class="d-flex">
+                                <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
+                                <small><p class="text-success">${$.fn.transEle.attr('data-finish-wf-non-apply')}</p></small>
+                            </div>
+                        </div>`;
+        let htmlCancel = `<div class="row mb-3">
+                            <div class="d-flex">
+                                <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
+                                <small><p class="text-red">${$.fn.transEle.attr('data-canceled-by-creator')}</p></small>
+                            </div>
+                        </div>`;
+        htmlBody = htmlFinish;
+        if (is_cancel === true) {
+            htmlBody = htmlCancel + htmlFinish;
+        }
+        return `<div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="hk-ribbon-type-1 start-touch">` + `<span>${$.fn.transEle.attr('data-node-completed')}</span></div>
+                            <div class="card-body mt-5">
+                                ${htmlBody}
+                            </div>
+                        </div>
+                        </div>
+                    </div>`;
     }
 
     static setWFRuntimeID(runtime_id) {
@@ -2247,11 +2256,15 @@ class WFRTControl {
                     // khi phiếu trong trạng thái đã tạo ( state > 1) thì button save không có hiệu lực
                     if (data['runtime_detail']?.['state'] >= 1) $('#idxRealAction .btn[type="submit"][form]').not('.btn-wf-after-finish').addClass('hidden');
                     // Finish with workflow non-apply -> show idxDataRuntimeNotFound
-                    if (data['runtime_detail']?.['state'] === 3) $('#idxDataRuntimeNotFound').removeClass('hidden');
+                    let $dataRTNotFound = $('#idxDataRuntimeNotFound')
+                    if (data['runtime_detail']?.['state'] === 3) $dataRTNotFound.removeClass('hidden');
+                    $dataRTNotFound.empty().append(
+                        WFRTControl.setupHTMLNonWF(false)
+                    )
                     let eleStatus = $('#systemStatus');
-                    if (eleStatus.attr('data-status') === '4') {  // if rejected after finish with workflow non-apply
-                        $('#idxDataRuntimeNotFound').empty().append(
-                            WFRTControl.setupHTMLWFNonApply()
+                    if (eleStatus.attr('data-status') === '4') {  // if canceled after finish with workflow non-apply
+                        $dataRTNotFound.empty().append(
+                            WFRTControl.setupHTMLNonWF(true)
                         )
                     }
                     let actionMySelf = data['runtime_detail']['action_myself'];

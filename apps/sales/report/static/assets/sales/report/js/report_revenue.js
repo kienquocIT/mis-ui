@@ -54,24 +54,24 @@ $(function () {
                         placeholder: $transFact.attr('data-filter-customer'),
                     },
                 ],
-                columns: [  // 120,120,120,60,192,192,160,160,160 (1600p)
+                columns: [  // 112,112,112,60,192,192,160,160,160 (1600p)
                     {
                         targets: 0,
-                        width: '7.5%',
+                        width: '7%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-primary">${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 1,
-                        width: '7.5%',
+                        width: '7%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-primary badge-outline">${row?.['sale_order']?.['employee_inherit']?.['full_name'] ? row?.['sale_order']?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '7.5%',
+                        width: '7%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</p>`;
                         }
@@ -347,6 +347,7 @@ $(function () {
         });
 
         $('#btn-apply-sm, #btn-apply-date').on('click', function () {
+            this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
             dataParams['is_initial'] = false;
             dataParams['group_inherit__is_delete'] = false;

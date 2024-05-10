@@ -565,3 +565,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     INVOICE_SIGN_LIST = StringUrl('ar-invoice/sign/list')
     INVENTORY_INTERACT_LIST = StringUrl('saledata/warehouses/config-interact')
     INVENTORY_INTERACT_DETAIL = StringUrl('saledata/warehouses/config-interact/{pk}')
+
+    # Diagram
+    DIAGRAM_LIST = StringUrl('diagram/list')

@@ -6528,7 +6528,7 @@ msgstr "Hoạt động khách hàng"
 
 #
 msgid "Sale person"
-msgstr "Người bán hàng"
+msgstr "Nv bán hàng"
 
 #
 msgid "Period"
@@ -7421,3 +7421,15 @@ msgstr "Ngày áp dụng"
 #
 msgid "Wait complete"
 msgstr "Đợi hoàn tất"
+
+#
+msgid "Please cancel current quotation"
+msgstr "Vui lòng hủy báo giá hiện tại"
+
+#
+msgid "Please cancel current sale order"
+msgstr "Vui lòng hủy đơn hàng hiện tại"
+
+#
+msgid "Please cancel current quotation, sale order"
+msgstr "Vui lòng hủy báo giá, đơn hàng hiện tại"

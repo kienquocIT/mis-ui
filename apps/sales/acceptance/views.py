@@ -20,7 +20,7 @@ class FinalAcceptanceList(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/acceptance/final_acceptance.html',
+        template='sales/acceptance/final_acceptance_update.html',
         menu_active='menu_final_acceptance_list',
         breadcrumb='FINAL_ACCEPTANCE_LIST_PAGE',
     )

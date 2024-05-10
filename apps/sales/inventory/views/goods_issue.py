@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck
+from apps.shared import mask_view, ServerAPI, ApiURL, InputMappingProperties, SaleMsg
 
 
 class GoodsIssueList(View):
@@ -13,8 +13,7 @@ class GoodsIssueList(View):
         auth_require=True,
         template='sales/inventory/goods_issue/list.html',
         menu_active='menu_goods_issue_list',
-        breadcrumb='GOODS_ISSUE_LIST_PAGE',
-        perm_check=PermCheck(url=ApiURL.GOODS_ISSUE_LIST, method='get'),
+        breadcrumb='GOODS_ISSUE_LIST_PAGE'
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -25,8 +24,7 @@ class GoodsIssueCreate(View):
         auth_require=True,
         template='sales/inventory/goods_issue/create.html',
         menu_active='menu_goods_issue_list',
-        breadcrumb='GOODS_ISSUE_CREATE_PAGE',
-        perm_check=PermCheck(url=ApiURL.GOODS_ISSUE_LIST, method='post'),
+        breadcrumb='GOODS_ISSUE_CREATE_PAGE'
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -39,8 +37,7 @@ class GoodsIssueDetail(View):
         auth_require=True,
         template='sales/inventory/goods_issue/detail.html',
         menu_active='menu_goods_issue_list',
-        breadcrumb='GOODS_ISSUE_DETAIL_PAGE',
-        perm_check=PermCheck(url=ApiURL.GOODS_ISSUE_DETAIL, method='get', fill_key=['pk']),
+        breadcrumb='GOODS_ISSUE_DETAIL_PAGE'
     )
     def get(self, request, pk, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -62,6 +59,7 @@ class GoodsIssueListAPI(APIView):
     )
     def post(self, request, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_ISSUE_LIST).post(request.data)
+        resp.result['message'] = SaleMsg.GOODS_ISSUE_CREATE
         return resp.auto_return(status_success=status.HTTP_201_CREATED)
 
 
@@ -80,7 +78,9 @@ class GoodsIssueDetailAPI(APIView):
     )
     def put(self, request, pk, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_ISSUE_DETAIL.fill_key(pk=pk)).put(request.data)
+        resp.result['message'] = SaleMsg.GOODS_ISSUE_UPDATE
         return resp.auto_return()
+
 
 class GoodsIssueUpdate(View):
     permission_classes = [IsAuthenticated]
@@ -89,8 +89,10 @@ class GoodsIssueUpdate(View):
         auth_require=True,
         template='sales/inventory/goods_issue/update.html',
         menu_active='menu_goods_issue_list',
-        breadcrumb='GOODS_ISSUE_UPDATE_PAGE',
-        perm_check=PermCheck(url=ApiURL.GOODS_ISSUE_DETAIL, method='PUT', fill_key=['pk']),
+        breadcrumb='GOODS_ISSUE_UPDATE_PAGE'
     )
     def get(self, request, pk, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_ISSUE
+        return {
+            'input_mapping_properties': input_mapping_properties, 'form_id': 'frmUpdate'
+        }, status.HTTP_200_OK

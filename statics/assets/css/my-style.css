@@ -729,6 +729,10 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
     min-width: 1500px;
 }
 
+.min-w-1600p {
+    min-width: 1600px;
+}
+
 .min-w-1920p {
     min-width: 1920px;
 }
@@ -966,3 +970,7 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
     color: #fff;
 }
 /* -- Badge parent */
+
+.bg-soft-success {
+    background: #ebfcf5;
+}

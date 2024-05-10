@@ -282,6 +282,18 @@
     <span class="hidden" id="idxSpanMsgGroup" data-make-sure="{% trans 'Make sure change to' %}"></span>
 {% endblock %}
 
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+        data-title="{% trans 'Title' %}"
+        data-date-applied="{% trans 'Date Applied' %}"
+        data-active="{% trans 'Active' %}"
+        data-wait-complete="{% trans 'Wait complete' %}"
+        data-action="{% trans 'Action' %}"
+    >
+{% endblock %}
+
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/moment.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/list-new.js' %}"></script>

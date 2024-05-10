@@ -1,5 +1,5 @@
 let urlEle = $('#url-factory');
-$(document).ready(function (){
+$(document).ready(function () {
     function loadDtb() {
         if (!$.fn.DataTable.isDataTable('#dtbGoodsIssue')) {
             let $table = $('#dtbGoodsIssue')
@@ -24,15 +24,16 @@ $(document).ready(function (){
                         width: "10%",
                         render: (data, type, row) => {
                             let urlDetail = urlEle.data('url-detail').format_url_with_uuid(row.id);
-                            return `<a href="${urlDetail}"><span class="badge badge-primary">${data}</span></a>` + $x.fn.buttonLinkBlank(urlDetail);
+                            return `<a href="${urlDetail}"><span class="badge badge-soft-primary w-70">${data}</span></a>` + $x.fn.buttonLinkBlank(urlDetail);
                         }
                     },
                     {
                         data: 'title',
                         targets: 1,
                         width: "40%",
-                        render: (data) => {
-                            return `<span class="fw-bold">${data}</span>`
+                        render: (data, type, row) => {
+                            let urlDetail = urlEle.data('url-detail').format_url_with_uuid(row.id);
+                            return `<a href="${urlDetail}"><span class="text-primary fw-bold">${data}</span></a>`
                         }
                     },
                     {
@@ -58,8 +59,15 @@ $(document).ready(function (){
                         targets: 4,
                         width: "10%",
                         className: 'wrap-text',
-                        render: (data) => {
-                            return `<span class="badge badge-primary">${data}</span>`
+                        render: (data, type, row) => {
+                            let color = [
+                                'badge-secondary',
+                                'badge-primary',
+                                'badge-indigo',
+                                'badge-success',
+                                'badge-danger'
+                            ]
+                            return `<span class="badge w-100 ${color[row?.['raw_system_status']]}">${data}</span>`
                         }
                     },
                 ],

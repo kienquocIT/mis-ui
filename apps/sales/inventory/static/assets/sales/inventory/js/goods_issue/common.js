@@ -7,6 +7,7 @@ let select_detail_table_lot = $('#select-detail-table-lot')
 let select_detail_table_lot_done = $('#select-detail-table-lot-done')
 let amount_balance = $('#amount-balance')
 let IS_DETAIL = false
+let IS_UPDATE = false
 
 class GoodsIssueLoadPage {
     load() {
@@ -82,7 +83,7 @@ class GoodsIssueLoadPage {
         $(document).on('click', '.select-detail', function () {
             NOW_BTN = $(this)
             let disabled = ''
-            if (IS_DETAIL) {
+            if (IS_DETAIL || IS_UPDATE) {
                 disabled = 'disabled readonly'
             }
             if (NOW_BTN.attr('data-manage-type') === '2') { // sn
@@ -247,6 +248,34 @@ class GoodsIssueLoadPage {
     }
 
     static loadInventoryAdjustment(ele, data) {
+        if (data) {
+            let url = urlEle.data('url-ia-product').format_url_with_uuid(data.id);
+            let dataProductEle = $('#data-ia-product');
+            let data_dict = JSON.parse(dataProductEle.text());
+            $.fn.callAjax(url, 'GET').then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('ia_product_list')) {
+                        let product_list = data?.['ia_product_list'].filter(function (obj) {
+                            return (obj.book_quantity - obj.count) > 0;
+                        });
+                        product_list.map(function (item) {
+                            if (data_dict[item.id]) {
+                                item['action_status'] = false
+                            }
+
+                            if (!item.action_status) {
+                                data_dict[item.id] = item;
+                                item['description'] = item?.['product_mapped']?.['description'];
+                                item['subtotal'] = '';
+                                item['unit_cost'] = '';
+                            }
+                        })
+                        $('#data-ia-product').text(JSON.stringify(data_dict));
+                    }
+                })
+        }
+
         ele.initSelect2({
             data: data,
             templateResult: function(data) {
@@ -266,19 +295,23 @@ class GoodsIssueLoadPage {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('ia_product_list')) {
                         let product_list = data?.['ia_product_list'].filter(function (obj) {
-                            return (obj.book_quantity - obj.count) > 0;
+                            return obj.action_type === 1;
                         });
                         product_list.map(function (item) {
                             if (data_dict[item.id]) {
                                 item['action_status'] = false
                             }
-
                             if (!item.action_status) {
                                 data_dict[item.id] = item;
                                 item['description'] = item?.['product_mapped']?.['description'];
-                                item['subtotal'] = '';
-                                item['unit_cost'] = '';
+                                item['subtotal'] = parseFloat(item?.['unit_cost']) * (parseFloat(item?.['book_quantity']) - parseFloat(item?.['count']));
+                                item['unit_cost'] = item?.['unit_cost'];
                                 tableEle.DataTable().row.add(item).draw();
+                                tableEle.find('tbody tr').each(function () {
+                                    if ($(this).find('.col-product').attr('data-manage-type') === '0') {
+                                        $(this).addClass('bg-primary-light-5')
+                                    }
+                                })
                             }
                         })
                         $('#data-ia-product').text(JSON.stringify(data_dict));
@@ -341,7 +374,7 @@ class GoodsIssueLoadPage {
                         data: 'product_mapped',
                         className: 'wrap-text w-20',
                         render: (data, type, row, meta) => {
-                            return `<span class="badge badge-primary badge-sm mb-1">${data.code}</span>&nbsp;<span class="text-primary col-product" data-id="${row.id}">${data.title}</span>`
+                            return `<span class="badge badge-primary badge-sm mb-1">${data.code}</span>&nbsp;<span class="text-primary col-product" data-manage-type="${row?.['product_mapped']?.['general_traceability_method']}" data-id="${row.id}">${data.title}</span>`
                         },
                     },
                     {
@@ -375,7 +408,7 @@ class GoodsIssueLoadPage {
                         data: 'unit_cost',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<input style="min-width: 250px" class="form-control mask-money col-unit-cost" value="${data}"/>`;
+                            return `<input disabled readonly style="min-width: 250px" class="form-control mask-money col-unit-cost" value="${data}"/>`;
                         },
                     },
                     {
@@ -537,6 +570,59 @@ class GoodsIssueLoadPage {
         }
     }
 
+    static getDataProductForIAUpdate(dataForm) {
+        let flag = true;
+        let rows = $('#dtbProductIA tbody tr');
+        let dict_product = JSON.parse($('#data-ia-product').text());
+        console.log(dict_product)
+        let list_product = [];
+        rows.each(function () {
+            let obj = dict_product[$(this).find('.col-product').attr('data-id')];
+            let data = {
+                'inventory_adjustment_item': obj.id,
+                'product_warehouse': obj.product_warehouse,
+                'warehouse': obj?.['warehouse_mapped'].id,
+                'uom': obj?.['uom_mapped'].id,
+                'description': $(this).find('.col-remarks').val(),
+                'quantity': $(this).find('.col-quantity').val(),
+                'unit_cost': $(this).find('.col-unit-cost').valCurrency(),
+                'subtotal': $(this).find('.col-subtotal').valCurrency(),
+            }
+            if ($(this).find('.select-detail').attr('data-manage-type') === '2') { // sn
+                if ($(this).find('.select-detail').find('.data-sn-selected').text()) {
+                    data['sn_changes'] = JSON.parse(
+                        $(this).find('.select-detail').find('.data-sn-selected').text()
+                    )
+                }
+                else {
+                    $.fn.notifyB({description: "Serial data can not NULL"}, 'warning');
+                    flag = false;
+                }
+                data['lot_changes'] = []
+            }
+            if ($(this).find('.select-detail').attr('data-manage-type') === '1') { // lot
+                if ($(this).find('.select-detail').find('.data-lot-selected').text()) {
+                    data['lot_changes'] = JSON.parse(
+                        $(this).find('.select-detail').find('.data-lot-selected').text()
+                    )
+                }
+                else {
+                    $.fn.notifyB({description: "Lot data can not NULL"}, 'warning');
+                    flag = false;
+                }
+                data['sn_changes'] = []
+            }
+            list_product.push(data);
+        })
+        dataForm['goods_issue_datas'] = list_product;
+        if (flag) {
+            return dataForm
+        }
+        else {
+            return false;
+        }
+    }
+
     static getDataProductForLiquidation(dataForm) {
         let rows = $('#dtbProductLiquidation tbody tr');
         let list_product = [];
@@ -559,8 +645,8 @@ class GoodsIssueLoadPage {
         return dataForm
     }
 
-    static loadGoodsIssueDetail(frmDetail, pk, page_type = 0) {
-        let url = frmDetail.data('url').format_url_with_uuid(pk);
+    static loadGoodsIssueDetail(frmDetail, pk, type='detail') {
+        let url = frmDetail.data('url')
         let iaSelectEle = $('#box-select-ia');
         $.fn.callAjax2({
             'url': url,
@@ -568,8 +654,10 @@ class GoodsIssueLoadPage {
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                IS_DETAIL = true;
+                IS_DETAIL = type === 'detail';
+                IS_UPDATE = type === 'update';
                 let detail = data?.['goods_issue_detail'];
+                WFRTControl.setWFRuntimeID(detail?.['workflow_runtime_id'])
                 $.fn.compareStatusShowPageAction(detail);
                 $x.fn.renderCodeBreadcrumb(detail);
 
@@ -583,59 +671,14 @@ class GoodsIssueLoadPage {
                     $('#box-good-receipt-type').val(1)
                     iaSelectEle.closest('.form-group').addClass('hidden');
                 }
-                if (page_type === 0) {
-                    GoodsIssueLoadPage.loadDtbProductPageDetail(detail?.['goods_issue_datas']);
-                } else {
-                    if (detail?.['goods_issue_type'] === 0) {
-                        let product_list = GoodsIssueLoadPage.backupDataProductsDetail(detail?.['goods_issue_datas'])
-                        GoodsIssueLoadPage.loadDtbProductForIA(product_list)
-                    } else {
-                        $('#row-for-liquidation').removeClass('hidden');
-                        $('#row-for-ia').addClass('hidden');
-                        GoodsIssueLoadPage.loadDtbProductForLiquidation([]);
-                        $('#box-select-ia').closest('.form-group').addClass('hidden');
-                        let table = $('#dtbProductLiquidation');
-                        let list_selected = []
-                        detail?.['goods_issue_datas'].map(function (item){
-                            list_selected.push(item.product_warehouse.id);
-                            table.DataTable().row.add(item).draw();
-                            let trCurrent = table.find('tbody tr');
-                            GoodsIssueLoadPage.loadWarehouse(trCurrent.find('.box-select-wh'), item.warehouse);
-                            GoodsIssueLoadPage.loadProduct(trCurrent.find('.box-select-product'), item.product_warehouse, item.warehouse.id, list_selected);
-                        })
-                    }
-                }
+                GoodsIssueLoadPage.loadDtbProductPageDetail(detail?.['goods_issue_datas']);
             }
         })
-    }
-
-    static backupDataProductsDetail(data) {
-        let dataEle = $('#data-ia-product');
-        let data_dict = JSON.parse(dataEle.text());
-        let list_result = []
-        data.map(function (item) {
-            let data_temp = {
-                'id': item.inventory_adjustment_item,
-                'product_warehouse': item.product_warehouse.id,
-                'warehouse_mapped': item.warehouse,
-                'description': item.description,
-                'uom_mapped': item.uom,
-                'book_quantity': item.quantity,
-                'count': 0,
-                'product_mapped': item.product_warehouse?.['product_data'],
-                'unit_cost': item.unit_cost,
-                'subtotal': item.subtotal,
-            }
-            data_dict[item.inventory_adjustment_item] = data_temp
-            list_result.push(data_temp)
-        })
-        dataEle.text(JSON.stringify(data_dict));
-        return list_result
     }
 
     static loadDtbProductPageDetail(data) {
-        if (!$.fn.DataTable.isDataTable('#dtbProduct')) {
-            let dtb = $('#dtbProduct');
+        if (!$.fn.DataTable.isDataTable('#dtbProductIA')) {
+            let dtb = $('#dtbProductIA');
             dtb.DataTableDefault({
                 dom: '',
                 data: data,
@@ -645,13 +688,13 @@ class GoodsIssueLoadPage {
                         data: 'product_warehouse',
                         className: 'wrap-text w-20',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-primary badge-sm mb-1">${data?.['product_mapped'].code}</span>&nbsp;<span class="text-primary">${data?.['product_mapped'].title}</span>`
+                            return `<span class="badge badge-primary badge-sm mb-1">${data?.['product_mapped'].code}</span>&nbsp;<span class="text-primary col-product" data-id="${row.id}">${data?.['product_mapped'].title}</span>`
                         },
                     }, {
                         data: 'product_warehouse',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<textarea style="min-width: 250px" rows="2" disabled readonly class="form-control small">${data?.['product_mapped'].description}</textarea>`
+                            return `<textarea style="min-width: 250px" rows="2" disabled readonly class="form-control small col-remarks">${data?.['product_mapped'].description}</textarea>`
                         },
                     }, {
                         data: 'product_warehouse',
@@ -675,17 +718,17 @@ class GoodsIssueLoadPage {
                         data: 'unit_cost',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<span class="text-primary mask-money" data-init-money=${data}></span>`
+                            return `<input disabled readonly class="col-unit-cost form-control mask-money" value=${data}>`
                         },
                     }, {
                         data: 'subtotal',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<span class="text-primary mask-money" data-init-money=${data}></span>`
+                            return `<input class="col-subtotal form-control mask-money" value=${data} disabled readonly>`
                         },
                     }, {
                         data: 'product_warehouse',
-                        className: 'wrap-text w-10',
+                        className: 'wrap-text w-10 text-center',
                         render: (data, type, row) => {
                             if (data?.['product_mapped']?.['general_traceability_method'] !== 0) {
                                 return `<button type="button"
@@ -707,6 +750,9 @@ class GoodsIssueLoadPage {
                         },
                     },
                 ],
+                initComplete: function () {
+                    $('#dtbProduct').find('tbody tr').attr('class', 'bg-primary-light-5')
+                }
             });
         }
     }

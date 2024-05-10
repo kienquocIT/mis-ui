@@ -26,14 +26,14 @@ $(function () {
                     }
                     // prepare for copy quotation to sale order
                     if (!$form.hasClass('sale-order')) { // QUOTATION PAGES
-                        $('#data-copy-quotation-detail').val(JSON.stringify(data))
+                        $('#data-copy-quotation-detail').val(JSON.stringify(data));
                     }
                     if ($form.attr('data-method').toLowerCase() === 'put') {
                         // Check config when begin edit
                         let check_config = QuotationCheckConfigHandle.checkConfig(true);
                         // load again total products if after check config the price change
                         if (check_config.hasOwnProperty('is_make_price_change')) {
-                            if (check_config.is_make_price_change === false) {
+                            if (check_config?.['is_make_price_change'] === false) {
                                 QuotationLoadDataHandle.loadTotal(data, true, false, false);
                             }
                         }
@@ -44,7 +44,7 @@ $(function () {
                     if ($form[0].classList.contains('sale-order')) {
                         appCode = 'saleorder';
                     }
-                    WFRTControl.setWFInitialData(appCode, $form.attr('data-method').toLowerCase());
+                    WFRTControl.setWFInitialData(appCode, $form.attr('data-method'));
 
                     // delivery button
                     if (data?.['delivery_call'] === false) $('#btnDeliverySaleOrder').removeClass('hidden');

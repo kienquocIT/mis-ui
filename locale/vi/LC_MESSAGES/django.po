@@ -2064,14 +2064,6 @@ msgid "Open a new tab with detail page"
 msgstr "Mở một tab mới với trang chi tiết"
 
 #
-msgid "wait for delivery"
-msgstr "Chờ giao hàng"
-
-#
-msgid "wait for receipt"
-msgstr "Đợi nhận hàng"
-
-#
 msgid "Title"
 msgstr "Tiêu đề"
 
@@ -2821,7 +2813,7 @@ msgstr "Ngày ký hợp đồng"
 
 #
 msgid "Delivery date"
-msgstr "Ngày giao hàng"
+msgstr "Ngày giao"
 
 #
 msgid "Invoice date"
@@ -3146,7 +3138,7 @@ msgid "WareHouse List"
 msgstr "Danh sách kho"
 
 #
-msgid "Cash Outflow"
+msgid "Cashflow"
 msgstr "Dòng tiền"
 
 #
@@ -3846,8 +3838,8 @@ msgid "Only the Account Manager of a Customer is allowed to create an Opportunit
 msgstr "Chỉ quản lý của khách hàng mới được tạo cơ hội kinh doanh cho khách hàng đó  "
 
 #
-msgid "Lost by other reason"
-msgstr "Thất bại bởi lý do khác"
+msgid "Lost"
+msgstr "Thất bại"
 
 #
 msgid "Configuration does not allow selecting stage"
@@ -4584,11 +4576,11 @@ msgstr "Đơn mua hàng"
 
 #
 msgid "Delivered date"
-msgstr "Ngày giao hàng"
+msgstr "Ngày giao"
 
 #
 msgid "Delivered status"
-msgstr "Trạng thái giao hàng"
+msgstr "Trạng thái giao"
 
 #
 msgid "Select items from purchase request"
@@ -4727,7 +4719,7 @@ msgstr "Số seri phải khác nhau"
 
 #
 msgid "Quantity delivery must less than equal quantity picked"
-msgstr "Số lượng giao hàng không vượt quá số lượng lấy hàng"
+msgstr "Số lượng giao không vượt quá số lượng lấy"
 
 #
 msgid "Only for view"
@@ -5948,7 +5940,7 @@ msgstr "Hoạt động"
 
 #
 msgid "Delivering"
-msgstr "Đang giao hàng"
+msgstr "Đang giao"
 
 #
 msgid "Partially delivered"
@@ -5960,7 +5952,7 @@ msgstr "Đã giao"
 
 #
 msgid "Partially received"
-msgstr "Nhập hàng một phần"
+msgstr "Nhập một phần"
 
 #
 msgid "Received"
@@ -6223,8 +6215,8 @@ msgid "Returned content"
 msgstr "Nội dung trả về"
 
 #
-msgid "Type your content here..."
-msgstr "Nhập nội dung của bạn vào đây..."
+msgid "Type your reason here..."
+msgstr "Nhập lý do của bạn tại đây..."
 
 #
 msgid "This image encountered an error during loading or does not exist."
@@ -7205,6 +7197,226 @@ msgstr "Đơn vị"
 #
 msgid "IA number"
 msgstr "Số IA"
+
+#
+msgid "Goods detail"
+msgstr "Chi tiết hàng"
+
+#
+msgid "Not yet"
+msgstr "Chưa xong"
+
+#
+msgid "LOT/Serial status"
+msgstr "Trạng thái LOT/Serial"
+
+#
+msgid "Inventory"
+msgstr "Hàng tồn kho"
+
+#
+msgid "Unit cost"
+msgstr "Giá vốn"
+
+#
+msgid "Wait for delivery"
+msgstr "Đợi giao"
+
+#
+msgid "Wait for receipt"
+msgstr "Đợi nhập"
+
+#
+msgid "PR code"
+msgstr "Mã PR"
+
+#
+msgid "Merge same product in 1 line, convert to reference unit if there is more 1 UOM"
+msgstr "Gộp các sản phẩm giống nhau, chuyển đổi về cùng một đơn vị"
+
+#
+msgid "Default all"
+msgstr "Mặc định là tất cả"
+
+#
+msgid "is not in stock"
+msgstr "không còn trong kho"
+
+#
+msgid "Posting periods"
+msgstr "Kỳ kế toán"
+
+#
+msgid "Main period code"
+msgstr "Mã kỳ chính"
+
+#
+msgid "Sub period code"
+msgstr "Mã kỳ phụ"
+
+#
+msgid "Period name"
+msgstr "Tên kỳ"
+
+#
+msgid "Individual"
+msgstr "Cá nhân"
+
+#
+msgid "Receipt code"
+msgstr "Mã phiếu nhập"
+
+#
+msgid "Lot information"
+msgstr "Thông tin LOT"
+
+#
+msgid "Serial information"
+msgstr "Thông tin serial"
+
+#
+msgid "Quantity import"
+msgstr "Số lượng nhập"
+
+#
+msgid "current"
+msgstr "hiện tại"
+
+#
+msgid "show current quantity"
+msgstr "xem số lượng hiện tại"
+
+#
+msgid "You need to select one option!"
+msgstr "Bạn cần chọn một tùy chọn!"
+
+#
+msgid "Lot number"
+msgstr "Số lô"
+
+#
+msgid "Select out warehouse"
+msgstr "Chọn kho xuất"
+
+#
+msgid "Select target warehouse"
+msgstr "Chọn kho đích"
+
+#
+msgid "Click the button besides input element to select (for serial/lot product) of enter number for default product."
+msgstr "Click vào nút bên cạnh ô nhập để lựa chọn chi tiết (cho sản phẩm serial/lot) hoặc nhập (cho sản phẩm mặc định)."
+
+#
+msgid "From warehouse"
+msgstr "Từ kho"
+
+#
+msgid "To warehouse"
+msgstr "Đến kho"
+
+#
+msgid "Stock quantity"
+msgstr "Số lượng tồn kho"
+
+#
+msgid "Click the button besides input element to see detail (for serial/lot product)."
+msgstr "Click vào nút bên cạnh ô nhập để xem chi tiết (cho sản phẩm serial/lot)."
+
+#
+msgid "Some Serials you selected are no longer in stock anymore."
+msgstr "Một số Serial bạn đã chọn không còn tồn tại trong kho nữa."
+
+#
+msgid "Lot available quantity now is < get quantity value OR Lot is empty now."
+msgstr "Số lượng khả dụng hiện tại đang < số lượng lấy HOẶC Lot hiện tại đang rỗng."
+
+#
+msgid "Inventory data has been changed."
+msgstr "Dữ liệu tồn kho đã bị thay đổi."
+
+#
+msgid "Have not done. Please finish in Goods Detail."
+msgstr "Chưa nhập xong. Hãy hoàn thành trong Chi tiết hàng"
+
+#
+msgid "Product type"
+msgstr "Loại sản phẩm"
+
+#
+msgid "Purchasing staff"
+msgstr "Nhân viên mua hàng"
+
+#
+msgid "Purchasing reports"
+msgstr "Báo cáo mua hàng"
+
+#
+msgid "Purchase order report"
+msgstr "Báo cáo theo đơn mua hàng"
+
+#
+msgid "Purchasing Code"
+msgstr "Mã phiếu mua hàng"
+
+#
+msgid "Order quantity"
+msgstr "Số lượng đặt hàng"
+
+#
+msgid "Received quantity"
+msgstr "SL đã nhận"
+
+#
+msgid "Remaining quantity"
+msgstr "SL còn lại"
+
+#
+msgid "Order value"
+msgstr "GT đơn hàng"
+
+#
+msgid "Received value"
+msgstr "GT đơn hàng đã nhận"
+
+#
+msgid "Remaining value"
+msgstr "GT đơn hàng còn lại"
+
+#
+msgid "WareHouses"
+msgstr "Các kho hàng"
+
+#
+msgid "AR Invoice"
+msgstr "Hoá đơn bán hàng"
+
+#
+msgid "AP Invoice"
+msgstr "Hoá đơn mua hàng"
+
+#
+msgid "Return to"
+msgstr "Trả về kho"
+
+#
+msgid "Reason for return"
+msgstr "Lý do trả về"
+
+#
+msgid "Reason for cancel"
+msgstr "Lý do hủy phiếu"
+
+#
+msgid "View by"
+msgstr "Xem theo"
+
+#
+msgid "Date applied"
+msgstr "Ngày áp dụng"
+
+#
+msgid "Wait complete"
+msgstr "Đợi hoàn tất"
 
 #
 msgid "Project list"

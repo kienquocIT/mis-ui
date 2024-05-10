@@ -175,8 +175,8 @@
                         <thead>
                         <tr>
                             <th class="w-5"></th>
-                            <th>{% trans "Activity" %}</th>
-                            <th>
+                            <th class="w-20">{% trans "Activity" %}</th>
+                            <th class="w-45">
                                 {% trans 'Subject' %}
                                 <i class="fas fa-info-circle icon-info"
                                    data-bs-toggle="tooltip"
@@ -184,8 +184,8 @@
                                    title="{% trans 'Press row here to see detail.' %}">
                                 </i>
                             </th>
-                            <th>{% trans "Type" %}</th>
-                            <th>{% trans "Date" %}</th>
+                            <th class="w-15">{% trans "Status" %}</th>
+                            <th class="w-15">{% trans "Date" %}</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
@@ -199,30 +199,36 @@
 <div class="row bg-light-5 border rounded py-2 px-2 mt-3">
     <div class="col-12">
         <ul class="nav nav-light nav-tabs col-12" id="tab-select">
-            <li class="nav-item">
+            <li class="nav-item w-15">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_product">
                     <span class="nav-link-text">{% trans 'Product' %}</span>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item w-15">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_competitors">
                     <span class="nav-link-text">{% trans 'Competitors' %}</span>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item w-15">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_contact_role">
                     <span class="nav-link-text">{% trans 'Contact Role' %}</span>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item w-15">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_account_history">
                     <span class="nav-link-text">{% trans 'Account History' %}</span>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item w-15">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_team">
                     <span class="nav-link-text">{% trans 'Team' %}</span>
                 </a>
+            </li>
+            <li class="nav-item w-25 text-right">
+                <div class="form-check mt-2">
+                    <input type="checkbox" class="form-check-input is-invalid" id="check-lost-reason">
+                    <label class="form-check-label text-danger fw-bold" for="check-lost-reason">{% trans "Lost" %}</label>
+                </div>
             </li>
         </ul>
         <div class="tab-content">
@@ -436,15 +442,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<div class="row bg-light-5 py-2 px-2 mt-3">
-    <div class="col-12 col-lg-4 col-md-4 bg-danger-light-4 border rounded justify-content-end">
-        <div class="form-check text-center">
-            <input type="checkbox" class="form-check-input" id="check-lost-reason">
-            <label class="form-check-label" for="check-lost-reason">{% trans "Lost by other reason" %}</label>
         </div>
     </div>
 </div>

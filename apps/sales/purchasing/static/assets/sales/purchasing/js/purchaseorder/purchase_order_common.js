@@ -49,7 +49,7 @@ class POLoadDataHandle {
                     if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
                         for (let product of data.product_sale_list) {
                             if (product.hasOwnProperty('product_choice') && Array.isArray(product.product_choice)) {
-                                if (product['product_choice'].includes(2)) {
+                                if (product['product_choice'].includes(2)) {  // has choice allow purchase
                                     finalData.push(product);
                                 }
                             }
@@ -848,7 +848,18 @@ class POLoadDataHandle {
             row.removeAttribute('title');
         }
         return true;
-    }
+    };
+
+    static loadCssToDtb(tableID) {
+        let tableIDWrapper = tableID + '_wrapper';
+        let tableWrapper = document.getElementById(tableIDWrapper);
+        if (tableWrapper) {
+            let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+            if (headerToolbar) {
+                headerToolbar.classList.add('hidden');
+            }
+        }
+    };
 
     // LOAD DETAIL
     static loadDetailPage(data) {
@@ -1227,6 +1238,10 @@ class PODataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                // add css to Dtb
+                POLoadDataHandle.loadCssToDtb('datable-purchase-request');
+            },
         });
     };
 
@@ -1234,7 +1249,6 @@ class PODataTableHandle {
         let $table = $('#datable-purchase-request-product');
         $table.DataTableDefault({
             data: data ? data : [],
-            // searching: false,
             paging: false,
             info: false,
             columns: [
@@ -1352,6 +1366,10 @@ class PODataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                // add css to Dtb
+                POLoadDataHandle.loadCssToDtb('datable-purchase-request-product');
+            },
         });
     };
 
@@ -1424,6 +1442,10 @@ class PODataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                // add css to Dtb
+                POLoadDataHandle.loadCssToDtb('datable-purchase-request-product-merge');
+            },
         });
     };
 

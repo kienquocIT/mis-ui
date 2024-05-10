@@ -30,7 +30,7 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength:50,
-                columns: [  // 100, 250, 250, 200, 150, 200, 150, 150, 50 (1500p)
+                columns: [  // 100, 300, 250, 150, 150, 200, 150, 150, 50 (1500p)
                     {
                         targets: 0,
                         width: '6.66%',
@@ -61,7 +61,7 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '16.66%',
+                        width: '20%',
                         render: (data, type, row) => {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
@@ -80,11 +80,11 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '13.33%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
                             if (Object.keys(row?.['sale_person']).length !== 0) {
-                                ele = `<p>${row?.['sale_person']?.['full_name']}</p>`;
+                                ele = `<div class="row"><span class="badge badge-primary badge-outline">${row?.['sale_person']?.['full_name']}</span></div>`;
                             }
                             return ele;
                         }
@@ -151,7 +151,7 @@ $(function () {
                                 isDelivery = `<a class="dropdown-item" href="#" id="create_delivery">${$elmTrans.attr('data-delivery')}</a>`;
                             }
                             return `<div class="dropdown">
-                                    <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                    <button class="btn btn-icon btn-rounded btn-soft-light btn-xs" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="fas fa-ellipsis-h"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
                                         ${isChange}
                                         ${isDelivery}

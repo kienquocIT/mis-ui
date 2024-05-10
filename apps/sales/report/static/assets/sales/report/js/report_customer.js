@@ -78,8 +78,21 @@ $(function () {
                     // mask money
                     $.fn.initMaskMoney2();
                     loadTotal();
+                    // add css to Dtb
+                    loadCssToDtb('table_report_customer_list');
                 },
             });
+        }
+
+        function loadCssToDtb(tableID) {
+            let tableIDWrapper = tableID + '_wrapper';
+            let tableWrapper = document.getElementById(tableIDWrapper);
+            if (tableWrapper) {
+                let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+                if (headerToolbar) {
+                    headerToolbar.classList.add('hidden');
+                }
+            }
         }
 
         function setupDataLoadTable(dataList) {
@@ -157,6 +170,8 @@ $(function () {
                                             'url': $table.attr('data-url'),
                                             'method': $table.attr('data-method'),
                                             'data': {
+                                                "group_inherit__is_delete": false,
+                                                "sale_order__system_status": 3,
                                                 'date_approved__gte': startDate,
                                                 'date_approved__lte': endDate,
                                             },
@@ -269,6 +284,7 @@ $(function () {
                     format: 'DD/MM/YYYY',
                 },
                 maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
                 autoApply: true,
                 autoUpdateInput: false,
             }).on('apply.daterangepicker', function (ev, picker) {
@@ -299,6 +315,8 @@ $(function () {
 
         btnView.on('click', function () {
             let dataParams = {};
+            dataParams['group_inherit__is_delete'] = false;
+            dataParams['sale_order__system_status'] = 3;
             if (boxGroup.val()) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
             }

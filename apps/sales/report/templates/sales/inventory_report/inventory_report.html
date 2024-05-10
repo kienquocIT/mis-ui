@@ -6,11 +6,8 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <style>
         th {
-            color: white !important;
             font-size: medium !important;
         }
-    </style>
-    <style>
         .custom-scroll {
             position: relative;
             margin: auto;
@@ -20,30 +17,15 @@
             position: sticky;
             left: 0;
         }
-        .second-col-x {
-            min-width: 500px;
-            position: sticky;
-            left: 350px;
-        }
-        thead .first-col {
-            background: #cbcbcb !important;
-            color: black !important;
-        }
-        thead .second-col {
-            background: #cbcbcb !important;
-            color: black !important;
+        thead th, thead .first-col {
+            background: #007D88 !important;
+            color: white !important;
         }
         tbody .first-col {
-            background-color: #fff;
-        }
-        tbody .second-col {
-            background-color: #fff;
+            background: white;
         }
         tbody .first-col-x {
-            background-color: #eaeaea;
-        }
-        tbody .second-col-x {
-            background-color: #eaeaea;
+            background: #eaeaea;
         }
         .table-wrap {
             width: 100%;
@@ -63,10 +45,6 @@
         .table-wrap .fixed_header .first-col {
             position: sticky;
             left: 0;
-        }
-        .table-wrap .fixed_header .second-col {
-            position: sticky;
-            left: 350px;
         }
     </style>
 {% endblock %}
@@ -189,16 +167,15 @@
                 <div class="table-wrap" style="max-height: 80vh">
                     <table hidden class="table nowrap w-100 fixed_header" id="table-inventory-report">
                         <thead class="row-fixed">
-                            <tr class="bg-gradient-primary">
-                                <th class="border-1 first-col" rowspan="3" colspan="3">{% trans 'Code' %}</th>
-                                <th class="border-1 second-col" rowspan="3" colspan="3">{% trans 'Name' %}</th>
+                            <tr>
+                                <th class="first-col" rowspan="3" colspan="3">{% trans 'Product' %}</th>
                                 <th class="border-1" rowspan="3" colspan="3">{% trans 'UoM' %}</th>
                                 <th class="border-1" colspan="2">{% trans 'OPENING' %}</th>
                                 <th class="border-1" colspan="2">{% trans 'INPUT' %}</th>
                                 <th class="border-1" colspan="2">{% trans 'OUTPUT' %}</th>
                                 <th class="border-1" colspan="2">{% trans 'ENDING' %}</th>
                             </tr>
-                            <tr class="bg-gradient-primary">
+                            <tr>
                                 <th class="border-1">{% trans 'Quantity' %}</th>
                                 <th class="border-1">{% trans 'Value' %}</th>
                                 <th class="border-1">{% trans 'Quantity' %}</th>
@@ -208,7 +185,7 @@
                                 <th class="border-1">{% trans 'Quantity' %}</th>
                                 <th class="border-1">{% trans 'Value' %}</th>
                             </tr>
-                            <tr class="bg-gradient-primary">
+                            <tr>
                                 <th class="border-1"><span id="opening-total-quantity">0</span></th>
                                 <th class="border-1"><span id="opening-total-value" class="mask-money" data-init-money="0"></span></th>
                                 <th class="border-1"><span id="in-total-quantity">0</span></th>
@@ -223,9 +200,8 @@
                     </table>
                     <table hidden class="table nowrap w-100 fixed_header" id="table-inventory-report-detail">
                         <thead class="row-fixed">
-                            <tr class="bg-gradient-primary">
-                                <th class="border-1 first-col" rowspan="3" colspan="3">{% trans 'Code' %}</th>
-                                <th class="border-1 second-col" rowspan="3" colspan="3">{% trans 'Name' %}</th>
+                            <tr>
+                                <th class="border-1 first-col" rowspan="3" colspan="3">{% trans 'Product' %}</th>
                                 <th class="border-1" rowspan="3" colspan="3">{% trans 'UoM' %}</th>
                                 <th class="border-1" rowspan="3" colspan="3">{% trans 'Date' %}</th>
                                 <th class="border-1" rowspan="3" colspan="3">{% trans 'LOT' %}</th>
@@ -235,7 +211,7 @@
                                 <th class="border-1" colspan="2">{% trans 'OUTPUT' %}</th>
                                 <th class="border-1" colspan="2">{% trans 'ENDING' %}</th>
                             </tr>
-                            <tr class="bg-gradient-primary">
+                            <tr>
                                 <th class="border-1">{% trans 'Quantity' %}</th>
                                 <th class="border-1">{% trans 'Value' %}</th>
                                 <th class="border-1">{% trans 'Quantity' %}</th>
@@ -245,7 +221,7 @@
                                 <th class="border-1">{% trans 'Quantity' %}</th>
                                 <th class="border-1">{% trans 'Value' %}</th>
                             </tr>
-                            <tr class="bg-gradient-primary">
+                            <tr>
                                 <th class="border-1"><span id="opening-total-quantity">0</span></th>
                                 <th class="border-1"><span id="opening-total-value" class="mask-money" data-init-money="0"></span></th>
                                 <th class="border-1"><span id="in-total-quantity">0</span></th>

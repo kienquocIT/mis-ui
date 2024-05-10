@@ -456,7 +456,7 @@ msgstr "Đã liên kết người dùng / Tổng nhân viên"
 
 #
 msgid "User"
-msgstr "Người Dùng"
+msgstr "Người dùng"
 
 #
 msgid "Company List"
@@ -532,7 +532,7 @@ msgstr "Ngày Tham Gia"
 
 #
 msgid "Role"
-msgstr "Vai Trò"
+msgstr "Vai trò"
 
 #
 msgid "Choose"
@@ -748,7 +748,7 @@ msgstr "Kích hoạt"
 
 #
 msgid "Role Name"
-msgstr "Tên Vai Trò"
+msgstr "Tên Vai trò"
 
 #
 msgid "Holder"
@@ -2497,7 +2497,7 @@ msgstr "Danh Sách Vai Trò"
 
 #
 msgid "Create Role"
-msgstr "Tạo Vai Trò"
+msgstr "Tạo Vai trò"
 
 #
 msgid "Organization"
@@ -3083,15 +3083,15 @@ msgstr "Trợ Giúp và Hỗ Trợ"
 
 #
 msgid "Process Management"
-msgstr "Quản Lý Quy Trình"
+msgstr "Quản lý Quy trình"
 
 #
 msgid "Workflow"
-msgstr "Quy Trình Làm Việc"
+msgstr "Quy trình làm việc"
 
 #
 msgid "Business Process"
-msgstr "Quy Trình Kinh Doanh"
+msgstr "Quy trình kinh doanh"
 
 #
 msgid "Automation"
@@ -3103,7 +3103,7 @@ msgstr "Tenant"
 
 #
 msgid "Account"
-msgstr "Tài Khoản"
+msgstr "Tài khoản"
 
 #
 msgid "Opportunity"
@@ -4420,7 +4420,7 @@ msgstr "Chọn người điều phối cho hoạt động giao hàng"
 
 #
 msgid "Org Charts"
-msgstr "Cây Cơ Cấu"
+msgstr "Cây cơ cấu"
 
 #
 msgid "Manager Person"
@@ -7421,6 +7421,102 @@ msgstr "Ngày áp dụng"
 #
 msgid "Wait complete"
 msgstr "Đợi hoàn tất"
+
+#
+msgid "Balance initialization"
+msgstr "Khởi tạo số dư"
+
+#
+msgid "Add balance"
+msgstr "Thêm số dư"
+
+#
+msgid "Select warehouse"
+msgstr "Chọn kho"
+
+#
+msgid "Total value"
+msgstr "Tổng giá trị"
+
+#
+msgid "Lot quantity"
+msgstr "Số lượng của lô"
+
+#
+msgid "Manufacture date"
+msgstr "Ngày sản xuất"
+
+#
+msgid "Input serial number"
+msgstr "Nhập serial"
+
+#
+msgid "Input LOT"
+msgstr "Nhập LOT"
+
+#
+msgid "Purchase Request Config"
+msgstr "Cấu hình Yêu cầu mua hàng"
+
+#
+msgid "Expense Items"
+msgstr "Các loại chi phí"
+
+#
+msgid "Internal Labor Items"
+msgstr "Các loại chi phí nhân công"
+
+#
+msgid "Invoice form config"
+msgstr "Cấu hình Mẫu hoá đơn"
+
+#
+msgid "Advance payment"
+msgstr "Tạm ứng"
+
+#
+msgid "Return advance"
+msgstr "Hoàn ứng"
+
+#
+msgid "Sale activities"
+msgstr "Hoạt động bán hàng"
+
+#
+msgid "Document for customer"
+msgstr "Tài liệu"
+
+#
+msgid "AR invoice"
+msgstr "Hoá đơn bán hàng"
+
+#
+msgid "AP invoice"
+msgstr "Hoá đơn mua hàng"
+
+#
+msgid "Asset, tools"
+msgstr "Tài sản, công cụ"
+
+#
+msgid "Asset, tools list"
+msgstr "Danh sách tài sản, công cụ"
+
+#
+msgid "Asset, tools delivery"
+msgstr "Yêu cầu bàn giao"
+
+#
+msgid "Asset, tools return list"
+msgstr "Danh sách thu hồi tài sản"
+
+#
+msgid "Inventory report"
+msgstr "Báo cáo tồn kho"
+
+#
+msgid "Items detail report"
+msgstr "Báo cáo chi tiết mặt hàng"
 
 #
 msgid "Please cancel current quotation"

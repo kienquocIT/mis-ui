@@ -37,6 +37,7 @@
 }
 .gantt-left-container{
     width: 100%;
+    background-color: #fff;
 }
 .gantt-left-container .grid-row{
     display: flex;
@@ -46,6 +47,11 @@
     border-top:0;
     border-right:0;
     align-items: center;
+}
+.gantt-left-container .grid-row:hover,
+.gantt-left-container .grid-row:nth-child(even):hover
+{
+    background-color: rgb(245 245 245/30%);
 }
 .gantt-wrap-title{
     border: solid 1px #ebeff2;
@@ -68,11 +74,13 @@
     font-size: 13px;
 }
 .expand-btn{
-    padding:5px 5px 5px 0;
+    padding:0 5px;
     font-size: 1rem;
     font-weight: 500;
     margin-right: 5px;
     cursor: pointer;
+    display: inline-block;
+    float: right;
 }
 /*css gantt*/
 .gaw-btn{
@@ -82,7 +90,28 @@
 .gaw-btn:hover{
     color: #146ebe;
 }
-.grid-row-title:hover span:not(.expand-btn){
+.wrap-title span:not(.expand-btn):hover{
     text-decoration:underline;
     cursor: pointer;
+}
+.wrap-title{
+    position: relative;
+    text-align: left;
+    padding-left:10px;
+}
+.sort-icon{
+    display: inline-block;
+    margin-right: 10px;
+    cursor: grab;
+    color: #b3b3b3;
+}
+.wrap-title{
+   line-height: 30px;
+}
+.wrap-title .dropdown {
+    display: inline-block;
+    float: right;
+}
+.gantt-left-outerwrap > .dropdown{
+    display: inline-block;
 }

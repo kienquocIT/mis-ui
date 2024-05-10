@@ -1,45 +1,26 @@
 function resetFormTask() {
     // clean html select etc.
-    $('#formOpportunityTask').trigger('reset').removeClass('task_edit')
-    $('#selectAssignTo').val(null).trigger('change');
-    if ($('.current-create-task').length <= 0)
-        $('#selectOpportunity').val(null).trigger('change').attr('disabled', false);
+    const $taskForm = $('#formOpportunityTask')
+    $taskForm.trigger('reset').removeClass('task_edit')
+    $('#inputAssigner').val($('#inputAssigner').attr('data-name'))
+    $('#employee_inherit_id').val(null).trigger('change').removeClass('is-invalid');
+    $('#employee_inherit_id-error').remove()
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
     $('#inputLabel').val(null);
     $('#rangeValue').text(0)
     $('#percent_completed').val(0)
-    $('[name="id"]').remove();
-    const $inputAssigner = $('#inputAssigner');
-    $inputAssigner.val($inputAssigner.attr('data-name'))
-    $('.create-subtask').addClass('hidden')
-    $('[name="parent_n"]').remove();
+    $('[name="id"]', $taskForm).remove();
+    $('.create-subtask').addClass('hidden');
+    $('[name="parent_n"]', $taskForm).remove();
     window.editor.setData('')
     $('.create-task').attr('disabled', false)
     $('.btn-log_work').removeClass('.disabled')
+    $('input[name="work_id"]', $taskForm).remove()
 }
 
 function isValidString(inputString) {
     let pattern = /^\d+[wdh]*$/;
     return pattern.test(inputString);
-}
-
-function logWorkSubmit() {
-    $('#save-logtime').on('click', function () {
-        const startDate = $('#startDateLogTime').val()
-        const endDate = $('#endDateLogTime').val()
-        const est = $('#EstLogtime').val()
-        if (!startDate && !endDate && !est) {
-            $.fn.notifyB({description: $('#form_valid').attr('data-logtime-valid')}, 'failure')
-            return false
-        }
-        const data = {
-            'start_date': moment(startDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-            'end_date': moment(endDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-            'time_spent': est,
-        }
-        $('[name="log_time"]').attr('value', JSON.stringify(data))
-        $('#logWorkModal').modal('hide')
-    });
 }
 
 class labelHandle {
@@ -87,7 +68,7 @@ class labelHandle {
     }
 
     showDropdown() {
-        $('.label-mark').off().on('click', function () {
+        $('.label-mark').on('click', function () {
             const isParent = $(this).parent('.dropdown')
             isParent.children().toggleClass('show')
             $('input', isParent).focus()
@@ -157,7 +138,7 @@ class checklistHandle {
     }
 }
 
-function TaskSubmitFunc(platform, callBackFunc) {
+function TaskSubmitFunc(platform) {
     let _form = new SetupFormSubmit(platform);
     let formData = _form.dataForm
     const start_date = new Date(formData.start_date).getDate()
@@ -177,8 +158,7 @@ function TaskSubmitFunc(platform, callBackFunc) {
     formData.end_date = moment(formData.end_date, 'DD/MM/YYYY').format('YYYY-MM-DD')
     formData.priority = parseInt(formData.priority)
     let tagsList = $('#inputLabel').attr('value')
-    if (tagsList)
-        formData.label = JSON.parse(tagsList)
+    if (tagsList) formData.label = JSON.parse(tagsList)
     formData.employee_created = $('#inputAssigner').attr('value')
 
     if (!formData.employee_inherit_id) {
@@ -186,28 +166,30 @@ function TaskSubmitFunc(platform, callBackFunc) {
         return false
     }
     formData.checklist = []
+
     $('.wrap-checklist .checklist_item').each(function () {
         formData.checklist.push({
             'name': $(this).find('label').text(),
             'done': $(this).find('input').prop('checked'),
         })
     })
-    const oppID = $('#opportunity_id').val()
-    if (oppID){
-         formData.opportunity = oppID
-         formData.opportunity_id = oppID
-    }
 
     if ($('[name="attach"]').val()) {
         let list = []
         list.push($('[name="attach"]').val())
         formData.attach = list
     }
-    let url = _form.dataUrl
+
+    const prepare_data = {
+        project: formData['project_id'],
+        work: $('input[name="work_id"]', platform).val(),
+        task: formData
+    }
+
     $.fn.callAjax2({
-        'url': url,
+        'url': $('#url-factory').attr('data-task'),
         'method': 'POST',
-        'data': formData,
+        'data': prepare_data,
         'sweetAlertOpts': {
             'allowOutsideClick': true
         }
@@ -217,23 +199,32 @@ function TaskSubmitFunc(platform, callBackFunc) {
             if (data) {
                 $.fn.notifyB({description: data.message}, 'success')
                 $('.cancel-task').trigger('click')
-                callBackFunc();
             }
         },
-        (error) => {
-            console.log('call submit error', error)
-        }
+        (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
     )
 }
 
-class Task_in_opps {
-    static init(opps_info, selfCallBack) {
+class Task_in_project {
+    static init(prj_info) {
         let $empElm = $('#employee_inherit_id')
         const $form = $('#formOpportunityTask')
 
+        // hidden update btn
+        $('.txt-update').addClass('hidden')
+
+        // init check text estimate
         $('#inputTextEstimate, #EstLogtime').on('blur', function () {
             if (!isValidString(this.value))
                 $.fn.notifyB({description: $('#form_valid').attr('data-estimate-error')}, 'failure')
+        })
+
+        // click to log-work
+        $('.btn-log_work').on('click', function() {
+            if ($(this).hasClass('disabled')) return;
+            $('#logWorkModal').modal('show')
+            $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
+            logWorkSubmit()
         })
 
         // run date picker
@@ -247,8 +238,41 @@ class Task_in_opps {
                 locale: {
                     format: 'DD/MM/YYYY'
                 }
-            })
+            }).val(null).trigger('change')
         })
+
+        // run status select default
+        const sttElm = $('#selectStatus');
+        sttElm.attr('data-url')
+        $.fn.callAjax2({'url': sttElm.attr('data-url'), 'method': 'get'})
+            .then((resp) => {
+                const data = $.fn.switcherResp(resp);
+                let todoItem = data[sttElm.attr('data-keyResp')][0]
+                sttElm.attr('data-onload', JSON.stringify({...todoItem, selected: true}))
+                sttElm.initSelect2()
+            })
+
+        // run init label function
+        let formLabel = new labelHandle()
+        formLabel.init()
+
+        // init comment
+        $('#btn-open-comment-task').on('click', function () {
+            let frmOppTask = $('#formOpportunityTask');
+            if (frmOppTask.length > 0) {
+                let appIdx = "e66cfb5a-b3ce-4694-a4da-47618f53de4c";  // Application: task - OpportunityTask
+                let docIdx = frmOppTask.attr('data-id-loaded');
+                if (docIdx) {
+                    let modalEle = $('#CommentModal');
+                    new $x.cls.cmt(modalEle.find('.comment-group')).init(docIdx, appIdx)
+                    modalEle.modal('show');
+                } else {
+                    $.fn.notifyB({
+                        'description': `${$.fn.gettext('Document is not selected')}`,
+                    }, 'failure');
+                }
+            }
+        });
 
         // init ASSIGNER
         const $assignerElm = $('#inputAssigner')
@@ -257,9 +281,6 @@ class Task_in_opps {
         //--DROPDOWN ASSIGN TO-- assign to me btn
         const $assignBtnElm = $(`<a href="#" class="form-text text-muted link-info btn-assign">${$('#form_valid').attr('data-assign-txt')}</a>`)
         $empElm.parents('.form-group').append($assignBtnElm)
-        let getParams = JSON.parse($empElm.attr('data-params'))
-        $empElm.attr('data-params', JSON.stringify({...getParams, list_from_opp: opps_info.id}))
-        $empElm.initSelect2()
         $assignBtnElm.off().on('click', function () {
             if ($(this).hasClass('disabled')) return false
             const infoObj = {
@@ -274,57 +295,37 @@ class Task_in_opps {
             $empElm.val(infoObj.id).trigger('change')
         });
 
-        // run status select default
-        const sttElm = $('#selectStatus');
-        sttElm.attr('data-url')
-        $.fn.callAjax2({
-            'url': sttElm.attr('data-url'),
-            'method': 'get'
-        })
-            .then(
-                (resp) => {
-                    const data = $.fn.switcherResp(resp);
-                    let todoItem = data[sttElm.attr('data-keyResp')][0]
-                    sttElm.attr('data-onload', JSON.stringify({...todoItem, selected: true}))
-                    sttElm.initSelect2()
-                })
+        // run component project/employee inherit
+        new $x.cls.bastionField({
+            has_prj: true,
+            has_inherit: true,
+            data_inherit: [{
+                "id": prj_info?.['employee_inherit']?.['id'],
+                "full_name": prj_info?.['employee_inherit']?.['full_name'] || '',
+                "first_name": prj_info?.['employee_inherit']?.['first_name'] || '',
+                "last_name": prj_info?.['employee_inherit']?.['last_name'] || '',
+                "email": prj_info?.['employee_inherit']?.['email'] || '',
+                "is_active": prj_info?.['employee_inherit']?.['is_active'] || false,
+                "selected": true,
+            }],
+            data_prj: [{
+                "id": prj_info['id'] || '',
+                "title": prj_info['title'] || '',
+                "code": prj_info['code'] || '',
+                "selected": true,
+            }]
+        }).init();
 
-        // run init label function
-        let formLabel = new labelHandle()
-        formLabel.init()
-        // auto load opp if in page opp
-        const $selectElm = $('#opportunity_id')
-        let data = {}
-        if (opps_info) data = {
-            "id": opps_info.id,
-            "code": opps_info.code,
-            "selected": true,
-        }
-        $selectElm.attr('data-onload', JSON.stringify(data)).attr('disabled', true)
-        $selectElm.initSelect2()
-
-        // click to log-work
-        $('.btn-log_work').on('click', function() {
-            if ($(this).hasClass('disabled')) return;
-            $('#logWorkModal').modal('show')
-            $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
-            logWorkSubmit()
-        })
 
         // run CKEditor
         ClassicEditor.create(
-            document.querySelector('.ck5-rich-txt'),
-            {
-                toolbar: {
-                    items: ['heading', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList']
-                },
-            },
-        )
-            .then(newEditor => {
-                // public global scope for clean purpose when reset form.
-                let editor = newEditor;
-                window.editor = editor;
-            })
+            $('.ck5-rich-txt').get()[0],
+            {toolbar: {items: ['heading', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList']},},
+        ).then(newEditor => {
+            // public global scope for clean purpose when reset form.
+            let editor = newEditor;
+            window.editor = editor;
+        })
 
         // run checklist tab
         let checklist = new checklistHandle()
@@ -351,7 +352,7 @@ class Task_in_opps {
             e.preventDefault();
             SetupFormSubmit.validate($form, {
                 errorClass: 'is-invalid cl-red',
-                submitHandler: TaskSubmitFunc($form, selfCallBack)
+                submitHandler: TaskSubmitFunc($form)
             })
         });
     }

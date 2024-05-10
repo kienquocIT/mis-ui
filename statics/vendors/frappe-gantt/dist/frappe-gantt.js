@@ -592,7 +592,7 @@ var Gantt = (function () {
                 // nếu loại start là finish to start thì lấy diểm kết thúc thay vì điềm bắt đầu của task
                 const xs = this.task.dependencies.map((dep) => {
                     let normal = this.gantt.get_bar(dep).$bar.getX();
-                    if (this.task.objData.relationships_type === 1)
+                    if (this.task.relationships_type === 1)
                         normal = this.gantt.get_bar(dep).$bar.getEndX()
                     return normal
                 });
@@ -795,8 +795,8 @@ var Gantt = (function () {
 
         calculate_path() {
             const dict_temp = this.to_task.task,
-                is_SS = dict_temp.objData?.['relationships_type'] === 0, // start to start
-                is_FS = dict_temp.objData?.['relationships_type'] === 1; // finish to start
+                is_SS = dict_temp?.['relationships_type'] === 0, // start to start
+                is_FS = dict_temp?.['relationships_type'] === 1; // finish to start
             let start_x = this.from_task.$bar.getX() + this.from_task.$bar.getWidth() / 2;
             if (is_SS) start_x = this.from_task.$bar.getX() + 1;
             else if (is_FS) start_x = this.from_task.$bar.getEndX() - 1;
@@ -1101,9 +1101,6 @@ var Gantt = (function () {
                 if (!task.id) {
                     task.id = generate_id(task);
                 }
-                if (typeof task.objData === 'object' || !task.dependencies){
-
-                }
 
                 return task;
             });
@@ -1123,19 +1120,59 @@ var Gantt = (function () {
         }
 
         refresh(tasks) {
+            jQuery('.gantt-left .gantt-left-outerwrap').remove()
             this.setup_tasks(tasks);
             this.change_view_mode();
         }
 
         load_more(data){
-            // clone old task list
+            // clone old task list to temp
             jQuery('.gantt-left .gantt-left-outerwrap').remove()
             let temp = jQuery.extend([], this.tasks)
-            // render new task list
+
+            // render new task list via call setup_tasks(data)
             this.setup_tasks(data)
+
+            // merge 2 list
             let temp2 = temp.concat(this.tasks)
+
+            // replace new list merged and render
             this.setup_tasks(temp2)
             this.change_view_mode();
+        }
+
+        update_data(data){
+            // clone old task list to temp
+            jQuery('.gantt-left .gantt-left-outerwrap').remove()
+            let temps = []
+            for (let item of this.tasks){
+                for (let val of data){
+                    if (val.id === item.id){
+                        item.name = val.name
+                        item.start = val.start
+                        item.end = val.end
+                        item.progress = val.progress
+                        item.weight = val.weight
+                        item.order = val.order
+                        if (val.hasOwnProperty('is_group')){
+                            item.is_group = val.is_group
+                            item.is_toggle = val.is_toggle
+                        }
+                        else{
+                            item.child_of_group = val.child_of_group
+                            item.child_group_id = val.child_group_id
+                            item.is_show = val.is_show
+                            item.relationships_type = val.relationships_type
+                            item.work_status = val.work_status
+                            item.dependencies = val.dependencies
+                        }
+                    }
+                }
+                temps.push(item)
+            }
+            this.setup_tasks(temps)
+            this.change_view_mode()
+
         }
 
         change_view_mode(mode = this.options.view_mode) {
@@ -1930,30 +1967,56 @@ var Gantt = (function () {
                 row.attr('data-id', item.id).css({"height": 38})
                 for ( let value of this.options['left_list']) {
                     if (is_flag) base_width += value.width
-                    let item_html = jQuery('<p/>');
-                    if (item.is_group && value.code === 'title'){
-                        let span = jQuery('<span class="expand-btn"/>')
-                        span.text(item.is_toggle ? "-" : "+")
-                        item_html.append(span).addClass('txt-bold')
-                        span.on('click', () => {
-                            this.change_child_show_hide(item.id)
-                        })
-                    }
+                    let item_html = jQuery('<div/>');
                     if (item.child_of_group && value.code === 'title') item_html.addClass('pd-30')
                     if (value.code === 'title'){
-                        item_html.append(`<span>${item['name']}</span>`).addClass('grid-row-title')
+                        item_html.append(
+                            '<span class="sort-icon"><i class="fa-solid fa-grip-vertical"></i></span>'
+                            + `<span class="row-title">${item['name']}</span>`
+                        ).addClass('wrap-title')
+
+                        const htmlBtn2 = jQuery(`<div class="dropdown"><button class="btn btn-sm row-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></button><ul class="dropdown-menu"><li><button class="dropdown-item btn-item-row-delete" type="button">${jQuery.fn.gettext('Delete')}</button></li><li><button class="dropdown-item btn-item-row-assign" type="button">${jQuery.fn.gettext('Assign Task')}</button></li></ul></div>`)
+                        item_html.append(htmlBtn2)
+
+                        if (item.is_group) {
+                            let span = jQuery('<span class="expand-btn"/>')
+                            span.html(item.is_toggle ? '<i class="bi bi-chevron-down"></i>' : '<i class="bi bi-chevron-up"></i>')
+                            item_html.append(span).addClass('txt-bold')
+                            span.on('click', () => {
+                                this.change_child_show_hide(item.id)
+                            })
+                            // disable btn assign when row is group
+                            htmlBtn2.find('.btn-item-row-assign').prop('disabled', true)
+                        }
                         const _this = this;
-                        item_html.on('click', function(){
+                        jQuery('.row-title', item_html).on('click', function(){
                             // event click load detail
                             if (item.is_group)
                                 _this.options.init_edit_btn_g(item.id)
                             else _this.options.init_edit_btn_w(item.id)
                         })
+                        jQuery('.btn-item-row-delete', item_html).on('click', function(e){
+                            // event click delete row
+                            const $Parent = jQuery(this).parents('.grid-row')
+                            _this.options.delete_row_func({
+                                is_group: $Parent.attr('data-group') === undefined,
+                                id: $Parent.attr('data-id')
+                            })
+                            let new_lst = _this.tasks.filter((task)=> task.id !== $Parent.attr('data-id'))
+                            _this.refresh(new_lst)
+                        })
+
+                        jQuery('.btn-item-row-assign', htmlBtn2).on('click', function(){
+                            const $form = jQuery('#formOpportunityTask')
+                            jQuery('.btn-show-task_f').trigger('click');
+                            $form.append(`<input type="hidden" name="work_id" value="${item.id}"/>`);
+
+                        })
                     }
                     else if (value.code === 'start' || value.code === 'end')
                         item_html.append(moment(item[value.code], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     else
-                        item_html.append(item[value.code])
+                        item_html.append(item?.[value.code])
                     item_html.css({"width": value.width})
                     row.append(item_html)
                 }
@@ -1969,10 +2032,20 @@ var Gantt = (function () {
                 this.options.padding +
                 (this.options.bar_height + this.options.padding) *
                     tasksList.length;
-            grid_height = grid_height + 44 // 58 là number ngẫu nhiên canh chỉnh để fit vs chiều dài khung bên phải
+            grid_height = grid_height + 27 // 58 là number ngẫu nhiên canh chỉnh để fit vs chiều dài khung bên phải
             div_wrapper.css({"min-width": base_width, "height": grid_height})
             jQuery('.gantt-wrap-title').css({"min-width": base_width})
             this.options.init_create_btn()
+
+            // handle sortable
+            div_wrapper.sortable({
+                items: ".grid-row",
+                placeholder: 'ui-state-highlight',
+                handle: ".sort-icon",
+                stop: function (event, ui) {
+                    jQuery('.btn-save-sort-idx').removeClass('hidden')
+                },
+            });
         }
     }
 

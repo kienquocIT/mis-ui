@@ -1,0 +1,30 @@
+{% load static i18n %}
+<div class="modal fade" id="assign_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Assign task' %}</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 col-md-12 form-group">
+                        <label for="selectTask" class="form-label required">{% trans 'Tasks' %}</label>
+                        <select class="form-select" name="task" id="selectTask"
+                                data-url="{% url "ProjectTaskListAPI" %}"
+                                data-keyResp="prj_task_list" data-keyText="title" data-keyId="id"
+                                data-params="{'project_id':'{{ prj_id }}'}" multiple
+                        ></select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary float-left" id="btn-assign-save">
+                    {% trans 'Save' %}
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% trans 'Close' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

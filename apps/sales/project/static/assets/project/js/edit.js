@@ -20,12 +20,12 @@ $(document).ready(function(){
 
     // init gantt
     const LEFT_TITLE = [
-        {"code": 'title', "name": $.fn.gettext('Title'), width: 200},
-        {"code": 'weight', "name": $.fn.gettext('Weight'), width: 100},
-        {"code": 'progress', "name": $.fn.gettext('Rate'), width: 100},
+        {"code": 'title', "name": $.fn.gettext('Title'), width: 300},
+        {"code": 'weight', "name": $.fn.gettext('Weight'), width: 50},
+        {"code": 'progress', "name": $.fn.gettext('Rate'), width: 50},
         {"code": 'start', "name": $.fn.gettext('Date from'), width: 100},
         {"code": 'end', "name": $.fn.gettext('Date to'), width: 100},
-        {"code": 'work_status', "name": $.fn.gettext('Work status'), width: 100},
+        {"code": 'work_status', "name": $.fn.gettext('Work status'), width: 180},
     ]
     let currentDate = new Date()
     let start_D = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -47,6 +47,7 @@ $(document).ready(function(){
             init_create_btn: fGanttCustom.setup_init_create,
             init_edit_btn_g: fGanttCustom.load_detail_group,
             init_edit_btn_w: fGanttCustom.load_detail_work,
+            delete_row_func: fGanttCustom.delete_row,
         }
     );
 
@@ -71,14 +72,49 @@ $(document).ready(function(){
                 const afterData = fGanttCustom.convert_data(data['groups'], data['works'])
                 new_gantt.load_more(afterData)
                 ProjectTeamsHandle.render(data.members)
+                Task_in_project.init(data)
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )
 
     // run click add group btn
-    saveGroup()
-    saveWork()
+    saveGroup(new_gantt)
+    saveWork(new_gantt)
 
     // run load employee list
     ProjectTeamsHandle.init()
+    // handle modal employee show
+    $('#modal_employee_list').on('show.bs.modal', function () {
+        let $tblUser = $('#dtbMember');
+        let tblData = $tblUser.DataTable().data().toArray();
+        for (let data of tblData) {
+            if (ProjectTeamsHandle.crt_user.includes(data.id)) data['is_checked_new'] = true
+        }
+        $tblUser.DataTable().clear().rows.add(tblData).draw();
+    });
+    // delete user member
+    $(document).on('card.action.close.confirm', '.member-item .card', function () {
+        let eleCard = $(this);
+        $.fn.callAjax2({
+            url: $('#url-factory').attr('data-member-delete').format_url_with_uuid(eleCard.attr('data-id')),
+            method: 'DELETE',
+            'sweetAlertOpts': {
+                'allowOutsideClick': true
+            }
+        }).then(
+            (resp) => {
+                $.fn.switcherResp(resp);
+                $.fn.notifyB({
+                    'description': $.fn.transEle.data('success'),
+                }, 'success');
+                $(this).trigger('card.action.close.purge');
+            },
+            (errs) => {
+                $.fn.notifyB({
+                    'description': $.fn.transEle.data('fail') + ": " + $('#trans-factory').attr('data-msg-deny-delete-member-owner'),
+                }, 'failure');
+                $(this).trigger('card.action.close.show');
+            }
+        )
+    })
 });

@@ -4152,8 +4152,8 @@ msgid "Log time"
 msgstr "Ghi nhận giờ làm"
 
 #
-msgid "Opp/Project code"
-msgstr "Mã cơ hội kinh doanh/dự án"
+msgid "Opp code"
+msgstr "Mã cơ hội kinh doanh"
 
 #
 msgid "Priority"
@@ -6287,10 +6287,6 @@ msgid "Whole year"
 msgstr "Cả năm"
 
 #
-msgid "Opp code"
-msgstr "Mã CHKD"
-
-#
 msgid "Win"
 msgstr "Thắng"
 
@@ -7209,3 +7205,55 @@ msgstr "Đơn vị"
 #
 msgid "IA number"
 msgstr "Số IA"
+
+#
+msgid "Project list"
+msgstr "Danh sách dự án"
+
+#
+msgid "Project group"
+msgstr "Nhóm dự án"
+
+#
+msgid "Project work"
+msgstr "Công việc dự án"
+
+#
+msgid "Project member"
+msgstr "Thành viên dự án"
+
+#
+msgid "Teams"
+msgstr "Đội ngũ"
+
+#
+msgid "Finish date"
+msgstr "Ngày hoàn thành"
+
+#
+msgid "Project PM"
+msgstr "Quản lý dự án"
+
+#
+msgid "Project owner"
+msgstr "Pháp nhân dự án"
+
+#
+msgid "Allow view this project"
+msgstr "Quyền xem dự án"
+
+#
+msgid "Can add member this project"
+msgstr "Có thể thêm thành viên dự án"
+
+#
+msgid "Allow create group and work this project"
+msgstr "Có quyền trên 'Nhóm' và 'Công việc' trong dự án"
+
+#
+msgid "Project code"
+msgstr "Mã Dự án"
+
+#
+msgid "Project assign task"
+msgstr "Giao việc dự án"

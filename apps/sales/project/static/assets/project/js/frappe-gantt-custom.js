@@ -15,6 +15,7 @@ class fGanttCustom {
         parentElm.innerHTML = ''
         parentElm.appendChild(left_header)
         parentElm.style.width = total_w
+
     }
 
     static convert_data(groups, works){
@@ -26,38 +27,33 @@ class fGanttCustom {
         ]
 
         let new_groups = groups.map(function(item){
-            let temp = {
+            return {
                 id: item.id,
                 name: item.title,
                 start: moment(item.date_from, 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD'),
-                end: moment(item['date_end'], 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD'),
+                end: moment(item.date_end, 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD'),
                 progress: item.progress,
+                weight: item.weight,
                 is_group: true,
                 is_toggle: true,
                 order: item.order
             }
-            return {...temp,
-                objData: temp
-            }
         });
         let new_works = works.map(function(item){
-            let temp = {
+            return {
                 id: item.id,
                 name: item.title,
                 start: moment(item.date_from, 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD'),
-                end: moment(item['date_end'], 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD'),
+                end: moment(item.date_end, 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD'),
                 progress: item.progress,
-                child_of_group: true,
+                weight: item.weight,
+                child_of_group: !!item.group,
                 child_group_id: item.group,
                 is_show: true,
                 relationships_type: item.relationships_type,
                 order: item.order,
                 work_status: WSttList[item.work_status],
                 dependencies: item['dependencies_parent']
-            }
-            return {
-                ...temp,
-                objData: temp
             }
         });
         // sort ds của works và group
@@ -76,7 +72,46 @@ class fGanttCustom {
         });
         $('.btn-gaw-work').on('click', function(){
             fGanttCustom.addWork();
-        });
+        })
+        if ($('.gantt-left-outerwrap').children('.btn-save-sort-idx').length === 0){
+            $('.gantt-left-outerwrap').append(`<button class="btn hidden btn-save-sort-idx btn-outline-primary btn-sm ml-2" type="button">${$.fn.gettext('Save')}</button>`)
+            $('.btn-save-sort-idx').on('click', function(e) {
+                e.preventDefault();
+                let work_lst = [], group_lst = [];
+                $('.gantt-left-container .grid-row').each(function () {
+                    const temp = {
+                        id: $(this).attr('data-id'),
+                        order: $(this).index() + 1
+                    }
+                    if ($(this).attr('data-group') === undefined)
+                        group_lst.push(temp)
+                    else
+                        work_lst.push(temp)
+                });
+                $.fn.callAjax2({
+                    url: $('#url-factory').attr('data-update-order'),
+                    method: 'put',
+                    data: {
+                        list_update: {
+                            work: work_lst,
+                            group: group_lst
+                        }
+                    },
+                    sweetAlertOpts: {'allowOutsideClick': true},
+                }).then(
+                    (resp) => {
+                        let res = $.fn.switcherResp(resp);
+                        if (res) {
+                            $.fn.notifyB({description: res.message}, 'success')
+                            location.reload()
+                        }
+                    },
+                    (err) => {
+                        $.fn.notifyB({description: err.data.errors}, 'failure')
+                    }
+                )
+            });
+        }
     }
 
     static addGroup(){
@@ -93,10 +128,8 @@ class fGanttCustom {
 
     static load_detail_group(group_ID){
         const $pjElm = $('#id');
-        if (!$pjElm.val()) {
-            console.log('Fail to load resource')
+        if (!$pjElm.val())
             return false
-        }
         $.fn.callAjax2({
             'url': $('#url-factory').attr('data-group-detail').format_url_with_uuid(group_ID),
             'method': 'get',
@@ -159,5 +192,25 @@ class fGanttCustom {
                 $.fn.notifyB({description: err.data.errors}, 'failure')
             }
         )
+    }
+
+    static delete_row(row){
+        const $urlFactory = $('#url-factory')
+        let url = $urlFactory.attr('data-group-detail').format_url_with_uuid(row.id)
+        if (!row.is_group) url = $urlFactory.attr('data-work-detail').format_url_with_uuid(row.id)
+
+        $.fn.callAjax2({
+            'url': url,
+            'method': 'delete',
+            'sweetAlertOpts': {'allowOutsideClick': true},
+        }).then(
+            (resp) => {
+                let res = $.fn.switcherResp(resp);
+                if (res) $.fn.notifyB({description: res.message}, 'success')
+            },
+            (err) => {
+                $.fn.notifyB({description: err.data.errors}, 'failure')
+            })
+
     }
 }

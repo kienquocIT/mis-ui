@@ -55,3 +55,5 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     PROJECT = _('Project')
     PROJECT_GROUP = _('Project group')
     PROJECT_WORK = _('Project work')
+    PROJECT_MEMBER = _('Project member')
+    PROJECT_ASSIGN_TASK = _('Project assign task')

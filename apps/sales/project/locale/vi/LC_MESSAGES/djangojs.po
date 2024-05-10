@@ -20,3 +20,63 @@ msgstr ""
 #
 msgid "Save"
 msgstr "Lưu"
+
+#
+msgid "Title"
+msgstr "Tiêu đề"
+
+#
+msgid "Weight"
+msgstr "Trọng số"
+
+#
+msgid "Rate"
+msgstr "Tỉ lệ"
+
+#
+msgid "Date from"
+msgstr "Ngày bắt đầu"
+
+#
+msgid "Date to"
+msgstr "Ngày kết thúc"
+
+#
+msgid "Work status"
+msgstr "Tình trạng"
+
+#
+msgid "To do"
+msgstr "Chưa thực hiện"
+
+#
+msgid "In progress"
+msgstr "Đang thực hiện"
+
+#
+msgid "Completed"
+msgstr "Hoàn thành"
+
+#
+msgid "Pending"
+msgstr "Tạm dừng"
+
+#
+msgid "Group"
+msgstr "Nhóm"
+
+#
+msgid "Work"
+msgstr "Công việc"
+
+#
+msgid "Delete"
+msgstr "Xoá"
+
+#
+msgid "Assign Task"
+msgstr "Phân công"
+
+#
+msgid "Document is not selected"
+msgstr "Không có công việc nào được chọn"

@@ -1,6 +1,8 @@
 __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI', 'ProjectDetail', 'ProjectDetailAPI',
            'ProjectEdit', 'ProjectEditAPI', 'ProjectCreateGroupAPI', 'ProjectGroupListAPI', 'ProjectWorkCreateAPI',
-           'ProjectWorkListAPI', 'ProjectGroupDetailAPI', 'ProjectWorkDetailAPI']
+           'ProjectWorkListAPI', 'ProjectGroupDetailAPI', 'ProjectWorkDetailAPI', 'ProjectMemberAddAPI',
+           'ProjectMemberDetailAPI', 'ProjectUpdateOrderAPI', 'ProjectTaskListAPI'
+           ]
 
 from django.views import View
 from rest_framework import status
@@ -174,8 +176,10 @@ class ProjectGroupDetailAPI(APIView):
         is_api=True,
     )
     def delete(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_GROUP_DETAIL.fill_key(pk=pk)).delete()
-        return resp.auto_return(key_success='result')
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_GROUP_DETAIL.push_id(pk)).delete()
+        if resp.state:
+            return {'message': f'{SaleMsg.PROJECT_GROUP} {BaseMsg.DELETE} {BaseMsg.SUCCESSFULLY}'}, status.HTTP_200_OK
+        return resp.auto_return()
 
 
 class ProjectWorkCreateAPI(APIView):
@@ -234,4 +238,102 @@ class ProjectWorkDetailAPI(APIView):
     )
     def delete(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_WORK_DETAIL.push_id(pk)).delete()
-        return resp.auto_return(key_success='result')
+        if resp.state:
+            return {'message': f'{SaleMsg.PROJECT_WORK} {BaseMsg.DELETE} {BaseMsg.SUCCESSFULLY}'}, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class ProjectMemberAddAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, pk_pj, *args, **kwargs):
+        data = request.data
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_MEMBER_ADD.fill_key(pk=pk_pj)).post(data)
+        if resp.state:
+            resp.result['message'] = f'{SaleMsg.PROJECT_MEMBER} {BaseMsg.ADDED}'
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class ProjectMemberDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk_pj, pk_member, *args, **kwargs):
+        resp = ServerAPI(
+            user=request.user, url=ApiURL.PROJECT_MEMBER_DETAIL.fill_key(pk=pk_pj, pk_member=pk_member)
+        ).get()
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk_pj, pk_member, *args, **kwargs):
+        resp = ServerAPI(
+            user=request.user, url=ApiURL.PROJECT_MEMBER_DETAIL.fill_key(pk=pk_pj, pk_member=pk_member)
+        ).put(request.data)
+        if resp.state:
+            resp.result['message'] = f'{SaleMsg.PROJECT_MEMBER} {BaseMsg.UPDATE} {BaseMsg.SUCCESSFULLY}'
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def delete(self, request, pk_pj, pk_member, *args, **kwargs):
+        resp = ServerAPI(
+            user=request.user, url=ApiURL.PROJECT_MEMBER_DETAIL.fill_key(pk=pk_pj, pk_member=pk_member)
+        ).delete()
+        if resp.state:
+            resp.result['message'] = f'{SaleMsg.PROJECT_MEMBER} {BaseMsg.DELETE} {BaseMsg.SUCCESSFULLY}'
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class ProjectUpdateOrderAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk_pj, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_UPDATE_ORDER.fill_key(pk=pk_pj)).put(request.data)
+        if resp.state:
+            resp.result['message'] = f'{SaleMsg.PROJECT} {BaseMsg.UPDATE} {BaseMsg.SUCCESSFULLY}'
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class ProjectTaskListAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        url = ApiURL.PROJECT_TASK_LIST.fill_key(pk_pj=params['project_id'])
+        resp = ServerAPI(user=request.user, url=url).get()
+        return resp.auto_return(key_success='prj_task_list')
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_TASK_LIST.fill_key(pk_pj=data['project'])).post(data)
+        if resp.state:
+            resp.result['message'] = f'{SaleMsg.PROJECT_ASSIGN_TASK} {BaseMsg.SUCCESS}'
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()

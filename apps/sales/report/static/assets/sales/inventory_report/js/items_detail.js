@@ -26,14 +26,16 @@ $(document).ready(function () {
                 year_temp += 1
             }
 
-            if (fiscal_year !== current_period['fiscal_year'] || trans_order <= new Date().getMonth() - current_period['space_month'] + 1) {
-                periodMonthEle.append(`<option value="${i+1}">${trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
-                data.push({
-                    'id': i+1,
-                    'title': trans_script.attr(`data-trans-m${trans_order}th`),
-                    'month': i+1,
-                    'year': year_temp
-                })
+            if (fiscal_year !== current_period['fiscal_year'] || trans_order <= new Date().getMonth() + 1) {
+                if (year_temp === new Date().getFullYear()) {
+                    periodMonthEle.append(`<option value="${i + 1}">${trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
+                    data.push({
+                        'id': i + 1,
+                        'title': trans_script.attr(`data-trans-m${trans_order}th`),
+                        'month': i + 1,
+                        'year': year_temp
+                    })
+                }
             }
         }
         data.push({
@@ -149,6 +151,7 @@ $(document).ready(function () {
 
             Promise.all([inventory_detail_list_ajax]).then(
                 (results) => {
+                    console.log(results[0])
                     $('#btn-collapse').trigger('click')
                     items_detail_report_table_Ele.find('tbody').html('')
                     for (const item of results[0]) {

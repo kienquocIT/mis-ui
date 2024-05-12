@@ -62,14 +62,16 @@ $(document).ready(function () {
                 trans_order -= 12
                 year_temp += 1
             }
-            periodMonthEle.append(`<option value="${i+1}">${trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
-
-            data.push({
-                'id': i+1,
-                'title': trans_script.attr(`data-trans-m${trans_order}th`),
-                'month': i+1,
-                'year': year_temp
-            })
+            
+            if (fiscal_year !== current_period['fiscal_year'] || trans_order <= new Date().getMonth() - current_period['space_month'] + 1) {
+                periodMonthEle.append(`<option value="${i+1}">${trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
+                data.push({
+                    'id': i+1,
+                    'title': trans_script.attr(`data-trans-m${trans_order}th`),
+                    'month': i+1,
+                    'year': year_temp
+                })
+            }
         }
         data.push({
             'id': '',
@@ -215,7 +217,7 @@ $(document).ready(function () {
                                 if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                     table_inventory_report.find('tbody').append(`
                                         <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #eaeaea">
-                                            <td class="first-col-x" colspan="3">
+                                            <td class="border-1 first-col-x" colspan="3">
                                                 <span class="text-primary small"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                             </td>
                                             <td class="" colspan="3"></td>
@@ -261,7 +263,7 @@ $(document).ready(function () {
                                         }
                                         detail_html += `
                                             <tr class="detail-row">
-                                                <td class="first-col" colspan="3"><span></span></td>
+                                                <td class="border-1 first-col" colspan="3"><span></span></td>
                                                 <td class="" colspan="3"><span></span></td>
                                                 <td class="small" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
                                                 <td class="small" colspan="3"><span>${activity?.['lot_number']}</span></td>
@@ -283,7 +285,7 @@ $(document).ready(function () {
                                     }
                                     table_inventory_report.find('tbody').append(`
                                         <tr class="${no_info}">
-                                            <td class="first-col" colspan="3">
+                                            <td class="border-1 first-col" colspan="3">
                                                 <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
                                                 &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
                                             </td>
@@ -342,7 +344,7 @@ $(document).ready(function () {
                                         }
                                         detail_html += `
                                             <tr class="detail-row">
-                                                <td class="first-col" colspan="3"><span></span></td>
+                                                <td class="border-1 first-col" colspan="3"><span></span></td>
                                                 <td class="" colspan="3"><span></span></td>
                                                 <td class="small" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
                                                 <td class="small" colspan="3"><span>${activity?.['lot_number']}</span></td>
@@ -365,7 +367,7 @@ $(document).ready(function () {
                                     let current_wh_row = table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`)
                                     current_wh_row.after(`
                                         <tr class="${no_info}">
-                                            <td class="first-col" colspan="3">
+                                            <td class="border-1 first-col" colspan="3">
                                                 <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
                                                 &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
                                             </td>
@@ -417,7 +419,7 @@ $(document).ready(function () {
                                     if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                         table_inventory_report.find('tbody').append(`
                                             <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #eaeaea">
-                                                <td class="first-col-x" colspan="3">
+                                                <td class="border-1 first-col-x" colspan="3">
                                                     <span class="text-primary small"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                                 </td>
                                                 <td class="" colspan="3"></td>
@@ -463,7 +465,7 @@ $(document).ready(function () {
                                         }
                                             detail_html += `
                                                 <tr class="detail-row">
-                                                    <td class="first-col" colspan="3"><span></span></td>
+                                                    <td class="border-1 first-col" colspan="3"><span></span></td>
                                                     <td class="" colspan="3"><span></span></td>
                                                     <td class="small" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
                                                     <td class="small" colspan="3"><span>${activity?.['lot_number']}</span></td>
@@ -485,7 +487,7 @@ $(document).ready(function () {
                                         }
                                         table_inventory_report.find('tbody').append(`
                                             <tr class="${no_info}">
-                                                <td class="first-col" colspan="3">
+                                                <td class="border-1 first-col" colspan="3">
                                                     <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
                                                     &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
                                                 </td>
@@ -544,7 +546,7 @@ $(document).ready(function () {
                                             }
                                             detail_html += `
                                                 <tr class="detail-row">
-                                                    <td class="first-col" colspan="3"><span></span></td>
+                                                    <td class="border-1 first-col" colspan="3"><span></span></td>
                                                     <td class="" colspan="3"><span></span></td>
                                                     <td class="small" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
                                                     <td class="small" colspan="3"><span>${activity?.['lot_number']}</span></td>
@@ -568,7 +570,7 @@ $(document).ready(function () {
                                         let current_wh_row = table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`)
                                         current_wh_row.after(`
                                             <tr class="${no_info}">
-                                                <td class="first-col" colspan="3">
+                                                <td class="border-1 first-col" colspan="3">
                                                     <span>${warehouse_activities?.['product']?.['code']}</span>
                                                     &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
                                                 </td>
@@ -675,7 +677,7 @@ $(document).ready(function () {
                                 if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                     table_inventory_report.find('tbody').append(`
                                         <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #eaeaea">
-                                            <td class="first-col-x" colspan="3">
+                                            <td class="border-1 first-col-x" colspan="3">
                                                 <span class="text-primary small"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                             </td>
                                             <td class="" colspan="3"></td>
@@ -691,7 +693,7 @@ $(document).ready(function () {
                                     `)
                                     table_inventory_report.find('tbody').append(`
                                         <tr>
-                                            <td class="first-col" colspan="3">
+                                            <td class="border-1 first-col" colspan="3">
                                                 <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
                                                 &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
                                             </td>
@@ -720,7 +722,7 @@ $(document).ready(function () {
                                     let current_wh_row = table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`)
                                     current_wh_row.after(`
                                         <tr>
-                                            <td class="first-col" colspan="3">
+                                            <td class="border-1 first-col" colspan="3">
                                                 <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
                                                 &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
                                             </td>
@@ -767,7 +769,7 @@ $(document).ready(function () {
                                     if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                         table_inventory_report.find('tbody').append(`
                                             <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #eaeaea">
-                                                <td class="first-col-x" colspan="3">
+                                                <td class="border-1 first-col-x" colspan="3">
                                                     <span class="text-primary small"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                                 </td> 
                                                 <td class="" colspan="3"></td>
@@ -783,7 +785,7 @@ $(document).ready(function () {
                                         `)
                                         table_inventory_report.find('tbody').append(`
                                             <tr>
-                                                <td class="first-col" colspan="3">
+                                                <td class="border-1 first-col" colspan="3">
                                                     <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
                                                     &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
                                                 </td>
@@ -811,7 +813,7 @@ $(document).ready(function () {
                                         let current_wh_row = table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`)
                                         current_wh_row.after(`
                                             <tr>
-                                                <td class="first-col" colspan="3">
+                                                <td class="border-1 first-col" colspan="3">
                                                     <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
                                                     &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
                                                 </td>

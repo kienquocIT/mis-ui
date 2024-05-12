@@ -56,14 +56,15 @@ $(document).ready(function () {
                 trans_order -= 12
                 year_temp += 1
             }
-            $periodMonthEle.append(`<option value="${i+1}">${$trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
-
-            data.push({
-                'id': i+1,
-                'title': $trans_script.attr(`data-trans-m${trans_order}th`),
-                'month': i+1,
-                'year': year_temp
-            })
+            if (fiscal_year !== current_period['fiscal_year'] || trans_order <= new Date().getMonth() - current_period['space_month'] + 1) {
+                $periodMonthEle.append(`<option value="${i+1}">${$trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
+                data.push({
+                    'id': i+1,
+                    'title': $trans_script.attr(`data-trans-m${trans_order}th`),
+                    'month': i+1,
+                    'year': year_temp
+                })
+            }
         }
         data.push({
             'id': '',
@@ -263,7 +264,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data && typeof data === 'object' && data.hasOwnProperty('po_report_list')) {
                     let filtered_data = data?.['po_report_list']
-                    console.log(filtered_data)
+                    // console.log(filtered_data)
                     filtered_data = filter_by_supplier(filtered_data)
                     filtered_data = filter_by_po_staff(filtered_data)
                     filtered_data = filter_by_sale_order(filtered_data)

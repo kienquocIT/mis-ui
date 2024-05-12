@@ -1539,14 +1539,16 @@ class QuotationLoadDataHandle {
                 let shipping = row.querySelector('.table-row-shipping');
                 if ($(product).val()) { // PRODUCT
                     dataProduct = SelectDDControl.get_data_from_idx($(product), $(product).val());
-                    valuePrice = dataProduct?.['sale_cost'] ? dataProduct?.['sale_cost'] : 0;
                     if ($(uom).val()) {
                         dataUOM = SelectDDControl.get_data_from_idx($(uom), $(uom).val());
                     }
                     if ($(tax).val()) {
                         dataTax = SelectDDControl.get_data_from_idx($(tax), $(tax).val());
                     }
-                    valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
+                    valueQuantity = 0;
+                    if (row.querySelector('.table-row-quantity').value) {
+                        valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
+                    }
                     valueOrder++
                     let dataAdd = {
                         "tax": {
@@ -1573,7 +1575,7 @@ class QuotationLoadDataHandle {
                         "product_tax_title": "",
                         "product_tax_value": 0,
                         "product_uom_title": "",
-                        "product_cost_price": valuePrice,
+                        "product_cost_price": 0,
                         "product_tax_amount": valueTaxAmount,
                         "product_subtotal_price": valueSubtotal,
                         "is_shipping": false,

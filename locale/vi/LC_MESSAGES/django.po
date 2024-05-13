@@ -350,7 +350,7 @@ msgstr "Địa chỉ của công ty mới"
 msgid "Full name of Representative"
 msgstr "Tên đầy đủ của người đại diện"
 
-#: .\apps\core\company\templates\core\company\company_list.html:174
+#
 msgid "Email of Representative"
 msgstr "Email của người đại diện"
 
@@ -358,7 +358,7 @@ msgstr "Email của người đại diện"
 msgid "Phone Number"
 msgstr "Số Điện Thoại"
 
-#: .\apps\core\company\templates\core\company\company_list.html:189
+#
 msgid "Phone number of Representative"
 msgstr "Số điện thoại của người đại diện"
 
@@ -370,7 +370,7 @@ msgstr "Thêm"
 msgid "Cancel"
 msgstr "Hủy bỏ"
 
-#: .\apps\core\company\templates\core\company\company_list.html:240
+#
 msgid "Language"
 msgstr "Ngôn ngữ"
 
@@ -7469,3 +7469,39 @@ msgstr "Mã Dự án"
 #
 msgid "Project assign task"
 msgstr "Giao việc dự án"
+
+#
+msgid "Completion rate"
+msgstr "Tỉ lệ hoàn thành"
+
+#
+msgid "Tasks"
+msgstr "Giao việc"
+
+#
+msgid "Project works"
+msgstr "Công việc"
+
+#
+msgid "Relationships type"
+msgstr "Loại quan hệ"
+
+#
+msgid "Relationships work"
+msgstr "Công việc cha"
+
+#
+msgid "Work weight"
+msgstr "Trọng số"
+
+#
+msgid "Work rate"
+msgstr "Tỉ lệ"
+
+#
+msgid "Group weight"
+msgstr "Trọng số"
+
+#
+msgid "Group rate"
+msgstr "Tỉ lệ"

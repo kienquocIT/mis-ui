@@ -1,8 +1,8 @@
 .txt-bold{
     font-weight: 600;
 }
-.pd-30{
-    padding-left: 30px!important;
+.pd-15{
+    padding-left: 15px!important;
 }
 
 .gantt-wrap{
@@ -26,10 +26,9 @@
     display: flex;
     justify-content: space-between;
     height: 60px;
-    align-items: end;
-    text-align: center;
     font-weight: 600;
     font-size: 14px;
+    gap: 5px;
 }
 .gantt-left-outerwrap{
     overflow-y: scroll;
@@ -52,9 +51,6 @@
 .gantt-left-container .grid-row:nth-child(even):hover
 {
     background-color: rgb(245 245 245/30%);
-}
-.gantt-wrap-title{
-    border: solid 1px #ebeff2;
 }
 .gantt-wrap-title div:first-child p{
     text-align: left;
@@ -114,4 +110,23 @@
 }
 .gantt-left-outerwrap > .dropdown{
     display: inline-block;
+}
+.empty-data {
+    padding: 6px 0;
+    font-style: italic;
+    margin-top: 8px;
+    text-align: center;
+}
+.gantt-wrap-title div{
+    border: solid 1px #cdcdcd;
+    border-radius:6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background:#f3ffff;
+    text-align: center;
+    line-height: 1.5;
+}
+.gantt-wrap-title div:first-child{
+    justify-content: start;
 }

@@ -29,9 +29,13 @@ $(document).ready(function () {
     }
 
     // form submit
+
     SetupFormSubmit.validate($FormElm, {
         errorClass: 'is-invalid cl-red',
-        submitHandler: submitHandleFunc
+        submitHandler: function(e){
+            e.preventDefault()
+            submitHandleFunc()
+        }
     })
 });
 
@@ -180,6 +184,95 @@ function saveWork(gantt_obj) {
     });
 }
 
+function show_task_list(){
+        const $taskTbl = $('#task_list'), $asModal = $('#assign_modal');
+        const workID = $asModal.find('#modal_work_id').val();
+            $asModal.on('shown.bs.modal', function(){
+            if ($taskTbl.hasClass('datatable'))
+                $taskTbl.DataTable().destroy()
+            const $pjElm = $('#id');
+            if (!$pjElm.val() || !workID)
+                return false
+            $.fn.callAjax2({
+                'url': $taskTbl.attr('data-url'),
+                'method': 'get',
+                'data': {"project_id": $pjElm.val(), "work": workID},
+                'sweetAlertOpts': {'allowOutsideClick': true},
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $taskTbl.DataTableDefault({
+                            data: data,
+                            info: false,
+                            autoWidth: true,
+                            scrollX: true,
+                            columns: [
+                                {
+                                    data: 'code',
+                                    width: '10%',
+                                    class: 'text-center',
+                                    render: (row, type, data) => {
+                                        const url = $EmTable.attr('data-detail').format_url_with_uuid(data.id)
+                                        return row ? `<a href="${url}">${row}</a>` : '--'
+                                    }
+                                },
+                                {
+                                    data: 'title',
+                                    width: '25%',
+                                    class: 'text-center',
+                                    render: (row) => {
+                                        return `${row ? row : '--'}`
+                                    }
+                                },
+                                {
+                                    data: 'percent',
+                                    width: '15%',
+                                    class: 'text-center',
+                                    render: (row) => {
+                                        let txt = '--'
+                                        if (row) txt = `${row}%`
+                                        return txt
+                                    }
+                                },
+                                {
+                                    data: 'assignee',
+                                    width: '15%',
+                                    class: 'text-center',
+                                    render: (row) => {
+                                        let txt = '--'
+                                        if (row) txt = row.full_name
+                                        return txt
+                                    }
+                                },
+
+                                {
+                                    data: 'tasks',
+                                    width: '15%',
+                                    class: 'text-center',
+                                    render: (row, index, data) => {
+                                        let txt = '--'
+                                        if (row) txt = `${row?.['all']} (${row?.['completed']})`
+                                        return txt
+                                    }
+                                },
+                                {
+                                    data: 'id',
+                                    width: '10%',
+                                    render: (row, index, data) => {
+                                        let txt = $('.table_btn').html();
+                                        return txt
+                                    }
+                                },
+                            ]
+                        })
+                    }
+                },
+                (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+            )
+        })
+    }
+
 class ProjectTeamsHandle {
     static crt_user = []
 
@@ -245,7 +338,7 @@ class ProjectTeamsHandle {
         )
     }
 
-    static render(datas=[]){
+    static render(datas=[], is_detail = false){
         if (!datas) return true
         const project_PM = $('#selectEmployeeInherit').val()
 
@@ -261,12 +354,20 @@ class ProjectTeamsHandle {
             }
             temp.find('.card-main-title p').eq(0).text(data.full_name)
             temp.find('.card-main-title p a').text(data.email).attr('href', 'mailto:'+ data.email)
+
             if(project_PM && project_PM !== data.id)
                 temp.find('.card-action-wrap .card-action-close').removeClass('hidden')
             $('#tab_members .wrap_members').prepend(temp)
+            if (is_detail === true){
+                temp.find('.card-action-wrap .card-action-edit i').addClass('bi-eye-slash-fill').removeClass('fa-pen')
+                $('#btnSavePermitMember').addClass('disabled')
+                $('#member-current-edit').prop('disabled', true)
+            }
 
             // event click edit permission of card member
-            temp.find('.card-action-wrap .card-action-edit').on('click', ()=>{
+            temp.find('.card-action-wrap .card-action-edit').on('click', function(){
+                $('.card-action-wrap .card-action-edit').find('i').addClass('bi-eye-slash-fill').removeClass('bi-eye-fill')
+                $(this).find('i').addClass('bi-eye-fill').removeClass('bi-eye-slash-fill')
                 $('#box-edit-permit').removeClass('hidden')
                 $('#member-current-edit').val(data.id).trigger('change');
             });

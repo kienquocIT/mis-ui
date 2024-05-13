@@ -1968,14 +1968,13 @@ var Gantt = (function () {
                 for ( let value of this.options['left_list']) {
                     if (is_flag) base_width += value.width
                     let item_html = jQuery('<div/>');
-                    if (item.child_of_group && value.code === 'title') item_html.addClass('pd-30')
                     if (value.code === 'title'){
                         item_html.append(
                             '<span class="sort-icon"><i class="fa-solid fa-grip-vertical"></i></span>'
-                            + `<span class="row-title">${item['name']}</span>`
+                            + `<span class="row-title ${item.child_of_group ? 'pd-15' : ''}">${item['name']}</span>`
                         ).addClass('wrap-title')
 
-                        const htmlBtn2 = jQuery(`<div class="dropdown"><button class="btn btn-sm row-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></button><ul class="dropdown-menu"><li><button class="dropdown-item btn-item-row-delete" type="button">${jQuery.fn.gettext('Delete')}</button></li><li><button class="dropdown-item btn-item-row-assign" type="button">${jQuery.fn.gettext('Assign Task')}</button></li></ul></div>`)
+                        const htmlBtn2 = jQuery(`<div class="dropdown"><button class="btn btn-sm row-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></button><ul class="dropdown-menu"><li><button class="dropdown-item btn-item-row-delete" type="button">${jQuery.fn.gettext('Delete')}</button></li><li><button class="dropdown-item btn-item-row-assign" type="button">${jQuery.fn.gettext('Assign Task')}</button></li><li><button class="dropdown-item btn-row-task_list" type="button">${jQuery.fn.gettext('Task list')}</button></li></ul></div>`)
                         item_html.append(htmlBtn2)
 
                         if (item.is_group) {
@@ -1991,17 +1990,19 @@ var Gantt = (function () {
                         const _this = this;
                         jQuery('.row-title', item_html).on('click', function(){
                             // event click load detail
-                            if (item.is_group)
+                            if (item.is_group && _this.options.hasOwnProperty('init_edit_btn_g'))
                                 _this.options.init_edit_btn_g(item.id)
-                            else _this.options.init_edit_btn_w(item.id)
+                            else if (_this.options.hasOwnProperty('init_edit_btn_w'))
+                                _this.options.init_edit_btn_w(item.id)
                         })
                         jQuery('.btn-item-row-delete', item_html).on('click', function(e){
                             // event click delete row
                             const $Parent = jQuery(this).parents('.grid-row')
-                            _this.options.delete_row_func({
-                                is_group: $Parent.attr('data-group') === undefined,
-                                id: $Parent.attr('data-id')
-                            })
+                            if (_this.options.hasOwnProperty('delete_row_func'))
+                                _this.options.delete_row_func({
+                                    is_group: $Parent.attr('data-group') === undefined,
+                                    id: $Parent.attr('data-id')
+                                })
                             let new_lst = _this.tasks.filter((task)=> task.id !== $Parent.attr('data-id'))
                             _this.refresh(new_lst)
                         })
@@ -2011,6 +2012,11 @@ var Gantt = (function () {
                             jQuery('.btn-show-task_f').trigger('click');
                             $form.append(`<input type="hidden" name="work_id" value="${item.id}"/>`);
 
+                        })
+
+                        jQuery('.btn-row-task_list', htmlBtn2).on('click', function(){
+                            if (_this.options.hasOwnProperty('show_task_list'))
+                               $('#assign_modal').modal('show')
                         })
                     }
                     else if (value.code === 'start' || value.code === 'end')
@@ -2025,6 +2031,12 @@ var Gantt = (function () {
                 is_flag = false
                 div_wrapper.append(row)
             }
+            if (!tasksList.length){
+                let row = jQuery('<p class="empty-data"/>')
+                row.text(jQuery.fn.gettext('empty data'))
+                div_wrapper.append(row)
+            }else div_wrapper.find('.empty-data').remove()
+
             div_outerwrap.append(div_wrapper).append(htmlBtn)
             jQuery('.gantt-left').append(div_outerwrap)
             let grid_height =
@@ -2035,7 +2047,7 @@ var Gantt = (function () {
             grid_height = grid_height + 27 // 58 là number ngẫu nhiên canh chỉnh để fit vs chiều dài khung bên phải
             div_wrapper.css({"min-width": base_width, "height": grid_height})
             jQuery('.gantt-wrap-title').css({"min-width": base_width})
-            this.options.init_create_btn()
+            if (this.options.hasOwnProperty('init_create_btn')) this.options.init_create_btn()
 
             // handle sortable
             div_wrapper.sortable({

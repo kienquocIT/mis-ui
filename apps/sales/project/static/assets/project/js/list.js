@@ -16,6 +16,7 @@ $(document).ready(function(){
             {
                 data: 'code',
                 width: '10%',
+                class: 'text-center',
                 render: (row, type, data) => {
                     const url = $EmTable.attr('data-detail').format_url_with_uuid(data.id)
                     return row ? `<a href="${url}">${row}</a>` : '--'
@@ -24,6 +25,7 @@ $(document).ready(function(){
             {
                 data: 'title',
                 width: '25%',
+                class: 'text-center',
                 render: (row) => {
                     return `${row ? row : '--'}`
                 }
@@ -31,6 +33,7 @@ $(document).ready(function(){
             {
                 data: 'start_date',
                 width: '15%',
+                class: 'text-center',
                 render: (row) => {
                     let txt = '--'
                     if (row) txt = moment(row).format('YYYY/MM/DD')
@@ -40,6 +43,7 @@ $(document).ready(function(){
             {
                 data: 'finish_date',
                 width: '15%',
+                class: 'text-center',
                 render: (row) => {
                     let txt = '--'
                     if (row) txt = moment(row).format('YYYY/MM/DD')
@@ -49,15 +53,15 @@ $(document).ready(function(){
             {
                 data: 'completion_rate',
                 width: '10%',
+                class: 'text-center',
                 render: (row) => {
-                    let txt = '--'
-                    if (row) txt = `${row}%`
-                    return txt
+                    return `${row}%`
                 }
             },
             {
                 data: 'works',
                 width: '15%',
+                class: 'text-center',
                 render: (row, index, data) => {
                     let txt = '--'
                     if (row) txt = `${row?.['all']} (${row?.['completed']})`
@@ -67,6 +71,7 @@ $(document).ready(function(){
             {
                 data: 'tasks',
                 width: '15%',
+                class: 'text-center',
                 render: (row, index, data) => {
                     let txt = '--'
                     if (row) txt = `${row?.['all']} (${row?.['completed']})`
@@ -81,20 +86,6 @@ $(document).ready(function(){
                     return txt
                 }
             },
-        ],
-        rowCallback: function (row, data, index) {
-            $(row).on('click', function(){
-                if ($(this).hasClass('selected')) $(this).removeClass('selected');
-                else{
-                    ListByUserHandle.callToolsListData(data.id)
-                    $(this).parents('table').find('tr').removeClass('selected')
-                    $(this).addClass('selected')
-                    if (window.isMobile && $(window).width() < 1024){
-                        $('.content_left').removeClass('is_active')
-                        $('#employee_tbl_wrapper').slideToggle()
-                    }
-                }
-            })
-        }
+        ]
     })
 });

@@ -179,7 +179,7 @@ class AppsCodeToList:
         },
         'project': {
             'project': {
-                'title': _('Dự án'),
+                'title': _('Project'),
                 'is_active': True,
             }
         }

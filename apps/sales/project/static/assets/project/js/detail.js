@@ -1,23 +1,4 @@
-$(document).ready(function(){
-    'use strict';
-    // run date-pick
-    $('.date-picker').daterangepicker({
-        singleDatePicker: true,
-        timepicker: false,
-        showDropdowns: false,
-        minYear: 2023,
-        autoApply: true,
-        locale: {
-            format: 'DD/MM/YYYY'
-        },
-        maxYear: parseInt(moment().format('YYYY'), 10),
-    });
-
-    // run select
-    $('#selectEmployeeInherit, #select_project_owner, #select_project_group, #select_project_work').each(function(){
-        $(this).initSelect2()
-    });
-
+$(document).ready(function () {
     // init gantt
     const LEFT_TITLE = [
         {"code": 'title', "name": $.fn.gettext('Title'), width: 300},
@@ -44,10 +25,6 @@ $(document).ready(function(){
             disable_on_click: true,
             gantt_start: start_D,
             gantt_end: new Date(end_D.getTime() - 1),
-            init_create_btn: fGanttCustom.setup_init_create,
-            init_edit_btn_g: fGanttCustom.load_detail_group,
-            init_edit_btn_w: fGanttCustom.load_detail_work,
-            delete_row_func: fGanttCustom.delete_row,
         }
     );
 
@@ -71,51 +48,10 @@ $(document).ready(function(){
                 $('#dateFinish').val(moment(data.finish_date).format('DD/MM/YYYY'))
                 const afterData = fGanttCustom.convert_data(data['groups'], data['works'])
                 new_gantt.load_more(afterData)
-                ProjectTeamsHandle.render(data.members)
+                ProjectTeamsHandle.render(data.members, true)
+                $('.gaw-btn').addClass('hidden')
                 Task_in_project.init(data)
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )
-
-    // run click add group btn
-    saveGroup(new_gantt)
-    saveWork(new_gantt)
-    show_task_list()
-
-    // run load employee list
-    ProjectTeamsHandle.init()
-    // handle modal employee show
-    $('#modal_employee_list').on('show.bs.modal', function () {
-        let $tblUser = $('#dtbMember');
-        let tblData = $tblUser.DataTable().data().toArray();
-        for (let data of tblData) {
-            if (ProjectTeamsHandle.crt_user.includes(data.id)) data['is_checked_new'] = true
-        }
-        $tblUser.DataTable().clear().rows.add(tblData).draw();
-    });
-    // delete user member
-    $(document).on('card.action.close.confirm', '.member-item .card', function () {
-        let eleCard = $(this);
-        $.fn.callAjax2({
-            url: $('#url-factory').attr('data-member-delete').format_url_with_uuid(eleCard.attr('data-id')),
-            method: 'DELETE',
-            'sweetAlertOpts': {
-                'allowOutsideClick': true
-            }
-        }).then(
-            (resp) => {
-                $.fn.switcherResp(resp);
-                $.fn.notifyB({
-                    'description': $.fn.transEle.data('success'),
-                }, 'success');
-                $(this).trigger('card.action.close.purge');
-            },
-            (errs) => {
-                $.fn.notifyB({
-                    'description': $.fn.transEle.data('fail') + ": " + $('#trans-factory').attr('data-msg-deny-delete-member-owner'),
-                }, 'failure');
-                $(this).trigger('card.action.close.show');
-            }
-        )
-    })
 });

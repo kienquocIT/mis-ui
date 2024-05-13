@@ -80,3 +80,11 @@ msgstr "Phân công"
 #
 msgid "Document is not selected"
 msgstr "Không có công việc nào được chọn"
+
+#
+msgid "Add"
+msgstr "Thêm"
+
+#
+msgid "Task list"
+msgstr "Danh sách task"

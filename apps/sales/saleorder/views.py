@@ -89,11 +89,10 @@ class SaleOrderCreate(View):
         data_copy_to = request.GET.get('data_copy_to', "")
         opportunity = request.GET.get('opportunity', "")
         result = {
-            'data': {
-                'employee_current': json.dumps(request.user.employee_current_data),
-                'data_copy_to': data_copy_to,
-                'opportunity': opportunity,
-            },
+            'employee_current': request.user.employee_current_data,
+            'data_copy_to': data_copy_to,
+            'opportunity': opportunity,
+
             'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
             'form_id': 'frm_quotation_create',
             'list_from_app': 'saleorder.saleorder.create',

@@ -845,7 +845,7 @@
     <input
             type="text"
             id="data-init-quotation-create-request-employee"
-            value="{{ data.data.employee_current }}"
+            value="{{ data.employee_current }}"
     >
     <input
             type="text"
@@ -880,12 +880,12 @@
     <input
             type="text"
             id="data-init-quotation-copy-to"
-            value="{{ data.data.data_copy_to }}"
+            value="{{ data.data_copy_to }}"
     >
     <input
             type="text"
             id="data-init-opportunity"
-            value="{{ data.data.opportunity }}"
+            value="{{ data.opportunity }}"
     >
     <input
             type="text"
@@ -915,6 +915,7 @@
     >
     {{ data.payment_term_stage|json_script:'payment_term_stage' }}
     {{ data.payment_date_type|json_script:'payment_date_type' }}
+    {{ data.employee_current|json_script:'employee_current' }}
 {% endblock %}
 
 {% block jsFooter %}

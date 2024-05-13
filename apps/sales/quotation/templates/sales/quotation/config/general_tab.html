@@ -2,7 +2,7 @@
 <!-- Config General -->
 <br>
 <div class="row">
-    <div class="col-12 col-md-6 col-lg-6">
+    <div class="col-12 col-md-5 col-lg-5">
         <div class="form-check mb-2 ml-2">
             <input type="checkbox" class="form-check-input disabled-but-edit" id="is-choose-price-list" disabled>
             <label
@@ -27,8 +27,27 @@
                     class="form-check-label disabled-label" for="is-discount-on-total"
             >{% trans 'If short sale (without opportunity), enable to input discount rate on total' %}</label>
         </div>
-        <br>
-        <br>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label class="form-label" for="box-ss-role">{% trans 'Role' %}</label>
+            <select
+                    class="form-select disabled-but-edit"
+                    id="box-ss-role"
+                    data-url="{% url "RoleListAPI" %}"
+                    data-method="GET"
+                    name="role"
+                    data-keyResp="role_list"
+                    multiple
+                    disabled
+            ></select>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<div class="row">
+    <div class="col-12 col-md-5 col-lg-5">
         <div class="form-check mb-2 ml-2">
             <input type="checkbox" class="form-check-input disabled-but-edit" id="is-not-input-price" disabled>
             <label
@@ -47,8 +66,27 @@
                     class="form-check-label disabled-label" for="is-not-discount-on-total"
             >{% trans 'If long sale (with opportunity), disable input discount on total' %}</label>
         </div>
-        <br>
-        <br>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label class="form-label" for="box-ls-role">{% trans 'Role' %}</label>
+            <select
+                    class="form-select disabled-but-edit"
+                    id="box-ls-role"
+                    data-url="{% url "RoleListAPI" %}"
+                    data-method="GET"
+                    name="role"
+                    data-keyResp="role_list"
+                    multiple
+                    disabled
+            ></select>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-6">
         <div class="form-check mb-2 ml-2">
             <input type="checkbox" class="form-check-input disabled-but-edit" id="is-require-payment" disabled>
             <label

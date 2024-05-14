@@ -7545,3 +7545,20 @@ msgstr "Vai trò bán hàng nhanh"
 #
 msgid "Role long sale"
 msgstr "Vai trò bán hàng chậm"
+
+#
+msgid "Calculate ending cumulative value"
+msgstr "Tính giá trị tích luỹ cuối kỳ"
+
+#
+msgid "Export to excel"
+msgstr "Xuất file excel"
+
+#
+msgid "Are you sure to calculate ending cumulative value?"
+msgstr "Bạn có chắc chắc muốn tính toán giá trị tích luỹ cuối kỳ của tháng này?"
+
+#
+msgid "Sure"
+msgstr "Đồng ý"
+

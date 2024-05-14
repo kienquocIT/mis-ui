@@ -7533,3 +7533,7 @@ msgstr "Vui lòng hủy báo giá, đơn hàng hiện tại"
 #
 msgid "Opportunity is disabled because employee in short sales roles"
 msgstr "CHKD bị vô hiệu vì nhân viên thuộc vai trò bán hàng nhanh"
+
+#
+msgid "Reason for reject"
+msgstr "Lý do từ chối"

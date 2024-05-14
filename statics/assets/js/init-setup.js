@@ -1727,8 +1727,10 @@ class WFRTControl {
         if (actionSelected !== undefined && taskID && urlBase) {
             if (actionSelected === '1') {  // Approve: check if next node is out form need select person before submit
                 return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
+            } else if (actionSelected === '2') {  // Reject: check if remark before submit
+                return WFRTControl.callActionRejectReturn(urlBase, taskID, dataSubmit, dataSuccessReload);
             } else if (actionSelected === '3') {  // Return: check if remark before submit
-                return WFRTControl.callActionReturn(urlBase, taskID, dataSubmit, dataSuccessReload);
+                return WFRTControl.callActionRejectReturn(urlBase, taskID, dataSubmit, dataSuccessReload);
             } else if (actionSelected === '4') {  // Receive: check if next node is out form need select person before submit
                 return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
             } else {
@@ -1900,10 +1902,14 @@ class WFRTControl {
         });
     }
 
-    static callActionReturn(urlBase, taskID, dataSubmit, dataSuccessReload) {
+    static callActionRejectReturn(urlBase, taskID, dataSubmit, dataSuccessReload) {
+        let label = $.fn.transEle.attr('data-reason-reject');
+        if (dataSubmit?.['action'] === '3') {
+            label = $.fn.transEle.attr('data-reason-return');
+        }
         Swal.fire({
             input: "textarea",
-            inputLabel: $.fn.transEle.attr('data-reason-return'),
+            inputLabel: label,
             inputPlaceholder: $.fn.transEle.attr('data-reason-type-here'),
             inputAttributes: {
                 "aria-label": $.fn.transEle.attr('data-reason-type-here'),
@@ -1923,6 +1929,9 @@ class WFRTControl {
             if (result.dismiss === Swal.DismissReason.timer || result.value) {
                 dataSubmit['remark'] = result.value;
                 return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
+            } else {
+                $.fn.notifyB({description: "remark is required"}, 'failure');
+                return false;
             }
         });
     }

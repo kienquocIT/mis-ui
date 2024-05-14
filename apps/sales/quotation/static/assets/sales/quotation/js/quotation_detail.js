@@ -195,7 +195,8 @@ $(function () {
                                         <div class="card-body">
                                             <div class="mb-5">
                                                 <div class="row"><small>Mã: ${docData?.['code']}</small></div>
-                                                <div class="row"><small>Giá trị: 1.000.000.000</small></div>
+                                                <div class="row"><small>Số lượng: ${docData?.['quantity']}</small></div>
+                                                <div class="row"><small>Giá trị: <span class="mask-money" data-init-money="${parseFloat(docData?.['total'] ? docData?.['total'] : '0')}"></span></small></div>
                                             </div>
                                         </div>
                                         <div class="card-footer text-muted d-flex justify-content-between">
@@ -212,6 +213,8 @@ $(function () {
             html += htmlMain;
             html += htmlSuffix;
             $chartDiagram.html(html);
+            // mask money
+            $.fn.initMaskMoney2();
         }
 
         function loadPrefixSuffix(data_pre_suf, sttTxt, diaTxt, sttMapBadge) {
@@ -228,7 +231,8 @@ $(function () {
                                         <div class="card-body">
                                             <div class="mb-5">
                                                 <div class="row"><small>Mã: ${data_record?.['code']}</small></div>
-                                                <div class="row"><small>Giá trị: 1.000.000.000</small></div>
+                                                <div class="row"><small>Số lượng: ${data_record?.['quantity']}</small></div>
+                                                <div class="row"><small>Giá trị: <span class="mask-money" data-init-money="${parseFloat(data_record?.['total'] ? data_record?.['total'] : '0')}"></span></small></div>
                                             </div>
                                         </div>
                                         <div class="card-footer text-muted d-flex justify-content-between">

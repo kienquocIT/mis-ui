@@ -787,6 +787,7 @@
         data-copy-successfully="{% trans "Copy successfully" %}"
         data-validate-due-date="{% trans "Invalid due date" %}"
         data-validate-total-payment="{% trans "Total payment must less than or equal to total before tax" %}"
+        data-validate-ss-role="{% trans "Opportunity is disabled because employee in short sales roles" %}"
     >
 
     <input
@@ -825,7 +826,7 @@
     <input
             type="text"
             id="data-init-quotation-create-request-employee"
-            value="{{ data.data.employee_current }}"
+            value="{{ data.employee_current }}"
     >
     <input
             type="text"
@@ -860,7 +861,7 @@
     <input
             type="text"
             id="data-init-opportunity"
-            value="{{ data.data.opportunity }}"
+            value="{{ data.opportunity }}"
     >
     <input
             type="text"
@@ -889,6 +890,8 @@
     >
     {{ data.payment_term_stage|json_script:'payment_term_stage' }}
     {{ data.payment_date_type|json_script:'payment_date_type' }}
+    {{ data.employee_current|json_script:'employee_current' }}
+    {{ data.opportunity|json_script:'init_opp' }}
 {% endblock %}
 
 {% block jsFooter %}

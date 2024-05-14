@@ -91,7 +91,7 @@ class SaleOrderCreate(View):
         result = {
             'employee_current': request.user.employee_current_data,
             'data_copy_to': data_copy_to,
-            'opportunity': opportunity,
+            'opportunity': json.loads(opportunity),
 
             'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
             'form_id': 'frm_quotation_create',

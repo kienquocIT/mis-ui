@@ -757,6 +757,7 @@
         data-required-product-uom="{% trans "Product unit of measure is required" %}"
         data-required-expense-uom="{% trans "Expense unit of measure is required" %}"
         data-copy-successfully="{% trans "Copy successfully" %}"
+        data-validate-ss-role="{% trans "Opportunity is disabled because employee in short sales roles" %}"
     >
 
     <input
@@ -858,6 +859,7 @@
             data-method="GET"
     >
     {{ data.employee_current|json_script:'employee_current' }}
+    {{ data.opportunity|json_script:'init_opp' }}
 {% endblock %}
 
 {% block jsFooter %}

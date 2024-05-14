@@ -15,25 +15,24 @@ class QuotationLoadDataHandle {
     static loadInitOpportunity() {
         let form = $('#frm_quotation_create');
         if (form.attr('data-method').toLowerCase() === 'post') {
-            let dataInitOppRaw = $('#data-init-opportunity').val();
-            if (dataInitOppRaw) {
-                let dataInitOpp = JSON.parse(dataInitOppRaw);
-                let list_from_app = 'quotation.quotation.create';
-                if (form[0].classList.contains('sale-order')) {
-                    list_from_app = 'saleorder.saleorder.create';
+            let dataInitOpp = JSON.parse($('#init_opp').text());
+            let list_from_app = 'quotation.quotation.create';
+            if (form[0].classList.contains('sale-order')) {
+                list_from_app = 'saleorder.saleorder.create';
+            }
+            $.fn.callAjax2({
+                    'url': QuotationLoadDataHandle.opportunitySelectEle.attr('data-url'),
+                    'method': QuotationLoadDataHandle.opportunitySelectEle.attr('data-method'),
+                    'data': {'list_from_app': list_from_app},
                 }
-                $.fn.callAjax2({
-                        'url': QuotationLoadDataHandle.opportunitySelectEle.attr('data-url'),
-                        'method': QuotationLoadDataHandle.opportunitySelectEle.attr('data-method'),
-                        'data': {'list_from_app': list_from_app},
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                                for (let opp of data.opportunity_list) {
-                                    if (opp?.['id'] === dataInitOpp?.['id']) {
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                            for (let opp of data.opportunity_list) {
+                                if (opp?.['id'] === dataInitOpp?.['id']) {
+                                    if (!QuotationLoadDataHandle.opportunitySelectEle.prop('disabled')) {
                                         QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
                                             data: opp,
                                             'allowClear': true,
@@ -46,8 +45,8 @@ class QuotationLoadDataHandle {
                             }
                         }
                     }
-                )
-            }
+                }
+            )
         }
     };
 
@@ -1894,6 +1893,7 @@ class QuotationLoadDataHandle {
                         // check config first time
                         if (page_method === "POST" && !$('#data-init-quotation-copy-to').val()) {
                             QuotationCheckConfigHandle.checkConfig(true, null, true);
+                            QuotationCheckConfigHandle.checkSsLsRole();
                         }
                     }
                 }
@@ -3810,19 +3810,12 @@ class QuotationCalculateCaseHandle {
 
 // Config
 class QuotationCheckConfigHandle {
-    static checkConfig(is_change_opp = false, new_row = null, is_first_time = false, is_has_opp_detail = false, is_copy = false) {
-        let form = document.getElementById('frm_quotation_create');
+    static checkSsLsRole() {
         let configRaw = $('#quotation-config-data').val();
         if (configRaw) {
-            let empCurrent = JSON.parse($('#employee_current').text());
-            let opportunity = QuotationLoadDataHandle.opportunitySelectEle.val();
             let config = JSON.parse(configRaw);
-            let tableProduct = document.getElementById('datable-quotation-create-product');
-            let is_make_price_change = false;
-            if (["", null].includes(opportunity)) {
-                opportunity = null;
-            }
             // check role in ss_role or ls_role
+            let empCurrent = JSON.parse($('#employee_current').text());
             let ss_role_id = [];
             let ls_role_id = [];
             for (let role of config?.['ss_role']) {
@@ -3834,12 +3827,28 @@ class QuotationCheckConfigHandle {
             for (let roleID of empCurrent?.['role']) {
                 if (ss_role_id.includes(roleID)) {
                     QuotationLoadDataHandle.opportunitySelectEle[0].setAttribute('disabled', 'true');
+                    $(QuotationLoadDataHandle.opportunitySelectEle[0].closest('.input-group')).after(`<small class="text-red">${QuotationLoadDataHandle.transEle.attr('data-validate-ss-role')}</small>`);
                 }
             }
             for (let roleID of empCurrent?.['role']) {
                 if (ls_role_id.includes(roleID)) {
                     QuotationLoadDataHandle.opportunitySelectEle[0].setAttribute('required', 'true');
                 }
+            }
+        }
+        return true;
+    };
+
+    static checkConfig(is_change_opp = false, new_row = null, is_first_time = false, is_has_opp_detail = false, is_copy = false) {
+        let form = document.getElementById('frm_quotation_create');
+        let configRaw = $('#quotation-config-data').val();
+        if (configRaw) {
+            let opportunity = QuotationLoadDataHandle.opportunitySelectEle.val();
+            let config = JSON.parse(configRaw);
+            let tableProduct = document.getElementById('datable-quotation-create-product');
+            let is_make_price_change = false;
+            if (["", null].includes(opportunity)) {
+                opportunity = null;
             }
             if (!opportunity && is_has_opp_detail === false) { // short sale
                 if (is_change_opp === true) {

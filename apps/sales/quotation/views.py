@@ -58,7 +58,7 @@ class QuotationCreate(View):
         opportunity = request.GET.get('opportunity', "")
         ctx = {
             'employee_current': request.user.employee_current_data,
-            'opportunity': opportunity,
+            'opportunity': json.loads(opportunity),
 
             'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
             'form_id': 'frm_quotation_create',

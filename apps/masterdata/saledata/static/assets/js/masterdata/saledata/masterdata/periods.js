@@ -13,16 +13,37 @@ $(document).ready(function () {
     const periods_fiscal_month_start_update_Ele = $('#periods-fiscal-month-start-update')
 
     function get_option_for_sw_using_time(ele, fiscal_year, fiscal_month_start, selected) {
+        ele.html('')
         if (selected) {
             ele.append(`
                 <option value="${parseInt(selected.split('/')[0])}}">${selected}</option>
             `)
         }
         else {
-            for (let i = parseInt(fiscal_month_start); i <= new Date().getMonth() + 1; i++) {
-                ele.append(`
-                    <option value="${i}">${i}/${fiscal_year}</option>
-                `)
+            let value_list = []
+            for (let i = 0; i < 12; i++) {
+                let option_month = i + fiscal_month_start
+                let option_year = fiscal_year
+                if (option_month > 12) {
+                    option_month -= 12
+                    option_year += 1
+                }
+                if (option_month < 10) {
+                    option_month = '0' + option_month.toString()
+                }
+                value_list.push(`${option_month}/${option_year}`)
+            }
+            for (let i = 0; i < value_list.length; i++) {
+                if (parseInt(value_list[i].split('/')[0]) > new Date().getMonth() + 1 || parseInt(value_list[i].split('/')[1]) > fiscal_year) {
+                    ele.append(`
+                        <option disabled value="${i}}">${value_list[i]}</option>
+                    `)
+                }
+                else {
+                    ele.append(`
+                        <option value="${i}}">${value_list[i]}</option>
+                    `)
+                }
             }
         }
     }
@@ -214,7 +235,9 @@ $(document).ready(function () {
         frm.dataForm['code'] = period_code_Ele.val();
         frm.dataForm['fiscal_year'] = periods_fiscal_year_Ele.val();
         frm.dataForm['start_date'] = changeDateFormat($('#periods-start-date').val());
-        frm.dataForm['software_start_using_time'] = $('#software_using_time_select option:selected').text();
+        if ($('#software_using_time_check').prop('checked')) {
+            frm.dataForm['software_start_using_time'] = $('#software_using_time_select option:selected').text();
+        }
         frm.dataForm['sub_periods_type'] = sub_periods_type_select.val()
         frm.dataForm['sub_period_data'] = []
         generate_period_table.find('tbody tr').each(function (index) {
@@ -226,7 +249,6 @@ $(document).ready(function () {
                 'end_date': changeDateFormat($(this).find('.end_date').attr('data-value')),
             })
         })
-
         console.log(frm.dataForm)
         return {
             url: frm.dataUrl,
@@ -243,8 +265,9 @@ $(document).ready(function () {
         frm.dataForm['code'] = period_code_update_Ele.val();
         frm.dataForm['fiscal_year'] = periods_fiscal_year_update_Ele.val();
         frm.dataForm['start_date'] = $('#periods-start-date-update').val();
-        frm.dataForm['software_start_using_time'] = $('#software_using_time_select_update option:selected').text();
-
+        if ($('#software_using_time_check').prop('checked')) {
+            frm.dataForm['software_start_using_time'] = $('#software_using_time_select_update option:selected').text();
+        }
         let pk = frmEle.attr('data-id');
         return {
             url: frmEle.attr('data-url').format_url_with_uuid(pk),
@@ -314,11 +337,11 @@ $(document).ready(function () {
         generate_period_table.DataTable().clear().destroy()
         generate_period_table.find('.main-row').remove()
         if (period_title_Ele.val() && period_code_Ele.val() && periods_fiscal_year_Ele.val() && periods_fiscal_month_start_Ele.val() !== '0') {
-            let first_month = $(software_using_time_select.find('option')[1]).text()
-            let last_month = $(software_using_time_select.find('option')[12]).text()
+            let first_month = $(software_using_time_select.find('option')[0]).text()
+            let last_month = $(software_using_time_select.find('option')[11]).text()
 
             let from_value = `01/${first_month}`
-            let to_value = `${get_final_date_of_current_month(last_month.split('-')[1], last_month.split('-')[0])}-${last_month}`
+            let to_value = `${get_final_date_of_current_month(last_month.split('/')[1], last_month.split('/')[0])}/${last_month}`
 
             generate_period_table.find('thead').append(`
                 <tr class="bg-secondary-light-5 main-row">
@@ -336,9 +359,9 @@ $(document).ready(function () {
                 sub_periods_type_select.val() === '2' ? 'Y' : '';
 
             for (let i = 0; i < 12; i++) {
-                let sub_month = $(software_using_time_select.find('option')[i+1]).text()
-                let key_month = sub_month.split('-')[0]
-                let key_year = sub_month.split('-')[1]
+                let sub_month = $(software_using_time_select.find('option')[i]).text()
+                let key_month = sub_month.split('/')[0]
+                let key_year = sub_month.split('/')[1]
 
                 generate_period_table.find('tbody').append(`
                     <tr class="sub-periods-row">
@@ -346,8 +369,8 @@ $(document).ready(function () {
                         <td><span class="code badge badge-soft-primary">${period_code_Ele.val()}/${key_sub}${key_month}/${key_year}</span></td>
                         <td><span class="name text-primary">${period_code_Ele.val()}/${key_sub}${key_month}/${key_year}</span></td>
                         <td></td>
-                        <td class="start_date" data-value="01-${sub_month}"><i class="far fa-calendar"></i> 01/${sub_month.replace('-', '/')}</td>
-                        <td class="end_date" data-value="${get_final_date_of_current_month(key_year, key_month)}/${sub_month.replace('-', '/')}"><i class="far fa-calendar"></i> ${get_final_date_of_current_month(key_year, key_month)}/${sub_month.replace('-', '/')}</td>           
+                        <td class="start_date" data-value="01-${sub_month.replace('/', '-')}"><i class="far fa-calendar"></i> 01/${sub_month}</td>
+                        <td class="end_date" data-value="${get_final_date_of_current_month(key_year, key_month)}-${sub_month.replace('/', '-')}"><i class="far fa-calendar"></i> ${get_final_date_of_current_month(key_year, key_month)}/${sub_month}</td>           
                     </tr>
                 `)
             }

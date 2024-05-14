@@ -14,6 +14,7 @@ $(document).ready(function () {
         periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
     }
     const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
+    let PERIODIC_CLOSED = false
 
     function getMonthOrder(space_month, fiscal_year) {
         periodMonthEle.html(``)
@@ -170,6 +171,7 @@ $(document).ready(function () {
                             </tr>`
                         )
                         for (const stock_activity of item?.['stock_activities']) {
+                            PERIODIC_CLOSED = stock_activity['periodic_closed']
                             if (warehouses_select_Ele.val().length > 0) {
                                 if (warehouses_select_Ele.val().includes(stock_activity?.['warehouse_id'])) {
                                     let stock_type_label = `<span class="text-secondary">${trans_script.attr('data-trans-ob')}</span>`
@@ -401,11 +403,13 @@ $(document).ready(function () {
                     setTimeout(
                         () => {
                             WindowControl.hideLoading();
-                            if ($definition_inventory_valuation === '1') {
+                            if ($definition_inventory_valuation === '1' && PERIODIC_CLOSED === false) {
                                 items_detail_report_table_Ele.find('tbody .main-row').each(function () {
                                     $(this).find('td:eq(15)').html('-')
                                     $(this).find('td:eq(16)').html('-')
                                 })
+                            }
+                            if ($definition_inventory_valuation === '1') {
                                 items_detail_report_table_Ele.find('tbody .detail-in').each(function () {
                                     $(this).find('td:eq(15)').html('-')
                                     $(this).find('td:eq(16)').html('-')
@@ -503,6 +507,7 @@ $(document).ready(function () {
                                     </tr>`
                                 )
                                 for (const stock_activity of item?.['stock_activities']) {
+                                    PERIODIC_CLOSED = stock_activity['periodic_closed']
                                     if (warehouses_select_Ele.val().length > 0) {
                                         if (warehouses_select_Ele.val().includes(stock_activity?.['warehouse_id'])) {
                                             let stock_type_label = `<span class="text-secondary">${trans_script.attr('data-trans-ob')}</span>`
@@ -734,11 +739,13 @@ $(document).ready(function () {
                             setTimeout(
                                 () => {
                                     WindowControl.hideLoading();
-                                    if ($definition_inventory_valuation === '1') {
+                                    if ($definition_inventory_valuation === '1' && PERIODIC_CLOSED === false) {
                                         items_detail_report_table_Ele.find('tbody .main-row').each(function () {
                                             $(this).find('td:eq(15)').html('-')
                                             $(this).find('td:eq(16)').html('-')
                                         })
+                                    }
+                                    if ($definition_inventory_valuation === '1') {
                                         items_detail_report_table_Ele.find('tbody .detail-in').each(function () {
                                             $(this).find('td:eq(15)').html('-')
                                             $(this).find('td:eq(16)').html('-')

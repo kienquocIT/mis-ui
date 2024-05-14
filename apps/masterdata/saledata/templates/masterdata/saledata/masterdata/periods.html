@@ -84,7 +84,7 @@
                             <div class="col-12 col-lg-3 col-md-3">
                                 <div class="form-group">
                                     <label for="periods-fiscal-year" class="required form-label">{% trans 'Fiscal year' %}</label>
-                                    <input type="number" class="form-control" id="periods-fiscal-year" placeholder="2024">
+                                    <input type="text" data-mask="9999" class="form-control" id="periods-fiscal-year" placeholder="2024">
                                 </div>
                             </div>
                             <div class="col-12 col-lg-3 col-md-3">
@@ -256,4 +256,5 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/masterdata/periods.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
 {% endblock %}

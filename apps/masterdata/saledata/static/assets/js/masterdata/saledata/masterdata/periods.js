@@ -152,27 +152,28 @@ $(document).ready(function () {
                     },
                     {
                         data: 'status',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center',
                         render: (data, type, row,) => {
-                            let state = ['Opening', 'Closed']
-                            let state_color = ['primary', 'secondary']
-                            return `<span class="text-${state_color[row?.['state']]}"><b>${state[row?.['state']]}</b></span>`
+                            if (row?.['state'] === 0) {
+                                return `<span class="badge badge-success badge-indicator"></span>`
+                            }
+                            return ''
                         }
                     },
                     {
-                        className: 'from',
+                        className: 'wrap-text text-center',
                         render: (data, type, row) => {
                             return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${moment(row?.['subs'][0]?.['start_date']).format('DD/MM/YYYY')}</span>`
                         }
                     },
                     {
-                        className: 'to',
+                        className: 'wrap-text text-center',
                         render: (data, type, row) => {
                             return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${moment(row?.['subs'][row?.['subs'].length-1]?.['end_date']).format('DD/MM/YYYY')}</span>`
                         }
                     },
                     {
-                        className: 'action',
+                        className: 'wrap-text text-center',
                         render: (data, type, row) => {
                             return `<button data-id="${row?.['id']}" data-title="${row?.['title']}" data-code="${row?.['code']}" data-fiscal-year="${row?.['fiscal_year']}" data-space-month="${row?.['space_month']}" data-start-date="${row?.['start_date']}" data-is-sw-start-using-time="${row?.['software_start_using_time']}"
                                             class="btn btn-icon btn-rounded btn-flush-primary edit-periods" type="button" data-bs-toggle="modal" data-bs-target="#modal-periods-update">

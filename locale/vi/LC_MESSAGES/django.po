@@ -7546,3 +7546,14 @@ msgstr "Bạn có chắc chắc muốn tính toán giá trị tích luỹ cuối
 msgid "Sure"
 msgstr "Đồng ý"
 
+#
+msgid "First month"
+msgstr "Tháng đầu kỳ"
+
+#
+msgid "Sub periods"
+msgstr "Kỳ con"
+
+#
+msgid "Set time of starting using software in this period."
+msgstr "Đặt thời gian bắt đầu sử dụng phần mềm trong kỳ này."

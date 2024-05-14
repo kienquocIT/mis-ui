@@ -36,10 +36,10 @@ class NodeLoadDataHandle {
     static dataSource = [
         {'id': 3, 'title': 'In workflow'},
         {'id': 2, 'title': 'Out form'},
-        {'id': 1, 'title': 'In form'},
+        // {'id': 1, 'title': 'In form'},
     ];
     static dataSourceJSON = {
-        1: {'id': 1, 'title': 'In form'},
+        // 1: {'id': 1, 'title': 'In form'},
         2: {'id': 2, 'title': 'Out form'},
         3: {'id': 3, 'title': 'In workflow'},
     };
@@ -1122,7 +1122,7 @@ class NodeDataTableHandle {
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                            <div class="row collab-area collab-in-form-area mb-5">
+                                                            <div class="row collab-area collab-in-form-area mb-5" hidden>
                                                                 <div class="form-group">
                                                                     <label class="form-label">Select field in form</label>
                                                                     <select 
@@ -1160,7 +1160,7 @@ class NodeDataTableHandle {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="row collab-area collab-out-form-area mb-5" hidden>
+                                                            <div class="row collab-area collab-out-form-area mb-5">
                                                                 <div class="form-group">
                                                                     <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-employee-list')}</label>
                                                                     <div 

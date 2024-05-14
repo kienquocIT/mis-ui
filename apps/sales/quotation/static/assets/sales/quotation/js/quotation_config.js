@@ -525,7 +525,6 @@ $(function () {
 
 // BEGIN setup formula
         let main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|%/g;
-        // let body_simple_regex = /\((.*?)\)/;
         let body_nested_regex = /\((.*)\)/;
         let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|".*?"|==|!=|>=|<=|>|</g;
 
@@ -545,7 +544,6 @@ $(function () {
 
         function parseStringToArray(expression) {
             let data = expression.replace(/\s/g, "");
-            // const regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+/g;
             return data.match(main_regex)
         }
 

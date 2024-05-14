@@ -644,7 +644,6 @@ $(function () {
         btnView.on('click', function () {
             let dataParams = {};
             dataParams['is_initial'] = false;
-            dataParams['group_inherit__is_delete'] = false;
             if (boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
             }

@@ -20,8 +20,6 @@ $(function () {
                     url: $table.attr('data-url'),
                     data: {
                         "is_initial": false,
-                        "group_inherit__is_delete": false,
-                        "sale_order__system_status": 3,
                     },
                     // dataSrc: 'data.report_revenue_list',
                     dataSrc: function (resp) {
@@ -196,8 +194,6 @@ $(function () {
                                             'method': $table.attr('data-method'),
                                             'data': {
                                                 'is_initial': false,
-                                                "group_inherit__is_delete": false,
-                                                "sale_order__system_status": 3,
                                                 'date_approved__gte': startDate,
                                                 'date_approved__lte': endDate,
                                             },
@@ -350,8 +346,6 @@ $(function () {
             this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
             dataParams['is_initial'] = false;
-            dataParams['group_inherit__is_delete'] = false;
-            dataParams['sale_order__system_status'] = 3;
             let listShowMe = [];
             let listDate = [];
             if (boxGroup.val() && boxGroup.val().length > 0) {

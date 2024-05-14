@@ -147,17 +147,15 @@ $(document).ready(function () {
                         data: 'period_name',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="text-secondary"><b>${row?.['title']}</b></span>`
-                        }
-                    },
-                    {
-                        data: 'status',
-                        className: 'wrap-text text-center',
-                        render: (data, type, row,) => {
+                            let html = ''
                             if (row?.['state'] === 0) {
-                                return `<span class="badge badge-success badge-indicator"></span>`
+                                html = `<span class="badge badge-success badge-indicator"></span>`
                             }
-                            return ''
+                            return `<span class="badge-status">
+                                    <span class="fw-bold text-secondary">${row?.['title']}</span>
+                                    ${html}
+                               </span>
+                            `
                         }
                     },
                     {
@@ -396,14 +394,13 @@ $(document).ready(function () {
                 let data_subs = JSON.parse($(this).find('script').text())
                 let html = ``
                 for (const item of data_subs) {
-                    html += `<tr class="sub-periods-row">
+                    html += `<tr class="sub-periods-row bg-secondary-light-5">
                                 <td></td>
                                 <td></td>
                                 <td><span class="code badge badge-outline badge-primary">${item?.['code']}</span></td>
-                                <td><span class="name text-primary">${item?.['name']}</span></td> 
-                                <td></td>      
-                                <td class="start_date text-primary" data-value="${item?.['start_date']}"><i class="far fa-calendar"></i> ${moment(item?.['start_date']).format('DD/MM/YYYY')}</td>
-                                <td class="end_date text-primary" data-value="${item?.['end_date']}"><i class="far fa-calendar"></i> ${moment(item?.['end_date']).format('DD/MM/YYYY')}</td>
+                                <td><span class="name text-primary">${item?.['name']}</span></td>   
+                                <td class="start_date text-primary text-center" data-value="${item?.['start_date']}"><i class="far fa-calendar"></i> ${moment(item?.['start_date']).format('DD/MM/YYYY')}</td>
+                                <td class="end_date text-primary text-center" data-value="${item?.['end_date']}"><i class="far fa-calendar"></i> ${moment(item?.['end_date']).format('DD/MM/YYYY')}</td>
                                 <td></td>
                             </tr>`
                 }

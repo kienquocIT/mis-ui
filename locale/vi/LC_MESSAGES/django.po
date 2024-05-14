@@ -7529,3 +7529,20 @@ msgstr "Vui lòng hủy đơn hàng hiện tại"
 #
 msgid "Please cancel current quotation, sale order"
 msgstr "Vui lòng hủy báo giá, đơn hàng hiện tại"
+
+#
+msgid "Calculate ending cumulative value"
+msgstr "Tính giá trị tích luỹ cuối kỳ"
+
+#
+msgid "Export to excel"
+msgstr "Xuất file excel"
+
+#
+msgid "Are you sure to calculate ending cumulative value?"
+msgstr "Bạn có chắc chắc muốn tính toán giá trị tích luỹ cuối kỳ của tháng này?"
+
+#
+msgid "Sure"
+msgstr "Đồng ý"
+

@@ -13,6 +13,7 @@ $(document).ready(function () {
         getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
         periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
     }
+    const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
 
     function get_final_date_of_current_month(filter_year, filter_month) {
         let currentDate = new Date();
@@ -625,6 +626,15 @@ $(document).ready(function () {
                         setTimeout(
                             () => {
                                 WindowControl.hideLoading();
+                                if ($definition_inventory_valuation === '1') {
+                                    table_inventory_report.find('#out-total-value').closest('th').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .wh-out-value-span').closest('td').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .out-value-span').closest('td').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .out-value-span-detail').closest('td').html('-').attr('class', '')
+                                    table_inventory_report.find('#ending-total-value').closest('th').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .wh-ending-value-span').closest('td').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .ending-value-span').closest('td').html('-').attr('class', '')
+                                }
                             },
                             500
                         )
@@ -864,6 +874,14 @@ $(document).ready(function () {
                         setTimeout(
                             () => {
                                 WindowControl.hideLoading();
+                                if ($definition_inventory_valuation === '1') {
+                                    table_inventory_report.find('#out-total-value').closest('th').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .wh-out-value-span').closest('td').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .out-value-span').closest('td').html('-').attr('class', '')
+                                    table_inventory_report.find('#ending-total-value').closest('th').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .wh-ending-value-span').closest('td').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .ending-value-span').closest('td').html('-').attr('class', '')
+                                }
                             },
                             500
                         )

@@ -78,6 +78,7 @@ INSTALLED_APPS = \
         'apps.core.printer',
         'apps.core.mailer',
         'apps.core.fimport',
+        'apps.core.diagram',
     ] + [  # Another Application
         'apps.masterdata.saledata',
         'apps.masterdata.promotion',

@@ -15,6 +15,7 @@ from .purchasing import PurchasingMsg
 from .saleorder import SOMsg
 from .report import ReportMsg
 from .templates import TemplateMsg
+from .application import AppMsg
 
 
 class BaseMsg:

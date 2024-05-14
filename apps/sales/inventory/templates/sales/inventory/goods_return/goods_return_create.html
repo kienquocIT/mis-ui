@@ -20,7 +20,6 @@
     {{ data.data.warehouse_list | json_script:"warehouse_list" }}
     <script id="script-url"
             data-url-delivery="{% url 'DeliveryListForGoodsReturnAPI' %}"
-            data-url-delivery-products="{% url 'DeliveryProductsForGoodsReturnAPI' '0' %}"
     >
     </script>
     <script id="script-trans"

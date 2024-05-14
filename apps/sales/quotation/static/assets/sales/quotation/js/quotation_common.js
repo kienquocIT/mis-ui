@@ -490,7 +490,7 @@ class QuotationLoadDataHandle {
             };
             if (opp_id) {
                 data_filter['opportunity'] = opp_id;
-                data_filter['opportunity__sale_order__isnull'] = true;
+                // data_filter['opportunity__sale_order__isnull'] = true;
                 data_filter['opportunity__is_close_lost'] = false;
                 data_filter['opportunity__is_deal_close'] = false;
                 if (QuotationLoadDataHandle.opportunitySelectEle.val()) {

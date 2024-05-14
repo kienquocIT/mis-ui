@@ -23,10 +23,10 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength:50,
-                columns: [  // 100, 375, 250, 150, 150, 225, 150, 100 (1500p)
+                columns: [  // (1280p)
                     {
                         targets: 0,
-                        width: '6.66%',
+                        width: '5%',
                         render: (data, type, row) => {
                             const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`
@@ -34,7 +34,7 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '25%',
+                        width: '20%',
                         render: (data, type, row) => {
                             const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
@@ -42,7 +42,7 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '16.66%',
+                        width: '20%',
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
                             if (Object.keys(row?.['customer']).length !== 0) {
@@ -81,7 +81,7 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '10%',
+                        width: '8%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
                             let sttData = [
@@ -96,7 +96,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '6.66%',
+                        width: '5%',
                         className: 'action-center',
                         render: (data, type, row) => {
                             const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);

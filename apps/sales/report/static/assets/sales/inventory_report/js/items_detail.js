@@ -418,12 +418,6 @@ $(document).ready(function () {
                                 })
                             }
                             items_detail_report_table_Ele.prop('hidden', false)
-                            items_detail_report_table_Ele.DataTable({
-                                dom: '<"row"<"col-12"<f>>',
-                                paging: false,
-                                ordering: false,
-                                searching: true,
-                            })
                         },
                         500
                     )

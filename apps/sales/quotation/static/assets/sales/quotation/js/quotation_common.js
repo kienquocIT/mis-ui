@@ -15,25 +15,24 @@ class QuotationLoadDataHandle {
     static loadInitOpportunity() {
         let form = $('#frm_quotation_create');
         if (form.attr('data-method').toLowerCase() === 'post') {
-            let dataInitOppRaw = $('#data-init-opportunity').val();
-            if (dataInitOppRaw) {
-                let dataInitOpp = JSON.parse(dataInitOppRaw);
-                let list_from_app = 'quotation.quotation.create';
-                if (form[0].classList.contains('sale-order')) {
-                    list_from_app = 'saleorder.saleorder.create';
+            let dataInitOpp = JSON.parse($('#init_opp').text());
+            let list_from_app = 'quotation.quotation.create';
+            if (form[0].classList.contains('sale-order')) {
+                list_from_app = 'saleorder.saleorder.create';
+            }
+            $.fn.callAjax2({
+                    'url': QuotationLoadDataHandle.opportunitySelectEle.attr('data-url'),
+                    'method': QuotationLoadDataHandle.opportunitySelectEle.attr('data-method'),
+                    'data': {'list_from_app': list_from_app},
                 }
-                $.fn.callAjax2({
-                        'url': QuotationLoadDataHandle.opportunitySelectEle.attr('data-url'),
-                        'method': QuotationLoadDataHandle.opportunitySelectEle.attr('data-method'),
-                        'data': {'list_from_app': list_from_app},
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                                for (let opp of data.opportunity_list) {
-                                    if (opp?.['id'] === dataInitOpp?.['id']) {
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                            for (let opp of data.opportunity_list) {
+                                if (opp?.['id'] === dataInitOpp?.['id']) {
+                                    if (!QuotationLoadDataHandle.opportunitySelectEle.prop('disabled')) {
                                         QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
                                             data: opp,
                                             'allowClear': true,
@@ -46,8 +45,8 @@ class QuotationLoadDataHandle {
                             }
                         }
                     }
-                )
-            }
+                }
+            )
         }
     };
 
@@ -120,11 +119,8 @@ class QuotationLoadDataHandle {
         let form = $('#frm_quotation_create');
         let data_filter = {};
         let sale_person_id = null;
-        let employee_current = $('#data-init-quotation-create-request-employee').val();
-        if (employee_current) {
-            let employee_current_data = JSON.parse(employee_current);
-            sale_person_id = employee_current_data?.['id'];
-        }
+        let employee_current_data = JSON.parse($('#employee_current').text());
+        sale_person_id = employee_current_data?.['id'];
         if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
             sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val();
         }
@@ -1097,7 +1093,7 @@ class QuotationLoadDataHandle {
                 $(costList).empty();
                 if (Array.isArray(data?.['cost_list']) && data?.['cost_list'].length > 0) {
                     for (let costData of data?.['cost_list']) {
-                        $(costList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['cost'])}">
+                        $(costList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['cost'])}" data-wh-id="${costData?.['warehouse']?.['id']}">
                                                 <div class="d-flex justify-content-between">
                                                     <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
                                                     <span class="mask-money" data-init-money="${parseFloat(costData?.['cost'])}"></span>
@@ -1539,14 +1535,16 @@ class QuotationLoadDataHandle {
                 let shipping = row.querySelector('.table-row-shipping');
                 if ($(product).val()) { // PRODUCT
                     dataProduct = SelectDDControl.get_data_from_idx($(product), $(product).val());
-                    valuePrice = dataProduct?.['sale_cost'] ? dataProduct?.['sale_cost'] : 0;
                     if ($(uom).val()) {
                         dataUOM = SelectDDControl.get_data_from_idx($(uom), $(uom).val());
                     }
                     if ($(tax).val()) {
                         dataTax = SelectDDControl.get_data_from_idx($(tax), $(tax).val());
                     }
-                    valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
+                    valueQuantity = 0;
+                    if (row.querySelector('.table-row-quantity').value) {
+                        valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
+                    }
                     valueOrder++
                     let dataAdd = {
                         "tax": {
@@ -1573,7 +1571,7 @@ class QuotationLoadDataHandle {
                         "product_tax_title": "",
                         "product_tax_value": 0,
                         "product_uom_title": "",
-                        "product_cost_price": valuePrice,
+                        "product_cost_price": 0,
                         "product_tax_amount": valueTaxAmount,
                         "product_subtotal_price": valueSubtotal,
                         "is_shipping": false,
@@ -1852,12 +1850,9 @@ class QuotationLoadDataHandle {
         $('#quotation-create-customer-billing').val(data?.['customer_billing_id']);
         // show print button
         if ($(form).attr('data-method').toLowerCase() === 'get') {
-            let employeeCurrentRaw = $('#data-init-quotation-create-request-employee').val();
-            if (employeeCurrentRaw) {
-                let employeeCurrent = JSON.parse(employeeCurrentRaw);
-                if (employeeCurrent?.['id'] === data?.['sale_person']?.['id'] && [2, 3].includes(data?.['system_status'])) {
-                    $('#print-document')[0].removeAttribute('hidden');
-                }
+            let employeeCurrent = JSON.parse($('#employee_current').text());
+            if (employeeCurrent?.['id'] === data?.['sale_person']?.['id'] && [2, 3].includes(data?.['system_status'])) {
+                $('#print-document')[0].removeAttribute('hidden');
             }
         }
         // load totals
@@ -1898,6 +1893,7 @@ class QuotationLoadDataHandle {
                         // check config first time
                         if (page_method === "POST" && !$('#data-init-quotation-copy-to').val()) {
                             QuotationCheckConfigHandle.checkConfig(true, null, true);
+                            QuotationCheckConfigHandle.checkSsLsRole();
                         }
                     }
                 }
@@ -2698,10 +2694,11 @@ class QuotationDataTableHandle {
                                             <div class="input-affix-wrapper">
                                                 <input 
                                                     type="text" 
-                                                    class="form-control mask-money table-row-price" 
+                                                    class="form-control mask-money table-row-price disabled-custom-show" 
                                                     value="${row?.['product_cost_price']}"
                                                     data-return-type="number"
                                                     data-zone="${dataZone}"
+                                                    disabled
                                                 >
                                                 <div class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></div>
                                             </div>
@@ -3813,6 +3810,35 @@ class QuotationCalculateCaseHandle {
 
 // Config
 class QuotationCheckConfigHandle {
+    static checkSsLsRole() {
+        let configRaw = $('#quotation-config-data').val();
+        if (configRaw) {
+            let config = JSON.parse(configRaw);
+            // check role in ss_role or ls_role
+            let empCurrent = JSON.parse($('#employee_current').text());
+            let ss_role_id = [];
+            let ls_role_id = [];
+            for (let role of config?.['ss_role']) {
+                ss_role_id.push(role?.['id']);
+            }
+            for (let role of config?.['ls_role']) {
+                ls_role_id.push(role?.['id']);
+            }
+            for (let roleID of empCurrent?.['role']) {
+                if (ss_role_id.includes(roleID)) {
+                    QuotationLoadDataHandle.opportunitySelectEle[0].setAttribute('disabled', 'true');
+                    $(QuotationLoadDataHandle.opportunitySelectEle[0].closest('.input-group')).after(`<small class="text-red">${QuotationLoadDataHandle.transEle.attr('data-validate-ss-role')}</small>`);
+                }
+            }
+            for (let roleID of empCurrent?.['role']) {
+                if (ls_role_id.includes(roleID)) {
+                    QuotationLoadDataHandle.opportunitySelectEle[0].setAttribute('required', 'true');
+                }
+            }
+        }
+        return true;
+    };
+
     static checkConfig(is_change_opp = false, new_row = null, is_first_time = false, is_has_opp_detail = false, is_copy = false) {
         let form = document.getElementById('frm_quotation_create');
         let configRaw = $('#quotation-config-data').val();
@@ -3820,9 +3846,11 @@ class QuotationCheckConfigHandle {
             let opportunity = QuotationLoadDataHandle.opportunitySelectEle.val();
             let config = JSON.parse(configRaw);
             let tableProduct = document.getElementById('datable-quotation-create-product');
-            let empty_list = ["", null];
             let is_make_price_change = false;
-            if ((!opportunity || empty_list.includes(opportunity)) && is_has_opp_detail === false) { // short sale
+            if (["", null].includes(opportunity)) {
+                opportunity = null;
+            }
+            if (!opportunity && is_has_opp_detail === false) { // short sale
                 if (is_change_opp === true) {
                     // ReCheck Table Product
                     if (is_first_time === false) {
@@ -3901,10 +3929,6 @@ class QuotationCheckConfigHandle {
                             }
                         }
                     }
-                    // ReCalculate Total
-                    // if (is_first_time === false && is_copy === false) {
-                    //     QuotationCalculateCaseHandle.updateTotal(tableProduct, true, false, false);
-                    // }
                 } else {
                     if (new_row) {
                         is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, new_row, false, true, is_make_price_change);
@@ -4904,6 +4928,7 @@ class QuotationSubmitHandle {
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
                     rowData['product_cost_price'] = $(elePrice).valCurrency();
+                    rowData['warehouse'] = $(elePrice).attr('data-wh-id');
                 }
                 let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
                 if (eleSubtotal) {

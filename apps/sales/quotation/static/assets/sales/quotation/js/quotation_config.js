@@ -1,172 +1,3 @@
-let eleTrans = $('#app-trans-factory');
-
-let dataAcceptanceAffect = [
-    {'id': 4, 'title': eleTrans.attr('data-payment')},
-    {'id': 3, 'title': eleTrans.attr('data-delivery')},
-    {'id': 2, 'title': eleTrans.attr('data-plan')},
-    {'id': 1, 'title': eleTrans.attr('data-none')},
-];
-
-let dataAcceptanceAffectJSON = {
-    1: {'id': 1, 'title': eleTrans.attr('data-none')},
-    2: {'id': 2, 'title': eleTrans.attr('data-plan')},
-    3: {'id': 3, 'title': eleTrans.attr('data-delivery')},
-    4: {'id': 4, 'title': eleTrans.attr('data-payment')},
-}
-
-function loadConfig(data) {
-    if (data?.['short_sale_config']) {
-        $('#is-choose-price-list')[0].checked = data?.['short_sale_config']?.['is_choose_price_list'];
-        $('#is-input-price')[0].checked = data?.['short_sale_config']?.['is_input_price'];
-        $('#is-discount-on-product')[0].checked = data?.['short_sale_config']?.['is_discount_on_product'];
-        $('#is-discount-on-total')[0].checked = data?.['short_sale_config']?.['is_discount_on_total'];
-    }
-    if (data?.['long_sale_config']) {
-        $('#is-not-input-price')[0].checked = data?.['long_sale_config']?.['is_not_input_price'];
-        $('#is-not-discount-on-product')[0].checked = data?.['long_sale_config']?.['is_not_discount_on_product'];
-        $('#is-not-discount-on-total')[0].checked = data?.['long_sale_config']?.['is_not_discount_on_total'];
-    }
-    if (data?.['is_require_payment']) {
-        $('#is-require-payment')[0].checked = data?.['is_require_payment'];
-    }
-}
-
-function loadInitIndicatorList(indicator_id, eleShow, row = null) {
-    let jqueryId = '#' + indicator_id;
-    let ele = $(jqueryId);
-    let indicator_detail_id = row.querySelector('.btn-edit-indicator').getAttribute('data-id');
-    let indicator_detail_order = row.querySelector('.table-row-order').value;
-    if (ele.val() && indicator_detail_id && indicator_detail_order) {
-        if (eleShow.is(':empty')) {
-            let data_list = JSON.parse(ele.val());
-            let indicator_list = ``;
-            for (let i = 0; i < data_list.length; i++) {
-                let item = data_list[i];
-                item['is_indicator'] = true;
-                item['syntax'] = "indicator(" + item.title + ")";
-                item['syntax_show'] = "indicator(" + item.title + ")";
-                let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                if (item.id !== indicator_detail_id && item.order < parseInt(indicator_detail_order)) { // check & not append this current indicator or higher indicators
-                    indicator_list += `<div class="row param-item">
-                                            <button type="button" class="btn btn-flush-light">
-                                                <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="indicator-title">${item.title}</span></span></div>
-                                                <input type="hidden" class="data-show" value="${dataStr}">
-                                            </button>
-                                        </div>`
-                }
-                // load detail editor by ID indicator
-                if (item.id === indicator_detail_id) {
-                    let editor = row.querySelector('.indicator-editor');
-                    editor.value = item.formula_data_show;
-                }
-            }
-            eleShow.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
-                                ${indicator_list}
-                            </div>`);
-        }
-    }
-}
-
-function loadInitPropertyList(property_id, eleShow, is_sale_order = false) {
-    let jqueryId = '#' + property_id;
-    let ele = $(jqueryId);
-    let url = ele.attr('data-url');
-    let method = ele.attr('data-method');
-    let code_app = "quotation";
-    if (is_sale_order === true) {
-        code_app = "saleorder";
-    }
-    let data_filter = {
-        'application__code': code_app,
-        'is_sale_indicator': true,
-    };
-    if (eleShow.is(':empty')) {
-        $.fn.callAjax(url, method, data_filter).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('application_property_list') && Array.isArray(data.application_property_list)) {
-                        let param_list = ``;
-                        data.application_property_list.map(function (item) {
-                            item['is_property'] = true;
-                            item['syntax'] = "prop(" + item.title + ")";
-                            item['syntax_show'] = "prop(" + item.title + ")";
-                            let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                            param_list += `<div class="row param-item">
-                                                <button type="button" class="btn btn-flush-light">
-                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title">${item.title}</span></span></div>
-                                                    <input type="hidden" class="data-show" value="${dataStr}">
-                                                </button>
-                                            </div>`
-                        })
-                        eleShow.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
-                                            ${param_list}
-                                        </div>`);
-                    }
-                }
-            }
-        )
-    }
-}
-
-function loadInitParamList(param_id, eleShow) {
-    let jqueryId = '#' + param_id;
-    let ele = $(jqueryId);
-    let url = ele.attr('data-url');
-    let method = ele.attr('data-method');
-    let data_filter = {'param_type': 2};
-    if (eleShow.is(':empty')) {
-        $.fn.callAjax(url, method, data_filter).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('indicator_param') && Array.isArray(data.indicator_param)) {
-                        let param_list = ``;
-                        data.indicator_param.map(function (item) {
-                            let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                            param_list += `<div class="row param-item">
-                                                <button type="button" class="btn btn-flush-light">
-                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title">${item.title}</span></span></div>
-                                                    <input type="hidden" class="data-show" value="${dataStr}">
-                                                </button>
-                                            </div>`
-                        })
-                        eleShow.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
-                                            ${param_list}
-                                        </div>`);
-                    }
-                }
-            }
-        )
-    }
-}
-
-function setupSubmit() {
-    let result = {}
-    result['short_sale_config'] = {
-        'is_choose_price_list': $('#is-choose-price-list')[0].checked,
-        'is_input_price': $('#is-input-price')[0].checked,
-        'is_discount_on_product': $('#is-discount-on-product')[0].checked,
-        'is_discount_on_total': $('#is-discount-on-total')[0].checked,
-    }
-    result['long_sale_config'] = {
-        'is_not_input_price': $('#is-not-input-price')[0].checked,
-        'is_not_discount_on_product': $('#is-not-discount-on-product')[0].checked,
-        'is_not_discount_on_total': $('#is-not-discount-on-total')[0].checked,
-    }
-    result['is_require_payment'] = $('#is-require-payment')[0].checked
-    return result
-}
-
-function loadBoxAcceptanceAffect(ele, data = null) {
-    if (!data) {
-        data = dataAcceptanceAffect;
-    }
-    ele.initSelect2({
-        data: data,
-    });
-    return true;
-}
 
 $(function () {
 
@@ -174,6 +5,22 @@ $(function () {
         let $form = $('#frm_quotation_config_create');
         let tableIndicator = $('#table_indicator_list');
         let btnCreateIndicator = $('#btn-create-indicator');
+        let eleTrans = $('#app-trans-factory');
+        let dataAcceptanceAffect = [
+            {'id': 4, 'title': eleTrans.attr('data-payment')},
+            {'id': 3, 'title': eleTrans.attr('data-delivery')},
+            {'id': 2, 'title': eleTrans.attr('data-plan')},
+            {'id': 1, 'title': eleTrans.attr('data-none')},
+        ];
+        let dataAcceptanceAffectJSON = {
+            1: {'id': 1, 'title': eleTrans.attr('data-none')},
+            2: {'id': 2, 'title': eleTrans.attr('data-plan')},
+            3: {'id': 3, 'title': eleTrans.attr('data-delivery')},
+            4: {'id': 4, 'title': eleTrans.attr('data-payment')},
+        }
+        let boxSRole = $('#box-ss-role');
+        let boxLRole = $('#box-ls-role');
+
 
         // call ajax get info quotation config detail
         $.fn.callAjax($form.data('url'), 'GET').then(
@@ -186,6 +33,8 @@ $(function () {
         )
         // load indicators
         loadIndicatorDbl();
+        loadSRole();
+        loadLRole();
 
         // enable edit
         $('#btn-edit_quotation_config').on('click', function () {
@@ -193,6 +42,15 @@ $(function () {
             $('#btn-create_quotation_config')[0].removeAttribute('hidden');
             $form.find('.disabled-but-edit').removeAttr('disabled');
         });
+
+        // valid SRole, LRole
+        boxSRole.on('change', function () {
+            return validateRole(boxSRole);
+        })
+
+        boxLRole.on('change', function () {
+            return validateRole(boxLRole);
+        })
 
         // Submit form config quotation + sale order
         $form.submit(function (e) {
@@ -203,11 +61,15 @@ $(function () {
                 _form.dataForm['short_sale_config'] = dataSubmit.short_sale_config;
                 _form.dataForm['long_sale_config'] = dataSubmit.long_sale_config;
                 _form.dataForm['is_require_payment'] = dataSubmit.is_require_payment;
+                _form.dataForm['ss_role'] = boxSRole.val();
+                _form.dataForm['ls_role'] = boxLRole.val();
             }
             let submitFields = [
                 'short_sale_config',
                 'long_sale_config',
                 'is_require_payment',
+                'ss_role',
+                'ls_role',
             ]
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {
@@ -663,7 +525,6 @@ $(function () {
 
 // BEGIN setup formula
         let main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|%/g;
-        // let body_simple_regex = /\((.*?)\)/;
         let body_nested_regex = /\((.*)\)/;
         let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|".*?"|==|!=|>=|<=|>|</g;
 
@@ -683,7 +544,6 @@ $(function () {
 
         function parseStringToArray(expression) {
             let data = expression.replace(/\s/g, "");
-            // const regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+/g;
             return data.match(main_regex)
         }
 
@@ -894,6 +754,195 @@ $(function () {
                 }
             }
         });
+
+
+        // functions
+        function loadSRole(roleData) {
+            boxSRole.initSelect2({
+                data: roleData,
+                'allowClear': true,
+            });
+        }
+
+        function loadLRole(roleData) {
+            boxLRole.initSelect2({
+                data: roleData,
+                'allowClear': true,
+            });
+        }
+
+        function validateRole($ele) {
+            let ss_role = boxSRole.val();
+            let ls_role = boxLRole.val();
+            for (let role_id of ss_role) {
+                if (ls_role.includes(role_id)) {
+                    $ele.empty();
+                    $.fn.notifyB({description: 'Role can only in short sales or long sales'}, 'failure');
+                    return false
+                }
+            }
+            return true;
+        }
+
+        function loadConfig(data) {
+            if (data?.['short_sale_config']) {
+                $('#is-choose-price-list')[0].checked = data?.['short_sale_config']?.['is_choose_price_list'];
+                $('#is-input-price')[0].checked = data?.['short_sale_config']?.['is_input_price'];
+                $('#is-discount-on-product')[0].checked = data?.['short_sale_config']?.['is_discount_on_product'];
+                $('#is-discount-on-total')[0].checked = data?.['short_sale_config']?.['is_discount_on_total'];
+            }
+            if (data?.['long_sale_config']) {
+                $('#is-not-input-price')[0].checked = data?.['long_sale_config']?.['is_not_input_price'];
+                $('#is-not-discount-on-product')[0].checked = data?.['long_sale_config']?.['is_not_discount_on_product'];
+                $('#is-not-discount-on-total')[0].checked = data?.['long_sale_config']?.['is_not_discount_on_total'];
+            }
+            if (data?.['is_require_payment']) {
+                $('#is-require-payment')[0].checked = data?.['is_require_payment'];
+            }
+            if (data?.['ss_role']) {
+                loadSRole(data?.['ss_role']);
+            }
+            if (data?.['ls_role']) {
+                loadLRole(data?.['ls_role']);
+            }
+        }
+
+        function loadInitIndicatorList(indicator_id, eleShow, row = null) {
+            let jqueryId = '#' + indicator_id;
+            let ele = $(jqueryId);
+            let indicator_detail_id = row.querySelector('.btn-edit-indicator').getAttribute('data-id');
+            let indicator_detail_order = row.querySelector('.table-row-order').value;
+            if (ele.val() && indicator_detail_id && indicator_detail_order) {
+                if (eleShow.is(':empty')) {
+                    let data_list = JSON.parse(ele.val());
+                    let indicator_list = ``;
+                    for (let i = 0; i < data_list.length; i++) {
+                        let item = data_list[i];
+                        item['is_indicator'] = true;
+                        item['syntax'] = "indicator(" + item.title + ")";
+                        item['syntax_show'] = "indicator(" + item.title + ")";
+                        let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                        if (item.id !== indicator_detail_id && item.order < parseInt(indicator_detail_order)) { // check & not append this current indicator or higher indicators
+                            indicator_list += `<div class="row param-item">
+                                            <button type="button" class="btn btn-flush-light">
+                                                <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="indicator-title">${item.title}</span></span></div>
+                                                <input type="hidden" class="data-show" value="${dataStr}">
+                                            </button>
+                                        </div>`
+                        }
+                        // load detail editor by ID indicator
+                        if (item.id === indicator_detail_id) {
+                            let editor = row.querySelector('.indicator-editor');
+                            editor.value = item.formula_data_show;
+                        }
+                    }
+                    eleShow.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
+                                ${indicator_list}
+                            </div>`);
+                }
+            }
+        }
+
+        function loadInitPropertyList(property_id, eleShow, is_sale_order = false) {
+            let jqueryId = '#' + property_id;
+            let ele = $(jqueryId);
+            let url = ele.attr('data-url');
+            let method = ele.attr('data-method');
+            let code_app = "quotation";
+            if (is_sale_order === true) {
+                code_app = "saleorder";
+            }
+            let data_filter = {
+                'application__code': code_app,
+                'is_sale_indicator': true,
+            };
+            if (eleShow.is(':empty')) {
+                $.fn.callAjax(url, method, data_filter).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('application_property_list') && Array.isArray(data.application_property_list)) {
+                                let param_list = ``;
+                                data.application_property_list.map(function (item) {
+                                    item['is_property'] = true;
+                                    item['syntax'] = "prop(" + item.title + ")";
+                                    item['syntax_show'] = "prop(" + item.title + ")";
+                                    let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                                    param_list += `<div class="row param-item">
+                                                <button type="button" class="btn btn-flush-light">
+                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title">${item.title}</span></span></div>
+                                                    <input type="hidden" class="data-show" value="${dataStr}">
+                                                </button>
+                                            </div>`
+                                })
+                                eleShow.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
+                                            ${param_list}
+                                        </div>`);
+                            }
+                        }
+                    }
+                )
+            }
+        }
+
+        function loadInitParamList(param_id, eleShow) {
+            let jqueryId = '#' + param_id;
+            let ele = $(jqueryId);
+            let url = ele.attr('data-url');
+            let method = ele.attr('data-method');
+            let data_filter = {'param_type': 2};
+            if (eleShow.is(':empty')) {
+                $.fn.callAjax(url, method, data_filter).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('indicator_param') && Array.isArray(data.indicator_param)) {
+                                let param_list = ``;
+                                data.indicator_param.map(function (item) {
+                                    let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                                    param_list += `<div class="row param-item">
+                                                <button type="button" class="btn btn-flush-light">
+                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title">${item.title}</span></span></div>
+                                                    <input type="hidden" class="data-show" value="${dataStr}">
+                                                </button>
+                                            </div>`
+                                })
+                                eleShow.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
+                                            ${param_list}
+                                        </div>`);
+                            }
+                        }
+                    }
+                )
+            }
+        }
+
+        function setupSubmit() {
+            let result = {}
+            result['short_sale_config'] = {
+                'is_choose_price_list': $('#is-choose-price-list')[0].checked,
+                'is_input_price': $('#is-input-price')[0].checked,
+                'is_discount_on_product': $('#is-discount-on-product')[0].checked,
+                'is_discount_on_total': $('#is-discount-on-total')[0].checked,
+            }
+            result['long_sale_config'] = {
+                'is_not_input_price': $('#is-not-input-price')[0].checked,
+                'is_not_discount_on_product': $('#is-not-discount-on-product')[0].checked,
+                'is_not_discount_on_total': $('#is-not-discount-on-total')[0].checked,
+            }
+            result['is_require_payment'] = $('#is-require-payment')[0].checked
+            return result
+        }
+
+        function loadBoxAcceptanceAffect(ele, data = null) {
+            if (!data) {
+                data = dataAcceptanceAffect;
+            }
+            ele.initSelect2({
+                data: data,
+            });
+            return true;
+        }
 
 
 

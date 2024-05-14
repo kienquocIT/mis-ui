@@ -29,7 +29,7 @@
         </div>
         <div class="offcanvas-body">
             <button type="button" class="btn-close text-reset mt-4" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="mh-800p min-w-1000p position-relative overflow-y-scroll">
+            <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="min-w-1000p position-relative overflow-y-scroll">
                 <div class="card-group h-800p" id="flowchart_diagram"></div>
             </div>
         </div>
@@ -635,7 +635,7 @@
     <input
             type="text"
             id="data-init-quotation-create-request-employee"
-            value="{{ data.data.employee_current }}"
+            value="{{ data.employee_current }}"
     >
     <input
             type="text"
@@ -670,7 +670,7 @@
     <input
             type="text"
             id="data-init-opportunity"
-            value="{{ data.data.opportunity }}"
+            value="{{ data.opportunity }}"
     >
     <input
             type="text"
@@ -699,6 +699,8 @@
     >
     {{ data.payment_term_stage|json_script:'payment_term_stage' }}
     {{ data.payment_date_type|json_script:'payment_date_type' }}
+    {{ data.employee_current|json_script:'employee_current' }}
+    {{ data.opportunity|json_script:'init_opp' }}
 
     {{ data.stt_sys|json_script:'stt_sys' }}
     {{ data.dia_app|json_script:'dia_app' }}

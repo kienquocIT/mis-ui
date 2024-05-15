@@ -13,6 +13,7 @@ $(document).ready(function () {
         getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
         periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
     }
+    const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
 
     function get_final_date_of_current_month(filter_year, filter_month) {
         let currentDate = new Date();
@@ -62,15 +63,17 @@ $(document).ready(function () {
                 trans_order -= 12
                 year_temp += 1
             }
-            
-            if (fiscal_year !== current_period['fiscal_year'] || trans_order <= new Date().getMonth() - current_period['space_month'] + 1) {
-                periodMonthEle.append(`<option value="${i+1}">${trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
-                data.push({
-                    'id': i+1,
-                    'title': trans_script.attr(`data-trans-m${trans_order}th`),
-                    'month': i+1,
-                    'year': year_temp
-                })
+
+            if (fiscal_year !== current_period['fiscal_year'] || trans_order <= new Date().getMonth() + 1) {
+                if (year_temp === new Date().getFullYear()) {
+                    periodMonthEle.append(`<option value="${i + 1}">${trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
+                    data.push({
+                        'id': i + 1,
+                        'title': trans_script.attr(`data-trans-m${trans_order}th`),
+                        'month': i + 1,
+                        'year': year_temp
+                    })
+                }
             }
         }
         data.push({
@@ -623,6 +626,15 @@ $(document).ready(function () {
                         setTimeout(
                             () => {
                                 WindowControl.hideLoading();
+                                if ($definition_inventory_valuation === '1') {
+                                    table_inventory_report.find('#out-total-value').closest('th').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .wh-out-value-span').closest('td').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .out-value-span').closest('td').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .out-value-span-detail').closest('td').html('-').attr('class', '')
+                                    table_inventory_report.find('#ending-total-value').closest('th').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .wh-ending-value-span').closest('td').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .ending-value-span').closest('td').html('-').attr('class', '')
+                                }
                             },
                             500
                         )
@@ -862,6 +874,14 @@ $(document).ready(function () {
                         setTimeout(
                             () => {
                                 WindowControl.hideLoading();
+                                if ($definition_inventory_valuation === '1') {
+                                    table_inventory_report.find('#out-total-value').closest('th').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .wh-out-value-span').closest('td').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .out-value-span').closest('td').html('-').attr('class', '')
+                                    table_inventory_report.find('#ending-total-value').closest('th').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .wh-ending-value-span').closest('td').html('-').attr('class', '')
+                                    table_inventory_report.find('tbody .ending-value-span').closest('td').html('-').attr('class', '')
+                                }
                             },
                             500
                         )

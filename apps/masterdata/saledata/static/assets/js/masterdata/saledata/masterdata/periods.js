@@ -13,28 +13,15 @@ $(document).ready(function () {
     const periods_fiscal_month_start_update_Ele = $('#periods-fiscal-month-start-update')
 
     function get_option_for_sw_using_time(ele, fiscal_year, fiscal_month_start, selected) {
-        ele.html(`<option value="0"></option>`)
-        for (let i = 0; i < new Date().getMonth(); i++) {
-            let month = fiscal_month_start + i
-            let year = fiscal_year
-            if (month > 12) {
-                month -= 12
-                year += 1
-            }
-            if (month < 10) {
-                month = '0' + month.toString()
-            }
-            let option_text = month.toString() + '-' + year.toString()
-            if (selected) {
-                if (option_text === selected.replace('/', '-')) {
-                    ele.append(`
-                        <option value="${1}" selected>${option_text}</option>
-                    `)
-                }
-            }
-            else {
+        if (selected) {
+            ele.append(`
+                <option value="${parseInt(selected.split('/')[0])}}">${selected}</option>
+            `)
+        }
+        else {
+            for (let i = parseInt(fiscal_month_start); i <= new Date().getMonth() + 1; i++) {
                 ele.append(`
-                    <option value="${1}">${option_text}</option>
+                    <option value="${i}">${i}/${fiscal_year}</option>
                 `)
             }
         }

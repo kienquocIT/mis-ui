@@ -51,6 +51,7 @@
 {% block pageAction %}{% endblock %}
 {% block pageContent %}
     {{ data.data.current_period | json_script:"current_period" }}
+    {{ data.data.definition_inventory_valuation | json_script:"definition_inventory_valuation" }}
 
     <script id="trans-script"
             data-trans-m1th="{% trans 'January' %}"

@@ -408,11 +408,13 @@ $(function () {
 // Action on click price list's option
         tableCost.on('click', '.table-row-price-option', function () {
             let priceValRaw = $(this)[0].getAttribute('data-value');
+            let whIDValRaw = $(this)[0].getAttribute('data-wh-id');
             if (priceValRaw) {
                 let row = $(this)[0].closest('tr');
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
                     $(elePrice).attr('value', String(priceValRaw));
+                    $(elePrice).attr('data-wh-id', whIDValRaw);
                     $.fn.initMaskMoney2();
                     QuotationCalculateCaseHandle.commonCalculate(tableCost, row, false, true, false);
                 }

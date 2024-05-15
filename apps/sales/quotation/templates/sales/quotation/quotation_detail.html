@@ -644,7 +644,7 @@
     <input
             type="text"
             id="data-init-quotation-create-request-employee"
-            value="{{ data.data.employee_current }}"
+            value="{{ data.employee_current }}"
     >
     <input
             type="text"
@@ -672,7 +672,7 @@
     <input
             type="text"
             id="data-init-opportunity"
-            value="{{ data.data.opportunity }}"
+            value="{{ data.opportunity }}"
     >
     <input
             type="text"
@@ -699,7 +699,8 @@
             data-url="{% url "AccountForSaleListAPI" %}"
             data-method="GET"
     >
-
+    {{ data.employee_current|json_script:'employee_current' }}
+    {{ data.opportunity|json_script:'init_opp' }}
 {% endblock %}
 
 {% block jsFooter %}

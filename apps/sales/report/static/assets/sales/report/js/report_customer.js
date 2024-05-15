@@ -170,8 +170,6 @@ $(function () {
                                             'url': $table.attr('data-url'),
                                             'method': $table.attr('data-method'),
                                             'data': {
-                                                "group_inherit__is_delete": false,
-                                                "sale_order__system_status": 3,
                                                 'date_approved__gte': startDate,
                                                 'date_approved__lte': endDate,
                                             },
@@ -315,8 +313,6 @@ $(function () {
 
         btnView.on('click', function () {
             let dataParams = {};
-            dataParams['group_inherit__is_delete'] = false;
-            dataParams['sale_order__system_status'] = 3;
             if (boxGroup.val()) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
             }

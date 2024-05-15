@@ -104,7 +104,6 @@ class ReportCustomerListAPI(APIView):
 
 # REPORT INVENTORY DETAIL
 class ReportInventoryDetailList(View):
-
     @mask_view(
         auth_require=True,
         template='sales/inventory_report/items_detail_report.html',
@@ -113,9 +112,13 @@ class ReportInventoryDetailList(View):
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.COMPANY_CONFIG).get()
         if len(resp1.result) > 0:
             return {
-                'data': {'current_period': resp1.result[0]},
+                'data': {
+                    'current_period': resp1.result[0],
+                    'definition_inventory_valuation': resp2.result['definition_inventory_valuation']
+                },
             }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
@@ -143,9 +146,13 @@ class ReportInventoryList(View):
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.COMPANY_CONFIG).get()
         if len(resp1.result) > 0:
             return {
-                'data': {'current_period': resp1.result[0]},
+                'data': {
+                    'current_period': resp1.result[0],
+                    'definition_inventory_valuation': resp2.result['definition_inventory_valuation']
+                },
             }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 

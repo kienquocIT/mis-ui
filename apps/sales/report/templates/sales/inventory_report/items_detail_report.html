@@ -53,6 +53,8 @@
 {% block pageAction %}{% endblock %}
 {% block pageContent %}
     {{ data.data.current_period | json_script:"current_period" }}
+    {{ data.data.definition_inventory_valuation | json_script:"definition_inventory_valuation" }}
+
     <script id="trans-script"
             data-trans-m1th="{% trans 'January' %}"
             data-trans-m2th="{% trans 'February' %}"
@@ -76,6 +78,9 @@
             data-trans-dlvr="{% trans 'Delivery' %}"
             data-trans-gis="{% trans 'Goods issue' %}"
             data-trans-gtf="{% trans 'Goods transfer' %}"
+            data-trans-sure-confirm="{% trans 'Are you sure to calculate ending cumulative value?' %}"
+            data-trans-sure="{% trans 'Sure' %}"
+            data-trans-cancel="{% trans 'Cancel' %}"
     ></script>
 
     <script id="url-script"
@@ -83,57 +88,75 @@
     ></script>
 
     <div class="row">
-        <div class="col-12">
-            <button type="button"
-                    id="btn-collapse"
-                    class="btn btn-primary w-100"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#filter_area"
-                    aria-expanded="false"
-                    aria-controls="filter_area"
-            >
-                <div class="row">
-                    <div class="col-6 text-left"><i class="bi bi-funnel"></i>&nbsp;{% trans 'Filter' %}</div>
-                    <div class="col-6 text-right" id="btn-title" data-trans-show="{% trans 'Show' %}" data-trans-hide="{% trans 'Hide' %}">{% trans 'Show' %}</div>
-                </div>
+        <div class="col-12 col-md-12 col-lg-12">
+            <div id="btn-collapse" class="card">
+                <div class="card-header bg-primary-light-5">
+                    <h6>
+                        <span class="badge badge-primary">
+                            <span>
+                                <span class="icon"><span class="feather-icon"><i class="bi bi-funnel"></i></span></span>
+                                {% trans 'Filter' %}
+                            </span>
+                        </span>
+                        <button type="button" data-bs-toggle="collapse" data-bs-target="#filter_area" aria-expanded="false" aria-controls="collapse-area" class="btn btn-rounded btn-icon btn-xs">
+                            <span class="icon">
+                                <i class="fas fa-angle-double-up text-primary"></i>
+                            </span>
+                        </button>
+                    </h6>
+                    <div class="card-action-wrap">
+                        <button type="button" class="btn btn-gradient-primary" id="btn-view">
+                <span>
+                    <span>{% trans 'View' %}</span>
+                    <span class="icon">
+                        <span class="feather-icon"><i class="fas fa-eye"></i></span>
+                    </span>
+                </span>
             </button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="collapse show" id="filter_area">
-            <div class="card card-body">
-                <div class="row">
-                    <div class="col-12 col-lg-4 col-md-6">
-                        <div class="form-group">
-                            <label class="form-label" for="items_select">{% trans 'Product' %}</label>
-                            <select class="form-select select2 select-multiple" id="items_select" multiple
-                                    data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
+                        <div class="btn-group" role="group">
+                            <button id="btn-action" type="button" class="btn btn-gradient-dark w-100 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {% trans 'Action' %}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btn-action">
+                                <a class="dropdown-item" id="btn-calculate" href="#"><i class="bi bi-calculator"></i> <span>{% trans 'Calculate ending cumulative value' %}</span></a>
+                                <a class="dropdown-item disabled" id="btn-export" href="#"><i class="bi bi-file-earmark-spreadsheet"></i> <span>{% trans 'Export to excel' %}</span></a>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-12 col-lg-4 col-md-6">
-                        <div class="form-group">
-                            <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
-                            <select class="form-select select2 select-multiple" id="warehouses_select" multiple
-                                    data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
+                </div>
+                <div id="filter_area" class="collapse show">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-lg-4 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="items_select">{% trans 'Product' %}</label>
+                                    <select class="form-select select2 select-multiple" id="items_select" multiple
+                                            data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-4 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
+                                    <select class="form-select select2 select-multiple" id="warehouses_select" multiple
+                                            data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-2 col-md-4">
+                                <div class="form-group">
+                                    <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
+                                    <select class="form-select select2" id="period-select"
+                                            data-url="{% url 'PeriodsConfigListAPI' %}"
+                                            data-method="GET"
+                                    ></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-2 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
+                                    <select id="period-month" class="form-select"></select>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-12 col-lg-2 col-md-4">
-                        <div class="form-group">
-                            <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
-                            <select class="form-select select2" id="period-select"
-                                    data-url="{% url 'PeriodsConfigListAPI' %}"
-                                    data-method="GET"
-                            ></select>
-                        </div>
-                    </div>
-                    <div class="col-12 col-lg-2 col-md-4">
-                        <div class="form-group">
-                            <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
-                            <select id="period-month" class="form-select"></select>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <button type="button" class="btn btn-gradient-primary" id="btn-view"><span><span>{% trans 'View' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-eye"></i></span></span></span></button>
                     </div>
                 </div>
             </div>
@@ -143,7 +166,7 @@
         <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
             <div class="custom-scroll">
                 <div class="table-wrap" style="max-height: 80vh">
-                    <table class="table nowrap w-100 fixed_header" id="items_detail_report_table">
+                    <table hidden class="table nowrap w-100 fixed_header" id="items_detail_report_table">
                         <thead class="row-fixed">
                             <tr>
                                 <th class="first-col border-1">{% trans 'Product' %}</th>
@@ -177,6 +200,7 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
 
     <script src="{% static 'assets/sales/inventory_report/js/items_detail.js' %}"></script>
 {% endblock %}

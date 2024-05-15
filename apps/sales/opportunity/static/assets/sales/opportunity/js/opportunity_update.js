@@ -1488,6 +1488,21 @@ $(document).ready(function () {
                         {
                             targets: 3,
                             render: (data, type, row) => {
+                                let link = '';
+                                let code = '';
+                                if (row?.['log_type'] === 0) {
+                                    if (row?.['app_code'] && row?.['doc_id']) {
+                                        link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_id']);
+                                        code = row?.['doc_data']?.['code'];
+                                        return `<a href="${link}" target="_blank"><span class="badge badge-primary">${code}</span></a>`;
+                                    }
+                                }
+                                return `<p>--</p>`;
+                            }
+                        },
+                        {
+                            targets: 4,
+                            render: (data, type, row) => {
                                 if (row?.['app_code']) {
                                     let sttTxt = JSON.parse($('#stt_sys').text())
                                     let sttData = [
@@ -1503,7 +1518,7 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            targets: 4,
+                            targets: 5,
                             render: (data, type, row) => {
                                 return $x.fn.displayRelativeTime(row?.['date_created'], {
                                     'outputFormat': 'DD-MM-YYYY',

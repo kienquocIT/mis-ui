@@ -137,7 +137,7 @@ $(function () {
         // initJSPlumbs();
 
 
-        $('#btn-diagram').on('click', function () {
+        $('#btn-diagram, #btn-refresh-diagram').on('click', function () {
             if (window.location.href.includes('/detail/')) {
                 // Split the URL by '/'
                 let parts = window.location.href.split('/');

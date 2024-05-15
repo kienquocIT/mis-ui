@@ -7,6 +7,8 @@ $(function () {
         let btnCreateIndicator = $('#btn-create-indicator');
         let eleTrans = $('#app-trans-factory');
         let dataAcceptanceAffect = [
+            {'id': 6, 'title': eleTrans.attr('data-project')},
+            {'id': 5, 'title': eleTrans.attr('data-invoice')},
             {'id': 4, 'title': eleTrans.attr('data-payment')},
             {'id': 3, 'title': eleTrans.attr('data-delivery')},
             {'id': 2, 'title': eleTrans.attr('data-plan')},
@@ -17,6 +19,8 @@ $(function () {
             2: {'id': 2, 'title': eleTrans.attr('data-plan')},
             3: {'id': 3, 'title': eleTrans.attr('data-delivery')},
             4: {'id': 4, 'title': eleTrans.attr('data-payment')},
+            5: {'id': 5, 'title': eleTrans.attr('data-invoice')},
+            6: {'id': 6, 'title': eleTrans.attr('data-project')},
         }
         let boxSRole = $('#box-ss-role');
         let boxLRole = $('#box-ls-role');
@@ -122,32 +126,32 @@ $(function () {
                         targets: 0,
                         render: (data, type, row) => {
                             if (is_sale_order === false) {
-                                return `<input type="text" class="form-control table-row-order" value="${row.order}">`;
+                                return `<input type="text" class="form-control table-row-order" value="${row?.['order']}">`;
                             } else {
-                                return `<span>${row.order}</span>`;
+                                return `<span>${row?.['order']}</span>`;
                             }
                         }
                     },
                     {
                         targets: 1,
                         render: (data, type, row) => {
-                            return `<input type="text" class="form-control table-row-title" value="${row.title}" hidden><span>${row.title}</span>`;
+                            return `<input type="text" class="form-control table-row-title" value="${row?.['title']}" hidden><span>${row?.['title']}</span>`;
                         }
                     },
                     {
                         targets: 2,
                         render: (data, type, row) => {
                             let transEle = $('#app-trans-factory');
-                            let modalID = "indicatorEditModalCenter" + String(row.order);
-                            let modalTarget = "#indicatorEditModalCenter" + String(row.order);
-                            let tabIndicatorID = "tab_indicator_" + String(row.order);
-                            let tabIndicatorHref = "#tab_indicator_" + String(row.order);
-                            let tabPropertyID = "tab_property_" + String(row.order);
-                            let tabPropertyHref = "#tab_property_" + String(row.order);
-                            let tabFunctionID = "tab_function_" + String(row.order);
-                            let tabFunctionHref = "#tab_function_" + String(row.order);
-                            let tabOperatorID = "tab_operator_" + String(row.order);
-                            let tabOperatorHref = "#tab_operator_" + String(row.order);
+                            let modalID = "indicatorEditModalCenter" + String(row?.['order']);
+                            let modalTarget = "#indicatorEditModalCenter" + String(row?.['order']);
+                            let tabIndicatorID = "tab_indicator_" + String(row?.['order']);
+                            let tabIndicatorHref = "#tab_indicator_" + String(row?.['order']);
+                            let tabPropertyID = "tab_property_" + String(row?.['order']);
+                            let tabPropertyHref = "#tab_property_" + String(row?.['order']);
+                            let tabFunctionID = "tab_function_" + String(row?.['order']);
+                            let tabFunctionHref = "#tab_function_" + String(row?.['order']);
+                            let tabOperatorID = "tab_operator_" + String(row?.['order']);
+                            let tabOperatorHref = "#tab_operator_" + String(row?.['order']);
                             let ele = `<button
                                         type="button"
                                         class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover modal-edit-formula"
@@ -162,7 +166,7 @@ $(function () {
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">${transEle.attr('data-edit-formula')}</h5>
+                                                    <h5 class="modal-title text-primary">${transEle.attr('data-edit-formula')}</h5>
                                                     <button
                                                             type="button" class="btn-close"
                                                             data-bs-dismiss="modal" aria-label="Close"
@@ -226,7 +230,7 @@ $(function () {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <h6 class="text-primary mt-1">${eleTrans.attr('data-final-acceptance')}</h6>
+                                                    <h6 class="text-primary mt-2">${eleTrans.attr('data-final-acceptance')}</h6>
                                                     <div class="row final-acceptance-zone">
                                                         <div class="col-12 col-md-6 col-lg-6">
                                                             <div class="form-group form-group-data-source">
@@ -257,7 +261,7 @@ $(function () {
                                                         <button 
                                                             type="button" 
                                                             class="btn btn-primary btn-edit-indicator"
-                                                            data-id="${row.id}"
+                                                            data-id="${row?.['id']}"
                                                             data-bs-dismiss="modal"
                                                         >${transEle.attr('data-btn-save')}</button>
                                                     </div>
@@ -276,9 +280,9 @@ $(function () {
                         targets: 3,
                         render: (data, type, row) => {
                             if (is_sale_order === false) {
-                                return `<input type="text" class="form-control table-row-description" value="${row.remark}">`;
+                                return `<input type="text" class="form-control table-row-description" value="${row?.['remark']}">`;
                             } else {
-                                return `<span>${row.remark}</span>`;
+                                return `<span>${row?.['remark']}</span>`;
                             }
                         }
                     },
@@ -348,15 +352,26 @@ $(function () {
             }
         });
 
-        tableIndicator.on('click', '.param-item', function() {
+        tableIndicator.on('click', '.param-item', function () {
             let propertySelected = $(this)[0].querySelector('.data-show');
             if (propertySelected) {
                 let dataShow = JSON.parse(propertySelected.value);
-                // show editor
-                let editor = $(this)[0].closest('.modal-body').querySelector('.indicator-editor');
-                editor.value = editor.value + dataShow.syntax;
-                // on blur editor to validate formula
-                $(editor).blur();
+                if (dataShow?.['type'] === 5) {
+                    let eleDesc = $(this)[0].closest('.tab-pane').querySelector('.property-description');
+                    if (eleDesc) {
+                        let eleBoxMD = eleDesc.querySelector('.box-md');
+                        if (eleBoxMD) {
+                            eleBoxMD.removeAttribute('disabled');
+                            $(eleBoxMD).next('.select2-container').find('.select2-selection').addClass('border-success');
+                        }
+                    }
+                } else {
+                    // show editor
+                    let editor = $(this)[0].closest('.modal-body').querySelector('.indicator-editor');
+                    editor.value = editor.value + dataShow.syntax;
+                    // on blur editor to validate formula
+                    $(editor).blur();
+                }
             }
         });
 
@@ -364,8 +379,10 @@ $(function () {
             let propertySelected = $(this)[0].querySelector('.data-show');
             if (propertySelected) {
                 let dataShow = JSON.parse(propertySelected.value);
+                let dataStr = JSON.stringify(dataShow).replace(/"/g, "&quot;");
                 // show description
                 let eleDescription = null;
+                let eleBoxMD = null;
                 if ($(this)[0].closest('.tab-pane').querySelector('.property-description')) {
                     eleDescription = $(this)[0].closest('.tab-pane').querySelector('.property-description');
                 } else if ($(this)[0].closest('.tab-pane').querySelector('.indicator-description')) {
@@ -374,21 +391,69 @@ $(function () {
                     eleDescription = $(this)[0].closest('.tab-pane').querySelector('.function-description');
                 }
                 if (eleDescription) {
+                    let $eleUrlFact = $('#app-url-factory');
+                    let htmlBoxMD = ``;
+                    if (dataShow?.['type'] === 5) {
+                        let url = "";
+                        let keyResp = "";
+                        if (dataShow?.['app_code_md'] === 'saledata.expenseitem') {
+                            url = $eleUrlFact.attr('data-url-expense-item');
+                            keyResp = "expense_item_list";
+                        }
+                        if (dataShow?.['app_code_md'] === 'saledata.expense') {
+                            url = $eleUrlFact.attr('data-url-labor');
+                            keyResp = "expense_list";
+                        }
+                        htmlBoxMD = `<div class="row w-80">
+                                            <select
+                                                    class="form-select box-md w-60"
+                                                    id="box-ss-role"
+                                                    data-url=${url}
+                                                    data-method="GET"
+                                                    data-keyResp=${keyResp}
+                                                    data-show="${dataStr}"
+                                                    disabled
+                                                    hidden
+                                            ></select>
+                                        </div>`;
+                    }
                     eleDescription.innerHTML = "";
                     $(eleDescription).append(`<div data-simplebar class="nicescroll-bar h-250p">
                                                 <div class="row mb-3">
-                                                    <h5>${dataShow.title}</h5>
-                                                    <p>${dataShow.remark}</p>
+                                                    <h5>${dataShow?.['title'] ? dataShow?.['title'] : ''}</h5>
+                                                    <p class="mb-2">${dataShow?.['remark'] ? dataShow?.['remark'] : ''}</p>
+                                                    ${htmlBoxMD}
                                                 </div>
                                                 <div class="row mb-2">
                                                     <b>Syntax</b>
-                                                    <p class="ml-2">${dataShow.syntax_show}</p>
+                                                    <p class="ml-2">${dataShow?.['syntax_show'] ? dataShow?.['syntax_show'] : ''}</p>
                                                 </div>
                                                 <div class="row">
                                                     <b>Example</b>
-                                                    <p class="ml-2">${dataShow.example}</p>
+                                                    <p class="ml-2">${dataShow?.['example'] ? dataShow?.['example'] : ''}</p>
                                                 </div>
                                             </div>`)
+                eleBoxMD = eleDescription.querySelector('.box-md');
+                }
+                if (eleBoxMD) {
+                    $(eleBoxMD).initSelect2({
+                        'allowClear': true,
+                    });
+                }
+            }
+        });
+
+        tableIndicator.on('change', '.box-md', function () {
+            let dataShowRaw = $(this).attr('data-show');
+            if (dataShowRaw) {
+                let dataShow = JSON.parse(dataShowRaw);
+                let dataSelected = SelectDDControl.get_data_from_idx($(this), $(this).val());
+                if (dataSelected) {
+                    // show editor
+                    let editor = $(this)[0].closest('.modal-body').querySelector('.indicator-editor');
+                    editor.value = `${editor.value + dataShow.syntax}=="${dataSelected?.['title']}"`;
+                    // on blur editor to validate formula
+                    $(editor).blur();
                 }
             }
         });
@@ -868,9 +933,18 @@ $(function () {
                                     item['syntax'] = "prop(" + item.title + ")";
                                     item['syntax_show'] = "prop(" + item.title + ")";
                                     let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                                    let iconMD = ``;
+                                    if (item?.['type'] === 5) {
+                                        iconMD = `<small><i class="fas fa-database text-primary ml-3 mt-1"></i></small>`;
+                                    }
                                     param_list += `<div class="row param-item">
                                                 <button type="button" class="btn btn-flush-light">
-                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title">${item.title}</span></span></div>
+                                                    <div class="float-left">
+                                                        <div class="d-flex justify-content-between">
+                                                            <span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title">${item.title}</span></span>
+                                                            ${iconMD}
+                                                        </div>
+                                                    </div>
                                                     <input type="hidden" class="data-show" value="${dataStr}">
                                                 </button>
                                             </div>`

@@ -3157,7 +3157,7 @@ class QuotationDataTableHandle {
                                     <input 
                                         type="checkbox"
                                         class="form-check-input table-row-check"
-                                        data-id="${row.id}"
+                                        data-id="${row?.['id']}"
                                     >
                                 </div>`
                     }
@@ -3165,13 +3165,16 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.title}</span>`
+                        return `<span class="table-row-title">${row?.['title']}</span>`
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row.code}</span>`
+                        if (row?.['code']) {
+                            return `<span class="badge badge-primary table-row-code">${row?.['code']}</span>`;
+                        }
+                        return `<p></p>`;
                     },
                 }
             ],

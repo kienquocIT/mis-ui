@@ -956,7 +956,7 @@ msgstr "Hoàn tất"
 
 #
 msgid "Restore default"
-msgstr "Đặt lại mặc định"
+msgstr "khôi phục mặc định"
 
 #
 msgid "Workflow detail"
@@ -5476,7 +5476,7 @@ msgstr "Lịch sử khách hàng"
 
 #
 msgid "Final acceptance setting"
-msgstr "Cấu hình nghiệm thu"
+msgstr "Cấu hình quyết toán"
 
 #
 msgid "Data source"
@@ -7562,3 +7562,6 @@ msgstr "Bạn có chắc chắc muốn tính toán giá trị tích luỹ cuối
 msgid "Sure"
 msgstr "Đồng ý"
 
+#
+msgid "Invoice"
+msgstr "Hóa đơn"

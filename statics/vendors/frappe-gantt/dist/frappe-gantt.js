@@ -2014,13 +2014,16 @@ var Gantt = (function () {
 
                         })
 
-                        jQuery('.btn-row-task_list', htmlBtn2).on('click', function(){
-                            if (_this.options.hasOwnProperty('show_task_list'))
-                               $('#assign_modal').modal('show')
+                        jQuery('.btn-row-task_list', htmlBtn2).on('click',() =>{
+                            jQuery('#assign_modal .modal-body').append(`<input type="hidden" id="modal_work_id" value="${item.id}"/>`)
+                            jQuery('#assign_modal').modal('show')
                         })
+
                     }
                     else if (value.code === 'start' || value.code === 'end')
                         item_html.append(moment(item[value.code], 'YYYY-MM-DD').format('DD/MM/YYYY'))
+                    else if (value.code === 'weight' || value.code === 'progress')
+                        item_html.append(`${item[value.code]}%`)
                     else
                         item_html.append(item?.[value.code])
                     item_html.css({"width": value.width})
@@ -2033,7 +2036,7 @@ var Gantt = (function () {
             }
             if (!tasksList.length){
                 let row = jQuery('<p class="empty-data"/>')
-                row.text(jQuery.fn.gettext('empty data'))
+                row.text(jQuery.fn.gettext('Empty data'))
                 div_wrapper.append(row)
             }else div_wrapper.find('.empty-data').remove()
 
@@ -2044,7 +2047,7 @@ var Gantt = (function () {
                 this.options.padding +
                 (this.options.bar_height + this.options.padding) *
                     tasksList.length;
-            grid_height = grid_height + 27 // 58 là number ngẫu nhiên canh chỉnh để fit vs chiều dài khung bên phải
+            grid_height = grid_height + 27 // 27 là number ngẫu nhiên canh chỉnh để fit vs chiều dài khung bên phải
             div_wrapper.css({"min-width": base_width, "height": grid_height})
             jQuery('.gantt-wrap-title').css({"min-width": base_width})
             if (this.options.hasOwnProperty('init_create_btn')) this.options.init_create_btn()

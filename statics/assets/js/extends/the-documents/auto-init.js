@@ -1,6 +1,7 @@
 $(document).ready(function () {
     new $x.cls.bastionField({
         has_opp: true,
+        has_prj: true,
         has_inherit: true,
         inherit_data: [{
             "id": "",
@@ -8,6 +9,11 @@ $(document).ready(function () {
             "selected": true,
         }],
         opp_data: [{
+            "id": "",
+            "title": "",
+            "selected": true,
+        }],
+        prj_data: [{
             "id": "",
             "title": "",
             "selected": true,

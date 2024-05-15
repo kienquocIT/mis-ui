@@ -36,7 +36,7 @@ $(document).ready(function(){
                 class: 'text-center',
                 render: (row) => {
                     let txt = '--'
-                    if (row) txt = moment(row).format('YYYY/MM/DD')
+                    if (row) txt = moment(row).format('DD/MM/YYYY')
                     return txt
                 }
             },
@@ -46,7 +46,7 @@ $(document).ready(function(){
                 class: 'text-center',
                 render: (row) => {
                     let txt = '--'
-                    if (row) txt = moment(row).format('YYYY/MM/DD')
+                    if (row) txt = moment(row).format('DD/MM/YYYY')
                     return txt
                 }
             },

@@ -7613,3 +7613,11 @@ msgstr "Trọng số"
 #
 msgid "Group rate"
 msgstr "Tỉ lệ"
+
+#
+msgid "Task list in work"
+msgstr "Danh sách công việc"
+
+#
+msgid "Project create"
+msgstr "Tạo dự án"

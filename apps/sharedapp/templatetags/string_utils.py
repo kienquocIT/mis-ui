@@ -262,3 +262,9 @@ def permit_mapping_pretty_json(value, app_by_id, exclude_key="", indent=4):
     except Exception as err:
         print(err)
     return '{}'
+
+
+@register.filter
+def split_list(data, order):
+    result = data.split(",")[int(order)]
+    return result

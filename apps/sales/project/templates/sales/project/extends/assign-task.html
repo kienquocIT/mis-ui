@@ -1,37 +1,65 @@
 {% load static i18n %}
 <div class="modal fade" id="assign_modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Assign task' %}</h5>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-xs-12 col-md-12 form-group">
-                        <label for="selectTask" class="form-label required">{% trans 'Tasks' %}</label>
-                        <select class="form-select" name="task" id="selectTask"
-                                data-url="{% url "ProjectTaskListAPI" %}"
-                                data-keyResp="prj_task_list" data-keyText="title" data-keyId="id"
-                                data-params="{'project_id':'{{ prj_id }}'}" multiple
-                        ></select>
+                <!-- Tabs -->
+                <ul class="nav nav-line nav-light nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_task_list">
+                            <i class="fa-solid fa-diagram-next"></i>
+                            <span class="nav-link-text">{% trans 'Task list in work' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_abandoned_task">
+                            <i class="fa-solid fa-address-card"></i>
+                            <span class="nav-link-text">{% trans 'Abandoned tasks' %}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab_task_list">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <table class="table nowrap w-100" id="task_list" data-method="get"
+                                       data-url="{% url 'ProjectTaskListAPI' %}">
+                                    <thead>
+                                    <tr>
+                                        <td>{% trans 'Code' %}</td>
+                                        <td>{% trans 'Name' %}</td>
+                                        <td>{% trans 'Percent complete' %}</td>
+                                        <td>{% trans 'Assignee' %}</td>
+                                        <td></td>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-xs-12">
-                        <table class="table nowrap w-100" id="task_list" data-method="get"
-                               data-url="{% url 'ProjectListAPI' %}" data-detail="{% url 'ProjectDetail' 1 %}">
-                            <thead>
-                            <tr>
-                                <td>{% trans 'Code' %}</td>
-                                <td>{% trans 'Name' %}</td>
-                                <td>{% trans 'Percent complete' %}</td>
-                                <td>{% trans 'Assignee' %}</td>
-                                <td></td>
-                            </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                    <div class="tab-pane fade" id="tab_abandoned_task">
+                        <div class="row">
+                            <table class="table nowrap w-100" id="task_abandoned_list" data-url="{% url 'ProjectTaskListAPI' %}">
+                                <thead>
+                                    <tr>
+                                        <td>{% trans 'Code' %}</td>
+                                        <td>{% trans 'Name' %}</td>
+                                        <td>{% trans 'Percent complete' %}</td>
+                                        <td>{% trans 'Assignee' %}</td>
+                                        <td>{% trans 'Previous Work' %}</td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                    <tbody></tbody>
+                                </table>
+                        </div>
                     </div>
-
                 </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary float-left" id="btn-assign-save">
@@ -41,6 +69,22 @@
                     {% trans 'Close' %}
                 </button>
             </div>
+        </div>
+    </div>
+</div>
+<div class="hidden">
+    <input type="hidden" id="table-asg_task-url" data-epl_lst="{% url 'EmployeeListAPI' %}">
+    <div class="abd-btn-group">
+        <div class="d-flex justify-content-center align-items-center">
+            <button type="button" class="btn btn-rounded flush-soft-hover edit-row">
+                <i class="fa-solid fa-pen"></i>
+            </button>
+            <button type="button" class="btn btn-rounded flush-soft-hover">
+                <i class="bi bi-trash"></i>
+            </button>
+            <button type="button" class="btn btn-rounded flush-soft-hover">
+                <i class="bi bi-floppy-fill"></i>
+            </button>
         </div>
     </div>
 </div>

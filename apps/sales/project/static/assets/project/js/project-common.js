@@ -32,8 +32,7 @@ $(document).ready(function () {
 
     SetupFormSubmit.validate($FormElm, {
         errorClass: 'is-invalid cl-red',
-        submitHandler: function(e){
-            e.preventDefault()
+        submitHandler: function(){
             submitHandleFunc()
         }
     })
@@ -185,93 +184,173 @@ function saveWork(gantt_obj) {
 }
 
 function show_task_list(){
-        const $taskTbl = $('#task_list'), $asModal = $('#assign_modal');
-        const workID = $asModal.find('#modal_work_id').val();
-            $asModal.on('shown.bs.modal', function(){
-            if ($taskTbl.hasClass('datatable'))
-                $taskTbl.DataTable().destroy()
-            const $pjElm = $('#id');
-            if (!$pjElm.val() || !workID)
-                return false
-            $.fn.callAjax2({
-                'url': $taskTbl.attr('data-url'),
-                'method': 'get',
-                'data': {"project_id": $pjElm.val(), "work": workID},
-                'sweetAlertOpts': {'allowOutsideClick': true},
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && (data['status'] === 201 || data['status'] === 200)) {
-                        $taskTbl.DataTableDefault({
-                            data: data,
-                            info: false,
-                            autoWidth: true,
-                            scrollX: true,
-                            columns: [
-                                {
-                                    data: 'code',
-                                    width: '10%',
-                                    class: 'text-center',
-                                    render: (row, type, data) => {
-                                        const url = $EmTable.attr('data-detail').format_url_with_uuid(data.id)
-                                        return row ? `<a href="${url}">${row}</a>` : '--'
-                                    }
-                                },
-                                {
-                                    data: 'title',
-                                    width: '25%',
-                                    class: 'text-center',
-                                    render: (row) => {
-                                        return `${row ? row : '--'}`
-                                    }
-                                },
-                                {
-                                    data: 'percent',
-                                    width: '15%',
-                                    class: 'text-center',
-                                    render: (row) => {
-                                        let txt = '--'
-                                        if (row) txt = `${row}%`
-                                        return txt
-                                    }
-                                },
-                                {
-                                    data: 'assignee',
-                                    width: '15%',
-                                    class: 'text-center',
-                                    render: (row) => {
-                                        let txt = '--'
-                                        if (row) txt = row.full_name
-                                        return txt
-                                    }
-                                },
+    const $taskTbl = $('#task_list'), $asModal = $('#assign_modal');
+    const $abdTable = $('#task_abandoned_list');
 
-                                {
-                                    data: 'tasks',
-                                    width: '15%',
-                                    class: 'text-center',
-                                    render: (row, index, data) => {
-                                        let txt = '--'
-                                        if (row) txt = `${row?.['all']} (${row?.['completed']})`
-                                        return txt
-                                    }
-                                },
-                                {
-                                    data: 'id',
-                                    width: '10%',
-                                    render: (row, index, data) => {
-                                        let txt = $('.table_btn').html();
-                                        return txt
-                                    }
-                                },
-                            ]
-                        })
-                    }
-                },
-                (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
-            )
-        })
-    }
+    $asModal.on('shown.bs.modal', function(){
+        const $pjElm = $('#id'), workID = $asModal.find('#modal_work_id').val();
+        if ($taskTbl.hasClass('datatable')) $taskTbl.DataTable().destroy()
+        if (!$pjElm.val() || !workID) return false
+
+        // get current task assign for current work
+        $.fn.callAjax2({
+            'url': $taskTbl.attr('data-url'),
+            'method': 'get',
+            'data': {"project_id": $pjElm.val(), "work": workID},
+            'sweetAlertOpts': {'allowOutsideClick': true},
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && (data['status'] === 201 || data['status'] === 200))
+                    $taskTbl.DataTableDefault({
+                        data: data['prj_task_list'],
+                        info: false,
+                        searching: false,
+                        ordering: false,
+                        paginate: false,
+                        columns: [
+                            {
+                                data: 'code',
+                                width: '10%',
+                                class: 'text-center',
+                                render: (row, type, data) => {
+                                    const url = $EmTable.attr('data-detail').format_url_with_uuid(data.id)
+                                    return row ? `<a href="${url}">${row}</a>` : '--'
+                                }
+                            },
+                            {
+                                data: 'title',
+                                width: '25%',
+                                class: 'text-center',
+                                render: (row) => {
+                                    return `${row ? row : '--'}`
+                                }
+                            },
+                            {
+                                data: 'percent',
+                                width: '15%',
+                                class: 'text-center',
+                                render: (row) => {
+                                    let txt = '--'
+                                    if (row) txt = `${row}%`
+                                    return txt
+                                }
+                            },
+                            {
+                                data: 'assignee',
+                                width: '15%',
+                                class: 'text-center',
+                                render: (row) => {
+                                    let txt = '--'
+                                    if (row) txt = row.full_name
+                                    return txt
+                                }
+                            },
+
+                            {
+                                data: 'tasks',
+                                width: '15%',
+                                class: 'text-center',
+                                render: (row, index, data) => {
+                                    let txt = '--'
+                                    if (row) txt = `${row?.['all']} (${row?.['completed']})`
+                                    return txt
+                                }
+                            },
+                            {
+                                data: 'id',
+                                width: '10%',
+                                render: (row, index, data) => {
+                                    let txt = $('.table_btn').html();
+                                    return txt
+                                }
+                            },
+                        ]
+                    })
+            },
+            (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+        )
+
+        // run abandoned list task
+        $.fn.callAjax2({
+            'url': $abdTable.attr('data-url'),
+            'method': 'get',
+            'data': {"project_id": $pjElm.val(), "work__isnull": true},
+            'sweetAlertOpts': {'allowOutsideClick': true},
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && (data['status'] === 201 || data['status'] === 200))
+                    $abdTable.DataTableDefault({
+                        data: data,
+                        info: false,
+                        autoWidth: true,
+                        scrollX: true,
+                        columns: [
+                            {
+                                data: 'code',
+                                width: '10%',
+                                class: 'text-center',
+                                render: (row, type, data) => {
+                                    const url = $EmTable.attr('data-detail').format_url_with_uuid(data.id)
+                                    return row ? `<a href="${url}">${row}</a>` : '--'
+                                }
+                            },
+                            {
+                                data: 'title',
+                                width: '25%',
+                                class: 'text-center',
+                                render: (row) => {
+                                    return `${row ? row : '--'}`
+                                }
+                            },
+                            {
+                                data: 'percent',
+                                width: '15%',
+                                class: 'text-center',
+                                render: (row) => {
+                                    let txt = '--'
+                                    if (row) txt = `${row}%`
+                                    return txt
+                                }
+                            },
+                            {
+                                data: 'assignee',
+                                width: '15%',
+                                class: 'text-center',
+                                render: (row, index, data) => {
+                                    let txt = '--', $getURL = $('#table-asg_task-url');
+                                    if (row) txt = row.full_name
+                                    if (data.is_edit)
+                                        txt = `<select class="form-select" id="table_edit_assig"`
+                                            + `data-url="${$getURL.attr('data-epl_lst')}"`
+                                            + `data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"`
+                                            + `data-params="{'list_from_app':'{{ data.list_from_app|escape }}'}"></select>`
+                                    return txt
+                                }
+                            },
+                            {
+                                data: 'id',
+                                width: '10%',
+                                render: (row, index, data) => {
+                                    let txt = $('.abd-btn-group').html();
+                                    return txt
+                                }
+                            },
+                        ],
+                        rowCallback: function (row, data) {
+                            // handle onclick btn
+                            $('.edit-row', row).on('click', function () {
+                                data.is_edit = true
+                            })
+                        },
+                    })
+            },
+            (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+        )
+    })
+
+}
 
 class ProjectTeamsHandle {
     static crt_user = []

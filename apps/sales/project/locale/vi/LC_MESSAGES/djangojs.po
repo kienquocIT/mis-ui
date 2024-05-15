@@ -88,3 +88,7 @@ msgstr "Thêm"
 #
 msgid "Task list"
 msgstr "Danh sách task"
+
+#
+msgid "Empty data"
+msgstr "Dữ liệu trống"

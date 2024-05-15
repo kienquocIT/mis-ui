@@ -322,7 +322,7 @@ class ProjectTaskListAPI(APIView):
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
         url = ApiURL.PROJECT_TASK_LIST.fill_key(pk_pj=params['project_id'])
-        resp = ServerAPI(user=request.user, url=url).get()
+        resp = ServerAPI(user=request.user, url=url).get(params)
         return resp.auto_return(key_success='prj_task_list')
 
     @mask_view(

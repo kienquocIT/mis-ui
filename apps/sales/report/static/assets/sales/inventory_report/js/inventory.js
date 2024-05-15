@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    const $btn_title = $('#btn-title')
     const current_period_Ele = $('#current_period')
     const items_select_Ele = $('#items_select')
     const warehouses_select_Ele = $('#warehouses_select')
@@ -14,6 +13,7 @@ $(document).ready(function () {
         periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
     }
     const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
+    let PERIODIC_CLOSED = false
 
     function get_final_date_of_current_month(filter_year, filter_month) {
         let currentDate = new Date();
@@ -164,7 +164,6 @@ $(document).ready(function () {
         $('table thead').find('span').attr('data-init-money', 0)
         $('table tbody').html('')
         const table_inventory_report = $('#table-inventory-report')
-        table_inventory_report.prop('hidden', false)
         $('#table-inventory-report-detail').prop('hidden', true)
         if (periodMonthEle.val()) {
             WindowControl.showLoading();
@@ -191,6 +190,7 @@ $(document).ready(function () {
 
             Promise.all([inventory_detail_list_ajax]).then(
                 (results) => {
+                    // console.log(results[0])
                     $('#btn-collapse').trigger('click')
                     table_inventory_report.find('tbody').html('')
                     let opening_sum_quantity = 0
@@ -238,6 +238,7 @@ $(document).ready(function () {
                                     </tr>
                                 `)
 
+                                PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
                                 opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
                                 in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
                                 out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
@@ -276,6 +277,7 @@ $(document).ready(function () {
                                 current_wh_row.find('.wh-ending-quantity-span').text(parseFloat(current_wh_row.find('.wh-ending-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['ending_balance_quantity'])
                                 current_wh_row.find('.wh-ending-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-ending-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['ending_balance_value'])
 
+                                PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
                                 opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
                                 in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
                                 out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
@@ -330,6 +332,7 @@ $(document).ready(function () {
                                         </tr>
                                     `)
 
+                                    PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
                                     opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
                                     in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
                                     out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
@@ -367,6 +370,7 @@ $(document).ready(function () {
                                     current_wh_row.find('.wh-ending-quantity-span').text(parseFloat(current_wh_row.find('.wh-ending-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['ending_balance_quantity'])
                                     current_wh_row.find('.wh-ending-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-ending-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['ending_balance_value'])
 
+                                    PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
                                     opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
                                     in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
                                     out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
@@ -391,7 +395,7 @@ $(document).ready(function () {
                     setTimeout(
                         () => {
                             WindowControl.hideLoading();
-                            if ($definition_inventory_valuation === '1') {
+                            if ($definition_inventory_valuation === '1' && PERIODIC_CLOSED === false) {
                                 table_inventory_report.find('#out-total-value').closest('th').html('-').attr('class', '')
                                 table_inventory_report.find('tbody .wh-out-value-span').closest('td').html('-').attr('class', '')
                                 table_inventory_report.find('tbody .out-value-span').closest('td').html('-').attr('class', '')
@@ -399,6 +403,14 @@ $(document).ready(function () {
                                 table_inventory_report.find('tbody .wh-ending-value-span').closest('td').html('-').attr('class', '')
                                 table_inventory_report.find('tbody .ending-value-span').closest('td').html('-').attr('class', '')
                             }
+                            if ($definition_inventory_valuation === '1') {
+                                table_inventory_report.find('tbody .out-value-span-detail').closest('td').html('-').attr('class', '')
+                            }
+                            if (PERIODIC_CLOSED === false) {
+                                table_inventory_report.find('tbody .out-value-span').closest('td').html('-').attr('class', '')
+                                table_inventory_report.find('tbody .wh-out-value-span').closest('td').html('-').attr('class', '')
+                            }
+                            table_inventory_report.prop('hidden', false)
                         },
                         500
                     )
@@ -415,7 +427,6 @@ $(document).ready(function () {
         $('table thead').find('span').attr('data-init-money', 0)
         $('table tbody').html('')
         const table_inventory_report = $('#table-inventory-report-detail')
-        table_inventory_report.prop('hidden', false)
         $('#table-inventory-report').prop('hidden', true)
         if (periodMonthEle.val()) {
             WindowControl.showLoading();
@@ -545,6 +556,7 @@ $(document).ready(function () {
                                     ${detail_html}
                                 `)
 
+                                PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
                                 opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
                                 in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
                                 out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
@@ -636,6 +648,7 @@ $(document).ready(function () {
                                 current_wh_row.find('.wh-ending-quantity-span').text(parseFloat(current_wh_row.find('.wh-ending-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['ending_balance_quantity'])
                                 current_wh_row.find('.wh-ending-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-ending-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['ending_balance_value'])
 
+                                PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
                                 opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
                                 in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
                                 out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
@@ -747,6 +760,7 @@ $(document).ready(function () {
                                         ${detail_html}
                                     `)
 
+                                    PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
                                     opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
                                     in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
                                     out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
@@ -839,6 +853,7 @@ $(document).ready(function () {
                                     current_wh_row.find('.wh-ending-quantity-span').text(parseFloat(current_wh_row.find('.wh-ending-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['ending_balance_quantity'])
                                     current_wh_row.find('.wh-ending-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-ending-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['ending_balance_value'])
 
+                                    PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
                                     opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
                                     in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
                                     out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
@@ -863,7 +878,7 @@ $(document).ready(function () {
                     setTimeout(
                         () => {
                             WindowControl.hideLoading();
-                            if ($definition_inventory_valuation === '1') {
+                            if ($definition_inventory_valuation === '1' && PERIODIC_CLOSED === false) {
                                 table_inventory_report.find('#out-total-value').closest('th').html('-').attr('class', '')
                                 table_inventory_report.find('tbody .wh-out-value-span').closest('td').html('-').attr('class', '')
                                 table_inventory_report.find('tbody .out-value-span').closest('td').html('-').attr('class', '')
@@ -872,6 +887,14 @@ $(document).ready(function () {
                                 table_inventory_report.find('tbody .wh-ending-value-span').closest('td').html('-').attr('class', '')
                                 table_inventory_report.find('tbody .ending-value-span').closest('td').html('-').attr('class', '')
                             }
+                            if ($definition_inventory_valuation === '1') {
+                                table_inventory_report.find('tbody .out-value-span-detail').closest('td').html('-').attr('class', '')
+                            }
+                            if (PERIODIC_CLOSED === false) {
+                                table_inventory_report.find('tbody .out-value-span').closest('td').html('-').attr('class', '')
+                                table_inventory_report.find('tbody .wh-out-value-span').closest('td').html('-').attr('class', '')
+                            }
+                            table_inventory_report.prop('hidden', false)
                         },
                         500
                     )

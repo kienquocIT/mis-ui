@@ -143,7 +143,6 @@ $(document).ready(function () {
                     // console.log(results[0])
                     items_detail_report_table_Ele.DataTable().clear().destroy()
                     items_detail_report_table_Ele.find('tbody').html('')
-                    // console.log(results[0])
                     for (const item of results[0]) {
                         let cumulative_quantity = 0
                         let cumulative_value = 0
@@ -179,10 +178,31 @@ $(document).ready(function () {
                                     cumulative_quantity += stock_activity?.['ending_balance_quantity']
                                     cumulative_value += stock_activity?.['ending_balance_value']
                                     items_detail_report_table_Ele.find('tbody').append(
-                                        `<tr class="fw-bold ob-row">
+                                        `<tr class="fw-bold">
                                             <td class="first-col border-1"></td>
                                             <td></td>
                                             <td><span class="badge badge-sm badge-secondary mb-1">${stock_activity?.['warehouse_code']}</span>&nbsp;<span class="text-secondary">${stock_activity?.['warehouse_title']}</span></td>
+                                            <td></td>
+                                            <td hidden></td>
+                                            <td hidden></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>`
+                                    )
+                                    items_detail_report_table_Ele.find('tbody').append(
+                                        `<tr class="fw-bold ob-row">
+                                            <td class="first-col border-1"></td>
+                                            <td></td>
+                                            <td></td>
                                             <td></td>
                                             <td hidden></td>
                                             <td hidden></td>
@@ -312,10 +332,31 @@ $(document).ready(function () {
                                 cumulative_quantity += stock_activity?.['ending_balance_quantity']
                                 cumulative_value += stock_activity?.['ending_balance_value']
                                 items_detail_report_table_Ele.find('tbody').append(
-                                    `<tr class="fw-bold ob-row">
+                                    `<tr class="fw-bold">
                                         <td class="first-col border-1"></td>
                                         <td></td>
                                         <td><span class="badge badge-sm badge-secondary mb-1">${stock_activity?.['warehouse_code']}</span>&nbsp;<span class="text-secondary">${stock_activity?.['warehouse_title']}</span></td>
+                                        <td></td>
+                                        <td hidden></td>
+                                        <td hidden></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>`
+                                )
+                                items_detail_report_table_Ele.find('tbody').append(
+                                    `<tr class="fw-bold ob-row">
+                                        <td class="first-col border-1"></td>
+                                        <td></td>
+                                        <td></td>
                                         <td></td>
                                         <td hidden></td>
                                         <td hidden></td>
@@ -504,7 +545,6 @@ $(document).ready(function () {
                     dataParam['sub_period_order'] = periodMonthEle.val() ? parseInt(periodMonthEle.val()) : null
                     dataParam['period_mapped'] = periodEle.val() ? periodEle.val() : null
                     dataParam['product_id_list'] = items_select_Ele.val().join(',')
-                    dataParam['is_calculate'] = true
                     let inventory_detail_list_ajax = $.fn.callAjax2({
                         url: url_script.attr('data-url-inventory-detail-list'),
                         data: dataParam,
@@ -525,6 +565,7 @@ $(document).ready(function () {
                     Promise.all([inventory_detail_list_ajax]).then(
                         (results) => {
                             // console.log(results[0])
+                            items_detail_report_table_Ele.DataTable().clear().destroy()
                             items_detail_report_table_Ele.find('tbody').html('')
                             for (const item of results[0]) {
                                 let cumulative_quantity = 0
@@ -561,10 +602,31 @@ $(document).ready(function () {
                                             cumulative_quantity += stock_activity?.['ending_balance_quantity']
                                             cumulative_value += stock_activity?.['ending_balance_value']
                                             items_detail_report_table_Ele.find('tbody').append(
-                                                `<tr>
+                                                `<tr class="fw-bold">
                                                     <td class="first-col border-1"></td>
                                                     <td></td>
                                                     <td><span class="badge badge-sm badge-secondary mb-1">${stock_activity?.['warehouse_code']}</span>&nbsp;<span class="text-secondary">${stock_activity?.['warehouse_title']}</span></td>
+                                                    <td></td>
+                                                    <td hidden></td>
+                                                    <td hidden></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>`
+                                            )
+                                            items_detail_report_table_Ele.find('tbody').append(
+                                                `<tr class="fw-bold ob-row">
+                                                    <td class="first-col border-1"></td>
+                                                    <td></td>
+                                                    <td></td>
                                                     <td></td>
                                                     <td hidden></td>
                                                     <td hidden></td>
@@ -665,6 +727,28 @@ $(document).ready(function () {
                                                     )
                                                 }
                                             }
+                                            let eb_label = `<span class="text-secondary">${trans_script.attr('data-trans-eb')}</span>`
+                                            items_detail_report_table_Ele.find('tbody').append(
+                                                `<tr class="fw-bold eb-row" hidden>
+                                                    <td class="first-col border-1"></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td hidden></td>
+                                                    <td hidden></td>
+                                                    <td>${eb_label}</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td><span>${stock_activity?.['ending_balance_quantity']}</span></td>
+                                                    <td><span class="mask-money" data-init-money="${stock_activity?.['ending_balance_cost']}"></span></td>
+                                                    <td><span class="mask-money" data-init-money="${stock_activity?.['ending_balance_value']}"></span></td>
+                                                </tr>`
+                                            )
                                         }
                                     }
                                     else {
@@ -672,10 +756,31 @@ $(document).ready(function () {
                                         cumulative_quantity += stock_activity?.['ending_balance_quantity']
                                         cumulative_value += stock_activity?.['ending_balance_value']
                                         items_detail_report_table_Ele.find('tbody').append(
-                                            `<tr>
+                                            `<tr class="fw-bold">
                                                 <td class="first-col border-1"></td>
                                                 <td></td>
                                                 <td><span class="badge badge-sm badge-secondary mb-1">${stock_activity?.['warehouse_code']}</span>&nbsp;<span class="text-secondary">${stock_activity?.['warehouse_title']}</span></td>
+                                                <td></td>
+                                                <td hidden></td>
+                                                <td hidden></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>`
+                                        )
+                                        items_detail_report_table_Ele.find('tbody').append(
+                                            `<tr class="fw-bold ob-row">
+                                                <td class="first-col border-1"></td>
+                                                <td></td>
+                                                <td></td>
                                                 <td></td>
                                                 <td hidden></td>
                                                 <td hidden></td>
@@ -776,6 +881,28 @@ $(document).ready(function () {
                                                 )
                                             }
                                         }
+                                        let eb_label = `<span class="text-secondary">${trans_script.attr('data-trans-eb')}</span>`
+                                        items_detail_report_table_Ele.find('tbody').append(
+                                            `<tr class="fw-bold eb-row" hidden>
+                                                <td class="first-col border-1"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td hidden></td>
+                                                <td hidden></td>
+                                                <td>${eb_label}</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td><span>${stock_activity?.['ending_balance_quantity']}</span></td>
+                                                <td><span class="mask-money" data-init-money="${stock_activity?.['ending_balance_cost']}"></span></td>
+                                                <td><span class="mask-money" data-init-money="${stock_activity?.['ending_balance_value']}"></span></td>
+                                            </tr>`
+                                        )
                                     }
                                 }
                                 $(`.${item?.['product']?.['id']}-cumulative-quantity`).text(cumulative_quantity)
@@ -791,6 +918,7 @@ $(document).ready(function () {
                                             $(this).find('td:eq(15)').html('-')
                                             $(this).find('td:eq(16)').html('-')
                                         })
+                                        items_detail_report_table_Ele.find('tbody .eb-row').prop('hidden', false)
                                     }
                                     if ($definition_inventory_valuation === '1') {
                                         items_detail_report_table_Ele.find('tbody .detail-in').each(function () {
@@ -803,6 +931,7 @@ $(document).ready(function () {
                                             $(this).find('td:eq(15)').html('-')
                                             $(this).find('td:eq(16)').html('-')
                                         })
+                                        items_detail_report_table_Ele.find('tbody .eb-row').prop('hidden', false)
                                     }
                                     items_detail_report_table_Ele.prop('hidden', false)
                                 },

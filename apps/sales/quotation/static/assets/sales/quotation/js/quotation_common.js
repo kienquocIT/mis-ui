@@ -484,23 +484,6 @@ class QuotationLoadDataHandle {
                 'employee_inherit': sale_person_id,
                 'system_status__in': [2, 3].join(','),
             };
-            if (opp_id) {
-                data_filter['opportunity'] = opp_id;
-                // data_filter['opportunity__sale_order__isnull'] = true;
-                data_filter['opportunity__is_close_lost'] = false;
-                data_filter['opportunity__is_deal_close'] = false;
-                if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                    let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, QuotationLoadDataHandle.opportunitySelectEle.val());
-                    if (dataSelected?.['quotation']?.['id']) {
-                        data_filter['id'] = dataSelected?.['quotation']?.['id'];
-                    } else {
-                        QuotationDataTableHandle.dataTableCopyQuotation();
-                        return false;
-                    }
-                }
-            } else {
-                data_filter['opportunity__isnull'] = true;
-            }
             $.fn.callAjax2({
                     'url': url,
                     'method': method,
@@ -512,7 +495,33 @@ class QuotationLoadDataHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
-                            QuotationDataTableHandle.dataTableCopyQuotation(data.quotation_list);
+                            let dataInit = data.quotation_list;
+                            // check OppID to get quotation same Opp then concat 2 list data
+                            if (opp_id) {
+                                data_filter = {'system_status': 4}
+                                data_filter['opportunity'] = opp_id;
+                                data_filter['opportunity__is_close_lost'] = false;
+                                data_filter['opportunity__is_deal_close'] = false;
+                                $.fn.callAjax2({
+                                        'url': url,
+                                        'method': method,
+                                        'data': data_filter,
+                                        'isDropdown': true,
+                                    }
+                                ).then(
+                                    (resp) => {
+                                        let data = $.fn.switcherResp(resp);
+                                        if (data) {
+                                            if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
+                                                let dataHasOpp = data.quotation_list.concat(dataInit);
+                                                QuotationDataTableHandle.dataTableCopyQuotation(dataHasOpp);
+                                            }
+                                        }
+                                    }
+                                )
+                            } else {
+                                QuotationDataTableHandle.dataTableCopyQuotation(dataInit);
+                            }
                         }
                     }
                 }

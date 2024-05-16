@@ -546,7 +546,7 @@ $(document).ready(function () {
                     dataParam['period_mapped'] = periodEle.val() ? periodEle.val() : null
                     dataParam['product_id_list'] = items_select_Ele.val().join(',')
                     let inventory_detail_list_ajax = $.fn.callAjax2({
-                        url: url_script.attr('data-url-inventory-detail-list'),
+                        url: url_script.attr('data-url-inventory-detail-list') + '?is_calculate=1',
                         data: dataParam,
                         method: 'GET'
                     }).then(

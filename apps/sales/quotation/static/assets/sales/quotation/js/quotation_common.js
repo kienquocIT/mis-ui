@@ -1110,6 +1110,19 @@ class QuotationLoadDataHandle {
                                                 </div>
                                             </a>`);
                     }
+                } else {
+                    let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
+                    let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
+                    let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
+                    if (elePrice) {
+                        elePrice.removeAttribute('disabled');
+                    }
+                    if (eleBtnPriceList) {
+                        eleBtnPriceList.setAttribute('hidden', 'true');
+                    }
+                    if (eleGrPrice) {
+                        eleGrPrice.removeAttribute('data-bs-toggle');
+                    }
                 }
             }
         }

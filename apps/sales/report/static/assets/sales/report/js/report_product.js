@@ -322,6 +322,16 @@ $(function () {
             e.stopPropagation();
         });
 
+        // Prevent the dropdown from closing when clicking outside it
+        $('.btn-group').on('hide.bs.dropdown', function (e) {
+            e.preventDefault();
+        });
+
+        // Reopen dropdown on button click
+        $('.btn-group').on('click', '.btn', function (e) {
+            $(this).siblings('.dropdown-menu').toggleClass('show');
+        });
+
         // Events
         boxGroup.on('change', function() {
             loadBoxEmployee();

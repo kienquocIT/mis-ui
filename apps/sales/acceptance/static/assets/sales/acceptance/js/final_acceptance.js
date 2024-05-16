@@ -10,6 +10,7 @@ $(function () {
         let updateIndicatorData = {};
         let $form = $('#frm_final_acceptance_update');
         let $btnS = $('#btn-save');
+        let $eleDataFact = $('#app-data-factory');
 
         function loadDbl(data) {
             $table.DataTableDefault({
@@ -86,6 +87,14 @@ $(function () {
                         targets: 4,
                         width: '13%',
                         render: (data, type, row) => {
+                            let dataFA = {};
+                            if ($eleDataFact.attr('data-detail')) {
+                                dataFA = JSON.parse($eleDataFact.attr('data-detail'));
+                            }
+                            let disabled = "";
+                            if (dataFA?.['system_status'] === 3) {
+                                disabled = "disabled"
+                            }
                             if (row?.['acceptance_affect_by'] === 1) { // INDICATOR ROWS
                                 if (row?.['indicator']?.['acceptance_affect_by'] === 2) { // Plan value
                                     let actualVal = row?.['actual_value'];
@@ -99,6 +108,7 @@ $(function () {
                                                     class="form-control mask-money table-row-actual-value" 
                                                     value="${actualVal}"
                                                     data-return-type="number"
+                                                    ${disabled}
                                                 >
                                             </div>`;
                                     } else { // not editable
@@ -115,6 +125,7 @@ $(function () {
                                                     class="form-control mask-money table-row-actual-value" 
                                                     value="${row?.['actual_value']}"
                                                     data-return-type="number"
+                                                    ${disabled}
                                                 >
                                             </div>`;
                                 } else {
@@ -150,7 +161,15 @@ $(function () {
                         targets: 7,
                         width: '17%',
                         render: (data, type, row) => {
-                            return `<input class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
+                            let dataFA = {};
+                            if ($eleDataFact.attr('data-detail')) {
+                                dataFA = JSON.parse($eleDataFact.attr('data-detail'));
+                            }
+                            let disabled = "";
+                            if (dataFA?.['system_status'] === 3) {
+                                disabled = "disabled"
+                            }
+                            return `<input class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}" ${disabled}>`;
                         }
                     },
                 ],
@@ -189,6 +208,7 @@ $(function () {
                         if (data.hasOwnProperty('final_acceptance_list') && Array.isArray(data.final_acceptance_list)) {
                             if (data.final_acceptance_list.length > 0) {
                                 let fa = data.final_acceptance_list[0];
+                                $eleDataFact.attr('data-detail', JSON.stringify(fa));
                                 if (fa?.['system_status'] === 3 && fa?.['date_approved']) {
                                     $('#final-acceptance-date-approved').val(moment(fa?.['date_approved']).format('DD/MM/YYYY'));
                                 }

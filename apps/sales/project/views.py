@@ -1,7 +1,7 @@
 __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI', 'ProjectDetail', 'ProjectDetailAPI',
            'ProjectEdit', 'ProjectEditAPI', 'ProjectCreateGroupAPI', 'ProjectGroupListAPI', 'ProjectWorkCreateAPI',
            'ProjectWorkListAPI', 'ProjectGroupDetailAPI', 'ProjectWorkDetailAPI', 'ProjectMemberAddAPI',
-           'ProjectMemberDetailAPI', 'ProjectUpdateOrderAPI', 'ProjectTaskListAPI'
+           'ProjectMemberDetailAPI', 'ProjectUpdateOrderAPI', 'ProjectTaskListAPI', 'ProjectGroupDDListAPI'
            ]
 
 from django.views import View
@@ -143,7 +143,18 @@ class ProjectGroupListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_GROUP_LIST).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_GROUP_LIST).get(request.query_params.dict())
+        return resp.auto_return(key_success='pj_group_list')
+
+
+class ProjectGroupDDListAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_GROUP_DD_LIST).get(request.query_params.dict())
         return resp.auto_return(key_success='pj_group_list')
 
 

@@ -31,9 +31,9 @@
                         <label for="select_project_group"
                                class="form-label">{% trans 'Project group' %}</label>
                         <select class="form-select" name="project_group" id="select_project_group"
-                                data-url="{% url 'ProjectGroupListAPI' %}"
+                                data-url="{% url 'ProjectGroupDDListAPI' %}"
                                 data-keyResp="pj_group_list" data-keyText="title" data-keyId="id"
-                                data-params="{'list_from_app': '{{ data.list_from_app|escape }}', 'project': '{{ data.pk }}'}"
+                                data-params="{'project': '{{ data.pk }}'}"
                         >
                         </select>
                     </div>

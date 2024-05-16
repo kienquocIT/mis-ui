@@ -63,6 +63,7 @@ $(document).ready(function(){
                 $x.fn.renderCodeBreadcrumb(data);
                 $('#titleInput').val(data.title)
                 $('#id').val(data.id)
+                $('.page-title').text(data.code)
                 let opt1 = new Option(data['project_owner']['full_name'], data['project_owner']['id'], true, true);
                 $('#select_project_owner').attr('data-onload', JSON.stringify(data['project_owner'])).append(opt1).trigger('change');
                 let opt2 = new Option(data['employee_inherit']['full_name'], data['employee_inherit']['id'], true, true);

@@ -74,7 +74,7 @@ $(document).ready(function () {
             if (periods_fiscal_month_start_Ele.val().length === 1) {
                 month_data = 0 + periods_fiscal_month_start_Ele.val()
             }
-            $('#periods-start-date').val(`01-${month_data}-${parseInt($(this).val())}`)
+            $('#periods-start-date').val(`01/${month_data}/${parseInt($(this).val())}`)
         }
         else {
             software_using_time_select.removeClass('is-valid').addClass('is-invalid')
@@ -90,7 +90,7 @@ $(document).ready(function () {
             if (periods_fiscal_month_start_Ele.val().length === 1) {
                 month_data = 0 + periods_fiscal_month_start_Ele.val()
             }
-            $('#periods-start-date').val(`01-${month_data}-${parseInt(periods_fiscal_year_Ele.val())}`)
+            $('#periods-start-date').val(`01/${month_data}/${parseInt(periods_fiscal_year_Ele.val())}`)
         }
         else {
             software_using_time_select.removeClass('is-valid').addClass('is-invalid')
@@ -220,7 +220,7 @@ $(document).ready(function () {
         period_code_update_Ele.val(periods_code)
         periods_fiscal_year_update_Ele.val(periods_fiscal_year)
         periods_fiscal_month_start_update_Ele.val(periods_fiscal_month_start)
-        $('#periods-start-date-update').val(periods_start_date)
+        $('#periods-start-date-update').val(moment(periods_start_date).format('DD/MM/YYYY'))
     })
 
     function changeDateFormat(date) {
@@ -233,9 +233,11 @@ $(document).ready(function () {
         frm.dataForm['title'] = period_title_Ele.val();
         frm.dataForm['code'] = period_code_Ele.val();
         frm.dataForm['fiscal_year'] = periods_fiscal_year_Ele.val();
-        frm.dataForm['start_date'] = changeDateFormat($('#periods-start-date').val());
+        frm.dataForm['start_date'] = changeDateFormat(
+            $('#periods-start-date').val().replace('/', '-')
+        );
         if ($('#software_using_time_check').prop('checked')) {
-            frm.dataForm['software_start_using_time'] = $('#software_using_time_select option:selected').text();
+            frm.dataForm['software_start_using_time'] = $('#software_using_time_select option:selected').text().replace('/', '-');
         }
         frm.dataForm['sub_periods_type'] = sub_periods_type_select.val()
         frm.dataForm['sub_period_data'] = []
@@ -263,9 +265,11 @@ $(document).ready(function () {
         frm.dataForm['title'] = period_title_update_Ele.val();
         frm.dataForm['code'] = period_code_update_Ele.val();
         frm.dataForm['fiscal_year'] = periods_fiscal_year_update_Ele.val();
-        frm.dataForm['start_date'] = $('#periods-start-date-update').val();
-        if ($('#software_using_time_check').prop('checked')) {
-            frm.dataForm['software_start_using_time'] = $('#software_using_time_select_update option:selected').text();
+        frm.dataForm['start_date'] = changeDateFormat(
+            $('#periods-start-date').val().replace('/', '-')
+        );
+        if ($('#software_using_time_check_update').prop('checked')) {
+            frm.dataForm['software_start_using_time'] = $('#software_using_time_select_update option:selected').text().replace('/', '-');
         }
         let pk = frmEle.attr('data-id');
         return {

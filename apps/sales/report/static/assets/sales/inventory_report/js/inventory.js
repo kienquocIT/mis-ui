@@ -395,21 +395,21 @@ $(document).ready(function () {
                     setTimeout(
                         () => {
                             WindowControl.hideLoading();
-                            if ($definition_inventory_valuation === '1' && PERIODIC_CLOSED === false) {
-                                table_inventory_report.find('#out-total-value').closest('th').html('-').attr('class', '')
-                                table_inventory_report.find('tbody .wh-out-value-span').closest('td').html('-').attr('class', '')
-                                table_inventory_report.find('tbody .out-value-span').closest('td').html('-').attr('class', '')
-                                table_inventory_report.find('#ending-total-value').closest('th').html('-').attr('class', '')
-                                table_inventory_report.find('tbody .wh-ending-value-span').closest('td').html('-').attr('class', '')
-                                table_inventory_report.find('tbody .ending-value-span').closest('td').html('-').attr('class', '')
-                            }
-                            if ($definition_inventory_valuation === '1') {
-                                table_inventory_report.find('tbody .out-value-span-detail').closest('td').html('-').attr('class', '')
-                            }
-                            if (PERIODIC_CLOSED === false) {
-                                table_inventory_report.find('tbody .out-value-span').closest('td').html('-').attr('class', '')
-                                table_inventory_report.find('tbody .wh-out-value-span').closest('td').html('-').attr('class', '')
-                            }
+                            let condition1 = $definition_inventory_valuation === '1' && PERIODIC_CLOSED === false
+                            let condition2 = $definition_inventory_valuation === '1'
+                            let condition3 = PERIODIC_CLOSED === false
+
+                            table_inventory_report.find('#out-total-value').prop('hidden', condition1)
+                            table_inventory_report.find('tbody .wh-out-value-span').prop('hidden', condition1)
+                            table_inventory_report.find('tbody .out-value-span').prop('hidden', condition1)
+                            table_inventory_report.find('#ending-total-value').prop('hidden', condition1)
+                            table_inventory_report.find('tbody .wh-ending-value-span').prop('hidden', condition1)
+                            table_inventory_report.find('tbody .ending-value-span').prop('hidden', condition1)
+
+                            table_inventory_report.find('tbody .out-value-span-detail').prop('hidden', condition2)
+
+                            table_inventory_report.find('tbody .out-value-span').prop('hidden', condition3)
+                            table_inventory_report.find('tbody .wh-out-value-span').prop('hidden', condition3)
                             table_inventory_report.prop('hidden', false)
                         },
                         500
@@ -878,22 +878,21 @@ $(document).ready(function () {
                     setTimeout(
                         () => {
                             WindowControl.hideLoading();
-                            if ($definition_inventory_valuation === '1' && PERIODIC_CLOSED === false) {
-                                table_inventory_report.find('#out-total-value').closest('th').html('-').attr('class', '')
-                                table_inventory_report.find('tbody .wh-out-value-span').closest('td').html('-').attr('class', '')
-                                table_inventory_report.find('tbody .out-value-span').closest('td').html('-').attr('class', '')
-                                table_inventory_report.find('tbody .out-value-span-detail').closest('td').html('-').attr('class', '')
-                                table_inventory_report.find('#ending-total-value').closest('th').html('-').attr('class', '')
-                                table_inventory_report.find('tbody .wh-ending-value-span').closest('td').html('-').attr('class', '')
-                                table_inventory_report.find('tbody .ending-value-span').closest('td').html('-').attr('class', '')
-                            }
-                            if ($definition_inventory_valuation === '1') {
-                                table_inventory_report.find('tbody .out-value-span-detail').closest('td').html('-').attr('class', '')
-                            }
-                            if (PERIODIC_CLOSED === false) {
-                                table_inventory_report.find('tbody .out-value-span').closest('td').html('-').attr('class', '')
-                                table_inventory_report.find('tbody .wh-out-value-span').closest('td').html('-').attr('class', '')
-                            }
+                            let condition1 = $definition_inventory_valuation === '1' && PERIODIC_CLOSED === false
+                            let condition2 = $definition_inventory_valuation === '1'
+                            let condition3 = PERIODIC_CLOSED === false
+
+                            table_inventory_report.find('#out-total-value').prop('hidden', condition1)
+                            table_inventory_report.find('tbody .wh-out-value-span').prop('hidden', condition1)
+                            table_inventory_report.find('tbody .out-value-span').prop('hidden', condition1)
+                            table_inventory_report.find('#ending-total-value').prop('hidden', condition1)
+                            table_inventory_report.find('tbody .wh-ending-value-span').prop('hidden', condition1)
+                            table_inventory_report.find('tbody .ending-value-span').prop('hidden', condition1)
+
+                            table_inventory_report.find('tbody .out-value-span-detail').prop('hidden', condition2)
+
+                            table_inventory_report.find('tbody .out-value-span').prop('hidden', condition3)
+                            table_inventory_report.find('tbody .wh-out-value-span').prop('hidden', condition3)
                             table_inventory_report.prop('hidden', false)
                         },
                         500

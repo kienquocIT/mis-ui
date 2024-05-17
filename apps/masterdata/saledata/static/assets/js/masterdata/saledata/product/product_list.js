@@ -11,6 +11,7 @@ $(document).ready(function () {
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    // console.log(resp.data['product_list'])
                     return resp.data['product_list'] ? resp.data['product_list'] : [];
                 }
                 return [];

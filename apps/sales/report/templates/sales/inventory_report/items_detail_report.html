@@ -73,6 +73,7 @@
             data-trans-gross-profit="{% trans 'Gross profit' %}"
             data-trans-we="{% trans 'Weighted average' %}"
             data-trans-ob="{% trans 'Opening balance' %}"
+            data-trans-eb="{% trans 'Ending balance' %}"
             data-trans-grc="{% trans 'Goods receipt' %}"
             data-trans-grt="{% trans 'Goods return' %}"
             data-trans-dlvr="{% trans 'Delivery' %}"
@@ -92,7 +93,7 @@
             <div id="btn-collapse" class="card">
                 <div class="card-header bg-primary-light-5">
                     <h6>
-                        <span class="badge badge-primary">
+                        <span class="text-primary">
                             <span>
                                 <span class="icon"><span class="feather-icon"><i class="bi bi-funnel"></i></span></span>
                                 {% trans 'Filter' %}
@@ -106,13 +107,13 @@
                     </h6>
                     <div class="card-action-wrap">
                         <button type="button" class="btn btn-gradient-primary" id="btn-view">
-                <span>
-                    <span>{% trans 'View' %}</span>
-                    <span class="icon">
-                        <span class="feather-icon"><i class="fas fa-eye"></i></span>
-                    </span>
-                </span>
-            </button>
+                            <span>
+                                <span>{% trans 'View' %}</span>
+                                <span class="icon">
+                                    <span class="feather-icon"><i class="fas fa-eye"></i></span>
+                                </span>
+                            </span>
+                        </button>
                         <div class="btn-group" role="group">
                             <button id="btn-action" type="button" class="btn btn-gradient-dark w-100 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {% trans 'Action' %}

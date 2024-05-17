@@ -598,7 +598,9 @@ $(function () {
         }
 
         function loadFilter(listData, $eleShow) {
-            $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
+            if (listData.length > 0) {
+                $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
+            }
         }
 
         // load init

@@ -956,7 +956,7 @@ msgstr "Hoàn tất"
 
 #
 msgid "Restore default"
-msgstr "Đặt lại mặc định"
+msgstr "khôi phục mặc định"
 
 #
 msgid "Workflow detail"
@@ -5476,7 +5476,7 @@ msgstr "Lịch sử khách hàng"
 
 #
 msgid "Final acceptance setting"
-msgstr "Cấu hình nghiệm thu"
+msgstr "Cấu hình quyết toán"
 
 #
 msgid "Data source"
@@ -6884,7 +6884,7 @@ msgstr "Mã nhân viên"
 
 #
 msgid "Gross profit plan"
-msgstr "Kế hoạch lợi nhuận gộp"
+msgstr "Kế hoạch LNG"
 
 #
 msgid "General revenue report"
@@ -7573,3 +7573,7 @@ msgstr "Kỳ con"
 #
 msgid "Set time of starting using software in this period."
 msgstr "Đặt thời gian bắt đầu sử dụng phần mềm trong kỳ này."
+
+#
+msgid "Invoice"
+msgstr "Hóa đơn"

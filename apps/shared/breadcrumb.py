@@ -789,7 +789,7 @@ class BreadcrumbView:
     BUSINESS_TRIP_EDIT = BUSINESS_TRIP_REQUEST_LIST + [BreadcrumbItem.BASTION_UPDATE]
 
     # Final acceptance
-    FINAL_ACCEPTANCE_LIST_PAGE = [BreadcrumbItem.FINAL_ACCEPTANCE_LIST_PAGE]
+    FINAL_ACCEPTANCE_LIST_PAGE = [BreadcrumbItem.FINAL_ACCEPTANCE_LIST_PAGE] + [BreadcrumbItem.BASTION_DETAIL]
 
     # Calendar
     CALENDAR_LIST_PAGE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.CALENDAR_LIST_PAGE]

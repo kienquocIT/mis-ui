@@ -148,6 +148,7 @@ class QuotationLoadDataHandle {
         let tableProduct = $('#datable-quotation-create-product');
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+        QuotationLoadDataHandle.loadChangePaymentTerm();
         if (QuotationLoadDataHandle.customerSelectEle.val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
             if (dataSelected) {
@@ -1102,12 +1103,25 @@ class QuotationLoadDataHandle {
                 $(costList).empty();
                 if (Array.isArray(data?.['cost_list']) && data?.['cost_list'].length > 0) {
                     for (let costData of data?.['cost_list']) {
-                        $(costList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['cost'])}" data-wh-id="${costData?.['warehouse']?.['id']}">
+                        $(costList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh-id="${costData?.['warehouse']?.['id']}">
                                                 <div class="d-flex justify-content-between">
                                                     <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
-                                                    <span class="mask-money" data-init-money="${parseFloat(costData?.['cost'])}"></span>
+                                                    <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
                                                 </div>
                                             </a>`);
+                    }
+                } else {
+                    let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
+                    let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
+                    let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
+                    if (elePrice) {
+                        elePrice.removeAttribute('disabled');
+                    }
+                    if (eleBtnPriceList) {
+                        eleBtnPriceList.setAttribute('hidden', 'true');
+                    }
+                    if (eleGrPrice) {
+                        eleGrPrice.removeAttribute('data-bs-toggle');
                     }
                 }
             }
@@ -1303,6 +1317,54 @@ class QuotationLoadDataHandle {
         });
     };
 
+    static loadBalanceValPT() {
+        let totalValue = 0;
+        let term = [];
+        if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+            if (dataSelected) {
+                term = dataSelected?.['term'];
+                for (let termDataCheck of term) {
+                    if (parseFloat(termDataCheck?.['value'])) {
+                        totalValue += parseFloat(termDataCheck?.['value']);
+                    }
+                }
+            }
+        }
+        return 100 - totalValue;
+    }
+
+    static loadChangePaymentTerm() {
+        let formSubmit = $('#frm_quotation_create');
+        if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+            let $table = $('#datable-quotation-payment-stage');
+            let term = [];
+            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+                if (dataSelected) {
+                    term = dataSelected?.['term'];
+                    let dataDateType = JSON.parse($('#payment_date_type').text());
+                    for (let termData of term) {
+                        termData['title'] = dataDateType[termData?.['after']][1];
+                        let isNum = parseFloat(termData?.['value']);
+                        if (!isNum) {  // balance
+                            termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPT());
+                        }
+                    }
+                }
+            }
+            $table.DataTable().rows().every(function () {
+                let row = this.node();
+                if (row.querySelector('.table-row-term')) {
+                    row.querySelector('.table-row-term').removeAttribute('disabled');
+                    $(row.querySelector('.table-row-term')).empty();
+                    $(row.querySelector('.table-row-term')).initSelect2({data: term, 'allowClear': true});
+                    $(row.querySelector('.table-row-term')).val('').trigger('change');
+                }
+            });
+        }
+    };
+
     static loadAddPaymentStage() {
         let $table = $('#datable-quotation-payment-stage');
         let dataAdd = {
@@ -1356,13 +1418,7 @@ class QuotationLoadDataHandle {
                         termData['title'] = dataDateType[termData?.['after']][1];
                         let isNum = parseFloat(termData?.['value']);
                         if (!isNum) {  // balance
-                            let balanceValue = 0;
-                            for (let termDataCheck of term) {
-                                if (parseFloat(termDataCheck?.['value'])) {
-                                    balanceValue += parseFloat(termDataCheck?.['value']);
-                                }
-                            }
-                            termData['value'] = String(100 - balanceValue);
+                            termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPT());
                         }
                     }
                 }
@@ -1479,43 +1535,6 @@ class QuotationLoadDataHandle {
         });
         // mask money
         $.fn.initMaskMoney2();
-    };
-
-    static loadChangePaymentTerm() {
-        let formSubmit = $('#frm_quotation_create');
-        if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
-            let $table = $('#datable-quotation-payment-stage');
-            let term = [];
-            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
-                if (dataSelected) {
-                    term = dataSelected?.['term'];
-                    let dataDateType = JSON.parse($('#payment_date_type').text());
-                    for (let termData of term) {
-                        termData['title'] = dataDateType[termData?.['after']][1];
-                        let isNum = parseFloat(termData?.['value']);
-                        if (!isNum) {  // balance
-                            let balanceValue = 0;
-                            for (let termDataCheck of term) {
-                                if (parseFloat(termDataCheck?.['value'])) {
-                                    balanceValue += parseFloat(termDataCheck?.['value']);
-                                }
-                            }
-                            termData['value'] = String(100 - balanceValue);
-                        }
-                    }
-                }
-            }
-            $table.DataTable().rows().every(function () {
-                let row = this.node();
-                if (row.querySelector('.table-row-term')) {
-                    row.querySelector('.table-row-term').removeAttribute('disabled');
-                    $(row.querySelector('.table-row-term')).empty();
-                    $(row.querySelector('.table-row-term')).initSelect2({data: term, 'allowClear': true});
-                    $(row.querySelector('.table-row-term')).val('').trigger('change');
-                }
-            });
-        }
     };
 
     static loadDataTableCost() {
@@ -2109,6 +2128,10 @@ class QuotationLoadDataHandle {
                         let dataDateType = JSON.parse($('#payment_date_type').text());
                         for (let termData of term) {
                             termData['title'] = dataDateType[termData?.['after']][1];
+                            let isNum = parseFloat(termData?.['value']);
+                            if (!isNum) {  // balance
+                                termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPT());
+                            }
                         }
                     }
                 }
@@ -3157,7 +3180,7 @@ class QuotationDataTableHandle {
                                     <input 
                                         type="checkbox"
                                         class="form-check-input table-row-check"
-                                        data-id="${row.id}"
+                                        data-id="${row?.['id']}"
                                     >
                                 </div>`
                     }
@@ -3165,13 +3188,16 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.title}</span>`
+                        return `<span class="table-row-title">${row?.['title']}</span>`
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row.code}</span>`
+                        if (row?.['code']) {
+                            return `<span class="badge badge-primary table-row-code">${row?.['code']}</span>`;
+                        }
+                        return `<p></p>`;
                     },
                 }
             ],
@@ -4937,7 +4963,10 @@ class QuotationSubmitHandle {
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
                     rowData['product_cost_price'] = $(elePrice).valCurrency();
-                    rowData['warehouse'] = $(elePrice).attr('data-wh-id');
+                    rowData['warehouse'] = null;
+                    if ($(elePrice).attr('data-wh-id')) {
+                        rowData['warehouse'] = $(elePrice).attr('data-wh-id');
+                    }
                 }
                 let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
                 if (eleSubtotal) {

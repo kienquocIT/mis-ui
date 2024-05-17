@@ -1208,10 +1208,6 @@ class GRLoadDataHandle {
         }
     };
 
-    static loadCostPrice() {
-
-    }
-
     // LOAD DETAIL
     static loadDetailPage(data) {
         let formSubmit = $('#frm_good_receipt_create');

@@ -43,6 +43,20 @@
 {% endblock %}
 {% block pageContent %}
     {{ data.data.period_setup_sw_start_using_time | json_script:"period_setup_sw_start_using_time" }}
+    <script id="trans-script"
+            data-trans-input-lot="{% trans 'Input LOT' %}"
+            data-trans-lot-no="{% trans 'Lot number' %}"
+            data-trans-lot-quantity="{% trans 'Lot quantity' %}"
+            data-trans-lot-exp="{% trans 'Expiration date' %}"
+            data-trans-lot-manu="{% trans 'Manufacture date' %}"
+            data-trans-input-sn="{% trans 'Input serial number' %}"
+            data-trans-vendor-sn-no="{% trans 'Vendor serial no.' %}"
+            data-trans-sn-no="{% trans 'Serial no.' %}"
+            data-trans-sn-exp="{% trans 'Expired date' %}"
+            data-trans-sn-manu="{% trans 'Manufacture date' %}"
+            data-trans-sn-warranty-start="{% trans 'Warranty start' %}"
+            data-trans-sn-warranty-end="{% trans 'Warranty end' %}"
+    ></script>
     <form id="form-balance" hidden
           data-method="PUT"
           data-url="{% url 'PeriodsConfigDetailAPI' '0' %}"
@@ -67,7 +81,7 @@
                        data-url="{% url 'BalanceInitListAPI' %}"
                 >
                     <thead>
-                        <th class="w-30">{% trans 'Item name' %}</th>
+                        <th class="w-30">{% trans 'Product' %}</th>
                         <th class="w-15">{% trans 'UoM' %}</th>
                         <th class="w-20">{% trans 'Warehouse' %}</th>
                         <th class="w-15">{% trans 'Quantity' %}</th>

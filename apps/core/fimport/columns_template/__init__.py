@@ -2,3 +2,7 @@ from .account import *
 from .hr.employee import *
 from .hr.role import *
 from .hr.group import *
+from .crm.saledata.contact import *
+from .crm.saledata.salutation import *
+from .crm.saledata.price import *
+from .crm.saledata.account import *

@@ -85,6 +85,11 @@ class BastionFieldControl {
             let config = {
                 'allowClear': true,
                 'dataParams': {'list_from_app': this.mainDiv.data('current-feature').trim()},
+                templateResult: function (state) {
+                    let titleHTML = `<span>${state.data?.title ? state.data.title : "_"}</span>`
+                    let codeHTML = `<span class="badge badge-soft-primary mr-2">${state.text ? state.text : "_"}</span>`
+                    return $(`<span>${codeHTML} ${titleHTML}</span>`);
+                },
                 cache: true,
             }
             if (dataOnload !== undefined && dataOnload !== null && dataOnload.length > 0) {

@@ -15,25 +15,24 @@ class QuotationLoadDataHandle {
     static loadInitOpportunity() {
         let form = $('#frm_quotation_create');
         if (form.attr('data-method').toLowerCase() === 'post') {
-            let dataInitOppRaw = $('#data-init-opportunity').val();
-            if (dataInitOppRaw) {
-                let dataInitOpp = JSON.parse(dataInitOppRaw);
-                let list_from_app = 'quotation.quotation.create';
-                if (form[0].classList.contains('sale-order')) {
-                    list_from_app = 'saleorder.saleorder.create';
+            let dataInitOpp = JSON.parse($('#init_opp').text());
+            let list_from_app = 'quotation.quotation.create';
+            if (form[0].classList.contains('sale-order')) {
+                list_from_app = 'saleorder.saleorder.create';
+            }
+            $.fn.callAjax2({
+                    'url': QuotationLoadDataHandle.opportunitySelectEle.attr('data-url'),
+                    'method': QuotationLoadDataHandle.opportunitySelectEle.attr('data-method'),
+                    'data': {'list_from_app': list_from_app},
                 }
-                $.fn.callAjax2({
-                        'url': QuotationLoadDataHandle.opportunitySelectEle.attr('data-url'),
-                        'method': QuotationLoadDataHandle.opportunitySelectEle.attr('data-method'),
-                        'data': {'list_from_app': list_from_app},
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                                for (let opp of data.opportunity_list) {
-                                    if (opp?.['id'] === dataInitOpp?.['id']) {
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                            for (let opp of data.opportunity_list) {
+                                if (opp?.['id'] === dataInitOpp?.['id']) {
+                                    if (!QuotationLoadDataHandle.opportunitySelectEle.prop('disabled')) {
                                         QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
                                             data: opp,
                                             'allowClear': true,
@@ -46,8 +45,8 @@ class QuotationLoadDataHandle {
                             }
                         }
                     }
-                )
-            }
+                }
+            )
         }
     };
 
@@ -120,11 +119,8 @@ class QuotationLoadDataHandle {
         let form = $('#frm_quotation_create');
         let data_filter = {};
         let sale_person_id = null;
-        let employee_current = $('#data-init-quotation-create-request-employee').val();
-        if (employee_current) {
-            let employee_current_data = JSON.parse(employee_current);
-            sale_person_id = employee_current_data?.['id'];
-        }
+        let employee_current_data = JSON.parse($('#employee_current').text());
+        sale_person_id = employee_current_data?.['id'];
         if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
             sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val();
         }
@@ -152,6 +148,7 @@ class QuotationLoadDataHandle {
         let tableProduct = $('#datable-quotation-create-product');
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+        QuotationLoadDataHandle.loadChangePaymentTerm();
         if (QuotationLoadDataHandle.customerSelectEle.val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
             if (dataSelected) {
@@ -318,6 +315,12 @@ class QuotationLoadDataHandle {
         ele.initSelect2({
             data: dataDD,
         });
+        // add css to row box select2
+        let row = ele[0].closest('tr');
+        let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
+        if (boxRender) {
+            boxRender.style.maxWidth = '270px';
+        }
     };
 
     static loadBoxQuotationExpenseItem(ele, dataExpenseItem = {}) {
@@ -482,23 +485,6 @@ class QuotationLoadDataHandle {
                 'employee_inherit': sale_person_id,
                 'system_status__in': [2, 3].join(','),
             };
-            if (opp_id) {
-                data_filter['opportunity'] = opp_id;
-                data_filter['opportunity__sale_order__isnull'] = true;
-                data_filter['opportunity__is_close_lost'] = false;
-                data_filter['opportunity__is_deal_close'] = false;
-                if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                    let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, QuotationLoadDataHandle.opportunitySelectEle.val());
-                    if (dataSelected?.['quotation']?.['id']) {
-                        data_filter['id'] = dataSelected?.['quotation']?.['id'];
-                    } else {
-                        QuotationDataTableHandle.dataTableCopyQuotation();
-                        return false;
-                    }
-                }
-            } else {
-                data_filter['opportunity__isnull'] = true;
-            }
             $.fn.callAjax2({
                     'url': url,
                     'method': method,
@@ -510,7 +496,33 @@ class QuotationLoadDataHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
-                            QuotationDataTableHandle.dataTableCopyQuotation(data.quotation_list);
+                            let dataInit = data.quotation_list;
+                            // check OppID to get quotation same Opp then concat 2 list data
+                            if (opp_id) {
+                                data_filter = {'system_status': 4}
+                                data_filter['opportunity'] = opp_id;
+                                data_filter['opportunity__is_close_lost'] = false;
+                                data_filter['opportunity__is_deal_close'] = false;
+                                $.fn.callAjax2({
+                                        'url': url,
+                                        'method': method,
+                                        'data': data_filter,
+                                        'isDropdown': true,
+                                    }
+                                ).then(
+                                    (resp) => {
+                                        let data = $.fn.switcherResp(resp);
+                                        if (data) {
+                                            if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
+                                                let dataHasOpp = data.quotation_list.concat(dataInit);
+                                                QuotationDataTableHandle.dataTableCopyQuotation(dataHasOpp);
+                                            }
+                                        }
+                                    }
+                                )
+                            } else {
+                                QuotationDataTableHandle.dataTableCopyQuotation(dataInit);
+                            }
                         }
                     }
                 }
@@ -750,6 +762,11 @@ class QuotationLoadDataHandle {
         $(newRow.querySelector('.table-row-item')).val('').trigger('change');
         QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
         QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
+        // add css to row box select2
+        let boxRender = newRow?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
+        if (boxRender) {
+            boxRender.style.maxWidth = '270px';
+        }
         // load again table cost
         QuotationLoadDataHandle.loadDataTableCost();
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
@@ -1034,18 +1051,16 @@ class QuotationLoadDataHandle {
                                 if (data.price_list[i].id === account_price_id) { // check CUSTOMER_PRICE then set customer_price
                                     customer_price = parseFloat(data.price_list[i].value);
                                     $(priceList).append(`<a class="dropdown-item table-row-price-option option-btn-checked text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="row">
-                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mr-5">${data.price_list[i].title}</span></div>
-                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                                <div class="col-12 col-md-2 col-lg-2"><small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small></div>
+                                                            <div class="d-flex justify-content-between">
+                                                                <span class="mr-5">${data.price_list[i].title}</span>
+                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
                                                             </div>
                                                         </a>`);
                                 } else {
                                     $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="row">
-                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mr-5">${data.price_list[i].title}</span></div>
-                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                                <div class="col-12 col-md-2 col-lg-2"><small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small></div>
+                                                            <div class="d-flex justify-content-between">
+                                                                <span class="mr-5">${data.price_list[i].title}</span>
+                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
                                                             </div>
                                                         </a>`);
                                 }
@@ -1053,10 +1068,9 @@ class QuotationLoadDataHandle {
                         } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
                             general_price = parseFloat(data.price_list[i].value);
                             $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="row">
-                                                        <div class="col-12 col-md-5 col-lg-5"><span class="mr-5">${data.price_list[i].title}</span></div>
-                                                        <div class="col-12 col-md-5 col-lg-5"><span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-12 col-md-2 col-lg-2"><small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small></div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span class="mr-5">${data.price_list[i].title}</span>
+                                                        <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
                                                     </div>
                                                 </a>`);
                         }
@@ -1089,12 +1103,25 @@ class QuotationLoadDataHandle {
                 $(costList).empty();
                 if (Array.isArray(data?.['cost_list']) && data?.['cost_list'].length > 0) {
                     for (let costData of data?.['cost_list']) {
-                        $(costList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['cost'])}">
-                                                <div class="row">
-                                                    <div class="col-12 col-md-6 col-lg-6"><span class="mr-5">${costData?.['warehouse']?.['title']}</span></div>
-                                                    <div class="col-12 col-md-6 col-lg-6"><span class="mask-money" data-init-money="${parseFloat(costData?.['cost'])}"></span></div>
+                        $(costList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh-id="${costData?.['warehouse']?.['id']}">
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
+                                                    <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
                                                 </div>
                                             </a>`);
+                    }
+                } else {
+                    let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
+                    let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
+                    let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
+                    if (elePrice) {
+                        elePrice.removeAttribute('disabled');
+                    }
+                    if (eleBtnPriceList) {
+                        eleBtnPriceList.setAttribute('hidden', 'true');
+                    }
+                    if (eleGrPrice) {
+                        eleGrPrice.removeAttribute('data-bs-toggle');
                     }
                 }
             }
@@ -1290,6 +1317,54 @@ class QuotationLoadDataHandle {
         });
     };
 
+    static loadBalanceValPT() {
+        let totalValue = 0;
+        let term = [];
+        if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+            if (dataSelected) {
+                term = dataSelected?.['term'];
+                for (let termDataCheck of term) {
+                    if (parseFloat(termDataCheck?.['value'])) {
+                        totalValue += parseFloat(termDataCheck?.['value']);
+                    }
+                }
+            }
+        }
+        return 100 - totalValue;
+    }
+
+    static loadChangePaymentTerm() {
+        let formSubmit = $('#frm_quotation_create');
+        if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+            let $table = $('#datable-quotation-payment-stage');
+            let term = [];
+            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+                if (dataSelected) {
+                    term = dataSelected?.['term'];
+                    let dataDateType = JSON.parse($('#payment_date_type').text());
+                    for (let termData of term) {
+                        termData['title'] = dataDateType[termData?.['after']][1];
+                        let isNum = parseFloat(termData?.['value']);
+                        if (!isNum) {  // balance
+                            termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPT());
+                        }
+                    }
+                }
+            }
+            $table.DataTable().rows().every(function () {
+                let row = this.node();
+                if (row.querySelector('.table-row-term')) {
+                    row.querySelector('.table-row-term').removeAttribute('disabled');
+                    $(row.querySelector('.table-row-term')).empty();
+                    $(row.querySelector('.table-row-term')).initSelect2({data: term, 'allowClear': true});
+                    $(row.querySelector('.table-row-term')).val('').trigger('change');
+                }
+            });
+        }
+    };
+
     static loadAddPaymentStage() {
         let $table = $('#datable-quotation-payment-stage');
         let dataAdd = {
@@ -1343,13 +1418,7 @@ class QuotationLoadDataHandle {
                         termData['title'] = dataDateType[termData?.['after']][1];
                         let isNum = parseFloat(termData?.['value']);
                         if (!isNum) {  // balance
-                            let balanceValue = 0;
-                            for (let termDataCheck of term) {
-                                if (parseFloat(termDataCheck?.['value'])) {
-                                    balanceValue += parseFloat(termDataCheck?.['value']);
-                                }
-                            }
-                            termData['value'] = String(100 - balanceValue);
+                            termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPT());
                         }
                     }
                 }
@@ -1468,43 +1537,6 @@ class QuotationLoadDataHandle {
         $.fn.initMaskMoney2();
     };
 
-    static loadChangePaymentTerm() {
-        let formSubmit = $('#frm_quotation_create');
-        if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
-            let $table = $('#datable-quotation-payment-stage');
-            let term = [];
-            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
-                if (dataSelected) {
-                    term = dataSelected?.['term'];
-                    let dataDateType = JSON.parse($('#payment_date_type').text());
-                    for (let termData of term) {
-                        termData['title'] = dataDateType[termData?.['after']][1];
-                        let isNum = parseFloat(termData?.['value']);
-                        if (!isNum) {  // balance
-                            let balanceValue = 0;
-                            for (let termDataCheck of term) {
-                                if (parseFloat(termDataCheck?.['value'])) {
-                                    balanceValue += parseFloat(termDataCheck?.['value']);
-                                }
-                            }
-                            termData['value'] = String(100 - balanceValue);
-                        }
-                    }
-                }
-            }
-            $table.DataTable().rows().every(function () {
-                let row = this.node();
-                if (row.querySelector('.table-row-term')) {
-                    row.querySelector('.table-row-term').removeAttribute('disabled');
-                    $(row.querySelector('.table-row-term')).empty();
-                    $(row.querySelector('.table-row-term')).initSelect2({data: term, 'allowClear': true});
-                    $(row.querySelector('.table-row-term')).val('').trigger('change');
-                }
-            });
-        }
-    };
-
     static loadDataTableCost() {
         let $table = $('#datable-quotation-create-cost');
         let $tableProduct = $('#datable-quotation-create-product');
@@ -1531,14 +1563,16 @@ class QuotationLoadDataHandle {
                 let shipping = row.querySelector('.table-row-shipping');
                 if ($(product).val()) { // PRODUCT
                     dataProduct = SelectDDControl.get_data_from_idx($(product), $(product).val());
-                    valuePrice = dataProduct?.['sale_cost'] ? dataProduct?.['sale_cost'] : 0;
                     if ($(uom).val()) {
                         dataUOM = SelectDDControl.get_data_from_idx($(uom), $(uom).val());
                     }
                     if ($(tax).val()) {
                         dataTax = SelectDDControl.get_data_from_idx($(tax), $(tax).val());
                     }
-                    valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
+                    valueQuantity = 0;
+                    if (row.querySelector('.table-row-quantity').value) {
+                        valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
+                    }
                     valueOrder++
                     let dataAdd = {
                         "tax": {
@@ -1565,7 +1599,7 @@ class QuotationLoadDataHandle {
                         "product_tax_title": "",
                         "product_tax_value": 0,
                         "product_uom_title": "",
-                        "product_cost_price": valuePrice,
+                        "product_cost_price": 0,
                         "product_tax_amount": valueTaxAmount,
                         "product_subtotal_price": valueSubtotal,
                         "is_shipping": false,
@@ -1795,11 +1829,11 @@ class QuotationLoadDataHandle {
             $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
         }
         if (is_copy === false) {
-            // check if finish or reject then hidden btn edit page
-            if ([2, 3, 4].includes(data?.['system_status'])) {
+            // check if not finish or reject then remove hidden btn edit page
+            if (![2, 3, 4].includes(data?.['system_status'])) {
                 let $btn = $('#btn-enable-edit');
                 if ($btn.length) {
-                    $btn[0].setAttribute('hidden', 'true');
+                    $btn[0].removeAttribute('hidden');
                 }
             }
             // check if is not finish then hidden btn delivery (Sale Order)
@@ -1844,12 +1878,9 @@ class QuotationLoadDataHandle {
         $('#quotation-create-customer-billing').val(data?.['customer_billing_id']);
         // show print button
         if ($(form).attr('data-method').toLowerCase() === 'get') {
-            let employeeCurrentRaw = $('#data-init-quotation-create-request-employee').val();
-            if (employeeCurrentRaw) {
-                let employeeCurrent = JSON.parse(employeeCurrentRaw);
-                if (employeeCurrent?.['id'] === data?.['sale_person']?.['id'] && [2, 3].includes(data?.['system_status'])) {
-                    $('#print-document')[0].removeAttribute('hidden');
-                }
+            let employeeCurrent = JSON.parse($('#employee_current').text());
+            if (employeeCurrent?.['id'] === data?.['sale_person']?.['id'] && [2, 3].includes(data?.['system_status'])) {
+                $('#print-document')[0].removeAttribute('hidden');
             }
         }
         // load totals
@@ -1890,6 +1921,7 @@ class QuotationLoadDataHandle {
                         // check config first time
                         if (page_method === "POST" && !$('#data-init-quotation-copy-to').val()) {
                             QuotationCheckConfigHandle.checkConfig(true, null, true);
+                            QuotationCheckConfigHandle.checkSsLsRole();
                         }
                     }
                 }
@@ -2096,6 +2128,10 @@ class QuotationLoadDataHandle {
                         let dataDateType = JSON.parse($('#payment_date_type').text());
                         for (let termData of term) {
                             termData['title'] = dataDateType[termData?.['after']][1];
+                            let isNum = parseFloat(termData?.['value']);
+                            if (!isNum) {  // balance
+                                termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPT());
+                            }
                         }
                     }
                 }
@@ -2206,10 +2242,10 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            columns: [  // 50, 300, 300, 150, 200, 350, 200, 150, 250, 50 (2000p)  // 50, 250, 200, 100, 150, 250, 150, 100, 200, 50 (1500p)
+            columns: [  // 25,325,325,150,175,325,150,150,270,25 (1920p)
                 {
                     targets: 0,
-                    width: '2.5%',
+                    width: '1.30208333333%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_group'] === true) {
@@ -2234,7 +2270,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '15%',
+                    width: '16.9270833333%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return `<input type="text" class="form-control table-row-group-title-edit" value="${row?.['group_title']}">
@@ -2260,7 +2296,7 @@ class QuotationDataTableHandle {
                         }
                         if (itemType === 0) { // PRODUCT
                             return `<div class="row table-row-item-area">
-                                        <div class="col-12">
+                                        <div class="col-12 col-md-12 col-lg-12">
                                             <select 
                                             class="form-select table-row-item" 
                                             data-zone="${dataZone}"
@@ -2310,7 +2346,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '15%',
+                    width: '16.9270833333%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2322,13 +2358,13 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_products_data";
                         }
                         return `<div class="row">
-                                    <p><span class="table-row-description" data-zone="${dataZone}">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
+                                    <span class="table-row-description" data-zone="${dataZone}">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span>
                                 </div>`;
                     }
                 },
                 {
                     targets: 3,
-                    width: '7.5%',
+                    width: '7.8125%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2373,7 +2409,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '10%',
+                    width: '9.11458333333%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2389,7 +2425,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '17.5%',
+                    width: '16.9270833333%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2411,7 +2447,7 @@ class QuotationDataTableHandle {
                                                 data-return-type="number"
                                                 data-zone="${dataZone}"
                                             >
-                                            <div class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></div>
+                                            <div class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></div>
                                         </div>
                                         </div>
                                         <div role="menu" class="dropdown-menu table-row-price-list w-500p">
@@ -2423,7 +2459,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: '10%',
+                    width: '7.8125%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2438,7 +2474,7 @@ class QuotationDataTableHandle {
                                     <div class="input-group">
                                         <div class="input-affix-wrapper">
                                             <input type="text" class="form-control table-row-discount validated-number" value="${row?.['product_discount_value']}" data-zone="${dataZone}">
-                                            <div class="input-suffix"><i class="fas fa-percentage"></i></div>
+                                            <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                         </div>
                                     </div>
                                     <input
@@ -2458,7 +2494,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '7.5%',
+                    width: '7.8125%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2528,7 +2564,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '12.5%',
+                    width: '14.0625%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2552,7 +2588,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 9,
-                    width: '2.5%',
+                    width: '1.30208333333%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2604,16 +2640,20 @@ class QuotationDataTableHandle {
                             }
                         }
                         if (itemType === 0) {  // product
-                            return `<select
-                                        class="form-select table-row-item disabled-custom-show"
-                                        data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
-                                        data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
-                                        data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
-                                        data-keyResp="product_sale_list"
-                                        data-zone="${dataZone}"
-                                        disabled
-                                    >
-                                    </select>`;
+                            return `<div class="row table-row-item-area">
+                                        <div class="col-12 col-md-12 col-lg-12">
+                                            <select
+                                                class="form-select table-row-item disabled-custom-show"
+                                                data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
+                                                data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                                data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
+                                                data-keyResp="product_sale_list"
+                                                data-zone="${dataZone}"
+                                                disabled
+                                            >
+                                            </select>
+                                        </div>
+                                    </div>`;
                         } else if (itemType === 1) {  // shipping
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
@@ -2686,12 +2726,13 @@ class QuotationDataTableHandle {
                                             <div class="input-affix-wrapper">
                                                 <input 
                                                     type="text" 
-                                                    class="form-control mask-money table-row-price" 
+                                                    class="form-control mask-money table-row-price disabled-custom-show" 
                                                     value="${row?.['product_cost_price']}"
                                                     data-return-type="number"
                                                     data-zone="${dataZone}"
+                                                    disabled
                                                 >
-                                                <div class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></div>
+                                                <div class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></div>
                                             </div>
                                             </div>
                                             <div role="menu" class="dropdown-menu table-row-cost-list w-500p">
@@ -3139,7 +3180,7 @@ class QuotationDataTableHandle {
                                     <input 
                                         type="checkbox"
                                         class="form-check-input table-row-check"
-                                        data-id="${row.id}"
+                                        data-id="${row?.['id']}"
                                     >
                                 </div>`
                     }
@@ -3147,13 +3188,16 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.title}</span>`
+                        return `<span class="table-row-title">${row?.['title']}</span>`
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row.code}</span>`
+                        if (row?.['code']) {
+                            return `<span class="badge badge-primary table-row-code">${row?.['code']}</span>`;
+                        }
+                        return `<p></p>`;
                     },
                 }
             ],
@@ -3442,7 +3486,7 @@ class QuotationDataTableHandle {
                         return `<div class="input-group">
                                     <div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-ratio validated-number" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
-                                        <div class="input-suffix"><i class="fas fa-percentage"></i></div>
+                                        <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                     </div>
                                 </div>`;
                     }
@@ -3801,6 +3845,35 @@ class QuotationCalculateCaseHandle {
 
 // Config
 class QuotationCheckConfigHandle {
+    static checkSsLsRole() {
+        let configRaw = $('#quotation-config-data').val();
+        if (configRaw) {
+            let config = JSON.parse(configRaw);
+            // check role in ss_role or ls_role
+            let empCurrent = JSON.parse($('#employee_current').text());
+            let ss_role_id = [];
+            let ls_role_id = [];
+            for (let role of config?.['ss_role']) {
+                ss_role_id.push(role?.['id']);
+            }
+            for (let role of config?.['ls_role']) {
+                ls_role_id.push(role?.['id']);
+            }
+            for (let roleID of empCurrent?.['role']) {
+                if (ss_role_id.includes(roleID)) {
+                    QuotationLoadDataHandle.opportunitySelectEle[0].setAttribute('disabled', 'true');
+                    $(QuotationLoadDataHandle.opportunitySelectEle[0].closest('.input-group')).after(`<small class="text-red">${QuotationLoadDataHandle.transEle.attr('data-validate-ss-role')}</small>`);
+                }
+            }
+            for (let roleID of empCurrent?.['role']) {
+                if (ls_role_id.includes(roleID)) {
+                    QuotationLoadDataHandle.opportunitySelectEle[0].setAttribute('required', 'true');
+                }
+            }
+        }
+        return true;
+    };
+
     static checkConfig(is_change_opp = false, new_row = null, is_first_time = false, is_has_opp_detail = false, is_copy = false) {
         let form = document.getElementById('frm_quotation_create');
         let configRaw = $('#quotation-config-data').val();
@@ -3808,9 +3881,11 @@ class QuotationCheckConfigHandle {
             let opportunity = QuotationLoadDataHandle.opportunitySelectEle.val();
             let config = JSON.parse(configRaw);
             let tableProduct = document.getElementById('datable-quotation-create-product');
-            let empty_list = ["", null];
             let is_make_price_change = false;
-            if ((!opportunity || empty_list.includes(opportunity)) && is_has_opp_detail === false) { // short sale
+            if (["", null].includes(opportunity)) {
+                opportunity = null;
+            }
+            if (!opportunity && is_has_opp_detail === false) { // short sale
                 if (is_change_opp === true) {
                     // ReCheck Table Product
                     if (is_first_time === false) {
@@ -3889,10 +3964,6 @@ class QuotationCheckConfigHandle {
                             }
                         }
                     }
-                    // ReCalculate Total
-                    // if (is_first_time === false && is_copy === false) {
-                    //     QuotationCalculateCaseHandle.updateTotal(tableProduct, true, false, false);
-                    // }
                 } else {
                     if (new_row) {
                         is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, new_row, false, true, is_make_price_change);
@@ -4892,6 +4963,10 @@ class QuotationSubmitHandle {
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
                     rowData['product_cost_price'] = $(elePrice).valCurrency();
+                    rowData['warehouse'] = null;
+                    if ($(elePrice).attr('data-wh-id')) {
+                        rowData['warehouse'] = $(elePrice).attr('data-wh-id');
+                    }
                 }
                 let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
                 if (eleSubtotal) {
@@ -5300,15 +5375,6 @@ class QuotationSubmitHandle {
                 _form.dataForm['payment_term_data'] = dataSelected;
             }
         }
-
-        // ****************************
-        // Auto fill data when form calling submit "$('.btn-saving-form')..."
-        // ****************************
-        // system fields
-
-        if (_form.dataMethod.toLowerCase() === 'post') {
-            _form.dataForm['system_status'] = 1;
-        }
     };
 }
 
@@ -5444,5 +5510,32 @@ function validateNumber(ele) {
     value = value.replace("-", "").replace(/^0+(?=\d)/, '');
     // Update value of input
     ele.value = value;
+    return true;
+}
+
+function validatePSValue(ele) {
+    let tablePS = $('#datable-quotation-payment-stage');
+    let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+    if (tableProductWrapper) {
+        let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+        let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+        let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+        if (elePretax && eleDiscount) {
+            let valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
+            let totalBT = 0;
+            tablePS.DataTable().rows().every(function () {
+                let row = this.node();
+                let eleValueBT = row.querySelector('.table-row-value-before-tax');
+                if (eleValueBT) {
+                    totalBT += $(eleValueBT).valCurrency();
+                }
+            });
+            if (totalBT > valueSO) {
+                $(ele).attr('value', String(0));
+                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+                return false
+            }
+        }
+    }
     return true;
 }

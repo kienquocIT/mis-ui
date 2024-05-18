@@ -78,8 +78,21 @@ $(function () {
                     // mask money
                     $.fn.initMaskMoney2();
                     loadTotal();
+                    // add css to Dtb
+                    loadCssToDtb('table_report_customer_list');
                 },
             });
+        }
+
+        function loadCssToDtb(tableID) {
+            let tableIDWrapper = tableID + '_wrapper';
+            let tableWrapper = document.getElementById(tableIDWrapper);
+            if (tableWrapper) {
+                let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+                if (headerToolbar) {
+                    headerToolbar.classList.add('hidden');
+                }
+            }
         }
 
         function setupDataLoadTable(dataList) {
@@ -243,9 +256,11 @@ $(function () {
             });
         }
 
-        $('#btn-collapse').click(function () {
-            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
-        });
+        function loadFilter(listData, $eleShow) {
+            if (listData.length > 0) {
+                $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
+            }
+        }
 
         // load init
         function initData() {
@@ -269,6 +284,7 @@ $(function () {
                     format: 'DD/MM/YYYY',
                 },
                 maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
                 autoApply: true,
                 autoUpdateInput: false,
             }).on('apply.daterangepicker', function (ev, picker) {
@@ -279,6 +295,21 @@ $(function () {
 
         // mask money
         $.fn.initMaskMoney2();
+
+        // Prevent dropdown from closing when clicking inside the dropdown
+        $('.dropdown-menu').on('click', function (e) {
+            e.stopPropagation();
+        });
+
+        // Prevent the dropdown from closing when clicking outside it
+        $('.btn-group').on('hide.bs.dropdown', function (e) {
+            e.preventDefault();
+        });
+
+        // Reopen dropdown on button click
+        $('.btn-group').on('click', '.btn', function (e) {
+            $(this).siblings('.dropdown-menu').toggleClass('show');
+        });
 
         // Events
         boxGroup.on('change', function() {
@@ -297,25 +328,41 @@ $(function () {
             loadTotal();
         });
 
-        btnView.on('click', function () {
+        $('#btn-apply-vb, #btn-apply-date').on('click', function () {
+            this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
-            if (boxGroup.val()) {
+            let listViewBy = [];
+            let listDate = [];
+            if (boxGroup.val() && boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
+                for (let text of boxGroup[0].innerText.split("\n")) {
+                    listViewBy.push(text);
+                }
             }
-            if (boxEmployee.val()) {
+            if (boxEmployee.val() && boxEmployee.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
+                for (let text of boxEmployee[0].innerText.split("\n")) {
+                    listViewBy.push(text);
+                }
             }
-            if (boxCustomer.val()) {
+            if (boxCustomer.val() && boxCustomer.val().length > 0) {
                 dataParams['customer_id__in'] = boxCustomer.val().join(',');
+                for (let text of boxCustomer[0].innerText.split("\n")) {
+                    listViewBy.push(text);
+                }
             }
+            loadFilter(listViewBy, $('#card-filter-vb'));
             if (boxStart.val()) {
                 let dateStart = moment(boxStart.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
                 dataParams['date_approved__gte'] = formatStartDate(dateStart);
+                listDate.push(boxStart.val());
             }
             if (boxEnd.val()) {
                 let dateEnd = moment(boxEnd.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
                 dataParams['date_approved__lte'] = formatEndDate(dateEnd);
+                listDate.push(boxEnd.val());
             }
+            loadFilter(listDate, $('#card-filter-date'));
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
@@ -332,6 +379,10 @@ $(function () {
                     }
                 }
             )
+        });
+
+        $('#btn-cancel-vb, #btn-cancel-date').on('click', function () {
+            this.closest('.dropdown-menu').classList.remove('show');
         });
 
 

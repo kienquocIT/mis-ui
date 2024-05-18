@@ -163,10 +163,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOOD_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Good receipt detail'))
 
     # Inventory Adjustment
-    INVENTORY_ADJUSTMENT_LIST_PAGE = BreadcrumbChildren(_('Inventory Adjustment'), 'InventoryAdjustmentList')
-    INVENTORY_ADJUSTMENT_CREATE_PAGE = BreadcrumbChildren(_('Inventory Adjustment create'), 'InventoryAdjustmentCreate')
-    INVENTORY_ADJUSTMENT_EDIT_PAGE = BreadcrumbChildren(_('Inventory Adjustment edit'))
-    INVENTORY_ADJUSTMENT_DETAIL_PAGE = BreadcrumbChildren(_('Inventory Adjustment detail'))
+    INVENTORY_ADJUSTMENT_LIST_PAGE = BreadcrumbChildren(_('Inventory adjustment'), 'InventoryAdjustmentList')
+    INVENTORY_ADJUSTMENT_CREATE_PAGE = BreadcrumbChildren(_('Inventory adjustment create'), 'InventoryAdjustmentCreate')
+    INVENTORY_ADJUSTMENT_EDIT_PAGE = BreadcrumbChildren(_('Inventory adjustment update'))
+    INVENTORY_ADJUSTMENT_DETAIL_PAGE = BreadcrumbChildren(_('Inventory adjustment detail'))
 
     # Transition Data Config
     DELIVERY_CONFIG_PAGE = BreadcrumbChildren(_('Delivery'), 'DeliveryConfigDetail')
@@ -250,6 +250,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Goods receipt detail'))
     GOODS_RECEIPT_UPDATE_PAGE = BreadcrumbChildren(_('Goods receipt update'))
 
+    # Goods detail
+    GOODS_DETAIL_PAGE = BreadcrumbChildren(_('Goods detail'), 'GoodsDetail')
+
     # Purchase request config
     PURCHASE_REQUEST_CONFIG_PAGE = BreadcrumbChildren(_('Purchase Request'), 'PurchaseRequestConfig')
 
@@ -257,7 +260,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_TRANSFER_LIST_PAGE = BreadcrumbChildren(_('Goods Transfer'), 'GoodsTransferList')
 
     # Goods issue
-    GOODS_ISSUE_LIST_PAGE = BreadcrumbChildren(_('Goods Issue'), 'GoodsIssueList')
+    GOODS_ISSUE_LIST_PAGE = BreadcrumbChildren(_('Goods issue'), 'GoodsIssueList')
 
     # E-Office
     #  Leave
@@ -311,7 +314,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     BALANCE_INIT_PAGE = BreadcrumbChildren(_('Balance initialization'), 'BalanceInitList')
 
-    INVOICE_SIGN_PAGE = BreadcrumbChildren(_('Invoice sign'), 'BalanceInitList')
+    INVOICE_SIGN_PAGE = BreadcrumbChildren(_('Invoice sign'), 'InvoiceSignList')
+
+    INVENTORY_INTERACT_CONFIG = BreadcrumbChildren(_('Inventory interact config'), 'InventoryInteractConfigList')
 
     REVENUE_PLAN_CONFIG_PAGE = BreadcrumbChildren(_('Revenue plan config'), 'RevenuePlanConfigList')
 
@@ -326,6 +331,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     REPORT_CUSTOMER_LIST_PAGE = BreadcrumbChildren(_('Customer report'), 'ReportCustomerList')
     REPORT_PIPELINE_LIST_PAGE = BreadcrumbChildren(_('Pipeline report'), 'ReportPipelineList')
     REPORT_CASHFLOW_LIST_PAGE = BreadcrumbChildren(_('Cashflow report'), 'ReportCashflowList')
+    REPORT_INVENTORY_LIST_PAGE = BreadcrumbChildren(_('Inventory Report'), 'ReportInventoryList')
+    REPORT_INVENTORY_DETAIL_LIST_PAGE = BreadcrumbChildren(_('Items Detail Report'), 'ReportInventoryDetailList')
+    REPORT_PURCHASING_LIST_PAGE = BreadcrumbChildren(_('Purchase order report'), 'PurchaseOrderReportList')
 
     GOODS_RETURN_LIST_PAGE = BreadcrumbChildren(_('Goods return list'), 'GoodsReturnList')
     GOODS_RETURN_CREATE_PAGE = BreadcrumbChildren(_('Goods return create'), 'GoodsReturnCreate')
@@ -735,6 +743,9 @@ class BreadcrumbView:
     GOODS_RECEIPT_DETAIL_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     GOODS_RECEIPT_UPDATE_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
+    # Goods detail
+    GOODS_DETAIL_PAGE = [BreadcrumbItem.GOODS_DETAIL_PAGE]
+
     # e-office Leave
     LEAVE_CONFIG_PAGE = [
         BreadcrumbItem.HOME_PAGE,
@@ -763,6 +774,7 @@ class BreadcrumbView:
     GOODS_TRANSFER_LIST_PAGE = [BreadcrumbItem.GOODS_TRANSFER_LIST_PAGE]
     GOODS_TRANSFER_CREATE_PAGE = GOODS_TRANSFER_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     GOODS_TRANSFER_DETAIL_PAGE = GOODS_TRANSFER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    GOODS_TRANSFER_UPDATE_PAGE = GOODS_TRANSFER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     # Goods issue
     GOODS_ISSUE_LIST_PAGE = [BreadcrumbItem.GOODS_ISSUE_LIST_PAGE]
@@ -777,7 +789,7 @@ class BreadcrumbView:
     BUSINESS_TRIP_EDIT = BUSINESS_TRIP_REQUEST_LIST + [BreadcrumbItem.BASTION_UPDATE]
 
     # Final acceptance
-    FINAL_ACCEPTANCE_LIST_PAGE = [BreadcrumbItem.FINAL_ACCEPTANCE_LIST_PAGE]
+    FINAL_ACCEPTANCE_LIST_PAGE = [BreadcrumbItem.FINAL_ACCEPTANCE_LIST_PAGE] + [BreadcrumbItem.BASTION_DETAIL]
 
     # Calendar
     CALENDAR_LIST_PAGE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.CALENDAR_LIST_PAGE]
@@ -824,6 +836,8 @@ class BreadcrumbView:
 
     INVOICE_SIGN_PAGE = [BreadcrumbItem.INVOICE_SIGN_PAGE]
 
+    INVENTORY_INTERACT_CONFIG = [BreadcrumbItem.INVENTORY_INTERACT_CONFIG]
+
     REVENUE_PLAN_CONFIG_PAGE = [BreadcrumbItem.REVENUE_PLAN_CONFIG_PAGE]
 
     REVENUE_PLAN_LIST_PAGE = [BreadcrumbItem.REVENUE_PLAN_LIST_PAGE]
@@ -846,6 +860,15 @@ class BreadcrumbView:
     ]
     REPORT_CASHFLOW_LIST_PAGE = [
         BreadcrumbItem.REPORT_CASHFLOW_LIST_PAGE
+    ]
+    REPORT_INVENTORY_LIST_PAGE = [
+        BreadcrumbItem.REPORT_INVENTORY_LIST_PAGE
+    ]
+    REPORT_INVENTORY_DETAIL_LIST_PAGE = [
+        BreadcrumbItem.REPORT_INVENTORY_DETAIL_LIST_PAGE
+    ]
+    REPORT_PURCHASING_LIST_PAGE = [
+        BreadcrumbItem.REPORT_PURCHASING_LIST_PAGE
     ]
 
     GOODS_RETURN_LIST_PAGE = [BreadcrumbItem.GOODS_RETURN_LIST_PAGE]

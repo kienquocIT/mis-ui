@@ -29,6 +29,16 @@ $(function () {
         //                 targets: 0,
         //                 width: '3.25%',
         //                 render: (data, type, row) => {
+        //                     if ([2, 3].includes(row?.['cashflow_type'])) {
+        //                         let typeMapIcon = {
+        //                             2: "fas fa-arrow-left text-green mt-1",
+        //                             3: "fas fa-arrow-right text-red mt-1",
+        //                         }
+        //                         return `<div class="d-flex justify-content-end">
+        //                                     <p class="table-row-type mr-2" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>
+        //                                     <small><i class="${typeMapIcon[row?.['cashflow_type']]}"></i></small>
+        //                                 </div>`;
+        //                     }
         //                     return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
         //                 }
         //             },
@@ -622,6 +632,16 @@ $(function () {
         //                 targets: 0,
         //                 width: '7.5%',
         //                 render: (data, type, row) => {
+        //                     if ([2, 3].includes(row?.['cashflow_type'])) {
+        //                         let typeMapIcon = {
+        //                             2: "fas fa-arrow-left text-green mt-1",
+        //                             3: "fas fa-arrow-right text-red mt-1",
+        //                         }
+        //                         return `<div class="d-flex justify-content-end">
+        //                                     <p class="table-row-type mr-2" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>
+        //                                     <small><i class="${typeMapIcon[row?.['cashflow_type']]}"></i></small>
+        //                                 </div>`;
+        //                     }
         //                     return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
         //                 }
         //             },
@@ -861,6 +881,16 @@ $(function () {
                         targets: 0,
                         width: '7%',
                         render: (data, type, row) => {
+                            if ([2, 3].includes(row?.['cashflow_type'])) {
+                                let typeMapIcon = {
+                                    2: "fas fa-arrow-left text-green mt-1",
+                                    3: "fas fa-arrow-right text-red mt-1",
+                                }
+                                return `<div class="d-flex justify-content-end">
+                                            <p class="table-row-type mr-2" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>
+                                            <small><i class="${typeMapIcon[row?.['cashflow_type']]}"></i></small>
+                                        </div>`;
+                            }
                             return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
                         }
                     },
@@ -1290,6 +1320,8 @@ $(function () {
                     $.fn.initMaskMoney2();
                     // change TH by months
                     changeTHTableYearByMonths();
+                    // add css to Dtb
+                    loadCssToDtb('table_report_cashflow_year_list');
                 },
             });
         }
@@ -1307,6 +1339,16 @@ $(function () {
                         targets: 0,
                         width: '15%',
                         render: (data, type, row) => {
+                            if ([2, 3].includes(row?.['cashflow_type'])) {
+                                let typeMapIcon = {
+                                    2: "fas fa-arrow-left text-green mt-1",
+                                    3: "fas fa-arrow-right text-red mt-1",
+                                }
+                                return `<div class="d-flex justify-content-end">
+                                            <p class="table-row-type mr-2" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>
+                                            <small><i class="${typeMapIcon[row?.['cashflow_type']]}"></i></small>
+                                        </div>`;
+                            }
                             return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
                         }
                     },
@@ -1457,11 +1499,24 @@ $(function () {
                     $.fn.initMaskMoney2();
                     // change TH by weeks
                     changeTHTableMonthByWeeks();
+                    // add css to Dtb
+                    loadCssToDtb('table_report_cashflow_month_list');
                 },
             });
         }
 
         loadDblMonth();
+
+        function loadCssToDtb(tableID) {
+            let tableIDWrapper = tableID + '_wrapper';
+            let tableWrapper = document.getElementById(tableIDWrapper);
+            if (tableWrapper) {
+                let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+                if (headerToolbar) {
+                    headerToolbar.classList.add('hidden');
+                }
+            }
+        }
 
         function setupDataLoadTable(dataList) {
             let result = [];
@@ -1501,18 +1556,20 @@ $(function () {
                     loadDblMonth();
                     let weeksOfMonth = getWeeksOfMonth(parseInt(month), parseInt(year));
                     for (let data of dataList) {
-                        if (data?.['due_date']) {
-                            let date = data?.['due_date'];
-                            for (let key in weeksOfMonth) {
-                                let startDate = weeksOfMonth[key]?.['start_date'];
-                                let endDate = weeksOfMonth[key]?.['end_date'];
-                                let isInRange = isDateInRange(date, startDate, endDate);
-                                if (isInRange === true) {
-                                    if (dataByWeek.hasOwnProperty(key)) {
-                                        dataByWeek[key]['value_estimate_sale'] += data?.['value_estimate_sale'];
-                                        dataByWeek[key]['value_estimate_cost'] += data?.['value_estimate_cost'];
+                        if (data?.['system_status'] === 3) {  // check system status is finished
+                            if (data?.['due_date']) {
+                                let date = data?.['due_date'];
+                                for (let key in weeksOfMonth) {
+                                    let startDate = weeksOfMonth[key]?.['start_date'];
+                                    let endDate = weeksOfMonth[key]?.['end_date'];
+                                    let isInRange = isDateInRange(date, startDate, endDate);
+                                    if (isInRange === true) {
+                                        if (dataByWeek.hasOwnProperty(key)) {
+                                            dataByWeek[key]['value_estimate_sale'] += data?.['value_estimate_sale'];
+                                            dataByWeek[key]['value_estimate_cost'] += data?.['value_estimate_cost'];
+                                        }
+                                        break;
                                     }
-                                    break;
                                 }
                             }
                         }
@@ -1526,11 +1583,13 @@ $(function () {
                     $eleTable.DataTable().destroy();
                     loadDbl();
                     for (let data of dataList) {
-                        if (data?.['due_date']) {
-                            let monthDueDate = getMonthFromDateStr(data?.['due_date']);
-                            if (dataByMonth.hasOwnProperty(monthDueDate)) {
-                                dataByMonth[monthDueDate]['value_estimate_sale'] += data?.['value_estimate_sale'];
-                                dataByMonth[monthDueDate]['value_estimate_cost'] += data?.['value_estimate_cost'];
+                        if (data?.['system_status'] === 3) {  // check system status is finished
+                            if (data?.['due_date']) {
+                                let monthDueDate = getMonthFromDateStr(data?.['due_date']);
+                                if (dataByMonth.hasOwnProperty(monthDueDate)) {
+                                    dataByMonth[monthDueDate]['value_estimate_sale'] += data?.['value_estimate_sale'];
+                                    dataByMonth[monthDueDate]['value_estimate_cost'] += data?.['value_estimate_cost'];
+                                }
                             }
                         }
                     }
@@ -1580,12 +1639,14 @@ $(function () {
                 $(firstRow).css({
                     'background-color': '#ebf5f5',
                     'color': '#007D88',
+                    'font-weight': 'bold',
                 });
                 for (let eleType of $eleTable[0].querySelectorAll('.table-row-type')) {
                     let row = eleType.closest('td');
                     $(row).css({
                         'background-color': '#ebf5f5',
                         'color': '#007D88',
+                        'font-weight': 'bold',
                     });
                     if (eleType.getAttribute('data-type')) {
                         if ([2, 3, 4].includes(parseInt(eleType.getAttribute('data-type')))) {

@@ -117,8 +117,8 @@ function loadMeetingSaleCodeList(data) {
 
             }
             else {
-                loadMeetingAddress(obj_selected?.['customer']?.['shipping_address'])
-                loadCustomerMember(obj_selected?.['customer']?.['contact_mapped'])
+                loadMeetingAddress(obj_selected?.['customer']?.['shipping_address'] ? obj_selected?.['customer']?.['shipping_address'] : [])
+                loadCustomerMember(obj_selected?.['customer']?.['contact_mapped'] ? obj_selected?.['customer']?.['contact_mapped'] : [])
             }
         }
     })

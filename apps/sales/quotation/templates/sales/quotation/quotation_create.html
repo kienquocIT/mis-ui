@@ -61,25 +61,6 @@
                                             required
                                     >
                                 </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-6">
-                                <div class="form-group">
-                                    <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
-                                    <select
-                                            class="form-select"
-                                            id="select-box-quotation-create-payment-term"
-                                            data-url="{% url "PaymentsTermsListAPI" %}"
-                                            data-link-detail=""
-                                            data-method="GET"
-                                            name="payment_term"
-                                            data-keyResp="payment_terms_list"
-                                            required
-                                    ></select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}</label>
                                     <select
@@ -94,33 +75,6 @@
                                             required
                                     ></select>
                                 </div>
-                            </div>
-                            <div class="col-12 col-md-3 col-lg-3">
-                                <div class="form-group">
-                                    <label class="form-label required" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
-                                    <div class="input-group">
-                                        <div class="input-affix-wrapper">
-                                            <input
-                                                type="text" class="form-control disabled-custom-show"
-                                                placeholder="dd/mm/yyyy"
-                                                name="date_created"
-                                                id="quotation-create-date-created"
-                                                disabled
-                                                required
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-3 col-lg-3">
-                                <div class="form-check mt-5">
-                                    <input type="checkbox" class="form-check-input" id="quotation-customer-confirm" name="is_customer_confirm">
-                                    <label class="form-check-label" for="quotation-customer-confirm">{% trans 'Customer Confirm' %}</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}</label>
                                     <select
@@ -136,6 +90,44 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
+                                    <select
+                                            class="form-select"
+                                            id="select-box-quotation-create-payment-term"
+                                            data-url="{% url "PaymentsTermsListAPI" %}"
+                                            data-link-detail=""
+                                            data-method="GET"
+                                            name="payment_term"
+                                            data-keyResp="payment_terms_list"
+                                            required
+                                    ></select>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <label class="form-label required" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
+                                            <div class="input-group">
+                                                <div class="input-affix-wrapper">
+                                                    <input
+                                                        type="text" class="form-control disabled-custom-show"
+                                                        placeholder="dd/mm/yyyy"
+                                                        name="date_created"
+                                                        id="quotation-create-date-created"
+                                                        disabled
+                                                        required
+                                                    >
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-4 col-lg-4">
+                                        <div class="form-check mt-5">
+                                            <input type="checkbox" class="form-check-input" id="quotation-customer-confirm" name="is_customer_confirm">
+                                            <label class="form-check-label" for="quotation-customer-confirm">{% trans 'Customer Confirm' %}</label>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="d-flex justify-content-start mt-5">
                                     <button
                                             type="button"
@@ -170,8 +162,8 @@
                                                     <thead>
                                                     <tr>
                                                         <th class="w-10"></th>
-                                                        <th class="w-50">{% trans 'Title' %}</th>
-                                                        <th class="w-40">{% trans 'Code' %}</th>
+                                                        <th class="w-60">{% trans 'Title' %}</th>
+                                                        <th class="w-30">{% trans 'Code' %}</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -261,7 +253,7 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-product"
-                                            class="table nowrap min-w-2000p w-100 mb-5"
+                                            class="table nowrap min-w-1920p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr>
@@ -302,7 +294,7 @@
                                                         <div class="input-group">
                                                             <span class="input-affix-wrapper">
                                                                 <input type="text" class="form-control validated-number quotation-create-product-discount" value="0" data-zone="quotation_products_data">
-                                                                <span class="input-suffix"><i class="fas fa-percentage"></i></span>
+                                                                <span class="input-suffix"><small><i class="fas fa-percentage"></i></small></span>
                                                             </span>
                                                         </div>
                                                     </div>
@@ -765,6 +757,7 @@
         data-required-product-uom="{% trans "Product unit of measure is required" %}"
         data-required-expense-uom="{% trans "Expense unit of measure is required" %}"
         data-copy-successfully="{% trans "Copy successfully" %}"
+        data-validate-ss-role="{% trans "Opportunity is disabled because employee in short sales roles" %}"
     >
 
     <input
@@ -803,7 +796,7 @@
     <input
             type="text"
             id="data-init-quotation-create-request-employee"
-            value="{{ data.data.employee_current }}"
+            value="{{ data.employee_current }}"
     >
     <input
             type="text"
@@ -838,7 +831,7 @@
     <input
             type="text"
             id="data-init-opportunity"
-            value="{{ data.data.opportunity }}"
+            value="{{ data.opportunity }}"
     >
     <input
             type="text"
@@ -865,7 +858,8 @@
             data-url="{% url "AccountForSaleListAPI" %}"
             data-method="GET"
     >
-
+    {{ data.employee_current|json_script:'employee_current' }}
+    {{ data.opportunity|json_script:'init_opp' }}
 {% endblock %}
 
 {% block jsFooter %}

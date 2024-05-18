@@ -1,9 +1,7 @@
 from django.views import View
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg
+from apps.shared import mask_view, ServerAPI, ApiURL
 from apps.shared.msg import ReportMsg
 
 FILTER_QUARTER = (
@@ -28,9 +26,9 @@ FILTER_MONTH = (
     (12, ReportMsg.MONTH_DECEMBER),
 )
 
+
 # REPORT REVENUE
 class ReportRevenueList(View):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
@@ -43,7 +41,6 @@ class ReportRevenueList(View):
 
 
 class ReportRevenueListAPI(APIView):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
@@ -57,7 +54,6 @@ class ReportRevenueListAPI(APIView):
 
 # REPORT PRODUCT
 class ReportProductList(View):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
@@ -70,7 +66,6 @@ class ReportProductList(View):
 
 
 class ReportProductListAPI(APIView):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
@@ -84,7 +79,6 @@ class ReportProductListAPI(APIView):
 
 # REPORT CUSTOMER
 class ReportCustomerList(View):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
@@ -97,7 +91,6 @@ class ReportCustomerList(View):
 
 
 class ReportCustomerListAPI(APIView):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
@@ -111,25 +104,26 @@ class ReportCustomerListAPI(APIView):
 
 # REPORT INVENTORY DETAIL
 class ReportInventoryDetailList(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/inventory_report/items_detail_report.html',
         menu_active='menu_items_detail_report',
-        breadcrumb='',
+        breadcrumb='REPORT_INVENTORY_DETAIL_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.COMPANY_CONFIG).get()
         if len(resp1.result) > 0:
             return {
-                'data': {'current_period': resp1.result[0]},
+                'data': {
+                    'current_period': resp1.result[0],
+                    'definition_inventory_valuation': resp2.result['definition_inventory_valuation']
+                },
             }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 
 class ReportInventoryDetailListAPI(APIView):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
@@ -143,25 +137,27 @@ class ReportInventoryDetailListAPI(APIView):
 
 # REPORT INVENTORY
 class ReportInventoryList(View):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
         template='sales/inventory_report/inventory_report.html',
         menu_active='menu_inventory_report',
-        breadcrumb='',
+        breadcrumb='REPORT_INVENTORY_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.COMPANY_CONFIG).get()
         if len(resp1.result) > 0:
             return {
-                'data': {'current_period': resp1.result[0]},
+                'data': {
+                    'current_period': resp1.result[0],
+                    'definition_inventory_valuation': resp2.result['definition_inventory_valuation']
+                },
             }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 
 class ReportInventoryListAPI(APIView):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
@@ -175,7 +171,6 @@ class ReportInventoryListAPI(APIView):
 
 # REPORT PIPELINE
 class ReportPipelineList(View):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
@@ -188,7 +183,6 @@ class ReportPipelineList(View):
 
 
 class ReportPipelineListAPI(APIView):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
@@ -202,7 +196,6 @@ class ReportPipelineListAPI(APIView):
 
 # REPORT CASHFLOW
 class ReportCashflowList(View):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
@@ -215,7 +208,6 @@ class ReportCashflowList(View):
 
 
 class ReportCashflowListAPI(APIView):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
@@ -229,7 +221,6 @@ class ReportCashflowListAPI(APIView):
 
 # REPORT GENERAL
 class ReportGeneralList(View):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
@@ -242,7 +233,6 @@ class ReportGeneralList(View):
 
 
 class ReportGeneralListAPI(APIView):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
@@ -252,3 +242,33 @@ class ReportGeneralListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.REPORT_GENERAL_LIST).get(data)
         return resp.auto_return(key_success='report_general_list')
+
+
+# PO REPORT
+class PurchaseOrderReportList(View):
+
+    @mask_view(
+        auth_require=True,
+        template='sales/purchasing_report/po_report.html',
+        menu_active='menu_po_report',
+        breadcrumb='REPORT_PURCHASING_LIST_PAGE',
+    )
+    def get(self, request, *args, **kwargs):
+        resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
+        if len(resp1.result) > 0:
+            return {
+                'data': {'current_period': resp1.result[0]},
+            }, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
+
+
+class PurchaseOrderReportListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PO_REPORT_LIST).get(data)
+        return resp.auto_return(key_success='po_report_list')

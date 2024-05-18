@@ -14,7 +14,8 @@ from apps.sales.purchasing.views import (
     PurchaseQuotationRequestDetailAPI, PurchaseQuotationRequestUpdate,
 
     PurchaseQuotationList, PurchaseQuotationListAPI, PurchaseQuotationCreate, PurchaseQuotationDetail,
-    PurchaseQuotationDetailAPI, PurchaseQuotationProductListAPI,
+    PurchaseQuotationDetailAPI, PurchaseQuotationProductListAPI, PurchaseRequestSaleListAPI,
+    PurchaseQuotationSaleListAPI,
 )
 
 urlpatterns = [
@@ -29,6 +30,7 @@ urlpatterns = [
     path('purchase-request/api/<str:pk>', PurchaseRequestDetailAPI.as_view(), name='PurchaseRequestDetailAPI'),
     path('purchase-request-product/list', PurchaseRequestProductListAPI.as_view(), name='PurchaseRequestProductListAPI'),
     path('purchase-request/list-for-pqr/api', PurchaseRequestListForPQRAPI.as_view(), name='PurchaseRequestListForPQRAPI'),
+    path('purchase-request/list-sale/api', PurchaseRequestSaleListAPI.as_view(), name='PurchaseRequestSaleListAPI'),
 
     # purchase order
     path('purchase-order/list', PurchaseOrderList.as_view(), name='PurchaseOrderList'),
@@ -57,4 +59,5 @@ urlpatterns = [
     path('purchase-quotation/list/api', PurchaseQuotationListAPI.as_view(), name='PurchaseQuotationListAPI'),
     path('purchase-quotation/api/<str:pk>', PurchaseQuotationDetailAPI.as_view(), name='PurchaseQuotationDetailAPI'),
     path('purchase-quotation-product/list', PurchaseQuotationProductListAPI.as_view(), name='PurchaseQuotationProductListAPI'),
+    path('purchase-quotation/list-sale/api', PurchaseQuotationSaleListAPI.as_view(), name='PurchaseQuotationSaleListAPI'),
 ]

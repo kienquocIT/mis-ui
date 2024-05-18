@@ -36,11 +36,14 @@ from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate
 from apps.masterdata.saledata.views.warehouse import (
     WareHouseList, WareHouseListAPI, WareHouseDetailAPI, WarehouseProductAPI, WareHouseListForInventoryAdjustmentAPI,
     WareHouseCreate, WareHouseDetail, WareHouseUpdate, WarehouseGetProductsListAPI, WarehouseLotListAPI,
-    WarehouseSerialListAPI, ProductWarehouseAssetList,
+    WarehouseSerialListAPI, ProductWarehouseAssetList, WarehouseGetProductsListAPIForGoodsTransfer,
 )
 from apps.masterdata.saledata.views.meeting_config import MeetingConfigList, MeetingRoomListAPI, \
     MeetingRoomDetailAPI, MeetingZoomConfigListAPI, MeetingZoomConfigDetailAPI
 from apps.masterdata.saledata.views.invoice_sign import InvoiceSignList, InvoiceSignListAPI
+from apps.masterdata.saledata.views.inventory_interact_config import (
+    InventoryInteractConfigList, InventoryInteractConfigListAPI, InventoryInteractConfigDetailAPI
+)
 
 
 urlpatterns = [
@@ -257,6 +260,7 @@ urlpatterns += [
     path('warehouse/api/<str:pk>', WareHouseDetailAPI.as_view(), name='WareHouseDetailAPI'),
     path('warehouse/product/api', WarehouseProductAPI.as_view(), name='WarehouseProductAPI'),
     path('warehouse-get-products/api', WarehouseGetProductsListAPI.as_view(), name='WarehouseGetProductsListAPI'),
+    path('warehouse-get-products-for-goods-transfer/api', WarehouseGetProductsListAPIForGoodsTransfer.as_view(), name='WarehouseGetProductsListAPIForGoodsTransfer'),
     path('warehouse-lots/api', WarehouseLotListAPI.as_view(), name='WarehouseLotListAPI'),
     path('warehouse-serials/api', WarehouseSerialListAPI.as_view(), name='WarehouseSerialListAPI'),
     path('warehouse/product-asset/list/api', ProductWarehouseAssetList.as_view(), name='ProductWarehouseAssetList'),
@@ -305,4 +309,10 @@ urlpatterns += [
 urlpatterns += [
     path('invoice_sign', InvoiceSignList.as_view(), name='InvoiceSignList'),
     path('invoice_sign/api', InvoiceSignListAPI.as_view(), name='InvoiceSignListAPI'),
+]
+
+urlpatterns += [
+    path('inventory-import-config', InventoryInteractConfigList.as_view(), name='InventoryInteractConfigList'),
+    path('inventory-import-config/api', InventoryInteractConfigListAPI.as_view(), name='InventoryInteractConfigListAPI'),
+    path('inventory-import-config/api/<str:pk>', InventoryInteractConfigDetailAPI.as_view(), name='InventoryInteractConfigDetailAPI'),
 ]

@@ -35,27 +35,34 @@ $(document).ready(function () {
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-35',
                         render: (data, type, row) => {
                             return `<span><b>` + row.title + `</b></span>`
                         }
                     },
                     {
                         data: 'warehouses',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-20',
                         render: (data, type, row) => {
                             let html = ``;
                             for (let i = 0; i < row?.['warehouses'].length; i++) {
-                                html = html + `<span class="badge badge-soft-primary mr-1 mb-1">${row?.['warehouses'][i]['warehouse_title']}</span>`
+                                html = html + `<span class="badge badge-blue mr-1 mb-1">${row?.['warehouses'][i]['warehouse_title']}</span>`
                             }
                             return html;
                         }
                     },
                     {
                         data: 'date_created',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             return `<span>` + row.date_created.split(' ')[0] + `</span>`
+                        }
+                    },
+                    {
+                        data: 'state',
+                        className: 'wrap-text w-10',
+                        render: (data, type, row) => {
+                            return `<span class="badge-primary badge">${data}</span>`
                         }
                     },
                 ],

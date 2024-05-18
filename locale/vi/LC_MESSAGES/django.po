@@ -456,7 +456,7 @@ msgstr "Đã liên kết người dùng / Tổng nhân viên"
 
 #
 msgid "User"
-msgstr "Người Dùng"
+msgstr "Người dùng"
 
 #
 msgid "Company List"
@@ -532,7 +532,7 @@ msgstr "Ngày Tham Gia"
 
 #
 msgid "Role"
-msgstr "Vai Trò"
+msgstr "Vai trò"
 
 #
 msgid "Choose"
@@ -748,7 +748,7 @@ msgstr "Kích hoạt"
 
 #
 msgid "Role Name"
-msgstr "Tên Vai Trò"
+msgstr "Tên Vai trò"
 
 #
 msgid "Holder"
@@ -956,7 +956,7 @@ msgstr "Hoàn tất"
 
 #
 msgid "Restore default"
-msgstr "Đặt lại mặc định"
+msgstr "khôi phục mặc định"
 
 #
 msgid "Workflow detail"
@@ -1311,6 +1311,10 @@ msgid "Account Type"
 msgstr "Loại tài khoản"
 
 #
+msgid "Account Type Selection"
+msgstr "Cá nhân/ Tổ chức"
+
+#
 msgid "individual"
 msgstr "Cá nhân"
 
@@ -1440,7 +1444,7 @@ msgstr "1-10 tỷ"
 
 #
 msgid "10-20 billions"
-msgstr "1-20 tỷ"
+msgstr "10-20 tỷ"
 
 #
 msgid "20-50 billions"
@@ -1595,8 +1599,8 @@ msgid "Province"
 msgstr "Tỉnh"
 
 #
-msgid "Inventory"
-msgstr "Kho - giao hàng"
+msgid "Inventory activities"
+msgstr "Hoạt động kho hàng"
 
 #
 msgid "Sale"
@@ -1764,8 +1768,20 @@ msgid "Transaction Type"
 msgstr "Loại giao dịch"
 
 #
-msgid "For"
-msgstr "Cho"
+msgid "Apply for"
+msgstr "Áp dụng cho"
+
+#
+msgid "30-30-40 Split Payment"
+msgstr "Thanh toán 30-30-40"
+
+#
+msgid "Select option"
+msgstr "Lựa chọn"
+
+#
+msgid "Payment in 3 installments"
+msgstr "Thanh toán theo 3 đợt"
 
 #
 msgid "Add new line"
@@ -2046,14 +2062,6 @@ msgstr "Không khả dụng"
 #
 msgid "Open a new tab with detail page"
 msgstr "Mở một tab mới với trang chi tiết"
-
-#
-msgid "wait for delivery"
-msgstr "Chờ giao hàng"
-
-#
-msgid "wait for receipt"
-msgstr "Đợi nhận hàng"
 
 #
 msgid "Title"
@@ -2489,7 +2497,7 @@ msgstr "Danh Sách Vai Trò"
 
 #
 msgid "Create Role"
-msgstr "Tạo Vai Trò"
+msgstr "Tạo Vai trò"
 
 #
 msgid "Organization"
@@ -2805,7 +2813,7 @@ msgstr "Ngày ký hợp đồng"
 
 #
 msgid "Delivery date"
-msgstr "Ngày giao hàng"
+msgstr "Ngày giao"
 
 #
 msgid "Invoice date"
@@ -3075,15 +3083,15 @@ msgstr "Trợ Giúp và Hỗ Trợ"
 
 #
 msgid "Process Management"
-msgstr "Quản Lý Quy Trình"
+msgstr "Quản lý Quy trình"
 
 #
 msgid "Workflow"
-msgstr "Quy Trình Làm Việc"
+msgstr "Quy trình làm việc"
 
 #
 msgid "Business Process"
-msgstr "Quy Trình Kinh Doanh"
+msgstr "Quy trình kinh doanh"
 
 #
 msgid "Automation"
@@ -3095,7 +3103,7 @@ msgstr "Tenant"
 
 #
 msgid "Account"
-msgstr "Tài Khoản"
+msgstr "Tài khoản"
 
 #
 msgid "Opportunity"
@@ -3130,7 +3138,7 @@ msgid "WareHouse List"
 msgstr "Danh sách kho"
 
 #
-msgid "Cash Outflow"
+msgid "Cashflow"
 msgstr "Dòng tiền"
 
 #
@@ -3830,8 +3838,8 @@ msgid "Only the Account Manager of a Customer is allowed to create an Opportunit
 msgstr "Chỉ quản lý của khách hàng mới được tạo cơ hội kinh doanh cho khách hàng đó  "
 
 #
-msgid "Lost by other reason"
-msgstr "Thất bại bởi lý do khác"
+msgid "Lost"
+msgstr "Thất bại"
 
 #
 msgid "Configuration does not allow selecting stage"
@@ -4345,7 +4353,7 @@ msgstr "Yêu cầu"
 
 #
 msgid "Note"
-msgstr "Chú ý"
+msgstr "Ghi chú"
 
 #
 msgid "Purchase Request"
@@ -4412,7 +4420,7 @@ msgstr "Chọn người điều phối cho hoạt động giao hàng"
 
 #
 msgid "Org Charts"
-msgstr "Cây Cơ Cấu"
+msgstr "Cây cơ cấu"
 
 #
 msgid "Manager Person"
@@ -4568,11 +4576,11 @@ msgstr "Đơn mua hàng"
 
 #
 msgid "Delivered date"
-msgstr "Ngày giao hàng"
+msgstr "Ngày giao"
 
 #
 msgid "Delivered status"
-msgstr "Trạng thái giao hàng"
+msgstr "Trạng thái giao"
 
 #
 msgid "Select items from purchase request"
@@ -4615,23 +4623,23 @@ msgstr "Cập nhật đơn mua hàng thành công"
 
 #
 msgid "Goods receipt create successfully"
-msgstr "Tạo đơn nhập kho thành công"
+msgstr "Tạo đơn nhập hàng thành công"
 
 #
 msgid "Goods receipt update successfully"
-msgstr "Cập nhật đơn nhập kho thành công"
+msgstr "Cập nhật đơn nhập hàng thành công"
 
 #
 msgid "Must select one warehouse"
 msgstr "Phải chọn một kho"
 
 #
-msgid "Quantity import must be less than equal remain quantity"
-msgstr "Số lượng nhập kho phải nhỏ hơn hoặc bằng số lượng chưa nhập"
+msgid "Exceeded remaining quantity"
+msgstr "Vượt quá số lượng còn lại"
 
 #
 msgid "Goods receipt"
-msgstr "Nhập kho"
+msgstr "Nhập hàng"
 
 #
 msgid "Search"
@@ -4711,7 +4719,7 @@ msgstr "Số seri phải khác nhau"
 
 #
 msgid "Quantity delivery must less than equal quantity picked"
-msgstr "Số lượng giao hàng không vượt quá số lượng lấy hàng"
+msgstr "Số lượng giao không vượt quá số lượng lấy"
 
 #
 msgid "Only for view"
@@ -5468,7 +5476,7 @@ msgstr "Lịch sử khách hàng"
 
 #
 msgid "Final acceptance setting"
-msgstr "Cấu hình nghiệm thu"
+msgstr "Cấu hình quyết toán"
 
 #
 msgid "Data source"
@@ -5776,7 +5784,7 @@ msgstr "Điều chỉnh tồn kho"
 
 #
 msgid "Goods receipt type"
-msgstr "Loại nhập kho"
+msgstr "Loại nhập hàng"
 
 #
 msgid "For purchase order"
@@ -5932,7 +5940,7 @@ msgstr "Hoạt động"
 
 #
 msgid "Delivering"
-msgstr "Đang giao hàng"
+msgstr "Đang giao"
 
 #
 msgid "Partially delivered"
@@ -5944,11 +5952,12 @@ msgstr "Đã giao"
 
 #
 msgid "Partially received"
-msgstr "Nhập kho một phần"
+msgstr "Nhập một phần"
 
 #
 msgid "Received"
-msgstr "Đã nhập kho"
+msgstr "Đã nhập"
+
 #
 msgid "From Price List in left side"
 msgstr "Chọn theo danh sách giá bên trái"
@@ -6206,8 +6215,8 @@ msgid "Returned content"
 msgstr "Nội dung trả về"
 
 #
-msgid "Type your content here..."
-msgstr "Nhập nội dung của bạn vào đây..."
+msgid "Type your reason here..."
+msgstr "Nhập lý do của bạn tại đây..."
 
 #
 msgid "This image encountered an error during loading or does not exist."
@@ -6519,7 +6528,7 @@ msgstr "Hoạt động khách hàng"
 
 #
 msgid "Sale person"
-msgstr "Người bán hàng"
+msgstr "Nv bán hàng"
 
 #
 msgid "Period"
@@ -6875,7 +6884,7 @@ msgstr "Mã nhân viên"
 
 #
 msgid "Gross profit plan"
-msgstr "Kế hoạch lợi nhuận gộp"
+msgstr "Kế hoạch LNG"
 
 #
 msgid "General revenue report"
@@ -6959,7 +6968,7 @@ msgstr "Đơn giá nhập"
 
 #
 msgid "In value"
-msgstr "Giá trị nhập kho"
+msgstr "Giá trị nhập"
 
 #
 msgid "Out quantity"
@@ -6971,7 +6980,7 @@ msgstr "Đơn giá xuất"
 
 #
 msgid "Out value"
-msgstr "Giá trị xuất kho"
+msgstr "Giá trị xuất"
 
 #
 msgid "Reload invoice status"
@@ -7036,3 +7045,535 @@ msgstr "Đơn giá tích luỹ"
 #
 msgid "Cumulative value"
 msgstr "Giá trị tích luỹ"
+
+#
+msgid "Goods return"
+msgstr "Đổi - trả hàng"
+
+#
+msgid "Opening balance"
+msgstr "Tồn đầu kỳ"
+
+#
+msgid "Expired date"
+msgstr "Ngày hết hạn"
+
+#
+msgid "Create business trip"
+msgstr "Tạo chuyến công tác"
+
+#
+msgid "Schedule a meeting"
+msgstr "Lên lịch cuộc họp"
+
+#
+msgid "Create leave"
+msgstr "Tạo nghỉ phép"
+
+#
+msgid "Require input data in payment tab (same to purchase order)"
+msgstr "Yêu cầu nhập dữ liệu vào tab thanh toán (tương tự với đơn đặt hàng)"
+
+#
+msgid "Show data have win rate is 100%"
+msgstr "Hiển thị dữ liệu có tỷ lệ thắng 100%"
+
+#
+msgid "Select document save status"
+msgstr "Chọn trạng thái lưu phiếu"
+
+#
+msgid "Please enter sufficient quantity"
+msgstr "Vui lòng nhập đủ số lượng"
+
+#
+msgid "Cancel document"
+msgstr "Hủy phiếu"
+
+#
+msgid "Total payment must less than or equal to total before tax"
+msgstr "Tổng thanh toán phải nhỏ hơn hoặc bằng tổng giá trị trước thuế"
+
+#
+msgid "Change"
+msgstr "Thay đổi"
+
+#
+msgid "Back"
+msgstr "Quay lại"
+
+#
+msgid "Save and apply workflow"
+msgstr "Lưu và áp dụng quy trình"
+
+#
+msgid "Save change"
+msgstr "Lưu thay đổi"
+
+#
+msgid "You won't be able to undo this action!"
+msgstr "Bạn sẽ không thể hoàn tác hành động này!"
+
+#
+msgid "Document was canceled by creator"
+msgstr "Phiếu bị hủy bỏ bởi người tạo"
+
+#
+msgid "Select save status"
+msgstr "Chọn trạng thái lưu"
+
+#
+msgid "Inventory interact config"
+msgstr "Cấu hình tương tác kho"
+
+#
+msgid "Can interact in these warehouses"
+msgstr "Có thể tương tác với các kho"
+
+#
+msgid "Add new config"
+msgstr "Thêm cấu hình mới"
+
+#
+msgid "Warehouse address"
+msgstr "Địa chỉ kho"
+
+#
+msgid "Goods issue"
+msgstr "Xuất hàng"
+
+#
+msgid "Goods transfer"
+msgstr "Điều chuyển hàng hoá"
+
+#
+msgid "Inventory adjustment create"
+msgstr "Tạo phiếu Điều chỉnh tồn kho"
+
+#
+msgid "Inventory adjustment detail"
+msgstr "Chi tiết phiếu Điều chỉnh tồn kho"
+
+#
+msgid "Inventory adjustment update"
+msgstr "Cập nhập phiếu Điều chỉnh tồn kho"
+
+#
+msgid "Inventory adjustment list"
+msgstr "Danh sách phiếu Điều chỉnh tồn kho"
+
+#
+msgid "Goods issue type"
+msgstr "Loại xuất hàng"
+
+#
+msgid "Select inventory adjustment"
+msgstr "Chọn phiếu kiểm kê kho"
+
+#
+msgid "Add information later"
+msgstr "Thêm thông tin sau"
+
+#
+msgid "Vendor serial no."
+msgstr "Số seri của NCC"
+
+#
+msgid "Serial no."
+msgstr "Số seri"
+
+#
+msgid "Mfr date"
+msgstr "Ngày sản xuất"
+
+#
+msgid "Warranty start"
+msgstr "Bảo hành từ"
+
+#
+msgid "Warranty end"
+msgstr "Bảo hành đến"
+
+#
+msgid "UOM"
+msgstr "Đơn vị"
+
+#
+msgid "IA number"
+msgstr "Số IA"
+
+#
+msgid "Goods detail"
+msgstr "Chi tiết hàng"
+
+#
+msgid "Not yet"
+msgstr "Chưa xong"
+
+#
+msgid "LOT/Serial status"
+msgstr "Trạng thái LOT/Serial"
+
+#
+msgid "Inventory"
+msgstr "Hàng tồn kho"
+
+#
+msgid "Unit cost"
+msgstr "Giá vốn"
+
+#
+msgid "Wait for delivery"
+msgstr "Đợi giao"
+
+#
+msgid "Wait for receipt"
+msgstr "Đợi nhập"
+
+#
+msgid "PR code"
+msgstr "Mã PR"
+
+#
+msgid "Merge same product in 1 line, convert to reference unit if there is more 1 UOM"
+msgstr "Gộp các sản phẩm giống nhau, chuyển đổi về cùng một đơn vị"
+
+#
+msgid "Default all"
+msgstr "Mặc định là tất cả"
+
+#
+msgid "is not in stock"
+msgstr "không còn trong kho"
+
+#
+msgid "Posting periods"
+msgstr "Kỳ kế toán"
+
+#
+msgid "Main period code"
+msgstr "Mã kỳ chính"
+
+#
+msgid "Sub period code"
+msgstr "Mã kỳ phụ"
+
+#
+msgid "Period name"
+msgstr "Tên kỳ"
+
+#
+msgid "Individual"
+msgstr "Cá nhân"
+
+#
+msgid "Receipt code"
+msgstr "Mã phiếu nhập"
+
+#
+msgid "Lot information"
+msgstr "Thông tin LOT"
+
+#
+msgid "Serial information"
+msgstr "Thông tin serial"
+
+#
+msgid "Quantity import"
+msgstr "Số lượng nhập"
+
+#
+msgid "current"
+msgstr "hiện tại"
+
+#
+msgid "show current quantity"
+msgstr "xem số lượng hiện tại"
+
+#
+msgid "You need to select one option!"
+msgstr "Bạn cần chọn một tùy chọn!"
+
+#
+msgid "Lot number"
+msgstr "Số lô"
+
+#
+msgid "Select out warehouse"
+msgstr "Chọn kho xuất"
+
+#
+msgid "Select target warehouse"
+msgstr "Chọn kho đích"
+
+#
+msgid "Click the button besides input element to select (for serial/lot product) of enter number for default product."
+msgstr "Click vào nút bên cạnh ô nhập để lựa chọn chi tiết (cho sản phẩm serial/lot) hoặc nhập (cho sản phẩm mặc định)."
+
+#
+msgid "From warehouse"
+msgstr "Từ kho"
+
+#
+msgid "To warehouse"
+msgstr "Đến kho"
+
+#
+msgid "Stock quantity"
+msgstr "Số lượng tồn kho"
+
+#
+msgid "Click the button besides input element to see detail (for serial/lot product)."
+msgstr "Click vào nút bên cạnh ô nhập để xem chi tiết (cho sản phẩm serial/lot)."
+
+#
+msgid "Some Serials you selected are no longer in stock anymore."
+msgstr "Một số Serial bạn đã chọn không còn tồn tại trong kho nữa."
+
+#
+msgid "Lot available quantity now is < get quantity value OR Lot is empty now."
+msgstr "Số lượng khả dụng hiện tại đang < số lượng lấy HOẶC Lot hiện tại đang rỗng."
+
+#
+msgid "Inventory data has been changed."
+msgstr "Dữ liệu tồn kho đã bị thay đổi."
+
+#
+msgid "Have not done. Please finish in Goods Detail."
+msgstr "Chưa nhập xong. Hãy hoàn thành trong Chi tiết hàng"
+
+#
+msgid "Product type"
+msgstr "Loại sản phẩm"
+
+#
+msgid "Purchasing staff"
+msgstr "Nhân viên mua hàng"
+
+#
+msgid "Purchasing reports"
+msgstr "Báo cáo mua hàng"
+
+#
+msgid "Purchase order report"
+msgstr "Báo cáo theo đơn mua hàng"
+
+#
+msgid "Purchasing Code"
+msgstr "Mã phiếu mua hàng"
+
+#
+msgid "Order quantity"
+msgstr "Số lượng đặt hàng"
+
+#
+msgid "Received quantity"
+msgstr "SL đã nhận"
+
+#
+msgid "Remaining quantity"
+msgstr "SL còn lại"
+
+#
+msgid "Order value"
+msgstr "GT đơn hàng"
+
+#
+msgid "Received value"
+msgstr "GT đơn hàng đã nhận"
+
+#
+msgid "Remaining value"
+msgstr "GT đơn hàng còn lại"
+
+#
+msgid "WareHouses"
+msgstr "Các kho hàng"
+
+#
+msgid "AR Invoice"
+msgstr "Hoá đơn bán hàng"
+
+#
+msgid "AP Invoice"
+msgstr "Hoá đơn mua hàng"
+
+#
+msgid "Return to"
+msgstr "Trả về kho"
+
+#
+msgid "Reason for return"
+msgstr "Lý do trả về"
+
+#
+msgid "Reason for cancel"
+msgstr "Lý do hủy phiếu"
+
+#
+msgid "View by"
+msgstr "Xem theo"
+
+#
+msgid "Date applied"
+msgstr "Ngày áp dụng"
+
+#
+msgid "Wait complete"
+msgstr "Đợi hoàn tất"
+
+#
+msgid "Balance initialization"
+msgstr "Khởi tạo số dư"
+
+#
+msgid "Add balance"
+msgstr "Thêm số dư"
+
+#
+msgid "Select warehouse"
+msgstr "Chọn kho"
+
+#
+msgid "Total value"
+msgstr "Tổng giá trị"
+
+#
+msgid "Lot quantity"
+msgstr "Số lượng của lô"
+
+#
+msgid "Manufacture date"
+msgstr "Ngày sản xuất"
+
+#
+msgid "Input serial number"
+msgstr "Nhập serial"
+
+#
+msgid "Input LOT"
+msgstr "Nhập LOT"
+
+#
+msgid "Purchase Request Config"
+msgstr "Cấu hình Yêu cầu mua hàng"
+
+#
+msgid "Expense Items"
+msgstr "Các loại chi phí"
+
+#
+msgid "Internal Labor Items"
+msgstr "Các loại chi phí nhân công"
+
+#
+msgid "Invoice form config"
+msgstr "Cấu hình Mẫu hoá đơn"
+
+#
+msgid "Advance payment"
+msgstr "Tạm ứng"
+
+#
+msgid "Return advance"
+msgstr "Hoàn ứng"
+
+#
+msgid "Sale activities"
+msgstr "Hoạt động bán hàng"
+
+#
+msgid "Document for customer"
+msgstr "Tài liệu"
+
+#
+msgid "AR invoice"
+msgstr "Hoá đơn bán hàng"
+
+#
+msgid "AP invoice"
+msgstr "Hoá đơn mua hàng"
+
+#
+msgid "Asset, tools"
+msgstr "Tài sản, công cụ"
+
+#
+msgid "Asset, tools list"
+msgstr "Danh sách tài sản, công cụ"
+
+#
+msgid "Asset, tools delivery"
+msgstr "Yêu cầu bàn giao"
+
+#
+msgid "Asset, tools return list"
+msgstr "Danh sách thu hồi tài sản"
+
+#
+msgid "Inventory report"
+msgstr "Báo cáo tồn kho"
+
+#
+msgid "Items detail report"
+msgstr "Báo cáo chi tiết mặt hàng"
+
+#
+msgid "Please cancel current quotation"
+msgstr "Vui lòng hủy báo giá hiện tại"
+
+#
+msgid "Please cancel current sale order"
+msgstr "Vui lòng hủy đơn hàng hiện tại"
+
+#
+msgid "Please cancel current quotation, sale order"
+msgstr "Vui lòng hủy báo giá, đơn hàng hiện tại"
+
+#
+msgid "Opportunity is disabled because employee in short sales roles"
+msgstr "CHKD bị vô hiệu vì nhân viên thuộc vai trò bán hàng nhanh"
+
+#
+msgid "Reason for reject"
+msgstr "Lý do từ chối"
+
+#
+msgid "Role short sale"
+msgstr "Vai trò bán hàng nhanh"
+
+#
+msgid "Role long sale"
+msgstr "Vai trò bán hàng chậm"
+
+#
+msgid "Calculate ending cumulative value"
+msgstr "Tính giá trị tích luỹ cuối kỳ"
+
+#
+msgid "Export to excel"
+msgstr "Xuất file excel"
+
+#
+msgid "Are you sure to calculate ending cumulative value?"
+msgstr "Bạn có chắc chắc muốn tính toán giá trị tích luỹ cuối kỳ của tháng này?"
+
+#
+msgid "Sure"
+msgstr "Đồng ý"
+
+#
+msgid "First month"
+msgstr "Tháng đầu kỳ"
+
+#
+msgid "Sub periods"
+msgstr "Kỳ con"
+
+#
+msgid "Set time of starting using software in this period."
+msgstr "Đặt thời gian bắt đầu sử dụng phần mềm trong kỳ này."
+
+#
+msgid "Invoice"
+msgstr "Hóa đơn"

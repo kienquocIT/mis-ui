@@ -13,7 +13,6 @@ const tableProductSN = $('#table-product-sn')
 const tableProductLOT = $('#table-product-lot')
 const btnAddRowLineDetail = $('#btn-add-row-line-detail')
 const modal_select_return_warehouse = $('#modal-select-return-warehouse')
-let DELIVERY_PRODUCT_NOW = null
 
 $('#modal-OK-btn').on('click', function(event) {
     modal_select_return_warehouse.modal('hide')
@@ -48,6 +47,7 @@ $('#modal-OK-btn').on('click', function(event) {
                     'vendor_serial_number': '',
                     'serial_number': '',
                     'serial_id': '',
+                    'delivery_item_id': this_selected.attr('data-delivery-item-id'),
                     'product_id': this_selected.attr('data-product-id'),
                     'product_title': this_selected.attr('data-product-title'),
                     'product_code': this_selected.attr('data-product-code'),
@@ -113,6 +113,7 @@ $('#modal-OK-btn').on('click', function(event) {
                     'vendor_serial_number': '',
                     'serial_number': '',
                     'serial_id': '',
+                    'delivery_item_id': lot_data.attr('data-delivery-item-id'),
                     'product_id': product_id,
                     'product_title': product_title,
                     'product_code': product_code,
@@ -180,6 +181,7 @@ $('#modal-OK-btn').on('click', function(event) {
                     'vendor_serial_number': vendor_serial_number,
                     'serial_number': serial_number,
                     'serial_id': serial_id,
+                    'delivery_item_id': serial_data.attr('data-delivery-item-id'),
                     'product_id': product_id,
                     'product_title': product_title,
                     'product_code': product_code,
@@ -247,7 +249,7 @@ function LoadDate() {
 }
 
 function loadTableSelectDelivery() {
-    tableSelectDeliveryEle.DataTable().destroy()
+    tableSelectDeliveryEle.DataTable().clear().destroy()
     tableSelectDeliveryEle.DataTableDefault({
         dom: '',
         useDataServer: true,
@@ -288,10 +290,10 @@ function loadTableSelectDelivery() {
                 }
             },
             {
-                data: 'select',
+                data: '',
                 className: 'wrap-text text-center',
                 render: (data, type, row) => {
-                    let details = JSON.stringify(row.details)
+                    let details = JSON.stringify(row?.['details'])
                     return `<div class="form-check">
                                 <input data-id="${row.id}" type="radio" name="selected-delivery" class="form-check-input selected-delivery">
                                 <label class="form-check-label"></label>
@@ -304,7 +306,7 @@ function loadTableSelectDelivery() {
 }
 
 $(document).on("change", '.selected-delivery', function () {
-    SelectDeliveryOnChange($(this).attr('data-id'))
+    SelectDeliveryOnChange($(this).closest('div').find('.details').text())
     loadTableSelectProductSerial([])
     loadTableSelectProductLOT([])
 })
@@ -313,19 +315,13 @@ $(document).on("change", '.selected-product', function () {
     tableProductLOT.closest('div').prop('hidden', $(this).attr('data-type') !== '1')
     tableProductSN.closest('div').prop('hidden', $(this).attr('data-type') !== '2')
     if ($(this).attr('data-type') === '1') {
-        let product_id_selected = $(this).attr('data-id')
         loadTableSelectProductLOT(
-            DELIVERY_PRODUCT_NOW?.['products_delivered_data_by_lot'].filter(function (item) {
-                return item.product.id === product_id_selected
-            })
+            $(this).closest('div').find('.product-details').text() ? JSON.parse($(this).closest('div').find('.product-details').text()) : []
         )
     }
     else if ($(this).attr('data-type') === '2') {
-        let product_id_selected = $(this).attr('data-id')
         loadTableSelectProductSerial(
-            DELIVERY_PRODUCT_NOW?.['products_delivered_data_by_serial'].filter(function (item) {
-                return item.product.id === product_id_selected
-            })
+            $(this).closest('div').find('.product-details').text() ? JSON.parse($(this).closest('div').find('.product-details').text()) : []
         )
     }
 })
@@ -334,7 +330,7 @@ $('#add-product-btn').on('click', function () {
     $('#select-wh-return-div').html('')
     for (const item of WH_LIST) {
         $('#select-wh-return-div').append(`
-            <div class="col-4">
+            <div class="col-4 mb-3">
                 <div style="width: 100%; height: 100%;" class="px-3 py-3 bg-gray-light-4 border rounded-5 wh-seletion" data-is-selected="false" data-wh-id="${item?.['id']}" data-wh-code="${item?.['code']}" data-wh-title="${item?.['title']}">
                     <span class="badge badge-soft-primary mb-1">${item?.['code']}</span><br>
                     <span class="text-secondary"><b>${item?.['title']}</b></span>
@@ -488,39 +484,13 @@ function loadTableLineDetail(data_source=[], targets_hidden_cols=[]) {
     });
 }
 
-function SelectDeliveryOnChange(delivery_selected_id) {
-    let delivery_products_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-delivery-products').replace('/0', `/${delivery_selected_id}`),
-            data: {},
-            method: 'GET'
-        }).then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data && typeof data === 'object' && data.hasOwnProperty('delivery_products_list')) {
-                return data?.['delivery_products_list'];
-            }
-            return {};
-        },
-        (errs) => {
-            console.log(errs);
-        }
-    )
-
-    Promise.all([delivery_products_ajax]).then(
-        (results) => {
-            DELIVERY_PRODUCT_NOW = results[0]
-            let data_product = []
-            $('.selected-delivery').each(function () {
-                if ($(this).prop('checked')) {
-                    data_product = data_product.concat(JSON.parse($(this).closest('div').find('.details').text()))
-                }
-            })
-            loadTableSelectDetailProduct(data_product)
-        })
+function SelectDeliveryOnChange(data_product) {
+    if (data_product) {
+        loadTableSelectDetailProduct(JSON.parse(data_product))
+    }
 }
 
 function loadTableSelectDetailProduct(datasource=[]) {
-    console.log(datasource)
     tableDetailProductEle.DataTable().clear().destroy()
     tableDetailProductEle.DataTableDefault({
         dom: "",
@@ -554,14 +524,10 @@ function loadTableSelectDetailProduct(datasource=[]) {
                 render: (data, type, row) => {
                     let product_row = []
                     if (row?.['product_general_traceability_method'] === 1) {
-                        product_row = DELIVERY_PRODUCT_NOW?.['products_delivered_data_by_lot'].filter(function (item) {
-                            return item?.['product']?.['id'] === row?.['product_data']?.['id']
-                        })
+                        product_row = row?.['lot_data']
                     }
                     else if (row?.['product_general_traceability_method'] === 2) {
-                        product_row = DELIVERY_PRODUCT_NOW?.['products_delivered_data_by_serial'].filter(function (item) {
-                            return item?.['product']?.['id'] === row?.['product_data']?.['id']
-                        })
+                        product_row = row?.['sn_data']
                     }
                     if (product_row[0]?.['serial_id'] !== undefined) {
                         let returned_number_sn = product_row.filter(function (item) {
@@ -613,11 +579,17 @@ function loadTableSelectDetailProduct(datasource=[]) {
                 data: '',
                 className: 'wrap-text text-center',
                 render: (data, type, row) => {
-                    let product_delivery_data = JSON.stringify(row?.['product_delivery_data'])
+                    let product_delivery_data = ''
+                    if (row?.['product_general_traceability_method'] === 1) {
+                        product_delivery_data = JSON.stringify(row?.['lot_data'])
+                    }
+                    else if (row?.['product_general_traceability_method'] === 2) {
+                        product_delivery_data = JSON.stringify(row?.['sn_data'])
+                    }
                     return `<div class="form-check">
                                 <input type="radio" name="selected-product" class="form-check-input selected-product"
                                         data-type="${row?.['product_general_traceability_method']}" 
-                                        data-id="${row?.['product_data']?.['id']}"
+                                        data-delivery-item-id="${row?.['id']}"
                                         data-product-id="${row?.['product_data']?.['id']}"
                                         data-product-code="${row?.['product_data']?.['code']}"
                                         data-product-title="${row?.['product_data']?.['title']}"
@@ -661,9 +633,16 @@ function loadTableSelectProductSerial(datasource=[]) {
                 data: '',
                 className: 'wrap-text',
                 render: (data, type, row) => {
+                    let delivery_item_id = null
+                    tableDetailProductEle.find('.selected-product').each(function () {
+                        if ($(this).prop('checked')) {
+                            delivery_item_id = $(this).attr('data-delivery-item-id')
+                        }
+                    })
                     return `<span class="serial-data-span"
                                 data-delivery-id="${selected_delivery_id}"
                                 data-delivery-code="${selected_delivery_code}"
+                                data-delivery-item-id="${delivery_item_id}"
                                 data-serial-number="${row?.['serial_number']}"
                                 data-vendor-serial-number="${row?.['vendor_serial_number']}"
                                 data-serial-id="${row?.['serial_id']}"
@@ -739,9 +718,16 @@ function loadTableSelectProductLOT(datasource=[]) {
                 data: '',
                 className: 'wrap-text',
                 render: (data, type, row) => {
+                    let delivery_item_id = null
+                    tableDetailProductEle.find('.selected-product').each(function () {
+                        if ($(this).prop('checked')) {
+                            delivery_item_id = $(this).attr('data-delivery-item-id')
+                        }
+                    })
                     return `<span class="lot-data-span"
                                 data-delivery-id="${selected_delivery_id}"
                                 data-delivery-code="${selected_delivery_code}"
+                                data-delivery-item-id="${delivery_item_id}"
                                 data-lot-quantity="${row?.['lot_quantity']}"
                                 data-lot-number="${row?.['lot_number']}"
                                 data-lot-id="${row?.['lot_id']}"
@@ -977,7 +963,6 @@ function LoadSaleOrder(data) {
 }
 
 function loadTableDetailPageLOT(data_source=[]) {
-    console.log(data_source)
     lineDetailTable.DataTable().clear().destroy()
     lineDetailTable.DataTableDefault({
         dom: "",
@@ -1245,7 +1230,7 @@ class GoodsReturnHandle {
         frm.dataForm['note'] = $('#note').val()
 
         let data_item = JSON.parse(dataLineDetailTableScript.text())
-
+        frm.dataForm['data_item'] = data_item
         frm.dataForm['delivery'] = data_item[0]?.['delivery_id']
         frm.dataForm['product'] = data_item[0]?.['product_id']
         frm.dataForm['uom'] = data_item[0]?.['uom_id']
@@ -1255,6 +1240,7 @@ class GoodsReturnHandle {
         if (data_item[0]?.['type'] === 0) {
             product_detail_list.push({
                 'type': 0,
+                'delivery_item_id': data_item[0]?.['delivery_item_id'],
                 'default_return_number': parseFloat(data_item[0]?.['is_return']),
                 'default_redelivery_number': parseFloat(data_item[0]?.['is_redelivery'])
             })
@@ -1263,6 +1249,7 @@ class GoodsReturnHandle {
             for (let item of data_item) {
                 product_detail_list.push({
                     'type': 1,
+                    'delivery_item_id': data_item[0]?.['delivery_item_id'],
                     'lot_no_id': item?.['lot_id'],
                     'lot_return_number': parseFloat(item?.['is_return']),
                     'lot_redelivery_number': parseFloat(item?.['is_redelivery'])
@@ -1273,6 +1260,7 @@ class GoodsReturnHandle {
             for (let item of data_item) {
                 product_detail_list.push({
                     'type': 2,
+                    'delivery_item_id': data_item[0]?.['delivery_item_id'],
                     'serial_no_id': item?.['serial_id'],
                     'is_return': item?.['is_return'],
                     'is_redelivery': item?.['is_redelivery']
@@ -1281,49 +1269,34 @@ class GoodsReturnHandle {
         }
         frm.dataForm['product_detail_list'] = product_detail_list
 
-        // frm.dataForm['system_status'] = 1;
-
         if (frm.dataForm['product_detail_list'].length === 0 ) {
             $.fn.notifyB({description: "No item in tab line detail"}, 'failure')
             return false
         }
 
         // console.log(frm.dataForm)
-        if (for_update) {
-            let pk = $.fn.getPkDetail();
-            return {
-                url: frmEle.attr('data-url-detail').format_url_with_uuid(pk),
-                method: frm.dataMethod,
-                data: frm.dataForm,
-                urlRedirect: frm.dataUrlRedirect,
-            };
-        }
-        return {
-            url: frm.dataUrl,
-            method: frm.dataMethod,
-            data: frm.dataForm,
-            urlRedirect: frm.dataUrlRedirect,
-        };
+        return frm
     }
 }
 
-function Disable() {
-    $('.form-control').prop('disabled', true).css({color: 'black'});
-    $('.form-select').prop('disabled', true).css({color: 'black'});
-    $('.select2').prop('disabled', true);
-    $('#collapse-area input').prop('disabled', true);
-    btnAddRowLineDetail.remove();
+function Disable(option) {
+    if (option === 'detail') {
+        $('.form-control').prop('disabled', true).css({color: 'black'});
+        $('.form-select').prop('disabled', true).css({color: 'black'});
+        $('.select2').prop('disabled', true);
+        $('#collapse-area input').prop('disabled', true);
+        btnAddRowLineDetail.remove();
+    }
 }
 
 function LoadDetailGoodsReturn(option) {
-    let pk = $.fn.getPkDetail()
-    let url_loaded = $('#frm_goods_return_detail').attr('data-url').replace(0, pk);
+    let url_loaded = option === 'detail' ? $('#frm_goods_return_detail').attr('data-url') : $('#frm_goods_return_update').attr('data-url')
     $.fn.callAjax(url_loaded, 'GET').then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                WFRTControl.setWFRuntimeID(data['good_return_detail']?.['good_return_detail']);
                 data = data['good_return_detail'];
+                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 
@@ -1342,7 +1315,7 @@ function LoadDetailGoodsReturn(option) {
                 } else if (data?.['data_detail'][0]?.['type'] === 0) {
                     loadTableDetailPageDefault([data])
                 }
-
+                dataLineDetailTableScript.text(JSON.stringify(data?.['data_item']))
                 new $x.cls.file($('#attachment')).init({
                     enable_edit: option !== 'detail',
                     data: data.attachment,

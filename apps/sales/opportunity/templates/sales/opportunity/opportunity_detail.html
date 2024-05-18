@@ -441,7 +441,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="mb-3">
-                                    <label class="form-label required">{% trans 'Customer member' %}</label>
+                                    <label class="form-label">{% trans 'Customer member' %}</label>
                                     <select disabled id="meeting-customer-member-select-box" multiple class="select2 select-multiple"></select>
                                 </div>
                             </div>
@@ -550,7 +550,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="mb-3">
-                                <label class="form-label required">{% trans 'Customer member' %}</label>
+                                <label class="form-label">{% trans 'Customer member' %}</label>
                                 <select disabled style="color: #6f6f6f" id="detail-meeting-customer-member-select-box" multiple class="select2 select-multiple"></select>
                             </div>
                         </div>
@@ -671,11 +671,15 @@
             data-trans-valid="{% trans "Valid" %}"
             data-trans-invalid="{% trans "invalid" %}"
             data-forbidden="{% trans "Forbidden" %}"
+            data-cancel-quo="{% trans "Please cancel current quotation" %}"
+            data-cancel-so="{% trans "Please cancel current sale order" %}"
+            data-cancel-quo-so="{% trans "Please cancel current quotation, sale order" %}"
     ></script>
     <input
             type="text"
             id="data-detail"
     >
+    {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

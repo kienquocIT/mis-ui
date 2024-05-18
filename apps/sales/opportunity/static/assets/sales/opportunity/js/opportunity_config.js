@@ -324,6 +324,16 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     modal.find('.header-title').text(data.indicator);
+                    if (data.indicator === 'Closed Lost') {
+                        modal.find('#box-select-logic-operator').prop('hidden', true)
+                        modal.find('#btn-add-condition').prop('hidden', true)
+                        modal.find('select').prop('disabled', true).prop('readonly', true)
+                    }
+                    else {
+                        modal.find('#box-select-logic-operator').prop('hidden', false)
+                        modal.find('#btn-add-condition').prop('hidden', false)
+                        modal.find('select').prop('disabled', false).prop('readonly', false)
+                    }
                     let ele_logical_operator = modal.find('#box-select-logic-operator');
                     $('#input-id-stage').val(data.id);
                     ele_logical_operator.val(data.logical_operator);

@@ -8,7 +8,7 @@
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'PurchaseOrderUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary" id="btn-enable-edit">
+        <button class="btn btn-outline-primary" id="btn-enable-edit" hidden>
             <span>
                 <span>{% trans 'Edit' %}</span>
                 <span class="icon">
@@ -32,7 +32,7 @@
             <div class="collapse multi-collapse show" id="collapseExample">
                 <div class="row" id="common-information-area">
                     <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
+                        <div class="col-12 col-md-5 col-lg-5">
                             <div class="form-group">
                                 <label class="form-label required" for="purchase-order-title">{% trans 'Title' %}</label>
                                 <div class="input-group">
@@ -46,39 +46,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-12 col-md-3 col-lg-3">
-                            <div class="form-group">
-                                <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
-                                <div class="input-affix-wrapper">
-                                    <input type="text" name="delivered-date" id="purchase-order-date-delivered"
-                                           class="form-control date-picker" autocomplete="off" disabled>
-                                    <div class="input-suffix">
-                                        <i class="far fa-calendar"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-3 col-lg-3">
-                            <div class="form-group">
-                                <label class="form-label" for="purchase-order-status-delivered">{% trans 'Delivered status' %}</label>
-                                <div class="input-group">
-                                    <div class="input-affix-wrapper">
-                                        <input
-                                            type="text" class="form-control"
-                                            name="status-delivered"
-                                            id="purchase-order-status-delivered"
-                                            value="None"
-                                            data-value="0"
-                                            disabled
-                                        >
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label class="form-label" for="box-purchase-order-supplier">{% trans 'Supplier' %}</label>
                                 <select
@@ -89,11 +56,56 @@
                                         data-link-detail="{% url "AccountDetail" 1 %}"
                                         name="supplier"
                                         data-keyResp="account_sale_list"
+                                        data-keyText="name"
+                                        disabled
+                                ></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="box-purchase-order-contact"
+                                        data-url="{% url "ContactListAPI" %}"
+                                        data-method="GET"
+                                        data-link-detail="{% url 'ContactDetail' 1 %}"
+                                        name="contact"
+                                        data-keyResp="contact_list"
                                         disabled
                                 ></select>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-6">
+                        <div class="col-12 col-md-5 col-lg-5">
+                            <div class="row">
+                                <div class="col-12 col-md-5 col-lg-5">
+                                    <div class="form-group">
+                                        <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" name="delivered-date" id="purchase-order-date-delivered"
+                                                   class="form-control date-picker" autocomplete="off" disabled>
+                                            <div class="input-suffix">
+                                                <i class="far fa-calendar"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="purchase-order-status-delivered">{% trans 'Delivered status' %}</label>
+                                        <div class="input-group">
+                                            <div class="input-affix-wrapper">
+                                                <input
+                                                    type="text" class="form-control"
+                                                    name="status-delivered"
+                                                    id="purchase-order-status-delivered"
+                                                    value="None"
+                                                    data-value="0"
+                                                    disabled
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Purchase Request' %}</label>
                                 <div class="input-group input-group-wth-btn">
@@ -113,25 +125,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}</label>
-                                <select
-                                        class="form-select"
-                                        id="box-purchase-order-contact"
-                                        data-url="{% url "ContactListAPI" %}"
-                                        data-method="GET"
-                                        data-link-detail="{% url 'ContactDetail' 1 %}"
-                                        name="contact"
-                                        data-keyResp="contact_list"
-                                        disabled
-                                ></select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Purchase quotation' %}</label>
                                 <div class="input-group input-group-wth-btn">
@@ -198,7 +191,7 @@
                             <div id="table-purchase-order-product-request-area" hidden>
                                 <table
                                     id="datable-purchase-order-product-request"
-                                    class="table nowrap min-w-2000p w-100 mb-5"
+                                    class="table nowrap min-w-1920p w-100 mb-5"
                                     data-url=""
                                     data-method="get"
                                 >
@@ -207,10 +200,10 @@
                                         <th></th>
                                         <th>{% trans 'Product' %}</th>
                                         <th>{% trans 'Description' %}</th>
-                                        <th>UOM (PR)</th>
+                                        <th>{% trans 'UOM' %} (PR)</th>
                                         <th>{% trans 'Quantity' %} (PR)</th>
                                         <th>{% trans 'Stock' %}</th>
-                                        <th>UOM (PO)</th>
+                                        <th>{% trans 'UOM' %} (PO)</th>
                                         <th>{% trans 'Quantity' %} (PO)</th>
                                         <th>{% trans 'Unit Price' %}</th>
                                         <th>{% trans 'Tax' %}</th>
@@ -264,7 +257,7 @@
                             <div id="table-purchase-order-product-add-area">
                                 <table
                                     id="datable-purchase-order-product-add"
-                                    class="table nowrap min-w-2000p w-100 mb-5"
+                                    class="table nowrap min-w-1920p w-100 mb-5"
                                     data-url=""
                                     data-method="get"
                                 >
@@ -362,7 +355,7 @@
             <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="row ml-2"><h6>{% trans 'Select items from purchase request' %}</h6></div>
+                        <div class="row ml-2"><h6 class="text-primary"><b>{% trans 'Select items from purchase request' %}</b></h6></div>
                         <div class="row mb-1">
                             <div class="col-4"></div>
                             <div class="col-8">
@@ -371,7 +364,7 @@
                                     <label
                                         class="form-check-label"
                                         for="merge-same-product"
-                                    >{% trans 'Merge same product in 1 line, convert to reference unit if there is more 1 UoM' %}</label>
+                                    >{% trans 'Merge same product in 1 line, convert to reference unit if there is more 1 UOM' %}</label>
                                 </div>
                             </div>
                         </div>
@@ -381,15 +374,15 @@
                                     <table
                                         id="datable-purchase-request"
                                         class="table nowrap w-100"
-                                        data-url="{% url "PurchaseRequestListAPI" %}"
+                                        data-url="{% url "PurchaseRequestSaleListAPI" %}"
                                         data-method="GET"
                                     >
                                         <thead>
                                         <tr>
                                             <th class="w-5"></th>
                                             <th class="w-5"><div class="form-check"><input type="checkbox" class="form-check-input table-checkbox-all" disabled></div></th>
-                                            <th>{% trans 'Title' %}</th>
-                                            <th>{% trans 'Code' %}</th>
+                                            <th class="w-45">{% trans 'Title' %}</th>
+                                            <th class="w-45">{% trans 'Code' %}</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -408,14 +401,14 @@
                                         >
                                             <thead>
                                             <tr>
-                                                <th class="w-10"></th>
-                                                <th class="w-10"></th>
-                                                <th class="w-20">{% trans 'Product' %}</th>
-                                                <th class="w-10">{% trans 'PR Code' %}</th>
-                                                <th class="w-10">{% trans 'Unit Of Measure' %}</th>
-                                                <th class="w-10">{% trans 'Quantity' %}</th>
-                                                <th class="w-10">{% trans 'Remain (PO)' %}</th>
-                                                <th class="w-20">{% trans 'Quantity order' %}</th>
+                                                <th class="w-5"></th>
+                                                <th class="w-5"></th>
+                                                <th class="w-40">{% trans 'Product' %}</th>
+                                                <th class="w-5">{% trans 'PR code' %}</th>
+                                                <th class="w-5">{% trans 'UOM' %}</th>
+                                                <th class="w-5">{% trans 'Quantity' %}</th>
+                                                <th class="w-5">{% trans 'Remain (PO)' %}</th>
+                                                <th class="w-30">{% trans 'Quantity order' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -432,14 +425,14 @@
                                         >
                                             <thead>
                                             <tr>
-                                                <th class="w-10"></th>
-                                                <th class="w-10"></th>
-                                                <th class="w-20">{% trans 'Product' %}</th>
-                                                <th class="w-10">{% trans 'PR Code' %}</th>
-                                                <th class="w-10">{% trans 'Unit Of Measure' %}</th>
-                                                <th class="w-10">{% trans 'Quantity' %}</th>
-                                                <th class="w-10">{% trans 'Remain (PO)' %}</th>
-                                                <th class="w-20">{% trans 'Quantity order' %}</th>
+                                                <th class="w-5"></th>
+                                                <th class="w-5"></th>
+                                                <th class="w-40">{% trans 'Product' %}</th>
+                                                <th class="w-5">{% trans 'PR code' %}</th>
+                                                <th class="w-5">{% trans 'UOM' %}</th>
+                                                <th class="w-5">{% trans 'Quantity' %}</th>
+                                                <th class="w-5">{% trans 'Remain (PO)' %}</th>
+                                                <th class="w-30">{% trans 'Quantity order' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -462,7 +455,7 @@
             <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="row mb-2"><h6>{% trans 'Select purchase quotation' %}</h6></div>
+                        <div class="row mb-2"><h6 class="text-primary"><b>{% trans 'Select purchase quotation' %}</b></h6></div>
                         <div class="row" hidden>
                             <label for="filterByPurchaseRequest" class="col-sm-3 col-form-label">{% trans 'PQ Request' %}</label>
                             <div class="col-sm-6">
@@ -478,7 +471,7 @@
                             <table
                                 id="datable-purchase-quotation"
                                 class="table nowrap w-100"
-                                data-url="{% url 'PurchaseQuotationListAPI' %}"
+                                data-url="{% url 'PurchaseQuotationSaleListAPI' %}"
                                 data-method="get"
                             >
                                 <thead>
@@ -509,7 +502,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-body modal-body-warning-add-product mb-2">
-                        <h6 class="mb-3">{% trans 'Warning' %}</h6>
+                        <h6 class="mb-3"><b>{% trans 'Warning' %}</b></h6>
                         <p>{% trans 'All selected purchase requests and related datas will be removed' %}</p>
                         <p>{% trans 'Do you wish to continue?' %}</p>
                     </div>
@@ -537,6 +530,7 @@
         data-validate-order-request="{% trans 'Exceeded quantity requested' %}"
         data-validate-order-actual="{% trans 'Must not less than quantity ordered' %}"
         data-valid="{% trans "Valid" %}"
+        data-validate-total-payment="{% trans "Total payment must less than or equal to total before tax" %}"
     >
     <input
         type="text"

@@ -183,6 +183,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     IMPORT_HR_GROUP = StringUrl('import-data/hr/group')
     IMPORT_HR_ROLE = StringUrl('import-data/hr/role')
     IMPORT_HR_EMPLOYEE = StringUrl('import-data/hr/employee')
+    IMPORT_SALEDATA_CONTACT = StringUrl('import-data/saledata/contact')
+    IMPORT_SALEDATA_ACCOUNT = StringUrl('import-data/saledata/account')
+    IMPORT_SALEDATA_SALUTATION = StringUrl('import-data/saledata/salutation')
+    IMPORT_SALEDATA_CURRENCY = StringUrl('import-data/saledata/currency')
+    IMPORT_SALEDATA_ACCOUNT_GROUP = StringUrl('import-data/saledata/account/group')
+    IMPORT_SALEDATA_ACCOUNT_TYPE = StringUrl('import-data/saledata/account/type')
+    IMPORT_SALEDATA_INDUSTRY = StringUrl('import-data/saledata/industry')
+    IMPORT_SALEDATA_PAYMENT_TERM = StringUrl('import-data/saledata/payment-term')
 
     # HR
 
@@ -352,6 +360,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WAREHOUSE_LIST_FOR_INVENTORY_ADJUSTMENT = StringUrl('saledata/warehouses-for-inventory-adjustment')
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
     WAREHOUSE_PRODUCT_LIST = StringUrl('saledata/warehouses-products')
+    WAREHOUSE_PRODUCT_LIST_FOR_GOODS_TRANSFER = StringUrl('saledata/warehouses-products-for-goods-transfer')
     WAREHOUSE_LOT_LIST = StringUrl('saledata/warehouses-lots')
     WAREHOUSE_SERIAL_LIST = StringUrl('saledata/warehouses-serials')
     WAREHOUSE_STOCK_PRODUCT = StringUrl('saledata/warehouses/check/{product_id}/{uom_id}')
@@ -413,6 +422,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_REQUEST_PRODUCT_LIST = StringUrl('purchasing/purchase-request-product/list')
     PURCHASE_ORDER_PRODUCT_LIST = StringUrl('purchasing/purchase-order-product/list')
     PURCHASE_ORDER_SALE_LIST = StringUrl('purchasing/purchase-order/list-sale')
+    PURCHASE_REQUEST_SALE_LIST = StringUrl('purchasing/purchase-request/list-sale')
+    PURCHASE_QUOTATION_SALE_LIST = StringUrl('purchasing/purchase-quotation/list-sale')
 
     # Purchasing
     PURCHASE_QUOTATION_REQUEST_LIST = StringUrl('purchasing/purchase-quotation-request/list')
@@ -437,6 +448,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_LIST = StringUrl('inventory/goods-receipt/list')
     GOODS_RECEIPT_DETAIL = StringUrl('inventory/goods-receipt')
     GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
+
+    GOODS_DETAIL_LIST = StringUrl('inventory/goods-detail/list')
+    GOODS_DETAIL_DETAIL = StringUrl('inventory/goods-detail/{pk}')
+    UPDATE_GOODS_DETAIL_DATA_LIST = StringUrl('inventory/update-detail-data/list')
+
+
     INVENTORY_ADJUSTMENT_LIST = StringUrl('inventory/inventory-adjustments')
     INVENTORY_ADJUSTMENT_DETAIL = StringUrl('inventory/inventory-adjustment/{pk}')
     INVENTORY_ADJUSTMENT_PRODUCT_LIST = StringUrl('inventory/inventory-adjustment/product/list/{ia_id}')
@@ -504,6 +521,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     BALANCE_INIT_LIST = StringUrl('report/balance-init/list')
     REPORT_INVENTORY_LIST = StringUrl('report/inventory/list')
     REPORT_GENERAL_LIST = StringUrl('report/general/list')
+    PO_REPORT_LIST = StringUrl('report/po-report/list')
 
     # Final Acceptance
     FINAL_ACCEPTANCE_LIST = StringUrl('acceptance/final-acceptance/list')
@@ -541,8 +559,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Goods Return
     SALE_ORDER_LIST_FOR_GOODS_RETURN = StringUrl('inventory/sale-orders-for-goods-return/list')
     DELIVERY_LIST_FOR_GOODS_RETURN = StringUrl('inventory/get-deliveries-for-goods-return')
-    DELIVERY_PRODUCTS_FOR_GOODS_RETURN = StringUrl('inventory/get-delivery-products-for-goods-return/{pk}')
     GOODS_RETURN_LIST = StringUrl('inventory/goods-return/list')
     GOODS_RETURN_DETAIL = StringUrl('inventory/goods-return/{pk}')
 
     INVOICE_SIGN_LIST = StringUrl('ar-invoice/sign/list')
+    INVENTORY_INTERACT_LIST = StringUrl('saledata/warehouses/config-interact')
+    INVENTORY_INTERACT_DETAIL = StringUrl('saledata/warehouses/config-interact/{pk}')
+
+    # Diagram
+    DIAGRAM_LIST = StringUrl('diagram/list')

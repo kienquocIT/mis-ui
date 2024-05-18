@@ -20,13 +20,16 @@
     {{ data.data.warehouse_list | json_script:"warehouse_list" }}
     <script id="script-url"
             data-url-delivery="{% url 'DeliveryListForGoodsReturnAPI' %}"
-            data-url-delivery-products="{% url 'DeliveryProductsForGoodsReturnAPI' '0' %}"
     >
     </script>
     <script id="script-trans"
             data-trans-has-returned="{% trans 'Returned' %}">
     </script>
-    <form id="frm_goods_return_create" data-url="{% url 'GoodsReturnListAPI' %}" data-method="POST" data-url-redirect="{% url "GoodsReturnList" %}">
+    <form id="frm_goods_return_create"
+          data-url="{% url 'GoodsReturnListAPI' %}"
+          data-method="POST"
+          data-url-redirect="{% url "GoodsReturnList" %}"
+    >
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
             <div class="row">

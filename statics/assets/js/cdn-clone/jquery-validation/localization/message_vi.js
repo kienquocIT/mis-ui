@@ -23,5 +23,6 @@ $.extend($.validator.messages, {
 	extension: "Phần mở rộng không đúng.",
     pattern: "Định dạng không hợp lệ.",
     accept: "Vui lòng chọn tệp có định dạng hợp lệ.",
-    check_phone_vn: "Vui lòng nhập số điện thoại hợp lệ."
+    phone_vn: "Vui lòng nhập số điện thoại hợp lệ.",
+    json: "Vùng lòng nhập json hợp lệ.",
 });

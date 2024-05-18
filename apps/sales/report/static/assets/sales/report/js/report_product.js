@@ -30,46 +30,48 @@ $(function () {
                     },
                 },
                 data: data ? data : [],
+                autoWidth: true,
+                scrollX: true,
                 pageLength: 50,
-                columns: [
+                columns: [  // (1024p)
                     {
                         targets: 0,
-                        class: 'w-5',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-primary">${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 1,
-                        class: 'w-20',
+                        width: '20%',
                         render: (data, type, row) => {
                             return `<p class="text-primary">${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 2,
-                        class: 'w-15',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<p>${row?.['product']?.['general_product_category']?.['title'] ? row?.['product']?.['general_product_category']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 3,
-                        class: 'w-20',
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
                         targets: 4,
-                        class: 'w-20',
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
                         targets: 5,
-                        class: 'w-20',
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
                         }
@@ -79,8 +81,21 @@ $(function () {
                     // mask money
                     $.fn.initMaskMoney2();
                     loadTotal();
+                    // add css to Dtb
+                    loadCssToDtb('table_report_product_list');
                 },
             });
+        }
+
+        function loadCssToDtb(tableID) {
+            let tableIDWrapper = tableID + '_wrapper';
+            let tableWrapper = document.getElementById(tableIDWrapper);
+            if (tableWrapper) {
+                let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+                if (headerToolbar) {
+                    headerToolbar.classList.add('hidden');
+                }
+            }
         }
 
         function setupDataLoadTable(dataList) {
@@ -257,9 +272,11 @@ $(function () {
             });
         }
 
-        $('#btn-collapse').click(function () {
-            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
-        });
+        function loadFilter(listData, $eleShow) {
+            if (listData.length > 0) {
+                $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
+            }
+        }
 
         // load init
         function initData() {
@@ -282,6 +299,7 @@ $(function () {
                     format: 'DD/MM/YYYY',
                 },
                 maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
                 autoApply: true,
                 autoUpdateInput: false,
             }).on('apply.daterangepicker', function (ev, picker) {
@@ -292,6 +310,21 @@ $(function () {
 
         // mask money
         $.fn.initMaskMoney2();
+
+        // Prevent dropdown from closing when clicking inside the dropdown
+        $('.dropdown-menu').on('click', function (e) {
+            e.stopPropagation();
+        });
+
+        // Prevent the dropdown from closing when clicking outside it
+        $('.btn-group').on('hide.bs.dropdown', function (e) {
+            e.preventDefault();
+        });
+
+        // Reopen dropdown on button click
+        $('.btn-group').on('click', '.btn', function (e) {
+            $(this).siblings('.dropdown-menu').toggleClass('show');
+        });
 
         // Events
         boxGroup.on('change', function() {
@@ -316,28 +349,47 @@ $(function () {
             loadTotal();
         });
 
-        btnView.on('click', function () {
+        $('#btn-apply-vb, #btn-apply-date').on('click', function () {
+            this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
-            if (boxGroup.val()) {
+            let listViewBy = [];
+            let listDate = [];
+            if (boxGroup.val() && boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
+                for (let text of boxGroup[0].innerText.split("\n")) {
+                    listViewBy.push(text);
+                }
             }
-            if (boxEmployee.val()) {
+            if (boxEmployee.val() && boxEmployee.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
+                for (let text of boxEmployee[0].innerText.split("\n")) {
+                    listViewBy.push(text);
+                }
             }
-            if (boxCategory.val()) {
+            if (boxCategory.val() && boxCategory.val().length > 0) {
                 dataParams['product__general_product_category_id'] = boxCategory.val().join(',');
+                for (let text of boxCategory[0].innerText.split("\n")) {
+                    listViewBy.push(text);
+                }
             }
-            if (boxProduct.val()) {
+            if (boxProduct.val() && boxProduct.val().length > 0) {
                 dataParams['product_id__in'] = boxProduct.val().join(',');
+                for (let text of boxProduct[0].innerText.split("\n")) {
+                    listViewBy.push(text);
+                }
             }
+            loadFilter(listViewBy, $('#card-filter-vb'));
             if (boxStart.val()) {
                 let dateStart = moment(boxStart.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
                 dataParams['date_approved__gte'] = formatStartDate(dateStart);
+                listDate.push(boxStart.val());
             }
             if (boxEnd.val()) {
                 let dateEnd = moment(boxEnd.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
                 dataParams['date_approved__lte'] = formatEndDate(dateEnd);
+                listDate.push(boxEnd.val());
             }
+            loadFilter(listDate, $('#card-filter-date'));
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
@@ -354,6 +406,10 @@ $(function () {
                     }
                 }
             )
+        });
+
+        $('#btn-cancel-vb, #btn-cancel-date').on('click', function () {
+            this.closest('.dropdown-menu').classList.remove('show');
         });
 
 

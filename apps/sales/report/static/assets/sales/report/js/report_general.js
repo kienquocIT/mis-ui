@@ -6,7 +6,6 @@ $(function () {
         let boxYear = $('#box-report-general-year');
         let boxDetail = $('#box-report-general-detail');
         let eleFiscalYear = $('#data-fiscal-year');
-        let btnView = $('#btn-view');
         let $table = $('#table_report_general_list');
         let dataQuarter = JSON.parse($('#filter_quarter').text());
         let dataMonth = JSON.parse($('#filter_month').text());
@@ -18,10 +17,10 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength: 50,
-                columns: [  // 250,250,200,250,250,150,250,250,150 (2000p)
+                columns: [  // (1500p)
                     {
                         targets: 0,
-                        width: '12.5%',
+                        width: '2%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 0) {
                                 return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
@@ -32,21 +31,21 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '12.5%',
+                        width: '4%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-primary badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '10%',
+                        width: '5%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-soft-primary">${row?.['employee_inherit']?.['code'] ? row?.['employee_inherit']?.['code'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 3,
-                        width: '12.5%',
+                        width: '6%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><span class="mask-money table-row-revenue-plan" data-init-money="${parseFloat(row?.['revenue_plan'])}"></span></b>`;
@@ -56,7 +55,7 @@ $(function () {
                     },
                     {
                         targets: 4,
-                        width: '12.5%',
+                        width: '6%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span></b>`;
@@ -66,7 +65,7 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '7.5%',
+                        width: '3%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><p>${parseFloat(row?.['revenue_ratio'])} %</p></b>`;
@@ -76,7 +75,7 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '12.5',
+                        width: '6%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><span class="mask-money table-row-profit-plan" data-init-money="${parseFloat(row?.['gross_profit_plan'])}"></span></b>`;
@@ -86,7 +85,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '12.5%',
+                        width: '6%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><span class="mask-money table-row-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span></b>`;
@@ -96,7 +95,7 @@ $(function () {
                     },
                     {
                         targets: 8,
-                        width: '7.5%',
+                        width: '3%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><p>${parseFloat(row?.['gross_profit_ratio'])} %</p></b>`;
@@ -108,10 +107,23 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
+                    // add css to Dtb
+                    loadCssToDtb('table_report_general_list');
                 },
             });
         }
         loadDbl();
+
+        function loadCssToDtb(tableID) {
+            let tableIDWrapper = tableID + '_wrapper';
+            let tableWrapper = document.getElementById(tableIDWrapper);
+            if (tableWrapper) {
+                let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+                if (headerToolbar) {
+                    headerToolbar.classList.add('hidden');
+                }
+            }
+        }
 
         function setupDataLoadTable(dataList) {
             let year = boxYear.val();
@@ -381,7 +393,7 @@ $(function () {
                             let currentYear = new Date().getFullYear();
                             boxYear.val(currentYear).trigger('change');
                             boxDetail.val('p-1').trigger('change');
-                            btnView.click();
+                            $('#btn-apply-vb').click();
                         }
                     }
                 }
@@ -585,9 +597,11 @@ $(function () {
             });
         }
 
-        $('#btn-collapse').click(function () {
-            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
-        });
+        function loadFilter(listData, $eleShow) {
+            if (listData.length > 0) {
+                $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
+            }
+        }
 
         // load init
         function initData() {
@@ -613,6 +627,21 @@ $(function () {
         // mask money
         $.fn.initMaskMoney2();
 
+        // Prevent dropdown from closing when clicking inside the dropdown
+        $('.dropdown-menu').on('click', function (e) {
+            e.stopPropagation();
+        });
+
+        // Prevent the dropdown from closing when clicking outside it
+        $('.btn-group').on('hide.bs.dropdown', function (e) {
+            e.preventDefault();
+        });
+
+        // Reopen dropdown on button click
+        $('.btn-group').on('click', '.btn', function (e) {
+            $(this).siblings('.dropdown-menu').toggleClass('show');
+        });
+
         // Events
         boxGroup.on('change', function() {
             loadBoxEmployee();
@@ -628,16 +657,25 @@ $(function () {
             boxDetail.val('p-1').trigger('change');
         });
 
-        btnView.on('click', function () {
+        $('#btn-apply-vb').on('click', function () {
+            this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
             dataParams['is_initial'] = false;
-            dataParams['group_inherit__is_delete'] = false;
-            if (boxGroup.val()) {
+            let listViewBy = [];
+            let listDate = [];
+            if (boxGroup.val() && boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
+                for (let text of boxGroup[0].innerText.split("\n")) {
+                    listViewBy.push(text);
+                }
             }
-            if (boxEmployee.val()) {
+            if (boxEmployee.val() && boxEmployee.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
+                for (let text of boxEmployee[0].innerText.split("\n")) {
+                    listViewBy.push(text);
+                }
             }
+            loadFilter(listViewBy, $('#card-filter-vb'));
             let year = boxYear.val();
             let detail = boxDetail.val();
             if (year && detail) {
@@ -664,6 +702,15 @@ $(function () {
                         dataParams['date_approved__lte'] = endDate;
                     }
                 }
+                let yearSelected = SelectDDControl.get_data_from_idx(boxYear, boxYear.val());
+                if (yearSelected) {
+                    listDate.push(yearSelected?.['title']);
+                }
+                let detailSelected = SelectDDControl.get_data_from_idx(boxDetail, boxDetail.val());
+                if (detailSelected) {
+                    listDate.push(detailSelected?.['title']);
+                }
+                loadFilter(listDate, $('#card-filter-date'));
             }
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
@@ -697,6 +744,10 @@ $(function () {
                     }
                 }
             )
+        });
+
+        $('#btn-cancel-vb').on('click', function () {
+            this.closest('.dropdown-menu').classList.remove('show');
         });
 
 

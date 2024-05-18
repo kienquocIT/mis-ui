@@ -6,7 +6,7 @@
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'QuotationUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary" id="btn-enable-edit">
+        <button class="btn btn-outline-primary" id="btn-enable-edit" hidden>
             <span>
                 <span>{% trans 'Edit' %}</span>
                 <span class="icon">
@@ -80,25 +80,6 @@
                                             disabled
                                     >
                                 </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-6">
-                                <div class="form-group">
-                                    <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
-                                    <select
-                                            class="form-select"
-                                            id="select-box-quotation-create-payment-term"
-                                            data-url="{% url "PaymentsTermsListAPI" %}"
-                                            data-link-detail=""
-                                            data-method="GET"
-                                            name="payment_term"
-                                            data-keyResp="payment_terms_list"
-                                            disabled
-                                    ></select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}</label>
                                     <select
@@ -113,32 +94,6 @@
                                             disabled
                                     ></select>
                                 </div>
-                            </div>
-                            <div class="col-12 col-md-3 col-lg-3">
-                                <div class="form-group">
-                                    <label class="form-label required" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
-                                    <div class="input-group">
-                                        <div class="input-affix-wrapper">
-                                            <input
-                                                type="text" class="form-control disabled-custom-show"
-                                                placeholder="dd/mm/yyyy"
-                                                name="date_created"
-                                                id="quotation-create-date-created"
-                                                disabled
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-3 col-lg-3">
-                                <div class="form-check mt-5">
-                                    <input type="checkbox" class="form-check-input" id="quotation-customer-confirm" disabled>
-                                    <label class="form-check-label" for="quotation-customer-confirm">{% trans 'Customer Confirm' %}</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}</label>
                                     <select
@@ -154,6 +109,43 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
+                                    <select
+                                            class="form-select"
+                                            id="select-box-quotation-create-payment-term"
+                                            data-url="{% url "PaymentsTermsListAPI" %}"
+                                            data-link-detail=""
+                                            data-method="GET"
+                                            name="payment_term"
+                                            data-keyResp="payment_terms_list"
+                                            disabled
+                                    ></select>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <label class="form-label required" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
+                                            <div class="input-group">
+                                                <div class="input-affix-wrapper">
+                                                    <input
+                                                        type="text" class="form-control disabled-custom-show"
+                                                        placeholder="dd/mm/yyyy"
+                                                        name="date_created"
+                                                        id="quotation-create-date-created"
+                                                        disabled
+                                                    >
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-4 col-lg-4">
+                                        <div class="form-check mt-5">
+                                            <input type="checkbox" class="form-check-input" id="quotation-customer-confirm" disabled>
+                                            <label class="form-check-label" for="quotation-customer-confirm">{% trans 'Customer Confirm' %}</label>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="d-flex justify-content-start mt-5">
                                     <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="{% trans 'Copy to sale order' %}">
                                     <button
@@ -267,7 +259,7 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-product"
-                                            class="table nowrap min-w-2000p w-100 mb-5"
+                                            class="table nowrap min-w-1920p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr>
@@ -308,7 +300,7 @@
                                                         <div class="input-group">
                                                             <span class="input-affix-wrapper">
                                                                 <input type="text" class="form-control validated-number quotation-create-product-discount" value="0" data-zone="quotation_products_data" disabled>
-                                                                <span class="input-suffix"><i class="fas fa-percentage"></i></span>
+                                                                <span class="input-suffix"><small><i class="fas fa-percentage"></i></small></span>
                                                             </span>
                                                         </div>
                                                     </div>
@@ -652,7 +644,7 @@
     <input
             type="text"
             id="data-init-quotation-create-request-employee"
-            value="{{ data.data.employee_current }}"
+            value="{{ data.employee_current }}"
     >
     <input
             type="text"
@@ -680,7 +672,7 @@
     <input
             type="text"
             id="data-init-opportunity"
-            value="{{ data.data.opportunity }}"
+            value="{{ data.opportunity }}"
     >
     <input
             type="text"
@@ -707,7 +699,8 @@
             data-url="{% url "AccountForSaleListAPI" %}"
             data-method="GET"
     >
-
+    {{ data.employee_current|json_script:'employee_current' }}
+    {{ data.opportunity|json_script:'init_opp' }}
 {% endblock %}
 
 {% block jsFooter %}

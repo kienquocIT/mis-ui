@@ -68,6 +68,10 @@ $(document).ready(function () {
             $x.fn.hideLoadingPage();
             const opportunity_detail_data = results[0];
 
+            if (opportunity_detail_data?.['is_deal_close'] === true) {
+                $('.page-content input, .page-content select, .page-content .btn').not($('#input-close-deal')).not($('#rangeInput')).prop('disabled', true);
+            }
+
             const config = results[1];
             const config_is_select_stage = config.is_select_stage;
             const config_is_AM_create = config.is_account_manager_create;
@@ -169,17 +173,17 @@ $(document).ready(function () {
             }
 
             loadDetail(opportunity_detail_data).then(function () {
-                autoLoadStage(
-                    true,
-                    false,
-                    list_stage_condition,
-                    list_stage,
-                    condition_sale_oder_approved,
-                    condition_is_quotation_confirm,
-                    condition_sale_oder_delivery_status,
-                    config_is_input_rate,
-                    dict_stage
-                )
+                // autoLoadStage(
+                //     true,
+                //     false,
+                //     list_stage_condition,
+                //     list_stage,
+                //     condition_sale_oder_approved,
+                //     condition_is_quotation_confirm,
+                //     condition_sale_oder_delivery_status,
+                //     config_is_input_rate,
+                //     dict_stage
+                // )
 
                 // Disable all select elements
                 $('#btn-auto-update-stage').prop('hidden', true)
@@ -312,21 +316,21 @@ $(document).ready(function () {
                 OpportunityLoadDetail.addRowCompetitor()
             })
 
-            $(document).on('change', '.input-win-deal', function () {
-                if ($(this).is(':checked')) {
-                    if (checkOppWonOrDelivery()) {
-                        $(this).prop('checked', false);
-                        OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
-                    } else {
-                        $('.input-win-deal').not(this).prop('checked', false);
-                        $('.stage-lost').addClass('bg-red-light-5 stage-selected');
-                        loadWinRate();
-                    }
-                } else {
-                    $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
-                    loadWinRate();
-                }
-            })
+            // $(document).on('change', '.input-win-deal', function () {
+            //     if ($(this).is(':checked')) {
+            //         if (checkOppWonOrDelivery()) {
+            //             $(this).prop('checked', false);
+            //             OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
+            //         } else {
+            //             $('.input-win-deal').not(this).prop('checked', false);
+            //             $('.stage-lost').addClass('bg-red-light-5 border-red stage-selected');
+            //             loadWinRate();
+            //         }
+            //     } else {
+            //         $('.stage-lost').removeClass('bg-red-light-5 border-red stage-selected');
+            //         loadWinRate();
+            //     }
+            // })
 
             // event in tab contact role
 
@@ -442,10 +446,20 @@ $(document).ready(function () {
             })
 
             $('#input-close-date').on('change', function () {
-                let open_date = $('#input-open-date').val();
-                if ($(this).val() < open_date) {
-                    $.fn.notifyB({description: $('#limit-close-date').text()}, 'failure');
-                    $(this).val(open_date);
+                let open_date = moment($('#input-open-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                let close_date = moment($('#input-close-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                if (close_date < open_date) {
+                    $.fn.notifyB({description: $('#limit-close-date').text()}, 'failure')
+                    $(this).val('')
+                }
+            })
+
+            $('#input-open-date').on('change', function () {
+                let open_date = moment($('#input-open-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                let close_date = moment($('#input-close-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                if (close_date < open_date) {
+                    $.fn.notifyB({description: $('#limit-close-date').text()}, 'failure')
+                    $(this).val('')
                 }
             })
 
@@ -466,13 +480,13 @@ $(document).ready(function () {
                             let stage = $(this).closest('.sub-stage');
                             let index = stage.index();
                             let ele_stage = $('#div-stage .sub-stage');
-                            $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
+                            $('.stage-lost').removeClass('bg-red-light-5 border-red stage-selected');
                             for (let i = 0; i <= ele_stage.length; i++) {
                                 if (i <= index) {
                                     if (!ele_stage.eq(i).hasClass('stage-lost'))
-                                        ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
+                                        ele_stage.eq(i).addClass('bg-primary-light-5 border-primary  stage-selected');
                                 } else {
-                                    ele_stage.eq(i).removeClass('bg-primary-light-5 stage-selected');
+                                    ele_stage.eq(i).removeClass('bg-primary-light-5 border-primary  stage-selected');
                                 }
                             }
                             loadWinRate();
@@ -492,22 +506,22 @@ $(document).ready(function () {
                 }
             }
 
-            $('#check-lost-reason').on('change', function () {
-                let ele_stage_lost = $('.stage-lost')
-                if (!$(this).is(':checked')) {
-                    ele_stage_lost.removeClass('bg-red-light-5 stage-selected');
-                    loadWinRate();
-                } else {
-                    if (checkOppWonOrDelivery()) {
-                        $(this).prop('checked', false);
-                        OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
-                    } else {
-                        $('.input-win-deal').not(this).prop('checked', false);
-                        ele_stage_lost.addClass('bg-red-light-5 stage-selected');
-                        loadWinRate();
-                    }
-                }
-            })
+            // $('#check-lost-reason').on('change', function () {
+            //     let ele_stage_lost = $('.stage-lost')
+            //     if (!$(this).is(':checked')) {
+            //         ele_stage_lost.removeClass('bg-red-light-5 border-red stage-selected');
+            //         loadWinRate();
+            //     } else {
+            //         if (checkOppWonOrDelivery()) {
+            //             $(this).prop('checked', false);
+            //             OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
+            //         } else {
+            //             $('.input-win-deal').not(this).prop('checked', false);
+            //             ele_stage_lost.addClass('bg-red-light-5 border-red stage-selected');
+            //             loadWinRate();
+            //         }
+            //     }
+            // })
 
 
             $('#btn-auto-update-stage').on('click', function () {
@@ -528,10 +542,10 @@ $(document).ready(function () {
 
             $(document).on('change', '#input-close-deal', function () {
                 if ($(this).is(':checked')) {
-                    $(this).closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
+                    $(this).closest('.sub-stage').addClass('bg-primary-light-5 border-primary  stage-selected');
                     $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', true);
                 } else {
-                    $(this).closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
+                    $(this).closest('.sub-stage').removeClass('bg-primary-light-5 border-primary  stage-selected');
                     $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', false);
                     if ($('#check-agency-role').is(':checked')) {
                         $('#select-box-end-customer').prop('disabled', false);
@@ -1024,8 +1038,8 @@ $(document).ready(function () {
                 $('#meeting-employee-attended-select-box option').remove();
 
                 loadMeetingSaleCodeList();
-                loadMeetingAddress(opportunity_detail_data.customer.shipping_address);
-                loadCustomerMember(opportunity_detail_data.customer.contact_mapped);
+                loadMeetingAddress(opportunity_detail_data?.['customer']?.['shipping_address'] ? opportunity_detail_data?.['customer']?.['shipping_address'] : [])
+                loadCustomerMember(opportunity_detail_data?.['customer']?.['contact_mapped'] ? opportunity_detail_data?.['customer']?.['contact_mapped'] : [])
                 loadEmployeeAttended();
             })
 
@@ -1377,11 +1391,11 @@ $(document).ready(function () {
                     'cashoutflow.returnadvance': transEle.attr('data-trans-return'),
                 }
                 let appMapBadge = {
-                    'quotation.quotation': "badge-soft-primary",
-                    'saleorder.saleorder': "badge-soft-success",
-                    'cashoutflow.advancepayment': "badge-soft-pink",
-                    'cashoutflow.payment': "badge-soft-violet",
-                    'cashoutflow.returnadvance': "badge-soft-purple",
+                    'quotation.quotation': "badge-primary badge-outline",
+                    'saleorder.saleorder': "badge-success badge-outline",
+                    'cashoutflow.advancepayment': "badge-pink badge-outline",
+                    'cashoutflow.payment': "badge-violet badge-outline",
+                    'cashoutflow.returnadvance': "badge-purple badge-outline",
                 }
                 let typeMapActivity = {
                     1: transEle.attr('data-trans-task'),
@@ -1390,11 +1404,11 @@ $(document).ready(function () {
                     4: transEle.attr('data-trans-meeting'),
                 }
                 let typeMapIcon = {
-                    0: `<i class="fas fa-file-alt"></i>`,
-                    1: `<i class="fas fa-tasks"></i>`,
-                    2: `<i class="fas fa-phone-alt"></i>`,
-                    3: `<i class="far fa-envelope"></i>`,
-                    4: `<i class="fas fa-users"></i>`,
+                    0: "fas fa-file-alt",
+                    1: "fas fa-tasks",
+                    2: "fas fa-phone-alt",
+                    3: "far fa-envelope",
+                    4: "fas fa-users",
                 }
                 $table.DataTable().clear().destroy()
                 $table.DataTableDefault({
@@ -1424,19 +1438,12 @@ $(document).ready(function () {
                             render: (data, type, row) => {
                                 if (row?.['log_type'] === 0) {
                                     if (row?.['app_code']) {
-                                        let status = ``;
-                                        if (row?.['app_code'] === 'quotation.quotation') {
-                                            if (opportunity_detail_data?.['quotation']?.['id'] === row?.['doc_id']) {
-                                                status = `<small class="text-green">${transEle.attr('data-trans-valid')}</small>`
-                                            } else {
-                                                status = `<small class="text-red">${transEle.attr('data-trans-invalid')}</small>`
-                                            }
-                                        }
-
-                                        return `<div class="d-flex justify-content-start">
-                                            <span class="badge ${appMapBadge[row?.['app_code']]} mr-2">${appMapTrans[row?.['app_code']]}</span>
-                                            ${status}
-                                        </div>`;
+                                        return `<span class="badge ${appMapBadge[row?.['app_code']]}">
+                                                    <span>
+                                                        <span class="icon"><span class="feather-icon"><small><i class="${typeMapIcon[row?.['log_type']]}"></i></small></span></span>
+                                                        ${appMapTrans[row?.['app_code']]}
+                                                    </span>
+                                                </span>`;
                                     }
                                 } else {
                                     let status = '';
@@ -1460,7 +1467,7 @@ $(document).ready(function () {
                                 if (row?.['log_type'] === 0) {
                                     if (row?.['app_code'] && row?.['doc_id']) {
                                         link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_id']);
-                                        title = row?.['title'];
+                                        title = row?.['doc_data']?.['title'];
                                         return `<a href="${link}" target="_blank"><p>${title}</p></a>`;
                                     } else {
                                         return `<p></p>`;
@@ -1484,11 +1491,37 @@ $(document).ready(function () {
                         {
                             targets: 3,
                             render: (data, type, row) => {
-                                return typeMapIcon[row?.['log_type']];
+                                let link = '';
+                                let code = '';
+                                if (row?.['log_type'] === 0) {
+                                    if (row?.['app_code'] && row?.['doc_id']) {
+                                        link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_id']);
+                                        code = row?.['doc_data']?.['code'];
+                                        return `<a href="${link}" target="_blank"><span class="badge badge-primary">${code}</span></a>`;
+                                    }
+                                }
+                                return `<p>--</p>`;
                             }
                         },
                         {
                             targets: 4,
+                            render: (data, type, row) => {
+                                if (row?.['app_code']) {
+                                    let sttTxt = JSON.parse($('#stt_sys').text())
+                                    let sttData = [
+                                        "soft-light",
+                                        "soft-primary",
+                                        "soft-info",
+                                        "soft-success",
+                                        "soft-danger",
+                                    ]
+                                    return `<div class="row"><span class="badge badge-${sttData[row?.['doc_data']?.['system_status']]}">${sttTxt[row?.['doc_data']?.['system_status']][1]}</span></div>`;
+                                }
+                                return `<p>--</p>`;
+                            }
+                        },
+                        {
+                            targets: 5,
                             render: (data, type, row) => {
                                 return $x.fn.displayRelativeTime(row?.['date_created'], {
                                     'outputFormat': 'DD-MM-YYYY',
@@ -1585,6 +1618,7 @@ $(document).ready(function () {
                         'quotation.quotation': 'quotation.quotation.create',
                         'saleorder.saleorder': 'saleorder.saleorder.create',
                     };
+                    let tableData = table_timeline.DataTable().rows().data().toArray();
                     $.fn.callAjax2({
                             'url': $('#script-url').attr('data-url-opp-list'),
                             'method': 'GET',
@@ -1596,17 +1630,28 @@ $(document).ready(function () {
                             let data = $.fn.switcherResp(resp);
                             if (data) {
                                 if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                                    let countCheck = 0;
-                                    for (let opp of data.opportunity_list) {
-                                        countCheck++;
+                                    for (let opp of data.opportunity_list) {  // check employee has opp permission on quotation/ sale order
                                         if (opp?.['id'] === detail?.['id']) {
+                                            // check opp already has quotation/ sale order
+                                            for (let tData of tableData) {
+                                                if (label === 'quotation.quotation') {
+                                                    if (tData?.['app_code'] === 'saleorder.saleorder' && [1, 2, 3].includes(tData?.['doc_data']?.['system_status'])) {
+                                                        $.fn.notifyB({description: transEle.attr('data-cancel-quo-so')}, 'failure');
+                                                        return false
+                                                    }
+                                                }
+                                                if (tData?.['app_code'] === label && [1, 2, 3].includes(tData?.['doc_data']?.['system_status'])) {
+                                                    let errTxt = transEle.attr('data-cancel-quo');
+                                                    if (label === 'saleorder.saleorder') {
+                                                        errTxt = transEle.attr('data-cancel-so');
+                                                    }
+                                                    $.fn.notifyB({description: errTxt}, 'failure');
+                                                    return false
+                                                }
+                                            }
                                             let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
                                             window.open(url, '_blank');
                                             return true;
-                                        }
-                                        if (countCheck >= data.opportunity_list.length) {
-                                            $.fn.notifyB({description: transEle.attr('data-forbidden')}, 'failure');
-                                            return false
                                         }
                                     }
                                     $.fn.notifyB({description: transEle.attr('data-forbidden')}, 'failure');

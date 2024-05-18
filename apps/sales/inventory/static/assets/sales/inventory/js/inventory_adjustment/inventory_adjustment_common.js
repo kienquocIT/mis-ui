@@ -13,6 +13,19 @@ let get_increase_items_btn = $('#get-increase-items-btn')
 let get_decrease_items_btn = $('#get-decrease-items-btn')
 let LIST_WAREHOUSE_PRODUCT = []
 
+dateInput.daterangepicker({
+    singleDatePicker: true,
+    timepicker: false,
+    showDropdowns: false,
+    minYear: 2023,
+    locale: {
+        format: 'DD/MM/YYYY'
+    },
+    maxYear: parseInt(moment().format('YYYY'), 10),
+    drops: 'up',
+    autoApply: true,
+});
+
 addRowLineDetailBtn.on('click', async function () {
     if (warehouseSelectBox.val().length < 1) {
         $.fn.notifyB({description: 'Please select at least 1 warehouse'}, 'warning');
@@ -41,15 +54,15 @@ selectProductBtn.on('click', async function () {
                 <td data-id="${selected_product[i].warehouse_id}" class="warehouse_id_td"><i class="fas fa-warehouse"></i> ${selected_product[i].warehouse_title}</td>
                 <td data-id="${selected_product[i].product_inventory_uom_id}" class="uom_id_td">${selected_product[i].product_inventory_uom_title}</td>
                 <td class="quantity-td">${selected_product[i].available_amount}</td>
-                <td><input class="form-control count-input" type="text" placeholder="Number" value="${selected_product[i].available_amount}"></td>
-                <td class="difference_td">0</td>
-                <td>
+                <td><input class="form-control count-input" type="number" placeholder="Number" value="${selected_product[i].available_amount}"></td>
+                <td class="difference_td text-center">0</td>
+                <td class="text-center">
                     <span class="form-check">
                         <input type="checkbox" disabled class="form-check-input selected_for_actions">
                         <label class="form-check-label"></label>
                     </span>
                 </td>
-                <td class="action_type_td"></td>
+                <td class="action_type_td text-center"></td>
                 <td></td>
             </tr>
         `)
@@ -73,10 +86,10 @@ $(document).on('input', '.count-input', function () {
         $(this).closest('tr').find('.selected_for_actions').attr('disabled', false);
         if (difference < 0) {
         difference = '(' + difference * -1 + ')';
-        action_type = '<span class="text-danger">Decreasing <i class="bi bi-arrow-down"></i></span>';
+        action_type = '<span class="text-danger"><i class="bi bi-arrow-down"></i></span>';
     }
         if (difference > 0) {
-            action_type = '<span class="text-primary">Increasing <i class="bi bi-arrow-up"></i></span>';
+            action_type = '<span class="text-primary"><i class="bi bi-arrow-up"></i></span>';
         }
     }
     $(this).val(parseFloat($(this).val() ? $(this).val() : 0));
@@ -109,22 +122,8 @@ selectAllProductBtn.on('click', function () {
     }
 })
 
-function LoadCreatedDate() {
-    dateInput.dateRangePickerDefault({
-        singleDatePicker: true,
-        timePicker: true,
-        showDropdowns: true,
-        minYear: 1901,
-        locale: {
-            format: 'YYYY-MM-DD'
-        },
-        "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY'),10)
-    }).prop('disabled', true).css({'color': 'black'});
-}
-
-function LoadStatus() {
-    statusInput.val('Open').prop('disabled', true).css({'color': 'black'});
+function LoadStatus(data) {
+    statusInput.val(data).prop('disabled', true).prop('readonly', true);
 }
 
 function LoadWarehouseSelectBox(data) {
@@ -154,86 +153,73 @@ function LoadInChargeSelectBox(data) {
 }
 
 function LoadTableSelectProduct(warehouse_list) {
-    tableSelectProduct.DataTable().clear().destroy();
-    tableSelectProduct.DataTableDefault({
-        dom: "<'row miner-group'<'col-sm-12 mt-3'f><'col-sm-10'p>>",
-        scrollY: true,
-        paging: false,
-        useDataServer: true,
-        ajax: {
-            url: $('#frm_inventory_adjustment_create').attr('data-url-warehouse-product-list'),
-            type: 'GET',
-            dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (resp.data['warehouses_products_list']) {
-                            let data_list = [];
-                            let data_dict = {};
-                            for (let i = 0; i < resp.data['warehouses_products_list'].length; i++) {
-                                let warehouse_temp = resp.data['warehouses_products_list'][i];
-                                if (warehouse_list.includes(warehouse_temp['id'])) {
-                                    for (let j = 0; j < warehouse_temp['product_list'].length; j++) {
-                                        let product_temp = warehouse_temp['product_list'];
-                                        let data_temp = {
-                                            'product_warehouse_id': product_temp[j]['id'],
-                                            'warehouse_id': warehouse_temp['id'],
-                                            'warehouse_code': warehouse_temp['code'],
-                                            'warehouse_title': warehouse_temp['title'],
-                                            'warehouse_is_active': warehouse_temp['is_active'],
-                                            'warehouse_remarks': warehouse_temp['remarks'],
-                                            'product_id': product_temp[j]['product']['id'],
-                                            'product_title': product_temp[j]['product']['title'],
-                                            'product_inventory_uom_id': product_temp[j]['inventory_uom']['id'],
-                                            'product_inventory_uom_title': product_temp[j]['inventory_uom']['title'],
-                                            'available_amount': product_temp[j]['available_amount'],
-                                        }
-                                        data_list.push(data_temp)
-                                        data_dict[product_temp[j]['id']] = data_temp;
-                                    }
+    let warehouses_products_list_ajax = $.fn.callAjax2({
+            url: $('#url_script').attr('data-url-warehouse-product-list'),
+            data: {},
+            method: 'GET'
+        }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data?.['warehouses_products_list']) {
+                    let data_list = [];
+                    let data_dict = {};
+                    for (let i = 0; i < data?.['warehouses_products_list'].length; i++) {
+                        let warehouse_temp = data?.['warehouses_products_list'][i];
+                        if (warehouse_list.includes(warehouse_temp['id'])) {
+                            for (let j = 0; j < warehouse_temp['product_list'].length; j++) {
+                                let product_temp = warehouse_temp['product_list'];
+                                let data_temp = {
+                                    'product_warehouse_id': product_temp[j]['id'],
+                                    'warehouse_id': warehouse_temp['id'],
+                                    'warehouse_code': warehouse_temp['code'],
+                                    'warehouse_title': warehouse_temp['title'],
+                                    'warehouse_is_active': warehouse_temp['is_active'],
+                                    'warehouse_remarks': warehouse_temp['remarks'],
+                                    'product_id': product_temp[j]['product']['id'],
+                                    'product_title': product_temp[j]['product']['title'],
+                                    'product_inventory_uom_id': product_temp[j]['inventory_uom']['id'],
+                                    'product_inventory_uom_title': product_temp[j]['inventory_uom']['title'],
+                                    'available_amount': product_temp[j]['available_amount'],
                                 }
+                                data_list.push(data_temp)
+                                data_dict[product_temp[j]['id']] = data_temp;
                             }
-                            LIST_WAREHOUSE_PRODUCT = data_list;
-                            $('#data-product-warehouse').text(JSON.stringify(data_dict));
-                            return data_list;
-                        } else {
-                            return [];
                         }
                     }
+                    LIST_WAREHOUSE_PRODUCT = data_list;
+                    $('#data-product-warehouse').text(JSON.stringify(data_dict));
+                    return data_list;
+                } else {
                     return [];
                 }
-            },
-        columns: [
-                {
-                    render: (data, type, row) => {
-                        return `<span class="form-check">
-                            <input type="checkbox" class="form-check-input selected_product" data-warehouse-id="${row.warehouse_id}" data-product-id="${row.product_id}" data-id="${row.product_warehouse_id}">
-                            <label class="form-check-label"></label>
-                        </span>`;
-                    }
-                },
-                {
-                    data: 'warehouse_code',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<span class="badge badge-soft-primary w-80">${row.warehouse_code}</span>`
-                    }
-                },
-                {
-                    data: 'warehouse_title',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<span><i class="fas fa-warehouse"></i> ${row.warehouse_title}</span>`
-                    }
-                },
-                {
-                    data: 'product_title',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<span class="text-primary">${row.product_title}</span>`
-                    }
-                }
-            ],
-    });
+            }
+            return [];
+        },
+        (errs) => {
+            console.log(errs);
+        }
+    )
+
+    Promise.all([warehouses_products_list_ajax]).then(
+        (results) => {
+            tableSelectProduct.find('tbody').html('')
+            for (const item of results[0]) {
+                tableSelectProduct.find('tbody').append(`
+                    <tr>
+                        <td>
+                            <span class="form-check">
+                                <input type="checkbox" class="form-check-input selected_product" data-warehouse-id="${item?.['warehouse_id']}" data-product-id="${item?.['product_id']}" data-id="${item?.['product_warehouse_id']}">
+                                <label class="form-check-label"></label>
+                            </span>
+                        </td>
+                        <td><span class="badge badge-soft-primary w-80">${item?.['warehouse_code']}</span></td>
+                        <td><span><i class="fas fa-warehouse"></i> ${item?.['warehouse_title']}</span></td>
+                        <td><span class="text-primary">${item?.['product_title']}</span></td>
+                    </tr>
+                `)
+            }
+        })
 }
 
 function getDataFormCreate() {
@@ -290,22 +276,24 @@ function getDataFormCreate() {
 function getDataFormUpdate() {
     let data = {}
 
+    data['title'] = titleInput.val();
+
+    data['ia_employees_in_charge'] = inChargeSelectBox.val();
+    if (data['ia_employees_in_charge'].length <= 0) {
+        $.fn.notifyB({description: 'Employee in charge must not be NULL'}, 'failure');
+        return false
+    }
+
     let ia_items_data_list = [];
     tableLineDetailTbody.find('tr').each(function () {
         let book_quantity = $(this).find('.quantity-td').text();
         let count = $(this).find('.count-input').val();
-        let action_status = 0;
         let action_type = (count > book_quantity) ? 2 : (count < book_quantity) ? 1 : 0;
         ia_items_data_list.push({
-            'product_warehouse_id': $(this).find('.product_id_td').attr('data-product-warehouse-id'),
-            'product_mapped_id': $(this).find('.product_id_td').attr('data-id'),
-            'warehouse_mapped_id': $(this).find('.warehouse_id_td').attr('data-id'),
-            'uom_mapped_id': $(this).find('.uom_id_td').attr('data-id'),
-            'book_quantity': book_quantity,
+            'id': $(this).find('.product_id_td').attr('data-item-id'),
             'count': count,
             'action_type': action_type,
             'select_for_action': $(this).find('.selected_for_actions').is(':checked'),
-            'action_status': action_status
         })
     });
 
@@ -316,7 +304,6 @@ function getDataFormUpdate() {
 
 class InventoryAdjustmentHandle {
     load() {
-        LoadCreatedDate();
         LoadStatus();
         LoadWarehouseSelectBox();
         LoadInChargeSelectBox();
@@ -350,11 +337,19 @@ class InventoryAdjustmentHandle {
     }
 }
 
-function Disable() {
-    $('.form-control').prop('disabled', true).css({color: 'black'});
-    $('.form-select').prop('disabled', true).css({color: 'black'});
-    $('.select2').prop('disabled', true);
-    $('#collapse-area input').prop('disabled', true);
+function Disable(option) {
+    if (option === 'detail') {
+        $('.form-control').prop('disabled', true).prop('readonly', true);
+        $('.form-select').prop('disabled', true).prop('readonly', true);
+        $('.select2').prop('disabled', true);
+        $('#collapse-area input').prop('disabled', true);
+    }
+    if (option === 'update') {
+        $('#collapse-area .form-control').prop('disabled', true).prop('readonly', true);
+        $('#collapse-area .form-select').prop('disabled', true).prop('readonly', true);
+        $('#collapse-area .select2').prop('disabled', true);
+        $('#collapse-area input').prop('disabled', true);
+    }
 }
 
 function LoadDetailIA(option) {
@@ -370,12 +365,10 @@ function LoadDetailIA(option) {
                 $x.fn.renderCodeBreadcrumb(data);
 
                 titleInput.val(data.title);
-                dateInput.val(data.date_created.split(' ')[0]);
-                LoadStatus();
+                dateInput.val(moment(data?.['date_created'].split(' ')[0]).format('DD/MM/YYYY'));
+                LoadStatus(data.state);
                 LoadWarehouseSelectBox(data?.['warehouses']);
                 LoadInChargeSelectBox(data?.['employees_in_charge']);
-
-                Disable(option);
 
                 for (let i = 0; i < data?.['inventory_adjustment_item_mapped'].length; i++) {
                     let data_row = data?.['inventory_adjustment_item_mapped'][i];
@@ -387,44 +380,46 @@ function LoadDetailIA(option) {
                     }
                     let done = '';
                     if (data_row?.['action_status']) {
-                        done = 'Done';
+                        done = '<i class="fas fa-check"></i>';
                     }
                     let difference = parseFloat(data_row?.['count']) - parseFloat(data_row?.['book_quantity']);
                     let action_type = '';
                     let disabled_select = '';
-                    if (difference === 0) {
-                        disabled_select = 'disabled';
+                    if (data_row?.['action_status']) {
+                        disabled_select = 'disabled readonly';
                     }
-                    else {
+                    if (difference !== 0) {
                         if (difference < 0) {
                             difference = '(' + difference * -1 + ')';
-                            action_type = '<span class="text-danger">Decreasing <i class="bi bi-arrow-down"></i></span>';
+                            action_type = '<span class="text-danger"><i class="bi bi-arrow-down"></i></span>';
                         }
                         if (difference > 0) {
-                        action_type = '<span class="text-primary">Increasing <i class="bi bi-arrow-up"></i></span>';
-                    }
+                            action_type = '<span class="text-primary"><i class="bi bi-arrow-up"></i></span>';
+                        }
                     }
                     tableLineDetailTbody.append(`
                         <tr class="${class_ctn}">
-                            <td data-product-warehouse-id="${data_row?.['product_warehouse_mapped'].id}" data-id="${data_row?.['product_mapped'].id}" class="text-primary product_id_td">${data_row?.['product_mapped'].title}</td>
+                            <td data-item-id="${data_row?.['id']}" data-product-warehouse-id="${data_row?.['product_warehouse_mapped'].id}" data-id="${data_row?.['product_mapped'].id}" class="text-primary product_id_td">${data_row?.['product_mapped'].title}</td>
                             <td data-id="${data_row?.['warehouse_mapped'].id}" class="warehouse_id_td"><i class="fas fa-warehouse"></i> ${data_row?.['warehouse_mapped'].title}</td>
                             <td data-id="${data_row?.['uom_mapped'].id}" class="uom_id_td">${data_row?.['uom_mapped'].title}</td>
                             <td class="quantity-td">${data_row?.['book_quantity']}</td>
-                            <td><input class="form-control count-input" type="text" placeholder="Number" value="${data_row?.['count']}"></td>
-                            <td class="difference_td">${difference}</td>
-                            <td>
+                            <td><input ${disabled_select} class="form-control count-input" type="text" placeholder="Number" value="${data_row?.['count']}"></td>
+                            <td class="text-center difference_td">${difference}</td>
+                            <td class="text-center">
                                 <span class="form-check">
                                     <input ${disabled_select} type="checkbox" class="form-check-input selected_for_actions" ${checked}>
                                     <label class="form-check-label"></label>
                                 </span>
                             </td>
-                            <td class="action_type_td">${action_type}</td>
-                            <td>${done}</td>
+                            <td class="text-center action_type_td">${action_type}</td>
+                            <td class="text-center text-success">${done}</td>
                         </tr>
                     `)
                 }
 
                 $.fn.initMaskMoney2();
+
+                Disable(option);
             }
         })
 }

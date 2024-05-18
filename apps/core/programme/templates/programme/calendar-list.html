@@ -22,16 +22,22 @@
                         {% trans 'Create' %}
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{% url 'LeaveRequestList' %}" target="_blank">
-                            <span class="feather-icon dropdown-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
-                            <span>{% trans 'Create leave' %}</span></a>
+                        <a class="dropdown-item" href="{% url 'OpportunityMeetingList' %}" target="_blank">
+                            <span class="feather-icon dropdown-icon"><i class="fa-solid fa-users-rectangle"></i></span>
+                            <span>{% trans 'Create meeting' %} ({% trans 'CRM' %})</span>
+                        </a>
+                        <a class="dropdown-item" href="{% url 'MeetingScheduleList' %}" target="_blank">
+                            <span class="feather-icon dropdown-icon"><i class="fas fa-chalkboard-teacher"></i></span>
+                            <span>{% trans 'Schedule a meeting' %} ({% trans 'E-Office' %})</span>
+                        </a>
                         <a class="dropdown-item" href="{% url 'BusinessTripRequestList' %}" target="_blank">
                             <span class="feather-icon dropdown-icon"><i class="fa-solid fa-business-time"></i></span>
                             <span>{% trans 'Create business trip' %}</span>
                         </a>
-                        <a class="dropdown-item" href="{% url 'OpportunityMeetingList' %}" target="_blank">
-                            <span class="feather-icon dropdown-icon"><i
-                                class="fa-solid fa-users-rectangle"></i></span><span>{% trans 'Create meeting' %}</span></a>
+                        <a class="dropdown-item" href="{% url 'LeaveRequestList' %}" target="_blank">
+                            <span class="feather-icon dropdown-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                            <span>{% trans 'Create leave' %}</span>
+                        </a>
                     </div>
                     <div class="clearfix mt-4"></div>
 
@@ -41,9 +47,12 @@
                     <div class="separator"></div>
                     <div class="categories-wrap content-wrap">
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="customChecksc3"
-                                   value="meeting" checked>
-                            <label class="form-check-label" for="customChecksc3">{% trans 'Meeting' %}</label>
+                            <input type="checkbox" class="form-check-input" id="customChecksc3" value="meeting" checked>
+                            <label class="form-check-label" for="customChecksc3">{% trans 'Meeting' %} ({% trans 'CRM' %})</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="customChecksc4" value="schedule-meeting" checked>
+                            <label class="form-check-label" for="customChecksc4">{% trans 'Meeting' %} ({% trans 'E-Office' %})</label>
                         </div>
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" id="customChecksc2" value="business">
@@ -317,10 +326,13 @@
     <input type="text" id="url-factory"
            data-leave="{% url 'LeaveRequestCalendarListAPI' %}"
            data-meet="{% url 'OpportunityMeetingListAPI' %}"
+           data-schedule-meeting="{% url 'MeetingScheduleListAPI' %}"
            data-business="{% url 'BusinessTripRequestListAPI' %}"
     >
-    <input type="text" id="trans-factory" data-meet="{% trans 'Meeting' %}"
-    data-business="{% trans 'Business trip' %}"
+    <input type="text" id="trans-factory"
+           data-meet="{% trans 'Meeting' %}"
+           data-schedule-meet="{% trans 'Schedule a meeting' %}"
+           data-business="{% trans 'Business trip' %}"
            data-leave="{% trans 'Leave' %}"
     >
     {{ data.working_shift|json_script:'ws_data' }}

@@ -1,9 +1,13 @@
 from django.urls import path
 
-from apps.core.fimport.views import (
+from apps.core.fimport.views.render import FImportListView, FImportCreateView
+from apps.core.fimport.views.core import (
     CoreAccountUserImportAPI,
-    FImportListView, FImportCreateView, HrGroupLevelImportAPI, HrGroupImportAPI,
-    HrRoleImportAPI, HrEmployeeImportAPI,
+    HrGroupLevelImportAPI, HrGroupImportAPI, HrRoleImportAPI, HrEmployeeImportAPI,
+)
+from apps.core.fimport.views.saledata import (
+    SaleDataContactImportAPI, SalutationImportAPI, CurrencyImportAPI, AccountGroupImportAPI, AccountTypeImportAPI,
+    IndustryImportAPI, PaymentTermImportAPI, SaleDataAccountImportAPI,
 )
 
 urlpatterns = [
@@ -16,4 +20,13 @@ urlpatterns = [
     path('hr/group', HrGroupImportAPI.as_view(), name='HrGroupImportAPI'),
     path('hr/role', HrRoleImportAPI.as_view(), name='HrRoleImportAPI'),
     path('hr/employee', HrEmployeeImportAPI.as_view(), name='HrEmployeeImportAPI'),
+    # saledata
+    path('saledata/currency', CurrencyImportAPI.as_view(), name='CurrencyImportAPI'),
+    path('saledata/account/group', AccountGroupImportAPI.as_view(), name='AccountGroupImportAPI'),
+    path('saledata/account/type', AccountTypeImportAPI.as_view(), name='AccountTypeImportAPI'),
+    path('saledata/industry', IndustryImportAPI.as_view(), name='IndustryImportAPI'),
+    path('saledata/payment-term', PaymentTermImportAPI.as_view(), name='PaymentTermImportAPI'),
+    path('saledata/salutation', SalutationImportAPI.as_view(), name='SalutationImportAPI'),
+    path('saledata/contact', SaleDataContactImportAPI.as_view(), name='SaleDataContactImportAPI'),
+    path('saledata/account', SaleDataAccountImportAPI.as_view(), name='SaleDataAccountImportAPI'),
 ]

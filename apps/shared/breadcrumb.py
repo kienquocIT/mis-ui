@@ -340,6 +340,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RETURN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     GOODS_RETURN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    LEAD_LIST_PAGE = BreadcrumbChildren(_('Lead list'), 'LeadList')
+    LEAD_CREATE_PAGE = BreadcrumbChildren(_('Lead create'), 'LeadCreate')
+    LEAD_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    LEAD_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
     MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
     IMPORT_LIST_PAGE = BreadcrumbChildren(_('Import List'), 'FImportListView')
@@ -875,6 +880,11 @@ class BreadcrumbView:
     GOODS_RETURN_CREATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     GOODS_RETURN_DETAIL_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     GOODS_RETURN_UPDATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    LEAD_LIST_PAGE = [BreadcrumbItem.LEAD_LIST_PAGE]
+    LEAD_CREATE_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    LEAD_DETAIL_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    LEAD_UPDATE_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     PRINTER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PRINTER_CONFIG_LIST_PAGE]
     PRINTER_CONFIG_LIST_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]

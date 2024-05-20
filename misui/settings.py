@@ -96,7 +96,8 @@ INSTALLED_APPS = \
         'apps.sales.dashboard',
         'apps.sales.revenueplan',
         'apps.sales.arinvoice',
-        'apps.sales.apinvoice'
+        'apps.sales.apinvoice',
+        'apps.sales.lead'
     ] + [  # e-office Application
         'apps.eoffice.leave',
         'apps.eoffice.businesstrip',

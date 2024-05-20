@@ -8,7 +8,7 @@
 {% endblock %}
 {% block pageAction %}
     <a href="{% url "LeadCreate" %}">
-        <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button">
+        <button class="btn btn-outline-primary" type="button">
             <span>
                 <span>{% trans 'Add' %}</span>
                 <span class="icon">
@@ -19,8 +19,24 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-
+    <div class="row">
+    <div class="col-12">
+        <table class="table nowrap w-100" id="lead-list-table" data-method="GET" data-url="{% url 'ARInvoiceListAPI' %}">
+            <thead>
+            <tr>
+                <th></th>
+                <th>{% trans 'Code' %}</th>
+                <th>{% trans 'Name' %}</th>
+                <th>{% trans 'Source' %}</th>
+                <th>{% trans 'Contact name' %}</th>
+                <th>{% trans 'Date created' %}</th>
+                <th>{% trans 'Status' %}</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    </div>
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/js/lead/lead_list.js' %}"></script>
+    <script src="{% static 'assets/sales/lead/js/lead_list.js' %}"></script>
 {% endblock %}

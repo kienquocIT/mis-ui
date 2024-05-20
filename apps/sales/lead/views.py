@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg
+from apps.shared.constant import COMPANY_SIZE, CUSTOMER_REVENUE, LEAD_STATUS
 
 
 class LeadList(View):
@@ -24,7 +25,11 @@ class LeadCreate(View):
         menu_active='',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {
+            'company_size': COMPANY_SIZE,
+            'customer_revenue': CUSTOMER_REVENUE,
+            'lead_status': LEAD_STATUS
+        }, status.HTTP_200_OK
 
 
 class LeadDetail(View):

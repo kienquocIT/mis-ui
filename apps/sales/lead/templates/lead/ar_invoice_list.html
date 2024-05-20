@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'AR Invoice List' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url "ARInvoiceCreate" %}">
+        <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+    ></script>
+    <div class="row">
+        <div class="col-12">
+            <button id="reload-invoice-status-btn" type="button" class="btn-sm btn btn-gradient-primary">{% trans 'Reload invoice status' %}</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <table id="datatable_ar_invoice_list" class="table nowrap w-100 mb-5"
+                   data-method="GET"
+                   data-url-redirect="{% url 'ARInvoiceList' %}"
+                   data-url="{% url 'ARInvoiceListAPI' %}"
+                   data-url-detail="{% url 'ARInvoiceDetail' '0' %}"
+            >
+                <thead>
+                <th class="w-5"></th>
+                <th class="w-10">{% trans "Code" %}</th>
+                <th class="w-25">{% trans "Name" %}</th>
+                <th class="w-15">{% trans "Sale order" %}</th>
+                <th class="w-15">{% trans "Customer" %}</th>
+                <th class="w-15">{% trans "Invoice number" %}</th>
+                <th class="w-15">{% trans "Status" %}</th>
+                </thead>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+{#    <script src="{% static 'assets/js/arinvoice/ar_invoice_common.js' %}"></script>#}
+    <script src="{% static 'assets/js/arinvoice/ar_invoice_list.js' %}"></script>
+{% endblock %}

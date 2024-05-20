@@ -491,6 +491,7 @@ $(document).ready(function () {
                             WindowControl.hideLoading();
                             let condition1 = $definition_inventory_valuation === '1' && PERIODIC_CLOSED === false
                             let condition2 = $definition_inventory_valuation === '1'
+                            let condition3 = $definition_inventory_valuation === '0'
 
                             items_detail_report_table_Ele.find('tbody .main-row').each(function () {
                                 $(this).find('td:eq(15) span').prop('hidden', condition1)
@@ -508,6 +509,8 @@ $(document).ready(function () {
                                 $(this).find('td:eq(15) span').prop('hidden', condition2)
                                 $(this).find('td:eq(16) span').prop('hidden', condition2)
                             })
+
+                            items_detail_report_table_Ele.find('tbody .eb-row').prop('hidden', condition3)
 
                             items_detail_report_table_Ele.prop('hidden', false)
                         },

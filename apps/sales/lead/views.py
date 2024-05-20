@@ -8,7 +8,7 @@ from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg
 class LeadList(View):
     @mask_view(
         auth_require=True,
-        template='lead/lead_list.html',
+        template='sales/lead/lead_list.html',
         breadcrumb='LEAD_LIST_PAGE',
         menu_active='menu_lead_list',
     )
@@ -19,7 +19,7 @@ class LeadList(View):
 class LeadCreate(View):
     @mask_view(
         auth_require=True,
-        template='lead/lead_create.html',
+        template='sales/lead/lead_create.html',
         breadcrumb='LEAD_CREATE_PAGE',
         menu_active='',
     )
@@ -30,7 +30,7 @@ class LeadCreate(View):
 class LeadDetail(View):
     @mask_view(
         auth_require=True,
-        template='lead/lead_detail.html',
+        template='sales/lead/lead_detail.html',
         breadcrumb='LEAD_DETAIL_PAGE',
         menu_active='',
     )
@@ -41,7 +41,7 @@ class LeadDetail(View):
 class LeadUpdate(View):
     @mask_view(
         auth_require=True,
-        template='lead/lead_update.html',
+        template='sales/lead/lead_update.html',
         breadcrumb='LEAD_UPDATE_PAGE',
         menu_active='',
     )

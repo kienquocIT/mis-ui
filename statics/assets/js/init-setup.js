@@ -6716,8 +6716,8 @@ class DiagramControl {
                                     <div class="offcanvas-header"></div>
                                     <div class="offcanvas-body">
                                         <div class="d-flex justify-content-start">
-                                            <button type="button" class="btn btn-icon mt-3 bm-sm" data-bs-dismiss="offcanvas" aria-label="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
-                                            <button type="button" class="btn btn-icon mt-3 bm-sm" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-sync-alt"></i></span></button>
+                                            <button type="button" class="btn btn-icon mt-3 bm-sm btn-sm" data-bs-dismiss="offcanvas" aria-label="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
+                                            <button type="button" class="btn btn-icon mt-3 bm-sm btn-sm" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-sync-alt"></i></span></button>
                                         </div>
                                         <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="min-w-1000p position-relative overflow-y-scroll">
                                             <div class="card-group h-800p" id="flowchart_diagram"></div>
@@ -6781,7 +6781,7 @@ class DiagramControl {
                                     <div class="card border-green clone" data-drag="1" title="card-1" id="control-1">
                                         <div class="card-header card-header-wth-text">
                                             <div>
-                                                <div class="row"><small>${docData?.['title']}</small></div>
+                                                <div class="row"><small>${docData?.['title'] ? docData?.['title'] : docData?.['code']}</small></div>
                                             </div>
                                         </div>
                                         <div class="card-body">
@@ -6817,7 +6817,7 @@ class DiagramControl {
                 htmlChild += `<div class="card border-green clone" data-drag="1" title="card-1" id="control-1">
                                         <div class="card-header card-header-wth-text">
                                             <div>
-                                                <div class="row"><small>${data_record?.['title']}</small></div>
+                                                <div class="row"><small>${data_record?.['title'] ? data_record?.['title'] : data_record?.['code']}</small></div>
                                             </div>
                                         </div>
                                         <div class="card-body">

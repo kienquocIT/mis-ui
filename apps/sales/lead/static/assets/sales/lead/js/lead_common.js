@@ -5,14 +5,31 @@ const $industry = $('#industry')
 const $total_employees = $('#total-employees')
 const $revenue = $('#revenue')
 const $assign_to_sale = $('#assign-to-sale')
+const $assign_to_sale_config = $('#assign-to-sale-config')
 const $lead_source = $('#lead-source')
 const $lead_status = $('#lead-status')
+const $account_config = $('#account-config')
+const $convert_to_opp_check = $('#convert-to-opp-check')
+const $select_an_existing_table = $('#select-an-existing-table')
+
+$convert_to_opp_check.on('change', function () {
+    $('.convert-to-opp-check-child').prop('hidden', !$(this).prop('checked'))
+})
+
+$('input[name="convert-to-opp"]').on('change', function () {
+    $('.convert-to-new-opp-radio-child').prop('hidden', !$('#convert-to-new-opp-radio').prop('checked'))
+    $('.select-an-existing-opp-radio-child').prop('hidden', !$('#select-an-existing-opp-radio').prop('checked'))
+})
+
+$('input[name="convert-to-opp-option"]').on('change', function () {
+    $('.select-an-existing-account-radio-child').prop('hidden', !$('#select-an-existing-account-radio').prop('checked'))
+})
 
 $btn_add_note.on('click', function () {
     let note_html = $(`<textarea class="form-control lead-note mb-3" placeholder=""></textarea>`)
     let index = $('#note-area textarea').length
     note_html.attr('placeholder', `${$script_trans.attr('data-trans-note')} ${index + 1}`)
-    $('#note-area').append(note_html)
+    $('#note-area').prepend(note_html)
 })
 
 function Disable(option) {
@@ -224,7 +241,6 @@ function LoadSales(data) {
             method: 'GET',
         },
         callbackDataResp: function (resp, keyResp) {
-            console.log(resp.data[keyResp])
             return resp.data[keyResp];
         },
         data: (data ? data : null),
@@ -234,9 +250,99 @@ function LoadSales(data) {
     }).on('change', function () {})
 }
 
+function LoadSalesConfig(data) {
+    $assign_to_sale_config.initSelect2({
+        allowClear: true,
+        ajax: {
+            url: $assign_to_sale_config.attr('data-url'),
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            return resp.data[keyResp];
+        },
+        data: (data ? data : null),
+        keyResp: 'employee_list',
+        keyId: 'id',
+        keyText: 'full_name',
+    }).on('change', function () {})
+}
+
+function LoadAccountConfig(data) {
+    $account_config.initSelect2({
+        allowClear: true,
+        ajax: {
+            url: $account_config.attr('data-url'),
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            return resp.data[keyResp];
+        },
+        data: (data ? data : null),
+        keyResp: 'account_list',
+        keyId: 'id',
+        keyText: 'name',
+    }).on('change', function () {})
+}
+
+function LoadOpportunityList() {
+    if (!$.fn.DataTable.isDataTable('#select-an-existing-table')) {
+        let frm = new SetupFormSubmit($select_an_existing_table);
+        $select_an_existing_table.DataTableDefault({
+            useDataServer: true,
+            paging: false,
+            ordering: false,
+            scrollCollapse: true,
+            scrollY: '50vh',
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('opportunity_list')) {
+                        return resp.data['opportunity_list'] ? resp.data['opportunity_list'] : [];
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        return `<div class="form-check form-check-sm">
+                                    <input type="radio" name="selected-opp" class="selected-opp form-check-input">
+                                    <label class="form-check-label badge badge-soft-primary">${row?.['code']}</label>
+                                </div>`
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<p class="fw-bold">${row?.['title']}</p>`
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<p>${row?.['customer']?.['title']}</p>`
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span class="badge badge badge-soft-blue ml-2 mt-2">${row?.['sale_person']?.['full_name']}</span>`
+                    }
+                },
+            ],
+        });
+    }
+}
+
 class LeadHandle {
     load() {
         LoadIndustry()
         LoadSales()
+        LoadSalesConfig()
+        LoadAccountConfig()
+        LoadOpportunityList()
     }
 }

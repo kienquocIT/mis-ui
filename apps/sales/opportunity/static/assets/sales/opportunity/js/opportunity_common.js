@@ -29,7 +29,8 @@ class OpportunityLoadDropdown {
                 let list_result = []
                 if (!config) {
                     resp.data[keyResp].map(function (item) {
-                        if (item.group.id === $('#employee_current_group').val() && list_account_manager.includes(item.id)) {
+                        // if (item.group.id === $('#employee_current_group').val() && list_account_manager.includes(item.id)) {
+                        if (list_account_manager.includes(item.id)) {
                             list_result.push(item)
                         }
                     })

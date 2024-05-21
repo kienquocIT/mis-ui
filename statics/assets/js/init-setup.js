@@ -2240,6 +2240,7 @@ class WFRTControl {
                     <div class="col-12">
                         <div class="card">
                             <div class="hk-ribbon-type-1 start-touch">` + `<span>${$.fn.transEle.attr('data-node-completed')}</span></div>
+                            <br>
                             <div class="card-body mt-5">
                                 ${htmlBody}
                             </div>

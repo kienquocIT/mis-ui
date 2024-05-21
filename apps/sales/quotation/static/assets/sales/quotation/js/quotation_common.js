@@ -1763,7 +1763,7 @@ class QuotationLoadDataHandle {
         if (tableProductWrapper) {
             let tableProductBd = tableProductWrapper.querySelector('.dataTables_scrollBody');
             if (tableProductBd) {
-                tableProductBd.style.minHeight = '150px';
+                tableProductBd.style.minHeight = '100px';
             }
         }
     };
@@ -2437,7 +2437,7 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_products_data";
                         }
                         return `<div class="row">
-                                    <div class="dropdown">
+                                    <div class="dropend">
                                         <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
                                         <div class="input-affix-wrapper">
                                             <input 

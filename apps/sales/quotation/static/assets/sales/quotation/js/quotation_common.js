@@ -1040,6 +1040,7 @@ class QuotationLoadDataHandle {
                 let transJSON = {};
                 transJSON['Valid'] = QuotationLoadDataHandle.transEle.attr('data-valid');
                 $(priceList).empty();
+                let htmlDD = ``;
                 if (Array.isArray(data.price_list) && data.price_list.length > 0) {
                     for (let i = 0; i < data.price_list.length; i++) {
                         if (data.price_list[i]?.['price_type'] === 0) { // PRICE TYPE IS PRODUCT (SALE)
@@ -1050,32 +1051,33 @@ class QuotationLoadDataHandle {
                             if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // If Valid Price
                                 if (data.price_list[i].id === account_price_id) { // check CUSTOMER_PRICE then set customer_price
                                     customer_price = parseFloat(data.price_list[i].value);
-                                    $(priceList).append(`<a class="dropdown-item table-row-price-option option-btn-checked text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
+                                    htmlDD += `<a class="dropdown-item table-row-price-option option-btn-checked text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
                                                             <div class="d-flex justify-content-between">
                                                                 <span class="mr-5">${data.price_list[i].title}</span>
                                                                 <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
                                                             </div>
-                                                        </a>`);
+                                                        </a>`;
                                 } else {
-                                    $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
+                                    htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
                                                             <div class="d-flex justify-content-between">
                                                                 <span class="mr-5">${data.price_list[i].title}</span>
                                                                 <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
                                                             </div>
-                                                        </a>`);
+                                                        </a>`;
                                 }
                             }
                         } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
                             general_price = parseFloat(data.price_list[i].value);
-                            $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
+                            htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
                                                     <div class="d-flex justify-content-between">
                                                         <span class="mr-5">${data.price_list[i].title}</span>
                                                         <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
                                                     </div>
-                                                </a>`);
+                                                </a>`;
                         }
                     }
                 }
+                $(priceList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-60p position-relative overflow-y-scroll">${htmlDD}</div>`);
                 // If change price then remove promotion & shipping
                 if (current_price_checked !== price.getAttribute('value')) {
                     is_change_price = true;
@@ -1101,15 +1103,17 @@ class QuotationLoadDataHandle {
             // load PRICE
             if (costList) {
                 $(costList).empty();
+                let htmlDD = ``;
                 if (Array.isArray(data?.['cost_list']) && data?.['cost_list'].length > 0) {
                     for (let costData of data?.['cost_list']) {
-                        $(costList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh-id="${costData?.['warehouse']?.['id']}">
+                        htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh-id="${costData?.['warehouse']?.['id']}">
                                                 <div class="d-flex justify-content-between">
                                                     <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
                                                     <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
                                                 </div>
-                                            </a>`);
+                                            </a>`;
                     }
+                    $(costList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-60p position-relative overflow-y-scroll">${htmlDD}</div>`);
                 } else {
                     let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
                     let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');

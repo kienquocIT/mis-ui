@@ -13,7 +13,7 @@ $(document).ready(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            return resp.data['ar_invoice_list'] ? resp.data['ar_invoice_list'] : [];
+                            return resp.data['lead_list'] ? resp.data['lead_list'] : [];
                         }
                         return [];
                     },
@@ -25,33 +25,34 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        'render': () => {
-                            return ``;
+                        'render': (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            return `<a href="${link}"><span class="badge badge-soft-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
-                        'render': () => {
-                            return ``;
+                        'render': (data, type, row) => {
+                            return `${row?.['title']}`;
                         }
                     },
                     {
-                        'render': () => {
-                            return ``;
+                        'render': (data, type, row) => {
+                            return `<span class="badge badge-sm badge-blue">${row?.['source']}</span>`;
                         }
                     },
                     {
-                        'render': () => {
-                            return ``;
+                        'render': (data, type, row) => {
+                            return `${row?.['contact_name']}`;
                         }
                     },
                     {
-                        'render': () => {
-                            return ``;
+                        'render': (data, type, row) => {
+                            return `${moment(row?.['date_created'].split(' ')[0]).format('DD/MM/YYYY')}`;
                         }
                     },
                     {
-                        'render': () => {
-                            return ``;
+                        'render': (data, type, row) => {
+                            return `<span class="fst-italic">${row?.['lead_status']}</span>`;
                         }
                     },
                 ]

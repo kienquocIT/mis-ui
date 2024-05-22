@@ -21,7 +21,7 @@
 {% block pageContent %}
     <div class="row">
     <div class="col-12">
-        <table class="table nowrap w-100" id="lead-list-table" data-method="GET" data-url="{% url 'ARInvoiceListAPI' %}">
+        <table class="table nowrap w-100" id="lead-list-table" data-method="GET" data-url="{% url 'LeadListAPI' %}" data-url-detail="{% url 'LeadDetail' '0' %}">
             <thead>
             <tr>
                 <th></th>

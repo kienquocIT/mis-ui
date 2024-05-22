@@ -1,19 +1,75 @@
-const $script_trans = $('#script-trans')
+const $trans_script = $('#script-trans')
 const $btn_add_note = $('#btn-add-note')
 
+const $lead_name = $('#lead-name')
+const $contact_name = $('#contact-name')
+const $job_title = $('#job-title')
+const $mobile = $('#mobile')
+const $email = $('#email')
+const $company_name = $('#company-name')
+const $account_name = $('#account-name')
 const $industry = $('#industry')
 const $total_employees = $('#total-employees')
 const $revenue = $('#revenue')
 const $assign_to_sale = $('#assign-to-sale')
-const $assign_to_sale_config = $('#assign-to-sale-config')
 const $lead_source = $('#lead-source')
 const $lead_status = $('#lead-status')
-const $account_config = $('#account-config')
-const $convert_to_opp_check = $('#convert-to-opp-check')
-const $select_an_existing_table = $('#select-an-existing-table')
+const $lead_note = $('.lead-note')
 
-$convert_to_opp_check.on('change', function () {
-    $('.convert-to-opp-check-child').prop('hidden', !$(this).prop('checked'))
+const $create_contact_btn = $('#convert-to-contact-btn')
+const $convert_opp_btn = $('#convert-to-opp-btn')
+const $convert_opp_create = $('#convert-to-new-opp-radio')
+const $convert_opp_select = $('#select-an-existing-opp-radio')
+const $convert_account_create = $('#convert-to-new-account-radio')
+const $convert_account_select = $('#select-an-existing-account-radio')
+const $assign_to_sale_config = $('#assign-to-sale-config')
+const $selected_opp = $('.selected-opp')
+const $account_existing = $('#existing-account')
+const $select_an_existing_opp_table = $('#select-an-existing-opp-table')
+
+$create_contact_btn.on('click', function () {
+    Swal.fire({
+        html:
+            `<p class="text-center text-secondary fw-bold">${$trans_script.attr('data-trans-convert-contact-confirm')}</p>`,
+        customClass: {
+            confirmButton: 'btn btn-outline-primary text-primary',
+            cancelButton: 'btn btn-outline-secondary text-secondary',
+            container: 'swal2-has-bg',
+            actions: 'w-100'
+        },
+        showCancelButton: true,
+        buttonsStyling: false,
+        confirmButtonText: $trans_script.attr('data-trans-convert'),
+        cancelButtonText: $trans_script.attr('data-trans-cancel'),
+        reverseButtons: true
+    }).then((result) => {
+        if (result.value) {
+
+        }
+    })
+})
+
+$convert_opp_btn.on('click', function () {
+    let alert_html = `<p class="text-center text-secondary fw-bold">${$trans_script.attr('data-trans-convert-opp-confirm')}</p><br>`
+
+    Swal.fire({
+        html: alert_html,
+        customClass: {
+            confirmButton: 'btn btn-outline-primary text-primary',
+            cancelButton: 'btn btn-outline-secondary text-secondary',
+            container: 'swal2-has-bg',
+            actions: 'w-100'
+        },
+        showCancelButton: true,
+        buttonsStyling: false,
+        confirmButtonText: $trans_script.attr('data-trans-convert'),
+        cancelButtonText: $trans_script.attr('data-trans-cancel'),
+        reverseButtons: true
+    }).then((result) => {
+        if (result.value) {
+
+        }
+    })
 })
 
 $('input[name="convert-to-opp"]').on('change', function () {
@@ -28,190 +84,61 @@ $('input[name="convert-to-opp-option"]').on('change', function () {
 $btn_add_note.on('click', function () {
     let note_html = $(`<textarea class="form-control lead-note mb-3" placeholder=""></textarea>`)
     let index = $('#note-area textarea').length
-    note_html.attr('placeholder', `${$script_trans.attr('data-trans-note')} ${index + 1}`)
+    note_html.attr('placeholder', `${$trans_script.attr('data-trans-note')} ${index + 1}`)
     $('#note-area').prepend(note_html)
 })
 
 function Disable(option) {
     if (option === 'detail') {
+        $('input').prop('readonly', true).prop('disabled', true)
+        $('select').prop('readonly', true).prop('disabled', true)
+        $btn_add_note.prop('disabled', true)
     }
 }
 
 function LoadDetailLead(option) {
     let pk = $.fn.getPkDetail()
-    let url_loaded = $('#form-detail-advance').attr('data-url-detail').replace(0, pk);
+    let url_loaded = $('#form-detail-lead').attr('data-url-detail').replace(0, pk);
     $.fn.callAjax(url_loaded, 'GET').then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                WFRTControl.setWFRuntimeID(data['advance_payment_detail']?.['workflow_runtime_id']);
-                data = data['advance_payment_detail'];
+                WFRTControl.setWFRuntimeID(data['lead_detail']?.['workflow_runtime_id']);
+                data = data['lead_detail'];
                 console.log(data)
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 
-                if (Object.keys(data?.['opportunity_mapped']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
-                    new $x.cls.bastionField({
-                        has_opp: true,
-                        has_inherit: true,
-                        data_inherit: [{
-                            "id": data?.['employee_inherit']?.['id'],
-                            "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                            "first_name": data?.['employee_inherit']?.['first_name'] || '',
-                            "last_name": data?.['employee_inherit']?.['last_name'] || '',
-                            "email": data?.['employee_inherit']?.['email'] || '',
-                            "is_active": data?.['employee_inherit']?.['is_active'] || false,
-                            "selected": true,
-                        }],
-                        data_opp: [{
-                            "id": data?.['opportunity_mapped']?.['id'] || '',
-                            "title": data?.['opportunity_mapped']?.['title'] || '',
-                            "code": data?.['opportunity_mapped']?.['code'] || '',
-                            "selected": true,
-                        }]
-                    }).init();
-                    APLoadQuotation(data?.['opportunity_mapped']?.['quotation_mapped'])
-                    LoadPlanQuotation(opp_mapped_select.val(), data?.['opportunity_mapped']?.['quotation_mapped']?.['id'])
-                }
-                else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
-                    new $x.cls.bastionField({
-                        has_opp: false,
-                        has_inherit: true,
-                        data_inherit: [{
-                            "id": data?.['employee_inherit']?.['id'],
-                            "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                            "first_name": data?.['employee_inherit']?.['first_name'] || '',
-                            "last_name": data?.['employee_inherit']?.['last_name'] || '',
-                            "email": data?.['employee_inherit']?.['email'] || '',
-                            "is_active": data?.['employee_inherit']?.['is_active'] || false,
-                            "selected": true,
-                        }],
-                    }).init();
-                    APLoadQuotation(data?.['quotation_mapped'])
+                // lead main data
+                $lead_name.val(data?.['title'])
+                $contact_name.val(data?.['contact_name'])
+                $job_title.val(data?.['job_title'])
+                $mobile.val(data?.['mobile'])
+                $email.val(data?.['email'])
+                $company_name.val(data?.['company_name'])
+                $account_name.val(data?.['account_name'])
+                LoadIndustry(data?.['industry'])
+                $total_employees.val(data?.['total_employees']).trigger('change')
+                $revenue.val(data?.['revenue']).trigger('change')
+                $lead_source.val(data?.['source'])
+                $lead_status.val(data?.['lead_status']).trigger('change')
+                LoadSales(data?.['assign_to_sale'])
 
-                    let dataParam = {'quotation_id': quotation_mapped_select.val()}
-                    let ap_mapped_item = $.fn.callAjax2({
-                        url: sale_order_mapped_select.attr('data-url'),
-                        data: dataParam,
-                        method: 'GET'
-                    }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && typeof data === 'object' && data.hasOwnProperty('sale_order_list')) {
-                                return data?.['sale_order_list'];
-                            }
-                            return {};
-                        },
-                        (errs) => {
-                            console.log(errs);
-                        }
-                    )
-
-                    Promise.all([ap_mapped_item]).then(
-                        (results) => {
-                            let so_mapped_opp = results[0];
-                            if (so_mapped_opp.length > 0) {
-                                APLoadSaleOrder(so_mapped_opp[0]);
-                            }
-                        })
-
-                    LoadPlanQuotationNoOPP(data?.['quotation_mapped']?.['id'])
-                }
-                else if (Object.keys(data?.['sale_order_mapped']).length !== 0) {
-                    new $x.cls.bastionField({
-                        has_opp: false,
-                        has_inherit: true,
-                        data_inherit: [{
-                            "id": data?.['employee_inherit']?.['id'],
-                            "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                            "first_name": data?.['employee_inherit']?.['first_name'] || '',
-                            "last_name": data?.['employee_inherit']?.['last_name'] || '',
-                            "email": data?.['employee_inherit']?.['email'] || '',
-                            "is_active": data?.['employee_inherit']?.['is_active'] || false,
-                            "selected": true,
-                        }],
-                    }).init();
-                    APLoadSaleOrder(data?.['sale_order_mapped'])
-                    APLoadQuotation(data?.['sale_order_mapped']?.['quotation_mapped'])
-
-                    LoadPlanSaleOrderNoOPP(data?.['sale_order_mapped']?.['id'])
+                // lead note data
+                for (const note_content of data?.['note_data']) {
+                    $('#note-area').prepend(`
+                        <textarea disabled readonly class="form-control lead-note mb-3">${note_content}</textarea>
+                    `)
                 }
 
-                $('#title').val(data.title);
-
-                let plan_dtb = tab_plan_datatable;
-                plan_dtb.DataTable().clear().destroy();
-                plan_dtb.prop('hidden', true);
-                $('#notify-none-sale-code').prop('hidden', false);
-
-                APTypeEle.val(data.advance_payment_type);
-
-                APLoadSupplier(data.supplier);
-
-                $('#ap-method').val(data.method);
-
-                $('#created_date_id').val(data.date_created.split(' ')[0]).prop('readonly', true)
-
-                $('#return_date_id').val(data.return_date.split(' ')[0])
-
-                APLoadCreator(data.creator_name);
-
-                if (Object.keys(data?.['supplier']).length !== 0) {
-                    APLoadSupplier(data?.['supplier'])
-                    InforSpanSupplier(data?.['supplier']);
-                    LoadBankAccount(data?.['supplier']?.['bank_accounts_mapped']);
-                }
-
-                let table_body = $('#tab_line_detail_datatable tbody');
-                for (let i = 0; i < data?.['expense_items'].length; i++) {
-                    table_body.append(`<tr id="" class="row-number">
-                        <td class="number text-center"></td>
-                        <td><input class="form-control expense-name-input" name="expense_valid_list"></td>
-                        <td><select class="form-select expense-type-select-box" name="expense_valid_list"></select></td>
-                        <td><input class="form-control expense-uom-input" name="expense_valid_list"></td>
-                        <td><input type="number" min="1" class="form-control expense_quantity" value="1" name="expense_valid_list"></td>
-                        <td><input data-return-type="number" type="text" class="form-control expense-unit-price-input mask-money" name="expense_valid_list"></td>
-                        <td><select class="form-select expense-tax-select-box" data-method="GET" name="expense_valid_list"><option selected></option></select></td>
-                        <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" disabled></td>
-                        <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" disabled></td>
-                        <td><button class="btn-del-line-detail btn text-danger btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
-                    </tr>`);
-                    $.fn.initMaskMoney2();
-                    count_row(table_body, 1);
-                    $('.btn-del-line-detail').on('click', function () {
-                        $(this).closest('tr').remove();
-                        count_row(table_body, 2);
-                        calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
-                    })
-                    let row_id = 'row-' + (i + 1);
-                    let rowEle = $('#' + row_id);
-                    let data_row = data?.['expense_items'][i];
-                    loadExpenseType(row_id, data_row['expense_type']);
-                    loadExpenseTaxList(row_id, data_row['expense_tax'] ? data_row['expense_tax'] : null);
-                    rowEle.find('.expense-name-input').val(data_row['expense_name']);
-                    rowEle.find('.expense-uom-input').val(data_row['expense_uom_name']);
-                    rowEle.find('.expense_quantity').val(data_row['expense_quantity']);
-                    rowEle.find('.expense-unit-price-input').attr('value', data_row['expense_unit_price']);
-                    rowEle.find('.expense-subtotal-price').attr('value', data_row['expense_subtotal_price']);
-                    rowEle.find('.expense-subtotal-price-after-tax').attr('value', data_row['expense_after_tax_price']);
-                    changePrice(`row-${i+1}`)
-                }
-
-                calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
-
-                money_gave.prop('disabled', data?.['money_gave']);
-                money_gave.prop('checked', data?.['money_gave']);
-
-                $.fn.initMaskMoney2();
-
-                new $x.cls.file($('#attachment')).init({
-                    enable_edit: option !== 'detail',
-                    data: data.attachment,
-                })
+                // lead config data
+                $convert_opp_create.prop('checked', data?.['config_data']?.['convert_opp_create'])
+                $convert_opp_select.prop('checked', data?.['config_data']?.['convert_opp_select'])
+                $convert_account_create.prop('checked', data?.['config_data']?.['convert_account_create'])
+                $convert_account_select.prop('checked', data?.['config_data']?.['convert_account_select'])
+                LoadSalesConfig(data?.['config_data']?.['assign_to_sale_config'])
 
                 Disable(option);
-                quotation_mapped_select.attr('disabled', true).attr('readonly', true);
-                sale_order_mapped_select.attr('disabled', true).attr('readonly', true);
             }
         })
 }
@@ -268,10 +195,10 @@ function LoadSalesConfig(data) {
 }
 
 function LoadAccountConfig(data) {
-    $account_config.initSelect2({
+    $account_existing.initSelect2({
         allowClear: true,
         ajax: {
-            url: $account_config.attr('data-url'),
+            url: $account_existing.attr('data-url'),
             method: 'GET',
         },
         callbackDataResp: function (resp, keyResp) {
@@ -286,8 +213,8 @@ function LoadAccountConfig(data) {
 
 function LoadOpportunityList() {
     if (!$.fn.DataTable.isDataTable('#select-an-existing-table')) {
-        let frm = new SetupFormSubmit($select_an_existing_table);
-        $select_an_existing_table.DataTableDefault({
+        let frm = new SetupFormSubmit($select_an_existing_opp_table);
+        $select_an_existing_opp_table.DataTableDefault({
             useDataServer: true,
             paging: false,
             ordering: false,
@@ -309,7 +236,7 @@ function LoadOpportunityList() {
                     targets: 0,
                     render: (data, type, row) => {
                         return `<div class="form-check form-check-sm">
-                                    <input type="radio" name="selected-opp" class="selected-opp form-check-input">
+                                    <input data-id="${row?.['id']}" type="radio" name="selected-opp" class="selected-opp form-check-input">
                                     <label class="form-check-label badge badge-soft-primary">${row?.['code']}</label>
                                 </div>`
                     }
@@ -338,11 +265,69 @@ function LoadOpportunityList() {
 }
 
 class LeadHandle {
-    load() {
+    load(option='create') {
         LoadIndustry()
         LoadSales()
-        LoadSalesConfig()
-        LoadAccountConfig()
-        LoadOpportunityList()
+        if (option !== 'create') {
+            LoadSalesConfig()
+            LoadAccountConfig()
+            LoadOpportunityList()
+        }
+    }
+
+    combinesData(frmEle) {
+        let frm = new SetupFormSubmit($(frmEle));
+
+        // lead main data
+        frm.dataForm['title'] = $lead_name.val()
+        frm.dataForm['contact_name'] = $contact_name.val()
+        frm.dataForm['job_title'] = $job_title.val()
+        frm.dataForm['mobile'] = $mobile.val()
+        frm.dataForm['email'] = $email.val()
+        frm.dataForm['company_name'] = $company_name.val()
+        frm.dataForm['account_name'] = $account_name.val()
+        frm.dataForm['industry'] = $industry.val()
+        frm.dataForm['total_employees'] = $total_employees.val()
+        frm.dataForm['revenue'] = $revenue.val()
+        frm.dataForm['source'] = $lead_source.val()
+        frm.dataForm['lead_status'] = $lead_status.val()
+        frm.dataForm['assign_to_sale'] = $assign_to_sale.val()
+
+        // lead note data
+        let note_data = []
+        $lead_note.each(function () {
+            if ($(this).val()) {
+                note_data.push($(this).val())
+            }
+        })
+        frm.dataForm['note_data'] = note_data
+
+        // lead config data
+        // frm.dataForm['config_data'] = {}
+        // let create_contact = $create_contact.prop('checked')
+        // let convert_opp = $convert_opp.prop('checked')
+        // frm.dataForm['config_data']['create_contact'] = create_contact
+        // frm.dataForm['config_data']['convert_opp'] = convert_opp
+        // if (convert_opp) {
+        //     let convert_opp_create = $convert_opp_create.prop('checked')
+        //     frm.dataForm['config_data']['convert_opp_create'] = convert_opp_create
+        //     if (convert_opp_create) {
+        //         let convert_account_create = $convert_account_create.prop('checked')
+        //         let convert_account_select = $convert_account_select.prop('checked')
+        //         frm.dataForm['config_data']['convert_account_create'] = convert_account_create
+        //         frm.dataForm['config_data']['convert_account_select'] = convert_account_select
+        //         if (convert_account_select) {
+        //             frm.dataForm['config_data']['account_select'] = $account_existing.val()
+        //         }
+        //         frm.dataForm['config_data']['assign_to_sale_config'] = $assign_to_sale_config.val()
+        //     }
+        //     let convert_opp_select = $convert_opp_select.prop('checked')
+        //     frm.dataForm['config_data']['convert_opp_select'] = convert_opp_select
+        //     if (convert_opp_select) {
+        //         frm.dataForm['config_data']['opp_select'] = $selected_opp.find('option:selected').attr('data-id')
+        //     }
+        // }
+
+        return frm;
     }
 }

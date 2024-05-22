@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Lead Create' %}{% endblock %}
+{% block title %}{% trans 'Lead Detail' %}{% endblock %}
 {% block cssHeader %}
     <style>
     .sub-stage:hover {
@@ -12,20 +12,26 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form-create-lead">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
+    <a href="{% url 'LeadUpdate' pk=pk %}" id="btn-edit">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
             </span>
-        </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
     <script id="script-trans"
             data-trans-note="{% trans 'Note' %}"
+            data-trans-convert="{% trans 'Convert' %}"
+            data-trans-cancel="{% trans 'Cancel' %}"
+            data-trans-convert-contact-confirm="{% trans 'Convert this Lead to a new Contact?' %}"
+            data-trans-convert-opp-confirm="{% trans 'Convert this Lead to a new Opp? Related to:' %}"
     ></script>
-    <form id="form-create-lead" data-url="{% url 'LeadListAPI' %}" data-method="POST" data-url-redirect="{% url "LeadList" %}">
+    <form id="form-detail-lead" data-url-detail="{% url 'LeadDetailAPI' '0' %}" data-method="GET">
     {% csrf_token %}
         <div class="row">
             <div class="col-12">
@@ -33,6 +39,11 @@
                     <li class="nav-item">
                         <a class="nav-link active" data-bs-toggle="pill" href="#tab_block_main">
                             <span class="nav-link-text"><i class="fa-regular fa-keyboard"></i>&nbsp;{% trans 'Lead create' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="pill" href="#tab_block_config">
+                            <span class="nav-link-text"><i class="fa-solid fa-clone"></i>&nbsp;{% trans 'Qualify Lead' %}</span>
                         </a>
                     </li>
                 </ul>
@@ -163,9 +174,7 @@
                                 <div class="tab-content">
                                     <div class="tab-pane fade show active" id="tab_line_detail">
                                         <div class="row" style="position: relative; overflow: auto; max-height: 300px;">
-                                            <div class="col-12" id="note-area">
-                                                <textarea class="form-control lead-note mb-3" placeholder="{% trans 'Note' %} 1"></textarea>
-                                            </div>
+                                            <div class="col-12" id="note-area"></div>
                                         </div>
                                         <div class="row">
                                             <div class="col-12">
@@ -180,6 +189,76 @@
                             </div>
                         </div>
                     </div>
+                    <div class="tab-pane fade" id="tab_block_config">
+                        <div class="row">
+                            <div class="col-12 col-lg-8">
+                                <div class="row">
+                                    <div class="col-12 mt-5">
+                                        <a href="#" id="convert-to-contact-btn" class="underline_hover">
+                                            {% trans 'Convert to a new Contact' %}
+                                        </a>
+                                    </div>
+                                    <div class="col-12 mt-3">
+                                        <a href='#' id="convert-to-opp-btn" class="underline_hover">
+                                            {% trans 'Convert to Opportunity' %}
+                                        </a>
+                                    </div>
+
+                                    <div class="px-10 col-12 col-lg-6 mt-3">
+                                        <div class="form-check form-check-sm">
+                                            <input type="radio" id="convert-to-new-opp-radio" name="convert-to-opp" class="form-check-input" checked>
+                                            <label class="form-check-label" for="convert-to-new-opp-radio">{% trans 'Convert to a new Opportunity' %}</label>
+                                        </div>
+                                    </div>
+                                    <div class="px-10 col-12 col-lg-6 mt-3">
+                                        <div class="form-check form-check-sm">
+                                            <input type="radio" id="select-an-existing-opp-radio" name="convert-to-opp" class="form-check-input">
+                                            <label class="form-check-label" for="select-an-existing-opp-radio">{% trans 'Select an existing Opportunity' %}</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="convert-to-new-opp-radio-child px-10 col-12 col-lg-6 mt-3">
+                                        <div class="form-check form-check-sm">
+                                            <input type="radio" id="convert-to-new-account-radio" name="convert-to-opp-option" class="form-check-input" checked>
+                                            <label class="form-check-label" for="convert-to-new-account-radio">{% trans 'Convert to a new Account' %}</label>
+                                        </div>
+                                    </div>
+                                    <div class="convert-to-new-opp-radio-child px-10 col-12 col-lg-6 mt-3">
+                                        <div class="form-check form-check-sm">
+                                            <input type="radio" id="select-an-existing-account-radio" name="convert-to-opp-option" class="form-check-input">
+                                            <label class="form-check-label" for="select-an-existing-account-radio">{% trans 'Select an existing Account' %}</label>
+                                        </div>
+                                    </div>
+                                    <div hidden class="select-an-existing-account-radio-child px-10 col-12 mt-3">
+                                        <div class="form-group">
+                                            <label class="form-label" for="existing-account">{% trans "Existing account" %}</label>
+                                            <select class="form-select select2" data-method="GET" data-url="{% url 'AccountListAPI' %}" id="existing-account"></select>
+                                        </div>
+                                    </div>
+                                    <div class="convert-to-new-opp-radio-child px-10 col-12 mt-3">
+                                        <div class="form-group">
+                                            <label class="form-label" for="assign-to-sale-config">{% trans "Assign to sale" %}</label>
+                                            <select class="form-select select2" data-method="GET" data-url="{% url 'EmployeeListAPI' %}" id="assign-to-sale-config"></select>
+                                        </div>
+                                    </div>
+
+                                    <div hidden class="select-an-existing-opp-radio-child px-10 col-12 mt-3">
+                                        <table id="select-an-existing-opp-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'OpportunityListAPI' %}">
+                                            <thead>
+                                            <tr>
+                                                <th>{% trans 'Code' %}</th>
+                                                <th>{% trans 'Name' %}</th>
+                                                <th>{% trans 'Customer' %}</th>
+                                                <th>{% trans 'Sale person' %}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -187,5 +266,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/lead/js/lead_common.js' %}"></script>
-    <script src="{% static 'assets/sales/lead/js/lead_create.js' %}"></script>
+    <script src="{% static 'assets/sales/lead/js/lead_detail.js' %}"></script>
 {% endblock %}

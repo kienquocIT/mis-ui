@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    new LeadHandle().load();
+    new LeadHandle().load('create');
 
     $('#form-create-lead').submit(function (event) {
         event.preventDefault();

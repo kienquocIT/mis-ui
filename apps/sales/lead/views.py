@@ -40,7 +40,11 @@ class LeadDetail(View):
         menu_active='',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {
+            'company_size': COMPANY_SIZE,
+            'customer_revenue': CUSTOMER_REVENUE,
+            'lead_status': LEAD_STATUS
+        }, status.HTTP_200_OK
 
 
 class LeadUpdate(View):

@@ -90,8 +90,8 @@ $btn_add_note.on('click', function () {
 
 function Disable(option) {
     if (option === 'detail') {
-        // $('input').prop('readonly', true).prop('disabled', true)
-        // $('select').prop('readonly', true).prop('disabled', true)
+        $('input').prop('readonly', true).prop('disabled', true)
+        $('select').prop('readonly', true).prop('disabled', true)
         $btn_add_note.prop('disabled', true)
     }
 }
@@ -136,7 +136,7 @@ function LoadDetailLead(option) {
                 $convert_opp_select.prop('checked', data?.['config_data']?.['convert_opp_select'])
                 $convert_account_create.prop('checked', data?.['config_data']?.['convert_account_create'])
                 $convert_account_select.prop('checked', data?.['config_data']?.['convert_account_select'])
-                
+                LoadSalesConfig(data?.['config_data']?.['assign_to_sale_config'])
 
                 Disable(option);
             }

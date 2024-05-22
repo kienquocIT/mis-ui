@@ -1,16 +1,32 @@
 const $script_trans = $('#script-trans')
 const $btn_add_note = $('#btn-add-note')
 
+const $lead_name = $('#lead-name')
+const $contact_name = $('#contact-name')
+const $job_title = $('#job-title')
+const $mobile = $('#mobile')
+const $email = $('#email')
+const $company_name = $('#company-name')
+const $account_name = $('#account-name')
 const $industry = $('#industry')
 const $total_employees = $('#total-employees')
 const $revenue = $('#revenue')
 const $assign_to_sale = $('#assign-to-sale')
-const $assign_to_sale_config = $('#assign-to-sale-config')
 const $lead_source = $('#lead-source')
 const $lead_status = $('#lead-status')
-const $account_config = $('#account-config')
+const $lead_note = $('.lead-note')
+
+const $convert_to_contact_check = $('#convert-to-contact-check')
 const $convert_to_opp_check = $('#convert-to-opp-check')
-const $select_an_existing_table = $('#select-an-existing-table')
+const $convert_to_new_opp_radio = $('#convert-to-new-opp-radio')
+const $select_an_existing_opp_radio = $('#select-an-existing-opp-radio')
+const $convert_to_new_account_radio = $('#convert-to-new-account-radio')
+const $select_an_existing_account_radio = $('#select-an-existing-account-radio')
+const $assign_to_sale_config = $('#assign-to-sale-config')
+const $selected_opp = $('.selected-opp')
+const $account_existing = $('#existing-account')
+const $select_an_existing_opp_table = $('#select-an-existing-opp-table')
+
 
 $convert_to_opp_check.on('change', function () {
     $('.convert-to-opp-check-child').prop('hidden', !$(this).prop('checked'))
@@ -268,10 +284,10 @@ function LoadSalesConfig(data) {
 }
 
 function LoadAccountConfig(data) {
-    $account_config.initSelect2({
+    $account_existing.initSelect2({
         allowClear: true,
         ajax: {
-            url: $account_config.attr('data-url'),
+            url: $account_existing.attr('data-url'),
             method: 'GET',
         },
         callbackDataResp: function (resp, keyResp) {
@@ -286,8 +302,8 @@ function LoadAccountConfig(data) {
 
 function LoadOpportunityList() {
     if (!$.fn.DataTable.isDataTable('#select-an-existing-table')) {
-        let frm = new SetupFormSubmit($select_an_existing_table);
-        $select_an_existing_table.DataTableDefault({
+        let frm = new SetupFormSubmit($select_an_existing_opp_table);
+        $select_an_existing_opp_table.DataTableDefault({
             useDataServer: true,
             paging: false,
             ordering: false,
@@ -309,7 +325,7 @@ function LoadOpportunityList() {
                     targets: 0,
                     render: (data, type, row) => {
                         return `<div class="form-check form-check-sm">
-                                    <input type="radio" name="selected-opp" class="selected-opp form-check-input">
+                                    <input data-id="${row?.['id']}" type="radio" name="selected-opp" class="selected-opp form-check-input">
                                     <label class="form-check-label badge badge-soft-primary">${row?.['code']}</label>
                                 </div>`
                     }
@@ -344,5 +360,61 @@ class LeadHandle {
         LoadSalesConfig()
         LoadAccountConfig()
         LoadOpportunityList()
+    }
+
+    combinesData(frmEle) {
+        let frm = new SetupFormSubmit($(frmEle));
+
+        // lead main data
+        frm.dataForm['title'] = $lead_name.val()
+        frm.dataForm['contact_name'] = $contact_name.val()
+        frm.dataForm['job_title'] = $job_title.val()
+        frm.dataForm['mobile'] = $mobile.val()
+        frm.dataForm['email'] = $email.val()
+        frm.dataForm['company_name'] = $company_name.val()
+        frm.dataForm['account_name'] = $account_name.val()
+        frm.dataForm['industry'] = $industry.val()
+        frm.dataForm['total_employees'] = $total_employees.val()
+        frm.dataForm['revenue'] = $revenue.val()
+        frm.dataForm['source'] = $lead_source.val()
+        frm.dataForm['lead_status'] = $lead_status.val()
+        frm.dataForm['assign_to_sale'] = $assign_to_sale.val()
+
+        // lead note data
+        let note_data = []
+        $lead_note.each(function () {
+            if ($(this).val()) {
+                note_data.push($(this).val())
+            }
+        })
+        frm.dataForm['note_data'] = note_data
+
+        // lead config data
+        frm.dataForm['config_data'] = {}
+        let create_contact = $convert_to_contact_check.prop('checked')
+        let convert_opp = $convert_to_opp_check.prop('checked')
+        frm.dataForm['config_data']['create_contact'] = create_contact
+        frm.dataForm['config_data']['convert_opp'] = convert_opp
+        if (convert_opp) {
+            let convert_opp_create = $convert_to_new_opp_radio.prop('checked')
+            frm.dataForm['config_data']['convert_opp_create'] = convert_opp_create
+            if (convert_opp_create) {
+                let convert_account_create = $convert_to_new_account_radio.prop('checked')
+                let convert_account_select = $select_an_existing_account_radio.prop('checked')
+                frm.dataForm['config_data']['convert_account_create'] = convert_account_create
+                frm.dataForm['config_data']['convert_account_select'] = convert_account_select
+                if (convert_account_select) {
+                    frm.dataForm['config_data']['account_select'] = $account_existing.val()
+                }
+                frm.dataForm['config_data']['assign_to_sale_config'] = $assign_to_sale_config.val()
+            }
+            let convert_opp_select = $select_an_existing_opp_radio.prop('checked')
+            frm.dataForm['config_data']['convert_opp_select'] = convert_opp_select
+            if (convert_opp_select) {
+                frm.dataForm['config_data']['opp_select'] = $selected_opp.find('option:selected').attr('data-id')
+            }
+        }
+
+        return frm;
     }
 }

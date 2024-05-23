@@ -3060,7 +3060,13 @@ class GRSubmitHandle {
                 let row = this.node();
                 let rowIndex = table.DataTable().row(row).index();
                 let $row = table.DataTable().row(rowIndex);
-                let dataRow = $row.data();
+                let dataRowRaw = $row.data();
+                let dataRow = {};
+                for (let key in dataRowRaw) {
+                    if (dataRowRaw.hasOwnProperty(key)) {
+                        dataRow[key] = dataRowRaw[key];
+                    }
+                }
                 order++;
                 let quantityImport = 0;
                 if (dataRow?.['product']?.['product_choice'].includes(1) || dataRow?.['purchase_request_products_data'].length > 0) { // If PO Product have inventory choice or PO have PR

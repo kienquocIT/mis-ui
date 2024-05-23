@@ -9,5 +9,5 @@ urlpatterns = [
     path('lead/detail/<str:pk>', LeadDetail.as_view(), name='LeadDetail'),
     path('lead/update/<str:pk>', LeadUpdate.as_view(), name='LeadUpdate'),
     path('lead/api', LeadListAPI.as_view(), name='LeadListAPI'),
-    path('lead/api/<str:pk>', LeadDetailAPI.as_view(), name='LeadDetailAPI'),
+    path('lead/api/<str:pk>', LeadDetailAPI.as_view(), name='LeadDetailAPI')
 ]

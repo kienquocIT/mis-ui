@@ -548,6 +548,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     LEAD_LIST = StringUrl('lead/list')
     LEAD_DETAIL = StringUrl('lead/detail/{pk}')
+    LEAD_STAGE_LIST = StringUrl('lead/list-lead-stage')
 
     # AR Invoice
     DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')

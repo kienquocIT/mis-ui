@@ -25,10 +25,12 @@ class LeadCreate(View):
         menu_active='',
     )
     def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAD_STAGE_LIST).get()
         return {
             'company_size': COMPANY_SIZE,
             'customer_revenue': CUSTOMER_REVENUE,
-            'lead_status': LEAD_STATUS
+            'lead_status': LEAD_STATUS,
+            'stage_list': resp.result
         }, status.HTTP_200_OK
 
 
@@ -40,10 +42,12 @@ class LeadDetail(View):
         menu_active='',
     )
     def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAD_STAGE_LIST).get()
         return {
             'company_size': COMPANY_SIZE,
             'customer_revenue': CUSTOMER_REVENUE,
-            'lead_status': LEAD_STATUS
+            'lead_status': LEAD_STATUS,
+            'stage_list': resp.result
         }, status.HTTP_200_OK
 
 
@@ -55,7 +59,13 @@ class LeadUpdate(View):
         menu_active='',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAD_STAGE_LIST).get()
+        return {
+            'company_size': COMPANY_SIZE,
+            'customer_revenue': CUSTOMER_REVENUE,
+            'lead_status': LEAD_STATUS,
+            'stage_list': resp.result
+        }, status.HTTP_200_OK
 
 
 class LeadListAPI(APIView):
@@ -86,7 +96,8 @@ class LeadDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.LEAD_DETAIL.fill_key(pk=pk)).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAD_DETAIL.fill_key(pk=pk)).get(params)
         return resp.auto_return(key_success='lead_detail')
 
     @mask_view(

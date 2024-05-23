@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Lead Detail' %}{% endblock %}
+{% block title %}{% trans 'Lead Update' %}{% endblock %}
 {% block cssHeader %}
     <style>
     .sub-stage:hover {
@@ -12,23 +12,29 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'LeadUpdate' pk=pk %}" id="btn-edit">
-        <button class="btn btn-outline-primary">
-            <span>
-                <span>{% trans 'Edit' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                </span>
+    <button class="btn btn-outline-primary" type="submit" form="form-update-lead">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
-        </button>
-    </a>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
     {{ data.stage_list | json_script:"stage_list" }}
     <script id="script-trans"
             data-trans-note="{% trans 'Note' %}"
+            data-trans-convert="{% trans 'Convert' %}"
+            data-trans-cancel="{% trans 'Cancel' %}"
+            data-trans-convert-contact-confirm="{% trans 'Convert to a new Contact?' %}"
+            data-trans-convert-opp-confirm="{% trans 'Convert to Opportunity? Related to:' %}"
     ></script>
-    <form id="form-detail-lead" data-url-detail="{% url 'LeadDetailAPI' '0' %}" data-method="GET">
+    <form id="form-update-lead"
+          data-url="{% url 'LeadDetailAPI' pk=pk %}"
+          data-method="PUT"
+          data-url-redirect="{% url "LeadDetail" pk=pk %}"
+    >
     {% csrf_token %}
         <div class="row">
             <div class="col-12">
@@ -186,10 +192,14 @@
                             <div class="col-12 col-lg-8">
                                 <div class="row">
                                     <div class="col-12 mt-3">
-                                        <a href="#">{% trans 'Convert to a new Contact' %}</a>
+                                        <i id="created_contact" hidden class="text-success fa-solid fa-check"></i>&nbsp;<a href="#" id="convert-to-contact-btn" class="underline_hover">
+                                            {% trans 'Convert to a new Contact' %}
+                                        </a>
                                     </div>
                                     <div class="col-12 mt-3">
-                                        <a href='#'>{% trans 'Convert to Opportunity' %}</a>
+                                        <i id="created_opp" hidden class="text-success fa-solid fa-check"></i>&nbsp;<a href='#' id="convert-to-opp-btn" class="underline_hover">
+                                            {% trans 'Convert to Opportunity' %}
+                                        </a>
                                     </div>
 
                                     <div class="px-10 col-12 col-lg-6 mt-3">
@@ -254,5 +264,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/lead/js/lead_common.js' %}"></script>
-    <script src="{% static 'assets/sales/lead/js/lead_detail.js' %}"></script>
+    <script src="{% static 'assets/sales/lead/js/lead_update.js' %}"></script>
 {% endblock %}

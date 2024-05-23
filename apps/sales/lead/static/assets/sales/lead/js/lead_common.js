@@ -1,5 +1,7 @@
 const $trans_script = $('#script-trans')
 const $btn_add_note = $('#btn-add-note')
+const $stage_list = $('#stage_list')
+const STAGE_LIST = $stage_list.text() ? JSON.parse($stage_list.text()) : [];
 
 const $lead_name = $('#lead-name')
 const $contact_name = $('#contact-name')
@@ -14,7 +16,6 @@ const $revenue = $('#revenue')
 const $assign_to_sale = $('#assign-to-sale')
 const $lead_source = $('#lead-source')
 const $lead_status = $('#lead-status')
-const $lead_note = $('.lead-note')
 
 const $create_contact_btn = $('#convert-to-contact-btn')
 const $convert_opp_btn = $('#convert-to-opp-btn')
@@ -28,48 +29,117 @@ const $account_existing = $('#existing-account')
 const $select_an_existing_opp_table = $('#select-an-existing-opp-table')
 
 $create_contact_btn.on('click', function () {
-    Swal.fire({
-        html:
-            `<p class="text-center text-secondary fw-bold">${$trans_script.attr('data-trans-convert-contact-confirm')}</p>`,
-        customClass: {
-            confirmButton: 'btn btn-outline-primary text-primary',
-            cancelButton: 'btn btn-outline-secondary text-secondary',
-            container: 'swal2-has-bg',
-            actions: 'w-100'
-        },
-        showCancelButton: true,
-        buttonsStyling: false,
-        confirmButtonText: $trans_script.attr('data-trans-convert'),
-        cancelButtonText: $trans_script.attr('data-trans-cancel'),
-        reverseButtons: true
-    }).then((result) => {
-        if (result.value) {
+    if ($create_contact_btn.attr('id')) {
+        Swal.fire({
+            html:
+                `<p class="text-center text-secondary fw-bold">${$trans_script.attr('data-trans-convert-contact-confirm')}</p>`,
+            customClass: {
+                confirmButton: 'btn btn-outline-primary text-primary',
+                cancelButton: 'btn btn-outline-secondary text-secondary',
+                container: 'swal2-has-bg',
+                actions: 'w-100'
+            },
+            showCancelButton: true,
+            buttonsStyling: false,
+            confirmButtonText: $trans_script.attr('data-trans-convert'),
+            cancelButtonText: $trans_script.attr('data-trans-cancel'),
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                WindowControl.showLoading();
+                let url_loaded = $('#form-update-lead').attr('data-url')
+                let dataParam = {}
+                dataParam['convert_contact'] = 1
+                let lead_detail_ajax = $.fn.callAjax2({
+                    url: url_loaded,
+                    data: dataParam,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('lead_detail')) {
+                            return data?.['lead_detail'];
+                        }
+                        return {};
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
 
-        }
-    })
+                Promise.all([lead_detail_ajax]).then(
+                    (results) => {
+                        setTimeout(
+                            () => {
+                                WindowControl.hideLoading();
+                                location.reload();
+                            },
+                            500
+                        )
+                    }
+                )
+            }
+        })
+    }
+    else {
+        $.fn.notifyB({description: 'Converted to a new contact!'}, 'warning');
+    }
 })
 
 $convert_opp_btn.on('click', function () {
+    let flag = true
     let alert_html = `<p class="text-center text-secondary fw-bold">${$trans_script.attr('data-trans-convert-opp-confirm')}</p><br>`
-
-    Swal.fire({
-        html: alert_html,
-        customClass: {
-            confirmButton: 'btn btn-outline-primary text-primary',
-            cancelButton: 'btn btn-outline-secondary text-secondary',
-            container: 'swal2-has-bg',
-            actions: 'w-100'
-        },
-        showCancelButton: true,
-        buttonsStyling: false,
-        confirmButtonText: $trans_script.attr('data-trans-convert'),
-        cancelButtonText: $trans_script.attr('data-trans-cancel'),
-        reverseButtons: true
-    }).then((result) => {
-        if (result.value) {
-
+    if ($convert_opp_create.prop('checked')) {
+        alert_html += `<h6>1. Convert to new Opportunity</h6>`
+        if ($convert_account_create.prop('checked')) {
+            alert_html += `<h6>2. Convert to new Account</h6>`
         }
-    })
+        else {
+            if ($account_existing.val()) {
+                let account_name = SelectDDControl.get_data_from_idx($account_existing, $account_existing.val())?.['full_name']
+                alert_html += `<h6>2. Match with Account ${account_name}</h6>`
+            }
+            else {
+                flag = false
+                $.fn.notifyB({description: 'Please select one Account before Convert!'}, 'failure');
+            }
+        }
+        if ($assign_to_sale_config.val()) {
+            let sale_config_fullname = SelectDDControl.get_data_from_idx($assign_to_sale_config, $assign_to_sale_config.val())?.['full_name']
+            alert_html += `<h6>3. Assign to sale ${sale_config_fullname}</h6>`
+        }
+    }
+    else {
+        let opp_code = $select_an_existing_opp_table.find('input:checked').closest('div').find('label').text()
+        if (opp_code) {
+            alert_html += `<h6>1. Match with Opportunity ${opp_code}</h6>`
+        }
+        else {
+            flag = false
+            $.fn.notifyB({description: 'Please select one Opportunity before Convert!'}, 'failure');
+        }
+    }
+
+    if (flag) {
+        Swal.fire({
+            html: alert_html,
+            customClass: {
+                confirmButton: 'btn btn-outline-primary text-primary',
+                cancelButton: 'btn btn-outline-secondary text-secondary',
+                container: 'swal2-has-bg',
+                actions: 'w-100'
+            },
+            showCancelButton: true,
+            buttonsStyling: false,
+            confirmButtonText: $trans_script.attr('data-trans-convert'),
+            cancelButtonText: $trans_script.attr('data-trans-cancel'),
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+
+            }
+        })
+    }
 })
 
 $('input[name="convert-to-opp"]').on('change', function () {
@@ -98,7 +168,7 @@ function Disable(option) {
 
 function LoadDetailLead(option) {
     let pk = $.fn.getPkDetail()
-    let url_loaded = $('#form-detail-lead').attr('data-url-detail').replace(0, pk);
+    let url_loaded = option === 'detail' ? $('#form-detail-lead').attr('data-url-detail').replace(0, pk) : $('#form-update-lead').attr('data-url')
     $.fn.callAjax(url_loaded, 'GET').then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
@@ -108,6 +178,8 @@ function LoadDetailLead(option) {
                 console.log(data)
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
+
+                LoadStage(STAGE_LIST, data?.['current_lead_stage']['level'])
 
                 // lead main data
                 $lead_name.val(data?.['title'])
@@ -125,13 +197,18 @@ function LoadDetailLead(option) {
                 LoadSales(data?.['assign_to_sale'])
 
                 // lead note data
+                let detail = option === 'detail' ? 'disabled readonly' : ''
                 for (const note_content of data?.['note_data']) {
                     $('#note-area').prepend(`
-                        <textarea disabled readonly class="form-control lead-note mb-3">${note_content}</textarea>
+                        <textarea ${detail} class="form-control lead-note mb-3">${note_content}</textarea>
                     `)
                 }
 
                 // lead config data
+                if (data?.['config_data']?.['create_contact']) {
+                    $('#created_contact').prop('hidden', false)
+                    $create_contact_btn.attr('id', '').attr('class', '')
+                }
                 $convert_opp_create.prop('checked', data?.['config_data']?.['convert_opp_create'])
                 $convert_opp_select.prop('checked', data?.['config_data']?.['convert_opp_select'])
                 $convert_account_create.prop('checked', data?.['config_data']?.['convert_account_create'])
@@ -264,8 +341,24 @@ function LoadOpportunityList() {
     }
 }
 
+function LoadStage(stage_list, level) {
+    $('#lead-stage').html('')
+    for (const stage of stage_list) {
+        let class_ctn = 'sub-stage w-25 bg-primary-light-5 border rounded py-3 px-5 text-center'
+        let style_ctn = 'min-width: 300px'
+        if (stage?.['level'] <= level) {
+            class_ctn = 'sub-stage w-25 bg-primary border rounded py-3 px-5 text-center'
+            style_ctn = 'color: #f0f0f0; min-width: 300px'
+        }
+        $('#lead-stage').append(`
+            <div data-id="${stage?.['id']}" data-level="${stage?.['level']}" class="${class_ctn}" style="${style_ctn}">${stage?.['stage_title']}</div>&nbsp;
+        `)
+    }
+}
+
 class LeadHandle {
     load(option='create') {
+        LoadStage(STAGE_LIST, 1)
         LoadIndustry()
         LoadSales()
         if (option !== 'create') {
@@ -295,7 +388,7 @@ class LeadHandle {
 
         // lead note data
         let note_data = []
-        $lead_note.each(function () {
+        $('.lead-note').each(function () {
             if ($(this).val()) {
                 note_data.push($(this).val())
             }

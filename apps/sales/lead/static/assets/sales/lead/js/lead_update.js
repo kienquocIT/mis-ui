@@ -3,7 +3,7 @@ $(document).ready(function () {
 
     LoadDetailLead('update')
 
-    $('#form-update-lead').submit(function (event) {
+    $('#form-detail-lead').submit(function (event) {
         event.preventDefault();
         let form = new LeadHandle().combinesData($(this));
         if (form) {

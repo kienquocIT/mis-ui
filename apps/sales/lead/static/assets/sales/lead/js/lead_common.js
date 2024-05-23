@@ -47,37 +47,24 @@ $create_contact_btn.on('click', function () {
         }).then((result) => {
             if (result.value) {
                 WindowControl.showLoading();
-                let url_loaded = $('#form-update-lead').attr('data-url')
-                let dataParam = {}
-                dataParam['convert_contact'] = 1
-                let lead_detail_ajax = $.fn.callAjax2({
-                    url: url_loaded,
-                    data: dataParam,
-                    method: 'GET'
-                }).then(
+                let combinesData = {
+                    url: $create_contact_btn.attr('data-url'),
+                    method: 'POST',
+                    data: {'convert_contact': true, 'lead_id': $.fn.getPkDetail()},
+                }
+                console.log(combinesData)
+                $.fn.callAjax2(combinesData).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
-                        if (data && typeof data === 'object' && data.hasOwnProperty('lead_detail')) {
-                            return data?.['lead_detail'];
+                        if (data) {
+                            $.fn.notifyB({description: 'Convert to a new Contact successfully!'}, 'success');
+                            setTimeout(() => {location.reload();}, 1000)
                         }
-                        return {};
                     },
                     (errs) => {
-                        console.log(errs);
-                    }
-                )
-
-                Promise.all([lead_detail_ajax]).then(
-                    (results) => {
-                        setTimeout(
-                            () => {
-                                WindowControl.hideLoading();
-                                location.reload();
-                            },
-                            500
-                        )
-                    }
-                )
+                        WindowControl.hideLoading();
+                        $.fn.notifyB({description: 'Your Lead is Draft, finish first!'}, 'failure');
+                    })
             }
         })
     }
@@ -160,15 +147,14 @@ $btn_add_note.on('click', function () {
 
 function Disable(option) {
     if (option === 'detail') {
-        $('input').prop('readonly', true).prop('disabled', true)
-        $('select').prop('readonly', true).prop('disabled', true)
+        $('#tab_block_main input').prop('readonly', true).prop('disabled', true)
+        $('#tab_block_main select').prop('readonly', true).prop('disabled', true)
         $btn_add_note.prop('disabled', true)
     }
 }
 
 function LoadDetailLead(option) {
-    let pk = $.fn.getPkDetail()
-    let url_loaded = option === 'detail' ? $('#form-detail-lead').attr('data-url-detail').replace(0, pk) : $('#form-update-lead').attr('data-url')
+    let url_loaded = $('#form-detail-lead').attr('data-url')
     $.fn.callAjax(url_loaded, 'GET').then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
@@ -208,6 +194,7 @@ function LoadDetailLead(option) {
                 if (data?.['config_data']?.['create_contact']) {
                     $('#created_contact').prop('hidden', false)
                     $create_contact_btn.attr('id', '').attr('class', '')
+                    $create_contact_btn.after(`&nbsp;<a target="_blank" href="${$create_contact_btn.attr('data-url-detail-contact').replace('0', data?.['config_data']?.['contact_mapped']?.['id'])}"><i class="fa-solid fa-up-right-from-square"></i></a>`)
                 }
                 $convert_opp_create.prop('checked', data?.['config_data']?.['convert_opp_create'])
                 $convert_opp_select.prop('checked', data?.['config_data']?.['convert_opp_select'])

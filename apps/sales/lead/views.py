@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg
+from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg, InputMappingProperties
 from apps.shared.constant import COMPANY_SIZE, CUSTOMER_REVENUE, LEAD_STATUS
 
 
@@ -60,11 +60,13 @@ class LeadUpdate(View):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.LEAD_STAGE_LIST).get()
+        input_mapping_properties = InputMappingProperties.LEAD_LEAD
         return {
             'company_size': COMPANY_SIZE,
             'customer_revenue': CUSTOMER_REVENUE,
             'lead_status': LEAD_STATUS,
-            'stage_list': resp.result
+            'stage_list': resp.result,
+            'input_mapping_properties': input_mapping_properties, 'form_id': 'form-detail-lead'
         }, status.HTTP_200_OK
 
 

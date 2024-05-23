@@ -12,7 +12,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form-update-lead">
+    <button class="btn btn-outline-primary" type="submit" form="form-detail-lead">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -30,7 +30,7 @@
             data-trans-convert-contact-confirm="{% trans 'Convert to a new Contact?' %}"
             data-trans-convert-opp-confirm="{% trans 'Convert to Opportunity? Related to:' %}"
     ></script>
-    <form id="form-update-lead"
+    <form id="form-detail-lead"
           data-url="{% url 'LeadDetailAPI' pk=pk %}"
           data-method="PUT"
           data-url-redirect="{% url "LeadDetail" pk=pk %}"
@@ -192,7 +192,8 @@
                             <div class="col-12 col-lg-8">
                                 <div class="row">
                                     <div class="col-12 mt-3">
-                                        <i id="created_contact" hidden class="text-success fa-solid fa-check"></i>&nbsp;<a href="#" id="convert-to-contact-btn" class="underline_hover">
+                                        <i id="created_contact" hidden class="text-success fa-solid fa-check"></i>&nbsp;
+                                        <a href="#" data-url-detail-contact="{% url 'ContactDetail' '0' %}" id="convert-to-contact-btn" class="underline_hover">
                                             {% trans 'Convert to a new Contact' %}
                                         </a>
                                     </div>

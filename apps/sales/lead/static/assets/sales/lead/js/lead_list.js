@@ -32,7 +32,8 @@ $(document).ready(function () {
                     },
                     {
                         'render': (data, type, row) => {
-                            return `${row?.['title']}`;
+                            const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            return `<a href="${link}">${row?.['title']}</a>`;
                         }
                     },
                     {

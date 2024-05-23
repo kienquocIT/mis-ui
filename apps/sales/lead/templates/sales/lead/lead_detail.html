@@ -27,8 +27,14 @@
     {{ data.stage_list | json_script:"stage_list" }}
     <script id="script-trans"
             data-trans-note="{% trans 'Note' %}"
+            data-trans-convert="{% trans 'Convert' %}"
+            data-trans-cancel="{% trans 'Cancel' %}"
+            data-trans-convert-contact-confirm="{% trans 'Convert to a new Contact?' %}"
+            data-trans-convert-opp-confirm="{% trans 'Convert to Opportunity? Related to:' %}"
     ></script>
-    <form id="form-detail-lead" data-url-detail="{% url 'LeadDetailAPI' '0' %}" data-method="GET">
+    <form id="form-detail-lead"
+          data-url="{% url 'LeadDetailAPI' pk=pk %}"
+          data-method="GET">
     {% csrf_token %}
         <div class="row">
             <div class="col-12">
@@ -186,10 +192,16 @@
                             <div class="col-12 col-lg-8">
                                 <div class="row">
                                     <div class="col-12 mt-3">
-                                        <a href="#">{% trans 'Convert to a new Contact' %}</a>
+                                        <i id="created_contact" hidden class="text-success fa-solid fa-check"></i>&nbsp;
+                                        <a href="#" data-url="{% url 'ContactCreateAPI' %}" data-url-detail-contact="{% url 'ContactDetail' '0' %}" id="convert-to-contact-btn" class="underline_hover">
+                                            {% trans 'Convert to a new Contact' %}
+                                        </a>
                                     </div>
                                     <div class="col-12 mt-3">
-                                        <a href='#'>{% trans 'Convert to Opportunity' %}</a>
+                                        <i id="created_opp" hidden class="text-success fa-solid fa-check"></i>&nbsp;
+                                        <a href='#' id="convert-to-opp-btn" class="underline_hover">
+                                            {% trans 'Convert to Opportunity' %}
+                                        </a>
                                     </div>
 
                                     <div class="px-10 col-12 col-lg-6 mt-3">

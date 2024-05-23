@@ -869,6 +869,36 @@ class POLoadDataHandle {
         }
     };
 
+    static loadChangePaymentRate(ele) {
+        let tableWrapper = document.getElementById('datable-purchase-order-product-add_wrapper');
+        if (POLoadDataHandle.PRDataEle.val()) { // PO PR products
+            tableWrapper = document.getElementById('datable-purchase-order-product-request_wrapper');
+        }
+        if (tableWrapper) {
+            let tableProductFt = tableWrapper.querySelector('.dataTables_scrollFoot');
+            if (tableProductFt) {
+                let elePretax = tableProductFt.querySelector('.purchase-order-product-pretax-amount-raw');
+                if (elePretax) {
+                    if (elePretax.value) {
+                        let row = ele.closest('tr');
+                        let eleValBT = row.querySelector('.table-row-value-before-tax');
+                        if (eleValBT) {
+                            let value = parseFloat(elePretax.value) * parseFloat(ele.value) / 100;
+                            $(eleValBT).attr('value', String(value));
+                            // mask money
+                            $.fn.initMaskMoney2();
+                            let check = POValidateHandle.validatePOPSValue(eleValBT);
+                            if (check === false) {
+                                ele.value = 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    };
+
     // LOAD DETAIL
     static loadDetailPage(data) {
         $('#data-detail-page').val(JSON.stringify(data));
@@ -1866,6 +1896,7 @@ class PODataTableHandle {
                                     class="form-control mask-money table-row-value-before-tax" 
                                     value="${row?.['value_before_tax'] ? row?.['value_before_tax'] : '0'}"
                                     data-return-type="number"
+                                    disabled
                                 >`;
                     },
                 },
@@ -2114,26 +2145,30 @@ class POValidateHandle {
     static validatePOPSValue(ele) {
         let tablePS = $('#datable-po-payment-stage');
         let tableProductWrapper = document.getElementById('datable-purchase-order-product-add_wrapper');
-        if (document.getElementById('purchase-order-purchase-request').innerHTML) {
+        if (POLoadDataHandle.PRDataEle.val()) {
             tableProductWrapper = document.getElementById('datable-purchase-order-product-request_wrapper');
         }
         if (tableProductWrapper) {
             let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-            let elePretax = tableProductFt.querySelector('.purchase-order-product-pretax-amount-raw');
-            if (elePretax) {
-                let valuePO = parseFloat(elePretax.value);
-                let totalBT = 0;
-                tablePS.DataTable().rows().every(function () {
-                    let row = this.node();
-                    let eleValueBT = row.querySelector('.table-row-value-before-tax');
-                    if (eleValueBT) {
-                        totalBT += $(eleValueBT).valCurrency();
+            if (tableProductFt) {
+                let elePretax = tableProductFt.querySelector('.purchase-order-product-pretax-amount-raw');
+                if (elePretax) {
+                    if (elePretax.value) {
+                        let valuePO = parseFloat(elePretax.value);
+                        let totalBT = 0;
+                        tablePS.DataTable().rows().every(function () {
+                            let row = this.node();
+                            let eleValueBT = row.querySelector('.table-row-value-before-tax');
+                            if (eleValueBT) {
+                                totalBT += $(eleValueBT).valCurrency();
+                            }
+                        });
+                        if (totalBT > valuePO) {
+                            $(ele).attr('value', String(0));
+                            $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+                            return false
+                        }
                     }
-                });
-                if (totalBT > valuePO) {
-                    $(ele).attr('value', String(0));
-                    $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
-                    return false
                 }
             }
         }

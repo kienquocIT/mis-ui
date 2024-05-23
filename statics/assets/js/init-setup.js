@@ -6826,6 +6826,7 @@ class DiagramControl {
                                                 <div class="row"><small>${$.fn.transEle.attr('data-code')}: ${data_record?.['code']}</small></div>
                                                 <div class="row"><small>${$.fn.transEle.attr('data-quantity')}: ${data_record?.['quantity']}</small></div>
                                                 <div class="row"><small>${$.fn.transEle.attr('data-total')}: <span class="mask-money" data-init-money="${parseFloat(data_record?.['total'] ? data_record?.['total'] : '0')}"></span></small></div>
+                                                <div class="row"><small>Ghi chu: ${data_record?.['remark'] ? data_record?.['remark'] : ''}</small></div>
                                             </div>
                                         </div>
                                         <div class="card-footer text-muted d-flex justify-content-between">

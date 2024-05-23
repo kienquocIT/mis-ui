@@ -1096,6 +1096,7 @@ class QuotationLoadDataHandle {
     };
 
     static loadCostProduct(eleProduct) {
+        let formSubmit = $('#frm_quotation_create');
         let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
         if (productData) {
             let data = productData;
@@ -1119,7 +1120,9 @@ class QuotationLoadDataHandle {
                     let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
                     let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
                     if (elePrice) {
-                        elePrice.removeAttribute('disabled');
+                        if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                            elePrice.removeAttribute('disabled');
+                        }
                     }
                     if (eleBtnPriceList) {
                         eleBtnPriceList.setAttribute('hidden', 'true');

@@ -2240,6 +2240,7 @@ class WFRTControl {
                     <div class="col-12">
                         <div class="card">
                             <div class="hk-ribbon-type-1 start-touch">` + `<span>${$.fn.transEle.attr('data-node-completed')}</span></div>
+                            <br>
                             <div class="card-body mt-5">
                                 ${htmlBody}
                             </div>
@@ -6789,6 +6790,7 @@ class DiagramControl {
                                                 <div class="row"><small>${$.fn.transEle.attr('data-code')}: ${docData?.['code']}</small></div>
                                                 <div class="row"><small>${$.fn.transEle.attr('data-quantity')}: ${docData?.['quantity']}</small></div>
                                                 <div class="row"><small>${$.fn.transEle.attr('data-total')}: <span class="mask-money" data-init-money="${parseFloat(docData?.['total'] ? docData?.['total'] : '0')}"></span></small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-detail')}: ${docData?.['detail'] ? docData?.['detail'] : ''}</small></div>
                                             </div>
                                         </div>
                                         <div class="card-footer text-muted d-flex justify-content-between">
@@ -6825,6 +6827,7 @@ class DiagramControl {
                                                 <div class="row"><small>${$.fn.transEle.attr('data-code')}: ${data_record?.['code']}</small></div>
                                                 <div class="row"><small>${$.fn.transEle.attr('data-quantity')}: ${data_record?.['quantity']}</small></div>
                                                 <div class="row"><small>${$.fn.transEle.attr('data-total')}: <span class="mask-money" data-init-money="${parseFloat(data_record?.['total'] ? data_record?.['total'] : '0')}"></span></small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-detail')}: ${data_record?.['detail'] ? data_record?.['detail'] : ''}</small></div>
                                             </div>
                                         </div>
                                         <div class="card-footer text-muted d-flex justify-content-between">

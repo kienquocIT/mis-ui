@@ -2240,10 +2240,10 @@ $(function () {
 
         btnView.on('click', function () {
             let dataParams = {};
-            if (boxGroup.val()) {
+            if (boxGroup.val() && boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
             }
-            if (boxEmployee.val()) {
+            if (boxEmployee.val() && boxEmployee.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
             }
             if (boxSO.val()) {

@@ -477,6 +477,7 @@ class QuotationLoadDataHandle {
 
     static loadTableCopyQuotation(opp_id = null, sale_person_id = null) {
         let ele = $('#data-init-copy-quotation');
+        let formSubmit = $('#frm_quotation_create');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         $('#datable-copy-quotation').DataTable().destroy();
@@ -497,8 +498,8 @@ class QuotationLoadDataHandle {
                     if (data) {
                         if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
                             let dataInit = data.quotation_list;
-                            // check OppID to get quotation same Opp then concat 2 list data
-                            if (opp_id) {
+                            // check OppID to get quotation same Opp then concat 2 list data (only for Quotation pages)
+                            if (opp_id && !formSubmit[0].classList.contains('sale-order')) {
                                 data_filter = {'system_status': 4}
                                 data_filter['opportunity'] = opp_id;
                                 data_filter['opportunity__is_close_lost'] = false;
@@ -1747,9 +1748,6 @@ class QuotationLoadDataHandle {
                     QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                     // Check promotion -> re calculate
                     QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
-                    // load again table cost
-                    QuotationLoadDataHandle.loadDataTableCost();
-                    QuotationLoadDataHandle.loadSetWFRuntimeZone();
                     // Set form novalidate
                     formSubmit[0].setAttribute('novalidate', 'novalidate');
                     $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');

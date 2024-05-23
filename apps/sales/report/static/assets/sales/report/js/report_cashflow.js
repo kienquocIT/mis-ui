@@ -2259,18 +2259,37 @@ $(function () {
                     dataParams['due_date__lte'] = endDate;
                 }
             }
+            dataParams['sale_order__system_status'] = 3;
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
                     'data': dataParams,
-                    isLoading: true,
                 }
             ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('report_cashflow_list') && Array.isArray(data.report_cashflow_list)) {
-                            setupDataLoadTable(data.report_cashflow_list);
+                            let dataCFSO = data.report_cashflow_list
+                            delete dataParams['sale_order__system_status'];
+                            dataParams['purchase_order__system_status'] = 3;
+                            $.fn.callAjax2({
+                                    'url': $table.attr('data-url'),
+                                    'method': $table.attr('data-method'),
+                                    'data': dataParams,
+                                    isLoading: true,
+                                }
+                            ).then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    if (data) {
+                                        if (data.hasOwnProperty('report_cashflow_list') && Array.isArray(data.report_cashflow_list)) {
+                                            let dataCFPO = data.report_cashflow_list;
+                                            setupDataLoadTable(dataCFSO.concat(dataCFPO));
+                                        }
+                                    }
+                                }
+                            )
                         }
                     }
                 }

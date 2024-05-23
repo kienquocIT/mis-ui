@@ -4,18 +4,15 @@ function resetFormTask() {
     $taskForm.trigger('reset').removeClass('task_edit')
     $('#inputAssigner').val($('#inputAssigner').attr('data-name'))
     $('#employee_inherit_id').val(null).trigger('change').removeClass('is-invalid');
-    $('#employee_inherit_id-error').remove()
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
     $('#inputLabel').val(null);
     $('#rangeValue').text(0)
     $('#percent_completed').val(0)
-    $('[name="id"]', $taskForm).remove();
+    $('[name="id"], input[name="work_id"], [name="parent_n"], #employee_inherit_id-error', $taskForm).remove();
     $('.create-subtask').addClass('hidden');
-    $('[name="parent_n"]', $taskForm).remove();
     window.editor.setData('')
     $('.create-task').attr('disabled', false)
     $('.btn-log_work').removeClass('.disabled')
-    $('input[name="work_id"]', $taskForm).remove()
 }
 
 function isValidString(inputString) {
@@ -180,19 +177,22 @@ function TaskSubmitFunc(platform) {
         formData.attach = list
     }
 
-    const prepare_data = {
-        project: formData['project_id'],
-        work: $('input[name="work_id"]', platform).val(),
-        task: formData
-    }
+    formData.work = $('input[name="work_id"]', platform).val()
+    formData.project = formData.project_id
+    let method = 'POST', url = platform.attr('data-url')
+    if ($('input[name="id"]', platform).length)
+        if ($('input[name="id"]', platform).val().length) {
+            method = 'PUT'
+            url = $('#assign_task-url').attr('data-task_detail').format_url_with_uuid($('input[name="id"]', platform).val())
+        }
 
     $.fn.callAjax2({
-        'url': $('#url-factory').attr('data-task'),
-        'method': 'POST',
-        'data': prepare_data,
+        'url': url,
+        'method': method,
+        'data': formData,
         'sweetAlertOpts': {
             'allowOutsideClick': true
-        }
+        },
     }).then(
         (resp) => {
             const data = $.fn.switcherResp(resp);
@@ -206,6 +206,99 @@ function TaskSubmitFunc(platform) {
 }
 
 class Task_in_project {
+    static initTableLogWork(dataList) {
+        let $table = $('#table_log-work')
+        if ($table.hasClass('dataTable')) {
+            $table.DataTable().clear().draw();
+            $table.DataTable().rows.add(dataList).draw();
+        } else $table.DataTable({
+            searching: false,
+            ordering: false,
+            paginate: false,
+            info: false,
+            data: dataList,
+            columns: [
+                {
+                    data: 'employee_created',
+                    targets: 0,
+                    width: "35%",
+                    render: (data, type, row) => {
+                        let avatar = ''
+                        const full_name = data.last_name + ' ' + data.first_name
+                        if (data?.['avatar'])
+                            avatar = `<img src="${data?.['avatar']}" alt="user" class="avatar-img">`
+                        else avatar = $.fn.shortName(full_name, '', 5)
+                        return `<div class="avatar avatar-rounded avatar-xs avatar-${$x.fn.randomColor()}">
+                                        <span class="initial-wrap">${avatar}</span>
+                                    </div>
+                                    <span class="ml-2">${full_name}</span>`;
+                    }
+                },
+                {
+                    data: 'start_date',
+                    targets: 1,
+                    width: "35%",
+                    render: (row, type, data) => {
+                        let date = moment(row, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+                        date += ' ~ '
+                        date += moment(data.end_date, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+
+                        return date;
+                    }
+                },
+                {
+                    data: 'time_spent',
+                    targets: 2,
+                    width: "20%",
+                    render: (data, type, row) => {
+                        return data;
+                    }
+                },
+                {
+                    data: 'id',
+                    targets: 3,
+                    width: "10%",
+                    render: (data, type, row) => {
+                        return `<btn type="button" class="btn action act-edit" data-row-id="${data}"><i class="fa-solid fa-pencil"></i></btn>`;
+                    }
+                }
+            ]
+        })
+    }
+
+    static renderSubtask(taskID, dataSub) {
+        const $wrap = $('.wrap-subtask'), $btnSub = $('.create-subtask')
+        let subTaskList = dataSub
+        $wrap.html('')
+        if (subTaskList.length)
+            for (let [key, item] of subTaskList.entries()) {
+                const template = $(`<div class="d-flex justify-content-start align-items-center subtask_item">
+                                    <p class="sub-tit" title="${item.title}">${item.title}</p>
+                                    <p class="sub-employee" title="${item.employee_inherit}"><span class="chip chip-primary chip-pill"><span class="chip-text">${item.employee_inherit}</span></span></p>
+                                    <button class="btn btn-flush-primary btn-icon btn-rounded ml-auto flush-soft-hover disabled">
+                                        <span><i class="fa-regular fa-trash-can fa-sm"></i></span>
+                                    </button>
+                                 </div>`);
+                $wrap.append(template);
+            }
+
+        $btnSub.on('click', function(){
+            resetFormTask()
+            $('.title-create').removeClass("hidden")
+            $('.title-detail').addClass("hidden")
+            // $('.btn-assign').removeClass('disabled')
+            // after reset
+            $('#formOpportunityTask').append(`<input type="hidden" name="parent_n" value="${taskID}"/>`)
+            const employee = JSON.parse($('#employee_info').text())
+            $('#inputAssigner').val(employee.full_name).attr({
+                "value": employee.id,
+                "data-name": employee.full_name,
+                "data-value-id": employee.id,
+            })
+            $btnSub.addClass('hidden')
+        });
+    }
+
     static init(prj_info) {
         let $empElm = $('#employee_inherit_id')
         const $form = $('#formOpportunityTask')
@@ -255,6 +348,7 @@ class Task_in_project {
         // run init label function
         let formLabel = new labelHandle()
         formLabel.init()
+        window.formLabel = formLabel
 
         // init comment
         $('#btn-open-comment-task').on('click', function () {
@@ -300,12 +394,12 @@ class Task_in_project {
             has_prj: true,
             has_inherit: true,
             data_inherit: [{
-                "id": prj_info?.['employee_inherit']?.['id'],
-                "full_name": prj_info?.['employee_inherit']?.['full_name'] || '',
-                "first_name": prj_info?.['employee_inherit']?.['first_name'] || '',
-                "last_name": prj_info?.['employee_inherit']?.['last_name'] || '',
-                "email": prj_info?.['employee_inherit']?.['email'] || '',
-                "is_active": prj_info?.['employee_inherit']?.['is_active'] || false,
+                "id": prj_info['employee_inherit']['id'],
+                "full_name": prj_info['employee_inherit']['full_name'],
+                "first_name":  '',
+                "last_name": '',
+                "email": '',
+                "is_active": true,
                 "selected": true,
             }],
             data_prj: [{
@@ -356,4 +450,69 @@ class Task_in_project {
             })
         });
     }
+
+    static loadTask(task_info) {
+        const $form = $('#formOpportunityTask');
+        $('.title-create').addClass('hidden')
+        $('.title-detail').removeClass('hidden')
+        $form.append(`<input type="hidden" name="work_id" value="${task_info.work_id}"/>`)
+        $.fn.callAjax2({
+            'url': $('#assign_task-url').attr('data-task_detail').format_url_with_uuid(task_info.task),
+            'method': 'GET',
+            'sweetAlertOpts': { 'allowOutsideClick': true }
+        }).then(
+            (resp) => {
+                const data = $.fn.switcherResp(resp);
+                if (data) {
+                    $('#inputTextTitle', $form).val(data.title)
+                    $('#inputTextCode', $form).val(data.code)
+                    const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
+                    $form.append(taskIDElm)
+                    $('#inputTextStartDate', $form).val(
+                        moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                    )
+                    $('#inputTextEndDate', $form).val(
+                        moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                    )
+                    $('#inputTextEstimate', $form).val(data.estimate)
+                    $('#selectPriority', $form).val(data.priority).trigger('change')
+                    $('#rangeValue').text(data['percent_completed'])
+                    $('#percent_completed').val(data['percent_completed'])
+
+                    $('#inputAssigner', $form).val(data.employee_created.full_name)
+                        .attr('data-value-id', data.employee_created.id)
+                        .attr('value', data.employee_created.id)
+                    const $EmpElm = $('#employee_inherit_id', $form)
+                    if ($EmpElm.find(`option[value="${data.employee_inherit.id}"]`).length > 0)
+                        $EmpElm.val(data.employee_inherit.id).trigger('change')
+                    else $EmpElm.append(`<option value="${data.employee_inherit.id}" selected>${
+                        data.employee_inherit.full_name}</option>`).trigger('change')
+
+                    window.formLabel.renderLabel(data.label)
+                    window.editor.setData(data.remark)
+                    window.checklist.setDataList = data.checklist
+                    window.checklist.render()
+
+                    if (data.attach) {
+                        const fileDetail = data.attach[0]?.['files']
+                        FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
+                    }
+                    Task_in_project.initTableLogWork(data?.['task_log_work'])
+                    Task_in_project.renderSubtask(data.id, data?.['sub_task_list'])
+
+                    // show hide btn sub-task
+                    const $btnSub = $('.create-subtask')
+                    if (Object.keys(data.parent_n).length > 0) $btnSub.addClass('hidden')
+                    else $btnSub.removeClass('hidden')
+                }
+            },
+            (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+        )
+    }
 }
+
+$(document).on('Task.click.view', function(e, detail){
+    if ($('#drawer_task_create').hasClass('open')) resetFormTask()
+    else $('.btn-show-task_f').trigger('click');
+    Task_in_project.loadTask(detail)
+});

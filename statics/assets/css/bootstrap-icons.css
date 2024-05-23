@@ -1554,3 +1554,5 @@ url("../fonts/bootstrap-icons/font/fonts/bootstrap-icons.woff?30af91bf14e37666a0
 .bi-mortarboard-fill::before { content: "\f6fd"; }
 .bi-mortarboard::before { content: "\f6fe"; }
 .bi-terminal-x::before { content: "\f6ff"; }
+/*custom*/
+.bi-floppy2::before { content: "\f7e4"; }

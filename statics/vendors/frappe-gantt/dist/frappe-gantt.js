@@ -1974,7 +1974,7 @@ var Gantt = (function () {
                             + `<span class="row-title ${item.child_of_group ? 'pd-15' : ''}">${item['name']}</span>`
                         ).addClass('wrap-title')
 
-                        const htmlBtn2 = jQuery(`<div class="dropdown"><button class="btn btn-sm row-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></button><ul class="dropdown-menu"><li><button class="dropdown-item btn-item-row-delete" type="button">${jQuery.fn.gettext('Delete')}</button></li><li><button class="dropdown-item btn-item-row-assign" type="button">${jQuery.fn.gettext('Assign Task')}</button></li><li><button class="dropdown-item btn-row-task_list" type="button">${jQuery.fn.gettext('Task list')}</button></li></ul></div>`)
+                        const htmlBtn2 = jQuery(`<div class="dropdown"><button class="btn btn-sm row-btn${this.options['is_detail'] ? ' disabled' : ''}" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></button><ul class="dropdown-menu"><li><button class="dropdown-item btn-item-row-delete" type="button">${jQuery.fn.gettext('Delete')}</button></li><li><button class="dropdown-item btn-item-row-assign" type="button">${jQuery.fn.gettext('Assign Task')}</button></li><li><button class="dropdown-item btn-row-task_list" type="button">${jQuery.fn.gettext('Task list')}</button></li></ul></div>`)
                         item_html.append(htmlBtn2)
 
                         if (item.is_group) {
@@ -1995,6 +1995,7 @@ var Gantt = (function () {
                             else if (_this.options.hasOwnProperty('init_edit_btn_w'))
                                 _this.options.init_edit_btn_w(item.id)
                         })
+
                         jQuery('.btn-item-row-delete', item_html).on('click', function(e){
                             // event click delete row
                             const $Parent = jQuery(this).parents('.grid-row')

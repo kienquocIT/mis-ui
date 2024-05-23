@@ -8,7 +8,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, SYSTEM_STATUS, InputMappingProperties
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, SYSTEM_STATUS
 from apps.shared.constant import DEPENDENCIES_TYPE
 from apps.shared.msg import BaseMsg
 
@@ -45,7 +45,7 @@ class ProjectCreate(View):
     def get(self, request, *args, **kwargs):
         return {
                    'dependencies_list': DEPENDENCIES_TYPE,
-                   'list_from_app': 'project.project.view'
+                   'list_from_app': 'project.project.create'
                }, status.HTTP_200_OK
 
 
@@ -101,7 +101,8 @@ class ProjectEdit(View):
                    'pk': pk,
                    'system_status': SYSTEM_STATUS,
                    'dependencies_list': DEPENDENCIES_TYPE,
-                   'list_from_app': 'project.project.edit'
+                   'list_from_app': 'project.project.edit',
+                   'employee_info': request.user.employee_current_data
                }, status.HTTP_200_OK
 
 
@@ -332,7 +333,7 @@ class ProjectTaskListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        url = ApiURL.PROJECT_TASK_LIST.fill_key(pk_pj=params['project_id'])
+        url = ApiURL.PROJECT_TASK_LIST.fill_key(pk_pj=params.pop('project_id'))
         resp = ServerAPI(user=request.user, url=url).get(params)
         return resp.auto_return(key_success='prj_task_list')
 

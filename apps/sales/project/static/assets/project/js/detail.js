@@ -25,6 +25,7 @@ $(document).ready(function () {
             disable_on_click: true,
             gantt_start: start_D,
             gantt_end: new Date(end_D.getTime() - 1),
+            is_detail: true
         }
     );
 

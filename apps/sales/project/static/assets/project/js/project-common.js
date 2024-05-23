@@ -29,7 +29,6 @@ $(document).ready(function () {
     }
 
     // form submit
-
     SetupFormSubmit.validate($FormElm, {
         errorClass: 'is-invalid cl-red',
         submitHandler: function(){
@@ -189,100 +188,96 @@ function show_task_list(){
 
     $asModal.on('shown.bs.modal', function(){
         const $pjElm = $('#id'), workID = $asModal.find('#modal_work_id').val();
-        if ($taskTbl.hasClass('datatable')) $taskTbl.DataTable().destroy()
+        const $urlPool = $('#assign_task-url');
+        if ($taskTbl.hasClass('dataTable')) $taskTbl.DataTable().destroy();
         if (!$pjElm.val() || !workID) return false
 
         // get current task assign for current work
         $.fn.callAjax2({
             'url': $taskTbl.attr('data-url'),
             'method': 'get',
-            'data': {"project_id": $pjElm.val(), "work": workID},
+            'data': {"project_id": $pjElm.val()},
             'sweetAlertOpts': {'allowOutsideClick': true},
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && (data['status'] === 201 || data['status'] === 200))
-                    $taskTbl.DataTableDefault({
-                        data: data['prj_task_list'],
-                        info: false,
-                        searching: false,
-                        ordering: false,
-                        paginate: false,
-                        columns: [
-                            {
-                                data: 'code',
-                                width: '10%',
-                                class: 'text-center',
-                                render: (row, type, data) => {
-                                    const url = $EmTable.attr('data-detail').format_url_with_uuid(data.id)
-                                    return row ? `<a href="${url}">${row}</a>` : '--'
-                                }
+                if (data && (data['status'] === 201 || data['status'] === 200)){
+                    let task_w_list = [], task_ab_list = [];
+                    for (let item of data['prj_task_list']){
+                        if (item.work.length > 0)
+                            task_w_list.append(item)
+                        else task_ab_list.append(item)
+                    }
+                    // render task work list
+                    let table_work = $taskTbl.DataTableDefault({
+                            data: task_w_list,
+                            info: false,
+                            searching: false,
+                            ordering: false,
+                            paginate: false,
+                            columns: [
+                                {
+                                    data: 'task',
+                                    width: '10%',
+                                    class: 'text-center',
+                                    render: (row, type, data) => {
+                                        const url = $urlPool.attr('data-task_detail').format_url_with_uuid(row.id)
+                                        return row ? `<a href="${url}" class="task_detail_view">${row.code}</a>` : '--'
+                                    }
+                                },
+                                {
+                                    data: 'task',
+                                    width: '25%',
+                                    class: 'text-center',
+                                    render: (row) => {
+                                        return `${row ? row.title : '--'}`
+                                    }
+                                },
+                                {
+                                    data: 'percent',
+                                    width: '15%',
+                                    class: 'text-center',
+                                    render: (row) => {
+                                        let txt = `${row}%`
+                                        if (row)
+                                            txt = `<div class="progress-wrap progress-lb-wrap progress"> <div class="progress-bar progress-bar-striped bg-primary progress-bar-animated w-${row}" role="progressbar" aria-valuenow="${row}" aria-valuemin="0" aria-valuemax="100">${row}%</div></div>`
+                                        return txt
+                                    }
+                                },
+                                {
+                                    data: 'assignee',
+                                    width: '15%',
+                                    class: 'text-center',
+                                    render: (row) => {
+                                        let txt = '--'
+                                        if (row) txt = row.full_name
+                                        return txt
+                                    }
+                                },
+                                {
+                                    data: 'id',
+                                    width: '10%',
+                                    class: 'text-center',
+                                    render: (row, index, data) => {
+                                        let txt = $('.btn-task-assign').html();
+                                        return txt
+                                    }
+                                },
+                            ],
+                            rowCallback: function(row, data){
+                                $('.task_detail_view', row).on('click', function(e){
+                                    e.preventDefault();
+                                    $('#assign_modal').modal('hide')
+                                    $('.task_detail_view').trigger('Task.click.view', [{
+                                        'id': data.id, 'task': data.task.id, 'work_id': workID
+                                    }])
+                                })
                             },
-                            {
-                                data: 'title',
-                                width: '25%',
-                                class: 'text-center',
-                                render: (row) => {
-                                    return `${row ? row : '--'}`
-                                }
-                            },
-                            {
-                                data: 'percent',
-                                width: '15%',
-                                class: 'text-center',
-                                render: (row) => {
-                                    let txt = '--'
-                                    if (row) txt = `${row}%`
-                                    return txt
-                                }
-                            },
-                            {
-                                data: 'assignee',
-                                width: '15%',
-                                class: 'text-center',
-                                render: (row) => {
-                                    let txt = '--'
-                                    if (row) txt = row.full_name
-                                    return txt
-                                }
-                            },
+                        });
 
-                            {
-                                data: 'tasks',
-                                width: '15%',
-                                class: 'text-center',
-                                render: (row, index, data) => {
-                                    let txt = '--'
-                                    if (row) txt = `${row?.['all']} (${row?.['completed']})`
-                                    return txt
-                                }
-                            },
-                            {
-                                data: 'id',
-                                width: '10%',
-                                render: (row, index, data) => {
-                                    let txt = $('.table_btn').html();
-                                    return txt
-                                }
-                            },
-                        ]
-                    })
-            },
-            (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
-        )
-
-        // run abandoned list task
-        $.fn.callAjax2({
-            'url': $abdTable.attr('data-url'),
-            'method': 'get',
-            'data': {"project_id": $pjElm.val(), "work__isnull": true},
-            'sweetAlertOpts': {'allowOutsideClick': true},
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && (data['status'] === 201 || data['status'] === 200))
-                    $abdTable.DataTableDefault({
-                        data: data,
+                    // render task without work
+                    let table_n_work = $abdTable.DataTableDefault({
+                        data: task_ab_list,
                         info: false,
                         autoWidth: true,
                         scrollX: true,
@@ -344,7 +339,12 @@ function show_task_list(){
                                 data.is_edit = true
                             })
                         },
-                    })
+                    });
+
+                    // init tab when click
+                    $('a[data-bs-toggle="tab"][href="#tab_task_list"]').on('shown.bs.tab', () => table_work.columns.adjust().draw())
+                    $('a[data-bs-toggle="tab"][href="#tab_abandoned_task"]').on('shown.bs.tab', () => table_n_work.columns.adjust().draw())
+                }
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )

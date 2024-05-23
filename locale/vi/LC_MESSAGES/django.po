@@ -7649,8 +7649,16 @@ msgstr "Tỉ lệ"
 
 #
 msgid "Task list in work"
-msgstr "Danh sách công việc"
+msgstr "Giao việc trong công việc"
 
 #
 msgid "Project create"
 msgstr "Tạo dự án"
+
+#
+msgid "Abandoned tasks"
+msgstr "Giao việc bị bỏ quên"
+
+#
+msgid "Unlink between Task and Work"
+msgstr "Huỷ liên kết giữa Giao việc và Công việc"

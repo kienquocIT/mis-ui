@@ -246,6 +246,10 @@ class MenusCRM:
         name='Revenue plan', code='menu_revenue_plan_list', view_name='RevenuePlanList',
         icon='<i class="fas fa-hand-holding-usd"></i>',
     )
+    LEAD = MenuCommon(
+        name='Lead', code='menu_lead_list', view_name='LeadList',
+        icon='<i class="fa-solid fa-fire"></i>',
+    )
     CALENDAR = MenuCommon(
         name='Calendar', code='menu_calendar', view_name='ProgrammeList',
         icon='<i class="fa-regular fa-calendar-days"></i>',
@@ -648,6 +652,7 @@ class SpaceItem:
                 MenusCRM.HOME,
                 MenusCRM.DASHBOARD,
                 MenusCRM.REVENUE_PLAN,
+                MenusCRM.LEAD,
                 MenusCRM.CALENDAR,
                 MenusCRM.CONTACT,
                 MenusCRM.ACCOUNT,

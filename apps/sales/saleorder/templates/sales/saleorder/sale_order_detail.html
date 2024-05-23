@@ -20,23 +20,6 @@
 {% endblock %}
 
 {% block pageContent %}
-
-
-    <button class="btn btn-icon btn-rounded bg-dark-hover btn-xs" type="button" id="btn-diagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasExample" data-url="{% url 'DiagramListAPI' %}" data-method="GET"><span class="icon"><i class="fas fa-project-diagram"></i></span></button>
-
-    <div class="offcanvas offcanvas-end w-90" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasTopLabel">
-        <div class="offcanvas-header">
-        </div>
-        <div class="offcanvas-body">
-            <button type="button" class="btn-close text-reset mt-4" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="min-w-1000p position-relative overflow-y-scroll">
-                <div class="card-group h-800p" id="flowchart_diagram"></div>
-            </div>
-        </div>
-    </div>
-
-
-
     <div class="row">
         <div class="col-12 col-md-6 col-lg-6">
             <ul class="nav nav-line nav-tabs nav-light justify-content-start quotation-tabs">
@@ -226,7 +209,7 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-product"
-                                            class="table nowrap min-w-1920p w-100 mb-5"
+                                            class="table nowrap min-w-1680p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr>
@@ -264,7 +247,7 @@
                                                         <p class="mb-3" style="text-align: right">{% trans 'Discount' %}:</p>
                                                     </div>
                                                     <div class="col-2">
-                                                        <div class="input-group">
+                                                        <div class="input-group w-80">
                                                             <span class="input-affix-wrapper">
                                                                 <input type="text" class="form-control validated-number quotation-create-product-discount" value="0" data-zone="sale_order_products_data_readonly" disabled>
                                                                 <span class="input-suffix"><small><i class="fas fa-percentage"></i></small></span>

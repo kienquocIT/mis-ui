@@ -1208,10 +1208,6 @@ class GRLoadDataHandle {
         }
     };
 
-    static loadCostPrice() {
-
-    }
-
     // LOAD DETAIL
     static loadDetailPage(data) {
         let formSubmit = $('#frm_good_receipt_create');
@@ -1831,7 +1827,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '16.9270833333%',
+                    width: '15%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>

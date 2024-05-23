@@ -272,16 +272,10 @@ $(function () {
             });
         }
 
-        function loadFilterShowMe(listData) {
-            let html = "";
-            for (let data of listData) {
-                html += `<div><small class="text-primary">${data}</small></div>`;
+        function loadFilter(listData, $eleShow) {
+            if (listData.length > 0) {
+                $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
             }
-            $('#card-filter-sm').html(html);
-        }
-
-        function loadFilterDate(listData) {
-            $('#card-filter-date').html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
         }
 
         // load init
@@ -322,6 +316,16 @@ $(function () {
             e.stopPropagation();
         });
 
+        // Prevent the dropdown from closing when clicking outside it
+        $('.btn-group').on('hide.bs.dropdown', function (e) {
+            e.preventDefault();
+        });
+
+        // Reopen dropdown on button click
+        $('.btn-group').on('click', '.btn', function (e) {
+            $(this).siblings('.dropdown-menu').toggleClass('show');
+        });
+
         // Events
         boxGroup.on('change', function() {
             loadBoxEmployee();
@@ -345,36 +349,36 @@ $(function () {
             loadTotal();
         });
 
-        $('#btn-apply-sm, #btn-apply-date').on('click', function () {
+        $('#btn-apply-vb, #btn-apply-date').on('click', function () {
             this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
-            let listShowMe = [];
+            let listViewBy = [];
             let listDate = [];
             if (boxGroup.val() && boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
                 for (let text of boxGroup[0].innerText.split("\n")) {
-                    listShowMe.push(text);
+                    listViewBy.push(text);
                 }
             }
             if (boxEmployee.val() && boxEmployee.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
                 for (let text of boxEmployee[0].innerText.split("\n")) {
-                    listShowMe.push(text);
+                    listViewBy.push(text);
                 }
             }
             if (boxCategory.val() && boxCategory.val().length > 0) {
                 dataParams['product__general_product_category_id'] = boxCategory.val().join(',');
                 for (let text of boxCategory[0].innerText.split("\n")) {
-                    listShowMe.push(text);
+                    listViewBy.push(text);
                 }
             }
             if (boxProduct.val() && boxProduct.val().length > 0) {
                 dataParams['product_id__in'] = boxProduct.val().join(',');
                 for (let text of boxProduct[0].innerText.split("\n")) {
-                    listShowMe.push(text);
+                    listViewBy.push(text);
                 }
             }
-            loadFilterShowMe(listShowMe);
+            loadFilter(listViewBy, $('#card-filter-vb'));
             if (boxStart.val()) {
                 let dateStart = moment(boxStart.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
                 dataParams['date_approved__gte'] = formatStartDate(dateStart);
@@ -385,7 +389,7 @@ $(function () {
                 dataParams['date_approved__lte'] = formatEndDate(dateEnd);
                 listDate.push(boxEnd.val());
             }
-            loadFilterDate(listDate);
+            loadFilter(listDate, $('#card-filter-date'));
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
@@ -402,6 +406,10 @@ $(function () {
                     }
                 }
             )
+        });
+
+        $('#btn-cancel-vb, #btn-cancel-date').on('click', function () {
+            this.closest('.dropdown-menu').classList.remove('show');
         });
 
 

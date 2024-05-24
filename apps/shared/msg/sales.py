@@ -57,3 +57,5 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     GOODS_TRANSFER_UPDATE = _('Goods transfer update successfully')
     GOODS_ISSUE_CREATE = _('Goods issue create successfully')
     GOODS_ISSUE_UPDATE = _('Goods issue update successfully')
+    LEAD_CREATE = _('Lead create successfully')
+    LEAD_UPDATE = _('Lead update successfully')

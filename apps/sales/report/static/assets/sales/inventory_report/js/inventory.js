@@ -515,7 +515,7 @@ $(document).ready(function () {
                                         bg_out = 'text-purple small gtf-out'
                                     }
                                     detail_html += `
-                                        <tr class="detail-row bg-smoke-light-5">
+                                        <tr class="detail-row bg-lime-light-5">
                                             <td class="border-1 first-col" colspan="3"><span></span></td>
                                             <td class="" colspan="3"><span></span></td>
                                             <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
@@ -597,7 +597,7 @@ $(document).ready(function () {
                                         bg_out = 'text-purple small gtf-out'
                                     }
                                     detail_html += `
-                                        <tr class="detail-row bg-smoke-light-5">
+                                        <tr class="detail-row bg-lime-light-5">
                                             <td class="border-1 first-col" colspan="3"><span></span></td>
                                             <td class="" colspan="3"><span></span></td>
                                             <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
@@ -719,7 +719,7 @@ $(document).ready(function () {
                                         bg_out = 'text-purple small gtf-out'
                                     }
                                         detail_html += `
-                                            <tr class="detail-row bg-smoke-light-5">
+                                            <tr class="detail-row bg-lime-light-5">
                                                 <td class="border-1 first-col" colspan="3"><span></span></td>
                                                 <td class="" colspan="3"><span></span></td>
                                                 <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
@@ -801,7 +801,7 @@ $(document).ready(function () {
                                             bg_out = 'text-purple small gtf-out'
                                         }
                                         detail_html += `
-                                            <tr class="detail-row bg-smoke-light-5">
+                                            <tr class="detail-row bg-lime-light-5">
                                                 <td class="border-1 first-col" colspan="3"><span></span></td>
                                                 <td class="" colspan="3"><span></span></td>
                                                 <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>

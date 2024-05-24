@@ -1224,6 +1224,7 @@ class GoodsReturnHandle {
     }
     combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle))
+        let flag = true
 
         frm.dataForm['title'] = $('#title').val()
         frm.dataForm['sale_order'] = saleOrderEle.val()
@@ -1238,14 +1239,20 @@ class GoodsReturnHandle {
 
         let product_detail_list = []
         if (data_item[0]?.['type'] === 0) {
-            product_detail_list.push({
-                'type': 0,
-                'delivery_item_id': data_item[0]?.['delivery_item_id'],
-                'default_return_number': parseFloat(data_item[0]?.['is_return']),
-                'default_redelivery_number': parseFloat(data_item[0]?.['is_redelivery'])
-            })
+            if (parseFloat(data_item[0]?.['is_return']) > 0) {
+                product_detail_list.push({
+                    'type': 0,
+                    'delivery_item_id': data_item[0]?.['delivery_item_id'],
+                    'default_return_number': parseFloat(data_item[0]?.['is_return']),
+                    'default_redelivery_number': parseFloat(data_item[0]?.['is_redelivery'])
+                })
+            }
+            else {
+                flag = false
+            }
         }
         else if (data_item[0]?.['type'] === 1) {
+            let sum_lot = 0
             for (let item of data_item) {
                 product_detail_list.push({
                     'type': 1,
@@ -1254,9 +1261,14 @@ class GoodsReturnHandle {
                     'lot_return_number': parseFloat(item?.['is_return']),
                     'lot_redelivery_number': parseFloat(item?.['is_redelivery'])
                 })
+                sum_lot += parseFloat(item?.['is_return'])
+            }
+            if (sum_lot <= 0) {
+                flag = false
             }
         }
         else if (data_item[0]?.['type'] === 2) {
+            let sum_sn = 0
             for (let item of data_item) {
                 product_detail_list.push({
                     'type': 2,
@@ -1265,6 +1277,10 @@ class GoodsReturnHandle {
                     'is_return': item?.['is_return'],
                     'is_redelivery': item?.['is_redelivery']
                 })
+                sum_sn += item?.['is_return'] ? 1 : 0
+            }
+            if (sum_sn <= 0) {
+                flag = false
             }
         }
         frm.dataForm['product_detail_list'] = product_detail_list
@@ -1275,7 +1291,13 @@ class GoodsReturnHandle {
         }
 
         // console.log(frm.dataForm)
-        return frm
+        if (flag) {
+            return frm
+        }
+        else {
+            $.fn.notifyB({description: "Return quantity must be > 0"}, 'failure')
+            return false
+        }
     }
 }
 

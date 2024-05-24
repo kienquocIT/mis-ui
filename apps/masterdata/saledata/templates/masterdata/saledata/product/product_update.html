@@ -229,12 +229,6 @@
                                     data-url="{% url "TaxListAPI" %}"></select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 col-lg-3">
-                        <div class="form-group">
-                            <label class="form-label">{% trans "Cost" %}</label>
-                            <input id="sale-cost" data-return-type="number" type="text" class="form-control mask-money">
-                        </div>
-                    </div>
                 </div>
                 <div class="row mt-5">
                     <div style="overflow-y: auto; height: 50vh" class="col-12 col-md-6 col-lg-6 ul-price-list" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">

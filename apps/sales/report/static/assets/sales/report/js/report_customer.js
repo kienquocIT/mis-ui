@@ -262,6 +262,22 @@ $(function () {
             }
         }
 
+        function getListTxtMultiSelect2 ($ele) {
+            let result = [];
+            if ($ele.val() && $ele.val().length > 0) {
+                let selectedValues = $ele.val();
+                let tempDiv = document.createElement('div');
+                tempDiv.innerHTML = $ele[0].innerHTML;
+                for (let val of selectedValues) {
+                    let option = tempDiv.querySelector(`option[value="${val}"]`);
+                    if (option) {
+                        result.push(option.textContent);
+                    }
+                }
+            }
+            return result;
+        }
+
         // load init
         function initData() {
             boxGroup.initSelect2({'allowClear': true,});
@@ -333,22 +349,25 @@ $(function () {
             let dataParams = {};
             let listViewBy = [];
             let listDate = [];
+            if (boxCustomer.val() && boxCustomer.val().length > 0) {
+                dataParams['customer_id__in'] = boxCustomer.val().join(',');
+                let listTxt = getListTxtMultiSelect2(boxCustomer);
+                for (let txt of listTxt) {
+                    listViewBy.push(txt);
+                }
+            }
             if (boxGroup.val() && boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
-                for (let text of boxGroup[0].innerText.split("\n")) {
-                    listViewBy.push(text);
+                let listTxt = getListTxtMultiSelect2(boxGroup);
+                for (let txt of listTxt) {
+                    listViewBy.push(txt);
                 }
             }
             if (boxEmployee.val() && boxEmployee.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
-                for (let text of boxEmployee[0].innerText.split("\n")) {
-                    listViewBy.push(text);
-                }
-            }
-            if (boxCustomer.val() && boxCustomer.val().length > 0) {
-                dataParams['customer_id__in'] = boxCustomer.val().join(',');
-                for (let text of boxCustomer[0].innerText.split("\n")) {
-                    listViewBy.push(text);
+                let listTxt = getListTxtMultiSelect2(boxEmployee);
+                for (let txt of listTxt) {
+                    listViewBy.push(txt);
                 }
             }
             loadFilter(listViewBy, $('#card-filter-vb'));

@@ -14,6 +14,9 @@ $(document).ready(function () {
         periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
     }
     const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
+    if ($definition_inventory_valuation === '0') {
+        $('#btn-calculate').addClass('disabled')
+    }
     let PERIODIC_CLOSED = false
 
     function getMonthOrder(space_month, fiscal_year) {

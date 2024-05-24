@@ -2240,6 +2240,7 @@ class WFRTControl {
                     <div class="col-12">
                         <div class="card">
                             <div class="hk-ribbon-type-1 start-touch">` + `<span>${$.fn.transEle.attr('data-node-completed')}</span></div>
+                            <br>
                             <div class="card-body mt-5">
                                 ${htmlBody}
                             </div>
@@ -6703,6 +6704,150 @@ class CommentControl {
 
         this.opts.comment_id ? this.fetch_room_of_idx(this.opts.comment_id) : this.fetch_all();
     }
+}
+
+class DiagramControl {
+    static setBtnDiagram(appCode) {
+        if (window.location.href.includes('/detail/')) {
+            let $btnLog = $('#btnLogShow');
+            let urlDiagram = globeDiagramList;
+            if ($btnLog && $btnLog.length > 0) {
+                let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
+                                <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
+                                    <div class="offcanvas-header"></div>
+                                    <div class="offcanvas-body">
+                                        <div class="d-flex justify-content-start">
+                                            <button type="button" class="btn btn-icon mt-3 bm-sm btn-sm" data-bs-dismiss="offcanvas" aria-label="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
+                                            <button type="button" class="btn btn-icon mt-3 bm-sm btn-sm" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-sync-alt"></i></span></button>
+                                        </div>
+                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="min-w-1000p position-relative overflow-y-scroll">
+                                            <div class="card-group h-800p" id="flowchart_diagram"></div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                $btnLog.after(htmlBase);
+                // set event
+                $('#btnDiagram, #btnRefreshDiagram').on('click', function () {
+                    if (window.location.href.includes('/detail/')) {
+                        // Split the URL by '/'
+                        let parts = window.location.href.split('/');
+                        let pk = parts[parts.length - 1];
+                        $.fn.callAjax2({
+                                'url': $(this).attr('data-url'),
+                                'method': $(this).attr('data-method'),
+                                'data': {'app_code': appCode, 'doc_id': pk},
+                                isLoading: true,
+                            }
+                        ).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    if (data.hasOwnProperty('diagram_list') && Array.isArray(data.diagram_list)) {
+                                        if (data.diagram_list.length > 0) {
+                                            let data_diagram = data.diagram_list[0];
+                                            DiagramControl.loadDiagram(data_diagram);
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                    }
+                })
+            }
+        }
+    };
+
+    static loadDiagram(data_diagram) {
+        let $chartDiagram = $('#flowchart_diagram');
+        $chartDiagram.empty();
+        let html = "";
+        let sttTxt = JSON.parse($('#stt_sys').text());
+        let diaTxt = JSON.parse($('#dia_app').text());
+        let sttMapBadge = [
+            "soft-light",
+            "soft-primary",
+            "soft-info",
+            "soft-success",
+            "soft-danger",
+        ]
+        // prefix
+        let htmlPrefix = DiagramControl.loadPrefixSuffix(data_diagram?.['prefix'], sttTxt, diaTxt, sttMapBadge);
+        // main doc
+        let docData = data_diagram?.['doc_data'];
+        let htmlMain = `<div class="card">
+                                <div class="card-header bg-primary">
+                                    <h6 class="text-white">${diaTxt[data_diagram?.['app_code']]}</h6>
+                                </div>
+                                <div class="card-body bg-soft-success">
+                                    <div class="card border-green clone" data-drag="1" title="card-1" id="control-1">
+                                        <div class="card-header card-header-wth-text">
+                                            <div>
+                                                <div class="row"><small>${docData?.['title'] ? docData?.['title'] : docData?.['code']}</small></div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-5">
+                                                <div class="row"><small>${$.fn.transEle.attr('data-code')}: ${docData?.['code']}</small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-quantity')}: ${docData?.['quantity']}</small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-total')}: <span class="mask-money" data-init-money="${parseFloat(docData?.['total'] ? docData?.['total'] : '0')}"></span></small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-reference')}: ${docData?.['reference'] ? docData?.['reference'] : ''}</small></div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-muted d-flex justify-content-between">
+                                            <small><span class="badge badge-${sttMapBadge[docData?.['system_status']]}">${sttTxt[docData?.['system_status']][1]}</span></small>
+                                            <small>${moment(docData?.['date_created']).format('DD/MM/YYYY')}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+        // suffix
+        let htmlSuffix = DiagramControl.loadPrefixSuffix(data_diagram?.['suffix'], sttTxt, diaTxt, sttMapBadge);
+        // result
+        html += htmlPrefix;
+        html += htmlMain;
+        html += htmlSuffix;
+        $chartDiagram.html(html);
+        // mask money
+        $.fn.initMaskMoney2();
+    };
+
+    static loadPrefixSuffix(data_pre_suf, sttTxt, diaTxt, sttMapBadge) {
+        let htmlPreSuffix = "";
+        for (let key in data_pre_suf) {
+            let htmlChild = "";
+            for (let data_record of data_pre_suf[key]) {
+                htmlChild += `<div class="card border-green clone" data-drag="1" title="card-1" id="control-1">
+                                        <div class="card-header card-header-wth-text">
+                                            <div>
+                                                <div class="row"><small>${data_record?.['title'] ? data_record?.['title'] : data_record?.['code']}</small></div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-5">
+                                                <div class="row"><small>${$.fn.transEle.attr('data-code')}: ${data_record?.['code']}</small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-quantity')}: ${data_record?.['quantity']}</small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-total')}: <span class="mask-money" data-init-money="${parseFloat(data_record?.['total'] ? data_record?.['total'] : '0')}"></span></small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-reference')}: ${data_record?.['reference'] ? data_record?.['reference'] : ''}</small></div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-muted d-flex justify-content-between">
+                                            <small><span class="badge badge-${sttMapBadge[data_record?.['system_status']]}">${sttTxt[data_record?.['system_status']][1]}</span></small>
+                                            <small>${moment(data_record?.['date_created']).format('DD/MM/YYYY')}</small>
+                                        </div>
+                                    </div>`;
+            }
+
+            htmlPreSuffix += `<div class="card">
+                                    <div class="card-header bg-primary">
+                                        <h6 class="text-white">${diaTxt[key]}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        ${htmlChild}
+                                    </div>
+                                </div>`;
+        }
+        return htmlPreSuffix;
+    };
 }
 
 let $x = {

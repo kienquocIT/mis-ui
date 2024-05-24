@@ -477,6 +477,7 @@ class QuotationLoadDataHandle {
 
     static loadTableCopyQuotation(opp_id = null, sale_person_id = null) {
         let ele = $('#data-init-copy-quotation');
+        let formSubmit = $('#frm_quotation_create');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         $('#datable-copy-quotation').DataTable().destroy();
@@ -497,8 +498,8 @@ class QuotationLoadDataHandle {
                     if (data) {
                         if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
                             let dataInit = data.quotation_list;
-                            // check OppID to get quotation same Opp then concat 2 list data
-                            if (opp_id) {
+                            // check OppID to get quotation same Opp then concat 2 list data (only for Quotation pages)
+                            if (opp_id && !formSubmit[0].classList.contains('sale-order')) {
                                 data_filter = {'system_status': 4}
                                 data_filter['opportunity'] = opp_id;
                                 data_filter['opportunity__is_close_lost'] = false;
@@ -1040,6 +1041,7 @@ class QuotationLoadDataHandle {
                 let transJSON = {};
                 transJSON['Valid'] = QuotationLoadDataHandle.transEle.attr('data-valid');
                 $(priceList).empty();
+                let htmlDD = ``;
                 if (Array.isArray(data.price_list) && data.price_list.length > 0) {
                     for (let i = 0; i < data.price_list.length; i++) {
                         if (data.price_list[i]?.['price_type'] === 0) { // PRICE TYPE IS PRODUCT (SALE)
@@ -1050,32 +1052,33 @@ class QuotationLoadDataHandle {
                             if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // If Valid Price
                                 if (data.price_list[i].id === account_price_id) { // check CUSTOMER_PRICE then set customer_price
                                     customer_price = parseFloat(data.price_list[i].value);
-                                    $(priceList).append(`<a class="dropdown-item table-row-price-option option-btn-checked text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
+                                    htmlDD += `<a class="dropdown-item table-row-price-option option-btn-checked text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
                                                             <div class="d-flex justify-content-between">
                                                                 <span class="mr-5">${data.price_list[i].title}</span>
                                                                 <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
                                                             </div>
-                                                        </a>`);
+                                                        </a>`;
                                 } else {
-                                    $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
+                                    htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
                                                             <div class="d-flex justify-content-between">
                                                                 <span class="mr-5">${data.price_list[i].title}</span>
                                                                 <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
                                                             </div>
-                                                        </a>`);
+                                                        </a>`;
                                 }
                             }
                         } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
                             general_price = parseFloat(data.price_list[i].value);
-                            $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
+                            htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
                                                     <div class="d-flex justify-content-between">
                                                         <span class="mr-5">${data.price_list[i].title}</span>
                                                         <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
                                                     </div>
-                                                </a>`);
+                                                </a>`;
                         }
                     }
                 }
+                $(priceList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-60p position-relative overflow-y-scroll">${htmlDD}</div>`);
                 // If change price then remove promotion & shipping
                 if (current_price_checked !== price.getAttribute('value')) {
                     is_change_price = true;
@@ -1094,6 +1097,7 @@ class QuotationLoadDataHandle {
     };
 
     static loadCostProduct(eleProduct) {
+        let formSubmit = $('#frm_quotation_create');
         let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
         if (productData) {
             let data = productData;
@@ -1101,21 +1105,25 @@ class QuotationLoadDataHandle {
             // load PRICE
             if (costList) {
                 $(costList).empty();
+                let htmlDD = ``;
                 if (Array.isArray(data?.['cost_list']) && data?.['cost_list'].length > 0) {
                     for (let costData of data?.['cost_list']) {
-                        $(costList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh-id="${costData?.['warehouse']?.['id']}">
+                        htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh-id="${costData?.['warehouse']?.['id']}">
                                                 <div class="d-flex justify-content-between">
                                                     <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
                                                     <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
                                                 </div>
-                                            </a>`);
+                                            </a>`;
                     }
+                    $(costList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-60p position-relative overflow-y-scroll">${htmlDD}</div>`);
                 } else {
                     let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
                     let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
                     let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
                     if (elePrice) {
-                        elePrice.removeAttribute('disabled');
+                        if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                            elePrice.removeAttribute('disabled');
+                        }
                     }
                     if (eleBtnPriceList) {
                         eleBtnPriceList.setAttribute('hidden', 'true');
@@ -1740,9 +1748,6 @@ class QuotationLoadDataHandle {
                     QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                     // Check promotion -> re calculate
                     QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
-                    // load again table cost
-                    QuotationLoadDataHandle.loadDataTableCost();
-                    QuotationLoadDataHandle.loadSetWFRuntimeZone();
                     // Set form novalidate
                     formSubmit[0].setAttribute('novalidate', 'novalidate');
                     $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');
@@ -1763,7 +1768,7 @@ class QuotationLoadDataHandle {
         if (tableProductWrapper) {
             let tableProductBd = tableProductWrapper.querySelector('.dataTables_scrollBody');
             if (tableProductBd) {
-                tableProductBd.style.minHeight = '150px';
+                tableProductBd.style.minHeight = '100px';
             }
         }
     };
@@ -2346,7 +2351,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '16.9270833333%',
+                    width: '15%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2437,7 +2442,7 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_products_data";
                         }
                         return `<div class="row">
-                                    <div class="dropdown">
+                                    <div class="dropend">
                                         <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
                                         <div class="input-affix-wrapper">
                                             <input 

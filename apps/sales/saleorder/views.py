@@ -47,6 +47,7 @@ DIAGRAM_APP = {
     "purchasing.purchaserequest": AppMsg.APP_PURCHASE_REQUEST,
     "purchasing.purchaseorder": AppMsg.APP_PURCHASE_ORDER,
     "inventory.goodsreceipt": AppMsg.APP_GOODS_RECEIPT,
+    "delivery.orderdeliverysub": AppMsg.APP_DELIVERY,
 }
 
 

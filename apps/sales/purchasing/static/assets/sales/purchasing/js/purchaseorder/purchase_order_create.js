@@ -261,7 +261,10 @@ $(function () {
             POLoadDataHandle.loadAddPaymentStage();
         });
 
-        tablePaymentStage.on('change', '.table-row-value-before-tax, .table-row-tax', function () {
+        tablePaymentStage.on('change', '.table-row-ratio, .table-row-value-before-tax, .table-row-tax', function () {
+            if ($(this).hasClass('table-row-ratio')) {
+                POLoadDataHandle.loadChangePaymentRate(this);
+            }
             if ($(this).hasClass('table-row-value-before-tax')) {
                 POValidateHandle.validatePOPSValue(this);
             }

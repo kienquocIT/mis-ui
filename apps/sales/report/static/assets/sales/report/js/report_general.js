@@ -393,7 +393,7 @@ $(function () {
                             let currentYear = new Date().getFullYear();
                             boxYear.val(currentYear).trigger('change');
                             boxDetail.val('p-1').trigger('change');
-                            $('#btn-apply-sm').click();
+                            $('#btn-apply-vb').click();
                         }
                     }
                 }
@@ -597,12 +597,26 @@ $(function () {
             });
         }
 
-        function loadFilterShowMe(listData) {
-            let html = "";
-            for (let data of listData) {
-                html += `<div><small class="text-primary">${data}</small></div>`;
+        function loadFilter(listData, $eleShow) {
+            if (listData.length > 0) {
+                $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
             }
-            $('#card-filter-sm').html(html);
+        }
+
+        function getListTxtMultiSelect2 ($ele) {
+            let result = [];
+            if ($ele.val() && $ele.val().length > 0) {
+                let selectedValues = $ele.val();
+                let tempDiv = document.createElement('div');
+                tempDiv.innerHTML = $ele[0].innerHTML;
+                for (let val of selectedValues) {
+                    let option = tempDiv.querySelector(`option[value="${val}"]`);
+                    if (option) {
+                        result.push(option.textContent);
+                    }
+                }
+            }
+            return result;
         }
 
         // load init
@@ -659,24 +673,27 @@ $(function () {
             boxDetail.val('p-1').trigger('change');
         });
 
-        $('#btn-apply-sm').on('click', function () {
+        $('#btn-apply-vb').on('click', function () {
             this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
             dataParams['is_initial'] = false;
-            let listShowMe = [];
+            let listViewBy = [];
+            let listDate = [];
             if (boxGroup.val() && boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
-                for (let text of boxGroup[0].innerText.split("\n")) {
-                    listShowMe.push(text);
+                let listTxt = getListTxtMultiSelect2(boxGroup);
+                for (let txt of listTxt) {
+                    listViewBy.push(txt);
                 }
             }
             if (boxEmployee.val() && boxEmployee.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
-                for (let text of boxEmployee[0].innerText.split("\n")) {
-                    listShowMe.push(text);
+                let listTxt = getListTxtMultiSelect2(boxEmployee);
+                for (let txt of listTxt) {
+                    listViewBy.push(txt);
                 }
             }
-            loadFilterShowMe(listShowMe);
+            loadFilter(listViewBy, $('#card-filter-vb'));
             let year = boxYear.val();
             let detail = boxDetail.val();
             if (year && detail) {
@@ -703,6 +720,15 @@ $(function () {
                         dataParams['date_approved__lte'] = endDate;
                     }
                 }
+                let yearSelected = SelectDDControl.get_data_from_idx(boxYear, boxYear.val());
+                if (yearSelected) {
+                    listDate.push(yearSelected?.['title']);
+                }
+                let detailSelected = SelectDDControl.get_data_from_idx(boxDetail, boxDetail.val());
+                if (detailSelected) {
+                    listDate.push(detailSelected?.['title']);
+                }
+                loadFilter(listDate, $('#card-filter-date'));
             }
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
@@ -736,6 +762,10 @@ $(function () {
                     }
                 }
             )
+        });
+
+        $('#btn-cancel-vb').on('click', function () {
+            this.closest('.dropdown-menu').classList.remove('show');
         });
 
 

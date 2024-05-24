@@ -195,7 +195,7 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
-                    //
+                    // setup groupChild to groupParent
                     for (let eleGroup of $table[0].querySelectorAll('.group-change')) {
                         if ($(eleGroup).is('button') && $(eleGroup).attr('data-bs-toggle') === 'collapse') {
                             let tableDtb = $table.DataTable();

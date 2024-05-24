@@ -6195,10 +6195,6 @@ msgid "Shipping fee"
 msgstr "Phí vận chuyển"
 
 #
-msgid "Promotion available"
-msgstr "Khuyến mãi"
-
-#
 msgid "Data is hidden by workflow config"
 msgstr "Dữ liệu bị ẩn theo quy trình"
 
@@ -7577,3 +7573,7 @@ msgstr "Đặt thời gian bắt đầu sử dụng phần mềm trong kỳ này
 #
 msgid "Invoice"
 msgstr "Hóa đơn"
+
+#
+msgid "Reference"
+msgstr "Tham chiếu"

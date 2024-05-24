@@ -46,7 +46,7 @@
         <div class="col-12 col-md-2 col-lg-2">
             <div class="card">
                 <div class="card-header card-header-action h-45p">
-                    <span class="badge badge-light">
+                    <span class="badge badge-light badge-sm">
                         <span>
                             <span class="icon"><span class="feather-icon"><i class="fas fa-filter"></i></span></span>
                             {% trans 'Filter' %}
@@ -61,7 +61,7 @@
                             <div class="col-12 col-md-9 col-lg-9">
                                 <div class="card-body">
                                     <div><small class="card-text text-light">{% trans 'View by' %}</small></div>
-                                    <div id="card-filter-sm"></div>
+                                    <div id="card-filter-vb"></div>
                                 </div>
                             </div>
                             <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
@@ -121,8 +121,9 @@
                                                     multiple
                                             ></select>
                                         </div>
-                                        <div class="d-flex justify-content-end">
-                                            <button type="button" class="btn btn-primary btn-sm" id="btn-apply-sm">{% trans 'Apply' %}</button>
+                                        <div class="d-flex justify-content-end mt-2">
+                                            <button type="button" class="btn btn-secondary btn-sm mr-2" id="btn-cancel-vb">{% trans 'Cancel' %}</button>
+                                            <button type="button" class="btn btn-primary btn-sm" id="btn-apply-vb">{% trans 'Apply' %}</button>
                                         </div>
                                     </div>
                                 </div>
@@ -161,7 +162,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="d-flex justify-content-end">
+                                        <div class="d-flex justify-content-end mt-2">
+                                            <button type="button" class="btn btn-secondary btn-sm mr-2" id="btn-cancel-date">{% trans 'Cancel' %}</button>
                                             <button type="button" class="btn btn-primary btn-sm" id="btn-apply-date">{% trans 'Apply' %}</button>
                                         </div>
                                     </div>

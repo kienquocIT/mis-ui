@@ -62,10 +62,10 @@
                                 </div>
                                 <div class="col-12 col-md-5 col-lg-5">
                                     <div class="form-group">
-                                        <label class="form-label" for="good-receipt-date-received">{% trans 'Date' %}</label>
+                                        <label class="form-label required" for="good-receipt-date-received">{% trans 'Date' %}</label>
                                         <div class="input-affix-wrapper">
                                             <input type="text" name="date-received" id="good-receipt-date-received"
-                                                   class="form-control date-picker" autocomplete="off">
+                                                   class="form-control date-picker" autocomplete="off" required>
                                             <div class="input-suffix">
                                                 <i class="far fa-calendar"></i>
                                             </div>
@@ -236,7 +236,7 @@
                             <div class="row">
                                 <table
                                     id="datable-good-receipt-line-detail-po"
-                                    class="table nowrap min-w-1920p w-100 mb-5"
+                                    class="table nowrap min-w-1600p w-100 mb-5"
                                     data-url=""
                                     data-method="get"
                                 >

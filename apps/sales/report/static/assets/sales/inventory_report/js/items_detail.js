@@ -15,7 +15,7 @@ $(document).ready(function () {
     }
     const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
     if ($definition_inventory_valuation === '0') {
-        $('#btn-calculate').addClass('disabled')
+        $('#btn-calculate').remove()
     }
     let PERIODIC_CLOSED = false
 

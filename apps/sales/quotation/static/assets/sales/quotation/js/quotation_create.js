@@ -186,7 +186,7 @@ $(function () {
                     QuotationLoadDataHandle.loadDataProductSelect($(this));
                 }
                 // validate number
-                if ($(this).hasClass('table-row-quantity') && $(this).hasClass('validated-number')) {
+                if ($(this).hasClass('validated-number')) {
                     validateNumber(this);
                 }
                 // Clear table COST if item or quantity change
@@ -205,12 +205,6 @@ $(function () {
                 QuotationLoadDataHandle.loadChangePSValueBTAll();
                 // store data
                 QuotationStoreDataHandle.storeProduct(row);
-                // load reinit if row has product value
-                // if ($(this).hasClass('table-row-item')) {
-                //     if ($(this).val()) {
-                //         QuotationLoadDataHandle.loadReInitDataTableProduct();
-                //     }
-                // }
             }
         });
 
@@ -264,6 +258,7 @@ $(function () {
 
 // Action on change discount rate on Total of product
         $('input[type=text].quotation-create-product-discount').on('change', function () {
+            validateNumber(this);
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows

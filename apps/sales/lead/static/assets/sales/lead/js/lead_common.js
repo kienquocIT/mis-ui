@@ -52,7 +52,6 @@ $create_contact_btn.on('click', function () {
                     method: 'POST',
                     data: {'convert_contact': true, 'lead_id': $.fn.getPkDetail()},
                 }
-                console.log(combinesData)
                 $.fn.callAjax2(combinesData).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);

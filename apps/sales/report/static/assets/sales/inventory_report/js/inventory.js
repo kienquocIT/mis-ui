@@ -207,7 +207,7 @@ $(document).ready(function () {
                                 table_inventory_report.find('tbody').append(`
                                     <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #eaeaea">
                                         <td class="border-1 first-col-x" colspan="3">
-                                            <span class="text-primary small"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
+                                            <span class="text-primary "><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                         </td>
                                         <td class="" colspan="3"></td>
                                         <td class=""><b><span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></b></td>
@@ -301,7 +301,7 @@ $(document).ready(function () {
                                     table_inventory_report.find('tbody').append(`
                                         <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #eaeaea">
                                             <td class="border-1 first-col-x" colspan="3">
-                                                <span class="text-primary small"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
+                                                <span class="text-primary "><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                             </td> 
                                             <td class="" colspan="3"></td>
                                             <td class=""><b><span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></b></td>
@@ -395,21 +395,23 @@ $(document).ready(function () {
                     setTimeout(
                         () => {
                             WindowControl.hideLoading();
-                            let condition1 = $definition_inventory_valuation === '1' && PERIODIC_CLOSED === false
-                            let condition2 = $definition_inventory_valuation === '1'
-                            let condition3 = PERIODIC_CLOSED === false
+                            if ($definition_inventory_valuation === '1') {
+                                let condition1 = $definition_inventory_valuation === '1' && PERIODIC_CLOSED === false
+                                let condition2 = $definition_inventory_valuation === '1'
+                                let condition3 = PERIODIC_CLOSED === false
 
-                            table_inventory_report.find('#out-total-value').prop('hidden', condition1)
-                            table_inventory_report.find('tbody .wh-out-value-span').prop('hidden', condition1)
-                            table_inventory_report.find('tbody .out-value-span').prop('hidden', condition1)
-                            table_inventory_report.find('#ending-total-value').prop('hidden', condition1)
-                            table_inventory_report.find('tbody .wh-ending-value-span').prop('hidden', condition1)
-                            table_inventory_report.find('tbody .ending-value-span').prop('hidden', condition1)
+                                table_inventory_report.find('#out-total-value').prop('hidden', condition1)
+                                table_inventory_report.find('tbody .wh-out-value-span').prop('hidden', condition1)
+                                table_inventory_report.find('tbody .out-value-span').prop('hidden', condition1)
+                                table_inventory_report.find('#ending-total-value').prop('hidden', condition1)
+                                table_inventory_report.find('tbody .wh-ending-value-span').prop('hidden', condition1)
+                                table_inventory_report.find('tbody .ending-value-span').prop('hidden', condition1)
 
-                            table_inventory_report.find('tbody .out-value-span-detail').prop('hidden', condition2)
+                                table_inventory_report.find('tbody .out-value-span-detail').prop('hidden', condition2)
 
-                            table_inventory_report.find('tbody .out-value-span').prop('hidden', condition3)
-                            table_inventory_report.find('tbody .wh-out-value-span').prop('hidden', condition3)
+                                table_inventory_report.find('tbody .out-value-span').prop('hidden', condition3)
+                                table_inventory_report.find('tbody .wh-out-value-span').prop('hidden', condition3)
+                            }
                             table_inventory_report.prop('hidden', false)
                         },
                         500
@@ -469,7 +471,7 @@ $(document).ready(function () {
                                 table_inventory_report.find('tbody').append(`
                                     <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #eaeaea">
                                         <td class="border-1 first-col-x" colspan="3">
-                                            <span class="text-primary small"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
+                                            <span class="text-primary "><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                         </td>
                                         <td class="" colspan="3"></td>
                                         <td class="" colspan="3"></td>
@@ -492,19 +494,19 @@ $(document).ready(function () {
                                     let bg_in = ''
                                     let bg_out = ''
                                     if (activity?.['trans_title'] === 'Goods receipt') {
-                                        bg_in = 'text-primary small'
+                                        bg_in = 'text-primary'
                                     }
                                     if (activity?.['trans_title'] === 'Goods return') {
-                                        bg_in = 'text-blue small'
+                                        bg_in = 'text-blue'
                                     }
                                     if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'text-danger small'
+                                        bg_out = 'text-danger'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
-                                        bg_in = 'text-green small'
+                                        bg_in = 'text-green'
                                     }
                                     if (activity?.['trans_title'] === 'Goods issue') {
-                                        bg_out = 'text-orange small'
+                                        bg_out = 'text-orange'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
                                         bg_in = 'text-purple small gtf-in'
@@ -513,12 +515,12 @@ $(document).ready(function () {
                                         bg_out = 'text-purple small gtf-out'
                                     }
                                     detail_html += `
-                                        <tr class="detail-row">
+                                        <tr class="detail-row bg-smoke-light-5">
                                             <td class="border-1 first-col" colspan="3"><span></span></td>
                                             <td class="" colspan="3"><span></span></td>
-                                            <td class="small" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
-                                            <td class="small" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                            <td class="small" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
+                                            <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
+                                            <td class="" colspan="3"><span>${activity?.['lot_number']}</span></td>
+                                            <td class="" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
                                             <td class=""></td>
                                             <td class=""></td>
                                             <td class="${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>
@@ -574,19 +576,19 @@ $(document).ready(function () {
                                     let bg_in = ''
                                     let bg_out = ''
                                     if (activity?.['trans_title'] === 'Goods receipt') {
-                                        bg_in = 'text-primary small'
+                                        bg_in = 'text-primary'
                                     }
                                     if (activity?.['trans_title'] === 'Goods return') {
-                                        bg_in = 'text-blue small'
+                                        bg_in = 'text-blue'
                                     }
                                     if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'text-danger small'
+                                        bg_out = 'text-danger'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
-                                        bg_in = 'text-green small'
+                                        bg_in = 'text-green'
                                     }
                                     if (activity?.['trans_title'] === 'Goods issue') {
-                                        bg_out = 'text-orange small'
+                                        bg_out = 'text-orange'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
                                         bg_in = 'text-purple small gtf-in'
@@ -595,12 +597,12 @@ $(document).ready(function () {
                                         bg_out = 'text-purple small gtf-out'
                                     }
                                     detail_html += `
-                                        <tr class="detail-row">
+                                        <tr class="detail-row bg-smoke-light-5">
                                             <td class="border-1 first-col" colspan="3"><span></span></td>
                                             <td class="" colspan="3"><span></span></td>
-                                            <td class="small" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
-                                            <td class="small" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                            <td class="small" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
+                                            <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
+                                            <td class="" colspan="3"><span>${activity?.['lot_number']}</span></td>
+                                            <td class="" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
                                             <td class=""></td>
                                             <td class=""></td>
                                             <td class="${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>
@@ -673,7 +675,7 @@ $(document).ready(function () {
                                     table_inventory_report.find('tbody').append(`
                                         <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #eaeaea">
                                             <td class="border-1 first-col-x" colspan="3">
-                                                <span class="text-primary small"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
+                                                <span class="text-primary "><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                             </td>
                                             <td class="" colspan="3"></td>
                                             <td class="" colspan="3"></td>
@@ -696,19 +698,19 @@ $(document).ready(function () {
                                         let bg_in = ''
                                         let bg_out = ''
                                         if (activity?.['trans_title'] === 'Goods receipt') {
-                                            bg_in = 'text-primary small'
+                                            bg_in = 'text-primary'
                                         }
                                         if (activity?.['trans_title'] === 'Goods return') {
-                                        bg_in = 'text-blue small'
+                                        bg_in = 'text-blue'
                                     }
                                         if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'text-danger small'
+                                        bg_out = 'text-danger'
                                     }
                                         if (activity?.['trans_title'] === 'Goods receipt (IA)') {
-                                        bg_in = 'text-green small'
+                                        bg_in = 'text-green'
                                     }
                                         if (activity?.['trans_title'] === 'Goods issue') {
-                                        bg_out = 'text-orange small'
+                                        bg_out = 'text-orange'
                                     }
                                         if (activity?.['trans_title'] === 'Goods transfer (in)') {
                                         bg_in = 'text-purple small gtf-in'
@@ -717,12 +719,12 @@ $(document).ready(function () {
                                         bg_out = 'text-purple small gtf-out'
                                     }
                                         detail_html += `
-                                            <tr class="detail-row">
+                                            <tr class="detail-row bg-smoke-light-5">
                                                 <td class="border-1 first-col" colspan="3"><span></span></td>
                                                 <td class="" colspan="3"><span></span></td>
-                                                <td class="small" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
-                                                <td class="small" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                                <td class="small" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
+                                                <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
+                                                <td class="" colspan="3"><span>${activity?.['lot_number']}</span></td>
+                                                <td class="" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
                                                 <td class=""></td>
                                                 <td class=""></td>
                                                 <td class="${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>
@@ -778,19 +780,19 @@ $(document).ready(function () {
                                         let bg_in = ''
                                         let bg_out = ''
                                         if (activity?.['trans_title'] === 'Goods receipt') {
-                                            bg_in = 'text-primary small'
+                                            bg_in = 'text-primary'
                                         }
                                         if (activity?.['trans_title'] === 'Goods return') {
-                                            bg_in = 'text-blue small'
+                                            bg_in = 'text-blue'
                                         }
                                         if (activity?.['trans_title'] === 'Delivery') {
-                                            bg_out = 'text-danger small'
+                                            bg_out = 'text-danger'
                                         }
                                         if (activity?.['trans_title'] === 'Goods receipt (IA)') {
-                                            bg_in = 'text-green small'
+                                            bg_in = 'text-green'
                                         }
                                         if (activity?.['trans_title'] === 'Goods issue') {
-                                            bg_out = 'text-orange small'
+                                            bg_out = 'text-orange'
                                         }
                                         if (activity?.['trans_title'] === 'Goods transfer (in)') {
                                             bg_in = 'text-purple small gtf-in'
@@ -799,12 +801,12 @@ $(document).ready(function () {
                                             bg_out = 'text-purple small gtf-out'
                                         }
                                         detail_html += `
-                                            <tr class="detail-row">
+                                            <tr class="detail-row bg-smoke-light-5">
                                                 <td class="border-1 first-col" colspan="3"><span></span></td>
                                                 <td class="" colspan="3"><span></span></td>
-                                                <td class="small" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
-                                                <td class="small" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                                <td class="small" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
+                                                <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
+                                                <td class="" colspan="3"><span>${activity?.['lot_number']}</span></td>
+                                                <td class="" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
                                                 <td class=""></td>
                                                 <td class=""></td>
                                                 <td class="${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>
@@ -878,21 +880,23 @@ $(document).ready(function () {
                     setTimeout(
                         () => {
                             WindowControl.hideLoading();
-                            let condition1 = $definition_inventory_valuation === '1' && PERIODIC_CLOSED === false
-                            let condition2 = $definition_inventory_valuation === '1'
-                            let condition3 = PERIODIC_CLOSED === false
+                            if ($definition_inventory_valuation === '1') {
+                                let condition1 = $definition_inventory_valuation === '1' && PERIODIC_CLOSED === false
+                                let condition2 = $definition_inventory_valuation === '1'
+                                let condition3 = PERIODIC_CLOSED === false
 
-                            table_inventory_report.find('#out-total-value').prop('hidden', condition1)
-                            table_inventory_report.find('tbody .wh-out-value-span').prop('hidden', condition1)
-                            table_inventory_report.find('tbody .out-value-span').prop('hidden', condition1)
-                            table_inventory_report.find('#ending-total-value').prop('hidden', condition1)
-                            table_inventory_report.find('tbody .wh-ending-value-span').prop('hidden', condition1)
-                            table_inventory_report.find('tbody .ending-value-span').prop('hidden', condition1)
+                                table_inventory_report.find('#out-total-value').prop('hidden', condition1)
+                                table_inventory_report.find('tbody .wh-out-value-span').prop('hidden', condition1)
+                                table_inventory_report.find('tbody .out-value-span').prop('hidden', condition1)
+                                table_inventory_report.find('#ending-total-value').prop('hidden', condition1)
+                                table_inventory_report.find('tbody .wh-ending-value-span').prop('hidden', condition1)
+                                table_inventory_report.find('tbody .ending-value-span').prop('hidden', condition1)
 
-                            table_inventory_report.find('tbody .out-value-span-detail').prop('hidden', condition2)
+                                table_inventory_report.find('tbody .out-value-span-detail').prop('hidden', condition2)
 
-                            table_inventory_report.find('tbody .out-value-span').prop('hidden', condition3)
-                            table_inventory_report.find('tbody .wh-out-value-span').prop('hidden', condition3)
+                                table_inventory_report.find('tbody .out-value-span').prop('hidden', condition3)
+                                table_inventory_report.find('tbody .wh-out-value-span').prop('hidden', condition3)
+                            }
                             table_inventory_report.prop('hidden', false)
                         },
                         500
@@ -907,27 +911,27 @@ $(document).ready(function () {
 
     function MatchTooltip() {
         $('#table-inventory-report-detail').find('td').each(function () {
-            if ($(this).attr('class').includes('text-primary small')) {
+            if ($(this).attr('class').includes('text-primary')) {
                 $(this).attr('data-bs-toggle', 'tooltip')
                 $(this).attr('data-bs-placement', 'top')
                 $(this).attr('title', trans_script.attr('data-trans-grc'))
             }
-            if ($(this).attr('class').includes('text-blue small')) {
+            if ($(this).attr('class').includes('text-blue')) {
                 $(this).attr('data-bs-toggle', 'tooltip')
                 $(this).attr('data-bs-placement', 'top')
                 $(this).attr('title', trans_script.attr('data-trans-grt'))
             }
-            if ($(this).attr('class').includes('text-danger small')) {
+            if ($(this).attr('class').includes('text-danger')) {
                 $(this).attr('data-bs-toggle', 'tooltip')
                 $(this).attr('data-bs-placement', 'top')
                 $(this).attr('title', trans_script.attr('data-trans-dlvr'))
             }
-            if ($(this).attr('class').includes('text-green small')) {
+            if ($(this).attr('class').includes('text-green')) {
                 $(this).attr('data-bs-toggle', 'tooltip')
                 $(this).attr('data-bs-placement', 'top')
                 $(this).attr('title', `${trans_script.attr('data-trans-grc')} (IA)`)
             }
-            if ($(this).attr('class').includes('text-orange small')) {
+            if ($(this).attr('class').includes('text-orange')) {
                 $(this).attr('data-bs-toggle', 'tooltip')
                 $(this).attr('data-bs-placement', 'top')
                 $(this).attr('title', trans_script.attr('data-trans-gis'))

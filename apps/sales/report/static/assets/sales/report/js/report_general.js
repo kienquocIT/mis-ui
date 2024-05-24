@@ -673,7 +673,7 @@ $(function () {
             boxDetail.val('p-1').trigger('change');
         });
 
-        $('#btn-apply-vb').on('click', function () {
+        $('#btn-apply-vb, #btn-apply-date').on('click', function () {
             this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
             dataParams['is_initial'] = false;

@@ -897,7 +897,6 @@ function getDataForm() {
     } else {
         data['sale_default_uom'] = null;
         data['sale_tax'] = null;
-        data['sale_cost'] = null;
         data['sale_price_list'] = [];
         data['sale_currency_using'] = null;
     }

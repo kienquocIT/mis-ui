@@ -314,7 +314,6 @@ $(document).ready(function () {
                             </td>
                         </tr>
                     `)
-                    $table_po_report.find('tbody').append(po_row)
                     let sum_order_quantity = 0
                     let sum_received_quantity = 0
                     let sum_remaining_quantity = 0
@@ -325,6 +324,9 @@ $(document).ready(function () {
                     product_data = filter_by_product_id(product_data)
                     product_data = filter_by_product_category(product_data)
                     product_data = filter_by_product_type(product_data)
+                    if (product_data.length > 0) {
+                        $table_po_report.find('tbody').append(po_row)
+                    }
                     for (const product of product_data) {
                         sum_order_quantity += parseFloat(product?.['order_quantity'])
                         sum_received_quantity += parseFloat(product?.['received_quantity'])

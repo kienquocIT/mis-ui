@@ -19,6 +19,11 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <div class="row mb-1">
+        <div class="col-3">
+            <div id="all-lead-chart"></div>
+        </div>
+    </div>
     <div class="row">
     <div class="col-12">
         <table class="table nowrap w-100" id="lead-list-table" data-method="GET" data-url="{% url 'LeadListAPI' %}" data-url-detail="{% url 'LeadDetail' '0' %}">
@@ -36,6 +41,9 @@
         </table>
     </div>
     </div>
+{% endblock %}
+{% block jsFooterUnCompress %}
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/lead/js/lead_list.js' %}"></script>

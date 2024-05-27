@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    const STATUS_LIST = ['Prospect', 'Open - not contacted', 'Working', 'Opportunity created', 'Not a target']
+
     function loadLeadList() {
         if (!$.fn.DataTable.isDataTable('#lead-list-table')) {
             let dtb = $('#lead-list-table');
@@ -56,7 +58,50 @@ $(document).ready(function () {
                             return `<span class="fst-italic">${row?.['lead_status']}</span>`;
                         }
                     },
-                ]
+                ],
+                initComplete: function (settings, json) {
+                    const lead_list = json?.['data']?.['lead_list']
+                    let stages_data = {}
+                    for (const status of STATUS_LIST) {
+                        stages_data[status] = 0
+                    }
+
+                    for (const lead of lead_list) {
+                        stages_data[lead?.['lead_status']] += 1
+                    }
+
+                    let series_data = []
+                    for (const status of STATUS_LIST) {
+                        series_data.push(stages_data?.[status])
+                    }
+
+                    let options = {
+                        series: series_data,
+                        labels: STATUS_LIST,
+                        chart: {
+                            type: 'donut',
+                        },
+                        dataLabels: {
+                            formatter: function (val, opts) {
+                                return [opts.w.config.series[opts.seriesIndex], val.toFixed(2) + '%']
+                            },
+                        },
+                        responsive: [{
+                            breakpoint: 480,
+                            options: {
+                            chart: {
+                                width: 200
+                            },
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }]
+                    };
+
+                    let chart = new ApexCharts(document.querySelector("#all-lead-chart"), options);
+                    chart.render();
+                }
             });
         }
     }

@@ -3,6 +3,7 @@ const $btn_add_note = $('#btn-add-note')
 const $stage_list = $('#stage_list')
 const STAGE_LIST = $stage_list.text() ? JSON.parse($stage_list.text()) : [];
 
+const $lead_stage = $('#lead-stage')
 const $lead_name = $('#lead-name')
 const $contact_name = $('#contact-name')
 const $job_title = $('#job-title')
@@ -61,8 +62,13 @@ $create_contact_btn.on('click', function () {
                         }
                     },
                     (errs) => {
-                        WindowControl.hideLoading();
-                        $.fn.notifyB({description: 'Your Lead is Draft, finish first!'}, 'failure');
+                        setTimeout(
+                            () => {
+                                WindowControl.hideLoading();
+                            },
+                            1000
+                        )
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
                     })
             }
         })
@@ -158,13 +164,12 @@ function LoadDetailLead(option) {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                WFRTControl.setWFRuntimeID(data['lead_detail']?.['workflow_runtime_id']);
                 data = data['lead_detail'];
                 console.log(data)
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 
-                LoadStage(STAGE_LIST, data?.['current_lead_stage']['level'])
+                LoadStage(STAGE_LIST, data?.['current_lead_stage']['level'], 'detail || update')
 
                 // lead main data
                 $lead_name.val(data?.['title'])
@@ -193,7 +198,14 @@ function LoadDetailLead(option) {
                 if (data?.['config_data']?.['create_contact']) {
                     $('#created_contact').prop('hidden', false)
                     $create_contact_btn.attr('id', '').attr('class', '')
-                    $create_contact_btn.after(`&nbsp;<a target="_blank" href="${$create_contact_btn.attr('data-url-detail-contact').replace('0', data?.['config_data']?.['contact_mapped']?.['id'])}"><i class="fa-solid fa-up-right-from-square"></i></a>`)
+                    $create_contact_btn.after(`
+                        &nbsp;
+                        <a target="_blank" href="${$create_contact_btn.attr('data-url-detail-contact').replace('0', data?.['config_data']?.['contact_mapped']?.['id'])}">
+                            <i class="fa-solid fa-up-right-from-square"></i>
+                        </a>
+                        &nbsp;
+                        <span class="badge badge-primary badge-sm">${data?.['config_data']?.['contact_mapped']?.['code']}</span>
+                    `)
                 }
                 $convert_opp_create.prop('checked', data?.['config_data']?.['convert_opp_create'])
                 $convert_opp_select.prop('checked', data?.['config_data']?.['convert_opp_select'])
@@ -327,8 +339,8 @@ function LoadOpportunityList() {
     }
 }
 
-function LoadStage(stage_list, level) {
-    $('#lead-stage').html('')
+function LoadStage(stage_list, level, page='create') {
+    $lead_stage.html('')
     for (const stage of stage_list) {
         let class_ctn = 'sub-stage w-25 bg-primary-light-5 border rounded py-3 px-5 text-center'
         let style_ctn = 'min-width: 300px'
@@ -336,8 +348,67 @@ function LoadStage(stage_list, level) {
             class_ctn = 'sub-stage w-25 bg-primary border rounded py-3 px-5 text-center'
             style_ctn = 'color: #f0f0f0; min-width: 300px'
         }
-        $('#lead-stage').append(`
-            <div data-id="${stage?.['id']}" data-level="${stage?.['level']}" class="${class_ctn}" style="${style_ctn}">${stage?.['stage_title']}</div>&nbsp;
+
+        let btn_goto_html = ``
+        if (stage?.['level'] === 3 && page !== 'create') {
+            btn_goto_html = `&nbsp;<button type="button"
+                                    class="btn btn-icon btn-rounded btn-outline-primary btn-xs btn-goto"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    title="Go to this stage"
+                            >
+                                <span class="icon"><i class="fas fa-forward"></i></span>
+                            </button>`
+
+            $(document).on("click", '.btn-goto', function () {
+                Swal.fire({
+                    html:
+                        `<p class="text-center text-secondary fw-bold">${$trans_script.attr('data-trans-goto-confirm')}</p>`,
+                    customClass: {
+                        confirmButton: 'btn btn-outline-primary text-primary',
+                        cancelButton: 'btn btn-outline-secondary text-secondary',
+                        container: 'swal2-has-bg',
+                        actions: 'w-100'
+                    },
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: 'OK',
+                    cancelButtonText: $trans_script.attr('data-trans-cancel'),
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        WindowControl.showLoading();
+                        let combinesData = {
+                            url: $('#form-detail-lead').attr('data-url'),
+                            method: 'PUT',
+                            data: {'goto_stage': true},
+                        }
+                        $.fn.callAjax2(combinesData).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyB({description: 'Update stage successfully!'}, 'success');
+                                    setTimeout(() => {location.reload();}, 1000)
+                                }
+                            },
+                            (errs) => {
+                                setTimeout(
+                                    () => {
+                                        WindowControl.hideLoading();
+                                    },
+                                    1000
+                                )
+                                $.fn.notifyB({description: errs.data.errors}, 'failure');
+                            })
+                    }
+                })
+            })
+        }
+        $lead_stage.append(`
+            <div data-id="${stage?.['id']}" data-level="${stage?.['level']}" class="${class_ctn}" style="${style_ctn}">
+                ${stage?.['stage_title']}
+                ${btn_goto_html}
+            </div>&nbsp;
         `)
     }
 }
@@ -407,6 +478,11 @@ class LeadHandle {
         //     }
         // }
 
-        return frm;
+        return {
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm,
+            urlRedirect: frm.dataUrlRedirect,
+        };
     }
 }

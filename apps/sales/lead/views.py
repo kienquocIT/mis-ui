@@ -60,13 +60,11 @@ class LeadUpdate(View):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.LEAD_STAGE_LIST).get()
-        input_mapping_properties = InputMappingProperties.LEAD_LEAD
         return {
             'company_size': COMPANY_SIZE,
             'customer_revenue': CUSTOMER_REVENUE,
             'lead_status': LEAD_STATUS,
-            'stage_list': resp.result,
-            'input_mapping_properties': input_mapping_properties, 'form_id': 'form-detail-lead'
+            'stage_list': resp.result
         }, status.HTTP_200_OK
 
 

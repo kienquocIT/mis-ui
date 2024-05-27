@@ -3,11 +3,6 @@
 {% load static %}
 {% block title %}{% trans 'Lead Create' %}{% endblock %}
 {% block cssHeader %}
-    <style>
-    .sub-stage:hover {
-        transform: translateY(-5px);
-    }
-    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -136,7 +131,7 @@
                                     <div class="col-12 col-lg-6">
                                         <div class="form-group">
                                             <label class="form-label" for="lead-status">{% trans "Lead status" %}</label>
-                                            <select class="form-select select2" id="lead-status">
+                                            <select disabled class="form-select select2" id="lead-status">
                                                 {% for item in data.lead_status %}
                                                     <option value="{{ item.value }}">{{ item.name }}</option>
                                                 {% endfor %}

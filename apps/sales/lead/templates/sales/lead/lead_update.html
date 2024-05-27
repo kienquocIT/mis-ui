@@ -3,11 +3,6 @@
 {% load static %}
 {% block title %}{% trans 'Lead Update' %}{% endblock %}
 {% block cssHeader %}
-    <style>
-    .sub-stage:hover {
-        transform: translateY(-5px);
-    }
-    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -29,6 +24,7 @@
             data-trans-cancel="{% trans 'Cancel' %}"
             data-trans-convert-contact-confirm="{% trans 'Convert to a new Contact?' %}"
             data-trans-convert-opp-confirm="{% trans 'Convert to Opportunity? Related to:' %}"
+            data-trans-goto-confirm="{% trans 'Go to this Stage?' %}"
     ></script>
     <form id="form-detail-lead"
           data-url="{% url 'LeadDetailAPI' pk=pk %}"
@@ -149,7 +145,7 @@
                                     <div class="col-12 col-lg-6">
                                         <div class="form-group">
                                             <label class="form-label" for="lead-status">{% trans "Lead status" %}</label>
-                                            <select class="form-select select2" id="lead-status">
+                                            <select disabled class="form-select select2" id="lead-status">
                                                 {% for item in data.lead_status %}
                                                     <option value="{{ item.value }}">{{ item.name }}</option>
                                                 {% endfor %}
@@ -193,12 +189,13 @@
                                 <div class="row">
                                     <div class="col-12 mt-3">
                                         <i id="created_contact" hidden class="text-success fa-solid fa-check"></i>&nbsp;
-                                        <a href="#" data-url-detail-contact="{% url 'ContactDetail' '0' %}" id="convert-to-contact-btn" class="underline_hover">
+                                        <a href="#" data-url="{% url 'ContactCreateAPI' %}" data-url-detail-contact="{% url 'ContactDetail' '0' %}" id="convert-to-contact-btn" class="underline_hover">
                                             {% trans 'Convert to a new Contact' %}
                                         </a>
                                     </div>
                                     <div class="col-12 mt-3">
-                                        <i id="created_opp" hidden class="text-success fa-solid fa-check"></i>&nbsp;<a href='#' id="convert-to-opp-btn" class="underline_hover">
+                                        <i id="created_opp" hidden class="text-success fa-solid fa-check"></i>&nbsp;
+                                        <a href='#' id="convert-to-opp-btn" class="underline_hover">
                                             {% trans 'Convert to Opportunity' %}
                                         </a>
                                     </div>

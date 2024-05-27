@@ -509,10 +509,35 @@ class Task_in_project {
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )
     }
+
+    static linkUnlinkTask(info){
+        window.task_done = true
+        let data = {'work': info.work_id}
+        if (info.unlink) data = {'unlink': true}
+        $.fn.callAjax2({
+            'url': $('#assign_task-url').attr('data-task_link').format_url_with_uuid(info.id),
+            'method': 'PUT',
+            'data': data,
+            'sweetAlertOpts': { 'allowOutsideClick': true }
+        }).then(
+            (resp) => {
+                const data = $.fn.switcherResp(resp);
+                if (data && (data['status'] === 201 || data['status'] === 200)) {
+                    $.fn.notifyB({description: data.message}, 'success');
+                }
+                window.task_done = false
+            },
+            (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+        )
+    }
 }
 
 $(document).on('Task.click.view', function(e, detail){
     if ($('#drawer_task_create').hasClass('open')) resetFormTask()
     else $('.btn-show-task_f').trigger('click');
     Task_in_project.loadTask(detail)
+});
+
+$(document).on('Task.link.work', function(e, detail){
+    if (window.task_done === false) Task_in_project.linkUnlinkTask(detail)
 });

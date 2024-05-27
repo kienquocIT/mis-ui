@@ -156,7 +156,8 @@ class BastionFieldControl {
                     if (clsThis.getOppFlag('disabled') === false) clsThis.oppEle.prop('disabled', hasVal);
                     if (clsThis.getOppFlag('readonly') === false) clsThis.oppEle.prop('readonly', hasVal);
                 }
-            }).trigger('change');
+            });
+            if (this.prj_call_trigger_change === true) this.prjEle.trigger('change');
 
             // active events
             this.mainDiv.trigger('bastionField.init:prj');

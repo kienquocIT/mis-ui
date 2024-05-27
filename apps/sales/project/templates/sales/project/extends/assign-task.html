@@ -4,6 +4,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Project assign task' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <!-- Tabs -->
@@ -52,9 +55,9 @@
                                     <tr>
                                         <td>{% trans 'Code' %}</td>
                                         <td>{% trans 'Name' %}</td>
-                                        <td>{% trans 'Percent complete' %}</td>
+                                        <td>{% trans 'Percent completed' %}</td>
                                         <td>{% trans 'Assignee' %}</td>
-                                        <td>{% trans 'Previous Work' %}</td>
+                                        <td>{% trans 'Previous work' %}</td>
                                         <td></td>
                                     </tr>
                                 </thead>
@@ -66,9 +69,6 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary float-left" id="btn-assign-save">
-                    {% trans 'Save' %}
-                </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     {% trans 'Close' %}
                 </button>
@@ -78,17 +78,16 @@
 </div>
 <div class="hidden">
     <input type="hidden" id="assign_task-url" data-emp_list="{% url 'EmployeeListAPI' %}"
-           data-task_detail="{% url 'OpportunityTaskDetailAPI' 1 %}">
+           data-task_detail="{% url 'OpportunityTaskDetailAPI' 1 %}"
+           data-task_link="{% url 'ProjectTaskDetailAPI' 1 %}"
+    >
     <div class="abd-btn-group">
         <div class="d-flex justify-content-center align-items-center">
-            <button type="button" class="btn btn-rounded flush-soft-hover edit-row">
-                <i class="fa-solid fa-pen"></i>
+            <button type="button" class="btn btn-icon btn-rounded bg-dark-hover btn-link-to-work">
+                <span class="icon"><i class="fa-solid fa-link"></i></span>
             </button>
-            <button type="button" class="btn btn-rounded flush-soft-hover">
-                <i class="bi bi-trash"></i>
-            </button>
-            <button type="button" class="btn btn-rounded flush-soft-hover">
-                <img src="{% static 'assets/fonts/bootstrap-icons/icons/floppy2.svg' %}" alt="Floppy" width="16" height="16">
+            <button type="button" class="btn btn-icon btn-rounded bg-dark-hover">
+                <span class="icon"><i class="bi bi-trash"></i></span>
             </button>
         </div>
     </div>

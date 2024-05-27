@@ -1986,6 +1986,7 @@ var Gantt = (function () {
                             })
                             // disable btn assign when row is group
                             htmlBtn2.find('.btn-item-row-assign').prop('disabled', true)
+                            htmlBtn2.find('.btn-row-task_list').prop('disabled', true)
                         }
                         const _this = this;
                         jQuery('.row-title', item_html).on('click', function(){

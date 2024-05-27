@@ -3,7 +3,7 @@ from django.urls import path
 from apps.sales.project.views import ProjectList, ProjectCreate, ProjectCreateAPI, ProjectListAPI, ProjectDetail, \
     ProjectDetailAPI, ProjectEdit, ProjectEditAPI, ProjectCreateGroupAPI, ProjectWorkCreateAPI, ProjectGroupListAPI, \
     ProjectWorkListAPI, ProjectGroupDetailAPI, ProjectWorkDetailAPI, ProjectMemberAddAPI, ProjectMemberDetailAPI, \
-    ProjectUpdateOrderAPI, ProjectTaskListAPI, ProjectGroupDDListAPI
+    ProjectUpdateOrderAPI, ProjectTaskListAPI, ProjectGroupDDListAPI, ProjectTaskDetailAPI
 
 urlpatterns = [
     # project
@@ -39,6 +39,9 @@ urlpatterns = [
     # project task
     path(
         'task-list', ProjectTaskListAPI.as_view(), name='ProjectTaskListAPI'
+    ),
+    path(
+        'task-link/<str:pk>', ProjectTaskDetailAPI.as_view(), name='ProjectTaskDetailAPI'
     ),
 
 ]

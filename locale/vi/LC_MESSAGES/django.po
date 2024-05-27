@@ -7677,3 +7677,7 @@ msgstr "Giao việc bị bỏ quên"
 #
 msgid "Unlink between Task and Work"
 msgstr "Huỷ liên kết giữa Giao việc và Công việc"
+
+#
+msgid "Previous work"
+msgstr "Công việc trước đó"

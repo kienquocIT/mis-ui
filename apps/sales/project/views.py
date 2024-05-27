@@ -1,7 +1,8 @@
 __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI', 'ProjectDetail', 'ProjectDetailAPI',
            'ProjectEdit', 'ProjectEditAPI', 'ProjectCreateGroupAPI', 'ProjectGroupListAPI', 'ProjectWorkCreateAPI',
            'ProjectWorkListAPI', 'ProjectGroupDetailAPI', 'ProjectWorkDetailAPI', 'ProjectMemberAddAPI',
-           'ProjectMemberDetailAPI', 'ProjectUpdateOrderAPI', 'ProjectTaskListAPI', 'ProjectGroupDDListAPI'
+           'ProjectMemberDetailAPI', 'ProjectUpdateOrderAPI', 'ProjectTaskListAPI', 'ProjectGroupDDListAPI',
+           'ProjectTaskDetailAPI'
            ]
 
 from django.views import View
@@ -347,5 +348,19 @@ class ProjectTaskListAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_TASK_LIST.fill_key(pk_pj=data['project'])).post(data)
         if resp.state:
             resp.result['message'] = f'{SaleMsg.PROJECT_ASSIGN_TASK} {BaseMsg.SUCCESS}'
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class ProjectTaskDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_TASK_LINK.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            resp.result['message'] = f'{SaleMsg.PROJECT} {BaseMsg.UPDATE} {BaseMsg.SUCCESSFULLY}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()

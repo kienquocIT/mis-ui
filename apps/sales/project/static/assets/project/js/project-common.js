@@ -183,13 +183,16 @@ function saveWork(gantt_obj) {
 }
 
 function show_task_list(){
-    const $taskTbl = $('#task_list'), $asModal = $('#assign_modal');
-    const $abdTable = $('#task_abandoned_list');
+    const $taskTbl = $('#task_list'), $asModal = $('#assign_modal'),
+    $abdTable = $('#task_abandoned_list');
+    // flag trigger when user click action link task abandoned to current work
+    window.task_done = false
 
     $asModal.on('shown.bs.modal', function(){
         const $pjElm = $('#id'), workID = $asModal.find('#modal_work_id').val();
         const $urlPool = $('#assign_task-url');
         if ($taskTbl.hasClass('dataTable')) $taskTbl.DataTable().destroy();
+        if ($abdTable.hasClass('dataTable')) $abdTable.DataTable().destroy();
         if (!$pjElm.val() || !workID) return false
 
         // get current task assign for current work
@@ -204,9 +207,8 @@ function show_task_list(){
                 if (data && (data['status'] === 201 || data['status'] === 200)){
                     let task_w_list = [], task_ab_list = [];
                     for (let item of data['prj_task_list']){
-                        if (item.work.length > 0)
-                            task_w_list.append(item)
-                        else task_ab_list.append(item)
+                        if (item.work) task_w_list.push(item)
+                        else task_ab_list.push(item)
                     }
                     // render task work list
                     let table_work = $taskTbl.DataTableDefault({
@@ -272,6 +274,12 @@ function show_task_list(){
                                         'id': data.id, 'task': data.task.id, 'work_id': workID
                                     }])
                                 })
+                                $('.unlink-row', row).on('click', function (e) {
+                                    $('.task_detail_view').trigger('Task.link.work', [{
+                                        'id': data.id, 'unlink': true
+                                    }])
+                                    table_work.row(row).remove().draw(false)
+                                })
                             },
                         });
 
@@ -279,24 +287,27 @@ function show_task_list(){
                     let table_n_work = $abdTable.DataTableDefault({
                         data: task_ab_list,
                         info: false,
+                        searching: false,
+                        ordering: false,
+                        paginate: false,
                         autoWidth: true,
                         scrollX: true,
                         columns: [
                             {
-                                data: 'code',
+                                data: 'task',
                                 width: '10%',
                                 class: 'text-center',
                                 render: (row, type, data) => {
-                                    const url = $EmTable.attr('data-detail').format_url_with_uuid(data.id)
-                                    return row ? `<a href="${url}">${row}</a>` : '--'
+                                    const url = $urlPool.attr('data-task_detail').format_url_with_uuid(row.id)
+                                        return row ? `<a href="${url}" class="task_detail_view">${row.code}</a>` : '--'
                                 }
                             },
                             {
-                                data: 'title',
+                                data: 'task',
                                 width: '25%',
                                 class: 'text-center',
                                 render: (row) => {
-                                    return `${row ? row : '--'}`
+                                    return `${row ? row.title : '--'}`
                                 }
                             },
                             {
@@ -304,8 +315,9 @@ function show_task_list(){
                                 width: '15%',
                                 class: 'text-center',
                                 render: (row) => {
-                                    let txt = '--'
-                                    if (row) txt = `${row}%`
+                                    let txt = `${row}%`;
+                                    if (row)
+                                        txt = `<div class="progress-wrap progress-lb-wrap progress"> <div class="progress-bar progress-bar-striped bg-primary progress-bar-animated w-${row}" role="progressbar" aria-valuenow="${row}" aria-valuemin="0" aria-valuemax="100">${row}%</div></div>`
                                     return txt
                                 }
                             },
@@ -314,13 +326,18 @@ function show_task_list(){
                                 width: '15%',
                                 class: 'text-center',
                                 render: (row, index, data) => {
-                                    let txt = '--', $getURL = $('#table-asg_task-url');
-                                    if (row) txt = row.full_name
-                                    if (data.is_edit)
-                                        txt = `<select class="form-select" id="table_edit_assig"`
-                                            + `data-url="${$getURL.attr('data-epl_lst')}"`
-                                            + `data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"`
-                                            + `data-params="{'list_from_app':'{{ data.list_from_app|escape }}'}"></select>`
+                                    let txt = '--'
+                                        if (row) txt = row.full_name
+                                        return txt
+                                }
+                            },
+                            {
+                                data: 'work_before',
+                                width: '25%',
+                                class: 'text-center',
+                                render: (row, index, data) => {
+                                    let txt = '--'
+                                    if (row.hasOwnProperty('title')) txt = row?.['title']
                                     return txt
                                 }
                             },
@@ -333,17 +350,21 @@ function show_task_list(){
                                 }
                             },
                         ],
-                        rowCallback: function (row, data) {
+                        rowCallback: function (row, data, index) {
                             // handle onclick btn
-                            $('.edit-row', row).on('click', function () {
-                                data.is_edit = true
+                            $('.btn-link-to-work', row).on('click', function (e) {
+                                e.preventDefault();
+                                $('.task_detail_view').trigger('Task.link.work', [{
+                                    'id': data.id, 'work_id': workID
+                                }])
+                                table_n_work.row(row).remove().draw(false)
                             })
                         },
                     });
 
                     // init tab when click
-                    $('a[data-bs-toggle="tab"][href="#tab_task_list"]').on('shown.bs.tab', () => table_work.columns.adjust().draw())
-                    $('a[data-bs-toggle="tab"][href="#tab_abandoned_task"]').on('shown.bs.tab', () => table_n_work.columns.adjust().draw())
+                    $('a[data-bs-toggle="tab"][href="#tab_task_list"]').on('shown.bs.tab', () => table_work.columns.adjust())
+                    $('a[data-bs-toggle="tab"][href="#tab_abandoned_task"]').on('shown.bs.tab', () => table_n_work.columns.adjust())
                 }
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')

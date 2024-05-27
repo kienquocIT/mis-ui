@@ -307,15 +307,11 @@ $(document).ready(function () {
         });
     });
 
-    // $form.on('submit', function(){
-    //     debugger
-    // })
     SetupFormSubmit.validate(
         $form,
         {
-            submitHandler: function (form, event) {
-                console.log(form, event)
-                let _form = new SetupFormSubmit($form);
+            submitHandler: function (form) {
+                let _form = new SetupFormSubmit(form);
                 let formData = _form.dataForm
                 const $assignerElm = $('#inputAssigner')
 
@@ -385,8 +381,7 @@ $(document).ready(function () {
                 if ($attElm) formData.attach = [...$attElm]
 
                 let method = 'POST'
-                let url = $form.attr('data-url')
-                console.log('url',url)
+                let url = form.attr('data-url')
                 if (formData.id && formData.id !== '') {
                     method = 'PUT'
                     url = $('#url-factory').attr('data-task-detail').format_url_with_uuid(formData.id)

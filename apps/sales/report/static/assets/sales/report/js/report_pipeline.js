@@ -38,7 +38,7 @@ $(function () {
                         width: '5%',
                         render: (data, type, row) => {
                             if (row?.['employee_inherit']?.['full_name']) {
-                                let target = `.change-${row?.['employee_inherit']?.['id'].replace(/-/g, "")}`;
+                                let target = `.cl-emp-${row?.['employee_inherit']?.['id'].replace(/-/g, "")}`;
                                 return `<div class="d-flex">
                                         <span class="badge badge-primary badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span>
                                         <small><button 
@@ -62,7 +62,7 @@ $(function () {
                         width: '6.25%',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['code'] && row?.['employee_inherit_id']) {
-                                let dataGr = 'change-' + row?.['employee_inherit_id'].replace(/-/g, "");
+                                let dataGr = 'cl-emp-' + row?.['employee_inherit_id'].replace(/-/g, "");
                                 return `<div class="row group-emp-child" data-group-target="${dataGr}"><span class="badge badge-soft-primary">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span></div>`;
                             }
                             return `<p></p>`;

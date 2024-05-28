@@ -7577,3 +7577,7 @@ msgstr "Hóa đơn"
 #
 msgid "Reference"
 msgstr "Tham chiếu"
+
+#
+msgid "Exceed stock quantity"
+msgstr "Vượt quá số lượng tồn kho"

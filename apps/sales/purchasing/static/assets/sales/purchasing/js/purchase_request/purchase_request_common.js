@@ -508,6 +508,9 @@ class PurchaseRequestAction {
                 autoWidth: false,
                 ajax: {
                     url: url,
+                    data: {
+                        "system_status": 3,
+                    },
                     type: frm.dataMethod,
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);

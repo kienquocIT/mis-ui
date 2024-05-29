@@ -190,12 +190,16 @@
                                     </div>
                                     <div class="col-12 mt-3">
                                         <i id="created_opp" hidden class="text-success fa-solid fa-check"></i>&nbsp;
-                                        <a href='#' data-url="{% url 'OpportunityListAPI' %}" data-url-detail-opp="{% url 'OpportunityDetail' '0' %}" id="convert-to-opp-btn" class="underline_hover">
+                                        <a href='#'
+                                           data-url="{% url 'OpportunityListAPI' %}"
+                                           data-url-map-opp="{% url 'LeadDetailAPI' pk=pk %}"
+                                           data-url-detail-opp="{% url 'OpportunityDetail' '0' %}"
+                                           id="convert-to-opp-btn" class="underline_hover">
                                             {% trans 'Convert to Opportunity' %}
                                         </a>
                                     </div>
                                 </div>
-                                <div class="row mt-3">
+                                <div class="config-opp-row row mt-3">
                                     <div class="px-10 col-12 col-lg-4">
                                         <div class="form-check form-check-sm">
                                             <input type="radio" id="convert-to-new-opp-radio" name="convert-to-opp" class="form-check-input" checked>
@@ -209,7 +213,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt-3">
+                                <div class="config-opp-row row mt-3">
                                     <div class="col-12 col-lg-8">
                                         <div class="card card-wth-line">
                                             <div class="card-line bg-primary"></div>

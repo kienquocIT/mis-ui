@@ -22,7 +22,6 @@ const $convert_opp_btn = $('#convert-to-opp-btn')
 const $convert_opp_create = $('#convert-to-new-opp-radio')
 const $convert_opp_select = $('#select-an-existing-opp-radio')
 const $assign_to_sale_config = $('#assign-to-sale-config')
-const $selected_opp = $('.selected-opp')
 const $account_existing = $('#existing-account')
 const $select_an_existing_opp_table = $('#select-an-existing-opp-table')
 const $related_opps_table = $('#related-opps-table')
@@ -78,6 +77,16 @@ $create_contact_btn.on('click', function () {
         $.fn.notifyB({description: 'Converted to a new contact!'}, 'warning');
     }
 })
+
+function find_opp_checked() {
+    let opp_id = null
+    $('.selected-opp').each(function () {
+        if ($(this).is(':checked')) {
+            opp_id = $(this).attr('data-id')
+        }
+    })
+    return opp_id
+}
 
 $convert_opp_btn.on('click', function () {
     if ($convert_opp_btn.attr('id')) {
@@ -135,6 +144,55 @@ $convert_opp_btn.on('click', function () {
                                 'create_new_opp': true,
                                 'account_mapped': $account_existing.val(),
                                 'employee_inherit_id': $assign_to_sale_config.val(),
+                                'lead_id': $.fn.getPkDetail()
+                            },
+                        }
+                        $.fn.callAjax2(combinesData_convert_opp).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyB({description: 'Convert to a new Contact successfully!'}, 'success');
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1000)
+                                }
+                            },
+                            (errs) => {
+                                setTimeout(
+                                    () => {
+                                        WindowControl.hideLoading();
+                                    },
+                                    1000
+                                )
+                                $.fn.notifyB({description: errs.data.errors}, 'failure');
+                            })
+                    }
+                })
+            }
+            else if ($convert_opp_select.prop('checked')) {
+                Swal.fire({
+                    html: alert_html,
+                    customClass: {
+                        confirmButton: 'btn btn-outline-primary text-primary',
+                        cancelButton: 'btn btn-outline-secondary text-secondary',
+                        container: 'swal2-has-bg',
+                        actions: 'w-100'
+                    },
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: $trans_script.attr('data-trans-convert'),
+                    cancelButtonText: $trans_script.attr('data-trans-cancel'),
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        WindowControl.showLoading();
+                        let combinesData_convert_opp = {
+                            url: $convert_opp_btn.attr('data-url-map-opp'),
+                            method: 'PUT',
+                            data: {
+                                'convert_opp': true,
+                                'map_opp': true,
+                                'opp_mapped_id': find_opp_checked(),
                                 'lead_id': $.fn.getPkDetail()
                             },
                         }
@@ -258,6 +316,7 @@ function LoadDetailLead(option) {
                     $convert_to_opp_radio_group.prop('disabled', true)
                     $convert_to_opp_option_radio_group.prop('disabled', true)
                     $('#create-to-new-account-btn').remove()
+                    $('.config-opp-row').prop('hidden', true)
                 }
                 $convert_opp_create.prop('checked', data?.['config_data']?.['convert_opp_create'])
                 $convert_opp_select.prop('checked', data?.['config_data']?.['convert_opp_select'])

@@ -17,6 +17,7 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <input type="hidden" id="employee_current_id" value="{{ request.user.employee_current_data.id }}">
     {{ data.stage_list | json_script:"stage_list" }}
     <script id="script-trans"
             data-trans-note="{% trans 'Note' %}"
@@ -213,31 +214,28 @@
                                         <div class="card card-wth-line">
                                             <div class="card-line bg-primary"></div>
                                             <div class="card-body px-0">
-                                                <div class="convert-to-new-opp-radio-child row">
-                                                    <div class="px-10 col-12 col-lg-6">
-                                                        <div class="form-check form-check-sm">
-                                                            <input type="radio" id="convert-to-new-account-radio" name="convert-to-opp-option" class="form-check-input" checked>
-                                                            <label class="form-check-label" for="convert-to-new-account-radio">{% trans 'Convert to a new Account' %}</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="px-10 col-12 col-lg-6">
-                                                        <div class="form-check form-check-sm">
-                                                            <input type="radio" id="select-an-existing-account-radio" name="convert-to-opp-option" class="form-check-input">
-                                                            <label class="form-check-label" for="select-an-existing-account-radio">{% trans 'Select an existing Account' %}</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                                 <div class="convert-to-new-opp-radio-child row mt-3">
                                                     <div class="px-10 col-12 col-lg-6">
                                                         <div class="form-group">
-                                                            <label class="form-label" for="assign-to-sale-config">{% trans "Assign to sale" %}</label>
-                                                            <select class="form-select select2" data-method="GET" data-url="{% url 'EmployeeListAPI' %}" id="assign-to-sale-config"></select>
-                                                        </div>
-                                                    </div>
-                                                    <div hidden class="select-an-existing-account-radio-child px-10 col-12 col-lg-6">
-                                                        <div class="form-group">
-                                                            <label class="form-label" for="existing-account">{% trans "Existing account" %}</label>
+                                                            <label class="form-label" for="existing-account">{% trans "Select account" %}</label>
                                                             <select class="form-select select2" data-method="GET" data-url="{% url 'AccountListAPI' %}" id="existing-account"></select>
+                                                        </div>
+                                                        <a id="create-to-new-account-btn" href="{% url 'AccountCreate' %}" target="_blank">
+                                                            <span class="badge badge-sm badge-soft-primary">
+                                                                <span>
+                                                                    <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
+                                                                    {% trans 'Create new account' %}
+                                                                </span>
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                    <div class="px-10 col-12 col-lg-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label" for="assign-to-sale-config">{% trans "Assign to sale" %}</label>
+                                                            <select class="form-select select2" data-method="GET"
+                                                                    data-url="{% url 'EmployeeListAPI' %}"
+                                                                    id="assign-to-sale-config"
+                                                            ></select>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -273,6 +271,11 @@
             </div>
         </div>
     </form>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-url-config="{% url 'OpportunityConfigAPI' %}"
+    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/lead/js/lead_common.js' %}"></script>

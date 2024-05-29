@@ -21,8 +21,6 @@ const $create_contact_btn = $('#convert-to-contact-btn')
 const $convert_opp_btn = $('#convert-to-opp-btn')
 const $convert_opp_create = $('#convert-to-new-opp-radio')
 const $convert_opp_select = $('#select-an-existing-opp-radio')
-const $convert_account_create = $('#convert-to-new-account-radio')
-const $convert_account_select = $('#select-an-existing-account-radio')
 const $assign_to_sale_config = $('#assign-to-sale-config')
 const $selected_opp = $('.selected-opp')
 const $account_existing = $('#existing-account')
@@ -87,18 +85,13 @@ $convert_opp_btn.on('click', function () {
         let alert_html = `<p class="text-center text-secondary fw-bold">${$trans_script.attr('data-trans-convert-opp-confirm')}</p><br>`
         if ($convert_opp_create.prop('checked')) {
             alert_html += `<h6>1. Convert to new Opportunity</h6>`
-            if ($convert_account_create.prop('checked')) {
-                alert_html += `<h6>2. Convert to new Account</h6>`
+            if ($account_existing.val()) {
+                let account_name = SelectDDControl.get_data_from_idx($account_existing, $account_existing.val())?.['name']
+                alert_html += `<h6>2. Match with Account ${account_name}</h6>`
             }
             else {
-                if ($account_existing.val()) {
-                    let account_name = SelectDDControl.get_data_from_idx($account_existing, $account_existing.val())?.['full_name']
-                    alert_html += `<h6>2. Match with Account ${account_name}</h6>`
-                }
-                else {
-                    flag = false
-                    $.fn.notifyB({description: 'Please select one Account before Convert!'}, 'failure');
-                }
+                flag = false
+                $.fn.notifyB({description: 'Please select one Account before Convert!'}, 'failure');
             }
             if ($assign_to_sale_config.val()) {
                 let sale_config_fullname = SelectDDControl.get_data_from_idx($assign_to_sale_config, $assign_to_sale_config.val())?.['full_name']
@@ -117,8 +110,7 @@ $convert_opp_btn.on('click', function () {
         }
 
         if (flag) {
-            // select existed account
-            if ($convert_opp_create.prop('checked') && $convert_account_select.prop('checked')) {
+            if ($convert_opp_create.prop('checked') && $account_existing.val()) {
                 Swal.fire({
                     html: alert_html,
                     customClass: {
@@ -167,6 +159,9 @@ $convert_opp_btn.on('click', function () {
                             })
                     }
                 })
+            }
+            else {
+                $.fn.notifyB({description: 'Select an account!'}, 'warning');
             }
         }
     }
@@ -262,14 +257,13 @@ function LoadDetailLead(option) {
                     $account_existing.prop('disabled', true)
                     $convert_to_opp_radio_group.prop('disabled', true)
                     $convert_to_opp_option_radio_group.prop('disabled', true)
+                    $('#create-to-new-account-btn').remove()
                 }
                 $convert_opp_create.prop('checked', data?.['config_data']?.['convert_opp_create'])
                 $convert_opp_select.prop('checked', data?.['config_data']?.['convert_opp_select'])
-                $convert_account_create.prop('checked', data?.['config_data']?.['convert_account_create'])
-                $convert_account_select.prop('checked', data?.['config_data']?.['convert_account_select'])
                 $convert_to_opp_radio_group.trigger('change')
                 $convert_to_opp_option_radio_group.trigger('change')
-                LoadAccountConfig(data?.['config_data']?.['account_select'])
+                LoadAccountConfig(data?.['config_data']?.['account_mapped'])
                 LoadSalesConfig(data?.['config_data']?.['assign_to_sale_config'])
 
                 data?.['related_opps'].length > 0 ? LoadOpportunityRelatedList(data?.['related_opps']) : $('#related-opps-span').prop('hidden', true)
@@ -323,7 +317,7 @@ function LoadSalesConfig(data) {
         callbackDataResp: function (resp, keyResp) {
             return resp.data[keyResp];
         },
-        data: (data ? data : null),
+        data: data,
         keyResp: 'employee_list',
         keyId: 'id',
         keyText: 'full_name',

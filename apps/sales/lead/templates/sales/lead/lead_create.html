@@ -76,12 +76,6 @@
                                             <input class="form-control" id="company-name">
                                         </div>
                                     </div>
-                                    <div class="col-12 col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label" for="account-name">{% trans "Account name" %}</label>
-                                            <input class="form-control" id="account-name">
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <div class="col-12 col-md-12 col-lg-6">
@@ -131,7 +125,7 @@
                                     <div class="col-12 col-lg-6">
                                         <div class="form-group">
                                             <label class="form-label" for="lead-status">{% trans "Lead status" %}</label>
-                                            <select disabled class="form-select select2" id="lead-status">
+                                            <select class="form-select" id="lead-status">
                                                 {% for item in data.lead_status %}
                                                     <option value="{{ item.value }}">{{ item.name }}</option>
                                                 {% endfor %}

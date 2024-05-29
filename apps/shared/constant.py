@@ -22,7 +22,8 @@ LEAD_STATUS = [
     {"value": 2, "name": _('Open - not contacted')},
     {"value": 3, "name": _('Working')},
     {"value": 4, "name": _('Opportunity created')},
-    {"value": 5, "name": _('Not a target')},
+    {"value": 5, "name": _('Disqualified')},
+    {"value": 6, "name": _('Not a target')},
 ]
 
 CUSTOMER_REVENUE = [

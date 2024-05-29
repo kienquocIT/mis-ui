@@ -10,7 +10,6 @@ const $job_title = $('#job-title')
 const $mobile = $('#mobile')
 const $email = $('#email')
 const $company_name = $('#company-name')
-const $account_name = $('#account-name')
 const $industry = $('#industry')
 const $total_employees = $('#total-employees')
 const $revenue = $('#revenue')
@@ -28,6 +27,10 @@ const $assign_to_sale_config = $('#assign-to-sale-config')
 const $selected_opp = $('.selected-opp')
 const $account_existing = $('#existing-account')
 const $select_an_existing_opp_table = $('#select-an-existing-opp-table')
+const $related_opps_table = $('#related-opps-table')
+const $related_leads_table = $('#related-leads-table')
+const $convert_to_opp_radio_group = $('input[name="convert-to-opp"]')
+const $convert_to_opp_option_radio_group = $('input[name="convert-to-opp-option"]')
 
 $create_contact_btn.on('click', function () {
     if ($create_contact_btn.attr('id')) {
@@ -48,12 +51,12 @@ $create_contact_btn.on('click', function () {
         }).then((result) => {
             if (result.value) {
                 WindowControl.showLoading();
-                let combinesData = {
+                let combinesData_convert_contact = {
                     url: $create_contact_btn.attr('data-url'),
                     method: 'POST',
                     data: {'convert_contact': true, 'lead_id': $.fn.getPkDetail()},
                 }
-                $.fn.callAjax2(combinesData).then(
+                $.fn.callAjax2(combinesData_convert_contact).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
@@ -79,67 +82,105 @@ $create_contact_btn.on('click', function () {
 })
 
 $convert_opp_btn.on('click', function () {
-    let flag = true
-    let alert_html = `<p class="text-center text-secondary fw-bold">${$trans_script.attr('data-trans-convert-opp-confirm')}</p><br>`
-    if ($convert_opp_create.prop('checked')) {
-        alert_html += `<h6>1. Convert to new Opportunity</h6>`
-        if ($convert_account_create.prop('checked')) {
-            alert_html += `<h6>2. Convert to new Account</h6>`
+    if ($convert_opp_btn.attr('id')) {
+        let flag = true
+        let alert_html = `<p class="text-center text-secondary fw-bold">${$trans_script.attr('data-trans-convert-opp-confirm')}</p><br>`
+        if ($convert_opp_create.prop('checked')) {
+            alert_html += `<h6>1. Convert to new Opportunity</h6>`
+            if ($convert_account_create.prop('checked')) {
+                alert_html += `<h6>2. Convert to new Account</h6>`
+            }
+            else {
+                if ($account_existing.val()) {
+                    let account_name = SelectDDControl.get_data_from_idx($account_existing, $account_existing.val())?.['full_name']
+                    alert_html += `<h6>2. Match with Account ${account_name}</h6>`
+                }
+                else {
+                    flag = false
+                    $.fn.notifyB({description: 'Please select one Account before Convert!'}, 'failure');
+                }
+            }
+            if ($assign_to_sale_config.val()) {
+                let sale_config_fullname = SelectDDControl.get_data_from_idx($assign_to_sale_config, $assign_to_sale_config.val())?.['full_name']
+                alert_html += `<h6>3. Assign to sale ${sale_config_fullname}</h6>`
+            }
         }
         else {
-            if ($account_existing.val()) {
-                let account_name = SelectDDControl.get_data_from_idx($account_existing, $account_existing.val())?.['full_name']
-                alert_html += `<h6>2. Match with Account ${account_name}</h6>`
+            let opp_code = $select_an_existing_opp_table.find('input:checked').closest('div').find('label').text()
+            if (opp_code) {
+                alert_html += `<h6>1. Match with Opportunity ${opp_code}</h6>`
             }
             else {
                 flag = false
-                $.fn.notifyB({description: 'Please select one Account before Convert!'}, 'failure');
+                $.fn.notifyB({description: 'Please select one Opportunity before Convert!'}, 'failure');
             }
         }
-        if ($assign_to_sale_config.val()) {
-            let sale_config_fullname = SelectDDControl.get_data_from_idx($assign_to_sale_config, $assign_to_sale_config.val())?.['full_name']
-            alert_html += `<h6>3. Assign to sale ${sale_config_fullname}</h6>`
+
+        if (flag) {
+            // select existed account
+            if ($convert_opp_create.prop('checked') && $convert_account_select.prop('checked')) {
+                Swal.fire({
+                    html: alert_html,
+                    customClass: {
+                        confirmButton: 'btn btn-outline-primary text-primary',
+                        cancelButton: 'btn btn-outline-secondary text-secondary',
+                        container: 'swal2-has-bg',
+                        actions: 'w-100'
+                    },
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: $trans_script.attr('data-trans-convert'),
+                    cancelButtonText: $trans_script.attr('data-trans-cancel'),
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        WindowControl.showLoading();
+                        let combinesData_convert_opp = {
+                            url: $convert_opp_btn.attr('data-url'),
+                            method: 'POST',
+                            data: {
+                                'convert_opp': true,
+                                'create_new_opp': true,
+                                'account_mapped': $account_existing.val(),
+                                'employee_inherit_id': $assign_to_sale_config.val(),
+                                'lead_id': $.fn.getPkDetail()
+                            },
+                        }
+                        $.fn.callAjax2(combinesData_convert_opp).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyB({description: 'Convert to a new Contact successfully!'}, 'success');
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1000)
+                                }
+                            },
+                            (errs) => {
+                                setTimeout(
+                                    () => {
+                                        WindowControl.hideLoading();
+                                    },
+                                    1000
+                                )
+                                $.fn.notifyB({description: errs.data.errors}, 'failure');
+                            })
+                    }
+                })
+            }
         }
     }
     else {
-        let opp_code = $select_an_existing_opp_table.find('input:checked').closest('div').find('label').text()
-        if (opp_code) {
-            alert_html += `<h6>1. Match with Opportunity ${opp_code}</h6>`
-        }
-        else {
-            flag = false
-            $.fn.notifyB({description: 'Please select one Opportunity before Convert!'}, 'failure');
-        }
-    }
-
-    if (flag) {
-        Swal.fire({
-            html: alert_html,
-            customClass: {
-                confirmButton: 'btn btn-outline-primary text-primary',
-                cancelButton: 'btn btn-outline-secondary text-secondary',
-                container: 'swal2-has-bg',
-                actions: 'w-100'
-            },
-            showCancelButton: true,
-            buttonsStyling: false,
-            confirmButtonText: $trans_script.attr('data-trans-convert'),
-            cancelButtonText: $trans_script.attr('data-trans-cancel'),
-            reverseButtons: true
-        }).then((result) => {
-            if (result.value) {
-
-            }
-        })
+        $.fn.notifyB({description: 'Converted to a new opp!'}, 'warning');
     }
 })
 
-$('input[name="convert-to-opp"]').on('change', function () {
+$convert_to_opp_radio_group.on('change', function () {
     $('.convert-to-new-opp-radio-child').prop('hidden', !$('#convert-to-new-opp-radio').prop('checked'))
     $('.select-an-existing-opp-radio-child').prop('hidden', !$('#select-an-existing-opp-radio').prop('checked'))
 })
 
-$('input[name="convert-to-opp-option"]').on('change', function () {
+$convert_to_opp_option_radio_group.on('change', function () {
     $('.select-an-existing-account-radio-child').prop('hidden', !$('#select-an-existing-account-radio').prop('checked'))
 })
 
@@ -178,7 +219,6 @@ function LoadDetailLead(option) {
                 $mobile.val(data?.['mobile'])
                 $email.val(data?.['email'])
                 $company_name.val(data?.['company_name'])
-                $account_name.val(data?.['account_name'])
                 LoadIndustry(data?.['industry'])
                 $total_employees.val(data?.['total_employees']).trigger('change')
                 $revenue.val(data?.['revenue']).trigger('change')
@@ -207,12 +247,33 @@ function LoadDetailLead(option) {
                         <span class="badge badge-primary badge-sm">${data?.['config_data']?.['contact_mapped']?.['code']}</span>
                     `)
                 }
+                if (data?.['config_data']?.['convert_opp']) {
+                    $('#created_opp').prop('hidden', false)
+                    $convert_opp_btn.attr('id', '').attr('class', '')
+                    $convert_opp_btn.after(`
+                        &nbsp;
+                        <a target="_blank" href="${$convert_opp_btn.attr('data-url-detail-opp').replace('0', data?.['config_data']?.['opp_mapped']?.['id'])}">
+                            <i class="fa-solid fa-up-right-from-square"></i>
+                        </a>
+                        &nbsp;
+                        <span class="badge badge-primary badge-sm">${data?.['config_data']?.['opp_mapped']?.['code']}</span>
+                    `)
+                    $assign_to_sale_config.prop('disabled', true)
+                    $account_existing.prop('disabled', true)
+                    $convert_to_opp_radio_group.prop('disabled', true)
+                    $convert_to_opp_option_radio_group.prop('disabled', true)
+                }
                 $convert_opp_create.prop('checked', data?.['config_data']?.['convert_opp_create'])
                 $convert_opp_select.prop('checked', data?.['config_data']?.['convert_opp_select'])
                 $convert_account_create.prop('checked', data?.['config_data']?.['convert_account_create'])
                 $convert_account_select.prop('checked', data?.['config_data']?.['convert_account_select'])
+                $convert_to_opp_radio_group.trigger('change')
+                $convert_to_opp_option_radio_group.trigger('change')
+                LoadAccountConfig(data?.['config_data']?.['account_select'])
                 LoadSalesConfig(data?.['config_data']?.['assign_to_sale_config'])
 
+                data?.['related_opps'].length > 0 ? LoadOpportunityRelatedList(data?.['related_opps']) : $('#related-opps-span').prop('hidden', true)
+                data?.['related_leads'].length > 0 ? LoadLeadRelatedList(data?.['related_leads']) : $('#related-leads-span').prop('hidden', true)
                 Disable(option);
             }
         })
@@ -294,7 +355,7 @@ function LoadOpportunityList() {
             paging: false,
             ordering: false,
             scrollCollapse: true,
-            scrollY: '50vh',
+            scrollY: '40vh',
             ajax: {
                 url: frm.dataUrl,
                 type: frm.dataMethod,
@@ -413,6 +474,30 @@ function LoadStage(stage_list, level, page='create') {
     }
 }
 
+function LoadOpportunityRelatedList(data) {
+    $related_opps_table.html('')
+    for (const opp of data) {
+        $related_opps_table.append(`
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <span class="badge badge-info badge-sm">${opp?.['code']}</span> <span class="text-secondary">${opp?.['title']}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `)
+    }
+}
+
+function LoadLeadRelatedList(data) {
+    $related_leads_table.html('')
+    for (const opp of data) {
+        $related_leads_table.append(`
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                <span class="badge badge-primary badge-sm">${opp?.['code']}</span> <span class="text-secondary">${opp?.['title']}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `)
+    }
+}
+
 class LeadHandle {
     load(option='create') {
         LoadStage(STAGE_LIST, 1)
@@ -435,7 +520,6 @@ class LeadHandle {
         frm.dataForm['mobile'] = $mobile.val()
         frm.dataForm['email'] = $email.val()
         frm.dataForm['company_name'] = $company_name.val()
-        frm.dataForm['account_name'] = $account_name.val()
         frm.dataForm['industry'] = $industry.val()
         frm.dataForm['total_employees'] = $total_employees.val()
         frm.dataForm['revenue'] = $revenue.val()

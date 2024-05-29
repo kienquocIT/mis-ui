@@ -31,7 +31,7 @@
     <form id="form-detail-lead"
           data-url="{% url 'LeadDetailAPI' pk=pk %}"
           data-method="GET">
-    {% csrf_token %}
+        {% csrf_token %}
         <div class="row">
             <div class="col-12">
                 <ul class="nav nav-line nav-tabs nav-light">
@@ -90,12 +90,6 @@
                                             <input class="form-control" id="company-name">
                                         </div>
                                     </div>
-                                    <div class="col-12 col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label" for="account-name">{% trans "Account name" %}</label>
-                                            <input class="form-control" id="account-name">
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <div class="col-12 col-md-12 col-lg-6">
@@ -145,7 +139,7 @@
                                     <div class="col-12 col-lg-6">
                                         <div class="form-group">
                                             <label class="form-label" for="lead-status">{% trans "Lead status" %}</label>
-                                            <select class="form-select select2" id="lead-status">
+                                            <select class="form-select" id="lead-status">
                                                 {% for item in data.lead_status %}
                                                     <option value="{{ item.value }}">{{ item.name }}</option>
                                                 {% endfor %}
@@ -195,63 +189,83 @@
                                     </div>
                                     <div class="col-12 mt-3">
                                         <i id="created_opp" hidden class="text-success fa-solid fa-check"></i>&nbsp;
-                                        <a href='#' id="convert-to-opp-btn" class="underline_hover">
+                                        <a href='#' data-url="{% url 'OpportunityListAPI' %}" data-url-detail-opp="{% url 'OpportunityDetail' '0' %}" id="convert-to-opp-btn" class="underline_hover">
                                             {% trans 'Convert to Opportunity' %}
                                         </a>
                                     </div>
-
-                                    <div class="px-10 col-12 col-lg-6 mt-3">
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="px-10 col-12 col-lg-4">
                                         <div class="form-check form-check-sm">
                                             <input type="radio" id="convert-to-new-opp-radio" name="convert-to-opp" class="form-check-input" checked>
                                             <label class="form-check-label" for="convert-to-new-opp-radio">{% trans 'Convert to a new Opportunity' %}</label>
                                         </div>
                                     </div>
-                                    <div class="px-10 col-12 col-lg-6 mt-3">
+                                    <div class="px-10 col-12 col-lg-4">
                                         <div class="form-check form-check-sm">
                                             <input type="radio" id="select-an-existing-opp-radio" name="convert-to-opp" class="form-check-input">
                                             <label class="form-check-label" for="select-an-existing-opp-radio">{% trans 'Select an existing Opportunity' %}</label>
                                         </div>
                                     </div>
-
-                                    <div class="convert-to-new-opp-radio-child px-10 col-12 col-lg-6 mt-3">
-                                        <div class="form-check form-check-sm">
-                                            <input type="radio" id="convert-to-new-account-radio" name="convert-to-opp-option" class="form-check-input" checked>
-                                            <label class="form-check-label" for="convert-to-new-account-radio">{% trans 'Convert to a new Account' %}</label>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-12 col-lg-8">
+                                        <div class="card card-wth-line">
+                                            <div class="card-line bg-primary"></div>
+                                            <div class="card-body px-0">
+                                                <div class="convert-to-new-opp-radio-child row">
+                                                    <div class="px-10 col-12 col-lg-6">
+                                                        <div class="form-check form-check-sm">
+                                                            <input type="radio" id="convert-to-new-account-radio" name="convert-to-opp-option" class="form-check-input" checked>
+                                                            <label class="form-check-label" for="convert-to-new-account-radio">{% trans 'Convert to a new Account' %}</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="px-10 col-12 col-lg-6">
+                                                        <div class="form-check form-check-sm">
+                                                            <input type="radio" id="select-an-existing-account-radio" name="convert-to-opp-option" class="form-check-input">
+                                                            <label class="form-check-label" for="select-an-existing-account-radio">{% trans 'Select an existing Account' %}</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="convert-to-new-opp-radio-child row mt-3">
+                                                    <div class="px-10 col-12 col-lg-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label" for="assign-to-sale-config">{% trans "Assign to sale" %}</label>
+                                                            <select class="form-select select2" data-method="GET" data-url="{% url 'EmployeeListAPI' %}" id="assign-to-sale-config"></select>
+                                                        </div>
+                                                    </div>
+                                                    <div hidden class="select-an-existing-account-radio-child px-10 col-12 col-lg-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label" for="existing-account">{% trans "Existing account" %}</label>
+                                                            <select class="form-select select2" data-method="GET" data-url="{% url 'AccountListAPI' %}" id="existing-account"></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="select-an-existing-opp-radio-child row">
+                                                    <div hidden class="select-an-existing-opp-radio-child px-5 col-12">
+                                                        <table id="select-an-existing-opp-table" class="table w-100" data-method="GET" data-url="{% url 'OpportunityListAPI' %}">
+                                                            <thead>
+                                                            <tr>
+                                                                <th>{% trans 'Code' %}</th>
+                                                                <th>{% trans 'Name' %}</th>
+                                                                <th>{% trans 'Customer' %}</th>
+                                                                <th>{% trans 'Sale person' %}</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody></tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="convert-to-new-opp-radio-child px-10 col-12 col-lg-6 mt-3">
-                                        <div class="form-check form-check-sm">
-                                            <input type="radio" id="select-an-existing-account-radio" name="convert-to-opp-option" class="form-check-input">
-                                            <label class="form-check-label" for="select-an-existing-account-radio">{% trans 'Select an existing Account' %}</label>
-                                        </div>
-                                    </div>
-                                    <div hidden class="select-an-existing-account-radio-child px-10 col-12 mt-3">
-                                        <div class="form-group">
-                                            <label class="form-label" for="existing-account">{% trans "Existing account" %}</label>
-                                            <select class="form-select select2" data-method="GET" data-url="{% url 'AccountListAPI' %}" id="existing-account"></select>
-                                        </div>
-                                    </div>
-                                    <div class="convert-to-new-opp-radio-child px-10 col-12 mt-3">
-                                        <div class="form-group">
-                                            <label class="form-label" for="assign-to-sale-config">{% trans "Assign to sale" %}</label>
-                                            <select class="form-select select2" data-method="GET" data-url="{% url 'EmployeeListAPI' %}" id="assign-to-sale-config"></select>
-                                        </div>
-                                    </div>
-
-                                    <div hidden class="select-an-existing-opp-radio-child px-10 col-12 mt-3">
-                                        <table id="select-an-existing-opp-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'OpportunityListAPI' %}">
-                                            <thead>
-                                            <tr>
-                                                <th>{% trans 'Code' %}</th>
-                                                <th>{% trans 'Name' %}</th>
-                                                <th>{% trans 'Customer' %}</th>
-                                                <th>{% trans 'Sale person' %}</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                <span id="related-opps-span">{% trans 'Related opps' %}:</span>
+                                <div class="mt-2 mb-2" id="related-opps-table" style="max-height: 30vh; overflow-y: auto;"></div>
+                                <span id="related-leads-span">{% trans 'Related leads' %}:</span>
+                                <div class="mt-2 mb-2" id="related-leads-table" style="max-height: 30vh; overflow-y: auto;"></div>
                             </div>
                         </div>
                     </div>

@@ -90,6 +90,17 @@ class LeadListAPI(APIView):
         return resp.auto_return()
 
 
+class LeadChartDataAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAD_CHART).get(params)
+        return resp.auto_return(key_success='chart_data')
+
+
 class LeadDetailAPI(APIView):
     @mask_view(
         auth_require=True,

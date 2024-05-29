@@ -436,17 +436,11 @@ function LoadDetail(option) {
 
                 if (data.account_type_selection === 0) {
                     inputIndividualEle.prop('checked', true);
-                    $('#parent-account-div-id').prop('hidden', true);
-                    $('#account-tax-code-label-id').removeClass('required');
-                    $('#total_employees_label').removeClass('required');
-                    $("#tax-code-label").removeClass("required");
                 } else if (data.account_type_selection === 1) {
                     inputOrganizationEle.prop('checked', true);
-                    $('#parent-account-div-id').prop('hidden', false);
-                    $('#account-tax-code-label-id').addClass('required');
-                    $('#total_employees_label').addClass('required');
-                    $("#tax-code-label").addClass("required");
                 }
+                inputIndividualEle.trigger('change')
+                inputOrganizationEle.trigger('change')
 
                 load_shipping_address_mapped(data);
                 load_billing_address_mapped(data);
@@ -862,6 +856,8 @@ class AccountHandle {
         loadShippingDistrict();
         loadShippingWard();
         loadContactOwner();
+        inputIndividualEle.trigger('change')
+        inputOrganizationEle.trigger('change')
     }
     combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle));

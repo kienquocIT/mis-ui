@@ -415,7 +415,13 @@ function LoadOpportunityList() {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('opportunity_list')) {
-                        return resp.data['opportunity_list'] ? resp.data['opportunity_list'] : [];
+                        let res = []
+                        for (const opp of resp.data['opportunity_list']) {
+                            if (opp?.['customer']?.['phone'] === $mobile.val() || opp?.['customer']?.['email'] === $email.val()) {
+                                res.push(opp)
+                            }
+                        }
+                        return res;
                     }
                     throw Error('Call data raise errors.')
                 },

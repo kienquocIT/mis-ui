@@ -350,7 +350,7 @@ msgstr "Địa chỉ của công ty mới"
 msgid "Full name of Representative"
 msgstr "Tên đầy đủ của người đại diện"
 
-#: .\apps\core\company\templates\core\company\company_list.html:174
+#
 msgid "Email of Representative"
 msgstr "Email của người đại diện"
 
@@ -358,7 +358,7 @@ msgstr "Email của người đại diện"
 msgid "Phone Number"
 msgstr "Số Điện Thoại"
 
-#: .\apps\core\company\templates\core\company\company_list.html:189
+#
 msgid "Phone number of Representative"
 msgstr "Số điện thoại của người đại diện"
 
@@ -370,7 +370,7 @@ msgstr "Thêm"
 msgid "Cancel"
 msgstr "Hủy bỏ"
 
-#: .\apps\core\company\templates\core\company\company_list.html:240
+#
 msgid "Language"
 msgstr "Ngôn ngữ"
 
@@ -4144,8 +4144,8 @@ msgid "Log time"
 msgstr "Ghi nhận giờ làm"
 
 #
-msgid "Opp/Project code"
-msgstr "Mã cơ hội kinh doanh/dự án"
+msgid "Opp code"
+msgstr "Mã cơ hội kinh doanh"
 
 #
 msgid "Priority"
@@ -6275,10 +6275,6 @@ msgid "Whole year"
 msgstr "Cả năm"
 
 #
-msgid "Opp code"
-msgstr "Mã CHKD"
-
-#
 msgid "Win"
 msgstr "Thắng"
 
@@ -7577,3 +7573,115 @@ msgstr "Hóa đơn"
 #
 msgid "Reference"
 msgstr "Tham chiếu"
+
+#
+msgid "Exceed stock quantity"
+msgstr "Vượt quá số lượng tồn kho"
+
+#
+msgid "Project list"
+msgstr "Danh sách dự án"
+
+#
+msgid "Project group"
+msgstr "Nhóm dự án"
+
+#
+msgid "Project work"
+msgstr "Công việc dự án"
+
+#
+msgid "Project member"
+msgstr "Thành viên dự án"
+
+#
+msgid "Teams"
+msgstr "Đội ngũ"
+
+#
+msgid "Finish date"
+msgstr "Ngày hoàn thành"
+
+#
+msgid "Project PM"
+msgstr "Quản lý dự án"
+
+#
+msgid "Project owner"
+msgstr "Pháp nhân dự án"
+
+#
+msgid "Allow view this project"
+msgstr "Quyền xem dự án"
+
+#
+msgid "Can add member this project"
+msgstr "Có thể thêm thành viên dự án"
+
+#
+msgid "Allow create group and work this project"
+msgstr "Có quyền trên 'Nhóm' và 'Công việc' trong dự án"
+
+#
+msgid "Project code"
+msgstr "Mã Dự án"
+
+#
+msgid "Project assign task"
+msgstr "Giao việc dự án"
+
+#
+msgid "Completion rate"
+msgstr "Tỉ lệ hoàn thành"
+
+#
+msgid "Tasks"
+msgstr "Giao việc"
+
+#
+msgid "Project works"
+msgstr "Công việc"
+
+#
+msgid "Relationships type"
+msgstr "Loại quan hệ"
+
+#
+msgid "Relationships work"
+msgstr "Công việc cha"
+
+#
+msgid "Work weight"
+msgstr "Trọng số"
+
+#
+msgid "Work rate"
+msgstr "Tỉ lệ"
+
+#
+msgid "Group weight"
+msgstr "Trọng số"
+
+#
+msgid "Group rate"
+msgstr "Tỉ lệ"
+
+#
+msgid "Task list in work"
+msgstr "Giao việc trong công việc"
+
+#
+msgid "Project create"
+msgstr "Tạo dự án"
+
+#
+msgid "Abandoned tasks"
+msgstr "Giao việc bị bỏ quên"
+
+#
+msgid "Unlink between Task and Work"
+msgstr "Huỷ liên kết giữa Giao việc và Công việc"
+
+#
+msgid "Previous work"
+msgstr "Công việc trước đó"

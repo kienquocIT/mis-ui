@@ -14,7 +14,8 @@ __all__ = [
     'ROLE_CUSTOMER',
     'PAID_BY',
     'SYSTEM_STATUS',
-    'LEAVE_ACTION'
+    'LEAVE_ACTION',
+    'DEPENDENCIES_TYPE'
 ]
 
 LEAD_STATUS = [
@@ -96,3 +97,8 @@ LEAVE_ACTION = {
     1: LeaveMsg.LEAVE_ACTION_INS,
     2: LeaveMsg.LEAVE_ACTION_DES,
 }
+
+DEPENDENCIES_TYPE = (
+    (0, _("Start to start")),
+    (1, _("Finish to start"))
+)

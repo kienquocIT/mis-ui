@@ -573,3 +573,17 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Diagram
     DIAGRAM_LIST = StringUrl('diagram/list')
+
+    # Project
+    PROJECT_LIST = StringUrl('project/list')
+    PROJECT_DETAIL = StringUrl('project/detail/{pk}')
+    PROJECT_GROUP_LIST = StringUrl('project/group/list')
+    PROJECT_GROUP_DD_LIST = StringUrl('project/group/list-dd')
+    PROJECT_GROUP_DETAIL = StringUrl('project/group/detail')
+    PROJECT_WORK_LIST = StringUrl('project/work/list')
+    PROJECT_WORK_DETAIL = StringUrl('project/work/detail')
+    PROJECT_MEMBER_ADD = StringUrl('project/{pk}/member/add')
+    PROJECT_MEMBER_DETAIL = StringUrl('project/{pk}/member/detail/{pk_member}')
+    PROJECT_UPDATE_ORDER = StringUrl('project/update-order/{pk}')
+    PROJECT_TASK_LIST = StringUrl('project/assign-task-list/{pk_pj}')
+    PROJECT_TASK_LINK = StringUrl('project/assign-task-link/{pk}')

@@ -177,12 +177,13 @@ class checklistHandle {
     }
 }
 
-$(function () {
+$(document).ready(function () {
     // declare variable
     const $form = $('#formOpportunityTask')
     const $empElm = $('#employee_inherit_id')
     const $sttElm = $('#selectStatus');
     const $oppElm = $('#opportunity_id')
+    const $prjElm = $('#project_id')
 
     new $x.cls.file($('#attachment')).init({'name': 'attach'});
 
@@ -192,10 +193,11 @@ $(function () {
         singleDatePicker: true,
         timePicker: false,
         showDropdowns: true,
+        autoApply: true,
         locale: {
             format: 'DD/MM/YYYY'
         }
-    })
+    }).val("").trigger('change')
 
     //--DROPDOWN STATUS-- run status select default
     $sttElm.attr('data-url')
@@ -305,11 +307,11 @@ $(function () {
         });
     });
 
-    // validate form
     SetupFormSubmit.validate(
-        $form, {
-            submitHandler: function () {
-                let _form = new SetupFormSubmit($form);
+        $form,
+        {
+            submitHandler: function (form) {
+                let _form = new SetupFormSubmit(form);
                 let formData = _form.dataForm
                 const $assignerElm = $('#inputAssigner')
 
@@ -341,14 +343,14 @@ $(function () {
                 if (task_status.is_finish) formData.percent_completed = 100
                 formData.percent_completed = parseInt(formData.percent_completed)
 
-                if (!isValidString(formData.estimate)){
+                if (!isValidString(formData.estimate)) {
                     $.fn.notifyB({description: $('#form_valid').attr('data-estimate-error')}, 'failure')
                     return false
                 }
 
                 const assign_to = $empElm.select2('data')[0]
                 let assign_toData = {}
-                if (assign_to){
+                if (assign_to) {
                     assign_toData = {
                         'id': assign_to.id,
                         'full_name': assign_to.text,
@@ -368,25 +370,28 @@ $(function () {
 
                 if (!formData.opportunity) delete formData.opportunity
                 let opportunity_data = {}
-                if ($oppElm.val()){
-                    formData.opportunity = $oppElm.val()
-                    formData.opportunity_id = $oppElm.val()
+                if ($oppElm.val()) {
+                    formData.opportunity = formData.opportunity_id = $oppElm.val()
                     opportunity_data = $oppElm.select2('data')[0]['data']
                 }
+                if (!formData.project) delete formData.project
+                if ($prjElm.val()) formData.project = formData.project_id = $prjElm.val()
 
                 const $attElm = $('[name="attach"]').val()
                 if ($attElm) formData.attach = [...$attElm]
 
                 let method = 'POST'
-                let url = _form.dataUrl
+                let url = form.attr('data-url')
                 if (formData.id && formData.id !== '') {
                     method = 'PUT'
                     url = $('#url-factory').attr('data-task-detail').format_url_with_uuid(formData.id)
                 }
+
                 $.fn.callAjax2({
                     'url': url,
                     'method': method,
-                    'data': formData
+                    'data': formData,
+                    'sweetAlertOpts': {'allowOutsideClick': true},
                 }).then(
                     (resp) => {
                         const data = $.fn.switcherResp(resp);
@@ -420,11 +425,11 @@ $(function () {
                         }
                     },
                     (errs) => {
-                    if (errs?.data?.errors)
-                        $.fn.notifyB({'description': errs?.data?.errors}, 'failure')
+                        if (errs?.data?.errors)
+                            $.fn.notifyB({'description': errs?.data?.errors}, 'failure')
                     }
-
                 )
             }
-        })
-}, jQuery)
+        }
+    )
+});

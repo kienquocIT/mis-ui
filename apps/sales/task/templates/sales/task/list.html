@@ -232,7 +232,7 @@
                data-change-stt="{% url 'OpportunityTaskStatusAPI' %}"
         />
         <input type="text" id="trans-factory" data-name="{% trans 'Name' %}" data-assigner="{% trans 'Assigner' %}"
-        data-assignee="{% trans 'Assignee' %}" data-priority="{% trans 'Priority' %}"
+               data-assignee="{% trans 'Assignee' %}" data-priority="{% trans 'Priority' %}"
                data-st-date="{% trans 'Start date' %}" data-ed-date="{% trans 'End date' %}"
                data-low="{% trans 'Low' %}"
                data-med="{% trans 'Medium' %}"
@@ -248,16 +248,17 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/js/perfect-scrollbar.min.js' %}"></script>
     <script src="{% static 'vendors/dragula/dragula.min.js' %}"></script>
+
     <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/extend/create-task.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/list.js' %}"></script>
     <script>
-        $('#btn-open-comment-task').on('click', function (){
+        $('#btn-open-comment-task').on('click', function () {
             let frmOppTask = $('#formOpportunityTask');
-            if (frmOppTask.length > 0){
+            if (frmOppTask.length > 0) {
                 let appIdx = "e66cfb5a-b3ce-4694-a4da-47618f53de4c";  // Application: task - OpportunityTask
                 let docIdx = frmOppTask.attr('data-id-loaded');
-                if (docIdx){
+                if (docIdx) {
                     let modalEle = $('#CommentModal');
                     new $x.cls.cmt(modalEle.find('.comment-group')).init(docIdx, appIdx)
                     modalEle.modal('show');

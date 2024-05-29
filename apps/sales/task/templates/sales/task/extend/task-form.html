@@ -1,25 +1,14 @@
 {% load i18n %}
 <style>
-    .is-lazy-loading .span_loading{
-        display: none;
-    }
-    .is-lazy-loading.is_show .span_loading{
-        display: block;
-        position: absolute;
-        z-index: 2;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-    }
-    .is-lazy-loading.is_show:after {
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255,.8);
-        z-index: 1;
-        top: 0;
-    }
+    .is-lazy-loading .span_loading{display: none;}
+    .is-lazy-loading.is_show .span_loading{display: block;position: absolute;z-index: 2;left: 50%;top: 50%;transform: translate(-50%, -50%);}
+    .is-lazy-loading.is_show:after {content: "";position: absolute;width: 100%;height: 100%;background: rgba(255, 255, 255,.8);z-index: 1;top: 0;}
+    .label-mark {width: 100%;height: 38px;color: #262a2e;border: 1px solid #d8d8d8;border-radius: 0.375rem;padding: 0.375rem 0.75rem;font-size: 1rem;line-height: 1.5;}
+    .label-mark:hover {border-color: #007D88;}
+    .label-mark.dropdown-toggle:after {content: '';right: 0;}
+    .label-mark .item-tag {color: #ffffff;background: var(--bs-info);border-radius: 0.375rem;padding: 1px 4px 2px;font-size: .8rem;}
+    .label-mark .item-tag > .tag-delete {margin-left: 4px;color: #555555;cursor: pointer;}
+    .label-mark .item-tag + .item-tag {margin-left: 4px;}
 </style>
 
 <div
@@ -131,8 +120,14 @@
                     </div>
                     <div class="col-xs-12 custom-layout">
                         {% trans 'Assignee' as inherit_title %}
-                        {% trans 'Opp/Project code' as opp_title %}
-                        {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=False show_warning=True priority_app='opp-prj-inherit' has_opp=True has_inherit=True is_open=True inherit_required=True %}
+                        {% if is_project_page %}
+                            {% trans 'Project code' as prj_title %}
+                            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='prj-inherit-opp' has_prj=True prj_disabled=True has_inherit=True is_open=True inherit_required=True %}
+                        {% else %}
+                            {% trans 'Opp code' as opp_title %}
+                            {% trans 'Project code' as prj_title %}
+                            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=False show_warning=True priority_app='opp-prj-inherit' has_opp=True has_prj=True has_inherit=True is_open=True inherit_required=True %}
+                        {% endif %}
                     </div>
                     <div class="col-md-12 col-xs-12">
                         <div class="form-group">

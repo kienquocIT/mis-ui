@@ -595,6 +595,16 @@ class MenusReport:
     )
 
 
+class MenusProject:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    LIST = MenuCommon(
+        name='Project list', code='menu_project', view_name='ProjectList',
+        icon='<i class="fa-solid fa-bars-progress"></i>',
+    )
+
+
 # Space Setup
 class SpaceCommon:
     name: str  # 'Sale'
@@ -657,6 +667,15 @@ class SpaceItem:
                 MenusCRM.SALE_ACTIVITIES,
                 MenusCRM.TASK,
             ],
+        ),
+        'project': SpaceCommon(
+            'Project',
+            'project',
+            icon='<i class="fa-solid fa-weight-scale"></i>',
+            menus=[
+                MenusProject.HOME,
+                MenusProject.LIST,
+            ]
         ),
         'purchase': SpaceCommon(
             'Purchasing',
@@ -760,6 +779,7 @@ class SpaceGroup:
     SPACE = SpaceCommon(
         'Space', 'space', child=[
             SpaceItem.mapping['crm'],
+            SpaceItem.mapping['project'],
             SpaceItem.mapping['purchase'],
             SpaceItem.mapping['inventory'],
             SpaceItem.mapping['hrm'],

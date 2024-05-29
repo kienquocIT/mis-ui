@@ -21,9 +21,9 @@
 
             {# Project flag #}
             data-has_prj="{{ has_prj|parse_0_or_1 }}"
-            data-prj_disabled="{{ opp_disabled|parse_0_or_1 }}"
-            data-prj_required="{{ opp_required|parse_0_or_1 }}"
-            data-prj_readonly="{{ opp_required|parse_0_or_1 }}"
+            data-prj_disabled="{{ prj_disabled|parse_0_or_1 }}"
+            data-prj_required="{{ prj_required|parse_0_or_1 }}"
+            data-prj_readonly="{{ prj_required|parse_0_or_1 }}"
             data-prj_hidden="{{ prj_hidden|parse_0_or_1 }}"
             data-prj_title="{{ prj_title }}"
 
@@ -144,7 +144,7 @@
                                     {% endif %}
                                 {% elif item == 'prj' %}
                                     {% if has_prj == True %}
-                                        <div class="{{ clsNameBastionField }}">
+                                        <div class="col-xs-12">
                                             <div class="form-group">
                                                 <label
                                                         for="project_id"
@@ -156,7 +156,11 @@
                                                         name="project_id"
                                                         id="project_id"
                                                         class="form-select {% if prj_hidden %} d-none {% endif %}"
+                                                        data-url="{% url 'ProjectListAPI' %}"
+                                                        data-method="GET"
+                                                        data-keyResp="project_list"
                                                         data-params='{"list_from_app": "{{ data.list_from_app }}"}'
+                                                        data-keyText="code"
                                                         {% if prj_required == True %} required {% endif %}
                                                         {% if prj_disabled == True %} disabled {% endif %}
                                                         {% if prj_readonly == True %} readonly {% endif %}
@@ -166,7 +170,7 @@
                                     {% endif %}
                                 {% elif item == 'inherit' %}
                                     {% if has_inherit == True %}
-                                        <div class="{{ clsNameBastionField }}">
+                                        <div class="{% if has_prj == True %}col-xs-12{% else %}{{ clsNameBastionField }}{% endif %}">
                                             <div class="form-group">
                                                 <label
                                                         for="employee_inherit_id"

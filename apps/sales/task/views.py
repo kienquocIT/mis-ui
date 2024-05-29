@@ -135,6 +135,9 @@ class OpportunityTaskDetailAPI(APIView):
     )
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_DETAIL.push_id(pk)).put(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.OPPORTUNITY_TASK_UPDATE
+            return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
     @mask_view(login_require=True,auth_require=True, is_api=True)

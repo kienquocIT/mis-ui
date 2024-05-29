@@ -1703,3 +1703,5 @@ url("./fonts/bootstrap-icons.woff?08efbba7c53d8c5413793eecb19b20bb") format("wof
 .bi-filetype-json::before { content: "\f791"; }
 .bi-filetype-pptx::before { content: "\f792"; }
 .bi-filetype-xlsx::before { content: "\f793"; }
+/*custom*/
+.bi-floppy2::before { content: "\F7E4"; }

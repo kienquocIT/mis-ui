@@ -1,0 +1,94 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 00:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "Save"
+msgstr "Lưu"
+
+#
+msgid "Title"
+msgstr "Tiêu đề"
+
+#
+msgid "Weight"
+msgstr "Trọng số"
+
+#
+msgid "Rate"
+msgstr "Tỉ lệ"
+
+#
+msgid "Date from"
+msgstr "Ngày bắt đầu"
+
+#
+msgid "Date to"
+msgstr "Ngày kết thúc"
+
+#
+msgid "Work status"
+msgstr "Tình trạng"
+
+#
+msgid "To do"
+msgstr "Chưa thực hiện"
+
+#
+msgid "In progress"
+msgstr "Đang thực hiện"
+
+#
+msgid "Completed"
+msgstr "Hoàn thành"
+
+#
+msgid "Pending"
+msgstr "Tạm dừng"
+
+#
+msgid "Group"
+msgstr "Nhóm"
+
+#
+msgid "Work"
+msgstr "Công việc"
+
+#
+msgid "Delete"
+msgstr "Xoá"
+
+#
+msgid "Assign Task"
+msgstr "Phân công"
+
+#
+msgid "Document is not selected"
+msgstr "Không có công việc nào được chọn"
+
+#
+msgid "Add"
+msgstr "Thêm"
+
+#
+msgid "Task list"
+msgstr "Danh sách task"
+
+#
+msgid "Empty data"
+msgstr "Dữ liệu trống"

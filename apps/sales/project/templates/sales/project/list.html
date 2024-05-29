@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Project' %} {% trans 'list' %}
+{% endblock %}
+{% block cssHeader %}
+{#    <link href="{% static 'assets/css/eoffice/assettools/list.css' %}" rel="stylesheet" type="text/css"/>#}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'ProjectCreate' %}">
+        <button class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Create' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <table
+                    class="table nowrap w-100 min-w-1500p"
+                    id="project_tb"
+                    data-method="get"
+                    data-url="{% url 'ProjectListAPI' %}"
+                    data-detail="{% url 'ProjectDetail' 1 %}"
+                >
+                    <thead>
+                        <tr>
+                            <td>{% trans 'Code' %}</td>
+                            <td>{% trans 'Name' %}</td>
+                            <td>{% trans 'Start date' %}</td>
+                            <td>{% trans 'Finish date' %}</td>
+                            <td>{% trans 'Completion rate' %}</td>
+                            <td>{% trans 'Project works' %}</td>
+                            <td>{% trans 'Tasks' %}</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <div class="table_btn">
+        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-adjust-row" >
+            <span class="btn-icon-wrap">
+                <i class="fa-solid fa-window-maximize"></i>
+            </span>
+        </a>
+    </div>
+    <input type="text" id="url-factory" aria-label="url-factory"
+    >
+    <input type="text" id="trans-factory" aria-label="trans-factory"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/project/js/list.js' %}"></script>
+{% endblock %}

@@ -106,7 +106,7 @@ class BastionFieldControl {
                 });
 
                 // re-check project
-                if (clsThis.getPrjFlag('showing') === true) {
+                if (clsThis.getPrjFlag('showing') === true && hasVal) {
                     if (clsThis.getPrjFlag('disabled') === false) clsThis.prjEle.prop('disabled', hasVal);
                     if (clsThis.getPrjFlag('readonly') === false) clsThis.prjEle.prop('readonly', hasVal);
                 }
@@ -128,19 +128,13 @@ class BastionFieldControl {
 
             let clsThis = this;
             let config = {
-                ajax: {
-                    url: '/project/list/api',
-                    type: 'GET',
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && data.hasOwnProperty('project_list')) {
-                            return data['project_list'];
-                        }
-                        return [];
-                    }
-                },
-                'dataParams': {'list_from_app': this.mainDiv.data('current-feature').trim()},
                 'allowClear': true,
+                'dataParams': {'list_from_app': this.mainDiv.data('current-feature').trim()},
+                templateResult: function (state) {
+                    let titleHTML = `<span>${state.data?.title ? state.data.title : "_"}</span>`
+                    let codeHTML = `<span class="badge badge-soft-primary mr-2">${state.text ? state.text : "_"}</span>`
+                    return $(`<span>${codeHTML} ${titleHTML}</span>`);
+                },
                 cache: true,
             }
             if (dataOnload !== undefined && dataOnload !== null && dataOnload.length > 0) {
@@ -158,11 +152,12 @@ class BastionFieldControl {
                 });
 
                 // re-check project
-                if (clsThis.getOppFlag('showing') === true) {
+                if (clsThis.getOppFlag('showing') === true && hasVal) {
                     if (clsThis.getOppFlag('disabled') === false) clsThis.oppEle.prop('disabled', hasVal);
                     if (clsThis.getOppFlag('readonly') === false) clsThis.oppEle.prop('readonly', hasVal);
                 }
-            }).trigger('change');
+            });
+            if (this.prj_call_trigger_change === true) this.prjEle.trigger('change');
 
             // active events
             this.mainDiv.trigger('bastionField.init:prj');
@@ -211,29 +206,6 @@ class BastionFieldControl {
         }
     }
 
-    mockupPrjData() {
-        $.mockjax({
-            url: "/project/list/api",
-            contentType: "application/json",
-            responseText: {
-                data: {
-                    'project_list': [
-                        {
-                            'id': '1',
-                            'title': 'Prj 1'
-                        }, {
-                            'id': '2',
-                            'title': 'Prj 2'
-                        }, {
-                            'id': '3',
-                            'title': 'Prj 3'
-                        },
-                    ]
-                }
-            }
-        });
-    }
-
     getParamsInitOfInheritor() {
         let params = {};
         if (this.realOppData.length > 0) {
@@ -259,7 +231,6 @@ class BastionFieldControl {
     }
 
     init() {
-        this.mockupPrjData();
         if (this.mainDiv instanceof jQuery && this.mainDiv.length === 1) {
             this.mainDiv.trigger('bastionField.preInit');
 

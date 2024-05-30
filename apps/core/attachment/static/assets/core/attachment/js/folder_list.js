@@ -1,13 +1,17 @@
 $(function () {
     $(document).ready(function () {
         let $folderMenu = $('#folder-menu');
+        let $btnBack = $('#btn-back');
+        let $btnNext = $('#btn-next');
+        let $btnRefresh = $('#btn-refresh');
+        let $folderPath = $('#folder-path');
         let $folderTree = $('#folder-tree');
         let $folderContent = $('#folder-content-body');
         let $btnAdd = $('#btn-add-folder');
         loadAction();
         loadAjaxFolder(0);
 
-
+        // FOLDER TREE
         $folderTree.on('mouseenter', '.folder-btn', function () {
             if (!$(this).hasClass('clicked')) {
                 $(this).closest('.folder-wrapper').css('background-color', '#ebfcf5');
@@ -38,8 +42,7 @@ $(function () {
             $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
         });
 
-
-
+        // FOLDER CONTENT
         $folderContent.on('mouseenter', '.folder-btn', function () {
             if (!$(this).hasClass('clicked')) {
                 $(this).closest('.folder-wrapper').css('background-color', '#ebfcf5');
@@ -66,6 +69,23 @@ $(function () {
 
         $folderContent.on('dblclick', '.folder-btn', function () {
             loadAjaxFolderContent($(this));
+        });
+
+
+
+        $btnBack.on('click', function () {
+            let ID = $(this).attr('data-id');
+            if (ID) {
+               loadAjaxFolderContent($(this));
+               loadFolderPath(1);
+            }
+        });
+
+        $btnRefresh.on('click', function () {
+            let ID = $(this).attr('data-id');
+            if (ID) {
+                loadAjaxFolderContent($(this));
+            }
         });
 
         $btnAdd.on('click', function () {
@@ -106,6 +126,7 @@ $(function () {
                     blogHeader.classList.add('hidden');
                 }
             }
+            return true;
         }
 
         function loadAjaxFolder(load_type, $eleFolderCl = null) {
@@ -152,6 +173,7 @@ $(function () {
                     }
                 }
             }
+            return true;
         }
 
         function loadFolderParent(dataList) {
@@ -168,7 +190,7 @@ $(function () {
                                         >
                                             <span class="icon"><small><i class="fas fa-chevron-right mt-2"></i></small></span>
                                         </button></small>
-                                        <button type="button" class="btn folder-btn" data-id="${dataFolder?.['id']}">
+                                        <button type="button" class="btn folder-btn" data-id="${dataFolder?.['id']}" data-parent-id="${dataFolder?.['parent_n_id'] ? dataFolder?.['parent_n_id'] : ''}">
                                             <span>
                                                 <span class="icon"><i class="far fa-folder"></i></span>
                                                 <span>${dataFolder?.['title']}</span>
@@ -176,6 +198,7 @@ $(function () {
                                         </button>
                                     </div>`);
             }
+            return true;
         }
 
         function loadFolderChild(dataList, $eleFolderCl) {
@@ -209,8 +232,7 @@ $(function () {
                                     >
                                         <span class="icon"><small><i class="fas fa-chevron-right mt-2"></i></small></span>
                                     </button></small>
-                                    <button type="button" class="btn folder-btn" data-id="${dataFolder?.['id']}"
-                                    >
+                                    <button type="button" class="btn folder-btn" data-id="${dataFolder?.['id']}" data-parent-id="${dataFolder?.['parent_n_id'] ? dataFolder?.['parent_n_id'] : ''}">
                                         <span>
                                             <span class="icon"><i class="far fa-folder"></i></span>
                                             <span>${dataFolder?.['title']}</span>
@@ -219,9 +241,13 @@ $(function () {
                                 </div>`;
             }
             $($eleFolderCl[0].closest('.folder-wrapper')).after(`<div class="collapse show collapse-folder-child" id="${parentID}">${htmlChild}</div>`);
+            return true;
         }
 
         function loadAjaxFolderContent($eleFolder) {
+            // set data-id $btnRefresh
+            $btnRefresh.attr('data-id', $eleFolder.attr('data-id'));
+            // load Folders
             $.fn.callAjax2({
                 url: $folderTree.attr('data-url'),
                 method: $folderTree.attr('data-method'),
@@ -232,6 +258,7 @@ $(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('folder_list')) {
                         let dataFolderList = resp.data['folder_list'] ? resp.data['folder_list'] : [];
+                        // load Files
                         $.fn.callAjax2({
                             url: $folderTree.attr('data-url-file'),
                             method: $folderTree.attr('data-method'),
@@ -243,12 +270,39 @@ $(function () {
                                 if (data && resp.data.hasOwnProperty('folder_file_list')) {
                                     let dataFileList = resp.data['folder_file_list'] ? resp.data['folder_file_list'] : [];
                                     loadFolderContent(dataFolderList, dataFileList);
+                                    // set data-id $btnBack
+                                    $.fn.callAjax2({
+                                        url: $folderTree.attr('data-url'),
+                                        method: $folderTree.attr('data-method'),
+                                        'data': {'id': $eleFolder.attr('data-id')},
+                                        isLoading: false,
+                                    }).then(
+                                        (resp) => {
+                                            let data = $.fn.switcherResp(resp);
+                                            if (data && resp.data.hasOwnProperty('folder_list')) {
+                                                let dataFdList = resp.data['folder_list'] ? resp.data['folder_list'] : [];
+                                                if (dataFdList.length > 0) {
+                                                    let dataFd = dataFdList[0];
+                                                    if (dataFd?.['parent_n_id']) {
+                                                        $btnBack.attr('data-id', dataFd?.['parent_n_id']);
+                                                        $btnBack[0].removeAttribute('disabled');
+                                                    } else {
+                                                        $btnBack[0].setAttribute('disabled', 'true');
+                                                    }
+                                                    if ($eleFolder[0].id !== 'btn-back') {
+                                                        loadFolderPath(0, dataFd?.['title']);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    )
                                 }
                             }
                         )
                     }
                 }
             )
+            return true;
         }
 
         function loadFolderContent(dataFolderList, dataFileList) {
@@ -257,7 +311,7 @@ $(function () {
                 $folderContent.append(`<div class="row">
                                             <div class="col-12 col-md-5 col-lg-5">
                                                 <div class="d-flex justify-content-start folder-wrapper">
-                                                    <button type="button" class="btn folder-btn" data-id="${data?.['id']}">
+                                                    <button type="button" class="btn folder-btn" data-id="${data?.['id']}" data-parent-id="${data?.['parent_n_id'] ? data?.['parent_n_id'] : ''}">
                                                         <span>
                                                             <span class="icon"><i class="far fa-folder"></i></span>
                                                             <span>${data?.['title']}</span>
@@ -273,9 +327,9 @@ $(function () {
                 'txt': 'far fa-file-alt',
                 'text/plain': 'far fa-file-alt',
                 'application/pdf': 'far fa-file-pdf text-red',
-                'application/msword': 'far fa-file-word text-blue',
-                'image/png': 'far fa-image',
-                'image/jpeg': 'far fa-image',
+                'application/msword': 'far fa-file-word text-indigo',
+                'image/png': 'far fa-image text-violet',
+                'image/jpeg': 'far fa-image text-violet',
             }
             for (let data of dataFileList) {
                 $folderContent.append(`<div class="row">
@@ -294,7 +348,31 @@ $(function () {
                                             <div class="col-12 col-md-2 col-lg-2">${data?.['file_size']}</div>
                                         </div>`);
             }
+            return true;
         }
+
+        function loadFolderPath(load_type, title = '') {
+            if (load_type === 0) {
+                $folderPath.append(`<i class="fas fa-angle-right mr-2"></i><span class="mr-2">${title}</span>`);
+            }
+            if (load_type === 1) {
+                // Select the last <i> element within the parent
+                let lastIcon = $folderPath[0].querySelector('i:last-of-type');
+                // Remove the last <i> element
+                if (lastIcon) {
+                    $folderPath[0].removeChild(lastIcon);
+                }
+                // Select the last <span> element within the parent
+                let lastSpan = $folderPath[0].querySelector('span:last-of-type');
+                // Remove the last <span> element
+                if (lastSpan) {
+                    $folderPath[0].removeChild(lastSpan);
+                }
+            }
+            return true;
+        }
+
+
 
 
 

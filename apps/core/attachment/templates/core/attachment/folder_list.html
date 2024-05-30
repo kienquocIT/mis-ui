@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+
+{% block pageContent %}
+
+    <form
+            data-url="{% url 'QuotationListAPI' %}"
+            data-method="POST"
+            id="frm_quotation_create"
+            method="post"
+    >
+        {% csrf_token %}
+        <div id="folder-menu" class="h-50p border-bottom">
+            <div class="row">
+                <div class="col-12 col-md-4 col-lg-4">
+                    <div class="row">
+                        <div class="col-12 col-md-3 col-lg-3 border-right">
+                            <button type="button" class="btn btn-flush-primary flush-soft-hover btn-sm" data-bs-toggle="modal" data-bs-target="#addFolder">
+                                <span><span class="icon"><i class="far fa-plus-square"></i></span><span>{% trans 'Add new' %}</span></span>
+                            </button>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3 border-right">
+                            <div class="d-flex justify-content-start">
+                                <button type="button" class="btn btn-icon btn-flush-primary flush-soft-hover btn-sm mr-3" disabled><span class="icon"><i class="fas fa-cut"></i></span></button>
+                                <button type="button" class="btn btn-icon btn-flush-primary flush-soft-hover btn-sm mr-3" disabled><span class="icon"><i class="fas fa-copy"></i></span></button>
+                                <button type="button" class="btn btn-icon btn-flush-primary flush-soft-hover btn-sm mr-3" disabled><span class="icon"><i class="fas fa-paste"></i></span></button>
+                                <button type="button" class="btn btn-icon btn-flush-primary flush-soft-hover btn-sm mr-3" disabled><span class="icon"><i class="fas fa-trash-alt"></i></span></button>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="d-flex justify-content-start">
+                                <button type="button" class="btn btn-icon btn-flush-primary flush-soft-hover btn-sm"><span class="icon"><i class="fas fa-ellipsis-h"></i></span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addFolder" tabindex="-1" role="dialog" aria-labelledby="addFolder" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add new folder</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label required" for="add-folder-title">{% trans 'Title' %}</label>
+                            <input
+                                    type="text" class="form-control"
+                                    name="title"
+                                    id="add-folder-title"
+                                    required
+                            >
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                        <button type="button" class="btn btn-primary" id="btn-add-folder" data-url="{% url 'FolderListAPI' %}" data-redirect="{% url 'FolderList' %}" data-method="POST">{% trans 'Save' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <div class="row">
+            <div class="col-12 col-md-4 col-lg-4">
+                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-800p position-relative overflow-y-scroll">
+                    <div class="row" id="folder-tree" data-url="{% url 'FolderListAPI' %}" data-url-file="{% url 'FolderFileListAPI' %}" data-method="GET"></div>
+                </div>
+            </div>
+            <div class="col-12 col-md-8 col-lg-8">
+                <div class="row mb-2">
+                    <div class="col-12 col-md-5 col-lg-5">
+                        <h6 class="text-primary ml-3">Name</h6>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <h6 class="text-primary">Date modified</h6>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <h6 class="text-primary">Type</h6>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <h6 class="text-primary">Size</h6>
+                    </div>
+                </div>
+
+                <div id="folder-content-body"></div>
+
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+    >
+
+{% endblock %}
+
+{% block jsFooter %}
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+
+    <script src="{% static 'assets/core/attachment/js/folder_list.js' %}"></script>
+
+{% endblock %}

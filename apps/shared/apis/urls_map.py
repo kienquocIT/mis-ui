@@ -572,3 +572,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Diagram
     DIAGRAM_LIST = StringUrl('diagram/list')
+
+    # Folder
+    FOLDER_LIST = StringUrl('attachment/folder/list')
+    FOLDER_FILE_LIST = StringUrl('attachment/folder-file/list')

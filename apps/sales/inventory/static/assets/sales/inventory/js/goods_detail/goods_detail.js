@@ -129,7 +129,10 @@ $(document).ready(function () {
                     data: 'goods_receipt',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span>${moment(data?.['date_approved'].split(' ')[0]).format('DD/MM/YYYY')}</span>`;
+                        if (data?.['date_approved']) {
+                            return `<span>${moment(data?.['date_approved'].split(' ')[0]).format('DD/MM/YYYY')}</span>`;
+                        }
+                        return ``
                     }
                 },
                 {

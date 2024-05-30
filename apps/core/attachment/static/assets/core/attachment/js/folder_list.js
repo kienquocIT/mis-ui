@@ -1,5 +1,6 @@
 $(function () {
     $(document).ready(function () {
+        let $folderMenu = $('#folder-menu');
         let $folderTree = $('#folder-tree');
         let $folderContent = $('#folder-content-body');
         let $btnAdd = $('#btn-add-folder');
@@ -58,6 +59,9 @@ $(function () {
             }
             $(this).addClass('clicked');
             $(this).closest('.folder-wrapper').css('background-color', '#f7f7f7');
+            for (let btn of $folderMenu[0].querySelectorAll('.btn-action')) {
+                btn.removeAttribute('disabled');
+            }
         });
 
         $folderContent.on('dblclick', '.folder-btn', function () {
@@ -228,7 +232,6 @@ $(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('folder_list')) {
                         let dataFolderList = resp.data['folder_list'] ? resp.data['folder_list'] : [];
-                        // loadFolderContent(dataFolderList);
                         $.fn.callAjax2({
                             url: $folderTree.attr('data-url-file'),
                             method: $folderTree.attr('data-method'),
@@ -269,8 +272,8 @@ $(function () {
             let imgMapType = {
                 'txt': 'far fa-file-alt',
                 'text/plain': 'far fa-file-alt',
-                'application/pdf': 'far fa-file-pdf',
-                'application/msword': 'far fa-file-word',
+                'application/pdf': 'far fa-file-pdf text-red',
+                'application/msword': 'far fa-file-word text-blue',
                 'image/png': 'far fa-image',
                 'image/jpeg': 'far fa-image',
             }

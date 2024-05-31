@@ -92,6 +92,14 @@ def create_common(request, url, msg):
     return resp.auto_return()
 
 
+def update_common(request, url, pk, msg):
+    resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
+    if resp.state:
+        resp.result['message'] = msg
+        return resp.result, status.HTTP_201_CREATED
+    return resp.auto_return()
+
+
 class FolderListAPI(APIView):
     @mask_view(
         auth_require=True,
@@ -111,6 +119,29 @@ class FolderListAPI(APIView):
             request=request,
             url=ApiURL.FOLDER_LIST,
             msg=CoreMsg.FOLDER_CREATE
+        )
+
+
+class FolderDetailAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_DETAIL.push_id(pk)).get()
+        return resp.auto_return()
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        return update_common(
+            request=request,
+            url=ApiURL.QUOTATION_DETAIL,
+            pk=pk,
+            msg=CoreMsg.FOLDER_UPDATE
         )
 
 

@@ -8,6 +8,11 @@ $(function () {
         let $folderTree = $('#folder-tree');
         let $folderContent = $('#folder-content-body');
         let $btnAdd = $('#btn-add-folder');
+
+        let $transFact = $('#app-trans-factory');
+        let $urlFact = $('#app-url-factory');
+
+        loadBoxParent($('#add-folder-box-parent'));
         loadAction();
         loadAjaxFolder(0);
 
@@ -103,11 +108,12 @@ $(function () {
         $btnAdd.on('click', function () {
             let dataSubmit = {};
             dataSubmit['title'] = $('#add-folder-title').val();
+            dataSubmit['parent_n'] = $('#add-folder-box-parent').val();
             WindowControl.showLoading();
             $.fn.callAjax2(
                 {
-                    'url': $(this).attr('data-url'),
-                    'method': $(this).attr('data-method'),
+                    'url': $urlFact.attr('data-url'),
+                    'method': 'POST',
                     'data': dataSubmit,
                 }
             ).then(
@@ -116,7 +122,7 @@ $(function () {
                         if (data && (data['status'] === 201 || data['status'] === 200)) {
                             $.fn.notifyB({description: data.message}, 'success');
                             setTimeout(() => {
-                                window.location.replace($(this).attr('data-redirect'));
+                                window.location.replace($urlFact.attr('data-url-redirect'));
                             }, 1000);
                         }
                     }, (err) => {
@@ -130,6 +136,15 @@ $(function () {
 
 
         // FUNCTIONS
+        function loadBoxParent($eleBox) {
+            $eleBox.empty();
+            let dataParams = {};
+            $eleBox.initSelect2({
+                'dataParams': dataParams,
+                'allowClear': true,
+            });
+        }
+
         function loadAction() {
             let $ele = $('#breadcrumb-data');
             if ($ele && $ele.length > 0) {
@@ -146,8 +161,8 @@ $(function () {
             if (load_type === 0) {
                 dataFilter = {'parent_n_id__isnull': true};
                 $.fn.callAjax2({
-                    url: $folderTree.attr('data-url'),
-                    method: $folderTree.attr('data-method'),
+                    url: $urlFact.attr('data-url'),
+                    method: 'GET',
                     'data': dataFilter,
                     isLoading: true,
                 }).then(
@@ -167,8 +182,8 @@ $(function () {
                     if (!$eleParent.length > 0) {
                         dataFilter = {'parent_n_id': $eleFolderCl.attr('data-id')};
                         $.fn.callAjax2({
-                            url: $folderTree.attr('data-url'),
-                            method: $folderTree.attr('data-method'),
+                            url: $urlFact.attr('data-url'),
+                            method: 'GET',
                             'data': dataFilter,
                             isLoading: false,
                         }).then(
@@ -261,8 +276,8 @@ $(function () {
             $btnRefresh.attr('data-id', $eleFolder.attr('data-id'));
             // load Folders
             $.fn.callAjax2({
-                url: $folderTree.attr('data-url'),
-                method: $folderTree.attr('data-method'),
+                url: $urlFact.attr('data-url'),
+                method: 'GET',
                 'data': {'parent_n_id': $eleFolder.attr('data-id')},
                 isLoading: false,
             }).then(
@@ -272,8 +287,8 @@ $(function () {
                         let dataFolderList = resp.data['folder_list'] ? resp.data['folder_list'] : [];
                         // load Files
                         $.fn.callAjax2({
-                            url: $folderTree.attr('data-url-file'),
-                            method: $folderTree.attr('data-method'),
+                            url: $urlFact.attr('data-url-file'),
+                            method: 'GET',
                             'data': {'folder_id': $eleFolder.attr('data-id')},
                             isLoading: false,
                         }).then(
@@ -284,8 +299,8 @@ $(function () {
                                     loadFolderContent(dataFolderList, dataFileList);
                                     // set data-id $btnBack && set data $folderPath
                                     $.fn.callAjax2({
-                                        url: $folderTree.attr('data-url'),
-                                        method: $folderTree.attr('data-method'),
+                                        url: $urlFact.attr('data-url'),
+                                        method: 'GET',
                                         'data': {'id': $eleFolder.attr('data-id')},
                                         isLoading: false,
                                     }).then(

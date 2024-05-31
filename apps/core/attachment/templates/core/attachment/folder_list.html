@@ -45,14 +45,17 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-12 col-md-4 col-lg-4">
+                <div class="col-12 col-md-6 col-lg-6">
                     <div class="row">
-                        <div class="col-12 col-md-4 col-lg-4 border-right">
-                            <button type="button" class="btn btn-flush-primary flush-soft-hover btn-sm" data-bs-toggle="modal" data-bs-target="#addFolder">
+                        <div class="col-12 col-md-5 col-lg-5 border-right">
+                            <button type="button" class="btn btn-link btn-animated btn-sm" data-bs-toggle="modal" data-bs-target="#addFolder">
                                 <span><span class="icon"><i class="far fa-plus-square"></i></span><span>{% trans 'Add new' %}</span></span>
                             </button>
+                            <button type="button" class="btn btn-link btn-animated btn-sm" data-bs-toggle="modal" data-bs-target="" disabled>
+                                <span><span class="icon"><i class="far fa-edit"></i></span><span>{% trans 'Edit' %}</span></span>
+                            </button>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-6 border-right">
+                        <div class="col-12 col-md-5 col-lg-5">
                             <div class="d-flex justify-content-start">
                                 <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm btn-action mr-4" disabled><span class="icon"><i class="fas fa-cut"></i></span></button>
                                 <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm btn-action mr-4" disabled><span class="icon"><i class="fas fa-copy"></i></span></button>
@@ -60,11 +63,11 @@
                                 <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm btn-action" disabled><span class="icon"><i class="fas fa-trash-alt"></i></span></button>
                             </div>
                         </div>
-                        <div class="col-12 col-md-2 col-lg-2">
-                            <div class="d-flex justify-content-start">
-                                <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"><span class="icon"><i class="fas fa-ellipsis-h"></i></span></button>
-                            </div>
-                        </div>
+{#                        <div class="col-12 col-md-2 col-lg-2">#}
+{#                            <div class="d-flex justify-content-start">#}
+{#                                <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"><span class="icon"><i class="fas fa-ellipsis-h"></i></span></button>#}
+{#                            </div>#}
+{#                        </div>#}
                     </div>
                 </div>
             </div>
@@ -74,7 +77,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Add new folder</h5>
+                        <h5 class="modal-title">{% trans 'Add folder' %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -89,10 +92,21 @@
                                     required
                             >
                         </div>
+                        <div class="form-group">
+                            <label class="form-label" for="add-folder-box-parent">{% trans 'Parent folder' %}</label>
+                            <select
+                                class="form-select"
+                                id="add-folder-box-parent"
+                                data-url="{% url "FolderListAPI" %}"
+                                data-method="GET"
+                                name="parent_n"
+                                data-keyResp="folder_list"
+                            ></select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-                        <button type="button" class="btn btn-primary" id="btn-add-folder" data-url="{% url 'FolderListAPI' %}" data-redirect="{% url 'FolderList' %}" data-method="POST">{% trans 'Save' %}</button>
+                        <button type="button" class="btn btn-primary" id="btn-add-folder">{% trans 'Save' %}</button>
                     </div>
                 </div>
             </div>
@@ -102,7 +116,7 @@
         <div class="row">
             <div class="col-12 col-md-4 col-lg-4">
                 <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-800p position-relative overflow-y-scroll">
-                    <div class="row" id="folder-tree" data-url="{% url 'FolderListAPI' %}" data-url-file="{% url 'FolderFileListAPI' %}" data-method="GET"></div>
+                    <div class="row" id="folder-tree"></div>
                 </div>
             </div>
             <div class="col-12 col-md-8 col-lg-8">
@@ -132,6 +146,14 @@
     <input
         type="text"
         id="app-trans-factory"
+    >
+    <input
+        type="text"
+        id="app-url-factory"
+        data-url="{% url 'FolderListAPI' %}"
+        data-url-detail="{% url 'FolderDetailAPI' pk %}"
+        data-url-redirect="{% url 'FolderList' %}"
+        data-url-file="{% url 'FolderFileListAPI' %}"
     >
 
 {% endblock %}

@@ -575,4 +575,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Folder
     FOLDER_LIST = StringUrl('attachment/folder/list')
+    FOLDER_DETAIL = StringUrl('attachment/folder')
     FOLDER_FILE_LIST = StringUrl('attachment/folder-file/list')

@@ -611,10 +611,10 @@
                             <div class="tab-pane fade" id="tab_logistic">
                                 <div class="row logistics-body">
                                     <div class="form-group">
-                                        <label class="form-label">{% trans 'Shipping Address' %}
-                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" id="btn-edit-shipping" data-bs-toggle="modal" data-bs-target="#shippingModalCenter" data-zone="quotation_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
+                                        <label class="form-label text-primary">{% trans 'Shipping Address' %}
+                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-sm" id="btn-edit-shipping" data-bs-toggle="modal" data-bs-target="#shippingModalCenter" data-zone="quotation_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
-                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-shipping-address" data-zone="quotation_logistic_data_readonly" disabled></textarea>
+                                        <textarea class="form-control text-black" rows="3" cols="50" name="" id="quotation-create-shipping-address" data-zone="quotation_logistic_data_readonly" disabled></textarea>
                                         <input type="text" id="quotation-create-customer-shipping" hidden>
                                     </div>
                                     <div
@@ -644,10 +644,10 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">{% trans 'Billing Address' %}
-                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" id="btn-edit-billing" data-bs-toggle="modal" data-bs-target="#billingModalCenter" data-zone="quotation_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
+                                        <label class="form-label text-primary">{% trans 'Billing Address' %}
+                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-sm" id="btn-edit-billing" data-bs-toggle="modal" data-bs-target="#billingModalCenter" data-zone="quotation_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
-                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-billing-address" data-zone="quotation_logistic_data_readonly" disabled></textarea>
+                                        <textarea class="form-control text-black" rows="3" cols="50" name="" id="quotation-create-billing-address" data-zone="quotation_logistic_data_readonly" disabled></textarea>
                                         <input type="text" id="quotation-create-customer-billing" hidden>
                                     </div>
                                     <div
@@ -684,7 +684,7 @@
             </div>
             <div class="tab-pane fade" id="tab_block_2">
                 <div class="row">
-                    <div class="row mb-1">
+                    <div class="row">
                         <div class="col-2">
                             <button
                                     type="button"
@@ -692,7 +692,7 @@
                                     id="btn-refresh-quotation-indicator"
                                     data-zone="quotation_indicators_data"
                             >
-                            <span><span>{% trans 'Refresh' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-sync-alt"></i></span></span></span>
+                            <span><span>{% trans 'Refresh' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-redo-alt"></i></span></span></span>
                             </button>
                         </div>
                         <div class="col-10"></div>
@@ -856,7 +856,6 @@
 
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
-    <script src="{% static 'assets/sales/quotation/js/quotation_promote_shipping.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_detail.js' %}"></script>

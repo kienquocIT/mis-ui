@@ -35,6 +35,7 @@ $(function () {
 
         $folderTree.on('click', '.folder-btn', function () {
             loadAjaxFolderContent($(this));
+            $btnNext[0].setAttribute('disabled', 'true');
         });
 
         $folderTree.on('click', '.folder-cl', function () {
@@ -69,6 +70,7 @@ $(function () {
 
         $folderContent.on('dblclick', '.folder-btn', function () {
             loadAjaxFolderContent($(this));
+            $btnNext[0].setAttribute('disabled', 'true');
         });
 
 
@@ -78,6 +80,16 @@ $(function () {
             if (ID) {
                loadAjaxFolderContent($(this));
                loadFolderPath(1);
+               $btnNext[0].removeAttribute('disabled');
+            } else {
+                $btnNext[0].setAttribute('disabled', 'true');
+            }
+        });
+
+        $btnNext.on('click', function () {
+            let ID = $(this).attr('data-id');
+            if (ID) {
+                loadAjaxFolderContent($(this));
             }
         });
 
@@ -270,7 +282,7 @@ $(function () {
                                 if (data && resp.data.hasOwnProperty('folder_file_list')) {
                                     let dataFileList = resp.data['folder_file_list'] ? resp.data['folder_file_list'] : [];
                                     loadFolderContent(dataFolderList, dataFileList);
-                                    // set data-id $btnBack
+                                    // set data-id $btnBack && set data $folderPath
                                     $.fn.callAjax2({
                                         url: $folderTree.attr('data-url'),
                                         method: $folderTree.attr('data-method'),
@@ -283,14 +295,25 @@ $(function () {
                                                 let dataFdList = resp.data['folder_list'] ? resp.data['folder_list'] : [];
                                                 if (dataFdList.length > 0) {
                                                     let dataFd = dataFdList[0];
+                                                    let dataIDBack = $btnBack.attr('data-id');
                                                     if (dataFd?.['parent_n_id']) {
                                                         $btnBack.attr('data-id', dataFd?.['parent_n_id']);
                                                         $btnBack[0].removeAttribute('disabled');
                                                     } else {
                                                         $btnBack[0].setAttribute('disabled', 'true');
                                                     }
-                                                    if ($eleFolder[0].id !== 'btn-back') {
-                                                        loadFolderPath(0, dataFd?.['title']);
+                                                    if (!['btn-back', 'btn-refresh'].includes($eleFolder[0].id)) {
+                                                        if (dataFd?.['id']) {
+                                                            if (dataFd?.['id'] !== dataIDBack) {
+                                                                $btnNext.attr('data-id', dataFd?.['id']);
+                                                            }
+                                                        }
+                                                        // reset path
+                                                        if ($eleFolder[0].closest('#folder-tree')) {
+                                                            loadFolderPath(3);
+                                                        }
+                                                        // set next path
+                                                        loadFolderPath(0, dataFd);
                                                     }
                                                 }
                                             }
@@ -351,9 +374,16 @@ $(function () {
             return true;
         }
 
-        function loadFolderPath(load_type, title = '') {
+        function loadFolderPath(load_type, dataFd = {}) {
             if (load_type === 0) {
-                $folderPath.append(`<i class="fas fa-angle-right mr-2"></i><span class="mr-2">${title}</span>`);
+                let lastSpan = $folderPath[0].querySelector('span:last-of-type');
+                if (lastSpan) {
+                    let dataParentID = lastSpan.getAttribute('data-parent-id');
+                    if (dataParentID === dataFd?.['parent_n_id']) {
+                        loadFolderPath(1);
+                    }
+                    $folderPath.append(`<i class="fas fa-angle-right mr-2"></i><span class="mr-2" data-parent-id="${dataFd?.['parent_n_id']}">${dataFd?.['title']}</span>`);
+                }
             }
             if (load_type === 1) {
                 // Select the last <i> element within the parent
@@ -368,6 +398,10 @@ $(function () {
                 if (lastSpan) {
                     $folderPath[0].removeChild(lastSpan);
                 }
+            }
+            if (load_type === 3) {
+                $folderPath.empty();
+                $folderPath.append(`<i class="fas fa-desktop mr-2"></i><span class="mr-2" data-parent-id="${dataFd?.['parent_n_id']}">Home</span>`);
             }
             return true;
         }

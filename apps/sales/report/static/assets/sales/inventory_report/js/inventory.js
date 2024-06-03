@@ -224,7 +224,7 @@ $(document).ready(function () {
                                     <tr>
                                         <td class="border-1 first-col" colspan="3">
                                             <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
-                                            &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
+                                            &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                         </td>
                                         <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
                                         <td class=""><span class="opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></td>
@@ -254,7 +254,7 @@ $(document).ready(function () {
                                     <tr>
                                         <td class="border-1 first-col" colspan="3">
                                             <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
-                                            &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
+                                            &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                         </td>
                                         <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
                                         <td class=""><span class="opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></td>
@@ -318,7 +318,7 @@ $(document).ready(function () {
                                         <tr>
                                             <td class="border-1 first-col" colspan="3">
                                                 <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
-                                                &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
+                                                &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                             </td>
                                             <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
                                             <td class=""><span class="opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></td>
@@ -347,7 +347,7 @@ $(document).ready(function () {
                                         <tr>
                                             <td class="border-1 first-col" colspan="3">
                                                 <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
-                                                &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
+                                                &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                             </td>
                                             <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
                                             <td class=""><span class="opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></td>
@@ -455,6 +455,7 @@ $(document).ready(function () {
 
             Promise.all([inventory_detail_list_ajax]).then(
                 (results) => {
+                    console.log(results[0])
                     $('#btn-collapse').trigger('click')
                     table_inventory_report.find('tbody').html('')
                     let opening_sum_quantity = 0
@@ -540,7 +541,7 @@ $(document).ready(function () {
                                     <tr class="${no_info}">
                                         <td class="border-1 first-col" colspan="3">
                                             <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
-                                            &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
+                                            &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                         </td>
                                         <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
                                         <td class="" colspan="3"></td>
@@ -623,7 +624,7 @@ $(document).ready(function () {
                                     <tr class="${no_info}">
                                         <td class="border-1 first-col" colspan="3">
                                             <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
-                                            &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
+                                            &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                         </td>
                                         <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
                                         <td class="" colspan="3"></td>
@@ -744,7 +745,7 @@ $(document).ready(function () {
                                         <tr class="${no_info}">
                                             <td class="border-1 first-col" colspan="3">
                                                 <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
-                                                &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
+                                                &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                             </td>
                                             <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
                                             <td class="" colspan="3"></td>
@@ -828,7 +829,7 @@ $(document).ready(function () {
                                         <tr class="${no_info}">
                                             <td class="border-1 first-col" colspan="3">
                                                 <span>${warehouse_activities?.['product']?.['code']}</span>
-                                                &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>
+                                                &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                             </td>
                                             <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
                                             <td class="" colspan="3"></td>

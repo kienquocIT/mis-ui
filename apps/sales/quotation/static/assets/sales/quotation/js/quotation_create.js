@@ -136,6 +136,11 @@ $(function () {
             QuotationLoadDataHandle.loadAddRowProduct();
         });
 
+// Action on click select2 product
+        tableProduct.on('click', '.table-row-item-area', function () {
+           QuotationLoadDataHandle.loadBtnAddProductSelect2(this.closest('tr'));
+        });
+
 // Action on delete row product
         tableProduct.on('click', '.del-row', function (e) {
             e.stopPropagation();

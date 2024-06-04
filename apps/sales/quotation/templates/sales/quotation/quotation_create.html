@@ -737,6 +737,113 @@
                 >
             </div>
         </div>
+
+        <div class="modal-area">
+            <div class="modal fade" id="addBasicProduct" tabindex="-1" role="dialog" aria-labelledby="addBasicProduct" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">New product</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="form-label required" for="add-product-title">{% trans 'Title' %}</label>
+                                <input
+                                        type="text" class="form-control"
+                                        name="title"
+                                        id="add-product-title"
+                                        required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required" for="add-product-remark">{% trans 'Description' %}</label>
+                                <textarea class="form-control" id="add-product-remark" rows="2"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required" for="add-product-part-number">{% trans 'Part number' %}</label>
+                                <input
+                                        type="text" class="form-control"
+                                        name="part_number"
+                                        id="add-product-part-number"
+                                        required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="add-product-type">{% trans 'Type' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="add-product-type"
+                                    data-url="{% url "FolderListAPI" %}"
+                                    data-method="GET"
+                                    name="parent_n"
+                                    data-keyResp="folder_list"
+                                ></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="add-product-category">{% trans 'Category' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="add-product-category"
+                                    data-url="{% url "FolderListAPI" %}"
+                                    data-method="GET"
+                                    name="parent_n"
+                                    data-keyResp="folder_list"
+                                ></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="add-product-uom-group">{% trans 'UOM group' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="add-product-uom-group"
+                                    data-url="{% url "FolderListAPI" %}"
+                                    data-method="GET"
+                                    name="parent_n"
+                                    data-keyResp="folder_list"
+                                ></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="add-product-uom">{% trans 'UOM' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="add-product-uom"
+                                    data-url="{% url "FolderListAPI" %}"
+                                    data-method="GET"
+                                    name="parent_n"
+                                    data-keyResp="folder_list"
+                                ></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="add-product-tax">{% trans 'Tax' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="add-product-tax"
+                                    data-url="{% url "FolderListAPI" %}"
+                                    data-method="GET"
+                                    name="parent_n"
+                                    data-keyResp="folder_list"
+                                ></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="add-product-method">{% trans 'Traceability' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="add-product-method"
+                                    data-url="{% url "FolderListAPI" %}"
+                                    data-method="GET"
+                                    name="parent_n"
+                                    data-keyResp="folder_list"
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 {% endblock %}
 

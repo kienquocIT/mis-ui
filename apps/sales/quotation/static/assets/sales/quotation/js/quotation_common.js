@@ -321,6 +321,29 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadBtnAddProductSelect2(row) {
+        let $tables = $('#datable-quotation-create-product');
+        let rowIndex = $tables.DataTable().row(row).index();
+        let $row = $tables.DataTable().row(rowIndex);
+        let rowData = $row.data();
+        if (rowData?.['order']) {
+            let addProductID = `btn-add-product-${rowData?.['order']}`;
+            let $addProduct = $(`#${addProductID}`);
+            if ($addProduct.length <= 0) {
+                let s2ResultID = `select2-product-${rowData?.['order']}-results`;
+                let $s2Result = $(`#${s2ResultID}`);
+                if ($s2Result && $s2Result.length > 0) {
+                    let eleResult = $s2Result[0].closest('.select2-results');
+                    if (eleResult) {
+                        $(eleResult).before(`<button type="button" class="btn btn-link btn-animated btn-sm" id="${addProductID}" data-bs-toggle="modal" data-bs-target="#addBasicProduct" disabled>
+                                                <span><span class="icon"><i class="far fa-plus-square"></i></span><span>Add new</span></span>
+                                            </button>`)
+                    }
+                }
+            }
+        }
+    };
+
     static loadBoxQuotationExpenseItem(ele, dataExpenseItem = {}) {
         ele.initSelect2({
             data: dataExpenseItem,
@@ -1777,7 +1800,7 @@ class QuotationLoadDataHandle {
         }
     };
 
-    // Load detail
+    // LOAD DETAIL
     static loadDetailQuotation(data, is_copy = false) {
         let form = document.getElementById('frm_quotation_create');
         if (data?.['title'] && is_copy === false) {
@@ -2310,10 +2333,7 @@ class QuotationDataTableHandle {
                         if (itemType === 0) { // PRODUCT
                             return `<div class="row table-row-item-area">
                                         <div class="col-12 col-md-12 col-lg-12">
-                                            <select 
-                                            class="form-select table-row-item" 
-                                            data-zone="${dataZone}"
-                                            >
+                                            <select class="form-select table-row-item" id="product-${row?.['order']}" data-zone="${dataZone}">
                                             </select>
                                         </div>
                                     </div>`;

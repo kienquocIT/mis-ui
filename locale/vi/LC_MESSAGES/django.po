@@ -7536,7 +7536,7 @@ msgstr "Vai trò bán hàng nhanh"
 
 #
 msgid "Role long sale"
-msgstr "Vai trò bán hàng chậm"
+msgstr "Vai trò bán hàng dự án"
 
 #
 msgid "Calculate ending cumulative value"

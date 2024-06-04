@@ -4233,7 +4233,7 @@ class indicatorHandle {
             }
             if (value && revenueValue) {
                 if (revenueValue !== 0) {
-                    rateValue = ((value / revenueValue) * 100).toFixed(1);
+                    rateValue = ((value / revenueValue) * 100).toFixed(0);
                 }
             }
             // quotation value

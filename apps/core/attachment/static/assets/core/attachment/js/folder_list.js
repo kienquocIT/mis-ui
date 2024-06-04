@@ -83,19 +83,6 @@ $(function () {
         $btnBack.on('click', function () {
             loadBackNext(0);
             $btnNext[0].removeAttribute('disabled');
-
-
-
-
-
-            // let ID = $(this).attr('data-id');
-            // if (ID) {
-            //    loadAjaxFolderContent($(this));
-            //    loadFolderPath(1);
-            //    $btnNext[0].removeAttribute('disabled');
-            // } else {
-            //     $btnNext[0].setAttribute('disabled', 'true');
-            // }
         });
 
         $btnNext.on('click', function () {
@@ -419,11 +406,15 @@ $(function () {
                                 $ele = $btnNext;
                                 targetData = nextData;
                             }
-                            if ($ele && targetData) {
-                                delete dataHis['is_current'];
-                                targetData['is_current'] = true;
-                                $ele.attr('data-id', targetData?.['id']);
-                                loadAjaxFolderContent($ele);
+                            if ($ele) {
+                                if (targetData) {
+                                    delete dataHis['is_current'];
+                                    targetData['is_current'] = true;
+                                    $ele.attr('data-id', targetData?.['id']);
+                                    loadAjaxFolderContent($ele);
+                                } else {
+                                    $ele.attr('disabled', 'true');
+                                }
                             }
                             // Update the data-list attribute with the modified listHistory
                             $folderHistory.attr('data-list', JSON.stringify(listHistory));

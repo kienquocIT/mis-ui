@@ -1754,7 +1754,8 @@ class WFRTControl {
                 WindowControl.showLoading();
                 setTimeout(function () {
                     // Redirect to the previous page
-                    window.history.back();
+                    let urlBack = window.location.href.replace('update', 'detail');
+                    window.location.replace(urlBack);
                 }, 1000);
             }
         }
@@ -6731,7 +6732,7 @@ class DiagramControl {
                     if (window.location.href.includes('/detail/')) {
                         // Split the URL by '/'
                         let parts = window.location.href.split('/');
-                        let pk = parts[parts.length - 1];
+                        let pk = DiagramControl.extractUUID(window.location.href);
                         $.fn.callAjax2({
                                 'url': $(this).attr('data-url'),
                                 'method': $(this).attr('data-method'),
@@ -6847,6 +6848,16 @@ class DiagramControl {
                                 </div>`;
         }
         return htmlPreSuffix;
+    };
+
+    static extractUUID(url) {
+        let regex = /\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/;
+        let match = url.match(regex);
+        if (match && match[1]) {
+            return match[1];
+        } else {
+            return null;
+        }
     };
 }
 

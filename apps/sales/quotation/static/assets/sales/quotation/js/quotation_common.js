@@ -1322,7 +1322,8 @@ class QuotationLoadDataHandle {
         });
     };
 
-    static loadBalanceValPT() {
+    // PAYMENT TERM
+    static loadBalanceValPaymentTerm() {
         let totalValue = 0;
         let term = [];
         if (QuotationLoadDataHandle.paymentSelectEle.val()) {
@@ -1353,7 +1354,7 @@ class QuotationLoadDataHandle {
                         termData['title'] = dataDateType[termData?.['after']][1];
                         let isNum = parseFloat(termData?.['value']);
                         if (!isNum) {  // balance
-                            termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPT());
+                            termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
                         }
                     }
                 }
@@ -1370,6 +1371,7 @@ class QuotationLoadDataHandle {
         }
     };
 
+    // TABLE PAYMENT STAGE
     static loadAddPaymentStage() {
         let $table = $('#datable-quotation-payment-stage');
         let dataAdd = {
@@ -1423,7 +1425,7 @@ class QuotationLoadDataHandle {
                         termData['title'] = dataDateType[termData?.['after']][1];
                         let isNum = parseFloat(termData?.['value']);
                         if (!isNum) {  // balance
-                            termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPT());
+                            termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
                         }
                     }
                 }
@@ -1476,21 +1478,7 @@ class QuotationLoadDataHandle {
                 if (dataSelected?.['value']) {
                     eleRatio.value = parseFloat(dataSelected?.['value']);
                 }
-                eleValueBT.setAttribute('disabled', 'true');
-                let valueSO = 0;
-                let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
-                if (tableProductWrapper) {
-                    let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-                    let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
-                    let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
-                    if (elePretax && eleDiscount) {
-                        valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
-                        if (dataSelected?.['value']) {
-                            let value = (parseFloat(dataSelected?.['value']) * valueSO) / 100;
-                            $(eleValueBT).attr('value', String(value));
-                        }
-                    }
-                }
+                QuotationLoadDataHandle.loadPSValueBeforeTax(eleValueBT, dataSelected?.['value']);
                 eleDueDate.setAttribute('disabled', 'true');
                 let date = $(eleDate).val();
                 if (date && dataSelected?.['no_of_days']) {
@@ -1503,12 +1491,31 @@ class QuotationLoadDataHandle {
         } else {
             if (eleRatio && eleValueBT && eleDueDate) {
                 eleRatio.removeAttribute('disabled');
-                eleValueBT.removeAttribute('disabled');
                 eleDueDate.removeAttribute('disabled');
             }
         }
         // mask money
         $.fn.initMaskMoney2();
+        return true;
+    };
+
+    static loadPSValueBeforeTax(ele, ratio) {
+        let valueSO = 0;
+        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+        if (tableProductWrapper) {
+            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+            let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+            let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+            if (elePretax && eleDiscount) {
+                valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
+                if (ratio) {
+                    let value = (parseFloat(ratio) * valueSO) / 100;
+                    $(ele).attr('value', String(value));
+                    // mask money
+                    $.fn.initMaskMoney2();
+                }
+            }
+        }
         return true;
     };
 
@@ -1519,29 +1526,13 @@ class QuotationLoadDataHandle {
             let eleTerm = row.querySelector('.table-row-term');
             let eleRatio = row.querySelector('.table-row-ratio');
             let eleValueBT = row.querySelector('.table-row-value-before-tax');
-            let valueSO = 0;
             if (eleTerm && eleRatio && eleValueBT) {
-                if ($(eleTerm).val()) {
-                    let tableProduct = document.getElementById('datable-quotation-create-product');
-                    if (tableProduct.closest('.dataTables_scroll')) {
-                        let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
-                        let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
-                        let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
-                        if (elePretax && eleDiscount) {
-                            valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
-                            if (eleRatio.value) {
-                                let value = (parseFloat(eleRatio.value) * valueSO) / 100;
-                                $(eleValueBT).attr('value', String(value));
-                            }
-                        }
-                    }
-                }
+                QuotationLoadDataHandle.loadPSValueBeforeTax(eleValueBT, $(eleRatio).val());
             }
         });
-        // mask money
-        $.fn.initMaskMoney2();
     };
 
+    // TABLE COST
     static loadDataTableCost() {
         let $table = $('#datable-quotation-create-cost');
         let $tableProduct = $('#datable-quotation-create-product');
@@ -2132,7 +2123,7 @@ class QuotationLoadDataHandle {
                             termData['title'] = dataDateType[termData?.['after']][1];
                             let isNum = parseFloat(termData?.['value']);
                             if (!isNum) {  // balance
-                                termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPT());
+                                termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
                             }
                         }
                     }
@@ -3495,9 +3486,10 @@ class QuotationDataTableHandle {
                     render: (data, type, row) => {
                         return `<input 
                                     type="text" 
-                                    class="form-control mask-money table-row-value-before-tax" 
+                                    class="form-control mask-money table-row-value-before-tax text-black" 
                                     value="${row?.['value_before_tax'] ? row?.['value_before_tax'] : '0'}"
                                     data-return-type="number"
+                                    disabled
                                 >`;
                     }
                 },
@@ -6377,7 +6369,9 @@ function validateNumber(ele) {
 }
 
 function validatePSValue(ele) {
+    let row = ele.closest('tr');
     let tablePS = $('#datable-quotation-payment-stage');
+    let eleRatio = row.querySelector('.table-row-ratio');
     let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
     if (tableProductWrapper) {
         let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
@@ -6395,6 +6389,7 @@ function validatePSValue(ele) {
             });
             if (totalBT > valueSO) {
                 $(ele).attr('value', String(0));
+                eleRatio.value = 0;
                 $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
                 return false
             }

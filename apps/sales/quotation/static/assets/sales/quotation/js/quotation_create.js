@@ -818,8 +818,8 @@ $(function () {
 
         tablePS.on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-value-before-tax, .table-row-due-date', function () {
             if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                let row = this.closest('tr');
                 if ($(this).hasClass('table-row-date')) {
-                    let row = this.closest('tr');
                     let isCheck = true;
                     let eleDueDate = row.querySelector('.table-row-due-date');
                     let eleTerm = row.querySelector('.table-row-term');
@@ -841,9 +841,9 @@ $(function () {
                 }
                 if ($(this).hasClass('table-row-ratio') && $(this).hasClass('validated-number')) {
                     validateNumber(this);
-                }
-                if ($(this).hasClass('table-row-value-before-tax')) {
-                    validatePSValue(this);
+                    let eleValueBeforeTax = row.querySelector('.table-row-value-before-tax');
+                    QuotationLoadDataHandle.loadPSValueBeforeTax(eleValueBeforeTax, $(this).val());
+                    validatePSValue(eleValueBeforeTax);
                 }
                 if ($(this).hasClass('table-row-due-date')) {
                     let row = this.closest('tr');

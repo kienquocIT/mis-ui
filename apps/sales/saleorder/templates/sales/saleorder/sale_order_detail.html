@@ -581,6 +581,12 @@
         data-copy-successfully="{% trans "Copy successfully" %}"
         data-validate-total-payment="{% trans "Total payment must less than or equal to total before tax" %}"
     >
+    <input
+        type="text"
+        id="app-url-factory"
+        data-url-product="{% url 'ProductForSaleListAPI' %}"
+        data-url-product-detail="{% url 'ProductForSaleDetailAPI' 1 %}"
+    >
 
     <input
             type="text"

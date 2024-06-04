@@ -607,6 +607,12 @@
         data-required-expense-uom="{% trans "Expense unit of measure is required" %}"
         data-copy-successfully="{% trans "Copy successfully" %}"
     >
+    <input
+        type="text"
+        id="app-url-factory"
+        data-url-product="{% url 'ProductForSaleListAPI' %}"
+        data-url-product-detail="{% url 'ProductForSaleDetailAPI' 1 %}"
+    >
 
     <input
             type="text"

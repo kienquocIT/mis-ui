@@ -1911,9 +1911,8 @@ class QuotationLoadDataHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         ele.val(JSON.stringify(data));
-                        // check config first time
+                        // check SsLsRole first time
                         if (page_method === "POST" && !$('#data-init-quotation-copy-to').val()) {
-                            QuotationCheckConfigHandle.checkConfig(true, null, true);
                             QuotationCheckConfigHandle.checkSsLsRole();
                         }
                     }
@@ -1952,6 +1951,11 @@ class QuotationLoadDataHandle {
         tableProduct.DataTable().rows.add(products_data).draw();
         tableProduct.DataTable().rows().every(function () {
             let row = this.node();
+            // check Config for row
+            if (form.getAttribute('data-method').toLowerCase() !== 'get') {
+                QuotationCheckConfigHandle.checkConfig(false, row);
+            }
+            // load collapse Group
             if (row.querySelector('.table-row-group')) {
                 let eleGroupEdit = row.querySelector('.table-row-group-title-edit');
                 let areaGroupShow = row.querySelector('.area-group-show');

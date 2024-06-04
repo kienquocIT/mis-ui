@@ -7,6 +7,7 @@ class QuotationLoadDataHandle {
     static salePersonSelectEle = $('#employee_inherit_id');
     static quotationSelectEle = $('#select-box-quotation');
     static transEle = $('#app-trans-factory');
+    static urlEle = $('#app-url-factory');
     static customerInitEle = $('#data-init-customer')
 
     static loadInitOpportunity() {
@@ -1103,35 +1104,50 @@ class QuotationLoadDataHandle {
             if (costList) {
                 $(costList).empty();
                 let htmlDD = ``;
-                if (Array.isArray(data?.['cost_list']) && data?.['cost_list'].length > 0) {
-                    for (let costData of data?.['cost_list']) {
-                        htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh-id="${costData?.['warehouse']?.['id']}">
+                let urlDetail = QuotationLoadDataHandle.urlEle.attr('data-url-product-detail').format_url_with_uuid(data?.['id']);
+                // call ajax get info product detail
+                $.fn.callAjax2({
+                    url: urlDetail,
+                    method: 'GET',
+                    isLoading: false,
+                }).then(
+                    (resp) => {
+                        let dataDetail = $.fn.switcherResp(resp);
+                        if (dataDetail) {
+                            if (dataDetail?.['cost_list']) {
+                                if (Array.isArray(dataDetail?.['cost_list']) && dataDetail?.['cost_list'].length > 0) {
+                                    for (let costData of dataDetail?.['cost_list']) {
+                                        htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh-id="${costData?.['warehouse']?.['id']}">
                                                 <div class="d-flex justify-content-between">
                                                     <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
                                                     <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
                                                 </div>
                                             </a>`;
-                    }
-                    $(costList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-60p position-relative overflow-y-scroll">${htmlDD}</div>`);
-                } else {
-                    let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
-                    let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
-                    let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
-                    if (elePrice) {
-                        if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
-                            elePrice.removeAttribute('disabled');
+                                    }
+                                    $(costList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-60p position-relative overflow-y-scroll">${htmlDD}</div>`);
+                                } else {
+                                    let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
+                                    let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
+                                    let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
+                                    if (elePrice) {
+                                        if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                                            elePrice.removeAttribute('disabled');
+                                        }
+                                    }
+                                    if (eleBtnPriceList) {
+                                        eleBtnPriceList.setAttribute('hidden', 'true');
+                                    }
+                                    if (eleGrPrice) {
+                                        eleGrPrice.removeAttribute('data-bs-toggle');
+                                    }
+                                }
+                            }
+                            $.fn.initMaskMoney2();
                         }
                     }
-                    if (eleBtnPriceList) {
-                        eleBtnPriceList.setAttribute('hidden', 'true');
-                    }
-                    if (eleGrPrice) {
-                        eleGrPrice.removeAttribute('data-bs-toggle');
-                    }
-                }
+                )
             }
         }
-        $.fn.initMaskMoney2();
     };
 
     static loadReInitDataTableProduct() {

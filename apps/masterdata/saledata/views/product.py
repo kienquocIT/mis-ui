@@ -288,7 +288,7 @@ class ProductDetailAPI(APIView):
         return resp.auto_return()
 
 
-# Product List use for Sale Apps
+# Products use for sale/ purchase/ inventory applications
 class ProductForSaleListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -300,6 +300,17 @@ class ProductForSaleListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SALE_LIST).get(data)
         return resp.auto_return(key_success='product_sale_list')
+
+
+class ProductForSaleDetailAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SALE_DETAIL.push_id(pk)).get()
+        return resp.auto_return()
 
 
 class UnitOfMeasureOfGroupLaborListAPI(APIView):

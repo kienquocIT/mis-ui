@@ -22,7 +22,7 @@ from apps.masterdata.saledata.views.product import (
     ProductMasterDataList, ProductTypeListAPI, ProductCategoryListAPI, UnitOfMeasureListAPI,
     UnitOfMeasureGroupListAPI, UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ProductCategoryDetailAPI,
     UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail,
-    ProductForSaleListAPI, ProductUpdate, UnitOfMeasureOfGroupLaborListAPI
+    ProductForSaleListAPI, ProductUpdate, UnitOfMeasureOfGroupLaborListAPI, ProductForSaleDetailAPI
 )
 from apps.masterdata.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
@@ -175,7 +175,8 @@ urlpatterns = [
     path('product/update/<str:pk>', ProductUpdate.as_view(), name='ProductUpdate'),
     path('product/detail/<str:pk>', ProductDetail.as_view(), name='ProductDetail'),
     path('product/api/<str:pk>', ProductDetailAPI.as_view(), name='ProductDetailAPI'),
-    path('products-sale/api', ProductForSaleListAPI.as_view(), name='ProductForSaleListAPI'),
+    path('products-sale/api/list', ProductForSaleListAPI.as_view(), name='ProductForSaleListAPI'),
+    path('products-sale/detail-api/<str:pk>', ProductForSaleDetailAPI.as_view(), name='ProductForSaleDetailAPI'),
     ] + [
     path('masterdata/price', PriceMasterDataList.as_view(), name='PriceMasterDataList'),
     path('masterdata/tax-category/api', TaxCategoryListAPI.as_view(), name='TaxCategoryListAPI'),

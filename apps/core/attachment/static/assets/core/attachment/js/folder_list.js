@@ -1,6 +1,7 @@
 $(function () {
     $(document).ready(function () {
         let $folderMenu = $('#folder-menu');
+        let $folderHistory = $('#folder-history');
         let $btnBack = $('#btn-back');
         let $btnNext = $('#btn-next');
         let $btnRefresh = $('#btn-refresh');
@@ -79,23 +80,26 @@ $(function () {
         });
 
 
-
         $btnBack.on('click', function () {
-            let ID = $(this).attr('data-id');
-            if (ID) {
-               loadAjaxFolderContent($(this));
-               loadFolderPath(1);
-               $btnNext[0].removeAttribute('disabled');
-            } else {
-                $btnNext[0].setAttribute('disabled', 'true');
-            }
+            loadBackNext(0);
+            $btnNext[0].removeAttribute('disabled');
+
+
+
+
+
+            // let ID = $(this).attr('data-id');
+            // if (ID) {
+            //    loadAjaxFolderContent($(this));
+            //    loadFolderPath(1);
+            //    $btnNext[0].removeAttribute('disabled');
+            // } else {
+            //     $btnNext[0].setAttribute('disabled', 'true');
+            // }
         });
 
         $btnNext.on('click', function () {
-            let ID = $(this).attr('data-id');
-            if (ID) {
-                loadAjaxFolderContent($(this));
-            }
+            loadBackNext(1);
         });
 
         $btnRefresh.on('click', function () {
@@ -297,6 +301,7 @@ $(function () {
                                 if (data && resp.data.hasOwnProperty('folder_file_list')) {
                                     let dataFileList = resp.data['folder_file_list'] ? resp.data['folder_file_list'] : [];
                                     loadFolderContent(dataFolderList, dataFileList);
+                                    // load Current Folder
                                     // set data-id $btnBack && set data $folderPath
                                     $.fn.callAjax2({
                                         url: $urlFact.attr('data-url'),
@@ -317,12 +322,18 @@ $(function () {
                                                     } else {
                                                         $btnBack[0].setAttribute('disabled', 'true');
                                                     }
-                                                    if (!['btn-back', 'btn-refresh'].includes($eleFolder[0].id)) {
-                                                        if (dataFd?.['id']) {
-                                                            if (dataFd?.['id'] !== dataIDBack) {
-                                                                $btnNext.attr('data-id', dataFd?.['id']);
-                                                            }
+                                                    if (!['btn-back', 'btn-next', 'btn-refresh'].includes($eleFolder[0].id)) {
+                                                        // set data-list for $folderHistory
+                                                        let listHistory = [];
+                                                        if ($folderHistory.attr('data-list')) {
+                                                            listHistory = JSON.parse($folderHistory.attr('data-list'));
                                                         }
+                                                        for (let dataHis of listHistory) {
+                                                            delete dataHis['is_current'];
+                                                        }
+                                                        dataFd['is_current'] = true;
+                                                        listHistory.push(dataFd);
+                                                        $folderHistory.attr('data-list', JSON.stringify(listHistory));
                                                         // reset path
                                                         if ($eleFolder[0].closest('#folder-tree')) {
                                                             loadFolderPath(3);
@@ -389,8 +400,42 @@ $(function () {
             return true;
         }
 
+        function loadBackNext(load_type) {
+            if ($folderHistory.attr('data-list')) {
+                let listHistory = JSON.parse($folderHistory.attr('data-list'));
+                if (listHistory.length > 1) {
+                    for (let i = 0; i < listHistory.length; i++) {
+                        let dataHis = listHistory[i];
+                        if (dataHis?.['is_current'] === true) {
+                            let $ele = null;
+                            let targetData = {};
+                            let backData = i > 0 ? listHistory[i - 1] : null;
+                            let nextData = i < listHistory.length - 1 ? listHistory[i + 1] : null;
+                            if (load_type === 0) {
+                                $ele = $btnBack;
+                                targetData = backData;
+                            }
+                            if (load_type === 1) {
+                                $ele = $btnNext;
+                                targetData = nextData;
+                            }
+                            if ($ele && targetData) {
+                                delete dataHis['is_current'];
+                                targetData['is_current'] = true;
+                                $ele.attr('data-id', targetData?.['id']);
+                                loadAjaxFolderContent($ele);
+                            }
+                            // Update the data-list attribute with the modified listHistory
+                            $folderHistory.attr('data-list', JSON.stringify(listHistory));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         function loadFolderPath(load_type, dataFd = {}) {
-            if (load_type === 0) {
+            if (load_type === 0) {  // next path
                 let lastSpan = $folderPath[0].querySelector('span:last-of-type');
                 if (lastSpan) {
                     let dataParentID = lastSpan.getAttribute('data-parent-id');
@@ -400,21 +445,17 @@ $(function () {
                     $folderPath.append(`<i class="fas fa-angle-right mr-2"></i><span class="mr-2" data-parent-id="${dataFd?.['parent_n_id']}">${dataFd?.['title']}</span>`);
                 }
             }
-            if (load_type === 1) {
-                // Select the last <i> element within the parent
+            if (load_type === 1) {  // back path
                 let lastIcon = $folderPath[0].querySelector('i:last-of-type');
-                // Remove the last <i> element
                 if (lastIcon) {
                     $folderPath[0].removeChild(lastIcon);
                 }
-                // Select the last <span> element within the parent
                 let lastSpan = $folderPath[0].querySelector('span:last-of-type');
-                // Remove the last <span> element
                 if (lastSpan) {
                     $folderPath[0].removeChild(lastSpan);
                 }
             }
-            if (load_type === 3) {
+            if (load_type === 3) {  // reset path
                 $folderPath.empty();
                 $folderPath.append(`<i class="fas fa-desktop mr-2"></i><span class="mr-2" data-parent-id="${dataFd?.['parent_n_id']}">Home</span>`);
             }

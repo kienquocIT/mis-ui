@@ -571,11 +571,13 @@ class GRLoadDataHandle {
         $('#scroll-table-lot-serial')[0].removeAttribute('hidden');
         GRDataTableHandle.tableLot.DataTable().clear().draw();
         GRDataTableHandle.tableSerial.DataTable().clear().draw();
-        if (is_lot === true) {
+        if (is_lot === true) {  // lot
             $('#table-good-receipt-manage-lot-area')[0].removeAttribute('hidden');
+            $('#btn-add-manage-lot')[0].removeAttribute('disabled');
             $('#table-good-receipt-manage-serial-area')[0].setAttribute('hidden', 'true');
-        } else if (is_serial === true) {
+        } else if (is_serial === true) {  // serial
             $('#table-good-receipt-manage-serial-area')[0].removeAttribute('hidden');
+            $('#btn-add-manage-serial')[0].removeAttribute('disabled');
             $('#table-good-receipt-manage-lot-area')[0].setAttribute('hidden', 'true');
         }
     };
@@ -584,11 +586,13 @@ class GRLoadDataHandle {
         $('#scroll-table-ia-lot-serial')[0].removeAttribute('hidden');
         GRDataTableHandle.tableIALot.DataTable().clear().draw();
         GRDataTableHandle.tableIASerial.DataTable().clear().draw();
-        if (is_lot === true) {
+        if (is_lot === true) {  // lot
             $('#table-good-receipt-ia-lot-area')[0].removeAttribute('hidden');
+            $('#btn-add-ia-lot')[0].removeAttribute('disabled');
             $('#table-good-receipt-ia-serial-area')[0].setAttribute('hidden', 'true');
-        } else if (is_serial === true) {
+        } else if (is_serial === true) {  // serial
             $('#table-good-receipt-ia-serial-area')[0].removeAttribute('hidden');
+            $('#btn-add-ia-serial')[0].removeAttribute('disabled');
             $('#table-good-receipt-ia-lot-area')[0].setAttribute('hidden', 'true');
         }
     };

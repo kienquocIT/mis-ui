@@ -143,17 +143,17 @@ $(document).ready(function () {
 
             Promise.all([inventory_detail_list_ajax]).then(
                 (results) => {
-                    // console.log(results[0])
+                    console.log(results[0])
                     items_detail_report_table_Ele.DataTable().clear().destroy()
                     items_detail_report_table_Ele.find('tbody').html('')
                     for (const item of results[0]) {
                         let cumulative_quantity = 0
                         let cumulative_value = 0
                         items_detail_report_table_Ele.find('tbody').append(
-                            `<tr class="main-row" style="background-color: #eaeaea">
+                            `<tr class="main-row" style="background-color: #f5f5f5">
                                 <td class="first-col-x border-1">
-                                    <span class="badge badge-primary">${item?.['product']?.['code']}</span>
-                                    <span class="text-primary small"><b>${item?.['product']?.['title']}</b></span>
+                                    <span class="badge badge-secondary">${item?.['product']?.['code']}</span>
+                                    <span class="text-secondary fw-bold">${item?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${item?.['product']?.['lot_number']}</span>
                                 </td>
                                 <td><span class="text-primary small">${trans_script.attr('data-trans-we')}</span></td>
                                 <td></td>
@@ -579,10 +579,10 @@ $(document).ready(function () {
                                 let cumulative_quantity = 0
                                 let cumulative_value = 0
                                 items_detail_report_table_Ele.find('tbody').append(
-                                    `<tr class="main-row" style="background-color: #eaeaea">
+                                    `<tr class="main-row" style="background-color: #f5f5f5">
                                         <td class="first-col-x border-1">
-                                            <span class="badge badge-primary">${item?.['product']?.['code']}</span>
-                                            <span class="text-primary small"><b>${item?.['product']?.['title']}</b></span>
+                                            <span class="badge badge-secondary">${item?.['product']?.['code']}</span>
+                                            <span class="text-secondary fw-bold">${item?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${item?.['product']?.['lot_number']}</span>
                                         </td>
                                         <td><span class="text-primary small">${trans_script.attr('data-trans-we')}</span></td>
                                         <td></td>

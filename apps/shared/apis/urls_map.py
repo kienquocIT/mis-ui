@@ -262,6 +262,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # product
     PRODUCT_LIST = StringUrl('saledata/products')
+    PRODUCT_QUICK_CREATE = StringUrl('saledata/product-quick-create')
     PRODUCT_DETAIL = StringUrl('saledata/product/{pk}')
     PRODUCT_SALE_LIST = StringUrl('saledata/products-sale/list')
     PRODUCT_SALE_DETAIL = StringUrl('saledata/products-sale')

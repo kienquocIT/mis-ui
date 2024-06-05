@@ -111,7 +111,7 @@ $(document).ready(function () {
                 type: 'donut',
                 height: 250,
             },
-            colors: ['#b9ceee', '#81a6de', '#00ab57', '#4885e1', '#706f6f', '#ff5e5e'],
+            colors: ['#b9ceee', '#80a6e3', '#2464ce', '#003593', '#706f6f', '#ff5e5e'],
             dataLabels: {
                 formatter: function (val, opts) {
                     return [opts.w.config.series[opts.seriesIndex], val.toFixed(2) + '%']
@@ -147,7 +147,7 @@ $(document).ready(function () {
                 stacked: true,
                 stackType: '100'
             },
-            colors: ['#b9ceee', '#81a6de', '#00ab57', '#4885e1'],
+            colors: ['#4885e1', '#e0ad00', '#ff5e5e', '#00ab57'],
             xaxis: {
                 categories: [
                     new Date().getFullYear()

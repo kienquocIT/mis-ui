@@ -7687,9 +7687,5 @@ msgid "Previous work"
 msgstr "Công việc trước đó"
 
 #
-msgid "New product"
-msgstr "Sản phẩm mới"
-
-#
 msgid "New folder"
 msgstr "Thư mục mới"

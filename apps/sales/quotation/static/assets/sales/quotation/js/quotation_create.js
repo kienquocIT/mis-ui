@@ -141,6 +141,61 @@ $(function () {
            QuotationLoadDataHandle.loadBtnAddProductSelect2(this.closest('tr'));
         });
 
+        $('#addBasicProduct').on('shown.bs.modal', function () {
+            let $boxPType = $('#add-product-type');
+            let $boxPCategory = $('#add-product-category');
+            let $boxPUomGr = $('#add-product-uom-group');
+            let $boxPUom = $('#add-product-uom');
+            let $boxPTax = $('#add-product-tax');
+            let $boxPMethod = $('#add-product-method');
+            let dataMethod = [
+                {'id': 0, 'title': 'None'},
+                {'id': 1, 'title': 'Batch/Lot number'},
+                {'id': 2, 'title': 'Serial number'},
+            ];
+            let $modal = $(this);
+            QuotationLoadDataHandle.loadInitS2Modal($boxPType, $modal);
+            QuotationLoadDataHandle.loadInitS2Modal($boxPCategory, $modal);
+            QuotationLoadDataHandle.loadInitS2Modal($boxPUomGr, $modal);
+            QuotationLoadDataHandle.loadInitS2Modal($boxPUom, $modal);
+            QuotationLoadDataHandle.loadInitS2Modal($boxPTax, $modal);
+            QuotationLoadDataHandle.loadInitS2Modal($boxPMethod, $modal, dataMethod);
+        });
+
+        $('#btn-save-product').on('click', function () {
+            let dataSubmit = {};
+            dataSubmit['title'] = $('#add-product-title').val();
+            dataSubmit['description'] = $('#add-product-remark').val();
+            dataSubmit['general_product_category'] = $('#add-product-category').val();
+            dataSubmit['general_uom_group'] = $('#add-product-uom-group').val();
+            dataSubmit['sale_default_uom'] = $('#add-product-uom').val();
+            dataSubmit['sale_tax'] = $('#add-product-tax').val();
+            dataSubmit['general_traceability_method'] = parseInt($('#add-product-method').val());
+            WindowControl.showLoading();
+            $.fn.callAjax2(
+                {
+                    'url': QuotationLoadDataHandle.urlEle.attr('data-url-product-md'),
+                    'method': 'POST',
+                    'data': dataSubmit,
+                }
+            ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && (data['status'] === 201 || data['status'] === 200)) {
+                            $.fn.notifyB({description: data.message}, 'success');
+                            setTimeout(() => {
+                                WindowControl.hideLoading();
+                            }, 1000);
+                        }
+                    }, (err) => {
+                        setTimeout(() => {
+                            WindowControl.hideLoading();
+                        }, 1000)
+                        $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                    }
+                )
+        });
+
 // Action on delete row product
         tableProduct.on('click', '.del-row', function (e) {
             e.stopPropagation();

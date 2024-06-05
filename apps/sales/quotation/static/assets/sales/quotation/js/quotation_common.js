@@ -10,6 +10,16 @@ class QuotationLoadDataHandle {
     static urlEle = $('#app-url-factory');
     static customerInitEle = $('#data-init-customer')
 
+    static loadInitS2Modal($ele, $modal, data = []) {
+        $ele.empty();
+        if (data.length > 0) {
+            $ele.initSelect2({data: data, dropdownParent: $modal, 'allowClear': true});
+        } else {
+            $ele.initSelect2({dropdownParent: $modal, 'allowClear': true});
+        }
+        return true;
+    };
+
     static loadInitOpportunity() {
         let form = $('#frm_quotation_create');
         if (form.attr('data-method').toLowerCase() === 'post') {
@@ -335,9 +345,9 @@ class QuotationLoadDataHandle {
                 if ($s2Result && $s2Result.length > 0) {
                     let eleResult = $s2Result[0].closest('.select2-results');
                     if (eleResult) {
-                        $(eleResult).before(`<button type="button" class="btn btn-link btn-animated btn-sm" id="${addProductID}" data-bs-toggle="modal" data-bs-target="#addBasicProduct" disabled>
-                                                <span><span class="icon"><i class="far fa-plus-square"></i></span><span>Add new</span></span>
-                                            </button>`)
+                        $(eleResult).before(`<button type="button" class="btn btn-link btn-animated btn-sm" id="${addProductID}" data-bs-toggle="modal" data-bs-target="#addBasicProduct">
+                                                <span><span class="icon"><i class="far fa-plus-square"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add-new')}</span></span>
+                                            </button>`);
                     }
                 }
             }

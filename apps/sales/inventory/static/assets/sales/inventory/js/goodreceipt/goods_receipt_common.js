@@ -487,15 +487,14 @@ class GRLoadDataHandle {
         if (dataPOProductCheckedRaw) {
             let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
             if ([1, 2].includes(dataPOProductChecked?.['product']?.['general_traceability_method'])) {
-                if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 1) {
+                if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 1) {  // lot
                     GRLoadDataHandle.loadAreaLotSerial(true, false);
                 }
-                if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 2) {
+                if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 2) {  // serial
                     GRLoadDataHandle.loadAreaLotSerial(false, true);
-                }
-            } else {
-                for (let eleCheckAdditional of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-checkbox-additional')) {
-                    eleCheckAdditional.setAttribute('disabled', 'true');
+                    for (let eleCheckAdditional of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-checkbox-additional')) {
+                        eleCheckAdditional.removeAttribute('disabled');
+                    }
                 }
             }
         }
@@ -511,6 +510,9 @@ class GRLoadDataHandle {
                 GRLoadDataHandle.loadAreaIALotSerial(true, false);
             } else if (rowData?.['product']?.['general_traceability_method'] === 2) {  // serial
                 GRLoadDataHandle.loadAreaIALotSerial(false, true);
+                for (let eleCheckAdditional of GRDataTableHandle.tableIAProduct[0].querySelectorAll('.table-row-checkbox-additional')) {
+                    eleCheckAdditional.removeAttribute('disabled');
+                }
             }
         }
     };
@@ -1614,7 +1616,7 @@ class GRDataTableHandle {
                             checked = `checked`;
                         }
                         return `<div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" ${checked}>
+                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" disabled ${checked}>
                                 </div>`;
                     }
                 },
@@ -2007,7 +2009,7 @@ class GRDataTableHandle {
                             checked = `checked`;
                         }
                         return `<div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" ${checked}>
+                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" disabled ${checked}>
                                 </div>`;
                     }
                 },

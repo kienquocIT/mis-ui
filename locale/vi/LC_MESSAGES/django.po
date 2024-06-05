@@ -7163,8 +7163,8 @@ msgid "Select inventory adjustment"
 msgstr "Chọn phiếu kiểm kê kho"
 
 #
-msgid "Add information later"
-msgstr "Thêm thông tin sau"
+msgid "Enter data later"
+msgstr "Nhập liệu sau"
 
 #
 msgid "Vendor serial no."
@@ -7685,3 +7685,11 @@ msgstr "Huỷ liên kết giữa Giao việc và Công việc"
 #
 msgid "Previous work"
 msgstr "Công việc trước đó"
+
+#
+msgid "New product"
+msgstr "Sản phẩm mới"
+
+#
+msgid "New folder"
+msgstr "Thư mục mới"

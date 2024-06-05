@@ -772,9 +772,9 @@
                                 <select
                                     class="form-select"
                                     id="add-product-type"
-                                    data-url="{% url "FolderListAPI" %}"
+                                    data-url="{% url "ProductTypeListAPI" %}"
                                     data-method="GET"
-                                    data-keyResp="folder_list"
+                                    data-keyResp="product_type_list"
                                 ></select>
                             </div>
                             <div class="form-group">
@@ -782,9 +782,9 @@
                                 <select
                                     class="form-select"
                                     id="add-product-category"
-                                    data-url="{% url "FolderListAPI" %}"
+                                    data-url="{% url "ProductCategoryListAPI" %}"
                                     data-method="GET"
-                                    data-keyResp="folder_list"
+                                    data-keyResp="product_category_list"
                                 ></select>
                             </div>
                             <div class="form-group">
@@ -792,9 +792,9 @@
                                 <select
                                     class="form-select"
                                     id="add-product-uom-group"
-                                    data-url="{% url "FolderListAPI" %}"
+                                    data-url="{% url "UnitOfMeasureGroupListAPI" %}"
                                     data-method="GET"
-                                    data-keyResp="folder_list"
+                                    data-keyResp="unit_of_measure_group"
                                 ></select>
                             </div>
                             <div class="form-group">
@@ -802,9 +802,9 @@
                                 <select
                                     class="form-select"
                                     id="add-product-uom"
-                                    data-url="{% url "FolderListAPI" %}"
+                                    data-url="{% url "UnitOfMeasureListAPI" %}"
                                     data-method="GET"
-                                    data-keyResp="folder_list"
+                                    data-keyResp="unit_of_measure"
                                 ></select>
                             </div>
                             <div class="form-group">
@@ -812,9 +812,9 @@
                                 <select
                                     class="form-select"
                                     id="add-product-tax"
-                                    data-url="{% url "FolderListAPI" %}"
+                                    data-url="{% url "TaxListAPI" %}"
                                     data-method="GET"
-                                    data-keyResp="folder_list"
+                                    data-keyResp="tax_list"
                                 ></select>
                             </div>
                             <div class="form-group">
@@ -822,15 +822,12 @@
                                 <select
                                     class="form-select"
                                     id="add-product-method"
-                                    data-url="{% url "FolderListAPI" %}"
-                                    data-method="GET"
-                                    data-keyResp="folder_list"
                                 ></select>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-product">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -857,10 +854,12 @@
         data-required-expense-uom="{% trans "Expense unit of measure is required" %}"
         data-copy-successfully="{% trans "Copy successfully" %}"
         data-validate-ss-role="{% trans "Opportunity is disabled because employee in short sales roles" %}"
+        data-add-new="{% trans "Add new" %}"
     >
     <input
         type="text"
         id="app-url-factory"
+        data-url-product-md="{% url 'ProductListAPI' %}"
         data-url-product="{% url 'ProductForSaleListAPI' %}"
         data-url-product-detail="{% url 'ProductForSaleDetailAPI' 1 %}"
     >

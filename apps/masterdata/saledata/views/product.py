@@ -206,6 +206,16 @@ class ProductCreate(View):
         }, status.HTTP_200_OK
 
 
+class ProductQuickCreateAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_QUICK_CREATE).post(request.data)
+        return resp.auto_return()
+
+
 class ProductListAPI(APIView):
     permission_classes = [IsAuthenticated]
 

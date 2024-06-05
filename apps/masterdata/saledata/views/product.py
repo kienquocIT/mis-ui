@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI, PermCheck
+from apps.shared.msg import MDMsg
 
 
 class ProductMasterDataList(View):
@@ -213,6 +214,9 @@ class ProductQuickCreateAPI(APIView):
     )
     def post(self, request, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_QUICK_CREATE).post(request.data)
+        if resp.state:
+            resp.result['message'] = MDMsg.PRODUCT_CREATE
+            return resp.result, status.HTTP_201_CREATED
         return resp.auto_return()
 
 

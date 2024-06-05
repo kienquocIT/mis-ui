@@ -17,6 +17,7 @@ from .report import ReportMsg
 from .templates import TemplateMsg
 from .application import AppMsg
 from .core import CoreMsg
+from .masterdata import MDMsg
 
 
 class BaseMsg:

@@ -182,7 +182,7 @@ $(function () {
             WindowControl.showLoading();
             $.fn.callAjax2(
                 {
-                    'url': QuotationLoadDataHandle.urlEle.attr('data-url-product-md'),
+                    'url': QuotationLoadDataHandle.urlEle.attr('data-url-quick-product'),
                     'method': 'POST',
                     'data': dataSubmit,
                 }
@@ -191,6 +191,8 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data && (data['status'] === 201 || data['status'] === 200)) {
                             $.fn.notifyB({description: data.message}, 'success');
+                            // call ajax again data ProductSales
+                            QuotationLoadDataHandle.loadInitQuotationProduct();
                             setTimeout(() => {
                                 WindowControl.hideLoading();
                             }, 1000);

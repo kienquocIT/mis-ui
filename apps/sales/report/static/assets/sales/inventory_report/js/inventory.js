@@ -205,7 +205,7 @@ $(document).ready(function () {
                         if (warehouses_select_Ele.val().length === 0) {
                             if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                 table_inventory_report.find('tbody').append(`
-                                    <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #eaeaea">
+                                    <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #f5f5f5">
                                         <td class="border-1 first-col-x" colspan="3">
                                             <span class="text-primary "><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                         </td>
@@ -299,7 +299,7 @@ $(document).ready(function () {
                             if (warehouses_select_Ele.val().includes(warehouse_activities?.['warehouse']?.['id'])) {
                                 if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                     table_inventory_report.find('tbody').append(`
-                                        <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #eaeaea">
+                                        <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #f5f5f5">
                                             <td class="border-1 first-col-x" colspan="3">
                                                 <span class="text-primary "><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                             </td> 
@@ -470,7 +470,7 @@ $(document).ready(function () {
                         if (warehouses_select_Ele.val().length === 0) {
                             if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                 table_inventory_report.find('tbody').append(`
-                                    <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #eaeaea">
+                                    <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #f5f5f5">
                                         <td class="border-1 first-col-x" colspan="3">
                                             <span class="text-primary "><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                         </td>
@@ -516,7 +516,7 @@ $(document).ready(function () {
                                         bg_out = 'text-purple small gtf-out'
                                     }
                                     detail_html += `
-                                        <tr class="detail-row bg-lime-light-5">
+                                        <tr class="detail-row">
                                             <td class="border-1 first-col" colspan="3"><span></span></td>
                                             <td class="" colspan="3"><span></span></td>
                                             <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
@@ -598,7 +598,7 @@ $(document).ready(function () {
                                         bg_out = 'text-purple small gtf-out'
                                     }
                                     detail_html += `
-                                        <tr class="detail-row bg-lime-light-5">
+                                        <tr class="detail-row">
                                             <td class="border-1 first-col" colspan="3"><span></span></td>
                                             <td class="" colspan="3"><span></span></td>
                                             <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
@@ -674,7 +674,7 @@ $(document).ready(function () {
                             if (warehouses_select_Ele.val().includes(warehouse_activities?.['warehouse']?.['id'])) {
                                 if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                     table_inventory_report.find('tbody').append(`
-                                        <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #eaeaea">
+                                        <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #f5f5f5">
                                             <td class="border-1 first-col-x" colspan="3">
                                                 <span class="text-primary "><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                             </td>
@@ -720,7 +720,7 @@ $(document).ready(function () {
                                         bg_out = 'text-purple small gtf-out'
                                     }
                                         detail_html += `
-                                            <tr class="detail-row bg-lime-light-5">
+                                            <tr class="detail-row">
                                                 <td class="border-1 first-col" colspan="3"><span></span></td>
                                                 <td class="" colspan="3"><span></span></td>
                                                 <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
@@ -802,7 +802,7 @@ $(document).ready(function () {
                                             bg_out = 'text-purple small gtf-out'
                                         }
                                         detail_html += `
-                                            <tr class="detail-row bg-lime-light-5">
+                                            <tr class="detail-row">
                                                 <td class="border-1 first-col" colspan="3"><span></span></td>
                                                 <td class="" colspan="3"><span></span></td>
                                                 <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>

@@ -209,7 +209,7 @@ $(function () {
                                             let newRow = tableDtb.row.add(data).node();
                                             $(newRow).addClass(classCl.slice(1));
                                             $(newRow).addClass('collapse');
-                                            $(newRow).css('background-color', '#eef6ff');
+                                            $(newRow).css('background-color', '#eaeaea');
                                             $(newRow).detach().insertAfter(rowChange);
                                         }
                                     }

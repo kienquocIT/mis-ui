@@ -7689,3 +7689,15 @@ msgstr "Công việc trước đó"
 #
 msgid "New folder"
 msgstr "Thư mục mới"
+
+#
+msgid "Parent folder"
+msgstr "Thư mục cha"
+
+#
+msgid "Upload file"
+msgstr "Tải tệp lên"
+
+#
+msgid "Upload folder"
+msgstr "Tải thư mục lên"

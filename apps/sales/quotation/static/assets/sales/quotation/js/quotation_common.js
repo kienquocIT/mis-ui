@@ -10,13 +10,19 @@ class QuotationLoadDataHandle {
     static urlEle = $('#app-url-factory');
     static customerInitEle = $('#data-init-customer')
 
-    static loadInitS2Modal($ele, $modal, data = []) {
+    static loadInitS2($ele, $modal = null, data = [], dataParams = {}) {
+        let opts = {'allowClear': true};
         $ele.empty();
         if (data.length > 0) {
-            $ele.initSelect2({data: data, dropdownParent: $modal, 'allowClear': true});
-        } else {
-            $ele.initSelect2({dropdownParent: $modal, 'allowClear': true});
+            opts['data'] = data;
         }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        $ele.initSelect2(opts);
         return true;
     };
 
@@ -345,7 +351,7 @@ class QuotationLoadDataHandle {
                 if ($s2Result && $s2Result.length > 0) {
                     let eleResult = $s2Result[0].closest('.select2-results');
                     if (eleResult) {
-                        $(eleResult).before(`<button type="button" class="btn btn-link btn-animated btn-sm" id="${addProductID}" data-bs-toggle="modal" data-bs-target="#addBasicProduct">
+                        $(eleResult).before(`<button type="button" class="btn btn-link btn-animated btn-sm" id="${addProductID}" data-bs-toggle="modal" data-bs-target="#addQuickProduct">
                                                 <span><span class="icon"><i class="far fa-plus-square"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add-new')}</span></span>
                                             </button>`);
                     }

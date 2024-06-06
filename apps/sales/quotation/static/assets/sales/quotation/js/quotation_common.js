@@ -2129,11 +2129,11 @@ class QuotationLoadDataHandle {
                     $(row.querySelector('.table-row-item')).empty();
                     if (table[0].id === "datable-quotation-create-product") {  // product
                         QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')));
-                        $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']);
+                        $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id'] ? dataRow?.['product']?.['id'] : '');
                         let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
                         if (boxRender) {
-                            boxRender.innerHTML = dataRow?.['product']?.['title'];
-                            boxRender.setAttribute('title', dataRow?.['product']?.['title']);
+                            boxRender.innerHTML = dataRow?.['product']?.['title'] ? dataRow?.['product']?.['title'] : '';
+                            boxRender.setAttribute('title', dataRow?.['product']?.['title'] ? dataRow?.['product']?.['title'] : '');
                         }
                         if (row.querySelector('.table-row-item')) {
                             QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));

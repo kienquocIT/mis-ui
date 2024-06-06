@@ -192,7 +192,12 @@ $(function () {
                         if (data && (data['status'] === 201 || data['status'] === 200)) {
                             $.fn.notifyB({description: data.message}, 'success');
                             // call ajax again data ProductSales
-                            QuotationLoadDataHandle.loadInitQuotationProduct();
+                            if (QuotationDataTableHandle.productInitEle.val()) {
+                                let dataInitProduct = JSON.parse(QuotationDataTableHandle.productInitEle.val());
+                                dataInitProduct.unshift(data);
+                                QuotationDataTableHandle.productInitEle.val(JSON.stringify(dataInitProduct));
+                                QuotationLoadDataHandle.loadReInitDataTableProduct();
+                            }
                             setTimeout(() => {
                                 WindowControl.hideLoading();
                             }, 1000);

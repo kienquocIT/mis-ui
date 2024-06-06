@@ -333,7 +333,7 @@ class QuotationLoadDataHandle {
         let row = ele[0].closest('tr');
         let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
         if (boxRender) {
-            boxRender.style.maxWidth = '270px';
+            boxRender.style.maxWidth = '230px';
         }
     };
 
@@ -803,7 +803,7 @@ class QuotationLoadDataHandle {
         // add css to row box select2
         let boxRender = newRow?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
         if (boxRender) {
-            boxRender.style.maxWidth = '270px';
+            boxRender.style.maxWidth = '230px';
         }
         // load again table cost
         QuotationLoadDataHandle.loadDataTableCost();
@@ -2322,7 +2322,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '16.9270833333%',
+                    width: '17%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return `<input type="text" class="form-control table-row-group-title-edit" value="${row?.['group_title']}">
@@ -2395,7 +2395,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '15%',
+                    width: '13%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2474,7 +2474,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '16.9270833333%',
+                    width: '17%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;

@@ -10,12 +10,12 @@ $(function () {
         let $uploadFile = $('#upload-file')
         let $folderTree = $('#folder-tree');
         let $folderContent = $('#folder-content-body');
+        let $modalAdd = $('#addFolder');
         let $btnAdd = $('#btn-add-folder');
 
         let $transFact = $('#app-trans-factory');
         let $urlFact = $('#app-url-factory');
 
-        loadBoxParent($('#add-folder-box-parent'));
         loadAction();
         loadAjaxFolder(0);
 
@@ -105,6 +105,10 @@ $(function () {
             }
         });
 
+        $modalAdd.on('shown.bs.modal', function () {
+            loadInitS2($('#add-folder-box-parent'));
+        });
+
         $btnAdd.on('click', function () {
             let dataSubmit = {};
             dataSubmit['title'] = $('#add-folder-title').val();
@@ -121,6 +125,8 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data && (data['status'] === 201 || data['status'] === 200)) {
                             $.fn.notifyB({description: data.message}, 'success');
+                            // refresh folder content
+                            $btnRefresh.click();
                             setTimeout(() => {
                                 window.location.replace($urlFact.attr('data-url-redirect'));
                             }, 1000);
@@ -136,6 +142,22 @@ $(function () {
 
 
         // FUNCTIONS
+        function loadInitS2($ele, $modal = null, data = [], dataParams = {}) {
+            let opts = {'allowClear': true};
+            $ele.empty();
+            if ($modal) {
+                opts['dropdownParent'] = $modal;
+            }
+            if (data.length > 0) {
+                opts['data'] = data;
+            }
+            if (Object.keys(dataParams).length !== 0) {
+                opts['dataParams'] = dataParams;
+            }
+            $ele.initSelect2(opts);
+            return true;
+        }
+
         function loadBoxParent($eleBox) {
             $eleBox.empty();
             let dataParams = {};

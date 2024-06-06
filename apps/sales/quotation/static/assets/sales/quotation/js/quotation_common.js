@@ -13,11 +13,11 @@ class QuotationLoadDataHandle {
     static loadInitS2($ele, $modal = null, data = [], dataParams = {}) {
         let opts = {'allowClear': true};
         $ele.empty();
-        if (data.length > 0) {
-            opts['data'] = data;
-        }
         if ($modal) {
             opts['dropdownParent'] = $modal;
+        }
+        if (data.length > 0) {
+            opts['data'] = data;
         }
         if (Object.keys(dataParams).length !== 0) {
             opts['dataParams'] = dataParams;

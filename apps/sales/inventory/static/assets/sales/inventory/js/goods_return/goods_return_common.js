@@ -327,7 +327,7 @@ $('#add-product-btn').on('click', function () {
     })
 })
 
-function loadTableLineDetail(data_source=[], detail=false) {
+function loadTableLineDetail(data_source=[], detail='create') {
     lineDetailTable.DataTable().clear().destroy()
     lineDetailTable.DataTableDefault({
         dom: "",
@@ -450,10 +450,11 @@ function loadTableLineDetail(data_source=[], detail=false) {
             for (const wh_ele of lineDetailTable.find('.return-to-wh')) {
                 LoadWarehouse($(wh_ele));
             }
-            if (detail) {
+            if (detail !== 'create') {
                 let warehouse_rows = lineDetailTable.find('.return-to-wh')
                 for (let i = 0; i < data_source.length; i++) {
-                    LoadWarehouse($(warehouse_rows[i]), data_source[i]?.['return_to_warehouse']);
+                    let disabled_wh = detail === 'detail'
+                    LoadWarehouse($(warehouse_rows[i]), data_source[i]?.['return_to_warehouse'], disabled_wh);
                 }
             }
         }
@@ -901,6 +902,10 @@ btnAddRowLineDetail.on('click', function () {
     }
 })
 
+$('#finish-btn').on('click', function () {
+    selectDeliveryOffcanvasEle.offcanvas('hide')
+})
+
 function LoadSaleOrder(data) {
     saleOrderEle.initSelect2({
         allowClear: true,
@@ -942,8 +947,9 @@ function LoadSaleOrder(data) {
     })
 }
 
-function LoadWarehouse(ele, data) {
+function LoadWarehouse(ele, data, disabled_wh) {
     ele.initSelect2({
+        disabled: disabled_wh,
         allowClear: true,
         ajax: {
             url: `${ele.attr('data-url')}`,
@@ -965,6 +971,7 @@ function LoadWarehouse(ele, data) {
 
 class GoodsReturnHandle {
     load() {
+        loadTableLineDetail([])
         LoadSaleOrder()
         LoadDate()
     }
@@ -1014,6 +1021,7 @@ function Disable(option) {
         $('.form-select').prop('disabled', true).css({color: 'black'});
         $('.select2').prop('disabled', true);
         $('#collapse-area input').prop('disabled', true);
+        $('.return-to-wh').prop('disabled', true);
         btnAddRowLineDetail.remove();
     }
 }
@@ -1035,7 +1043,7 @@ function LoadDetailGoodsReturn(option) {
                 $('#date').val(data?.['date_created'].split(' ')[0])
                 $('#note').val(data?.['note'])
 
-                loadTableLineDetail(data?.['data_line_detail_table'], true)
+                loadTableLineDetail(data?.['data_line_detail_table'], option)
                 RETURN_DATA_CREATE = data?.['product_detail_list']
                 RETURN_DATA_CREATE_PROCESSED = data?.['data_line_detail_table']
                 dataLineDetailTableScript.text(JSON.stringify(data?.['data_line_detail']))

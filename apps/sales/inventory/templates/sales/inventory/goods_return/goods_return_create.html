@@ -17,9 +17,9 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    {{ data.data.warehouse_list | json_script:"warehouse_list" }}
     <script id="script-url"
             data-url-delivery="{% url 'DeliveryListForGoodsReturnAPI' %}"
+            data-url-warehouse="{% url 'WareHouseListAPI' %}"
     >
     </script>
     <script id="script-trans"
@@ -38,37 +38,39 @@
                         <label for="title" class="form-label required">{% trans 'Title' %}</label>
                         <input type="text" class="form-control" id="title" placeholder="Goods return for defective orders">
                     </div>
-                    <div class="form-group">
-                        <label for="sale-order" class="form-label required">{% trans 'Sale order' %}</label>
-                        <select data-method="GET" data-url="{% url 'SaleOrderListAPIForGoodsReturn' %}" class="form-select select2" id="sale-order"></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="customer" class="form-label required">{% trans 'Customer' %}</label>
-                        <input readonly class="form-control" id="customer">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                            <label for="sale-order" class="form-label required">{% trans 'Sale order' %}</label>
+                            <select data-method="GET" data-url="{% url 'SaleOrderListAPIForGoodsReturn' %}" class="form-select select2" id="sale-order"></select>
+                        </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                            <label for="customer" class="form-label required">{% trans 'Customer' %}</label>
+                            <input readonly class="form-control" id="customer">
+                        </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
+                        <div class="col-12 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label for="date" class="form-label required">{% trans 'Date' %}</label>
                                 <input type="text" class="form-control" id="date" readonly>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-6">
+                        <div class="col-12 col-md-8 col-lg-8">
                             <div class="form-group">
-                                <label for="return-wh-title" class="form-label required">{% trans 'Return to' %}</label>
-                                <input data-wh-id="" type="text" class="form-control" id="return-wh-title" readonly>
+                                <label for="note" class="form-label">{% trans 'Note' %}</label>
+                                <textarea class="form-control" id="note"></textarea>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="note" class="form-label">{% trans 'Note' %}</label>
-                        <textarea class="form-control" id="note"></textarea>
-                    </div>
                 </div>
             </div>
-            <div class="offcanvas offcanvas-end w-95 mt-9" tabindex="-1" id="select-delivery-offcanvas" aria-labelledby="offcanvasTopLabel">
+            <div class="offcanvas offcanvas-end w-90 mt-9" tabindex="-1" id="select-delivery-offcanvas" aria-labelledby="offcanvasTopLabel">
                 <div class="offcanvas-body py-5 pr-5 px-5">
                     <div class="row">
                         <div class="col-7 border rounded-3 px-2 py-2">
@@ -173,7 +175,6 @@
                                 <table id="tab_line_detail_datatable" class="table nowrap w-100"
                                        data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
                                        data-url-tax-list="{% url 'TaxListAPI' %}"
-                                       data-selected-wh=""
                                 >
                                 <thead>
                                 <tr>
@@ -185,6 +186,7 @@
                                     <th style="min-width: 280px">{% trans 'Vendor serial (Serial)' %}</th>
                                     <th style="min-width: 100px">{% trans 'Return' %}</th>
                                     <th style="min-width: 100px">{% trans 'Redelivery' %}</th>
+                                    <th style="min-width: 250px">{% trans 'Return to warehouse' %}</th>
 {#                                    <th class="required" style="min-width: 180px">{% trans 'Cost' %}</th>#}
 {#                                    <th class="required" style="min-width: 180px">{% trans 'Subtotal price' %}</th>#}
                                 </tr>

@@ -76,7 +76,7 @@ class POLoadDataHandle {
         let row = ele[0].closest('tr');
         let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
         if (boxRender) {
-            boxRender.style.maxWidth = '270px';
+            boxRender.style.maxWidth = '230px';
         }
     };
 

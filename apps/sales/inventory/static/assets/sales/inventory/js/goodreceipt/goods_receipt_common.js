@@ -487,15 +487,14 @@ class GRLoadDataHandle {
         if (dataPOProductCheckedRaw) {
             let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
             if ([1, 2].includes(dataPOProductChecked?.['product']?.['general_traceability_method'])) {
-                if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 1) {
+                if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 1) {  // lot
                     GRLoadDataHandle.loadAreaLotSerial(true, false);
                 }
-                if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 2) {
+                if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 2) {  // serial
                     GRLoadDataHandle.loadAreaLotSerial(false, true);
-                }
-            } else {
-                for (let eleCheckAdditional of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-checkbox-additional')) {
-                    eleCheckAdditional.setAttribute('disabled', 'true');
+                    for (let eleCheckAdditional of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-checkbox-additional')) {
+                        eleCheckAdditional.removeAttribute('disabled');
+                    }
                 }
             }
         }
@@ -511,6 +510,9 @@ class GRLoadDataHandle {
                 GRLoadDataHandle.loadAreaIALotSerial(true, false);
             } else if (rowData?.['product']?.['general_traceability_method'] === 2) {  // serial
                 GRLoadDataHandle.loadAreaIALotSerial(false, true);
+                for (let eleCheckAdditional of GRDataTableHandle.tableIAProduct[0].querySelectorAll('.table-row-checkbox-additional')) {
+                    eleCheckAdditional.removeAttribute('disabled');
+                }
             }
         }
     };
@@ -569,11 +571,13 @@ class GRLoadDataHandle {
         $('#scroll-table-lot-serial')[0].removeAttribute('hidden');
         GRDataTableHandle.tableLot.DataTable().clear().draw();
         GRDataTableHandle.tableSerial.DataTable().clear().draw();
-        if (is_lot === true) {
+        if (is_lot === true) {  // lot
             $('#table-good-receipt-manage-lot-area')[0].removeAttribute('hidden');
+            $('#btn-add-manage-lot')[0].removeAttribute('disabled');
             $('#table-good-receipt-manage-serial-area')[0].setAttribute('hidden', 'true');
-        } else if (is_serial === true) {
+        } else if (is_serial === true) {  // serial
             $('#table-good-receipt-manage-serial-area')[0].removeAttribute('hidden');
+            $('#btn-add-manage-serial')[0].removeAttribute('disabled');
             $('#table-good-receipt-manage-lot-area')[0].setAttribute('hidden', 'true');
         }
     };
@@ -582,11 +586,13 @@ class GRLoadDataHandle {
         $('#scroll-table-ia-lot-serial')[0].removeAttribute('hidden');
         GRDataTableHandle.tableIALot.DataTable().clear().draw();
         GRDataTableHandle.tableIASerial.DataTable().clear().draw();
-        if (is_lot === true) {
+        if (is_lot === true) {  // lot
             $('#table-good-receipt-ia-lot-area')[0].removeAttribute('hidden');
+            $('#btn-add-ia-lot')[0].removeAttribute('disabled');
             $('#table-good-receipt-ia-serial-area')[0].setAttribute('hidden', 'true');
-        } else if (is_serial === true) {
+        } else if (is_serial === true) {  // serial
             $('#table-good-receipt-ia-serial-area')[0].removeAttribute('hidden');
+            $('#btn-add-ia-serial')[0].removeAttribute('disabled');
             $('#table-good-receipt-ia-lot-area')[0].setAttribute('hidden', 'true');
         }
     };
@@ -1614,7 +1620,7 @@ class GRDataTableHandle {
                             checked = `checked`;
                         }
                         return `<div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" ${checked}>
+                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" disabled ${checked}>
                                 </div>`;
                     }
                 },
@@ -2007,7 +2013,7 @@ class GRDataTableHandle {
                             checked = `checked`;
                         }
                         return `<div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" ${checked}>
+                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" disabled ${checked}>
                                 </div>`;
                     }
                 },

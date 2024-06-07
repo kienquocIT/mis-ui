@@ -262,8 +262,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # product
     PRODUCT_LIST = StringUrl('saledata/products')
+    PRODUCT_QUICK_CREATE = StringUrl('saledata/product-quick-create')
     PRODUCT_DETAIL = StringUrl('saledata/product/{pk}')
-    PRODUCT_SALE_LIST = StringUrl('saledata/products-sale')
+    PRODUCT_SALE_LIST = StringUrl('saledata/products-sale/list')
+    PRODUCT_SALE_DETAIL = StringUrl('saledata/products-sale')
     PRODUCT_VARIANT_LIST = StringUrl('saledata/products-variants')
 
     # advance payment
@@ -588,3 +590,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROJECT_UPDATE_ORDER = StringUrl('project/update-order/{pk}')
     PROJECT_TASK_LIST = StringUrl('project/assign-task-list/{pk_pj}')
     PROJECT_TASK_LINK = StringUrl('project/assign-task-link/{pk}')
+
+    # Folder
+    FOLDER_LIST = StringUrl('attachment/folder/list')
+    FOLDER_DETAIL = StringUrl('attachment/folder')
+    FOLDER_FILE_LIST = StringUrl('attachment/folder-file/list')

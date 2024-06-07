@@ -1754,7 +1754,8 @@ class WFRTControl {
                 WindowControl.showLoading();
                 setTimeout(function () {
                     // Redirect to the previous page
-                    window.history.back();
+                    let urlBack = window.location.href.replace('update', 'detail');
+                    window.location.replace(urlBack);
                 }, 1000);
             }
         }
@@ -2790,22 +2791,10 @@ class WFRTControl {
         let btnEnableCR = $('#btnEnableCR');
         if (eleRealAction) {
             if (btnCancel.length <= 0 && btnEnableCR.length <= 0) {
-                $(eleRealAction).append(`<button class="btn btn-outline-blue btn-wf-after-finish" id="btnEnableCR" data-value="1">
-                                            <span>
-                                                <span>${$.fn.transEle.attr('data-change-request')}</span>
-                                                <span class="icon">
-                                                    <i class="fa-regular fa-pen-to-square"></i>
-                                                </span>
-                                            </span>
-                                        </button>
-                                        <button class="btn btn-outline-danger btn-wf-after-finish" id="btnCancel" data-value="2">
-                                            <span>
-                                                <span>${$.fn.transEle.attr('data-cancel')}</span>
-                                                <span class="icon">
-                                                    <i class="fas fa-times"></i>
-                                                </span>
-                                            </span>
-                                        </button>`);
+                $(eleRealAction).append(`<div class="btn-group btn-group-rounded" role="group" aria-label="Basic example">
+                                            <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>
+                                            <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>
+                                        </div>`);
                 // add event
                 eleRealAction.on('click', '.btn-wf-after-finish', function () {
                     return WFRTControl.callActionWF($(this));
@@ -2821,22 +2810,10 @@ class WFRTControl {
         let formID = globeFormMappedZone;
         if (eleRealAction && formID) {
             if (btnSaveCR.length <= 0 && btnCancelCR.length <= 0) {
-                $(eleRealAction).append(`<button class="btn btn-outline-blue btn-wf-after-finish" type="submit" form="${formID}" id="btnSaveCR" data-value="3">
-                                            <span>
-                                                <span>${$.fn.transEle.attr('data-save-change')}</span>
-                                                <span class="icon">
-                                                    <i class="fa-regular fa-floppy-disk"></i>
-                                                </span>
-                                            </span>
-                                        </button>
-                                        <button class="btn btn-outline-secondary btn-wf-after-finish" id="btnCancelCR" data-value="4">
-                                            <span>
-                                                <span>${$.fn.transEle.attr('data-go-back')}</span>
-                                                <span class="icon">
-                                                    <i class="fas fa-arrow-left"></i>
-                                                </span>
-                                            </span>
-                                        </button>`);
+                $(eleRealAction).append(`<div class="btn-group btn-group-rounded" role="group" aria-label="Basic example">
+                                            <button class="btn btn-outline-primary btn-wf-after-finish" type="submit" form="${formID}" id="btnSaveCR" data-value="3">${$.fn.transEle.attr('data-save-change')}</button>
+                                            <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancelCR" data-value="4">${$.fn.transEle.attr('data-go-back')}</button>
+                                        </div>`);
                 // Add event
                 eleRealAction.on('click', '.btn-wf-after-finish', function () {
                     return WFRTControl.callActionWF($(this));
@@ -6731,7 +6708,7 @@ class DiagramControl {
                     if (window.location.href.includes('/detail/')) {
                         // Split the URL by '/'
                         let parts = window.location.href.split('/');
-                        let pk = parts[parts.length - 1];
+                        let pk = DiagramControl.extractUUID(window.location.href);
                         $.fn.callAjax2({
                                 'url': $(this).attr('data-url'),
                                 'method': $(this).attr('data-method'),
@@ -6847,6 +6824,16 @@ class DiagramControl {
                                 </div>`;
         }
         return htmlPreSuffix;
+    };
+
+    static extractUUID(url) {
+        let regex = /\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/;
+        let match = url.match(regex);
+        if (match && match[1]) {
+            return match[1];
+        } else {
+            return null;
+        }
     };
 }
 

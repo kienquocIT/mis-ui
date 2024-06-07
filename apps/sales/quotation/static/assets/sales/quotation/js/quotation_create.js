@@ -3,8 +3,6 @@ $(function () {
 
     $(document).ready(function () {
 
-        let promotionClass = new promotionHandle();
-        let shippingClass = new shippingHandle();
         // Elements
         let formSubmit = $('#frm_quotation_create');
         let boxPriceList = $('#select-box-quotation-create-price-list');
@@ -136,6 +134,81 @@ $(function () {
 // Action on click button add product
         btnAddProduct.on('click', function (e) {
             QuotationLoadDataHandle.loadAddRowProduct();
+        });
+
+// Action on click select2 product
+        tableProduct.on('click', '.table-row-item-area', function () {
+           QuotationLoadDataHandle.loadBtnAddProductS2(this.closest('tr'));
+        });
+
+        $('#addQuickProduct').on('shown.bs.modal', function () {
+            let $boxPType = $('#add-product-type');
+            let $boxPCategory = $('#add-product-category');
+            let $boxPUomGr = $('#add-product-uom-group');
+            let $boxPUom = $('#add-product-uom');
+            let $boxPTax = $('#add-product-tax');
+            let $boxPMethod = $('#add-product-method');
+            let dataMethod = [
+                {'id': 0, 'title': 'None'},
+                {'id': 1, 'title': 'Batch/Lot number'},
+                {'id': 2, 'title': 'Serial number'},
+            ];
+            let $modal = $(this);
+            QuotationLoadDataHandle.loadInitS2($boxPType, $modal, [], {'is_default': true});
+            QuotationLoadDataHandle.loadInitS2($boxPCategory, $modal);
+            QuotationLoadDataHandle.loadInitS2($boxPUomGr, $modal);
+            QuotationLoadDataHandle.loadInitS2($boxPUom, $modal);
+            QuotationLoadDataHandle.loadInitS2($boxPTax, $modal);
+            QuotationLoadDataHandle.loadInitS2($boxPMethod, $modal, dataMethod);
+        });
+
+        $('#add-product-uom-group').on('change', function () {
+            let $boxPUom = $('#add-product-uom');
+            let $modal = $('#addQuickProduct');
+            QuotationLoadDataHandle.loadInitS2($boxPUom, $modal, [], {'group': $(this).val()});
+        });
+
+        $('#btn-save-product').on('click', function () {
+            let dataSubmit = {};
+            dataSubmit['title'] = $('#add-product-title').val();
+            dataSubmit['code'] = $('#add-product-code').val();
+            dataSubmit['description'] = $('#add-product-remark').val();
+            dataSubmit['product_types_mapped_list'] = $('#add-product-type').val();
+            dataSubmit['general_product_category'] = $('#add-product-category').val();
+            dataSubmit['general_uom_group'] = $('#add-product-uom-group').val();
+            dataSubmit['sale_default_uom'] = $('#add-product-uom').val();
+            dataSubmit['sale_tax'] = $('#add-product-tax').val();
+            dataSubmit['general_traceability_method'] = parseInt($('#add-product-method').val());
+            WindowControl.showLoading();
+            $.fn.callAjax2(
+                {
+                    'url': QuotationLoadDataHandle.urlEle.attr('data-url-quick-product'),
+                    'method': 'POST',
+                    'data': dataSubmit,
+                }
+            ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && (data['status'] === 201 || data['status'] === 200)) {
+                            $.fn.notifyB({description: data.message}, 'success');
+                            // call ajax again data ProductSales
+                            if (QuotationDataTableHandle.productInitEle.val()) {
+                                let dataInitProduct = JSON.parse(QuotationDataTableHandle.productInitEle.val());
+                                dataInitProduct.unshift(data);
+                                QuotationDataTableHandle.productInitEle.val(JSON.stringify(dataInitProduct));
+                                QuotationLoadDataHandle.loadReInitDataTableProduct();
+                            }
+                            setTimeout(() => {
+                                WindowControl.hideLoading();
+                            }, 1000);
+                        }
+                    }, (err) => {
+                        setTimeout(() => {
+                            WindowControl.hideLoading();
+                        }, 1000)
+                        $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                    }
+                )
         });
 
 // Action on delete row product
@@ -612,7 +685,7 @@ $(function () {
             QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false);
             // get promotion condition to apply
             let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
-            let promotionResult = promotionClass.getPromotionResult(promotionCondition);
+            let promotionResult = promotionHandle.getPromotionResult(promotionCondition);
             let is_promotion_on_row = false;
             if (promotionResult.hasOwnProperty('is_promotion_on_row')) {
                 if (promotionResult.is_promotion_on_row === true) {
@@ -684,9 +757,9 @@ $(function () {
                     if (promotionResult.hasOwnProperty('discount_rate_on_order')) {
                         if (promotionResult.discount_rate_on_order !== null) {
                             if (promotionResult.is_before_tax === true) {
-                                promotionClass.reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price);
+                                promotionHandle.reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price);
                             } else {
-                                promotionClass.reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price, false)
+                                promotionHandle.reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price, false)
                             }
                         }
                     }
@@ -785,7 +858,7 @@ $(function () {
             QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
             QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
             // Re Calculate after add shipping (pretax, discount, total)
-            shippingClass.reCalculateIfShipping(shippingPrice);
+            shippingHandle.reCalculateIfShipping(shippingPrice);
             // Load disabled
             QuotationLoadDataHandle.loadRowDisabled(newRow);
             // ReOrder STT
@@ -820,8 +893,8 @@ $(function () {
 
         tablePS.on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-value-before-tax, .table-row-due-date', function () {
             if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                let row = this.closest('tr');
                 if ($(this).hasClass('table-row-date')) {
-                    let row = this.closest('tr');
                     let isCheck = true;
                     let eleDueDate = row.querySelector('.table-row-due-date');
                     let eleTerm = row.querySelector('.table-row-term');
@@ -843,9 +916,9 @@ $(function () {
                 }
                 if ($(this).hasClass('table-row-ratio') && $(this).hasClass('validated-number')) {
                     validateNumber(this);
-                }
-                if ($(this).hasClass('table-row-value-before-tax')) {
-                    validatePSValue(this);
+                    let eleValueBeforeTax = row.querySelector('.table-row-value-before-tax');
+                    QuotationLoadDataHandle.loadPSValueBeforeTax(eleValueBeforeTax, $(this).val());
+                    validatePSValue(eleValueBeforeTax);
                 }
                 if ($(this).hasClass('table-row-due-date')) {
                     let row = this.closest('tr');
@@ -876,7 +949,7 @@ $(function () {
         formSubmit.submit(function (e) {
             e.preventDefault();
             if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method') === "POST") { // HAS PROMOTION => Check condition again
-                promotionClass.checkPromotionIfSubmit('data-init-quotation-create-promotion', QuotationLoadDataHandle.customerSelectEle.val());
+                promotionHandle.checkPromotionIfSubmit('data-init-quotation-create-promotion', QuotationLoadDataHandle.customerSelectEle.val());
                 // Check promotion then Submit Form
                 submitCheckPromotion();
             } else { // NO PROMOTION => submit normal

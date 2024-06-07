@@ -504,18 +504,18 @@ class MenuEOffice:
 
 class MenuDMS:
     WORK_SPACE = MenuCommon(
-        name='Work space', code='menu_DMS_work_space', view_name='', icon='<i class="fas fa-vector-square"></i>',
+        name='Work space', code='menu_dms_work_space', view_name='', icon='<i class="fas fa-laptop-house"></i>',
         child=[
             MenuCommon(
                 name='File',
-                code='menu_report_pipeline_list',
-                view_name='ReportPipelineList',
-                icon='<i class="far fa-file"></i>',
+                code='menu_folder_list',
+                view_name='FolderList',
+                icon='<i class="fas fa-file"></i>',
             )
         ],
     )
     MY_SPACE = MenuCommon(
-        name='My space', code='menu_DMS_my_space', view_name='', icon='<i class="fas fa-user-astronaut"></i>',
+        name='My space', code='menu_dms_my_space', view_name='', icon='<i class="fas fa-user"></i>',
         child=[],
     )
 

@@ -79,6 +79,7 @@ INSTALLED_APPS = \
         'apps.core.mailer',
         'apps.core.fimport',
         'apps.core.diagram',
+        'apps.core.attachment',
     ] + [  # Another Application
         'apps.masterdata.saledata',
         'apps.masterdata.promotion',

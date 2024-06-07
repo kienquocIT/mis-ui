@@ -7163,8 +7163,8 @@ msgid "Select inventory adjustment"
 msgstr "Chọn phiếu kiểm kê kho"
 
 #
-msgid "Add information later"
-msgstr "Thêm thông tin sau"
+msgid "Enter data later"
+msgstr "Nhập liệu sau"
 
 #
 msgid "Vendor serial no."
@@ -7536,7 +7536,7 @@ msgstr "Vai trò bán hàng nhanh"
 
 #
 msgid "Role long sale"
-msgstr "Vai trò bán hàng chậm"
+msgstr "Vai trò bán hàng dự án"
 
 #
 msgid "Calculate ending cumulative value"
@@ -7685,3 +7685,19 @@ msgstr "Huỷ liên kết giữa Giao việc và Công việc"
 #
 msgid "Previous work"
 msgstr "Công việc trước đó"
+
+#
+msgid "New folder"
+msgstr "Thư mục mới"
+
+#
+msgid "Parent folder"
+msgstr "Thư mục cha"
+
+#
+msgid "Upload file"
+msgstr "Tải tệp lên"
+
+#
+msgid "Upload folder"
+msgstr "Tải thư mục lên"

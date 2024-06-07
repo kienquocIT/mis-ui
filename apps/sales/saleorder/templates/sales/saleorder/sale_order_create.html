@@ -291,9 +291,9 @@
                                         <tr>
                                             <th colspan="5"></th>
                                             <th colspan="5">
-                                                <div class="row">
+                                                <div class="row mb-2">
                                                     <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
+                                                        <p style="text-align: right">{% trans 'Pretax Amount' %}:</p>
                                                     </div>
                                                     <div class="col-2"></div>
                                                     <div class="col-4">
@@ -304,7 +304,7 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Discount' %}:</p>
+                                                        <p style="text-align: right">{% trans 'Discount' %}:</p>
                                                     </div>
                                                     <div class="col-2">
                                                         <div class="input-group w-80">
@@ -321,7 +321,7 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
+                                                        <p style="text-align: right">{% trans 'Taxes' %}:</p>
                                                     </div>
                                                     <div class="col-2"></div>
                                                     <div class="col-4">
@@ -332,11 +332,11 @@
                                                 <hr class="bg-teal">
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
+                                                        <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
                                                     </div>
                                                     <div class="col-2"></div>
                                                     <div class="col-4">
-                                                        <span class="mask-money font-3 quotation-create-product-total" data-init-money="0" data-zone="sale_order_products_data"></span>
+                                                        <b><span class="mask-money font-3 quotation-create-product-total" data-init-money="0" data-zone="sale_order_products_data"></span></b>
                                                         <input type="text" class="form-control quotation-create-product-total-raw" value="0" hidden>
                                                     </div>
                                                 </div>
@@ -347,48 +347,18 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12 col-md-6 col-lg-6">
-                                        <div class="d-flex">
-                                            <button type="button" class="btn btn-outline-primary mr-2" id="btn-add-product-quotation-create" data-zone="sale_order_products_data">
-                                                <span><span>{% trans 'Add Product' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-primary" id="btn-add-product-group-quotation" data-zone="quotation_products_data">
-                                                <span><span>{% trans 'Add group' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
-                                            </button>
+                                        <button type="button" class="btn btn-outline-primary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="sale_order_products_data">
+                                            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span><span class="icon"><i class="fas fa-angle-down"></i></span></span>
+                                        </button>
+                                        <div class="dropdown-menu w-210p">
+                                            <a class="dropdown-item" href="#" id="btn-add-product-quotation-create"><i class="dropdown-icon fas fa-kaaba text-primary"></i><span class="mt-2">{% trans 'Add Product' %}</span></a>
+                                            <a class="dropdown-item" href="#" id="btn-add-product-group-quotation"><i class="dropdown-icon fas fa-layer-group text-primary"></i><span>{% trans 'Add group' %}</span></a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#" id="btn-add-shipping" data-bs-toggle="modal" data-bs-target="#shippingFeeModalCenter"><i class="dropdown-icon fas fa-shipping-fast text-primary"></i><span class="mt-2">{% trans 'Shipping fee' %}</span></a>
+                                            <a class="dropdown-item" href="#" id="btn-check-promotion" data-bs-toggle="modal" data-bs-target="#promotionModalCenter"><i class="dropdown-icon fas fa-tags text-primary"></i><span>{% trans 'Promotion' %}</span></a>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 col-lg-6">
-                                        <div class="d-flex justify-content-end">
-                                            <button
-                                                type="button"
-                                                class="btn btn-outline-primary mr-2"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#shippingFeeModalCenter"
-                                                id="btn-add-shipping"
-                                                data-zone="sale_order_products_data"
-                                            >
-                                                <span>
-                                                    <span>{% trans 'Shipping fee' %}</span>
-                                                    <span class="icon">
-                                                        <i class="fas fa-shipping-fast"></i>
-                                                    </span>
-                                                </span>
-                                            </button>
-                                            <button
-                                                type="button"
-                                                class="btn btn-outline-primary"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#promotionModalCenter"
-                                                id="btn-check-promotion"
-                                                data-zone="sale_order_products_data"
-                                            >
-                                                <span>
-                                                    <span>{% trans 'Promotion' %}</span>
-                                                    <span class="icon">
-                                                        <i class="fas fa-tags"></i>
-                                                    </span>
-                                                </span>
-                                            </button>
-                                        </div>
                                         <div
                                                 class="modal fade" id="shippingFeeModalCenter" tabindex="-1"
                                                 role="dialog" aria-labelledby="shippingFeeModalCenter"
@@ -503,9 +473,9 @@
                                         <tr>
                                             <th colspan="4"></th>
                                             <th colspan="4">
-                                                <div class="row">
+                                                <div class="row mb-2">
                                                     <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
+                                                        <p style="text-align: right">{% trans 'Pretax Amount' %}:</p>
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
@@ -515,7 +485,7 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
+                                                        <p style="text-align: right">{% trans 'Taxes' %}:</p>
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
@@ -526,11 +496,11 @@
                                                 <hr class="bg-teal">
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
+                                                        <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
-                                                        <span class="mask-money font-3 quotation-create-cost-total" data-init-money="0" data-zone="sale_order_costs_data"></span>
+                                                        <b><span class="mask-money font-3 quotation-create-cost-total" data-init-money="0" data-zone="sale_order_costs_data"></span></b>
                                                         <input type="text" class="form-control quotation-create-cost-total-raw" value="0" hidden>
                                                     </div>
                                                 </div>
@@ -565,9 +535,9 @@
                                         <tr>
                                             <th colspan="5"></th>
                                             <th colspan="4">
-                                                <div class="row">
+                                                <div class="row mb-2">
                                                     <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
+                                                        <p style="text-align: right">{% trans 'Pretax Amount' %}:</p>
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
@@ -577,7 +547,7 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
+                                                        <p style="text-align: right">{% trans 'Taxes' %}:</p>
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
@@ -588,11 +558,11 @@
                                                 <hr class="bg-teal">
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
+                                                        <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
-                                                        <span class="mask-money font-3 quotation-create-expense-total" data-init-money="0" data-zone="sale_order_expenses_data"></span>
+                                                        <b><span class="mask-money font-3 quotation-create-expense-total" data-init-money="0" data-zone="sale_order_expenses_data"></span></b>
                                                         <input type="text" class="form-control quotation-create-expense-total-raw" value="0" hidden>
                                                     </div>
                                                 </div>
@@ -603,13 +573,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12 col-md-6 col-lg-6">
-                                        <div class="d-flex">
-                                            <button type="button" class="btn btn-outline-primary mr-2" id="btn-add-expense-quotation-create" data-zone="sale_order_expenses_data">
-                                                <span><span>{% trans 'Add Expense' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-primary" id="btn-add-labor-quotation-create" data-zone="sale_order_expenses_data">
-                                                <span><span>{% trans 'Add Labor' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
-                                            </button>
+                                        <button type="button" class="btn btn-outline-primary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="sale_order_expenses_data">
+                                            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span><span class="icon"><i class="fas fa-angle-down"></i></span></span>
+                                        </button>
+                                        <div class="dropdown-menu w-210p">
+                                            <a class="dropdown-item" href="#" id="btn-add-expense-quotation-create"><i class="dropdown-icon fas fa-hand-holding-usd text-primary"></i><span class="mt-2">{% trans 'Add Expense' %}</span></a>
+                                            <a class="dropdown-item" href="#" id="btn-add-labor-quotation-create"><i class="dropdown-icon fas fa-people-carry text-primary"></i><span>{% trans 'Add Labor' %}</span></a>
                                         </div>
                                     </div>
                                 </div>
@@ -639,7 +608,7 @@
                                 <div class="row mb-5">
                                     <div class="col-12 col-md-6 col-lg-6">
                                         <button type="button" class="btn btn-outline-primary" id="btn-add-payment-stage" data-zone="sale_order_logistic_data_readonly">
-                                            <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
                                         </button>
                                     </div>
                                 </div>
@@ -647,10 +616,10 @@
                             <div class="tab-pane fade" id="tab_logistic">
                                 <div class="row logistics-body">
                                     <div class="form-group">
-                                        <label class="form-label">{% trans 'Shipping Address' %}
-                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#shippingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
+                                        <label class="form-label text-primary">{% trans 'Shipping Address' %}
+                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-sm" data-bs-toggle="modal" data-bs-target="#shippingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
-                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-shipping-address" data-zone="sale_order_logistic_data_readonly" disabled></textarea>
+                                        <textarea class="form-control text-black" rows="3" cols="50" name="" id="quotation-create-shipping-address" data-zone="sale_order_logistic_data_readonly" disabled></textarea>
                                         <input type="text" id="quotation-create-customer-shipping" hidden>
                                     </div>
                                     <div
@@ -680,10 +649,10 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">{% trans 'Billing Address' %}
-                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#billingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
+                                        <label class="form-label text-primary">{% trans 'Billing Address' %}
+                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-sm" data-bs-toggle="modal" data-bs-target="#billingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
-                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-billing-address" data-zone="sale_order_logistic_data_readonly" disabled></textarea>
+                                        <textarea class="form-control text-black" rows="3" cols="50" name="" id="quotation-create-billing-address" data-zone="sale_order_logistic_data_readonly" disabled></textarea>
                                         <input type="text" id="quotation-create-customer-billing" hidden>
                                     </div>
                                     <div
@@ -745,7 +714,7 @@
             </div>
             <div class="tab-pane fade" id="tab_block_2">
                 <div class="row">
-                    <div class="row mb-1">
+                    <div class="row">
                         <div class="col-2">
                             <button
                                     type="button"
@@ -753,7 +722,7 @@
                                     id="btn-refresh-quotation-indicator"
                                     data-zone="sale_order_indicators_data"
                             >
-                            <span><span>{% trans 'Refresh' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-sync-alt"></i></span></span></span>
+                            <span><span>{% trans 'Refresh' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-redo-alt"></i></span></span></span>
                             </button>
                         </div>
                         <div class="col-10"></div>
@@ -808,6 +777,12 @@
         data-validate-due-date="{% trans "Invalid due date" %}"
         data-validate-total-payment="{% trans "Total payment must less than or equal to total before tax" %}"
         data-validate-ss-role="{% trans "Opportunity is disabled because employee in short sales roles" %}"
+    >
+    <input
+        type="text"
+        id="app-url-factory"
+        data-url-product="{% url 'ProductForSaleListAPI' %}"
+        data-url-product-detail="{% url 'ProductForSaleDetailAPI' 1 %}"
     >
 
     <input
@@ -924,7 +899,6 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
-    <script src="{% static 'assets/sales/quotation/js/quotation_promote_shipping.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
 

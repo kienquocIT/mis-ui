@@ -45,11 +45,8 @@ class GoodsReturnCreate(View):
         breadcrumb='GOODS_RETURN_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST + f"?interact=1").get()
         return {
-            'data': {
-                'warehouse_list': resp1.result,
-            },
+            'data': {},
         }, status.HTTP_200_OK
 
 
@@ -72,12 +69,9 @@ class GoodsReturnUpdate(View):
         menu_active='menu_goods_return',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST + f"?interact=1").get()
         input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_RETURN
         return {
-            'data': {
-                'warehouse_list': resp1.result,
-            },
+            'data': {},
             'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_goods_return_update'
         }, status.HTTP_200_OK
 

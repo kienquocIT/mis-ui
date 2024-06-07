@@ -7203,8 +7203,8 @@ msgid "Not yet"
 msgstr "Chưa xong"
 
 #
-msgid "LOT/Serial status"
-msgstr "Trạng thái LOT/Serial"
+msgid "Serial status"
+msgstr "Trạng thái Serial"
 
 #
 msgid "Inventory"

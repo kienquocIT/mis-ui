@@ -138,7 +138,7 @@ $(function () {
 
 // Action on click select2 product
         tableProduct.on('click', '.table-row-item-area', function () {
-           QuotationLoadDataHandle.loadBtnAddProductSelect2(this.closest('tr'));
+           QuotationLoadDataHandle.loadBtnAddProductS2(this.closest('tr'));
         });
 
         $('#addQuickProduct').on('shown.bs.modal', function () {

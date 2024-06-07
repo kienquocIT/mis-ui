@@ -25,7 +25,6 @@ class BaseMsg:
     CREATE = _('Create')
     UPDATE = _('Update')
     DELETE = _('Delete')
-    SUCCESSFULLY = _('successfully')
     DRAFT = _('Draft')
     CREATED = _('Created')
     ADDED = _('Added')

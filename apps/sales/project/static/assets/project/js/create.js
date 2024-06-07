@@ -15,6 +15,12 @@ $(document).ready(function(){
 
     // run select
     $('#selectEmployeeInherit, #select_project_owner').each(function(){
-        $(this).initSelect2()
+        $(this).initSelect2({
+            templateResult: function (state) {
+                let groupHTML = `<span class="badge badge-soft-primary">${state.data?.group?.title ? state.data.group.title : "_"}</span>`
+                let activeHTML = state.data?.is_active === true ? `<span class="badge badge-success badge-indicator"></span>` : `<span class="badge badge-light badge-indicator"></span>`;
+                return $(`<span>${state.text} ${activeHTML} ${groupHTML}</span>`);
+            },
+        })
     })
 });

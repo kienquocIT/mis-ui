@@ -77,7 +77,7 @@ class BusinessTripRequestCreateAPI(APIView):
     def post(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.BUSINESS_TRIP_LIST).post(request.data)
         if resp.state:
-            resp.result['message'] = f'{BusinessTripMsg.BUSINESS_TRIP} {BaseMsg.CREATE} {BaseMsg.SUCCESSFULLY}'
+            resp.result['message'] = f'{BusinessTripMsg.BUSINESS_TRIP} {BaseMsg.CREATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -135,6 +135,6 @@ class BusinessTripRequestEditAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.BUSINESS_TRIP_DETAIL.push_id(pk)).put(request.data)
         if resp.state:
-            resp.result['message'] = f'{BusinessTripMsg.BUSINESS_TRIP} {BaseMsg.UPDATE} {BaseMsg.SUCCESSFULLY}'
+            resp.result['message'] = f'{BusinessTripMsg.BUSINESS_TRIP} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()

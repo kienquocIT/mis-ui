@@ -31,6 +31,14 @@ $(document).ready(function(){
                 }
             },
             {
+                data: 'employee_inherit',
+                width: '10%',
+                class: 'text-center',
+                render: (row, type, data) => {
+                    return row ? row?.['full_name'] : '--'
+                }
+            },
+            {
                 data: 'start_date',
                 width: '15%',
                 class: 'text-center',

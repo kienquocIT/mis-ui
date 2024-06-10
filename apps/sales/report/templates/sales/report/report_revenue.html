@@ -150,18 +150,16 @@
         <div class="col-12 col-md-10 col-lg-10">
             <table
                     id="table_report_revenue_list"
-                    class="table nowrap min-w-1600p w-100 mb-5"
+                    class="table nowrap min-w-1280p w-100 mb-5"
                     data-url="{% url 'ReportRevenueListAPI' %}"
                     data-method="get"
             >
                 <thead>
                 <tr>
-                    <th>{% trans 'Employee Code' %}</th>
-                    <th>{% trans 'Employee name' %}</th>
-                    <th>{% trans 'Sale order code' %}</th>
+                    <th>{% trans 'Employee' %}</th>
+                    <th>{% trans 'Sale order' %}</th>
                     <th>{% trans 'Date' %}</th>
-                    <th>{% trans 'Sale order name' %}</th>
-                    <th>{% trans 'Customer name' %}</th>
+                    <th>{% trans 'Customer' %}</th>
                     <th>{% trans 'Revenue' %}</th>
                     <th>{% trans 'Gross profit' %}</th>
                     <th>{% trans 'Net income' %}</th>

@@ -55,7 +55,7 @@ $(function () {
                                         </div>`;
                                 }
                                 if (row?.['is_change'] === true && row?.['document_root_id'] && row?.['system_status'] !== 3) {
-                                    return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-blue">${row?.['code']} <span class="badge-child badge-child-blue">${row?.['document_change_order'] ? row?.['document_change_order'] : 0}</span></span></a></div>`;
+                                    return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-secondary">${row?.['code']} <span class="badge-child badge-child-blue">${row?.['document_change_order'] ? row?.['document_change_order'] : 0}</span></span></a></div>`;
                                 }
                                 return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']}</span></a></div>`;
                             }

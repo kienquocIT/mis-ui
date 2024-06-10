@@ -28,6 +28,17 @@ const $related_opps_table = $('#related-opps-table')
 const $related_leads_table = $('#related-leads-table')
 const $convert_to_opp_radio_group = $('input[name="convert-to-opp"]')
 const $convert_to_opp_option_radio_group = $('input[name="convert-to-opp-option"]')
+const $new_account_btn = $('#create-to-new-account-btn')
+
+$new_account_btn.on('click', function () {
+    let href = $(this).attr('href')
+    let industry = SelectDDControl.get_data_from_idx($industry, $industry.val())
+    let industry_id = industry['id']
+    let industry_title = industry['title']
+    $(this).attr(
+        'href', `${href}?name=${$company_name.val()}&industry_id=${industry_id}&industry_title=${industry_title}&total_employees=${$total_employees.val()}&revenue=${$revenue.val()}`
+    )
+})
 
 $create_contact_btn.on('click', function () {
     if ($create_contact_btn.attr('id')) {

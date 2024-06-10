@@ -1,6 +1,20 @@
 $(document).ready(function () {
     new AccountHandle().load();
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = urlParams.get('name');
+    const industry_id = urlParams.get('industry_id');
+    const industry_title = urlParams.get('industry_title');
+    const total_employees = urlParams.get('total_employees');
+    const revenue = urlParams.get('revenue');
+
+    $('#inp-account-name').val(name).prop('disabled', true).prop('readonly', true)
+    loadIndustry({'id': industry_id, 'title': industry_title})
+    $('#select-box-industry').prop('disabled', true).prop('readonly', true)
+    $('#select-box-total-emp').val(total_employees).prop('disabled', true).prop('readonly', true)
+    $('#select-box-annual-revenue').val(revenue).prop('disabled', true).prop('readonly', true)
+
+
     let frm = $('#form-create-account')
     frm.submit(function (event) {
         event.preventDefault();

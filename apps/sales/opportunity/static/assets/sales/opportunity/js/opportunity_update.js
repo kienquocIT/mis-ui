@@ -31,6 +31,50 @@ $(document).ready(function () {
 
     // Promise.all
 
+    function loadLeadList(datasource) {
+        if (!$.fn.DataTable.isDataTable('#lead-list-table')) {
+            let dtb = $('#lead-list-table');
+            dtb.DataTableDefault({
+                rowIdx: true,
+                data: datasource,
+                columns: [
+                    {
+                        'render': () => {
+                            return ``;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['lead'].id);
+                            return `<a href="${link}"><span class="badge badge-soft-primary w-70">${row?.['lead'].code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['lead'].id);
+                            return `<a href="${link}">${row?.['lead']?.['title']}</a>`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            return `<span class="badge badge-sm badge-blue">${row?.['lead']?.['source']}</span>`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            return `${row?.['lead']?.['contact_name']}`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            return `${moment(row?.['lead']?.['date_created'].split(' ')[0]).format('DD/MM/YYYY')}`;
+                        }
+                    },
+                ],
+            });
+        }
+    }
+
     let prm_config = $.fn.callAjax2({
         url: urlFactory.data('url-config'),
         method: 'GET'
@@ -60,10 +104,25 @@ $(document).ready(function () {
         (errs) => {}
     )
 
+    let prm_lead = $.fn.callAjax2({
+        url: $('#lead-list-table').attr('data-url') + `?opp_id=${pk}`,
+        method: 'GET'
+    }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && typeof data === 'object' && data.hasOwnProperty('lead_list')) {
+                console.log(data?.['lead_list'])
+                return data?.['lead_list'];
+            }
+            return {};
+        },
+        (errs) => {}
+    )
+
     let list_stage_condition = []
     let config_is_input_rate = null;
     $x.fn.showLoadingPage()
-    Promise.all([prm_detail, prm_config]).then(
+    Promise.all([prm_detail, prm_config, prm_lead]).then(
         (results) => {
             $x.fn.hideLoadingPage();
             const opportunity_detail_data = results[0];
@@ -1737,6 +1796,8 @@ $(document).ready(function () {
 
                 $('#create-return-advance-shortcut').attr('data-opportunity_mapped', encodeURIComponent(JSON.stringify({'id': dataInitSaleCode?.['id'], 'code': dataInitSaleCode?.['code'], 'title': dataInitSaleCode?.['title']})))
             })
+
+            loadLeadList(results[2])
         }
     )
 

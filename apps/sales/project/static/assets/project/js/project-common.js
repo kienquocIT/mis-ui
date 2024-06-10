@@ -16,7 +16,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     $.fn.notifyB({description: data.message}, 'success');
-                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    if (frm.dataMethod === 'post') $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                 }
             },
             (err) => {
@@ -51,7 +51,6 @@ function saveGroup(gantt_obj) {
             'title': $tit.val(),
             'employee_inherit': $('#selectEmployeeInherit').val(),
             'gr_weight': $('#groupWeight').val() || 0,
-            'gr_rate': $('#groupRate').val() || 0,
             'gr_start_date': moment($startD.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
             'gr_end_date': moment($startE.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
             'order': parseInt($('.gantt-wrap').data('detail-index')) + 1
@@ -80,7 +79,7 @@ function saveGroup(gantt_obj) {
                         let temps = []
                         if (method === 'put') res = data
                         res.weight = res.gr_weight
-                        res.progress = res.gr_rate
+                        res.progress = $('#groupRate').val()
                         res.date_from = res.gr_start_date
                         res.date_end = res.gr_end_date
                         if (method === 'post'){
@@ -121,7 +120,6 @@ function saveWork(gantt_obj) {
             'title': $tit.val(),
             'employee_inherit': $('#selectEmployeeInherit').val(),
             'w_weight':  $('#workWeight').val() || 0,
-            'w_rate': $('#workRate').val() || 0,
             'w_start_date': moment($startD.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
             'w_end_date': moment($startE.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
             'order': childIdx,
@@ -157,7 +155,7 @@ function saveWork(gantt_obj) {
                         if (method === 'put')
                             res = data
                         res.weight = res.w_weight
-                        res.progress = res.w_rate
+                        res.progress = $('#workRate').val(),
                         res.date_from = res.w_start_date
                         res.date_end = res.w_end_date
                         if (method === 'post'){
@@ -351,12 +349,26 @@ function show_task_list(){
                             },
                         ],
                         rowCallback: function (row, data, index) {
-                            // handle onclick btn
+                            // handle onclick btn link to work
                             $('.btn-link-to-work', row).on('click', function (e) {
                                 e.preventDefault();
                                 $('.task_detail_view').trigger('Task.link.work', [{
                                     'id': data.id, 'work_id': workID
                                 }])
+                                table_n_work.row(row).remove().draw(false)
+                            })
+                            // open task detail
+                            $('.task_detail_view', row).on('click', function (e) {
+                                e.preventDefault();
+                                $('#assign_modal').modal('hide')
+                                $('.task_detail_view').trigger('Task.click.view', [{
+                                    'id': data.id, 'task': data.task.id
+                                }])
+                            })
+                            // del task
+                            $('.btn-delete-task', row).on('click', function (e) {
+                                e.preventDefault();
+                                Task_in_project.deleteTask(data.task.id)
                                 table_n_work.row(row).remove().draw(false)
                             })
                         },

@@ -452,10 +452,12 @@ class Task_in_project {
     }
 
     static loadTask(task_info) {
+        window.is_load = true
         const $form = $('#formOpportunityTask');
         $('.title-create').addClass('hidden')
         $('.title-detail').removeClass('hidden')
-        $form.append(`<input type="hidden" name="work_id" value="${task_info.work_id}"/>`)
+        if (task_info.work_id)
+            $form.append(`<input type="hidden" name="work_id" value="${task_info.work_id}"/>`)
         $.fn.callAjax2({
             'url': $('#assign_task-url').attr('data-task_detail').format_url_with_uuid(task_info.task),
             'method': 'GET',
@@ -504,6 +506,7 @@ class Task_in_project {
                     const $btnSub = $('.create-subtask')
                     if (Object.keys(data.parent_n).length > 0) $btnSub.addClass('hidden')
                     else $btnSub.removeClass('hidden')
+                    window.is_load = false
                 }
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
@@ -530,12 +533,28 @@ class Task_in_project {
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )
     }
+
+    static deleteTask(task){
+        $.fn.callAjax2({
+            'url': $('#assign_task-url').attr('data-task_detail').format_url_with_uuid(task),
+            'method': 'DELETE',
+            'sweetAlertOpts': { 'allowOutsideClick': true }
+        }).then(
+            (resp) => {
+                const data = $.fn.switcherResp(resp);
+                if (data) $.fn.notifyB({description: data.message}, 'success');
+            },
+            (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+        )
+    }
 }
 
 $(document).on('Task.click.view', function(e, detail){
-    if ($('#drawer_task_create').hasClass('open')) resetFormTask()
-    else $('.btn-show-task_f').trigger('click');
-    Task_in_project.loadTask(detail)
+    if (!window.is_load){
+        if ($('#drawer_task_create').hasClass('open')) resetFormTask()
+        else $('.btn-show-task_f').trigger('click');
+        Task_in_project.loadTask(detail)
+    }
 });
 
 $(document).on('Task.link.work', function(e, detail){

@@ -17,6 +17,7 @@ from .report import ReportMsg
 from .templates import TemplateMsg
 from .application import AppMsg
 from .core import CoreMsg
+from .masterdata import MDMsg
 
 
 class BaseMsg:
@@ -26,7 +27,6 @@ class BaseMsg:
     CREATE = _('Create')
     UPDATE = _('Update')
     DELETE = _('Delete')
-    SUCCESSFULLY = _('successfully')
     DRAFT = _('Draft')
     CREATED = _('Created')
     ADDED = _('Added')

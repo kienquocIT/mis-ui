@@ -29,13 +29,13 @@
                     </div>
                     <div class="col-xs-12 col-md-6 form-group">
                         <label for="groupWeight" class="form-label">{% trans 'Group weight' %}</label>
-                        <input type="text" id="groupWeight" name="gr_weight" class="form-control" autocomplete="off">
-                    </div>
-                    <div class="col-xs-12 col-md-6 form-group">
-                        <label for="groupRate" class="form-label">{% trans 'Group rate' %}</label>
-                        <input type="text" id="groupRate" name="gr_rate" class="form-control" autocomplete="off">
+                        <span class="input-affix-wrapper">
+                            <input type="text" id="groupWeight" name="gr_weight" class="form-control" autocomplete="off">
+                            <span class="input-suffix"><i class="fa-solid fa-percent"></i></span>
+                        </span>
                     </div>
                 </div>
+                <input type="hidden" id="groupRate" name="gr_weight" class="form-control" autocomplete="off">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary float-left" id="btn-group-add">

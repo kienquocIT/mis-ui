@@ -138,10 +138,10 @@ $(function () {
 
 // Action on click select2 product
         tableProduct.on('click', '.table-row-item-area', function () {
-           QuotationLoadDataHandle.loadBtnAddProductSelect2(this.closest('tr'));
+           QuotationLoadDataHandle.loadBtnAddProductS2(this.closest('tr'));
         });
 
-        $('#addBasicProduct').on('shown.bs.modal', function () {
+        $('#addQuickProduct').on('shown.bs.modal', function () {
             let $boxPType = $('#add-product-type');
             let $boxPCategory = $('#add-product-category');
             let $boxPUomGr = $('#add-product-uom-group');
@@ -154,18 +154,26 @@ $(function () {
                 {'id': 2, 'title': 'Serial number'},
             ];
             let $modal = $(this);
-            QuotationLoadDataHandle.loadInitS2Modal($boxPType, $modal);
-            QuotationLoadDataHandle.loadInitS2Modal($boxPCategory, $modal);
-            QuotationLoadDataHandle.loadInitS2Modal($boxPUomGr, $modal);
-            QuotationLoadDataHandle.loadInitS2Modal($boxPUom, $modal);
-            QuotationLoadDataHandle.loadInitS2Modal($boxPTax, $modal);
-            QuotationLoadDataHandle.loadInitS2Modal($boxPMethod, $modal, dataMethod);
+            QuotationLoadDataHandle.loadInitS2($boxPType, $modal, [], {'is_default': true});
+            QuotationLoadDataHandle.loadInitS2($boxPCategory, $modal);
+            QuotationLoadDataHandle.loadInitS2($boxPUomGr, $modal);
+            QuotationLoadDataHandle.loadInitS2($boxPUom, $modal);
+            QuotationLoadDataHandle.loadInitS2($boxPTax, $modal);
+            QuotationLoadDataHandle.loadInitS2($boxPMethod, $modal, dataMethod);
+        });
+
+        $('#add-product-uom-group').on('change', function () {
+            let $boxPUom = $('#add-product-uom');
+            let $modal = $('#addQuickProduct');
+            QuotationLoadDataHandle.loadInitS2($boxPUom, $modal, [], {'group': $(this).val()});
         });
 
         $('#btn-save-product').on('click', function () {
             let dataSubmit = {};
             dataSubmit['title'] = $('#add-product-title').val();
+            dataSubmit['code'] = $('#add-product-code').val();
             dataSubmit['description'] = $('#add-product-remark').val();
+            dataSubmit['product_types_mapped_list'] = $('#add-product-type').val();
             dataSubmit['general_product_category'] = $('#add-product-category').val();
             dataSubmit['general_uom_group'] = $('#add-product-uom-group').val();
             dataSubmit['sale_default_uom'] = $('#add-product-uom').val();
@@ -174,7 +182,7 @@ $(function () {
             WindowControl.showLoading();
             $.fn.callAjax2(
                 {
-                    'url': QuotationLoadDataHandle.urlEle.attr('data-url-product-md'),
+                    'url': QuotationLoadDataHandle.urlEle.attr('data-url-quick-product'),
                     'method': 'POST',
                     'data': dataSubmit,
                 }
@@ -183,6 +191,13 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data && (data['status'] === 201 || data['status'] === 200)) {
                             $.fn.notifyB({description: data.message}, 'success');
+                            // call ajax again data ProductSales
+                            if (QuotationDataTableHandle.productInitEle.val()) {
+                                let dataInitProduct = JSON.parse(QuotationDataTableHandle.productInitEle.val());
+                                dataInitProduct.unshift(data);
+                                QuotationDataTableHandle.productInitEle.val(JSON.stringify(dataInitProduct));
+                                QuotationLoadDataHandle.loadReInitDataTableProduct();
+                            }
                             setTimeout(() => {
                                 WindowControl.hideLoading();
                             }, 1000);

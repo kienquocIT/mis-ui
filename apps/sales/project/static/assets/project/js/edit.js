@@ -13,8 +13,17 @@ $(document).ready(function(){
         maxYear: parseInt(moment().format('YYYY'), 10),
     });
 
-    // run select
-    $('#selectEmployeeInherit, #select_project_owner, #select_project_group, #select_project_work').each(function(){
+    // run select employee choise
+    $('#selectEmployeeInherit, #select_project_owner').each(function(){
+        $(this).initSelect2({
+            templateResult: function (state) {
+                let groupHTML = `<span class="badge badge-soft-primary">${state.data?.group?.title ? state.data.group.title : "_"}</span>`
+                let activeHTML = state.data?.is_active === true ? `<span class="badge badge-success badge-indicator"></span>` : `<span class="badge badge-light badge-indicator"></span>`;
+                return $(`<span>${state.text} ${activeHTML} ${groupHTML}</span>`);
+            },
+        })
+    });
+    $('#select_project_group, #select_project_work').each(function(){
         $(this).initSelect2()
     });
 
@@ -63,7 +72,6 @@ $(document).ready(function(){
                 $x.fn.renderCodeBreadcrumb(data);
                 $('#titleInput').val(data.title)
                 $('#id').val(data.id)
-                $('.page-title').text(data.code)
                 let opt1 = new Option(data['project_owner']['full_name'], data['project_owner']['id'], true, true);
                 $('#select_project_owner').attr('data-onload', JSON.stringify(data['project_owner'])).append(opt1).trigger('change');
                 let opt2 = new Option(data['employee_inherit']['full_name'], data['employee_inherit']['id'], true, true);

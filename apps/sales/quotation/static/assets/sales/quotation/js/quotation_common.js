@@ -10,13 +10,19 @@ class QuotationLoadDataHandle {
     static urlEle = $('#app-url-factory');
     static customerInitEle = $('#data-init-customer')
 
-    static loadInitS2Modal($ele, $modal, data = []) {
+    static loadInitS2($ele, $modal = null, data = [], dataParams = {}) {
+        let opts = {'allowClear': true};
         $ele.empty();
-        if (data.length > 0) {
-            $ele.initSelect2({data: data, dropdownParent: $modal, 'allowClear': true});
-        } else {
-            $ele.initSelect2({dropdownParent: $modal, 'allowClear': true});
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
         }
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        $ele.initSelect2(opts);
         return true;
     };
 
@@ -327,11 +333,12 @@ class QuotationLoadDataHandle {
         let row = ele[0].closest('tr');
         let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
         if (boxRender) {
-            boxRender.style.maxWidth = '270px';
+            boxRender.style.maxWidth = '230px';
         }
     };
 
-    static loadBtnAddProductSelect2(row) {
+    static loadBtnAddProductS2(row) {
+        let $form = $('#frm_quotation_create');
         let $tables = $('#datable-quotation-create-product');
         let rowIndex = $tables.DataTable().row(row).index();
         let $row = $tables.DataTable().row(rowIndex);
@@ -345,9 +352,11 @@ class QuotationLoadDataHandle {
                 if ($s2Result && $s2Result.length > 0) {
                     let eleResult = $s2Result[0].closest('.select2-results');
                     if (eleResult) {
-                        $(eleResult).before(`<button type="button" class="btn btn-link btn-animated btn-sm" id="${addProductID}" data-bs-toggle="modal" data-bs-target="#addBasicProduct">
-                                                <span><span class="icon"><i class="far fa-plus-square"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add-new')}</span></span>
-                                            </button>`);
+                        if (!$form[0].classList.contains('sale-order')) {
+                            $(eleResult).before(`<button type="button" class="btn btn-link btn-animated btn-sm" id="${addProductID}" data-bs-toggle="modal" data-bs-target="#addQuickProduct">
+                                                    <span><span class="icon"><i class="far fa-plus-square"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add-new')}</span></span>
+                                                </button>`);
+                        }
                     }
                 }
             }
@@ -797,7 +806,7 @@ class QuotationLoadDataHandle {
         // add css to row box select2
         let boxRender = newRow?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
         if (boxRender) {
-            boxRender.style.maxWidth = '270px';
+            boxRender.style.maxWidth = '230px';
         }
         // load again table cost
         QuotationLoadDataHandle.loadDataTableCost();
@@ -2123,11 +2132,11 @@ class QuotationLoadDataHandle {
                     $(row.querySelector('.table-row-item')).empty();
                     if (table[0].id === "datable-quotation-create-product") {  // product
                         QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')));
-                        $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']);
+                        $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id'] ? dataRow?.['product']?.['id'] : '');
                         let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
                         if (boxRender) {
-                            boxRender.innerHTML = dataRow?.['product']?.['title'];
-                            boxRender.setAttribute('title', dataRow?.['product']?.['title']);
+                            boxRender.innerHTML = dataRow?.['product']?.['title'] ? dataRow?.['product']?.['title'] : '';
+                            boxRender.setAttribute('title', dataRow?.['product']?.['title'] ? dataRow?.['product']?.['title'] : '');
                         }
                         if (row.querySelector('.table-row-item')) {
                             QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
@@ -2316,7 +2325,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '16.9270833333%',
+                    width: '17%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return `<input type="text" class="form-control table-row-group-title-edit" value="${row?.['group_title']}">
@@ -2389,7 +2398,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '15%',
+                    width: '13%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2468,7 +2477,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '16.9270833333%',
+                    width: '17%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;

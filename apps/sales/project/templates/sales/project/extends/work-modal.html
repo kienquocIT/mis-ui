@@ -32,7 +32,7 @@
                                class="form-label">{% trans 'Project group' %}</label>
                         <select class="form-select" name="project_group" id="select_project_group"
                                 data-url="{% url 'ProjectGroupDDListAPI' %}"
-                                data-keyResp="pj_group_list" data-keyText="title" data-keyId="id"
+                                data-keyResp="pj_group_list" data-keyText="group.title" data-keyId="group.id"
                                 data-params="{'project': '{{ data.pk }}'}" data-allowClear="true"
                         >
                         </select>
@@ -48,7 +48,7 @@
                         </select>
                     </div>
                     <div class="col-xs-12 col-md-6 form-group">
-                        <label for="select_project_group"
+                        <label for="select_project_work"
                                class="form-label">{% trans 'Relationships work' %}</label>
                         <select class="form-select" name="project_work" id="select_project_work"
                                 data-url="{% url 'ProjectWorkListAPI' %}"
@@ -59,13 +59,13 @@
                     </div>
                     <div class="col-xs-12 col-md-6 form-group">
                         <label for="workWeight" class="form-label">{% trans 'Work weight' %}</label>
-                        <input type="text" id="workWeight" name="w_weight" class="form-control" autocomplete="off">
-                    </div>
-                    <div class="col-xs-12 col-md-6 form-group">
-                        <label for="workRate" class="form-label">{% trans 'Work rate' %}</label>
-                        <input type="text" id="workRate" name="w_rate" class="form-control" autocomplete="off">
+                        <span class="input-affix-wrapper">
+                            <input type="text" id="workWeight" name="w_weight" class="form-control" autocomplete="off">
+                            <span class="input-suffix"><i class="fa-solid fa-percent"></i></span>
+                        </span>
                     </div>
                 </div>
+                <input type="hidden" id="workRate" name="w_rate" class="form-control" autocomplete="off">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary float-left" id="btn-work-add">

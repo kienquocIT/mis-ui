@@ -59,7 +59,7 @@ class ProjectCreateAPI(APIView):
     def post(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_LIST).post(request.data)
         if resp.state:
-            resp.result['message'] = f'{SaleMsg.PROJECT} {BaseMsg.CREATE} {BaseMsg.SUCCESSFULLY}'
+            resp.result['message'] = f'{SaleMsg.PROJECT} {BaseMsg.CREATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -114,9 +114,9 @@ class ProjectEditAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ASSET_TOOLS_RETURN_DETAIL.fill_key(pk=pk)).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_EDIT.fill_key(pk=pk)).put(request.data)
         if resp.state:
-            resp.result['message'] = f'{SaleMsg.PROJECT} {BaseMsg.UPDATE} {BaseMsg.SUCCESSFULLY}'
+            resp.result['message'] = f'{SaleMsg.PROJECT} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -133,7 +133,7 @@ class ProjectCreateGroupAPI(APIView):
             data
         )
         if resp.state:
-            resp.result['message'] = f'{SaleMsg.PROJECT_GROUP} {BaseMsg.CREATE} {BaseMsg.SUCCESSFULLY}'
+            resp.result['message'] = f'{SaleMsg.PROJECT_GROUP} {BaseMsg.CREATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -179,7 +179,7 @@ class ProjectGroupDetailAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_GROUP_DETAIL.push_id(pk)).put(request.data)
         if resp.state:
-            resp.result['message'] = f'{SaleMsg.PROJECT_GROUP} {BaseMsg.UPDATE} {BaseMsg.SUCCESSFULLY}'
+            resp.result['message'] = f'{SaleMsg.PROJECT_GROUP} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -191,7 +191,7 @@ class ProjectGroupDetailAPI(APIView):
     def delete(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_GROUP_DETAIL.push_id(pk)).delete()
         if resp.state:
-            return {'message': f'{SaleMsg.PROJECT_GROUP} {BaseMsg.DELETE} {BaseMsg.SUCCESSFULLY}'}, status.HTTP_200_OK
+            return {'message': f'{SaleMsg.PROJECT_GROUP} {BaseMsg.DELETE} {BaseMsg.SUCCESS}'}, status.HTTP_200_OK
         return resp.auto_return()
 
 
@@ -205,7 +205,7 @@ class ProjectWorkCreateAPI(APIView):
         data = request.data
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_WORK_LIST).post(data)
         if resp.state:
-            resp.result['message'] = f'{SaleMsg.PROJECT_WORK} {BaseMsg.CREATE} {BaseMsg.SUCCESSFULLY}'
+            resp.result['message'] = f'{SaleMsg.PROJECT_WORK} {BaseMsg.CREATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -240,7 +240,7 @@ class ProjectWorkDetailAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_WORK_DETAIL.push_id(pk)).put(request.data)
         if resp.state:
-            resp.result['message'] = f'{SaleMsg.PROJECT_WORK} {BaseMsg.UPDATE} {BaseMsg.SUCCESSFULLY}'
+            resp.result['message'] = f'{SaleMsg.PROJECT_WORK} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -252,7 +252,7 @@ class ProjectWorkDetailAPI(APIView):
     def delete(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_WORK_DETAIL.push_id(pk)).delete()
         if resp.state:
-            return {'message': f'{SaleMsg.PROJECT_WORK} {BaseMsg.DELETE} {BaseMsg.SUCCESSFULLY}'}, status.HTTP_200_OK
+            return {'message': f'{SaleMsg.PROJECT_WORK} {BaseMsg.DELETE} {BaseMsg.SUCCESS}'}, status.HTTP_200_OK
         return resp.auto_return()
 
 
@@ -293,7 +293,7 @@ class ProjectMemberDetailAPI(APIView):
             user=request.user, url=ApiURL.PROJECT_MEMBER_DETAIL.fill_key(pk=pk_pj, pk_member=pk_member)
         ).put(request.data)
         if resp.state:
-            resp.result['message'] = f'{SaleMsg.PROJECT_MEMBER} {BaseMsg.UPDATE} {BaseMsg.SUCCESSFULLY}'
+            resp.result['message'] = f'{SaleMsg.PROJECT_MEMBER} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -307,7 +307,7 @@ class ProjectMemberDetailAPI(APIView):
             user=request.user, url=ApiURL.PROJECT_MEMBER_DETAIL.fill_key(pk=pk_pj, pk_member=pk_member)
         ).delete()
         if resp.state:
-            resp.result['message'] = f'{SaleMsg.PROJECT_MEMBER} {BaseMsg.DELETE} {BaseMsg.SUCCESSFULLY}'
+            resp.result['message'] = f'{SaleMsg.PROJECT_MEMBER} {BaseMsg.DELETE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -321,7 +321,7 @@ class ProjectUpdateOrderAPI(APIView):
     def put(self, request, pk_pj, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_UPDATE_ORDER.fill_key(pk=pk_pj)).put(request.data)
         if resp.state:
-            resp.result['message'] = f'{SaleMsg.PROJECT} {BaseMsg.UPDATE} {BaseMsg.SUCCESSFULLY}'
+            resp.result['message'] = f'{SaleMsg.PROJECT} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -361,6 +361,6 @@ class ProjectTaskDetailAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_TASK_LINK.fill_key(pk=pk)).put(request.data)
         if resp.state:
-            resp.result['message'] = f'{SaleMsg.PROJECT} {BaseMsg.UPDATE} {BaseMsg.SUCCESSFULLY}'
+            resp.result['message'] = f'{SaleMsg.PROJECT} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()

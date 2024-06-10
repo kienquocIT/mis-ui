@@ -7,6 +7,8 @@ from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg
 __all__ = ['OpportunityTaskConfig', 'OpportunityTaskConfigAPI', 'OpportunityTaskList', 'OpportunityTaskListAPI',
            'OpportunityTaskStatusAPI', 'OpportunityTaskDetailAPI', 'OpportunityTaskLogTimeAPI']
 
+from apps.shared.msg import BaseMsg
+
 
 class OpportunityTaskConfig(View):
     @mask_view(
@@ -102,7 +104,7 @@ class OpportunityTaskListAPI(APIView):
     def post(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_LIST).post(request.data)
         if resp.state:
-            resp.result['message'] = SaleMsg.OPPORTUNITY_TASK_CREATE
+            resp.result['message'] = f'{SaleMsg.OPPORTUNITY_TASK} {BaseMsg.CREATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -136,16 +138,16 @@ class OpportunityTaskDetailAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_DETAIL.push_id(pk)).put(request.data)
         if resp.state:
-            resp.result['message'] = SaleMsg.OPPORTUNITY_TASK_UPDATE
+            resp.result['message'] = f'{SaleMsg.OPPORTUNITY_TASK} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
-    @mask_view(login_require=True,auth_require=True, is_api=True)
+    @mask_view(login_require=True, auth_require=True, is_api=True)
     def delete(self, request, pk, *args, **kwargs):
         url = ApiURL.OPPORTUNITY_TASK_DETAIL.push_id(pk)
         resp = ServerAPI(user=request.user, url=url).delete({})
         if resp.state:
-            return {'message': SaleMsg.OPPORTUNITY_TASK_DELETE}, status.HTTP_200_OK
+            return {'message': f'{SaleMsg.OPPORTUNITY_TASK} {BaseMsg.DELETE} {BaseMsg.SUCCESS}'}, status.HTTP_200_OK
         return resp.auto_return()
 
 

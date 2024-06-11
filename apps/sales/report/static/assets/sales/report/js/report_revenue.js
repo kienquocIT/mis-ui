@@ -67,7 +67,7 @@ $(function () {
                         targets: 1,
                         width: '12%',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-blue badge-sm">${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</span>
+                            return `<span class="badge badge-secondary badge-sm">${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</span>
                                     <p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
                         }
                     },

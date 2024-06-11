@@ -122,3 +122,14 @@ class LeadDetailAPI(APIView):
             resp.result['message'] = SaleMsg.LEAD_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+class LeadListForOpportunityAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAD_LIST_FOR_OPP).get(params)
+        return resp.auto_return(key_success='lead_list')

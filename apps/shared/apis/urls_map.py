@@ -549,6 +549,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REVENUE_PLAN_DETAIL = StringUrl('revenue-plans/detail/{pk}')
 
     LEAD_LIST = StringUrl('lead/list')
+    LEAD_LIST_FOR_OPP = StringUrl('lead/list-for-opp')
     LEAD_CHART = StringUrl('lead/chart-data')
     LEAD_DETAIL = StringUrl('lead/detail/{pk}')
     LEAD_STAGE_LIST = StringUrl('lead/list-lead-stage')
@@ -568,6 +569,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_LIST_FOR_GOODS_RETURN = StringUrl('inventory/get-deliveries-for-goods-return')
     GOODS_RETURN_LIST = StringUrl('inventory/goods-return/list')
     GOODS_RETURN_DETAIL = StringUrl('inventory/goods-return/{pk}')
+
+    # Goods Registration
+    GOODS_REGISTRATION_LIST = StringUrl('inventory/goods-registration/list')
+    GOODS_REGISTRATION_DETAIL = StringUrl('inventory/goods-registration/{pk}')
 
     INVOICE_SIGN_LIST = StringUrl('ar-invoice/sign/list')
     INVENTORY_INTERACT_LIST = StringUrl('saledata/warehouses/config-interact')

@@ -418,6 +418,12 @@ class MenusInventory:
                 icon='<i class="fas fa-file-import"></i>',
             ),
             MenuCommon(
+                name='Goods registration',
+                code='menu_goods_registration_list',
+                view_name='GoodsRegistrationList',
+                icon='<i class="bi bi-ui-radios-grid"></i>',
+            ),
+            MenuCommon(
                 name='Goods detail',
                 code='menu_goods_detail_list',
                 view_name='GoodsDetail',

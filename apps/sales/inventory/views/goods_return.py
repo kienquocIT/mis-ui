@@ -32,7 +32,7 @@ class GoodsReturnListAPI(APIView):
     def post(self, request, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_LIST).post(request.data)
         if resp.state:
-            resp.result['message'] = SaleMsg.GRT_INVOICE_CREATE
+            resp.result['message'] = SaleMsg.GRT_CREATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -93,7 +93,7 @@ class GoodsReturnDetailAPI(APIView):
         data = request.data
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_DETAIL.fill_key(pk=pk)).put(data)
         if resp.state:
-            resp.result['message'] = SaleMsg.GRT_INVOICE_UPDATE
+            resp.result['message'] = SaleMsg.GRT_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 

@@ -340,6 +340,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RETURN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     GOODS_RETURN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    GOODS_REGISTRATION_LIST_PAGE = BreadcrumbChildren(_('Goods registration list'), 'GoodsRegistrationList')
+    GOODS_REGISTRATION_CREATE_PAGE = BreadcrumbChildren(_('Goods registration create'), 'GoodsRegistrationCreate')
+    GOODS_REGISTRATION_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    GOODS_REGISTRATION_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     LEAD_LIST_PAGE = BreadcrumbChildren(_('Lead list'), 'LeadList')
     LEAD_CREATE_PAGE = BreadcrumbChildren(_('Lead create'), 'LeadCreate')
     LEAD_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
@@ -883,6 +888,11 @@ class BreadcrumbView:
     GOODS_RETURN_CREATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     GOODS_RETURN_DETAIL_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     GOODS_RETURN_UPDATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    GOODS_REGISTRATION_LIST_PAGE = [BreadcrumbItem.GOODS_REGISTRATION_LIST_PAGE]
+    GOODS_REGISTRATION_CREATE_PAGE = GOODS_REGISTRATION_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    GOODS_REGISTRATION_DETAIL_PAGE = GOODS_REGISTRATION_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    GOODS_REGISTRATION_UPDATE_PAGE = GOODS_REGISTRATION_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     LEAD_LIST_PAGE = [BreadcrumbItem.LEAD_LIST_PAGE]
     LEAD_CREATE_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]

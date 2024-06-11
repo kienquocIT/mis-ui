@@ -10,10 +10,12 @@ from apps.sales.inventory.views import (
     GoodsIssueDetailAPI, InventoryAdjustmentProductListAPI, GoodsIssueUpdate,
     GoodsReturnList, GoodsReturnCreate, GoodsReturnDetail, GoodsReturnUpdate, SaleOrderListAPIForGoodsReturn,
     DeliveryListForGoodsReturnAPI, GoodsReturnListAPI, GoodsReturnDetailAPI,
-    GoodsDetail, GoodsDetailAPI
+    GoodsDetail, GoodsDetailAPI,
+    GoodsTransferList, GoodsTransferDetail, GoodsTransferCreate,
+    GoodsTransferListAPI, GoodsTransferDetailAPI, GoodsTransferUpdate,
+    GoodsRegistrationList, GoodsRegistrationCreate, GoodsRegistrationUpdate,
+    GoodsRegistrationDetail, GoodsRegistrationDetailAPI, GoodsRegistrationListAPI
 )
-from apps.sales.inventory.views.goods_transfer import GoodsTransferList, GoodsTransferDetail, GoodsTransferCreate, \
-    GoodsTransferListAPI, GoodsTransferDetailAPI, GoodsTransferUpdate
 
 urlpatterns = [
     # good receipt
@@ -71,4 +73,14 @@ urlpatterns += [
 urlpatterns += [
     path('goods-detail', GoodsDetail.as_view(), name='GoodsDetail'),
     path('goods-detail/api', GoodsDetailAPI.as_view(), name='GoodsDetailAPI')
+]
+
+# goods registration
+urlpatterns += [
+    path('goods-registration/list', GoodsRegistrationList.as_view(), name='GoodsRegistrationList'),
+    path('goods-registration/create', GoodsRegistrationCreate.as_view(), name='GoodsRegistrationCreate'),
+    path('goods-registration/detail/<str:pk>', GoodsRegistrationDetail.as_view(), name='GoodsRegistrationDetail'),
+    path('goods-registration/update/<str:pk>', GoodsRegistrationUpdate.as_view(), name='GoodsRegistrationUpdate'),
+    path('goods-registration/list/api', GoodsRegistrationListAPI.as_view(), name='GoodsRegistrationListAPI'),
+    path('goods-registration/detail/api/<str:pk>', GoodsRegistrationDetailAPI.as_view(), name='GoodsRegistrationDetailAPI'),
 ]

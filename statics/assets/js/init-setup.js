@@ -6695,7 +6695,7 @@ class DiagramControl {
                                     <div class="offcanvas-body">
                                         <div class="d-flex justify-content-start">
                                             <button type="button" class="btn btn-icon mt-3 bm-sm btn-sm" data-bs-dismiss="offcanvas" aria-label="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
-                                            <button type="button" class="btn btn-icon mt-3 bm-sm btn-sm" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-sync-alt"></i></span></button>
+                                            <button type="button" class="btn btn-icon mt-3 bm-sm btn-sm" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-redo-alt"></i></span></button>
                                         </div>
                                         <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="min-w-1600p position-relative overflow-y-scroll">
                                             <div class="card-group h-800p" id="flowchart_diagram"></div>

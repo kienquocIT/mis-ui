@@ -962,8 +962,8 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
     color: #fff;
 }
 
-.badge-parent.badge-parent-blue {
-    background: #298dff;
+.badge-parent.badge-parent-secondary {
+    background: #6f6f6f;
     color: #fff;
 }
 

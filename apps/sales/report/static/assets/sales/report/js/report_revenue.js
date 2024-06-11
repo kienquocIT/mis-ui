@@ -55,28 +55,25 @@ $(function () {
                 columns: [  // 112,112,112,60,192,192,160,160,160 (1600p)
                     {
                         targets: 0,
-                        width: '7%',
+                        width: '5%',
                         render: (data, type, row) => {
-                            return `<div class="row"><span class="badge badge-primary">${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</span></div>`;
+                            return `<div class="d-flex">
+                                        <span class="badge badge-primary mr-2">${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</span>
+                                        <span class="badge badge-primary badge-outline">${row?.['sale_order']?.['employee_inherit']?.['full_name'] ? row?.['sale_order']?.['employee_inherit']?.['full_name'] : ''}</span>
+                                    </div>`;
                         }
                     },
                     {
                         targets: 1,
-                        width: '7%',
+                        width: '12%',
                         render: (data, type, row) => {
-                            return `<div class="row"><span class="badge badge-primary badge-outline">${row?.['sale_order']?.['employee_inherit']?.['full_name'] ? row?.['sale_order']?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
+                            return `<span class="badge badge-blue badge-sm">${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</span>
+                                    <p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '7%',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</p>`;
-                        }
-                    },
-                    {
-                        targets: 3,
-                        width: '3.75%',
+                        width: '3%',
                         render: (data, type, row) => {
                             if (row?.['date_approved']) {
                                 return `<p>${moment(row?.['date_approved'] ? row?.['date_approved'] : '').format('DD/MM/YYYY')}</p>`;
@@ -86,35 +83,28 @@ $(function () {
                         }
                     },
                     {
-                        targets: 4,
-                        width: '12%',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
-                        }
-                    },
-                    {
-                        targets: 5,
+                        targets: 3,
                         width: '12%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
-                        targets: 6,
+                        targets: 4,
                         width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
-                        targets: 7,
+                        targets: 5,
                         width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
-                        targets: 8,
+                        targets: 6,
                         width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;

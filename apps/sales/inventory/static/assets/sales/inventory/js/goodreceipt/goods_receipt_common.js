@@ -156,7 +156,7 @@ class GRLoadDataHandle {
                             if (lot?.['id'] === checkedID) {
                                 isChecked = 'true';
                             }
-                            $(ele).append(`<a class="dropdown-item dropdown-item-lot" data-id="${lot?.['id']}" data-lot="${dataLot}" data-checked="${isChecked}" href="#">
+                            $(ele).append(`<a class="dropdown-item dropdown-item-lot border border-grey mb-1" data-id="${lot?.['id']}" data-lot="${dataLot}" data-checked="${isChecked}" href="#">
                                                 <div class="d-flex justify-content-between">
                                                     <span class="badge badge-soft-blue">${lot?.['lot_number']}</span>
                                                     <div class="d-flex">
@@ -205,7 +205,7 @@ class GRLoadDataHandle {
                             if (lot?.['id'] === checkedID) {
                                 isChecked = 'true';
                             }
-                            $(ele).append(`<a class="dropdown-item dropdown-item-lot" data-id="${lot?.['id']}" data-lot="${dataLot}" data-checked="${isChecked}" href="#">
+                            $(ele).append(`<a class="dropdown-item dropdown-item-lot border border-grey mb-1" data-id="${lot?.['id']}" data-lot="${dataLot}" data-checked="${isChecked}" href="#">
                                                 <div class="d-flex justify-content-between">
                                                     <span class="badge badge-soft-blue">${lot?.['lot_number']}</span>
                                                     <div class="d-flex">

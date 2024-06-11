@@ -33,45 +33,39 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength: 50,
-                columns: [  // (1024p)
+                columns: [  // (1000p)
                     {
                         targets: 0,
-                        width: '10%',
+                        width: '30%',
                         render: (data, type, row) => {
-                            return `<div class="row"><span class="badge badge-primary">${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}</span></div>`;
+                            return `<span class="badge badge-blue badge-sm">${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}</span>
+                                    <p>${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 1,
-                        width: '20%',
-                        render: (data, type, row) => {
-                            return `<p class="text-primary">${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}</p>`;
-                        }
-                    },
-                    {
-                        targets: 2,
-                        width: '10%',
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<p>${row?.['product']?.['general_product_category']?.['title'] ? row?.['product']?.['general_product_category']?.['title'] : ''}</p>`;
                         }
                     },
                     {
-                        targets: 3,
-                        width: '15%',
+                        targets: 2,
+                        width: '18%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
-                        targets: 4,
-                        width: '15%',
+                        targets: 3,
+                        width: '18%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
-                        targets: 5,
-                        width: '15%',
+                        targets: 4,
+                        width: '18%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
                         }

@@ -165,14 +165,13 @@
         <div class="col-12 col-md-10 col-lg-10">
             <table
                     id="table_report_customer_list"
-                    class="table nowrap w-100 mb-5"
+                    class="table nowrap min-w-1000p w-100 mb-5"
                     data-url="{% url 'ReportCustomerListAPI' %}"
                     data-method="get"
             >
                 <thead>
                 <tr>
-                    <th>{% trans 'Customer code' %}</th>
-                    <th>{% trans 'Customer name' %}</th>
+                    <th>{% trans 'Customer' %}</th>
                     <th>{% trans 'Industry name' %}</th>
                     <th>{% trans 'Revenue' %}</th>
                     <th>{% trans 'Gross profit' %}</th>

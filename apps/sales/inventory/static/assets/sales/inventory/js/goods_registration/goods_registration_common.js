@@ -44,6 +44,7 @@ function LoadLineDetailTable(data) {
         tab_line_detail_datatable.find('tbody').append(`
         <tr>
             <td><span class="badge badge-sm badge-soft-indigo">${product?.['code']}</span> <b>${product?.['title']}</b></td>
+            <td><span>${product?.['description']}</span></td>
             <td><span>${uom?.['title']}</span></td>
             <td class="text-primary fw-bold">${total_order}</td>
             <td class="text-primary fw-bold">${registered_quantity}</td>

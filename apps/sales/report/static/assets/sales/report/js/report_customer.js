@@ -37,7 +37,7 @@ $(function () {
                         targets: 0,
                         width: '30%',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-blue badge-sm">${row?.['customer']?.['code'] ? row?.['customer']?.['code'] : ''}</span>
+                            return `<span class="badge badge-secondary badge-sm">${row?.['customer']?.['code'] ? row?.['customer']?.['code'] : ''}</span>
                                     <p>${row?.['customer']?.['title'] ? row?.['customer']?.['title'] : ''}</p>`;
                         }
                     },

@@ -12,35 +12,21 @@
     {% csrf_token %}
 
     <div class="row">
-        <div class="col-12 col-md-8 col-lg-8">
-            <div class="card-group">
-                <div class="card">
-                    <div class="card-header bg-blue">
-                        <h6 class="text-white">{% trans 'Revenue' %}</h6>
-                    </div>
-                    <div class="card-body">
-                        <h5><span class="mask-money" id="report-product-revenue" data-init-money="0"></span></h5>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header bg-yellow">
-                        <h6 class="text-white">{% trans 'Gross profit' %}</h6>
-                    </div>
-                    <div class="card-body">
-                        <h5><span class="mask-money" id="report-product-gross-profit" data-init-money="0"></span></h5>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header bg-green">
-                        <h6 class="text-white">{% trans 'Net income' %}</h6>
-                    </div>
-                    <div class="card-body">
-                        <h5><span class="mask-money" id="report-product-net-income" data-init-money="0"></span></h5>
-                    </div>
-                </div>
-            </div>
+        <div class="col-12 col-md-3 col-lg-3 border-right">
+            <h5><b><span class="mask-money" id="report-product-revenue" data-init-money="0"></span></b></h5>
+            <b><p class="text-blue">{% trans 'Revenue' %}</p></b>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3 border-right">
+            <h5><b><span class="mask-money" id="report-product-gross-profit" data-init-money="0"></span></b></h5>
+            <b><p class="text-yellow">{% trans 'Gross profit' %}</p></b>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3 border-right">
+            <h5><b><span class="mask-money" id="report-product-net-income" data-init-money="0"></span></b></h5>
+            <b><p class="text-green">{% trans 'Net income' %}</p></b>
         </div>
     </div>
+
+    <br>
 
     <div class="row">
         <div class="col-12 col-md-2 col-lg-2">

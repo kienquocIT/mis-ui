@@ -40,6 +40,7 @@ $(function () {
                             if (row?.['employee_inherit']?.['full_name']) {
                                 let target = `.cl-emp-${row?.['employee_inherit']?.['id'].replace(/-/g, "")}`;
                                 return `<div class="d-flex">
+                                        <span class="badge badge-primary mr-2">${row?.['employee_inherit']?.['code'] ? row?.['employee_inherit']?.['code'] : ''}</span>
                                         <span class="badge badge-primary badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span>
                                         <small><button 
                                             type="button" 
@@ -63,7 +64,7 @@ $(function () {
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['code'] && row?.['employee_inherit_id']) {
                                 let dataGr = 'cl-emp-' + row?.['employee_inherit_id'].replace(/-/g, "");
-                                return `<div class="row group-emp-child" data-group-target="${dataGr}"><span class="badge badge-soft-primary">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span></div>`;
+                                return `<div class="group-emp-child" data-group-target="${dataGr}"><span class="badge badge-secondary badge-sm">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span><p>${row?.['opportunity']?.['title'] ? row?.['opportunity']?.['title'] : ''}</p></div>`;
                             }
                             return `<p></p>`;
 
@@ -194,6 +195,11 @@ $(function () {
                         }
                     },
                 ],
+                rowCallback(row, data, index) {
+                    if (data?.['type_group_by'] === 1) {
+                        row.classList.add('bg-light');
+                    }
+                },
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();

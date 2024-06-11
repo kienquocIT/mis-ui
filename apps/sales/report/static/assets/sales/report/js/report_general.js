@@ -31,20 +31,16 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '4%',
+                        width: '3%',
                         render: (data, type, row) => {
-                            return `<div class="row"><span class="badge badge-primary badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
+                            return `<div class="d-flex">
+                                        <span class="badge badge-primary mr-2">${row?.['employee_inherit']?.['code'] ? row?.['employee_inherit']?.['code'] : ''}</span>
+                                        <span class="badge badge-primary badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span>
+                                    </div>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '5%',
-                        render: (data, type, row) => {
-                            return `<div class="row"><span class="badge badge-soft-primary">${row?.['employee_inherit']?.['code'] ? row?.['employee_inherit']?.['code'] : ''}</span></div>`;
-                        }
-                    },
-                    {
-                        targets: 3,
                         width: '6%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
@@ -54,7 +50,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 4,
+                        targets: 3,
                         width: '6%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
@@ -64,7 +60,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 5,
+                        targets: 4,
                         width: '3%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
@@ -74,7 +70,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 6,
+                        targets: 5,
                         width: '6%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
@@ -84,7 +80,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 7,
+                        targets: 6,
                         width: '6%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
@@ -94,7 +90,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 8,
+                        targets: 7,
                         width: '3%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group

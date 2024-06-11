@@ -35,7 +35,7 @@
                             </div>
                             <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
                                 <div class="btn-group dropend">
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-chevron-right text-blue"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-caret-right"></i></span></button>
                                     <div class="dropdown-menu w-300p">
                                         <div class="form-group">
                                             <label class="form-label" for="box-report-pipeline-group">{% trans 'Group' %}</label>
@@ -86,7 +86,7 @@
                             </div>
                             <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
                                 <div class="btn-group dropend">
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-chevron-right text-blue"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-caret-right"></i></span></button>
                                     <div class="dropdown-menu w-300p">
                                         <div class="row area-period-all" id="area-period-all">
                                             <div class="form-group area-period">
@@ -158,7 +158,7 @@
         <div class="col-12 col-md-10 col-lg-10">
             <table
                     id="table_report_pipeline_list"
-                    class="table nowrap min-w-1920p w-100 mb-5"
+                    class="table nowrap min-w-2000p w-100 mb-5"
                     data-url="{% url 'ReportPipelineListAPI' %}"
                     data-method="get"
             >
@@ -166,7 +166,7 @@
                 <tr>
                     <th>{% trans 'Group' %}</th>
                     <th>{% trans 'Sale person' %}</th>
-                    <th>{% trans 'Opp code' %}</th>
+                    <th>{% trans 'Opportunity' %}</th>
                     <th>{% trans 'Customer' %}</th>
                     <th>{% trans 'Stage' %}</th>
                     <th>% {% trans 'Win' %}</th>

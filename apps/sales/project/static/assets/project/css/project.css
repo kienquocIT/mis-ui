@@ -32,7 +32,7 @@
 }
 .gantt-left-outerwrap{
     overflow-y: scroll;
-    width: calc(100% + 17px);
+    width: calc(100% + 8px);
 }
 .gantt-left-container{
     width: 100%;
@@ -92,24 +92,25 @@
 }
 .wrap-title{
     position: relative;
-    text-align: left;
     padding-left:10px;
+    display: flex;
+    align-items: center;
+    line-height: 30px;
+    justify-content: start;
 }
 .sort-icon{
+    width: 10px;
     display: inline-block;
     margin-right: 10px;
     cursor: grab;
     color: #b3b3b3;
 }
-.wrap-title{
-   line-height: 30px;
-}
-.wrap-title .dropdown {
-    display: inline-block;
-    float: right;
-}
-.gantt-left-outerwrap > .dropdown{
-    display: inline-block;
+.row-title {
+    width: 207px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: left;
 }
 .empty-data {
     padding: 6px 0;
@@ -129,4 +130,18 @@
 }
 .gantt-wrap-title div:first-child{
     justify-content: start;
+}
+
+.gantt-container::-webkit-scrollbar,
+.gantt-left-outerwrap::-webkit-scrollbar{
+    height: 8px;
+    width: 8px;
+}
+.gantt-container::-webkit-scrollbar-thumb,
+.gantt-left-outerwrap::-webkit-scrollbar-thumb{
+    background-color: #d6d9da;
+    border-radius: 4px;
+}
+.gantt-left-outerwrap > .dropdown{
+    display: inline-block;
 }

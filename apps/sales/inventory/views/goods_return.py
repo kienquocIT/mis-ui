@@ -32,7 +32,7 @@ class GoodsReturnListAPI(APIView):
     def post(self, request, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_LIST).post(request.data)
         if resp.state:
-            resp.result['message'] = SaleMsg.GRT_INVOICE_CREATE
+            resp.result['message'] = SaleMsg.GRT_CREATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -45,11 +45,8 @@ class GoodsReturnCreate(View):
         breadcrumb='GOODS_RETURN_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST + f"?interact=1").get()
         return {
-            'data': {
-                'warehouse_list': resp1.result,
-            },
+            'data': {},
         }, status.HTTP_200_OK
 
 
@@ -72,12 +69,9 @@ class GoodsReturnUpdate(View):
         menu_active='menu_goods_return',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST + f"?interact=1").get()
         input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_RETURN
         return {
-            'data': {
-                'warehouse_list': resp1.result,
-            },
+            'data': {},
             'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_goods_return_update'
         }, status.HTTP_200_OK
 
@@ -99,7 +93,7 @@ class GoodsReturnDetailAPI(APIView):
         data = request.data
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_DETAIL.fill_key(pk=pk)).put(data)
         if resp.state:
-            resp.result['message'] = SaleMsg.GRT_INVOICE_UPDATE
+            resp.result['message'] = SaleMsg.GRT_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 

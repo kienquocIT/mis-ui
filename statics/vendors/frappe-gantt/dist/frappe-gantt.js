@@ -1332,7 +1332,7 @@ var Gantt = (function () {
                 height: main_svg_height,
                 width: '100%',
             });
-            const gantt_height = main_svg_height + 17
+            const gantt_height = main_svg_height + 8
             $.attr($('.gantt-left'), {
                 style: "height: " + gantt_height + 'px'
             });
@@ -1971,7 +1971,8 @@ var Gantt = (function () {
                     if (value.code === 'title'){
                         item_html.append(
                             '<span class="sort-icon"><i class="fa-solid fa-grip-vertical"></i></span>'
-                            + `<span class="row-title ${item.child_of_group ? 'pd-15' : ''}">${item['name']}</span>`
+                            + `<span class="row-title ${item.child_of_group ? 'pd-15' : ''}" title="${item['name']
+                            }">${item['name']}</span>`
                         ).addClass('wrap-title')
 
                         const htmlBtn2 = jQuery(`<div class="dropdown"><button class="btn btn-sm row-btn${this.options['is_detail'] ? ' disabled' : ''}" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></button><ul class="dropdown-menu"><li><button class="dropdown-item btn-item-row-delete" type="button">${jQuery.fn.gettext('Delete')}</button></li><li><button class="dropdown-item btn-item-row-assign" type="button">${jQuery.fn.gettext('Assign Task')}</button></li><li><button class="dropdown-item btn-row-task_list" type="button">${jQuery.fn.gettext('Task list')}</button></li></ul></div>`)

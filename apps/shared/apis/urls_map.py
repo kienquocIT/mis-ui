@@ -549,6 +549,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REVENUE_PLAN_DETAIL = StringUrl('revenue-plans/detail/{pk}')
 
     LEAD_LIST = StringUrl('lead/list')
+    LEAD_LIST_FOR_OPP = StringUrl('lead/list-for-opp')
     LEAD_CHART = StringUrl('lead/chart-data')
     LEAD_DETAIL = StringUrl('lead/detail/{pk}')
     LEAD_STAGE_LIST = StringUrl('lead/list-lead-stage')
@@ -569,6 +570,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_RETURN_LIST = StringUrl('inventory/goods-return/list')
     GOODS_RETURN_DETAIL = StringUrl('inventory/goods-return/{pk}')
 
+    # Goods Registration
+    GOODS_REGISTRATION_LIST = StringUrl('inventory/goods-registration/list')
+    GOODS_REGISTRATION_DETAIL = StringUrl('inventory/goods-registration/{pk}')
+
     INVOICE_SIGN_LIST = StringUrl('ar-invoice/sign/list')
     INVENTORY_INTERACT_LIST = StringUrl('saledata/warehouses/config-interact')
     INVENTORY_INTERACT_DETAIL = StringUrl('saledata/warehouses/config-interact/{pk}')
@@ -579,6 +584,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Project
     PROJECT_LIST = StringUrl('project/list')
     PROJECT_DETAIL = StringUrl('project/detail/{pk}')
+    PROJECT_EDIT = StringUrl('project/edit/{pk}')
     PROJECT_GROUP_LIST = StringUrl('project/group/list')
     PROJECT_GROUP_DD_LIST = StringUrl('project/group/list-dd')
     PROJECT_GROUP_DETAIL = StringUrl('project/group/detail')

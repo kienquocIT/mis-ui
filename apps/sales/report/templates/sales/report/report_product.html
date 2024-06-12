@@ -12,35 +12,21 @@
     {% csrf_token %}
 
     <div class="row">
-        <div class="col-12 col-md-10 col-lg-10">
-            <div class="row">
-                <div class="col-12 col-md-4 col-lg-4">
-                    <div class="card border-blue">
-                        <div class="card-body">
-                            <h5><span class="mask-money" id="report-product-revenue" data-init-money="0"></span></h5>
-                            <span class="text-blue">{% trans 'Revenue' %}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4 col-lg-4">
-                    <div class="card border-yellow">
-                        <div class="card-body">
-                            <h5><span class="mask-money" id="report-product-gross-profit" data-init-money="0"></span></h5>
-                            <span class="text-yellow">{% trans 'Gross profit' %}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4 col-lg-4">
-                    <div class="card border-green">
-                        <div class="card-body">
-                            <h5><span class="mask-money" id="report-product-net-income" data-init-money="0"></span></h5>
-                            <span class="text-green">{% trans 'Net income' %}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="col-12 col-md-3 col-lg-3 border-right">
+            <h5><b><span class="mask-money" id="report-product-revenue" data-init-money="0"></span></b></h5>
+            <b><p class="text-blue">{% trans 'Revenue' %}</p></b>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3 border-right">
+            <h5><b><span class="mask-money" id="report-product-gross-profit" data-init-money="0"></span></b></h5>
+            <b><p class="text-yellow">{% trans 'Gross profit' %}</p></b>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3 border-right">
+            <h5><b><span class="mask-money" id="report-product-net-income" data-init-money="0"></span></b></h5>
+            <b><p class="text-green">{% trans 'Net income' %}</p></b>
         </div>
     </div>
+
+    <br>
 
     <div class="row">
         <div class="col-12 col-md-2 col-lg-2">
@@ -66,7 +52,7 @@
                             </div>
                             <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
                                 <div class="btn-group dropend">
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-chevron-right text-blue"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-caret-right"></i></span></button>
                                     <div class="dropdown-menu w-300p">
                                         <div class="form-group">
                                             <label class="form-label" for="box-report-product-category">{% trans 'Category' %}</label>
@@ -140,7 +126,7 @@
                             </div>
                             <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
                                 <div class="btn-group dropend">
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-chevron-right text-blue"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-caret-right"></i></span></button>
                                     <div class="dropdown-menu w-300p">
                                         <div class="form-group w-60">
                                             <label class="form-label" for="report-product-date-from">{% trans 'From' %}</label>
@@ -177,14 +163,13 @@
         <div class="col-12 col-md-10 col-lg-10">
             <table
                     id="table_report_product_list"
-                    class="table nowrap min-w-1024p w-100 mb-5"
+                    class="table nowrap min-w-1000p w-100 mb-5"
                     data-url="{% url 'ReportProductListAPI' %}"
                     data-method="get"
             >
                 <thead>
                 <tr>
-                    <th>{% trans 'Product Code' %}</th>
-                    <th>{% trans 'Product Name' %}</th>
+                    <th>{% trans 'Product' %}</th>
                     <th>{% trans 'Category' %}</th>
                     <th>{% trans 'Revenue' %}</th>
                     <th>{% trans 'Gross profit' %}</th>

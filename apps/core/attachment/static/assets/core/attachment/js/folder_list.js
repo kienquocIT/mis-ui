@@ -12,6 +12,7 @@ $(function () {
         let $folderContent = $('#folder-content-body');
         let $modalAdd = $('#addFolder');
         let $btnAdd = $('#btn-add-folder');
+        let $btnUpFile = $('#btn-upload-file');
 
         let $transFact = $('#app-trans-factory');
         let $urlFact = $('#app-url-factory');
@@ -138,6 +139,10 @@ $(function () {
                         $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
                     }
                 )
+        });
+
+        $btnUpFile.on('click', function () {
+            $btnRefresh.click();
         });
 
 
@@ -297,85 +302,52 @@ $(function () {
             // set data-id $btnRefresh
             $btnRefresh.attr('data-id', $eleFolder.attr('data-id'));
             // load Folders
+            let urlDetail = $urlFact.attr('data-url-detail').format_url_with_uuid($eleFolder.attr('data-id'));
             $.fn.callAjax2({
-                url: $urlFact.attr('data-url'),
+                url: urlDetail,
                 method: 'GET',
-                'data': {'parent_n_id': $eleFolder.attr('data-id')},
                 isLoading: false,
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
-                    if (data && resp.data.hasOwnProperty('folder_list')) {
-                        let dataFolderList = resp.data['folder_list'] ? resp.data['folder_list'] : [];
-                        // load Files
-                        $.fn.callAjax2({
-                            url: $urlFact.attr('data-url-file'),
-                            method: 'GET',
-                            'data': {'folder_id': $eleFolder.attr('data-id')},
-                            isLoading: false,
-                        }).then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data && resp.data.hasOwnProperty('folder_file_list')) {
-                                    let dataFileList = resp.data['folder_file_list'] ? resp.data['folder_file_list'] : [];
-                                    loadFolderContent(dataFolderList, dataFileList);
-                                    // load Current Folder
-                                    // set data-id $btnBack && set data $folderPath
-                                    $.fn.callAjax2({
-                                        url: $urlFact.attr('data-url'),
-                                        method: 'GET',
-                                        'data': {'id': $eleFolder.attr('data-id')},
-                                        isLoading: false,
-                                    }).then(
-                                        (resp) => {
-                                            let data = $.fn.switcherResp(resp);
-                                            if (data && resp.data.hasOwnProperty('folder_list')) {
-                                                let dataFdList = resp.data['folder_list'] ? resp.data['folder_list'] : [];
-                                                if (dataFdList.length > 0) {
-                                                    let dataFd = dataFdList[0];
-                                                    let dataIDBack = $btnBack.attr('data-id');
-                                                    if (dataFd?.['parent_n_id']) {
-                                                        $btnBack.attr('data-id', dataFd?.['parent_n_id']);
-                                                        $btnBack[0].removeAttribute('disabled');
-                                                    } else {
-                                                        $btnBack[0].setAttribute('disabled', 'true');
-                                                    }
-                                                    if (!['btn-back', 'btn-next', 'btn-refresh'].includes($eleFolder[0].id)) {
-                                                        // reset path
-                                                        if ($eleFolder[0].closest('#folder-tree')) {
-                                                            loadFolderPath(3);
-                                                        }
-                                                        // set next path
-                                                        loadFolderPath(0, dataFd);
-                                                        // set data-list for $folderHistory
-                                                        let listHistory = [];
-                                                        if ($folderHistory.attr('data-list')) {
-                                                            listHistory = JSON.parse($folderHistory.attr('data-list'));
-                                                        }
-                                                        for (let dataHis of listHistory) {
-                                                            delete dataHis['is_current'];
-                                                        }
-                                                        dataFd['is_current'] = true;
-                                                        listHistory.push(dataFd);
-                                                        $folderHistory.attr('data-list', JSON.stringify(listHistory));
-                                                        // set data-list for $folderHistoryPath
-                                                        let listHistoryPath = [];
-                                                        if ($folderHistoryPath.attr('data-list')) {
-                                                            listHistoryPath = JSON.parse($folderHistoryPath.attr('data-list'));
-                                                        }
-                                                        for (let dataHisPath of listHistoryPath) {
-                                                            delete dataHisPath['is_current'];
-                                                        }
-                                                        listHistoryPath.push({'path': $folderPath[0].innerHTML, 'is_current': true});
-                                                        $folderHistoryPath.attr('data-list', JSON.stringify(listHistoryPath));
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    )
-                                }
+                    if (data) {
+                        loadFolderContent(data?.['child_n'], data?.['file']);
+
+                        if (data?.['parent_n']) {
+                            $btnBack.attr('data-id', data?.['parent_n']?.['id']);
+                            $btnBack[0].removeAttribute('disabled');
+                        } else {
+                            $btnBack[0].setAttribute('disabled', 'true');
+                        }
+                        if (!['btn-back', 'btn-next', 'btn-refresh'].includes($eleFolder[0].id)) {
+                            // reset path
+                            if ($eleFolder[0].closest('#folder-tree')) {
+                                loadFolderPath(3);
                             }
-                        )
+                            // set next path
+                            loadFolderPath(0, data);
+                            // set data-list for $folderHistory
+                            let listHistory = [];
+                            if ($folderHistory.attr('data-list')) {
+                                listHistory = JSON.parse($folderHistory.attr('data-list'));
+                            }
+                            for (let dataHis of listHistory) {
+                                delete dataHis['is_current'];
+                            }
+                            data['is_current'] = true;
+                            listHistory.push(data);
+                            $folderHistory.attr('data-list', JSON.stringify(listHistory));
+                            // set data-list for $folderHistoryPath
+                            let listHistoryPath = [];
+                            if ($folderHistoryPath.attr('data-list')) {
+                                listHistoryPath = JSON.parse($folderHistoryPath.attr('data-list'));
+                            }
+                            for (let dataHisPath of listHistoryPath) {
+                                delete dataHisPath['is_current'];
+                            }
+                            listHistoryPath.push({'path': $folderPath[0].innerHTML, 'is_current': true});
+                            $folderHistoryPath.attr('data-list', JSON.stringify(listHistoryPath));
+                        }
                     }
                 }
             )
@@ -433,10 +405,10 @@ $(function () {
                 let lastSpan = $folderPath[0].querySelector('span:last-of-type');
                 if (lastSpan) {
                     let dataParentID = lastSpan.getAttribute('data-parent-id');
-                    if (dataParentID === dataFd?.['parent_n_id']) {
+                    if (dataParentID === dataFd?.['parent_n']?.['id']) {
                         loadFolderPath(1);
                     }
-                    $folderPath.append(`<i class="fas fa-angle-right mr-2"></i><span class="mr-2" data-parent-id="${dataFd?.['parent_n_id']}">${dataFd?.['title']}</span>`);
+                    $folderPath.append(`<i class="fas fa-angle-right mr-2"></i><span class="mr-2" data-parent-id="${dataFd?.['parent_n']?.['id']}">${dataFd?.['title']}</span>`);
                 }
             }
             if (load_type === 1) {  // back path
@@ -451,7 +423,7 @@ $(function () {
             }
             if (load_type === 3) {  // reset path
                 $folderPath.empty();
-                $folderPath.append(`<i class="fas fa-desktop mr-2"></i><span class="mr-2" data-parent-id="${dataFd?.['parent_n_id']}">Home</span>`);
+                $folderPath.append(`<i class="fas fa-desktop mr-2"></i><span class="mr-2" data-parent-id="${dataFd?.['parent_n']?.['id']}">Home</span>`);
             }
             return true;
         }

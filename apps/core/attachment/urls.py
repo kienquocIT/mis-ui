@@ -2,7 +2,8 @@ from django.urls import path
 
 from apps.core.attachment.views import (
     AttachmentUpload, FilesUnusedAPI,
-    ImageWebBuilderUpload, ImageWebBuilderList, FolderList, FolderListAPI, FolderFileListAPI, FolderDetailAPI,
+    ImageWebBuilderUpload, ImageWebBuilderList, FolderList, FolderListAPI, FolderDetailAPI,
+    FolderUploadFileList,
 )
 
 urlpatterns = [
@@ -13,5 +14,5 @@ urlpatterns = [
     path('folder/list', FolderList.as_view(), name='FolderList'),
     path('folder/api/list', FolderListAPI.as_view(), name='FolderListAPI'),
     path('folder/detail-api/<str:pk>', FolderDetailAPI.as_view(), name='FolderDetailAPI'),
-    path('folder-file/api/list', FolderFileListAPI.as_view(), name='FolderFileListAPI'),
+    path('folder-upload-file/api/list', FolderUploadFileList.as_view(), name='FolderUploadFileList'),
 ]

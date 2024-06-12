@@ -10,3 +10,4 @@ class AppMsg:  # pylint: disable=too-few-public-methods
     APP_PURCHASE_ORDER = _('Purchase order')
     APP_GOODS_RECEIPT = _('Goods receipt')
     APP_DELIVERY = _('Delivery')
+    APP_GOODS_RETURN = _('Goods return')

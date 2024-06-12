@@ -11,7 +11,7 @@
     <form
             data-url="{% url 'QuotationListAPI' %}"
             data-method="POST"
-            id="frm_quotation_create"
+            id="frm_folder"
             method="post"
     >
         {% csrf_token %}
@@ -158,6 +158,10 @@
                         <div class="modal-body">
                             <div id="attachment">{% include 'core/attachment/upload.html' %}</div>
                         </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btn-upload-file">{% trans 'Save' %}</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -174,9 +178,8 @@
         type="text"
         id="app-url-factory"
         data-url="{% url 'FolderListAPI' %}"
-        data-url-detail="{% url 'FolderDetailAPI' pk %}"
+        data-url-detail="{% url 'FolderDetailAPI' 1 %}"
         data-url-redirect="{% url 'FolderList' %}"
-        data-url-file="{% url 'FolderFileListAPI' %}"
     >
     <input type="file" id="uploadOpen"/>
 

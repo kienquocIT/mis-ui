@@ -35,7 +35,7 @@
                             </div>
                             <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
                                 <div class="btn-group dropend">
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-chevron-right text-blue"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-caret-right"></i></span></button>
                                     <div class="dropdown-menu w-300p">
                                         <div class="form-group">
                                             <label class="form-label mt-2" for="box-report-general-group">{% trans 'Group' %}</label>
@@ -82,7 +82,7 @@
                             </div>
                             <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
                                 <div class="btn-group dropend">
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-chevron-right text-blue"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-caret-right"></i></span></button>
                                     <div class="dropdown-menu w-300p">
                                         <div class="form-group">
                                             <label class="form-label mt-2" for="box-report-general-year">{% trans 'Year' %}</label>
@@ -119,15 +119,14 @@
         <div class="col-12 col-md-10 col-lg-10">
             <table
                     id="table_report_general_list"
-                    class="table nowrap min-w-1500p w-100 mb-5"
+                    class="table nowrap min-w-1366p w-100 mb-5"
                     data-url="{% url 'ReportGeneralListAPI' %}"
                     data-method="get"
             >
                 <thead>
                 <tr>
                     <th>{% trans 'Group' %}</th>
-                    <th>{% trans 'Employee name' %}</th>
-                    <th>{% trans 'Employee code' %}</th>
+                    <th>{% trans 'Employee' %}</th>
                     <th>{% trans 'Revenue plan' %}</th>
                     <th>{% trans 'Revenue' %}</th>
                     <th>{% trans 'Ratio' %}</th>

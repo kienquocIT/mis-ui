@@ -129,7 +129,7 @@ class FolderDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_DETAIL.push_id(pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.FOLDER_DETAIL.push_id(pk)).get()
         return resp.auto_return()
 
     @mask_view(
@@ -139,18 +139,30 @@ class FolderDetailAPI(APIView):
     def put(self, request, *args, pk, **kwargs):
         return update_common(
             request=request,
-            url=ApiURL.QUOTATION_DETAIL,
+            url=ApiURL.FOLDER_DETAIL,
             pk=pk,
             msg=CoreMsg.FOLDER_UPDATE
         )
 
 
-class FolderFileListAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.FOLDER_FILE_LIST).get(data)
-        return resp.auto_return(key_success='folder_file_list')
+class FolderUploadFileList(APIView):
+    parser_classes = [MultiPartParser]
+
+    @mask_view(login_require=True, auth_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        uploaded_file = request.FILES.get('file')
+        if uploaded_file:
+            m = MultipartEncoder(
+                fields={
+                    'file': (uploaded_file.name, uploaded_file, uploaded_file.content_type),
+                    'remarks': request.data.get('remarks', ''),
+                }
+            )
+            resp = ServerAPI(
+                request=request, user=request.user, url=ApiURL.FOLDER_UPLOAD_FILE_LIST,
+                cus_headers={
+                    'content-type': m.content_type,
+                }
+            ).post(data=m)
+            return resp.auto_return(key_success='file_detail')
+        return RespData.resp_400(errors_data={'file': 'Not found'})

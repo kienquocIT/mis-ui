@@ -5,7 +5,7 @@
 <div
         class="card p-1 dad-file-control-group"
         {% if id %} id="{{ id }}" {% endif %}
-        data-url="{% url 'AttachmentUpload' %}"
+        data-url="{% url 'FolderUploadFileList' %}"
         data-msg-upload-exception="{% trans 'Has exception in upload progress' %}"
         data-msg-skip-exist-file="{% trans 'Skip add exist file' %}"
         data-msg-description-file="{% trans 'Descriptions of file' %}"

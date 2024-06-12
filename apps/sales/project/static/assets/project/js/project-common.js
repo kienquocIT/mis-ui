@@ -127,10 +127,11 @@ function saveWork(gantt_obj) {
         if (workParent.val()){
             data.work_dependencies_parent = workParent.val()
             data.order = $(`.gantt-left-container .grid-row[data-id="${workParent.val()}"]`).index() + 1
-        }
+        }else data.work_dependencies_parent = null
 
         if (workType) data.work_dependencies_type = parseInt(workType)
-        if (groupElm.val()) data['group'] = groupElm.val()
+        else data.work_dependencies_type = null
+        if (groupElm.val()) data.group = groupElm.val()
 
         let url = $('#url-factory').attr('data-work'),
             method = 'post';
@@ -148,8 +149,10 @@ function saveWork(gantt_obj) {
                 let res = $.fn.switcherResp(resp);
                 if (res && (res['status'] === 201 || res['status'] === 200)) {
                     $.fn.notifyB({description: res.message}, 'success');
-                    let crtIdx = parseInt($('.gantt-wrap').data('detail-index'))
-                    $('.gantt-wrap').data('detail-index', crtIdx + 1)
+                    if (method === 'post'){
+                        let crtIdx = parseInt($('.gantt-wrap').data('detail-index'))
+                        $('.gantt-wrap').data('detail-index', crtIdx + 1)
+                    }
                     if (gantt_obj){
                         let temps = []
                         if (method === 'put')
@@ -158,6 +161,8 @@ function saveWork(gantt_obj) {
                         res.progress = $('#workRate').val(),
                         res.date_from = res.w_start_date
                         res.date_end = res.w_end_date
+                        res.dependencies_parent = res.work_dependencies_parent
+                        res.relationships_type = res.work_dependencies_type
                         if (method === 'post'){
                             temps.push(res)
                             const afterData = fGanttCustom.convert_data([], temps)
@@ -166,6 +171,7 @@ function saveWork(gantt_obj) {
                         else{
                             $wModal.modal('hide')
                             res.id = $workID.val()
+                            res.work_status = $('#work_status').val()
                             temps.push(res)
                             const afterData = fGanttCustom.convert_data([], temps)
                             gantt_obj.update_data(afterData)

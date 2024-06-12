@@ -29,6 +29,14 @@ const $related_leads_table = $('#related-leads-table')
 const $convert_to_opp_radio_group = $('input[name="convert-to-opp"]')
 const $convert_to_opp_option_radio_group = $('input[name="convert-to-opp-option"]')
 const $new_account_btn = $('#create-to-new-account-btn')
+let CURRENT_LEVEL = null
+
+$lead_status.on('change', function () {
+    if ($(this).val() !== '5' && $(this).val() !== '6') {
+        $.fn.notifyB({description: 'This status option is auto!'}, 'warning');
+        $(this).val(CURRENT_LEVEL)
+    }
+})
 
 $new_account_btn.on('click', function () {
     let href = $(this).attr('href')
@@ -275,6 +283,7 @@ function LoadDetailLead(option) {
                 $x.fn.renderCodeBreadcrumb(data);
 
                 LoadStage(STAGE_LIST, data?.['current_lead_stage']['level'], 'detail || update')
+                CURRENT_LEVEL = data?.['current_lead_stage']['level']
 
                 // lead main data
                 $lead_name.val(data?.['title'])
@@ -287,7 +296,7 @@ function LoadDetailLead(option) {
                 $total_employees.val(data?.['total_employees']).trigger('change')
                 $revenue.val(data?.['revenue']).trigger('change')
                 $lead_source.val(data?.['source'])
-                $lead_status.val(data?.['lead_status']).trigger('change')
+                $lead_status.val(data?.['lead_status'])
                 LoadSales(data?.['assign_to_sale'])
 
                 // lead note data
@@ -300,8 +309,8 @@ function LoadDetailLead(option) {
 
                 // lead config data
                 if (data?.['config_data']?.['create_contact']) {
-                    $('#created_contact').prop('hidden', false)
                     $create_contact_btn.attr('id', '').attr('class', '')
+                    $create_contact_btn.find('button').prop('disabled', true)
                     $create_contact_btn.after(`
                         &nbsp;
                         <a target="_blank" href="${$create_contact_btn.attr('data-url-detail-contact').replace('0', data?.['config_data']?.['contact_mapped']?.['id'])}">
@@ -312,9 +321,8 @@ function LoadDetailLead(option) {
                     `)
                 }
                 if (data?.['config_data']?.['convert_opp']) {
-                    $('#created_opp').prop('hidden', false)
-                    $convert_opp_btn.attr('id', '').attr('class', '')
-                    $convert_opp_btn.after(`
+                    $('#btn-opp').prop('disabled', true).attr('data-bs-target', '')
+                    $('#btn-opp').after(`
                         &nbsp;
                         <a target="_blank" href="${$convert_opp_btn.attr('data-url-detail-opp').replace('0', data?.['config_data']?.['opp_mapped']?.['id'])}">
                             <i class="fa-solid fa-up-right-from-square"></i>
@@ -328,6 +336,7 @@ function LoadDetailLead(option) {
                     $convert_to_opp_option_radio_group.prop('disabled', true)
                     $('#create-to-new-account-btn').remove()
                     $('.config-opp-row').prop('hidden', true)
+                    $lead_status.prop('disabled', true)
                 }
                 $convert_opp_create.prop('checked', data?.['config_data']?.['convert_opp_create'])
                 $convert_opp_select.prop('checked', data?.['config_data']?.['convert_opp_select'])
@@ -570,7 +579,8 @@ function LoadLeadRelatedList(data) {
 
 class LeadHandle {
     load(option='create') {
-        LoadStage(STAGE_LIST, 1)
+        CURRENT_LEVEL = 1
+        LoadStage(STAGE_LIST, CURRENT_LEVEL)
         LoadIndustry()
         LoadSales()
         if (option !== 'create') {

@@ -183,83 +183,14 @@
                             <div class="col-12 col-lg-8">
                                 <div class="row">
                                     <div class="col-12 mt-3">
-                                        <i id="created_contact" hidden class="text-success fa-solid fa-check"></i>&nbsp;
-                                        <a href="#" data-url="{% url 'ContactCreateAPI' %}" data-url-detail-contact="{% url 'ContactDetail' '0' %}" id="convert-to-contact-btn" class="underline_hover">
-                                            {% trans 'Convert to a new Contact' %}
+                                        <a href="#" data-url="{% url 'ContactCreateAPI' %}" data-url-detail-contact="{% url 'ContactDetail' '0' %}" id="convert-to-contact-btn">
+                                            <button class="btn btn-soft-primary" type="button">{% trans 'Convert to a new Contact' %}</button>
                                         </a>
                                     </div>
                                     <div class="col-12 mt-3">
-                                        <i id="created_opp" hidden class="text-success fa-solid fa-check"></i>&nbsp;
-                                        <a href='#'
-                                           data-url="{% url 'OpportunityListAPI' %}"
-                                           data-url-map-opp="{% url 'LeadDetailAPI' pk=pk %}"
-                                           data-url-detail-opp="{% url 'OpportunityDetail' '0' %}"
-                                           id="convert-to-opp-btn" class="underline_hover">
+                                        <button id="btn-opp" class="btn btn-soft-primary" type="button" data-bs-toggle="modal" data-bs-target="#convert_opp_config">
                                             {% trans 'Convert to Opportunity' %}
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="config-opp-row row mt-3">
-                                    <div class="px-10 col-12 col-lg-4">
-                                        <div class="form-check form-check-sm">
-                                            <input type="radio" id="convert-to-new-opp-radio" name="convert-to-opp" class="form-check-input" checked>
-                                            <label class="form-check-label" for="convert-to-new-opp-radio">{% trans 'Convert to a new Opportunity' %}</label>
-                                        </div>
-                                    </div>
-                                    <div class="px-10 col-12 col-lg-4">
-                                        <div class="form-check form-check-sm">
-                                            <input type="radio" id="select-an-existing-opp-radio" name="convert-to-opp" class="form-check-input">
-                                            <label class="form-check-label" for="select-an-existing-opp-radio">{% trans 'Select an existing Opportunity' %}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="config-opp-row row mt-3">
-                                    <div class="col-12 col-lg-8">
-                                        <div class="card card-wth-line">
-                                            <div class="card-line bg-primary"></div>
-                                            <div class="card-body px-0">
-                                                <div class="convert-to-new-opp-radio-child row mt-3">
-                                                    <div class="px-10 col-12 col-lg-6">
-                                                        <div class="form-group">
-                                                            <label class="form-label" for="existing-account">{% trans "Select account" %}</label>
-                                                            <select class="form-select select2" data-method="GET" data-url="{% url 'AccountListAPI' %}" id="existing-account"></select>
-                                                        </div>
-                                                        <a id="create-to-new-account-btn" href="{% url 'AccountCreate' %}" target="_blank">
-                                                            <span class="badge badge-sm badge-soft-primary">
-                                                                <span>
-                                                                    <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
-                                                                    {% trans 'Create new account' %}
-                                                                </span>
-                                                            </span>
-                                                        </a>
-                                                    </div>
-                                                    <div class="px-10 col-12 col-lg-6">
-                                                        <div class="form-group">
-                                                            <label class="form-label" for="assign-to-sale-config">{% trans "Assign to sale" %}</label>
-                                                            <select class="form-select select2" data-method="GET"
-                                                                    data-url="{% url 'EmployeeListAPI' %}"
-                                                                    id="assign-to-sale-config"
-                                                            ></select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="select-an-existing-opp-radio-child row">
-                                                    <div hidden class="select-an-existing-opp-radio-child px-5 col-12">
-                                                        <table id="select-an-existing-opp-table" class="table w-100" data-method="GET" data-url="{% url 'OpportunityListAPI' %}">
-                                                            <thead>
-                                                            <tr>
-                                                                <th>{% trans 'Code' %}</th>
-                                                                <th>{% trans 'Name' %}</th>
-                                                                <th>{% trans 'Customer' %}</th>
-                                                                <th>{% trans 'Sale person' %}</th>
-                                                            </tr>
-                                                            </thead>
-                                                            <tbody></tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -275,6 +206,94 @@
             </div>
         </div>
     </form>
+
+    <div class="modal fade" id="convert_opp_config" tabindex="-1" role="dialog" aria-labelledby="convert_opp_config" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Convert to Opportunity' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="config-opp-row row mt-3">
+                        <div class="px-10 col-12 col-lg-6">
+                            <div class="form-check form-check-sm">
+                                <input type="radio" id="convert-to-new-opp-radio" name="convert-to-opp" class="form-check-input" checked>
+                                <label class="form-check-label" for="convert-to-new-opp-radio">{% trans 'Convert to a new Opportunity' %}</label>
+                            </div>
+                        </div>
+                        <div class="px-10 col-12 col-lg-6">
+                            <div class="form-check form-check-sm">
+                                <input type="radio" id="select-an-existing-opp-radio" name="convert-to-opp" class="form-check-input">
+                                <label class="form-check-label" for="select-an-existing-opp-radio">{% trans 'Select an existing Opportunity' %}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="config-opp-row row mt-3">
+                        <div class="col-12">
+                            <div class="card card-wth-line">
+                                <div class="card-line bg-primary"></div>
+                                <div class="card-body px-0">
+                                    <div class="convert-to-new-opp-radio-child row">
+                                        <div class="px-10 col-12 mt-3">
+                                            <div class="form-group">
+                                                <label class="form-label required" for="existing-account">{% trans "Select account" %}</label>
+                                                <select class="form-select select2" data-method="GET" data-url="{% url 'AccountListAPI' %}" id="existing-account"></select>
+                                            </div>
+                                            <a id="create-to-new-account-btn" href="{% url 'AccountCreate' %}" target="_blank">
+                                                <span class="badge badge-sm badge-soft-primary">
+                                                    <span>
+                                                        <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
+                                                        {% trans 'Create new account' %}
+                                                    </span>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div class="px-10 col-12 mt-3">
+                                            <div class="form-group">
+                                                <label class="form-label required" for="assign-to-sale-config">{% trans "Assign to sale" %}</label>
+                                                <select class="form-select select2" data-method="GET"
+                                                        data-url="{% url 'EmployeeListAPI' %}"
+                                                        id="assign-to-sale-config"
+                                                ></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="select-an-existing-opp-radio-child row">
+                                        <div hidden class="select-an-existing-opp-radio-child px-5 col-12">
+                                            <table id="select-an-existing-opp-table" class="table w-100" data-method="GET" data-url="{% url 'OpportunityListAPI' %}">
+                                                <thead>
+                                                <tr>
+                                                    <th>{% trans 'Code' %}</th>
+                                                    <th>{% trans 'Name' %}</th>
+                                                    <th>{% trans 'Customer' %}</th>
+                                                    <th>{% trans 'Sale person' %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <a href='#'
+                       data-url="{% url 'OpportunityListAPI' %}"
+                       data-url-map-opp="{% url 'LeadDetailAPI' pk=pk %}"
+                       data-url-detail-opp="{% url 'OpportunityDetail' '0' %}"
+                       id="convert-to-opp-btn" class="underline_hover">
+                        <button type="button" class="btn btn-primary">{% trans 'Convert' %}</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"

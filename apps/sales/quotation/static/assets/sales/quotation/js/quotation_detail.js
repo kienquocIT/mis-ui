@@ -31,13 +31,7 @@ $(function () {
                     }
                     if ($form.attr('data-method').toLowerCase() === 'put') {
                         // Check config when begin edit
-                        let check_config = QuotationCheckConfigHandle.checkConfig(true);
-                        // load again total products if after check config the price change
-                        if (check_config.hasOwnProperty('is_make_price_change')) {
-                            if (check_config?.['is_make_price_change'] === false) {
-                                QuotationLoadDataHandle.loadTotal(data, true, false, false);
-                            }
-                        }
+                        QuotationCheckConfigHandle.checkConfig(0);
                     }
 
                     // init workflow

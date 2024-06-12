@@ -977,7 +977,7 @@ $(function () {
 
         // events on btn action WF zone (depend on business rule)
         $('#btn-active-edit-zone-wf').on('click', function () {
-            QuotationCheckConfigHandle.checkConfig(true);
+            QuotationCheckConfigHandle.checkConfig(0);
         });
 
 // Main Function Submit

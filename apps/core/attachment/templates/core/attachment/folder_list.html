@@ -88,16 +88,16 @@
             <div class="col-12 col-md-8 col-lg-8">
                 <div class="row mb-2">
                     <div class="col-12 col-md-5 col-lg-5">
-                        <h6 class="text-primary ml-3">Name</h6>
+                        <h6 class="text-primary ml-3">{% trans 'Name' %}</h6>
                     </div>
                     <div class="col-12 col-md-2 col-lg-2">
-                        <h6 class="text-primary">Date modified</h6>
+                        <h6 class="text-primary">{% trans 'Date modified' %}</h6>
                     </div>
                     <div class="col-12 col-md-2 col-lg-2">
-                        <h6 class="text-primary">Type</h6>
+                        <h6 class="text-primary">{% trans 'Type' %}</h6>
                     </div>
                     <div class="col-12 col-md-2 col-lg-2">
-                        <h6 class="text-primary">Size</h6>
+                        <h6 class="text-primary">{% trans 'Size' %}</h6>
                     </div>
                 </div>
 
@@ -112,9 +112,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">{% trans 'New folder' %}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
@@ -151,9 +149,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">{% trans 'Upload file' %}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                         </div>
                         <div class="modal-body">
                             <div id="attachment">{% include 'core/attachment/upload.html' %}</div>

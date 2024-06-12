@@ -60,9 +60,9 @@
                                 <span><span class="icon"><i class="far fa-plus-square"></i></span><span>{% trans 'New' %}</span></span>
                             </button>
                             <div class="dropdown-menu w-210p">
-                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFolder"><i class="dropdown-icon fas fa-folder-plus text-primary"></i><span>{% trans 'New folder' %}</span></a>
+                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFolderMdl"><i class="dropdown-icon fas fa-folder-plus text-primary"></i><span>{% trans 'New folder' %}</span></a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" id="upload-file" data-bs-toggle="modal" data-bs-target="#uploadFile"><i class="dropdown-icon fas fa-file-upload text-primary"></i><span class="mt-2">{% trans 'Upload file' %}</span></a>
+                                <a class="dropdown-item" href="#" id="upload-file" data-bs-toggle="modal" data-bs-target="#uploadFileMdl"><i class="dropdown-icon fas fa-file-upload text-primary"></i><span class="mt-2">{% trans 'Upload file' %}</span></a>
                                 <a class="dropdown-item" href="#" id="upload-folder"><i class="dropdown-icon fas fa-upload text-primary"></i><span>{% trans 'Upload folder' %}</span></a>
                             </div>
                         </div>
@@ -80,12 +80,12 @@
         </div>
         <br>
         <div class="row">
-            <div class="col-12 col-md-4 col-lg-4">
+            <div class="col-12 col-md-3 col-lg-3">
                 <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-800p position-relative overflow-y-scroll">
                     <div class="row" id="folder-tree"></div>
                 </div>
             </div>
-            <div class="col-12 col-md-8 col-lg-8">
+            <div class="col-12 col-md-9 col-lg-9">
                 <div class="row mb-2">
                     <div class="col-12 col-md-5 col-lg-5">
                         <h6 class="text-primary ml-3">{% trans 'Name' %}</h6>
@@ -107,7 +107,7 @@
         </div>
 
         <div class="modal-area">
-            <div class="modal fade" id="addFolder" tabindex="-1" role="dialog" aria-labelledby="addFolder" aria-hidden="true">
+            <div class="modal fade" id="addFolderMdl" tabindex="-1" role="dialog" aria-labelledby="addFolderMdl" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -144,7 +144,7 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="uploadFile" tabindex="-1" role="dialog" aria-labelledby="uploadFile" aria-hidden="true">
+            <div class="modal fade" id="uploadFileMdl" tabindex="-1" role="dialog" aria-labelledby="uploadFileMdl" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">

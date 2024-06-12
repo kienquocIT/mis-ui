@@ -441,17 +441,33 @@ var Gantt = (function () {
         }
 
         draw_bar() {
-            this.$bar = createSVG('rect', {
-                x: this.x,
-                y: this.y,
-                width: this.width,
-                height: this.height,
-                rx: this.corner_radius,
-                ry: this.corner_radius,
-                class: 'bar',
-                append_to: this.bar_group,
-            });
-
+            // create bar if item is_group
+            if (this.task?.is_group){
+                const this_path = ` M ${this.x} ${this.y} L ${this.x + this.width} ${this.y} L ${this.x + this.width} ${this.y + 15} L ${this.x + this.width - 6} ${this.y + 10} L ${this.x + 6} ${this.y + 10} L ${this.x} ${this.y + 15}`;
+                this.$bar = createSVG('path', {
+                    d: this_path,
+                    x: this.x,
+                    y: this.y,
+                    width: this.width,
+                    height: this.height,
+                    class: 'bar-group',
+                    fill: '#555',
+                    append_to: this.bar_group,
+                });
+            }
+            else{
+                this.$bar = createSVG('rect', {
+                    x: this.x,
+                    y: this.y,
+                    width: this.width,
+                    height: this.height,
+                    rx: this.corner_radius,
+                    ry: this.corner_radius,
+                    class: 'bar',
+                    append_to: this.bar_group,
+                    fill: this.task?.work_status?.value >= 0 ? `rgb(${WORK_STT_COL[this.task?.work_status.value]} / 20%)` : '#b8c2cc'
+                });
+            }
             animateSVG(this.$bar, 'width', 0, this.width);
 
             if (this.invalid) {
@@ -461,16 +477,22 @@ var Gantt = (function () {
 
         draw_progress_bar() {
             if (this.invalid) return;
-            this.$bar_progress = createSVG('rect', {
-                x: this.x,
-                y: this.y,
-                width: this.progress_width,
-                height: this.height,
-                rx: this.corner_radius,
-                ry: this.corner_radius,
-                class: 'bar-progress',
+            let progress_width = this.progress_width
+            if (this.task?.is_group && this.width === this.progress_width)
+                progress_width = progress_width - 4
+            let attrs = {
+                x: this.task?.is_group ? this.x + 2 : this.x,
+                y: this.task?.is_group ? this.y + 4 : this.y,
+                width: progress_width,
+                height: this.task?.is_group ? 2 : this.height,
+                rx: this.task?.is_group ? 0 : this.corner_radius,
+                ry: this.task?.is_group ? 0 : this.corner_radius,
+                class: `bar-progress ${this.task?.is_group ? 'bar-prg-group' : ''}`,
                 append_to: this.bar_group,
-            });
+            }
+
+            if (!this.task?.is_group) attrs.fill = `rgb(${WORK_STT_COL[this.task?.work_status.value]})`
+            this.$bar_progress = createSVG('rect', attrs);
 
             animateSVG(this.$bar_progress, 'width', 0, this.progress_width);
         }
@@ -519,7 +541,7 @@ var Gantt = (function () {
                 this.$handle_progress = createSVG('polygon', {
                     points: this.get_progress_polygon_points().join(','),
                     class: 'handle progress',
-                    append_to: this.handle_group,
+                    // append_to: this.handle_group,
                 });
             }
         }
@@ -752,13 +774,14 @@ var Gantt = (function () {
                 label = this.group.querySelector('.bar-label');
             // label.classList.add('big');
             // label.setAttribute('x', bar.getX() + bar.getWidth() + 5);
-            if (label.getBBox().width > bar.getWidth()) {
+            if (label.getBBox().width > bar.getWidth() || this.task?.is_group) {
                 label.classList.add('big');
                 label.setAttribute('x', bar.getX() + bar.getWidth() + 5);
             } else {
                 label.classList.remove('big');
                 label.setAttribute('x', bar.getX() + bar.getWidth() / 2);
             }
+            if (this.task?.is_group) label.classList.add('group-label')
         }
 
         update_handle_position() {
@@ -960,6 +983,18 @@ var Gantt = (function () {
         MONTH: 'Month',
         YEAR: 'Year',
     };
+    const WORK_STT_COL = {
+        0: '41 141 255',
+        1: '0 214 127',
+        2: '255 104 109',
+        3: '255 196 0'
+    }
+    const WORK_STT_COL_TXT = {
+        0: 'blue',
+        1: 'success',
+        2: 'danger',
+        3: 'warning'
+    }
 
     class Gantt {
         constructor(wrapper, tasks, options) {
@@ -2027,6 +2062,9 @@ var Gantt = (function () {
                         item_html.append(moment(item[value.code], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     else if (value.code === 'weight' || value.code === 'progress')
                         item_html.append(`${item[value.code]}%`)
+                    else if (value.code === 'work_status' && item[value.code]){
+                        item_html.append(`<span class="badge badge-${WORK_STT_COL_TXT[item[value.code]['value']]} badge-indicator-processing badge-indicator"></span> ${item[value.code]['txt']}`)
+                    }
                     else
                         item_html.append(item?.[value.code])
                     item_html.css({"width": value.width})
@@ -2068,6 +2106,8 @@ var Gantt = (function () {
     }
 
     Gantt.VIEW_MODE = VIEW_MODE;
+    Gantt.WORK_STT_COL_TXT = WORK_STT_COL_TXT;
+    Gantt.WORK_STT_COL = WORK_STT_COL;
 
     function generate_id(task) {
         return task.name + '_' + Math.random().toString(36).slice(2, 12);

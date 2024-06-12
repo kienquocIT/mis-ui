@@ -7701,3 +7701,23 @@ msgstr "Tải tệp lên"
 #
 msgid "Upload folder"
 msgstr "Tải thư mục lên"
+
+#
+msgid "Start to start"
+msgstr "Bắt đầu cùng lúc"
+
+#
+msgid "Finish to start"
+msgstr "Hoàn thành để bắt đầu"
+
+#
+msgid "Start to Start (SS) - You can only start work B when work A has started."
+msgstr "Bắt đầu cùng lúc (SS) - bạn chỉ có thể bắt đầu công việc B khi công việc A bắt đầu."
+
+#
+msgid "Finish to Start (FS) - You can only start work B when work A has finished."
+msgstr "Hoàn thành để bắt đầu (FS) - bạn chỉ có thể bắt đầu công việc B khi công việc A đã hoàn thành."
+
+#
+msgid "Explanation of Types of Relationships"
+msgstr "Chú thích Loại quan hệ"

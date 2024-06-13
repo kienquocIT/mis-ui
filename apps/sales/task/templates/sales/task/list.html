@@ -240,7 +240,7 @@
         >
         {{ data.task_config|json_script:'task_config' }}
     </div>
-    {% include 'sales/task/extend/task-form.html' %}
+    {% include 'sales/task/extend/task-form.html' with has_prj=True%}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>

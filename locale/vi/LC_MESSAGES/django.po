@@ -1100,7 +1100,7 @@ msgstr "Số tiền tối đa"
 
 #
 msgid "use  for each customer per"
-msgstr "Sử dụng cho mỗi khách hàng"
+msgstr "Lần sử dụng cho mỗi khách hàng trên"
 
 #
 msgid "Select.."

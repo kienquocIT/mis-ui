@@ -404,8 +404,9 @@ $(function () {
                                             <div class="col-12 col-md-1 col-lg-1">
                                                 <div class="dropdown">
                                                     <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
-                                                    <div role="menu" class="dropdown-menu">
+                                                    <div role="menu" class="dropdown-menu w-210p">
                                                         <a class="dropdown-item" href="#"><i class="dropdown-icon fas fa-share-square text-primary"></i><span>Share</span></a>
+                                                        <a class="dropdown-item" href="#"><i class="dropdown-icon fas fa-download text-primary"></i><span>Download</span></a>
                                                     </div>
                                                 </div>
                                             </div>

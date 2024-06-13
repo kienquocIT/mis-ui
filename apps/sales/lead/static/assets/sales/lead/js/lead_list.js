@@ -62,7 +62,10 @@ $(document).ready(function () {
                     },
                     {
                         'render': (data, type, row) => {
-                            return `<span class="fst-italic">${row?.['current_lead_stage']?.['title']}</span>`;
+                            return `<span class="badge-status">
+                                        <span class="badge badge-primary badge-indicator"></span>
+                                        <span class="badge-label">${row?.['current_lead_stage']?.['title']}</span>
+                                    </span>`;
                         }
                     },
                     {

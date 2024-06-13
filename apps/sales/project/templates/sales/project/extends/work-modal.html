@@ -39,7 +39,7 @@
                     </div>
                     <div class="col-xs-12 col-md-6 form-group">
                         <label for="select_relationships_type"
-                               class="form-label">{% trans 'Relationships type' %}</label>
+                               class="form-label">{% trans 'Types of Relationships' %}</label>
                         <select class="form-select" id="select_relationships_type">
                             <option value=""></option>
                             {% for value, name in data.dependencies_list %}
@@ -49,7 +49,7 @@
                     </div>
                     <div class="col-xs-12 col-md-6 form-group">
                         <label for="select_project_work"
-                               class="form-label">{% trans 'Relationships work' %}</label>
+                               class="form-label">{% trans "Parents Work" %}</label>
                         <select class="form-select" name="project_work" id="select_project_work"
                                 data-url="{% url 'ProjectWorkListAPI' %}"
                                 data-keyResp="pj_work_list" data-keyText="title" data-keyId="id"

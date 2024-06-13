@@ -7643,11 +7643,11 @@ msgid "Project works"
 msgstr "Công việc"
 
 #
-msgid "Relationships type"
+msgid "Types of Relationships"
 msgstr "Loại quan hệ"
 
 #
-msgid "Relationships work"
+msgid "Parents Work"
 msgstr "Công việc cha"
 
 #

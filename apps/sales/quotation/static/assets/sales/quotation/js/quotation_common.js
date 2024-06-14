@@ -3595,6 +3595,7 @@ class QuotationCalculateCaseHandle {
         let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
         let pretaxAmount = 0;
         let discountAmount = 0;
+        let discountAmountTotal = 0;
         let taxAmount = 0;
         let elePretaxAmount = null;
         let eleTaxes = null;
@@ -3700,23 +3701,22 @@ class QuotationCalculateCaseHandle {
                 discountTotalRate = $('#quotation-copy-discount-on-total').val();
             }
             if (discountTotalRate && eleDiscount) {
-                if (!form.classList.contains('sale-order')) {
+                if (!form.classList.contains('sale-order')) {  // quotation
                     discount_on_total = parseFloat(discountTotalRate);
                     discountAmount = ((pretaxAmount * discount_on_total) / 100);
                     // check if shipping fee then minus before calculate discount
                     if (shippingFee > 0) {
                         discountAmount = (((pretaxAmount - shippingFee) * discount_on_total) / 100);
                     }
-                } else {
+                } else {  // sale order
                     discount_on_total = parseFloat(discountTotalRate);
-                    let discountAmountOnTotal = 0;
                     // check if shipping fee then minus before calculate discount
+                    let discountAmountOnTotal = (((pretaxAmount - discountAmount) * discount_on_total) / 100);
                     if (shippingFee > 0) {
                         discountAmountOnTotal = (((pretaxAmount - discountAmount - shippingFee) * discount_on_total) / 100);
-                    } else {
-                        discountAmountOnTotal = (((pretaxAmount - discountAmount) * discount_on_total) / 100);
                     }
                     discountAmount += discountAmountOnTotal;
+                    discountAmountTotal += discountAmountOnTotal;
 
                     if (pretaxAmount > 0) {
                         discount_on_total = ((discountAmount / pretaxAmount) * 100).toFixed(2);
@@ -3729,18 +3729,20 @@ class QuotationCalculateCaseHandle {
             let totalFinal = (pretaxAmount - discountAmount + taxAmount);
             $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
             elePretaxAmountRaw.value = pretaxAmount;
-            if (is_product === true) {
-                if (finalRevenueBeforeTax) {
-                    finalRevenueBeforeTax.value = pretaxAmount;
-                }
-            }
+
             if (eleDiscount && eleDiscountRaw) {
                 $(eleDiscount).attr('data-init-money', String(discountAmount));
                 eleDiscountRaw.value = discountAmount;
-                if (finalRevenueBeforeTax) {
-                    finalRevenueBeforeTax.value = (pretaxAmount - discountAmount);
+            }
+
+            if (finalRevenueBeforeTax) {
+                if (!form.classList.contains('sale-order')) {  // quotation (revenue = pretaxAmount - discountAmountTotal)
+                    finalRevenueBeforeTax.value = pretaxAmount - discountAmountTotal;
+                } else {  // sale order (revenue = pretaxAmount - discountAmount)
+                    finalRevenueBeforeTax.value = pretaxAmount - discountAmount;
                 }
             }
+
             $(eleTaxes).attr('data-init-money', String(taxAmount));
             eleTaxesRaw.value = taxAmount;
             $(eleTotal).attr('data-init-money', String(totalFinal));

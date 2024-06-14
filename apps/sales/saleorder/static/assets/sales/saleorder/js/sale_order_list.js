@@ -154,7 +154,7 @@ $(function () {
                                 isDelivery = `<a class="dropdown-item" href="#" id="create_delivery"><i class="dropdown-icon fas fa-truck text-primary"></i><span>${$elmTrans.attr('data-delivery')}</span></a>`;
                             }
                             return `<div class="dropdown">
-                                    <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
                                         ${isEdit}
                                         ${isDelivery}

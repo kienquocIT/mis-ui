@@ -62,6 +62,14 @@ $(document).ready(function () {
                     },
                     {
                         'render': (data, type, row) => {
+                            return `<span class="badge-status">
+                                        <span class="badge badge-primary badge-indicator"></span>
+                                        <span class="badge-label">${row?.['current_lead_stage']?.['title']}</span>
+                                    </span>`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
                             return `<span class="fst-italic">${row?.['lead_status']}</span>`;
                         }
                     },
@@ -108,7 +116,7 @@ $(document).ready(function () {
             series: series_data,
             labels: STATUS_LIST,
             chart: {
-                type: 'donut',
+                type: 'pie',
                 height: 250,
             },
             colors: ['#b9ceee', '#80a6e3', '#2464ce', '#003593', '#706f6f', '#ff5e5e'],

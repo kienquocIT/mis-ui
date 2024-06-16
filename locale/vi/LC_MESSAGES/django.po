@@ -1660,7 +1660,7 @@ msgstr "Kho hàng"
 
 #
 msgid "Quantity"
-msgstr "Số lượng"
+msgstr "SL"
 
 #
 msgid "Unit price"
@@ -2289,6 +2289,10 @@ msgstr "Liên hệ liên kết với báo giá"
 
 #
 msgid "Date Created"
+msgstr "Ngày tạo"
+
+#
+msgid "Date created"
 msgstr "Ngày tạo"
 
 #
@@ -3503,7 +3507,7 @@ msgstr "Ghi chú"
 
 #
 msgid "Total order"
-msgstr "Tổng số"
+msgstr "Tổng số đặt hàng"
 
 #
 msgid "Get Product"
@@ -7721,3 +7725,51 @@ msgstr "Hoàn thành để bắt đầu (FS) - bạn chỉ có thể bắt đầ
 #
 msgid "Explanation of Types of Relationships"
 msgstr "Chú thích Loại quan hệ"
+
+#
+msgid "Goods registration"
+msgstr "Đăng ký hàng"
+
+#
+msgid "Goods registration list"
+msgstr "Danh sách phiếu đăng ký hàng"
+
+#
+msgid "Goods registration detail"
+msgstr "Chi tiết phiếu đăng ký hàng"
+
+#
+msgid "Goods registration update"
+msgstr "Cập nhập phiếu đăng ký hàng"
+
+#
+msgid "Registered"
+msgstr "Đã đăng ký"
+
+#
+msgid "Inventory this order"
+msgstr "Tồn kho DA này"
+
+#
+msgid "Keep for other orders"
+msgstr "Giữ cho DA khác"
+
+#
+msgid "Remaining"
+msgstr "Còn lại"
+
+#
+msgid "Register for this order"
+msgstr "Hàng cho DA này"
+
+#
+msgid "Register from other orders"
+msgstr "Hàng từ DA khác"
+
+#
+msgid "Stock quantity this order detail"
+msgstr "Chi tiết tồn kho cho DA này"
+
+#
+msgid "Transaction"
+msgstr "Giao dịch"

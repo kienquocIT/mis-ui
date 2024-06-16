@@ -158,12 +158,18 @@ function saveWork(gantt_obj) {
                         if (method === 'put')
                             res = data
                         res.weight = res.w_weight
-                        res.progress = $('#workRate').val(),
+
                         res.date_from = res.w_start_date
                         res.date_end = res.w_end_date
-                        res.dependencies_parent = res.work_dependencies_parent
                         res.relationships_type = res.work_dependencies_type
                         if (method === 'post'){
+                            if (Object.keys(res.work_dependencies_parent).length)
+                                res.dependencies_parent = res.work_dependencies_parent.id
+                            else res.dependencies_parent = ""
+                            res.progress = res['w_rate']
+                            if (Object.keys(res.group).length)
+                                res.group = res.group.id
+                            else res.group = ""
                             temps.push(res)
                             const afterData = fGanttCustom.convert_data([], temps)
                             gantt_obj.load_more(afterData)
@@ -171,7 +177,9 @@ function saveWork(gantt_obj) {
                         else{
                             $wModal.modal('hide')
                             res.id = $workID.val()
+                            res.progress = $('#workRate').val(),
                             res.work_status = $('#work_status').val()
+                            res.dependencies_parent = res.work_dependencies_parent
                             temps.push(res)
                             const afterData = fGanttCustom.convert_data([], temps)
                             gantt_obj.update_data(afterData)

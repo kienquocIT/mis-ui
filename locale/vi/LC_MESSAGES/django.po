@@ -1100,7 +1100,7 @@ msgstr "Số tiền tối đa"
 
 #
 msgid "use  for each customer per"
-msgstr "Sử dụng cho mỗi khách hàng"
+msgstr "Lần sử dụng cho mỗi khách hàng trên"
 
 #
 msgid "Select.."
@@ -7647,11 +7647,11 @@ msgid "Project works"
 msgstr "Công việc"
 
 #
-msgid "Relationships type"
+msgid "Types of Relationships"
 msgstr "Loại quan hệ"
 
 #
-msgid "Relationships work"
+msgid "Parents Work"
 msgstr "Công việc cha"
 
 #

@@ -7721,3 +7721,23 @@ msgstr "Hoàn thành để bắt đầu (FS) - bạn chỉ có thể bắt đầ
 #
 msgid "Explanation of Types of Relationships"
 msgstr "Chú thích Loại quan hệ"
+
+#
+msgid "Work expense"
+msgstr "Chi phí công việc"
+
+#
+msgid "Work title"
+msgstr "Tên công việc"
+
+#
+msgid "Total Unit Price"
+msgstr "Tổng đơn giá"
+
+#
+msgid "Total Tax"
+msgstr "Tổng thuế"
+
+#
+msgid "Total Price"
+msgstr "Tổng thành tiền"

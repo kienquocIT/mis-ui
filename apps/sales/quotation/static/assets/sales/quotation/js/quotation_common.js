@@ -3716,6 +3716,7 @@ class QuotationCalculateCaseHandle {
                     if (shippingFee > 0) {
                         discountAmount = (((pretaxAmount - shippingFee) * discount_on_total) / 100);
                     }
+                    discountAmountTotal += discountAmount;
                 } else {  // sale order
                     discount_on_total = parseFloat(discountTotalRate);
                     // check if shipping fee then minus before calculate discount

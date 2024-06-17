@@ -147,7 +147,7 @@ $(function () {
                             const $elmTrans = $('#trans-factory')
                             let isEdit = ``;
                             let isDelivery = ``;
-                            if (![2, 3].includes(row?.['system_status'])) {
+                            if (![2, 3, 4].includes(row?.['system_status'])) {
                                 isEdit = `<a class="dropdown-item" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${$elmTrans.attr('data-change')}</span></a>`;
                             }
                             if (!row.delivery_call && [2, 3].includes(row?.['system_status'])) {

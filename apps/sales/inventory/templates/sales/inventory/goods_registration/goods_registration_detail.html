@@ -3,7 +3,12 @@
 {% block title %}{% trans 'Goods registration detail' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">``
+    <style>
+        td {
+            min-width: max-content !important;
+        }
+    </style>
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'GoodsRegistrationUpdate' pk=pk %}">
@@ -124,6 +129,7 @@
                                 <tr>
                                     <th class="border-1 text-white" rowspan="2">{% trans 'Sale order' %}</th>
                                     <th class="border-1 text-white" rowspan="2">{% trans 'Transaction' %}</th>
+                                    <th class="border-1 text-white" rowspan="2">{% trans 'Warehouse' %}</th>
                                     <th class="border-1 text-white" rowspan="2">{% trans 'Lot number' %}</th>
                                     <th class="border-1 text-white" colspan="2">{% trans 'OPENING' %}</th>
                                     <th class="border-1 text-white" colspan="2">{% trans 'INPUT' %}</th>

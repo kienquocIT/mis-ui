@@ -104,22 +104,7 @@ function loadStockQuantityDataTable(data_src=[]) {
         for (const registered_data of item?.['registered_data']) {
             data_src_processed.push({
                 "so_code": item?.['so_code'],
-                "so_item": item?.['so_item'],
-                "this_registered": item?.['this_registered'],
-                "this_others": item?.['this_others'],
-                "this_available": item?.['this_available'],
-                "this_registered_value": item?.['this_registered_value'],
-                "this_others_value": item?.['this_others_value'],
-                "this_available_value": item?.['this_available_value'],
                 "registered_data": registered_data,
-                "out_registered": item?.['out_registered'],
-                "out_delivered": item?.['out_delivered'],
-                "out_remain": item?.['out_remain'],
-                "out_registered_value": item?.['out_registered_value'],
-                "out_delivered_value": item?.['out_delivered_value'],
-                "out_remain_value": item?.['out_remain_value'],
-                "current_stock": item?.['current_stock'],
-                "current_stock_value": item?.['current_stock_value'],
             })
         }
     }
@@ -129,110 +114,99 @@ function loadStockQuantityDataTable(data_src=[]) {
     let current_stock = 0
     let current_stock_value = 0
     dtb.DataTableDefault({
+        dom: '',
         reloadCurrency: true,
         data: data_src_processed,
         columns: [
             {
-                className: 'wrap-text w-5',
+                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary">${row?.['so_code']}</span>`;
                 }
             },
             {
-                className: 'wrap-text w-10',
+                className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="small">${row?.['registered_data']?.['goods_receipt'] ? 'Goods Receipt' : ''} <span class="text-primary">${row?.['registered_data']?.['goods_receipt']?.['code']}</span></span>`;
+                    return `<span class="small">${row?.['registered_data']?.['trans_title'] ? 'Goods Receipt' : ''} <span class="text-primary">${row?.['registered_data']?.['trans_code']}</span></span>`;
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (row?.['registered_data']?.['lot_data']?.['lot_id']) {
+                    return `<span class="badge badge-soft-primary">${row?.['registered_data']?.['warehouse_code']}</span>`;
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    if (row?.['registered_data']?.['lot_data']?.['lot_number']) {
                         return `<span class="text-blue fw-bold">${row?.['registered_data']?.['lot_data']?.['lot_number']}</span>`;
                     }
                     return ''
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `${current_stock}`;
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<span class="mask-money" data-init-money="${current_stock_value}"></span>`;
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (row?.['registered_data']?.['goods_receipt'] || row?.['registered_data']?.['goods_return'] || row?.['registered_data']?.['transfer_in']) {
-                        if (row?.['registered_data']?.['lot_data']?.['lot_id']) {
-                            current_stock += row?.['registered_data']?.['lot_data']?.['lot_quantity']
-                            return `${row?.['registered_data']?.['lot_data']?.['lot_quantity']}`;
-                        }
-                        current_stock += row?.['this_registered']
-                        return `${row?.['this_registered']}`;
+                    if (row?.['registered_data']?.['stock_type'] === 1) {
+                        current_stock += row?.['registered_data']?.['quantity']
+                        return `${row?.['registered_data']?.['quantity']}`;
                     }
                     return '-'
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (row?.['registered_data']?.['goods_receipt'] || row?.['registered_data']?.['goods_return'] || row?.['registered_data']?.['transfer_in']) {
-                        if (row?.['registered_data']?.['lot_data']?.['lot_id']) {
-                            let this_registered_value = parseFloat(row?.['current_stock_value']) * row?.['registered_data']?.['lot_data']?.['lot_quantity'] / parseFloat(row?.['current_stock'])
-                            current_stock_value += this_registered_value
-                            return `<span class="mask-money" data-init-money="${this_registered_value}"></span>`;
-                        }
-                        current_stock_value += row?.['this_registered_value']
-                        return `<span class="mask-money" data-init-money="${row?.['this_registered_value']}"></span>`;
+                    if (row?.['registered_data']?.['stock_type'] === 1) {
+                        current_stock_value += row?.['registered_data']?.['value']
+                        return `<span class="mask-money" data-init-money="${row?.['registered_data']?.['value']}"></span>`;
                     }
                     return '-'
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (row?.['registered_data']?.['delivery'] || row?.['registered_data']?.['transfer_out']) {
-                        if (row?.['registered_data']?.['lot_data']?.['lot_id']) {
-                            current_stock -= row?.['registered_data']?.['lot_data']?.['lot_quantity']
-                            return `${row?.['registered_data']?.['lot_data']?.['lot_quantity']}`;
-                        }
-                        current_stock -= row?.['this_registered']
-                        return `${row?.['this_registered']}`;
+                    if (row?.['registered_data']?.['stock_type'] === -1) {
+                        current_stock -= row?.['registered_data']?.['quantity']
+                        return `${row?.['registered_data']?.['quantity']}`;
                     }
                     return '-'
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (row?.['registered_data']?.['delivery'] || row?.['registered_data']?.['transfer_out']) {
-                        return `<span class="mask-money" data-init-money="${row?.['this_registered_value']}"></span>`;
+                    if (row?.['registered_data']?.['stock_type'] === -1) {
+                        current_stock_value -= row?.['registered_data']?.['value']
+                        return `<span class="mask-money" data-init-money="${row?.['registered_data']?.['value']}"></span>`;
                     }
                     return '-'
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (row?.['registered_data']?.['lot_data']?.['lot_id']) {
-                        return `${current_stock}`;
-                    }
-                    return `${row?.['current_stock']}`;
+                    return `${current_stock}`;
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (row?.['registered_data']?.['lot_data']?.['lot_id']) {
-                        return `<span class="mask-money" data-init-money="${current_stock_value}"></span>`;
-                    }
-                    return `<span class="mask-money" data-init-money="${row?.['current_stock_value']}"></span>`;
+                    return `<span class="mask-money" data-init-money="${current_stock_value}"></span>`;
                 }
             },
         ],

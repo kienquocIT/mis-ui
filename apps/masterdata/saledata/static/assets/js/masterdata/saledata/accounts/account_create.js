@@ -8,18 +8,18 @@ $(document).ready(function () {
     const total_employees = urlParams.get('total_employees');
     const revenue = urlParams.get('revenue');
 
-    $('#inp-account-name').val(name).prop('disabled', true).prop('readonly', true)
+    $('#inp-account-name').val(name)
     loadIndustry({'id': industry_id, 'title': industry_title})
-    $('#select-box-industry').prop('disabled', true).prop('readonly', true)
-    $('#select-box-total-emp').val(total_employees).prop('disabled', true).prop('readonly', true)
-    $('#select-box-annual-revenue').val(revenue).prop('disabled', true).prop('readonly', true)
+    $('#select-box-industry')
+    $('#select-box-total-emp').val(total_employees)
+    $('#select-box-annual-revenue').val(revenue)
 
 
     let frm = $('#form-create-account')
     frm.submit(function (event) {
         event.preventDefault();
         let combinesData = new AccountHandle().combinesData($(this));
-        console.log(combinesData)
+        // console.log(combinesData)
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)

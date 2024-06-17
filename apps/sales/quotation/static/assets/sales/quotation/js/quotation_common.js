@@ -67,6 +67,9 @@ class QuotationLoadDataHandle {
     static loadDataByOpportunity() {
         let tableProduct = $('#datable-quotation-create-product');
         if ($(QuotationLoadDataHandle.opportunitySelectEle).val()) {
+            QuotationLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
+            QuotationLoadDataHandle.customerSelectEle[0].setAttribute('readonly', 'true');
+            QuotationLoadDataHandle.contactSelectEle[0].setAttribute('readonly', 'true');
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, $(QuotationLoadDataHandle.opportunitySelectEle).val());
             if (dataSelected) {
                 // load sale person
@@ -75,7 +78,6 @@ class QuotationLoadDataHandle {
                     data: dataSelected?.['sale_person'],
                     'allowClear': true,
                 });
-                QuotationLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
                 // load customer
                 if (QuotationLoadDataHandle.customerInitEle.val()) {
                     let initCustomer = JSON.parse(QuotationLoadDataHandle.customerInitEle.val());
@@ -88,6 +90,8 @@ class QuotationLoadDataHandle {
             }
         } else {
             QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
+            QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
+            QuotationLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
         }
         // Delete all promotion rows
         deletePromotionRows(tableProduct, true, false);
@@ -212,7 +216,6 @@ class QuotationLoadDataHandle {
                 return item?.['fullname'] || '';
             },
         });
-        // QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.contactSelectEle);
     };
 
     static loadBoxQuotationPaymentTerm(dataPayment = {}) {
@@ -1853,6 +1856,11 @@ class QuotationLoadDataHandle {
                         btnCopy.setAttribute('disabled', 'true');
                     }
                 }
+            }
+            if ($(form).attr('data-method').toLowerCase() !== 'get') {
+                QuotationLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
+                QuotationLoadDataHandle.customerSelectEle[0].setAttribute('readonly', 'true');
+                QuotationLoadDataHandle.contactSelectEle[0].setAttribute('readonly', 'true');
             }
         }
         if (data?.['customer']) {

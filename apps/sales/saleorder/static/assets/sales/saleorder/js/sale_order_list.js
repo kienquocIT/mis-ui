@@ -147,14 +147,14 @@ $(function () {
                             const $elmTrans = $('#trans-factory')
                             let isEdit = ``;
                             let isDelivery = ``;
-                            if (![2, 3].includes(row?.['system_status'])) {
+                            if (![2, 3, 4].includes(row?.['system_status'])) {
                                 isEdit = `<a class="dropdown-item" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${$elmTrans.attr('data-change')}</span></a>`;
                             }
                             if (!row.delivery_call && [2, 3].includes(row?.['system_status'])) {
                                 isDelivery = `<a class="dropdown-item" href="#" id="create_delivery"><i class="dropdown-icon fas fa-truck text-primary"></i><span>${$elmTrans.attr('data-delivery')}</span></a>`;
                             }
                             return `<div class="dropdown">
-                                    <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
                                         ${isEdit}
                                         ${isDelivery}

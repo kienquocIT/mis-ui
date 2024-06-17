@@ -35,7 +35,6 @@ function LoadSalePerson(data) {
 }
 
 function LoadLineDetailTable(data) {
-    console.log(data)
     for (const row of data) {
         let product = row?.['so_item']?.['product']
         let uom = row?.['so_item']?.['uom']

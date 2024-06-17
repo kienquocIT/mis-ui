@@ -2432,9 +2432,37 @@ function setupMergeProduct() {
     let table = $('#datable-purchase-request-product');
     if (!table[0].querySelector('.dataTables_empty')) {
         let order = 0;
-        let uom_reference = {};
-        let uom_default = {};
-        // Setup Merge Data by Product
+        let productMapUOMList = {};
+        // Setup smallest UOM from many UOM of PRs
+        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked:not(.disabled-by-pq)')) {
+            let row = eleChecked.closest('tr');
+            let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
+            if (dataRowRaw) {
+                let dataRow = JSON.parse(dataRowRaw);
+                if (dataRow?.['product']?.['id'] && dataRow?.['uom']) {
+                    if (!productMapUOMList.hasOwnProperty(dataRow?.['product']?.['id'])) {
+                        productMapUOMList[dataRow?.['product']?.['id']] = [dataRow?.['uom']];
+                    } else {
+                        productMapUOMList[dataRow?.['product']?.['id']].push(dataRow?.['uom']);
+                    }
+                }
+            }
+        }
+        for (let key in productMapUOMList) {
+            let uomApply = {};
+            for (let uom of productMapUOMList[key]) {
+                if (Object.keys(uomApply).length === 0) {
+                    uomApply = uom;
+                } else {
+                    if (uom?.['ratio'] && uomApply?.['ratio']) {
+                        if (uom?.['ratio'] < uomApply?.['ratio']) {
+                            uomApply = uom;
+                        }
+                    }
+                }
+            }
+            productMapUOMList[key] = uomApply;
+        }
         for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked:not(.disabled-by-pq)')) {
             let row = eleChecked.closest('tr');
             let sale_order_id = eleChecked.getAttribute('data-sale-order-product-id');
@@ -2444,19 +2472,13 @@ function setupMergeProduct() {
             let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
             if (dataRowRaw) {
                 let dataRow = JSON.parse(dataRowRaw);
-                if (Object.keys(uom_reference).length === 0) {
-                    uom_reference = dataRow?.['uom']?.['uom_group']?.['uom_reference'];
-                }
-                if (Object.keys(uom_default).length === 0) {
-                    uom_default = dataRow?.['product']?.['purchase_information']?.['uom'];
-                }
                 let tax = dataRow?.['tax'];
                 let product_id = dataRow?.['product']?.['id'];
                 let quantity = parseFloat(dataRow?.['quantity']);
                 let quantity_order = parseFloat(row.querySelector('.table-row-quantity-order').value);
                 let remain = (parseFloat(row.querySelector('.table-row-remain').innerHTML) - quantity_order);
-                if (dataRow?.['uom']?.['id'] !== uom_default?.['id']) {
-                    let finalRatio = (parseFloat(dataRow?.['uom']?.['ratio']) / parseFloat(uom_default?.['ratio']));
+                if (dataRow?.['uom']?.['ratio'] && productMapUOMList[product_id]?.['ratio']) {
+                    let finalRatio = (parseFloat(dataRow?.['uom']?.['ratio']) / parseFloat(productMapUOMList[product_id]?.['ratio']));
                     quantity = (parseFloat(dataRow?.['quantity']) * finalRatio);
                     quantity_order = (parseFloat(row.querySelector('.table-row-quantity-order').value) * finalRatio);
                     remain = ((parseFloat(row.querySelector('.table-row-remain').innerHTML) * finalRatio) - quantity_order);
@@ -2477,8 +2499,8 @@ function setupMergeProduct() {
                                 'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
                             }],
                             'product': dataRow?.['product'],
-                            'uom_order_request': uom_default,
-                            'uom_order_actual': uom_default,
+                            'uom_order_request': productMapUOMList[product_id],
+                            'uom_order_actual': productMapUOMList[product_id],
                             'uom_list': [dataRow?.['uom']],
                             'uom_id_list': [dataRow?.['uom']?.['id']],
                             'tax': tax,

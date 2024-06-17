@@ -40,10 +40,10 @@ $(async function () {
                 'url': url,
                 'method': 'get',
                 'data': {
-                    'product_id': prod_data?.product_data?.id,
+                    'product_id': prod_data?.['product_data']?.['id'],
                 }
             }).then((req) => {
-                const isKey = `${prod_data?.product_data?.id}.${prod_data?.uom_data?.id}`
+                const isKey = `${prod_data?.['product_data']?.['id']}.${prod_data?.['uom_data']?.['id']}`
                 let temp = _this.getWarehouseList
                 const res = $.fn.switcherResp(req);
                 const table = $('#productStockDetail')
@@ -55,68 +55,28 @@ $(async function () {
                 let newData = []
                 for (let [idx, pwh] of isData.entries()) {
                     pwh.picked = 0
-                    if (!config?.['is_picking'] && config?.['is_partial_ship']) { // TH: none_picking_many_delivery
-                        // config 2
-                        let finalRate = 1;
-                        if (pwh?.['uom'] && prod_data?.['uom_data']) {
-                            pwh['uom_stock'] = pwh?.['uom'];
-                            pwh['uom_delivery'] = prod_data?.['uom_data'];
-                            if (pwh?.['uom_stock']?.['ratio'] && pwh?.['uom_delivery']?.['ratio']) {
-                                if (pwh?.['uom_delivery']?.['ratio'] > 0) {
-                                    finalRate = pwh?.['uom_stock']?.['ratio'] / pwh?.['uom_delivery']?.['ratio'];
-                                }
-                            }
-                        }
-                        pwh['stock_amount'] = pwh?.['stock_amount'] * finalRate;
-                        if (prod_data?.['delivery_data']) {
-                            for (let val of prod_data?.['delivery_data']) {
-                                if (val?.['warehouse'] === pwh?.['warehouse']?.['id']
-                                    && val?.['uom'] === prod_data?.['uom_data']?.['id']
-                                ) { // Check if warehouse of product warehouse in list warehouse have picked
-                                    if (prod_data?.['picked_quantity']) {
-                                        pwh['picked'] = prod_data?.['picked_quantity'];
-                                    }
-                                    if (val?.['lot_data']) {
-                                        pwh['lot_data'] = val?.['lot_data'];
-                                    }
-                                    if (val?.['serial_data']) {
-                                        pwh['serial_data'] = val?.['serial_data'];
-                                    }
-                                    break;
-                                }
+                    let finalRate = 1;
+                    if (pwh?.['uom'] && prod_data?.['uom_data']) {
+                        pwh['uom_stock'] = pwh?.['uom'];
+                        pwh['uom_delivery'] = prod_data?.['uom_data'];
+                        if (pwh?.['uom_stock']?.['ratio'] && pwh?.['uom_delivery']?.['ratio']) {
+                            if (pwh?.['uom_delivery']?.['ratio'] > 0) {
+                                finalRate = pwh?.['uom_stock']?.['ratio'] / pwh?.['uom_delivery']?.['ratio'];
                             }
                         }
                     }
-                    else if ((config?.['is_picking'] && config?.['is_partial_ship']) && prod_data?.['delivery_data']) { // TH: has_picking_many_delivery
-                        // config 4
+                    if (!config?.['is_picking'] && config?.['is_partial_ship']) { // TH config 2: none_picking_many_delivery
+                        pwh['stock_amount'] = pwh?.['stock_amount'] * finalRate;
+                        if (prod_data?.['delivery_data']) {
+                            prodTable.loadProductWHModal(pwh, prod_data);
+                        }
+                    }
+                    if ((config?.['is_picking'] && config?.['is_partial_ship']) && prod_data?.['delivery_data']) { // TH config 4: has_picking_many_delivery
                         // nếu ready quantity > 0 => có hàng để giao
                         // lấy delivery
+                        pwh['stock_amount'] = pwh?.['picked_ready'] * finalRate;
                         if (prod_data?.['ready_quantity'] > 0) {
-                            for (let val of prod_data?.['delivery_data']) {
-                                if (val?.['warehouse'] === pwh?.['warehouse']?.['id']
-                                    && val?.['uom'] === prod_data?.['uom_data']?.['id']
-                                ) { // Check if warehouse of product warehouse in list warehouse have picked
-                                    // item['stock_amount'] = prod_data?.['ready_quantity'];
-                                    pwh['stock_amount'] = pwh?.['picked_ready'];
-                                    if (prod_data?.['picked_quantity']) {
-                                        pwh['picked'] = prod_data?.['picked_quantity'];
-                                    }
-                                    if (prod_data?.['uom_data']) {
-                                        pwh['uom_so'] = prod_data?.['uom_data'];
-                                    }
-                                    if (val?.['lot_data']) {
-                                        pwh['lot_data'] = val?.['lot_data'];
-                                    }
-                                    if (val?.['serial_data']) {
-                                        pwh['serial_data'] = val?.['serial_data'];
-                                    }
-                                } else {
-                                    pwh['stock_amount'] = pwh?.['picked_ready'];
-                                    if (prod_data?.['uom_data']) {
-                                        pwh['uom_so'] = prod_data?.['uom_data'];
-                                    }
-                                }
-                            }
+                            prodTable.loadProductWHModal(pwh, prod_data);
                         }
                         // change column name stock -> picked
                         if (!table.hasClass('dataTable')) {
@@ -199,10 +159,10 @@ $(async function () {
                             data: 'picked',
                             render: (row, type, data, meta) => {
                                 if ($form.attr('data-method').toLowerCase() === 'put') {
-                                    let disabled = data.product_amount <= 0 ? 'disabled' : '';
+                                    let disabled = data?.['product_amount'] <= 0 ? 'disabled' : '';
                                     // condition 1 for config 3, condition 2 for config 4
-                                    if (config.is_picking && !config.is_partial_ship ||
-                                        (config.is_picking && config.is_partial_ship && data.picked_ready === 0)
+                                    if (config?.['is_picking'] && !config?.['is_partial_ship'] ||
+                                        (config?.['is_picking'] && config?.['is_partial_ship'] && data?.['picked_ready'] === 0)
                                     ) disabled = 'disabled';
                                     if ([1, 2].includes(data?.['product']?.['general_traceability_method'])) {
                                         disabled = 'disabled';
@@ -421,6 +381,26 @@ $(async function () {
                     $('#warehouseStockModal').modal('hide');
                 })
             })
+        }
+
+        loadProductWHModal(pwh, prod_data) {
+            for (let val of prod_data?.['delivery_data']) {
+                if (val?.['warehouse'] === pwh?.['warehouse']?.['id']) {
+                    if (val?.['stock'] && prod_data?.['picked_quantity']) {
+                        if (prod_data?.['picked_quantity'] > 0) {
+                            pwh['picked'] = val?.['stock'];
+                        }
+                    }
+                    if (val?.['lot_data']) {
+                        pwh['lot_data'] = val?.['lot_data'];
+                    }
+                    if (val?.['serial_data']) {
+                        pwh['serial_data'] = val?.['serial_data'];
+                    }
+                    break;
+                }
+            }
+            return true;
         }
 
         initTableProd() {

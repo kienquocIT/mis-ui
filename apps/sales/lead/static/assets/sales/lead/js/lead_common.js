@@ -29,6 +29,14 @@ const $related_leads_table = $('#related-leads-table')
 const $convert_to_opp_radio_group = $('input[name="convert-to-opp"]')
 const $convert_to_opp_option_radio_group = $('input[name="convert-to-opp-option"]')
 const $new_account_btn = $('#create-to-new-account-btn')
+let CURRENT_LEVEL = null
+
+$lead_status.on('change', function () {
+    if ($(this).val() !== '5' && $(this).val() !== '6') {
+        $.fn.notifyB({description: 'This status option is auto!'}, 'warning');
+        $(this).val(CURRENT_LEVEL)
+    }
+})
 
 $new_account_btn.on('click', function () {
     let href = $(this).attr('href')
@@ -275,6 +283,7 @@ function LoadDetailLead(option) {
                 $x.fn.renderCodeBreadcrumb(data);
 
                 LoadStage(STAGE_LIST, data?.['current_lead_stage']['level'], 'detail || update')
+                CURRENT_LEVEL = data?.['current_lead_stage']['level']
 
                 // lead main data
                 $lead_name.val(data?.['title'])
@@ -287,7 +296,7 @@ function LoadDetailLead(option) {
                 $total_employees.val(data?.['total_employees']).trigger('change')
                 $revenue.val(data?.['revenue']).trigger('change')
                 $lead_source.val(data?.['source'])
-                $lead_status.val(data?.['lead_status']).trigger('change')
+                $lead_status.val(data?.['lead_status'])
                 LoadSales(data?.['assign_to_sale'])
 
                 // lead note data
@@ -300,8 +309,10 @@ function LoadDetailLead(option) {
 
                 // lead config data
                 if (data?.['config_data']?.['create_contact']) {
-                    $('#created_contact').prop('hidden', false)
+                    $('#btn-edit-lead').remove()
+                    $('#btn-update-lead').remove()
                     $create_contact_btn.attr('id', '').attr('class', '')
+                    $create_contact_btn.find('button').prop('disabled', true)
                     $create_contact_btn.after(`
                         &nbsp;
                         <a target="_blank" href="${$create_contact_btn.attr('data-url-detail-contact').replace('0', data?.['config_data']?.['contact_mapped']?.['id'])}">
@@ -312,9 +323,10 @@ function LoadDetailLead(option) {
                     `)
                 }
                 if (data?.['config_data']?.['convert_opp']) {
-                    $('#created_opp').prop('hidden', false)
-                    $convert_opp_btn.attr('id', '').attr('class', '')
-                    $convert_opp_btn.after(`
+                    $('#btn-edit-lead').remove()
+                    $('#btn-update-lead').remove()
+                    $('#btn-opp').prop('disabled', true).attr('data-bs-target', '')
+                    $('#btn-opp').after(`
                         &nbsp;
                         <a target="_blank" href="${$convert_opp_btn.attr('data-url-detail-opp').replace('0', data?.['config_data']?.['opp_mapped']?.['id'])}">
                             <i class="fa-solid fa-up-right-from-square"></i>
@@ -328,6 +340,7 @@ function LoadDetailLead(option) {
                     $convert_to_opp_option_radio_group.prop('disabled', true)
                     $('#create-to-new-account-btn').remove()
                     $('.config-opp-row').prop('hidden', true)
+                    $lead_status.prop('disabled', true)
                 }
                 $convert_opp_create.prop('checked', data?.['config_data']?.['convert_opp_create'])
                 $convert_opp_select.prop('checked', data?.['config_data']?.['convert_opp_select'])
@@ -335,6 +348,7 @@ function LoadDetailLead(option) {
                 $convert_to_opp_option_radio_group.trigger('change')
                 LoadAccountConfig(data?.['config_data']?.['account_mapped'])
                 LoadSalesConfig(data?.['config_data']?.['assign_to_sale_config'])
+                LoadOpportunityList(data?.['related_opps'])
 
                 data?.['related_opps'].length > 0 ? LoadOpportunityRelatedList(data?.['related_opps']) : $('#related-opps-span').prop('hidden', true)
                 data?.['related_leads'].length > 0 ? LoadLeadRelatedList(data?.['related_leads']) : $('#related-leads-span').prop('hidden', true)
@@ -411,63 +425,44 @@ function LoadAccountConfig(data) {
     }).on('change', function () {})
 }
 
-function LoadOpportunityList() {
-    if (!$.fn.DataTable.isDataTable('#select-an-existing-table')) {
-        let frm = new SetupFormSubmit($select_an_existing_opp_table);
-        $select_an_existing_opp_table.DataTableDefault({
-            useDataServer: true,
-            paging: false,
-            ordering: false,
-            scrollCollapse: true,
-            scrollY: '40vh',
-            ajax: {
-                url: frm.dataUrl,
-                type: frm.dataMethod,
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && resp.data.hasOwnProperty('opportunity_list')) {
-                        let res = []
-                        for (const opp of resp.data['opportunity_list']) {
-                            if (opp?.['customer']?.['phone'] === $mobile.val() || opp?.['customer']?.['email'] === $email.val()) {
-                                res.push(opp)
-                            }
-                        }
-                        return res;
-                    }
-                    throw Error('Call data raise errors.')
-                },
+function LoadOpportunityList(data_src) {
+    $select_an_existing_opp_table.DataTable().clear().destroy()
+    $select_an_existing_opp_table.DataTableDefault({
+        paging: false,
+        ordering: false,
+        scrollCollapse: true,
+        scrollY: '40vh',
+        data: data_src,
+        columns: [
+            {
+                targets: 0,
+                render: (data, type, row) => {
+                    return `<div class="form-check form-check-sm">
+                                <input data-id="${row?.['id']}" type="radio" name="selected-opp" class="selected-opp form-check-input">
+                                <label class="form-check-label badge badge-soft-primary">${row?.['code']}</label>
+                            </div>`
+                }
             },
-            columns: [
-                {
-                    targets: 0,
-                    render: (data, type, row) => {
-                        return `<div class="form-check form-check-sm">
-                                    <input data-id="${row?.['id']}" type="radio" name="selected-opp" class="selected-opp form-check-input">
-                                    <label class="form-check-label badge badge-soft-primary">${row?.['code']}</label>
-                                </div>`
-                    }
-                },
-                {
-                    targets: 1,
-                    render: (data, type, row) => {
-                        return `<p class="fw-bold">${row?.['title']}</p>`
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        return `<p>${row?.['customer']?.['title']}</p>`
-                    }
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
-                        return `<span class="badge badge badge-soft-blue ml-2 mt-2">${row?.['sale_person']?.['full_name']}</span>`
-                    }
-                },
-            ],
-        });
-    }
+            {
+                targets: 1,
+                render: (data, type, row) => {
+                    return `<p class="fw-bold">${row?.['title']}</p>`
+                }
+            },
+            {
+                targets: 2,
+                render: (data, type, row) => {
+                    return `<p>${row?.['customer']?.['title']}</p>`
+                }
+            },
+            {
+                targets: 3,
+                render: (data, type, row) => {
+                    return `<span class="badge badge badge-soft-blue ml-2 mt-2">${row?.['sale_person']?.['full_name']}</span>`
+                }
+            },
+        ],
+    });
 }
 
 function LoadStage(stage_list, level, page='create') {
@@ -570,7 +565,8 @@ function LoadLeadRelatedList(data) {
 
 class LeadHandle {
     load(option='create') {
-        LoadStage(STAGE_LIST, 1)
+        CURRENT_LEVEL = 1
+        LoadStage(STAGE_LIST, CURRENT_LEVEL)
         LoadIndustry()
         LoadSales()
         if (option !== 'create') {

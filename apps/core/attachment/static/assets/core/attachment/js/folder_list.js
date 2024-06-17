@@ -10,7 +10,8 @@ $(function () {
         let $uploadFile = $('#upload-file')
         let $folderTree = $('#folder-tree');
         let $folderContent = $('#folder-content-body');
-        let $modalAdd = $('#addFolder');
+        let $modalAdd = $('#addFolderMdl');
+        let $modalUpFile = $('#uploadFileMdl');
         let $btnAdd = $('#btn-add-folder');
         let $btnUpFile = $('#btn-upload-file');
 
@@ -45,11 +46,21 @@ $(function () {
             }
             $(this).addClass('clicked');
             $(this).closest('.folder-wrapper').css('background-color', '#f7f7f7');
-        });
 
-        $folderTree.on('click', '.folder-btn', function () {
             loadAjaxFolderContent($(this));
             $btnNext[0].setAttribute('disabled', 'true');
+        });
+
+        $folderTree.on('dblclick', '.folder-btn', function () {
+            loadAjaxFolderContent($(this));
+            $btnNext[0].setAttribute('disabled', 'true');
+            let folderWrp = this.closest('.folder-wrapper');
+            if (folderWrp) {
+                let eleCl = folderWrp.querySelector('.folder-cl');
+                if (eleCl) {
+                    $(eleCl).click();
+                }
+            }
         });
 
         $folderTree.on('click', '.folder-cl', function () {
@@ -161,15 +172,6 @@ $(function () {
             }
             $ele.initSelect2(opts);
             return true;
-        }
-
-        function loadBoxParent($eleBox) {
-            $eleBox.empty();
-            let dataParams = {};
-            $eleBox.initSelect2({
-                'dataParams': dataParams,
-                'allowClear': true,
-            });
         }
 
         function loadAction() {
@@ -301,6 +303,11 @@ $(function () {
         function loadAjaxFolderContent($eleFolder) {
             // set data-id $btnRefresh
             $btnRefresh.attr('data-id', $eleFolder.attr('data-id'));
+            // set data-id dad-file-control-group (modal #uploadFileMdl)
+            let fileCtrlEle = $modalUpFile[0].querySelector('.dad-file-control-group');
+            if (fileCtrlEle) {
+                $(fileCtrlEle).attr('data-folder-id', $eleFolder.attr('data-id'));
+            }
             // load Folders
             let urlDetail = $urlFact.attr('data-url-detail').format_url_with_uuid($eleFolder.attr('data-id'));
             $.fn.callAjax2({
@@ -357,7 +364,7 @@ $(function () {
         function loadFolderContent(dataFolderList, dataFileList) {
             $folderContent.empty();
             for (let data of dataFolderList) {
-                $folderContent.append(`<div class="row">
+                $folderContent.append(`<div class="row align-items-center">
                                             <div class="col-12 col-md-5 col-lg-5">
                                                 <div class="d-flex justify-content-start folder-wrapper">
                                                     <button type="button" class="btn folder-btn" data-id="${data?.['id']}" data-parent-id="${data?.['parent_n_id'] ? data?.['parent_n_id'] : ''}">
@@ -381,7 +388,7 @@ $(function () {
                 'image/jpeg': 'far fa-image text-violet',
             }
             for (let data of dataFileList) {
-                $folderContent.append(`<div class="row">
+                $folderContent.append(`<div class="row align-items-center">
                                             <div class="col-12 col-md-5 col-lg-5">
                                                 <div class="d-flex justify-content-start file-wrapper">
                                                     <button type="button" class="btn file-btn" data-id="${data?.['id']}">
@@ -394,7 +401,16 @@ $(function () {
                                             </div>
                                             <div class="col-12 col-md-2 col-lg-2">${moment(data?.['date_created']).format('DD/MM/YYYY')}</div>
                                             <div class="col-12 col-md-2 col-lg-2">${data?.['file_type']}</div>
-                                            <div class="col-12 col-md-2 col-lg-2">${data?.['file_size']}</div>
+                                            <div class="col-12 col-md-2 col-lg-2">${data?.['file_size']} KB</div>
+                                            <div class="col-12 col-md-1 col-lg-1">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                                                    <div role="menu" class="dropdown-menu w-210p">
+                                                        <a class="dropdown-item" href="#"><i class="dropdown-icon fas fa-share-square text-primary"></i><span>Share</span></a>
+                                                        <a class="dropdown-item" href="#"><i class="dropdown-icon fas fa-download text-primary"></i><span>Download</span></a>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>`);
             }
             return true;

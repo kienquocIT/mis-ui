@@ -3598,6 +3598,9 @@ class QuotationDataTableHandle {
 class QuotationCalculateCaseHandle {
 
     static updateTotal(table, is_product, is_cost, is_expense) {
+        // *** quotation & sale order have different rules ***
+        // Quotation: discount on row apply to subtotal => pretax includes discount on row => discount on total = pretax * %discountTotalRate
+        // Sale order: discount on row not apply to subtotal => pretax not includes discount on row => discount on total = (pretax - discountRows) * %discountTotalRate
         let form = document.getElementById('frm_quotation_create');
         let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
         let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');

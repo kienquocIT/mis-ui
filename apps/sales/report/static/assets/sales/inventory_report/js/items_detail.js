@@ -143,17 +143,23 @@ $(document).ready(function () {
 
             Promise.all([inventory_detail_list_ajax]).then(
                 (results) => {
-                    console.log(results[0])
+                    // console.log(results[0])
                     items_detail_report_table_Ele.DataTable().clear().destroy()
                     items_detail_report_table_Ele.find('tbody').html('')
                     for (const item of results[0]) {
+                        let regis_html = ''
+                        if (item?.['sale_order']?.['code']) {
+                            regis_html = `<span class="text-purple"><i class="bi bi-bookmarks-fill"></i>${item?.['sale_order']?.['code']}</span>`
+                        }
                         let cumulative_quantity = 0
                         let cumulative_value = 0
                         items_detail_report_table_Ele.find('tbody').append(
                             `<tr class="main-row" style="background-color: #f5f5f5">
                                 <td class="first-col-x border-1">
                                     <span class="badge badge-secondary">${item?.['product']?.['code']}</span>
-                                    <span class="text-secondary fw-bold">${item?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${item?.['product']?.['lot_number']}</span>
+                                    <span class="text-secondary fw-bold">${item?.['product']?.['title']}</span>&nbsp;
+                                    <span class="text-blue small fw-bold">${item?.['product']?.['lot_number']}</span>&nbsp;
+                                    ${regis_html}
                                 </td>
                                 <td><span class="text-primary small">${trans_script.attr('data-trans-we')}</span></td>
                                 <td></td>
@@ -576,13 +582,19 @@ $(document).ready(function () {
                             items_detail_report_table_Ele.DataTable().clear().destroy()
                             items_detail_report_table_Ele.find('tbody').html('')
                             for (const item of results[0]) {
+                                let regis_html = ''
+                                if (item?.['sale_order']?.['code']) {
+                                    regis_html = `<span class="text-purple"><i class="bi bi-bookmarks-fill"></i>${item?.['sale_order']?.['code']}</span>`
+                                }
                                 let cumulative_quantity = 0
                                 let cumulative_value = 0
                                 items_detail_report_table_Ele.find('tbody').append(
                                     `<tr class="main-row" style="background-color: #f5f5f5">
                                         <td class="first-col-x border-1">
                                             <span class="badge badge-secondary">${item?.['product']?.['code']}</span>
-                                            <span class="text-secondary fw-bold">${item?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${item?.['product']?.['lot_number']}</span>
+                                            <span class="text-secondary fw-bold">${item?.['product']?.['title']}</span>&nbsp;
+                                            <span class="text-blue small fw-bold">${item?.['product']?.['lot_number']}</span>&nbsp;
+                                            ${regis_html}
                                         </td>
                                         <td><span class="text-primary small">${trans_script.attr('data-trans-we')}</span></td>
                                         <td></td>
@@ -694,8 +706,7 @@ $(document).ready(function () {
                                                             <td><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
                                                         </tr>`
                                                     )
-                                                }
-                                                else {
+                                                } else {
                                                     let text_color = ''
                                                     if (activity?.['trans_title'] === 'Delivery') {
                                                         text_color = 'danger'
@@ -758,8 +769,7 @@ $(document).ready(function () {
                                                 </tr>`
                                             )
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         let ob_label = `<span class="text-secondary">${trans_script.attr('data-trans-ob')}</span>`
                                         cumulative_quantity += stock_activity?.['ending_balance_quantity']
                                         cumulative_value += stock_activity?.['ending_balance_value']
@@ -848,8 +858,7 @@ $(document).ready(function () {
                                                         <td><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
                                                     </tr>`
                                                 )
-                                            }
-                                            else {
+                                            } else {
                                                 let text_color = ''
                                                 if (activity?.['trans_title'] === 'Delivery') {
                                                     text_color = 'danger'

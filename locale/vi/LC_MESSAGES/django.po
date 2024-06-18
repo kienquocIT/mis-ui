@@ -5808,11 +5808,15 @@ msgstr "Sai định dạng trường dự tính"
 
 #
 msgid "Cost per warehouse management"
-msgstr "Tính giá theo từng kho"
+msgstr "Tính giá cost theo từng kho"
 
 #
-msgid "Cost per lot/batch management"
-msgstr "Tính giá theo lô"
+msgid "Cost per project (sale order in Opp)"
+msgstr "Tính giá cost theo dự án (đơn hàng trong CHKD)"
+
+#
+msgid "Cost per Lot/batch"
+msgstr "Tính giá cost theo Lot/batch"
 
 #
 msgid "Save config"

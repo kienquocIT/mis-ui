@@ -7797,3 +7797,7 @@ msgstr "Chi tiết tồn kho cho DA này"
 #
 msgid "Transaction"
 msgstr "Giao dịch"
+
+#
+msgid "Estimated gross profit"
+msgstr "Lợi nhuận dự kiến"

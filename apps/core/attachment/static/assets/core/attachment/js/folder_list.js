@@ -27,7 +27,7 @@ $(function () {
         // FOLDER TREE
         $folderTree.on('mouseenter', '.folder-btn', function () {
             if (!$(this).hasClass('clicked')) {
-                $(this).closest('.folder-wrapper').css('background-color', '#f7f7f7');
+                $(this).closest('.folder-wrapper').css('background-color', '#5e7d8a');
             }
         });
 
@@ -43,7 +43,7 @@ $(function () {
                 $(eleBtn).closest('.folder-wrapper').css('background-color', '');
             }
             $(this).addClass('clicked');
-            $(this).closest('.folder-wrapper').css('background-color', '#99efcc');
+            $(this).closest('.folder-wrapper').css('background-color', '#4b646e');
 
             loadAjaxFolderContent($(this));
         });
@@ -225,12 +225,12 @@ $(function () {
                                             data-bs-placement="top"
                                             aria-expanded="false"
                                         >
-                                            <span class="icon"><small><i class="fas fa-chevron-right mt-2"></i></small></span>
+                                            <span class="icon"><small><i class="fas fa-chevron-right mt-2 text-white"></i></small></span>
                                         </button></small>
                                         <button type="button" class="btn folder-btn" data-id="${dataFolder?.['id']}" data-parent-id="${dataFolder?.['parent_n_id'] ? dataFolder?.['parent_n_id'] : ''}">
                                             <span>
-                                                <span class="icon"><i class="far fa-folder"></i></span>
-                                                <span>${dataFolder?.['title']}</span>
+                                                <span class="icon"><i class="far fa-folder text-white"></i></span>
+                                                <span class="text-white">${dataFolder?.['title']}</span>
                                             </span>
                                         </button>
                                     </div>`);
@@ -267,12 +267,12 @@ $(function () {
                                         data-bs-placement="top"
                                         aria-expanded="false"
                                     >
-                                        <span class="icon"><small><i class="fas fa-chevron-right mt-2"></i></small></span>
+                                        <span class="icon"><small><i class="fas fa-chevron-right mt-2 text-white"></i></small></span>
                                     </button></small>
                                     <button type="button" class="btn folder-btn" data-id="${dataFolder?.['id']}" data-parent-id="${dataFolder?.['parent_n_id'] ? dataFolder?.['parent_n_id'] : ''}">
                                         <span>
-                                            <span class="icon"><i class="far fa-folder"></i></span>
-                                            <span>${dataFolder?.['title']}</span>
+                                            <span class="icon"><i class="far fa-folder text-white"></i></span>
+                                            <span class="text-white">${dataFolder?.['title']}</span>
                                         </span>
                                     </button>
                                 </div>`;
@@ -337,7 +337,7 @@ $(function () {
         function loadFolderContent(dataFolderList, dataFileList) {
             $folderContent.empty();
             for (let data of dataFolderList) {
-                $folderContent.append(`<div class="row align-items-center">
+                $folderContent.append(`<div class="row align-items-center border-bottom h-50p">
                                             <div class="col-12 col-md-5 col-lg-5">
                                                 <div class="d-flex justify-content-start folder-wrapper">
                                                     <button type="button" class="btn folder-btn" data-id="${data?.['id']}" data-parent-id="${data?.['parent_n_id'] ? data?.['parent_n_id'] : ''}">
@@ -348,7 +348,7 @@ $(function () {
                                                     </button>
                                                 </div>
                                             </div>
-                                            <div class="col-12 col-md-2 col-lg-2">Me</div>
+                                            <div class="col-12 col-md-2 col-lg-2"><div class="d-flex align-items-center"><i class="fas fa-user-circle mr-2 text-grey"></i><span>Me</span></div></div>
                                             <div class="col-12 col-md-2 col-lg-2">${moment(data?.['date_modified']).format('DD/MM/YYYY')}</div>
                                         </div>`);
             }
@@ -361,7 +361,7 @@ $(function () {
                 'image/jpeg': 'far fa-image text-violet',
             }
             for (let data of dataFileList) {
-                $folderContent.append(`<div class="row align-items-center">
+                $folderContent.append(`<div class="row align-items-center border-bottom h-50p">
                                             <div class="col-12 col-md-5 col-lg-5">
                                                 <div class="d-flex justify-content-start file-wrapper">
                                                     <button type="button" class="btn file-btn" data-id="${data?.['id']}">
@@ -372,7 +372,7 @@ $(function () {
                                                     </button>
                                                 </div>
                                             </div>
-                                            <div class="col-12 col-md-2 col-lg-2">Me</div>
+                                            <div class="col-12 col-md-2 col-lg-2"><div class="d-flex align-items-center"><i class="fas fa-user-circle mr-2 text-grey"></i><span>Me</span></div></div>
                                             <div class="col-12 col-md-2 col-lg-2">${moment(data?.['date_created']).format('DD/MM/YYYY')}</div>
                                             <div class="col-12 col-md-2 col-lg-2">${data?.['file_size']} KB</div>
                                             <div class="col-12 col-md-1 col-lg-1">

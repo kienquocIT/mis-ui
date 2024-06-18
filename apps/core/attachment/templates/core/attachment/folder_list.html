@@ -15,44 +15,13 @@
             method="post"
     >
         {% csrf_token %}
-        <div id="folder-menu" class="h-100p border-bottom">
-            <div class="row">
-                <div class="col-12 col-md-2 col-lg-2">
-                    <div class="row">
-                        <div class="col-12 col-md-8 col-lg-8">
-                            <div class="row" id="folder-history">
-                                <div class="col-12 col-md-4 col-lg-4">
-                                    <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Click to go back">
-                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm mr-4" id="btn-back" disabled><span class="icon"><i class="fas fa-arrow-left"></i></span></button>
-                                    </span>
-                                </div>
-                                <div class="col-12 col-md-4 col-lg-4">
-                                    <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Click to go forward">
-                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm mr-4" id="btn-next" disabled><span class="icon"><i class="fas fa-arrow-right"></i></span></button>
-                                    </span>
-                                </div>
-                                <div class="col-12 col-md-4 col-lg-4">
-                                    <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reload">
-                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm" id="btn-refresh"><span class="icon"><i class="fas fa-redo-alt"></i></span></button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-7 col-lg-7">
+        <div id="folder-menu" class="border-bottom p-2">
+            <div class="row mb-3">
+                <div class="col-12 col-md-12 col-lg-12">
                     <div class="row" id="folder-history-path">
-                        <div type="text" class="form-control rounded-input text-black" readonly>
-                            <p id="folder-path"><i class="fas fa-desktop mr-2"></i><span class="mr-2" data-parent-id="null">Home</span></p>
+                        <div class="d-flex align-items-center" id="folder-path">
+                            <button type="button" class="btn btn-flush-secondary flush-soft-hover btn-rounded btn-lg text-black">My files</button>
                         </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-3 col-lg-3">
-                    <div class="input-group mb-3">
-                        <span class="input-affix-wrapper">
-                            <input type="text" class="form-control rounded-input" placeholder="Search">
-                            <span class="input-suffix"><i class="fas fa-search"></i></span>
-                        </span>
                     </div>
                 </div>
             </div>
@@ -78,6 +47,15 @@
                                 <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm btn-action" disabled><span class="icon"><i class="fas fa-trash-alt"></i></span></button>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-2 col-lg-2"></div>
+                <div class="col-12 col-md-4 col-lg-4">
+                    <div class="input-group mb-3">
+                        <span class="input-affix-wrapper">
+                            <input type="text" class="form-control rounded-input" placeholder="Search">
+                            <span class="input-suffix"><i class="fas fa-search"></i></span>
+                        </span>
                     </div>
                 </div>
             </div>

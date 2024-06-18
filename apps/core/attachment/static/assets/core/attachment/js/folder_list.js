@@ -3,8 +3,6 @@ $(function () {
         let $folderMenu = $('#folder-menu');
         let $folderHistory = $('#folder-history');
         let $folderHistoryPath = $('#folder-history-path');
-        let $btnBack = $('#btn-back');
-        let $btnNext = $('#btn-next');
         let $btnRefresh = $('#btn-refresh');
         let $folderPath = $('#folder-path');
         let $uploadFile = $('#upload-file')
@@ -48,12 +46,10 @@ $(function () {
             $(this).closest('.folder-wrapper').css('background-color', '#f7f7f7');
 
             loadAjaxFolderContent($(this));
-            $btnNext[0].setAttribute('disabled', 'true');
         });
 
         $folderTree.on('dblclick', '.folder-btn', function () {
             loadAjaxFolderContent($(this));
-            $btnNext[0].setAttribute('disabled', 'true');
             let folderWrp = this.closest('.folder-wrapper');
             if (folderWrp) {
                 let eleCl = folderWrp.querySelector('.folder-cl');
@@ -95,26 +91,11 @@ $(function () {
 
         $folderContent.on('dblclick', '.folder-btn', function () {
             loadAjaxFolderContent($(this));
-            $btnNext[0].setAttribute('disabled', 'true');
         });
 
-
-        $btnBack.on('click', function () {
-            loadBackNext(0);
-            $btnNext[0].removeAttribute('disabled');
-            loadBackNextPath(0);
-        });
-
-        $btnNext.on('click', function () {
-            loadBackNext(1);
-            loadBackNextPath(1);
-        });
-
-        $btnRefresh.on('click', function () {
-            let ID = $(this).attr('data-id');
-            if (ID) {
-                loadAjaxFolderContent($(this));
-            }
+        // FOLDER PATH
+        $folderPath.on('click', '.folder-btn', function () {
+            loadAjaxFolderContent($(this));
         });
 
         $modalAdd.on('shown.bs.modal', function () {
@@ -301,8 +282,6 @@ $(function () {
         }
 
         function loadAjaxFolderContent($eleFolder) {
-            // set data-id $btnRefresh
-            $btnRefresh.attr('data-id', $eleFolder.attr('data-id'));
             // set data-id dad-file-control-group (modal #uploadFileMdl)
             let fileCtrlEle = $modalUpFile[0].querySelector('.dad-file-control-group');
             if (fileCtrlEle) {
@@ -320,12 +299,6 @@ $(function () {
                     if (data) {
                         loadFolderContent(data?.['child_n'], data?.['file']);
 
-                        if (data?.['parent_n']) {
-                            $btnBack.attr('data-id', data?.['parent_n']?.['id']);
-                            $btnBack[0].removeAttribute('disabled');
-                        } else {
-                            $btnBack[0].setAttribute('disabled', 'true');
-                        }
                         if (!['btn-back', 'btn-next', 'btn-refresh'].includes($eleFolder[0].id)) {
                             // reset path
                             if ($eleFolder[0].closest('#folder-tree')) {
@@ -418,14 +391,7 @@ $(function () {
 
         function loadFolderPath(load_type, dataFd = {}) {
             if (load_type === 0) {  // next path
-                let lastSpan = $folderPath[0].querySelector('span:last-of-type');
-                if (lastSpan) {
-                    let dataParentID = lastSpan.getAttribute('data-parent-id');
-                    if (dataParentID === dataFd?.['parent_n']?.['id']) {
-                        loadFolderPath(1);
-                    }
-                    $folderPath.append(`<i class="fas fa-angle-right mr-2"></i><span class="mr-2" data-parent-id="${dataFd?.['parent_n']?.['id']}">${dataFd?.['title']}</span>`);
-                }
+                $folderPath.append(`<i class="fas fa-angle-right mr-2 ml-2"></i><button type="button" class="btn btn-flush-secondary flush-soft-hover btn-rounded btn-lg text-black folder-btn" data-id="${dataFd?.['id']}">${dataFd?.['title']}</button>`);
             }
             if (load_type === 1) {  // back path
                 let lastIcon = $folderPath[0].querySelector('i:last-of-type');
@@ -439,85 +405,10 @@ $(function () {
             }
             if (load_type === 3) {  // reset path
                 $folderPath.empty();
-                $folderPath.append(`<i class="fas fa-desktop mr-2"></i><span class="mr-2" data-parent-id="${dataFd?.['parent_n']?.['id']}">Home</span>`);
+                $folderPath.append(`<button type="button" class="btn btn-flush-secondary flush-soft-hover btn-rounded btn-lg text-black folder-btn">My files</button>`);
             }
             return true;
         }
-
-        function loadBackNext(load_type) {
-            if ($folderHistory.attr('data-list')) {
-                let listHistory = JSON.parse($folderHistory.attr('data-list'));
-                if (listHistory.length > 1) {
-                    for (let i = 0; i < listHistory.length; i++) {
-                        let dataHis = listHistory[i];
-                        if (dataHis?.['is_current'] === true) {
-                            let $ele = null;
-                            let targetData = {};
-                            let backData = i > 0 ? listHistory[i - 1] : null;
-                            let nextData = i < listHistory.length - 1 ? listHistory[i + 1] : null;
-                            if (load_type === 0) {
-                                $ele = $btnBack;
-                                targetData = backData;
-                            }
-                            if (load_type === 1) {
-                                $ele = $btnNext;
-                                targetData = nextData;
-                            }
-                            if ($ele) {
-                                if (targetData) {
-                                    delete dataHis['is_current'];
-                                    targetData['is_current'] = true;
-                                    $ele.attr('data-id', targetData?.['id']);
-                                    loadAjaxFolderContent($ele);
-                                } else {
-                                    $ele.attr('disabled', 'true');
-                                }
-                            }
-                            // Update the data-list attribute with the modified listHistory
-                            $folderHistory.attr('data-list', JSON.stringify(listHistory));
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        function loadBackNextPath(load_type) {
-            if ($folderHistoryPath.attr('data-list')) {
-                let listHistoryPath = JSON.parse($folderHistoryPath.attr('data-list'));
-                if (listHistoryPath.length > 1) {
-                    for (let i = 0; i < listHistoryPath.length; i++) {
-                        let dataHisPath = listHistoryPath[i];
-                        if (dataHisPath?.['is_current'] === true) {
-                            let targetData = {};
-                            let backPathData = i > 0 ? listHistoryPath[i - 1] : null;
-                            let nextPathData = i < listHistoryPath.length - 1 ? listHistoryPath[i + 1] : null;
-                            if (load_type === 0) {
-                                targetData = backPathData;
-                            }
-                            if (load_type === 1) {
-                                targetData = nextPathData;
-                            }
-                            if (targetData) {
-                                delete dataHisPath['is_current'];
-                                targetData['is_current'] = true;
-                                $folderPath.empty();
-                                $folderPath[0].innerHTML = targetData?.['path'];
-                            } else {
-                                $folderPath.empty();
-                                $folderPath.append(`<i class="fas fa-desktop mr-2"></i><span class="mr-2">Home</span>`);
-                            }
-                            // Update the data-list attribute with the modified listHistory
-                            $folderHistoryPath.attr('data-list', JSON.stringify(listHistoryPath));
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-
-
 
 
     });

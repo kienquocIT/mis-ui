@@ -27,7 +27,7 @@ $(function () {
         // FOLDER TREE
         $folderTree.on('mouseenter', '.folder-btn', function () {
             if (!$(this).hasClass('clicked')) {
-                $(this).closest('.folder-wrapper').css('background-color', '#ebfcf5');
+                $(this).closest('.folder-wrapper').css('background-color', '#f7f7f7');
             }
         });
 
@@ -43,7 +43,7 @@ $(function () {
                 $(eleBtn).closest('.folder-wrapper').css('background-color', '');
             }
             $(this).addClass('clicked');
-            $(this).closest('.folder-wrapper').css('background-color', '#f7f7f7');
+            $(this).closest('.folder-wrapper').css('background-color', '#99efcc');
 
             loadAjaxFolderContent($(this));
         });
@@ -348,8 +348,8 @@ $(function () {
                                                     </button>
                                                 </div>
                                             </div>
+                                            <div class="col-12 col-md-2 col-lg-2">Me</div>
                                             <div class="col-12 col-md-2 col-lg-2">${moment(data?.['date_modified']).format('DD/MM/YYYY')}</div>
-                                            <div class="col-12 col-md-2 col-lg-2">Folder</div>
                                         </div>`);
             }
             let imgMapType = {
@@ -372,8 +372,8 @@ $(function () {
                                                     </button>
                                                 </div>
                                             </div>
+                                            <div class="col-12 col-md-2 col-lg-2">Me</div>
                                             <div class="col-12 col-md-2 col-lg-2">${moment(data?.['date_created']).format('DD/MM/YYYY')}</div>
-                                            <div class="col-12 col-md-2 col-lg-2">${data?.['file_type']}</div>
                                             <div class="col-12 col-md-2 col-lg-2">${data?.['file_size']} KB</div>
                                             <div class="col-12 col-md-1 col-lg-1">
                                                 <div class="dropdown">

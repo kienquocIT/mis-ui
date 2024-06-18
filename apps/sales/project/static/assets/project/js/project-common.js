@@ -609,3 +609,179 @@ class ProjectTeamsHandle {
         ProjectTeamsHandle.saveMemberPermission()
     }
 }
+
+class ProjectWorkExpenseHandle{
+
+    static appendChildTable(trElm, workID){
+        let dtlSub = `<table id="expense_child_${workID}" class="table nowrap w-100 mb-5"><thead></thead><tbody></tbody></table>`
+        trElm.after(
+            `<tr class="work-expense-wrap"><td colspan="4"><div class="WE-content hidden-simple">${dtlSub}</div></td></tr>`
+        );
+        const $URLFactory = $('#url-factory')
+        $('#expense_child_' + workID).DataTableDefault({
+            info: false,
+            searching: false,
+            ordering: false,
+            data: [],
+            columns: [
+                {
+                    data: 'expense_name',
+                    title: $.fn.gettext('Expense name'),
+                    width: '20%',
+                    render: (row, index, data) => {
+                        let HTML = `<select 
+                                    class="form-select" 
+                                    data-url="${$URLFactory.attr('data-expense')}"
+                                    data-link-detail="${$URLFactory.attr('data-expense-detail')}"
+                                    data-method="get" data-keyResp="expense_list" required></select>`;
+                        if (data?.['is_labor'] === false)
+                            HTML = `<input type="text" class="form-control" value="${row}" required>`;
+                        return HTML
+                    }
+                }, {
+                    data: 'expense_item',
+                    title: $.fn.gettext('Expense items'),
+                    width: '20%',
+                    render: (row, index, data) => {
+                        let HTML = `<select 
+                                    class="form-select" 
+                                    data-url="${$URLFactory.attr('data-expense_item')}"
+                                    data-link-detail="${$URLFactory.attr('data-expense_item-detail')}"
+                                    data-method="get" data-keyResp="expense_item_list" ${
+                            data?.['is-labor'] === false ? 'disabled' : 'required'}></select>`;
+                        return HTML;
+                    }
+                }, {
+                    data: 'uom',
+                    title: $.fn.gettext('UoM'),
+                    width: '10%',
+                    render: (row, index, data) => {
+                        let HTML = `<select 
+                                    class="form-select" 
+                                    data-url="${$URLFactory.attr('data-uom')}"
+                                    data-method="get" data-keyResp="unit_of_measure" ${
+                            data?.['is-labor'] === false ? '' : 'disabled'} required></select>`
+                        return HTML
+                    }
+                }, {
+                    data: 'quantity',
+                    width: '5%',
+                    title: $.fn.gettext('Quantity'),
+                    render: (row) => {
+                        return `<input type="text" class="form-control validated-number" value="${row}" required>`;
+                    }
+                }, {
+                    data: 'expense_price',
+                    width: '20%',
+                    title: $.fn.gettext('Expense Price'),
+                    render: (row) => {
+                        return `<input type="text" class="form-control mask-money" value="${row}" data-return-type="number">`;
+                    }
+                }, {
+                    data: 'tax',
+                    width: '10%',
+                    title: $.fn.gettext('Tax'),
+                    render: () => {
+                        return `<select
+                                    className="form-select"
+                                    data-url="${$URLFactory.attr('data-tax')}"
+                                    data-method="get"
+                                    data-keyResp="tax_list"
+                                ></select>`
+                    }
+                },
+                {
+                    data: 'sub_total',
+                    width: '20%',
+                    title: $.fn.gettext('Subtotal Price'),
+                    render: (row) => {
+                        return `<div class="row subtotal-area">
+                                <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row ? row : '0')}"></span></p>
+                                <input
+                                    type="text"
+                                    class="form-control table-row-subtotal-raw"
+                                    value="${row}"
+                                    hidden
+                                >
+                            </div>`;
+                    }
+                },
+                {
+                    data: 'id',
+                    width: '5%',
+                    render: () => {
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
+                    }
+                },
+            ],
+        });
+    }
+
+    static init(data=[]){
+        const $workExpenseTbl = $('#work_expense_tbl')
+        let WExTbl = $workExpenseTbl.DataTableDefault({
+            data: data,
+            info: false,
+            searching: false,
+            ordering: false,
+            paginate: false,
+            columns: [
+                {
+                    data: 'title',
+                    width: '60%',
+                    render: (row, type, data) => {
+                        return `<button class="btn-sh-ex btn-flush-primary btn btn-icon btn-rounded flush-soft-hover mr-1"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> ${row}`;
+                    }
+                },
+                {
+                    data: 'unit_price',
+                    width: '15%',
+                    class: 'text-center',
+                    render: (row, type, data) => {
+                        return `${data?.['expense_data']?.unit_price ? data?.['expense_data']?.unit_price : '--'}`
+                    }
+                },
+                {
+                    data: 'tax',
+                    width: '10%',
+                    class: 'text-center',
+                    render: (row, type, data) => {
+                        return `${data?.['expense_data']?.tax ? data?.['expense_data']?.tax : '--'}`
+                    }
+                },
+                {
+                    data: 'total',
+                    width: '15%',
+                    class: 'text-center',
+                    render: (row) => {
+                        return `${data?.['expense_data']?.total ? data?.['expense_data']?.total : '--'}`
+                    }
+                }
+            ],
+            rowCallback: function (row, data) {
+                $('.btn-sh-ex', row).on('click', function (e) {
+                    e.preventDefault();
+                    let tr = $(this).parents('tr');
+                    tr.toggleClass('active')
+
+                    if (!tr.hasClass('active')){
+                        // when toggle close
+                        tr.next().find('.WE-content').slideToggle({ complete: () => tr.next().addClass('hidden')})
+                    }else{
+                        // toggle open
+                        if (!tr.next().hasClass('work-expense-wrap')){
+                            ProjectWorkExpenseHandle.appendChildTable(tr, data.id)
+                        }
+                        tr.next().removeClass('hidden').find('.WE-content').slideToggle()
+                    }
+                })
+                $('.unlink-row', row).on('click', function (e) {
+                    e.preventDefault();
+                })
+            },
+        });
+
+        // init tab when click
+        $('a[data-bs-toggle="tab"][href="#tab_work_expense"]').on('shown.bs.tab', () => WExTbl.columns.adjust())
+    }
+}

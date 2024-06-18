@@ -356,3 +356,15 @@
     visibility: visible;
     display: flex;
 }
+/*css work expense */
+.btn-sh-ex{
+    transition: all .15s ease-in;
+    -webkit-transition: all .15s ease-in;
+}
+#work_expense_tbl tr.active .btn{
+    transform: rotate(90deg);
+    --webkit--transform: rotate(90deg);
+}
+#work_expense_tbl tr.active{
+    background: var(--bs-table-hover-bg);
+}

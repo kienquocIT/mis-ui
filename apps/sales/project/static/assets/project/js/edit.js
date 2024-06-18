@@ -124,10 +124,11 @@ $(document).ready(function(){
                 $('#selectEmployeeInherit').attr('data-onload', JSON.stringify(data['employee_inherit'])).append(opt2).trigger('change');
                 $('#dateStart').val(moment(data.start_date).format('DD/MM/YYYY'))
                 $('#dateFinish').val(moment(data.finish_date).format('DD/MM/YYYY'))
-                const afterData = fGanttCustom.convert_data(data['groups'], data['works'])
+                const afterData = fGanttCustom.convert_data(data.groups, data?.['works'])
                 new_gantt.load_more(afterData)
                 ProjectTeamsHandle.render(data.members)
                 Task_in_project.init(data)
+                ProjectWorkExpenseHandle.init(data?.['works'])
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )

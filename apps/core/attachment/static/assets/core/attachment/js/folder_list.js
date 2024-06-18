@@ -46,11 +46,21 @@ $(function () {
             }
             $(this).addClass('clicked');
             $(this).closest('.folder-wrapper').css('background-color', '#f7f7f7');
-        });
 
-        $folderTree.on('click', '.folder-btn', function () {
             loadAjaxFolderContent($(this));
             $btnNext[0].setAttribute('disabled', 'true');
+        });
+
+        $folderTree.on('dblclick', '.folder-btn', function () {
+            loadAjaxFolderContent($(this));
+            $btnNext[0].setAttribute('disabled', 'true');
+            let folderWrp = this.closest('.folder-wrapper');
+            if (folderWrp) {
+                let eleCl = folderWrp.querySelector('.folder-cl');
+                if (eleCl) {
+                    $(eleCl).click();
+                }
+            }
         });
 
         $folderTree.on('click', '.folder-cl', function () {
@@ -162,15 +172,6 @@ $(function () {
             }
             $ele.initSelect2(opts);
             return true;
-        }
-
-        function loadBoxParent($eleBox) {
-            $eleBox.empty();
-            let dataParams = {};
-            $eleBox.initSelect2({
-                'dataParams': dataParams,
-                'allowClear': true,
-            });
         }
 
         function loadAction() {

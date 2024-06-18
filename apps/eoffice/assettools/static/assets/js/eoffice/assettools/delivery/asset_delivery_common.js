@@ -135,6 +135,7 @@ class DeliveryTableHandle {
                     // init warehouse selected
                     const warehouseLst = JSON.parse($('#warehouse_lst').text())
                     if (!data.warehouse) data.warehouse = warehouseLst[0].id
+                    else if (Array.isArray(data.warehouse)) data.warehouse = warehouseLst[0].id
                     $('[name*="warehouse_"]', row)
                         .initSelect2({
                             "data": warehouseLst,

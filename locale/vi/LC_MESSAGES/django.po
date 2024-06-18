@@ -7727,6 +7727,26 @@ msgid "Explanation of Types of Relationships"
 msgstr "Chú thích Loại quan hệ"
 
 #
+msgid "Work expense"
+msgstr "Chi phí công việc"
+
+#
+msgid "Work title"
+msgstr "Tên công việc"
+
+#
+msgid "Total Unit Price"
+msgstr "Tổng đơn giá"
+
+#
+msgid "Total Tax"
+msgstr "Tổng thuế"
+
+#
+msgid "Total Price"
+msgstr "Tổng thành tiền"
+
+#
 msgid "Goods registration"
 msgstr "Đăng ký hàng"
 

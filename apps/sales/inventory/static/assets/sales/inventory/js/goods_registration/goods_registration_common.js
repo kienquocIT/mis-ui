@@ -3,21 +3,6 @@ const saleOrderEle = $('#sale-order')
 const salePersonEle = $('#sale-person')
 const tab_line_detail_datatable = $('#tab_line_detail_datatable')
 
-function LoadDate() {
-    dateEle.daterangepicker({
-        singleDatePicker: true,
-        timePicker: false,
-        showDropdowns: true,
-        minYear: parseInt(moment().format('YYYY')),
-        minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM'))-1, parseInt(moment().format('DD'))),
-        locale: {
-            format: 'YYYY-MM-DD'
-        },
-        cancelClass: "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY')) + 50,
-    })
-}
-
 function LoadSaleOrder(data) {
     saleOrderEle.initSelect2({
         data: data,
@@ -35,20 +20,42 @@ function LoadSalePerson(data) {
 }
 
 function LoadLineDetailTable(data) {
-    console.log(data)
     for (const row of data) {
+        let row_data = JSON.stringify([row])
         let product = row?.['so_item']?.['product']
         let uom = row?.['so_item']?.['uom']
         let total_order = row?.['so_item']?.['total_order']
-        let registered_quantity = row?.['registered_quantity']
+        let this_registered = row?.['this_registered']
+        let this_others = row?.['this_others']
+        let this_available = row?.['this_available']
+        let out_registered = row?.['out_registered']
+        let out_delivered = row?.['out_delivered']
+        let out_remain = row?.['out_remain']
         tab_line_detail_datatable.find('tbody').append(`
-        <tr>
-            <td><span class="badge badge-sm badge-soft-indigo">${product?.['code']}</span> <b>${product?.['title']}</b></td>
-            <td><span>${product?.['description']}</span></td>
-            <td><span>${uom?.['title']}</span></td>
-            <td class="text-primary fw-bold">${total_order}</td>
-            <td class="text-primary fw-bold">${registered_quantity}</td>
-        </tr>
+            <tr>
+                <td class="border-1 text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="${product?.['description']}">
+                    <span class="badge badge-sm badge-secondary">${product?.['code']}</span> ${product?.['title']}
+                </td>
+                <td class="border-1 text-primary"><span>${uom?.['title']}</span></td>
+                <td class="border-1 text-primary">${total_order}</td>
+                <td class="border-1 text-primary">
+                    ${this_registered}
+                    <button data-bs-toggle="modal" data-bs-target="#this_registered_detail_modal" type="button" class="this_registered_detail btn btn-icon btn-flush-primary flush-soft-hover btn-sm">
+                        <script>${row_data}</script>
+                        <span class="icon"><i class="bi bi-three-dots"></i></span>
+                    </button>
+                </td>
+                <td class="border-1 text-primary">
+                    ${this_others}
+                    <button type="button" class="this_others_detail btn btn-icon btn-flush-primary flush-soft-hover btn-sm">
+                        <span class="icon"><i class="bi bi-three-dots"></i></span>
+                    </button>
+                </td>
+                <td class="border-1 text-primary">${this_available}</td>
+                <td class="border-1 text-primary">${out_registered}</td>
+                <td class="border-1 text-primary">${out_delivered}</td>
+                <td class="border-1 text-primary">${out_remain}</td>
+            </tr>
         `)
     }
 }
@@ -81,7 +88,7 @@ function LoadDetailGoodsRegistration(option) {
                 $x.fn.renderCodeBreadcrumb(data);
 
                 $('#title').val(data?.['title'])
-                LoadDate()
+                dateEle.val(moment(data?.['date_created'].split(' ')[0]).format('DD/MM/YYYY'))
                 LoadSaleOrder(data?.['sale_order'])
                 LoadSalePerson(data?.['sale_order']?.['sale_person'])
                 LoadLineDetailTable(data?.['data_line_detail'])
@@ -90,3 +97,122 @@ function LoadDetailGoodsRegistration(option) {
             }
         })
 }
+
+function loadStockQuantityDataTable(data_src=[]) {
+    let data_src_processed = []
+    for (const item of data_src) {
+        for (const registered_data of item?.['registered_data']) {
+            data_src_processed.push({
+                "so_code": item?.['so_code'],
+                "registered_data": registered_data,
+            })
+        }
+    }
+    console.log(data_src_processed)
+    let dtb = $('#tab_stock_quantity_datatable');
+    dtb.DataTable().clear().destroy()
+    let current_stock = 0
+    let current_stock_value = 0
+    dtb.DataTableDefault({
+        dom: '',
+        reloadCurrency: true,
+        data: data_src_processed,
+        columns: [
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="badge badge-primary">${row?.['so_code']}</span>`;
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="small">${row?.['registered_data']?.['trans_title'] ? 'Goods Receipt' : ''} <span class="text-primary">${row?.['registered_data']?.['trans_code']}</span></span>`;
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="badge badge-soft-primary">${row?.['registered_data']?.['warehouse_code']}</span>`;
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    if (row?.['registered_data']?.['lot_data']?.['lot_number']) {
+                        return `<span class="text-blue fw-bold">${row?.['registered_data']?.['lot_data']?.['lot_number']}</span>`;
+                    }
+                    return ''
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `${current_stock}`;
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money" data-init-money="${current_stock_value}"></span>`;
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    if (row?.['registered_data']?.['stock_type'] === 1) {
+                        current_stock += row?.['registered_data']?.['quantity']
+                        return `${row?.['registered_data']?.['quantity']}`;
+                    }
+                    return '-'
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    if (row?.['registered_data']?.['stock_type'] === 1) {
+                        current_stock_value += row?.['registered_data']?.['value']
+                        return `<span class="mask-money" data-init-money="${row?.['registered_data']?.['value']}"></span>`;
+                    }
+                    return '-'
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    if (row?.['registered_data']?.['stock_type'] === -1) {
+                        current_stock -= row?.['registered_data']?.['quantity']
+                        return `${row?.['registered_data']?.['quantity']}`;
+                    }
+                    return '-'
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    if (row?.['registered_data']?.['stock_type'] === -1) {
+                        current_stock_value -= row?.['registered_data']?.['value']
+                        return `<span class="mask-money" data-init-money="${row?.['registered_data']?.['value']}"></span>`;
+                    }
+                    return '-'
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `${current_stock}`;
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money" data-init-money="${current_stock_value}"></span>`;
+                }
+            },
+        ],
+    });
+}
+
+$(document).on("click", '.this_registered_detail', function () {
+    loadStockQuantityDataTable(JSON.parse($(this).find('script').text()))
+})

@@ -1,9 +1,14 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Goods Registration Detail' %}{% endblock %}
+{% block title %}{% trans 'Goods registration detail' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">``
+    <style>
+        td {
+            min-width: max-content !important;
+        }
+    </style>
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'GoodsRegistrationUpdate' pk=pk %}">
@@ -27,28 +32,28 @@
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
             <div class="row">
-                <div class="col-12 col-md-6 col-lg-6">
+                <div class="col-12 col-md-3 col-lg-3">
                     <div class="form-group">
                         <label for="title" class="form-label required">{% trans 'Name' %}</label>
                         <input type="text" class="form-control" id="title" disabled readonly>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 col-lg-6">
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="form-group">
+                        <label for="sale-order" class="form-label required">{% trans 'Sale order' %}</label>
+                        <select class="form-select select2" id="sale-order" disabled></select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 col-lg-3">
                     <div class="form-group">
                         <label for="date" class="form-label required">{% trans 'Date' %}</label>
                         <input class="form-control" id="date" disabled readonly>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="form-group">
-                        <label for="sale-order" class="form-label required">{% trans 'Sale order' %}</label>
-                        <select class="form-select select2" id="sale-order" disabled readonly></select>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-6">
+                <div class="col-12 col-md-3 col-lg-3">
                     <div class="form-group">
                         <label for="sale-person" class="form-label required">{% trans 'Sale person' %}</label>
-                        <select class="form-select select2" id="sale-person" disabled readonly></select>
+                        <select class="form-select select2" id="sale-person" disabled></select>
                     </div>
                 </div>
             </div>
@@ -73,13 +78,28 @@
                         <div class="row">
                             <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
                                 <table id="tab_line_detail_datatable" class="table nowrap w-100">
-                                    <thead>
+                                    <thead class="bg-primary">
                                     <tr>
-                                        <th class="w-20">{% trans 'Product' %}</th>
-                                        <th class="w-20">{% trans 'Description' %}</th>
-                                        <th class="w-20">{% trans 'UoM' %}</th>
-                                        <th class="w-20">{% trans 'Total order' %}</th>
-                                        <th class="w-20">{% trans 'Registered' %}</th>
+                                        <th class="w-20 border-1 text-white" rowspan="2">
+                                            {% trans 'Product' %}
+                                            <i class="fas fa-info-circle icon-info tit_visible_tb-head"
+                                               data-bs-toggle="tooltip"
+                                               data-bs-placement="right"
+                                               title="{% trans 'Hover to see product description' %}">
+                                            </i>
+                                        </th>
+                                        <th class="w-10 border-1 text-white" rowspan="2">{% trans 'UoM' %}</th>
+                                        <th class="w-10 border-1 text-white" rowspan="2">{% trans 'Total order' %}</th>
+                                        <th class="w-30 border-1 text-white" colspan="3">{% trans 'Register for this order' %}</th>
+                                        <th class="w-30 border-1 text-white" colspan="3">{% trans 'Register from other orders' %}</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="w-10 border-1 text-white">{% trans 'Stock quantity' %}</th>
+                                        <th class="w-10 border-1 text-white">{% trans 'Keep for other orders' %}</th>
+                                        <th class="w-10 border-1 text-white">{% trans 'Available' %}</th>
+                                        <th class="w-10 border-1 text-white">{% trans 'Registered' %}</th>
+                                        <th class="w-10 border-1 text-white">{% trans 'Delivered' %}</th>
+                                        <th class="w-10 border-1 text-white">{% trans 'Remaining' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -91,6 +111,53 @@
             </div>
         </div>
     </form>
+
+    <div class="modal fade" id="this_registered_detail_modal" tabindex="-1" role="dialog" aria-labelledby="this_registered_detail_modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" style="min-width: 95%; margin-right: 1%" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Stock quantity this order detail' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
+                            <table id="tab_stock_quantity_datatable" class="table nowrap w-100">
+                                <thead class="bg-secondary">
+                                <tr>
+                                    <th class="border-1 text-white" rowspan="2">{% trans 'Sale order' %}</th>
+                                    <th class="border-1 text-white" rowspan="2">{% trans 'Transaction' %}</th>
+                                    <th class="border-1 text-white" rowspan="2">{% trans 'Warehouse' %}</th>
+                                    <th class="border-1 text-white" rowspan="2">{% trans 'Lot number' %}</th>
+                                    <th class="border-1 text-white" colspan="2">{% trans 'OPENING' %}</th>
+                                    <th class="border-1 text-white" colspan="2">{% trans 'INPUT' %}</th>
+                                    <th class="border-1 text-white" colspan="2">{% trans 'OUTPUT' %}</th>
+                                    <th class="border-1 text-white" colspan="2">{% trans 'ENDING' %}</th>
+                                </tr>
+                                <tr>
+                                    <th class="border-1 text-white">{% trans 'Quantity' %}</th>
+                                    <th class="border-1 text-white">{% trans 'Value' %}</th>
+                                    <th class="border-1 text-white">{% trans 'Quantity' %}</th>
+                                    <th class="border-1 text-white">{% trans 'Value' %}</th>
+                                    <th class="border-1 text-white">{% trans 'Quantity' %}</th>
+                                    <th class="border-1 text-white">{% trans 'Value' %}</th>
+                                    <th class="border-1 text-white">{% trans 'Quantity' %}</th>
+                                    <th class="border-1 text-white">{% trans 'Value' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

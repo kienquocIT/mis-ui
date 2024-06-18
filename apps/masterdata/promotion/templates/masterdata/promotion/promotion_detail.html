@@ -146,27 +146,32 @@
             </div>
             <div class="clearfix"></div>
             <div class="col-md-6 col-xs-12 mb-2">
-                <div class="form-group d-md-flex align-items-center">
-                    <input class="form-control mr-2" type="number" min="1" name="use_count" placeholder="1"
-                           id="use_count" required readonly>
-                    <label class="mr-4" for="use_count">{% trans 'use for each customer per' %}</label>
-                    <div class="readonly">
+                <div class="row">
+                    <div class="col-xs-12 col-md-4">
+                        <div class="form-group use_number_count">
+                            <input class="form-control" type="number" min="1" name="use_count" placeholder="1"
+                                   id="use_count" required readonly>
+                            <label for="use_count">{% trans 'use  for each customer per' %}</label>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-3">
                         <select name="times_condition" id="times_condition" class="form-select" required disabled>
                             <option value="" selected disabled hidden>{% trans 'Select..' %}</option>
                             <option value="1">{% trans 'Valid time' %}</option>
                             <option value="2">{% trans 'Week' %}</option>
                             <option value="3">{% trans 'Month' %}</option>
                         </select>
-                        <span></span>
                     </div>
-                    <div class="sub-text-max_usages d-flex align-items-center">
-                        <p class="mr-4">{% trans 'Max Usages' %}</p>
-                        <div class="readonly">
+                    <div class="col-xs-12 col-md-5">
+                        <div class="sub-text-max_usages d-flex align-items-center justify-content-end">
+                            <p class="mr-4">{% trans 'Max Usages' %}</p>
                             <input class="form-control" type="number" min="0" max="999999" name="max_usages"
-                                   id="max_usages" readonly>
-                            <span></span>
+                                       id="max_usages" readonly>
                         </div>
                     </div>
+                </div>
+
+
                 </div>
             </div>
             <div class="clearfix"></div>

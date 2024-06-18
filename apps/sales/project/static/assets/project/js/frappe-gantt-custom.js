@@ -22,8 +22,8 @@ class fGanttCustom {
         let WSttList = [
             $.fn.gettext('To do'),
             $.fn.gettext('In progress'),
-            $.fn.gettext('Completed'),
-            $.fn.gettext('Pending')
+            $.fn.gettext('Pending'),
+            $.fn.gettext('Completed')
         ]
 
         let new_groups = groups.map(function(item){
@@ -52,7 +52,7 @@ class fGanttCustom {
                 is_show: true,
                 relationships_type: item.relationships_type,
                 order: item.order,
-                work_status: WSttList[item.work_status],
+                work_status: {value: item.work_status, txt: WSttList[item.work_status]},
                 dependencies: item['dependencies_parent']
             }
         });
@@ -169,11 +169,12 @@ class fGanttCustom {
                     $('#workTitle').val(res.title)
                     $('#workStartDate').val(moment(res.w_start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
                     $('#workEndDate').val(moment(res.w_end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
-                    let $wID = $('<input id="work_id" type="hidden"/>')
+                    let $wID = $('<input id="work_id" type="hidden"/>'), $wSTT = $('<input id="work_status" type="hidden"/>')
                     $wID.val(res.id)
+                    $wSTT.val(res.work_status)
                     $('#workWeight').val(res.w_weight)
                     $('#workRate').val(res.w_rate)
-                    $('#work_modal .modal-body').append($wID)
+                    $('#work_modal .modal-body').append($wID).append($wSTT)
                     $('#work_modal #btn-work-add').text($.fn.gettext('Save'))
                     if (res.group.hasOwnProperty('id'))
                         $('#select_project_group').attr('data-onload', JSON.stringify(res.group))

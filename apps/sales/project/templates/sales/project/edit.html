@@ -82,6 +82,12 @@
                 <span class="nav-link-text">{% trans 'Teams' %}</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_work_expense">
+                <i class="fa-solid fa-money-check-dollar"></i>
+                <span class="nav-link-text">{% trans 'Work expense' %}</span>
+            </a>
+        </li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade show active" id="tab_detail">
@@ -90,6 +96,11 @@
                 </div>
                 <div class="gantt-block gantt-right">
                     <svg id="gantt"></svg>
+                </div>
+            </div>
+            <div class="lazy_loading">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
             </div>
         </div>
@@ -160,6 +171,23 @@
                 </div>
             </div>
         </div>
+        <div class="tab-pane fade" id="tab_work_expense">
+            <table class="table nowrap w-100 min-w-1500p" id="work_expense_tbl"
+                   data-method="get"
+                   data-url="{% url 'ProjectListAPI' %}"
+                   data-detail="{% url 'ProjectDetail' 1 %}">
+                <thead>
+                <tr>
+                    <th>{% trans 'Work title' %}</th>
+                    <th>{% trans 'Total Unit Price' %}</th>
+                    <th>{% trans 'Total Tax' %}</th>
+                    <th>{% trans 'Total Price' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
     <!-- End Tabs -->
     <!-- modal group -->
@@ -171,7 +199,7 @@
     <!-- modal assign task -->
     {% include 'sales/project/extends/assign-task.html' with prj_id=data.pk %}
     <!-- modal create task -->
-    {% include 'sales/task/extend/task-form.html' with is_project_page=True new_list_from_app='task.opportunitytask.create' %}
+    {% include 'sales/task/extend/task-form.html' with is_project_page=True new_list_from_app='task.opportunitytask.create'%}
 {% endblock %}
 {% block dataHiddenGroup %}
     <div class="table_btn">
@@ -192,8 +220,14 @@
            data-member-delete="{% url 'ProjectMemberDeleteAPI' data.pk 1 %}"
            data-update-order="{% url 'ProjectUpdateOrderAPI' data.pk %}"
            data-task="{% url 'ProjectTaskListAPI' %}"
+           data-expense="{% url 'ExpenseListAPI' %}"
+           data-expense-detail="{% url "ExpenseDetail" 1 %}"
+           data-expense_item="{% url "ExpenseItemListAPI" %}"
+           data-expense_item-detail="{% url "ExpenseItemDetailAPI" 1 %}"
+           data-uom="{% url "UnitOfMeasureListAPI" %}"
+           data-tax="{% url "TaxListAPI" %}"
     >
-    <input type="text" id="trans-factory">
+
 {% endblock %}
 {% block jsFooter %}
     <!-- library -->

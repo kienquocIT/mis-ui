@@ -92,3 +92,32 @@ msgstr "Danh sách task"
 #
 msgid "Empty data"
 msgstr "Dữ liệu trống"
+
+#
+msgid "Expense name"
+msgstr "Tên chi phí"
+
+#
+msgid "Expense items"
+msgstr "Danh mục phí"
+
+#
+msgid "UoM"
+msgstr "Đơn vị"
+
+#
+msgid "Quantity"
+msgstr "Số lượng"
+
+#
+msgid "Expense Price"
+msgstr "Chi phí giá"
+
+#
+msgid "Tax"
+msgstr "Thuế"
+
+#
+msgid "Subtotal Price"
+msgstr "Thành tiền"
+

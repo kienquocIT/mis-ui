@@ -39,7 +39,7 @@
                     </div>
                     <div class="col-xs-12 col-md-6 form-group">
                         <label for="select_relationships_type"
-                               class="form-label">{% trans 'Relationships type' %}</label>
+                               class="form-label">{% trans 'Types of Relationships' %}</label>
                         <select class="form-select" id="select_relationships_type">
                             <option value=""></option>
                             {% for value, name in data.dependencies_list %}
@@ -49,15 +49,31 @@
                     </div>
                     <div class="col-xs-12 col-md-6 form-group">
                         <label for="select_project_work"
-                               class="form-label">{% trans 'Relationships work' %}</label>
+                               class="form-label">{% trans "Parents Work" %}</label>
                         <select class="form-select" name="project_work" id="select_project_work"
                                 data-url="{% url 'ProjectWorkListAPI' %}"
                                 data-keyResp="pj_work_list" data-keyText="title" data-keyId="id"
                                 data-params="{'list_from_app': '{{ data.list_from_app|escape }}', 'project': '{{ data.pk }}'}"
+                                data-allowClear="true"
                         >
                         </select>
                     </div>
-                    <div class="col-xs-12 col-md-6 form-group">
+                    <div class="col-xs-12 col-md-12">
+                        <p class="mt-2 toggle-notes">
+                            <i class="fa-solid fa-info font-3"></i>
+                            <span>
+                                {% trans 'Explanation of Types of Relationships' %}
+                            </span>
+
+                        </p>
+                        <figure>
+                            <blockquote class="blockquote content-notes">
+                                <p>{% trans "Start to Start (SS) - You can only start work B when work A has started." %}</p>
+                                <p>{% trans "Finish to Start (FS) - You can only start work B when work A has finished." %}</p>
+                            </blockquote>
+                        </figure>
+                    </div>
+                    <div class="col-xs-12 col-md-6 form-group mt-3">
                         <label for="workWeight" class="form-label">{% trans 'Work weight' %}</label>
                         <span class="input-affix-wrapper">
                             <input type="text" id="workWeight" name="w_weight" class="form-control" autocomplete="off">

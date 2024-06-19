@@ -98,11 +98,7 @@ class QuotationLoadDataHandle {
         // Delete all shipping rows
         deletePromotionRows(tableProduct, false, true);
         // ReCheck Config when change Opportunity
-        let check_config = QuotationCheckConfigHandle.checkConfig(0);
-        // load again total products if after check config the price change
-        if (check_config?.['is_make_price_change'] === true) {
-            QuotationCalculateCaseHandle.calculateAllRowsTableProduct($(tableProduct));
-        }
+        QuotationCheckConfigHandle.checkConfig(0);
     };
 
     static loadInitCustomer() {
@@ -541,7 +537,7 @@ class QuotationLoadDataHandle {
                     if (data) {
                         if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
                             let dataInit = data.quotation_list;
-                            // check OppID to get quotation same Opp then concat 2 list data (only for Quotation pages)
+                            // check OppID to get canceled quotation in same Opp then concat 2 list data (only for Quotation pages)
                             if (opp_id && !formSubmit[0].classList.contains('sale-order')) {
                                 data_filter = {'system_status': 4}
                                 data_filter['opportunity'] = opp_id;
@@ -670,6 +666,7 @@ class QuotationLoadDataHandle {
         }
     };
 
+    // PRODUCT
     static loadAddRowProductGr() {
         let tableProduct = $('#datable-quotation-create-product');
         let order = tableProduct[0].querySelectorAll('.table-row-group').length + 1;
@@ -1821,33 +1818,27 @@ class QuotationLoadDataHandle {
         }
     };
 
-    // LOAD DETAIL
+    // LOAD DATA DETAIL
     static loadDetailQuotation(data, is_copy = false) {
         let form = document.getElementById('frm_quotation_create');
         if (data?.['title'] && is_copy === false) {
             document.getElementById('quotation-create-title').value = data?.['title'];
         }
         if (data?.['opportunity'] && data?.['sale_person']) {
-            new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                data_inherit: [{
-                    "id": data?.['sale_person']?.['id'],
-                    "full_name": data?.['sale_person']?.['full_name'] || '',
-                    "first_name": data?.['sale_person']?.['first_name'] || '',
-                    "last_name": data?.['sale_person']?.['last_name'] || '',
-                    "email": data?.['sale_person']?.['email'] || '',
-                    "is_active": data?.['sale_person']?.['is_active'] || false,
-                    "selected": true,
-                }],
-                data_opp: [{
-                    "id": data?.['opportunity']?.['id'] || '',
-                    "title": data?.['opportunity']?.['title'] || '',
-                    "code": data?.['opportunity']?.['code'] || '',
-                    "selected": true,
-                }]
-            }).init();
+            QuotationLoadDataHandle.salePersonSelectEle.empty();
+            QuotationLoadDataHandle.opportunitySelectEle.empty();
+            QuotationLoadDataHandle.salePersonSelectEle.initSelect2({
+                    data: data?.['sale_person'],
+                    'allowClear': true,
+                });
+            QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
+                    data: data?.['opportunity'],
+                    'allowClear': true,
+                });
         }
+        QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
+        QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
+        QuotationLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
         if (Object.keys(data?.['opportunity']).length > 0) {
             if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
                 if (form.getAttribute('data-method').toLowerCase() === 'get') {
@@ -2368,17 +2359,11 @@ class QuotationDataTableHandle {
                                 link = linkDetail.format_url_with_uuid(row?.['promotion']?.['id']);
                             }
                             return `<div class="row">
-                                    <div class="input-group">
-                                    <span class="input-affix-wrapper">
-                                        <span class="input-prefix">
-                                            <a href="${link}" target="_blank">
-                                                <i class="fas fa-gift text-primary"></i>
-                                            </a>
-                                        </span>
-                                        <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product_title}" data-id="${row.promotion.id}" data-is-promotion-on-row="${row.is_promotion_on_row}" data-id-product="${row.product.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
-                                    </span>
-                                </div>
-                                </div>`;
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-gift text-primary mr-2"></i>
+                                            <p data-id="${row?.['promotion']?.['id']}" data-is-promotion-on-row="${row.is_promotion_on_row}" data-id-product="${row?.['product']?.['id']}">${row?.['product_title']}</p>
+                                        </div>
+                                    </div>`;
                         } else if (itemType === 2) { // SHIPPING
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
@@ -2415,7 +2400,7 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_products_data";
                         }
                         return `<div class="row">
-                                    <span class="table-row-description" data-zone="${dataZone}">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span>
+                                    <p class="table-row-description" data-zone="${dataZone}">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</p>
                                 </div>`;
                     }
                 },
@@ -2600,22 +2585,7 @@ class QuotationDataTableHandle {
                                         hidden
                                     >`;
                         } else {  // promotion || shipping
-                            return `<select class="form-select table-row-tax disabled-custom-show" disabled>
-                                        <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
-                                    </select>
-                                    <input
-                                        type="text"
-                                        class="form-control mask-money table-row-tax-amount"
-                                        value="${row?.['product_tax_amount']}"
-                                        data-return-type="number"
-                                        hidden
-                                    >
-                                    <input
-                                        type="text"
-                                        class="form-control table-row-tax-amount-raw"
-                                        value="${row?.['product_tax_amount']}"
-                                        hidden
-                                    >`;
+                            return `<p>--</p>`;
                         }
                     }
                 },
@@ -3233,27 +3203,37 @@ class QuotationDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         return `<div class="form-check">
-                                    <input 
-                                        type="checkbox"
-                                        class="form-check-input table-row-check"
-                                        data-id="${row?.['id']}"
-                                    >
+                                    <input type="radio" class="form-check-input table-row-check" data-id="${row?.['id']}">
                                 </div>`
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row?.['title']}</span>`
+                        if (row?.['title'] && row?.['code']) {
+                            return `<span class="badge badge-primary badge-sm">${row?.['code'] ? row?.['code'] : ''}</span>
+                                    <p class="table-row-title">${row?.['title']}</p>`;
+                        }
+                        return `<p>--</p>`;
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        if (row?.['code']) {
-                            return `<span class="badge badge-primary table-row-code">${row?.['code']}</span>`;
+                        if (row?.['opportunity']?.['title'] && row?.['opportunity']?.['code']) {
+                            return `<span class="badge badge-secondary badge-sm">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>
+                                    <p class="table-row-customer">${row?.['opportunity']?.['title']}</p>`;
                         }
-                        return `<p></p>`;
+                        return `<p>--</p>`;
+                    },
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        if (row?.['customer']?.['title']) {
+                            return `<p class="table-row-customer">${row?.['customer']?.['title']}</p>`;
+                        }
+                        return `<p>--</p>`;
                     },
                 }
             ],

@@ -269,6 +269,8 @@ $(function () {
         function loadFilter(listData, $eleShow) {
             if (listData.length > 0) {
                 $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
+            } else {
+                $eleShow.html(``);
             }
         }
 

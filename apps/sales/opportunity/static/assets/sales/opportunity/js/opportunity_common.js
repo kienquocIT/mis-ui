@@ -466,17 +466,25 @@ class OpportunityLoadDetail {
         }
 
         if (stages.length !== 0) {
+            let is_delivery = false
+            stages.map(function (item) {
+                if (item?.['indicator'] === 'Delivery') {
+                    is_delivery = true
+                }
+            })
             stages.map(function (item) {
                 let ele_stage = $(`.sub-stage[data-id="${item.id}"]`);
                 if (ele_stage.hasClass('stage-lost')) {
-                    ele_stage.addClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
+                    if (!is_delivery) {
+                        ele_stage.addClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
+                    }
                 } else if (ele_stage.hasClass('stage-close')) {
                     let el_close_deal = $('#input-close-deal');
                     $('.page-content input, .page-content select, .page-content .btn').not(el_close_deal).not($('#rangeInput')).prop('disabled', true);
-                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 border-primary  stage-selected');
+                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 border-primary stage-selected');
                     el_close_deal.prop('checked', true);
                 } else {
-                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 border-primary  stage-selected');
+                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 border-primary stage-selected');
                 }
             })
         }

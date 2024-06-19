@@ -541,7 +541,7 @@ class QuotationLoadDataHandle {
                     if (data) {
                         if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
                             let dataInit = data.quotation_list;
-                            // check OppID to get quotation same Opp then concat 2 list data (only for Quotation pages)
+                            // check OppID to get canceled quotation in same Opp then concat 2 list data (only for Quotation pages)
                             if (opp_id && !formSubmit[0].classList.contains('sale-order')) {
                                 data_filter = {'system_status': 4}
                                 data_filter['opportunity'] = opp_id;
@@ -1828,6 +1828,8 @@ class QuotationLoadDataHandle {
             document.getElementById('quotation-create-title').value = data?.['title'];
         }
         if (data?.['opportunity'] && data?.['sale_person']) {
+            QuotationLoadDataHandle.salePersonSelectEle.empty();
+            QuotationLoadDataHandle.opportunitySelectEle.empty();
             new $x.cls.bastionField({
                 has_opp: true,
                 has_inherit: true,
@@ -1848,6 +1850,9 @@ class QuotationLoadDataHandle {
                 }]
             }).init();
         }
+        QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
+        QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
+        QuotationLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
         if (Object.keys(data?.['opportunity']).length > 0) {
             if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
                 if (form.getAttribute('data-method').toLowerCase() === 'get') {
@@ -3233,11 +3238,7 @@ class QuotationDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         return `<div class="form-check">
-                                    <input 
-                                        type="checkbox"
-                                        class="form-check-input table-row-check"
-                                        data-id="${row?.['id']}"
-                                    >
+                                    <input type="radio" class="form-check-input table-row-check" data-id="${row?.['id']}">
                                 </div>`
                     }
                 },
@@ -3253,7 +3254,25 @@ class QuotationDataTableHandle {
                         if (row?.['code']) {
                             return `<span class="badge badge-primary table-row-code">${row?.['code']}</span>`;
                         }
-                        return `<p></p>`;
+                        return `<p>--</p>`;
+                    },
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        if (row?.['opportunity']?.['title']) {
+                            return `<p class="table-row-customer">${row?.['opportunity']?.['title']}</p>`;
+                        }
+                        return `<p>--</p>`;
+                    },
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        if (row?.['customer']?.['title']) {
+                            return `<p class="table-row-customer">${row?.['customer']?.['title']}</p>`;
+                        }
+                        return `<p>--</p>`;
                     },
                 }
             ],

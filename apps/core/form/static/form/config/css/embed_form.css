@@ -1,0 +1,122 @@
+#config-embed-form {
+        position: absolute;
+        z-index: 1055;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #e1e1e1;
+    }
+
+    #config-embed-form-sub {
+        width: 100%;
+        height: 100%;
+    }
+
+    #config-embed-form-sub .config-embed-form-head {
+        padding: 1rem 1.2rem;
+        background-color: #2a3746;
+        color: #fff;
+        height: 70px;
+    }
+
+    #config-embed-form-sub .config-embed-form-body {
+        background-color: #f1f1f1;
+        color: #000;
+        width: 100%;
+        height: calc(100% - 70px);
+        overflow: hidden;
+    }
+
+    .config-embed-form-body .publish-form-data {
+        width: 100%;
+        height: 100%;
+        padding-top: 20px
+    }
+
+    .publish-form-data .publish-form-type {
+        flex-basis: 20%;
+        padding-right: 30px;
+        padding-left: 20px;
+    }
+
+    .publish-data {
+        width: 100%;
+    }
+
+    .publish-form-data .publish-form-type-data {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: #fff;
+        box-shadow: 0 0.25rem 0.375rem 0.125rem #d9d9d9;
+        flex-basis: 80%;
+        display: flex;
+    }
+
+    .publish-form-type-data .publish-type-sub {
+        flex-basis: 30%;
+        border-right: 1px solid #f1f1f1;
+        padding: 1rem 2rem;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+
+    .publish-form-type-data .publish-type-data {
+        flex-basis: 70%;
+        overflow: hidden;
+    }
+
+    .publish-type-data > * {
+        padding: 1rem 2rem;
+    }
+
+    .publish-form-type .publish-type-item {
+        background-color: #fff;
+        margin-bottom: 20px;
+        box-shadow: 0 0 0.250rem 0.125rem #d9d9d9;
+        border: 1px solid #b9b9b9;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .publish-type-item p {
+        color: #007d88;
+    }
+
+    .publish-type-item small {
+        color: #5e7d8a;
+    }
+
+    .publish-type-item.active {
+        border-color: #007d88;
+        box-shadow: 0 0 3px 0.125rem #99cbcf;
+    }
+
+    .publish-type-item.disable {
+        border-color: #5e7d8a;
+        box-shadow: 0 0 3px 0.125rem #bfcbd0;
+        cursor: not-allowed;
+        background-color: #eaeaea;
+    }
+
+    .publish-type-sub .type-sub-title {
+        padding: 10px 0;
+        color: #8c8c8c;
+    }
+
+    .publish-type-sub .type-sub-item {
+        padding: 10px 20px;
+        transition: background-color 0.5s, color 0.5s;
+        cursor: pointer;
+    }
+
+    .type-sub-item.active {
+        background-color: #ebfcf5;
+        color: #00c172;
+    }
+
+    .type-sub-item.disable {
+        color: #5f5f5f;
+        cursor: not-allowed;
+    }

@@ -1,0 +1,242 @@
+{% load static i18n %}
+
+<div
+        id="config-embed-form" style="display:none;"
+        data-url="{% url 'FormPublishDetailFromFormAPI' pk_form=pk %}"
+        data-method="GET"
+>
+    <div
+            id="config-embed-form-sub"
+            data-url="{% url 'FormPublishDetailAPI' pk='__pk__' %}"
+            data-method="PUT"
+    >
+        <div class="config-embed-form-head d-flex justify-content-center align-items-center">
+            <p style="flex-basis: 70%;">
+                {% trans 'Published Form' %}
+            </p>
+            <div class="embed-action d-flex justify-content-end align-items-center" style="flex-basis: 30%;">
+                <button class="btn btn-icon btn-rounded btn-secondary btn-xs" id="btn-close-embed-form" type="button">
+                    <span class="icon">
+                        <i class="fa-solid fa-xmark"></i>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div class="config-embed-form-body">
+            <div class="publish-form-data d-flex">
+                <div class="publish-form-type">
+                    <div class="publish-type-item active" data-code="share-with">
+                        <p>{% trans 'Share With' %}</p>
+                        <small>{% trans 'Share your form as a public link or privately within your organization.' %}</small>
+                    </div>
+                    <div class="publish-type-item" data-code="embed">
+                        <p>{% trans 'Embed' %}</p>
+                        <small>{% trans 'Embed your form on a website using the embed codes that suits your need.' %}</small>
+                    </div>
+                    <div class="publish-type-item disable" data-code="email-campaigns">
+                        <p>{% trans 'Email Campaigns' %}</p>
+                        <small>{% trans 'Share your form with a list of contacts using email campaign software.' %}</small>
+                    </div>
+                    <div class="publish-type-item disable" data-code="track-entries">
+                        <p>{% trans 'Track Entries' %}</p>
+                        <small>{% trans 'Use advanced tracking codes in your forms to measure your campaign metrics.' %}</small>
+                    </div>
+                </div>
+                <div id="publish-form-type-share" class="publish-data">
+                    <div class="publish-form-type-data">
+                        <div class="publish-type-sub">
+                            <p class="type-sub-title">{% trans 'Share With' %}</p>
+                            <div class="type-sub-item active">{% trans 'Public' %}</div>
+                            <div class="type-sub-item disable">{% trans 'Specific Users' %}</div>
+                            <div class="type-sub-item disable">{% trans 'Group' %}</div>
+                            <div class="type-sub-item disable">{% trans 'All Users' %}</div>
+                        </div>
+                        <div class="publish-type-data">
+                            <div
+                                    class="type-data-head d-flex justify-content-start align-items-center"
+                                    style="border-bottom: 1px solid #f1f1f1;height: 100px;"
+                            >
+                                <div class="type-data-head-title" style="flex-basis: 80%;">
+                                    <p>{% trans 'Share Publicly' %}</p>
+                                    <span style="font-size: 0.8rem">
+                                        {% trans 'Share your form as a public link or privately within your organization.' %}
+                                    </span>
+                                    <br/>
+                                    <small class="text-muted">{% trans 'All changes are automatically saved to the server' %}</small>
+                                </div>
+                                <div
+                                        class="type-data-head-action"
+                                        style="flex-basis: 20%; display: flex; justify-content: end; align-items: center;"
+                                >
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input" id="public-form-enabled">
+                                        <label
+                                                class="form-check-label" for="public-form-enabled"
+                                        >{% trans 'Enable' %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="type-data-body" style="height: calc(100% - 100px);overflow-y: scroll;">
+                                <div class="w-100 p-3 mb-3" style="background-color: #f5f5f5;">
+                                    <div class="form-group m-0">
+                                        <label class="form-label">{% trans 'Form Permalink (URL)' %}</label>
+                                        <textarea
+                                                id="form-permalink"
+                                                data-url="{% url 'FormPublishedRuntimeView' form_code='__form_code__' %}"
+                                                class="form-control" rows="3" readonly
+                                                style="background-color: #fff;color: #000;cursor: copy;"
+                                        ></textarea>
+                                        <a href="#" target="_blank">
+                                            <button class="btn btn-secondary btn-xs mt-2">
+                                                {% trans 'Access Form' %}
+                                                <i class="fa-solid fa-square-up-right"></i>
+                                            </button>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="w-100 py-3 mb-3" style="border-top: 1px solid #f5f5f5;">
+                                    <p style="margin-bottom: 10px;font-weight: bold;">{% trans 'QR Code' %}</p>
+                                    <div
+                                            class="w-100 p-3"
+                                            style="border: 1px solid #f3f3f3;display: flex; justify-content: start; align-items: center;"
+                                    >
+                                        <p id="QRCodeLink" style="flex: 1 1 100px;width: 100%;height: 100px;"></p>
+                                        <div style="flex-basis: calc(100% - 100px);padding-left: 30px;">
+                                            <p>
+                                                {% trans 'Share this QR code with your audience to let them access the form directly on their devices.' %}
+                                            </p>
+                                            <button
+                                                    class="btn btn-dark btn-xs" id="DownloadQRCodeLink"
+                                            >{% trans 'Download' %}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-100 py-3 mb-3" style="border-top: 1px solid #f5f5f5;">
+                                    <p style="font-weight: bold;">
+                                        {% trans 'Track referrals' %}
+                                    </p>
+                                    <small>
+                                        {% trans 'You can append parameters to your URL to track referrals.' %}
+                                    </small>
+                                    <pre style="padding: 10px;text-align: left;white-space: pre-line;border: 1px dashed #9c9c9c;">
+                                        e.g. https://forms.bflow.vn/...?referrername=&lt;referralwebsite&gt;
+                                    </pre>
+                                    <br/>
+                                    <p style="font-weight: bold;">
+                                        {% trans 'Prefill form fields' %}
+                                    </p>
+                                    <small>
+                                        {% trans 'You can append parameters to your URL to prefill form fields.' %}
+                                    </small>
+                                    <pre style="padding: 10px;text-align: left;white-space: pre-line;border: 1px dashed #9c9c9c;">
+                                        e.g. https://forms.bflow.vn/...?&lt;fieldalias1>=&lt;fieldvalue&gt;&&lt;fieldalias2&gt;=&lt;fieldvalue&gt;
+                                    </pre>
+                                </div>
+                                <div class="w-100 py-3 mb-3" style="border-top: 1px solid #f5f5f5;">
+                                    <p style="font-weight: bold">
+                                        {% trans 'Share on social media.' %}
+                                    </p>
+                                    <small>{% trans 'Share this form on your social networks.' %}</small>
+                                    <div class="w-100 d-flex justify-content-start align-items-center">
+                                        <span id="form-share-fb" class="mr-1">
+                                            <a
+                                                    target="_blank"
+                                                    href="https://www.facebook.com/dialog/share?app_id=145634995501895&display=popup&href=https%3A%2F%2Fwww.bflow.vn&redirect_uri=https%3A%2F%2Fdevelopers.facebook.com%2Ftools%2Fexplorer"
+                                            >
+                                                <img
+                                                        src="{% static 'form/config/images/facebook.svg' %}"
+                                                        alt="facebook"
+                                                        style="width: 30px;object-fit: cover;background-repeat: no-repeat;"
+                                                >
+                                            </a>
+                                        </span>
+                                        <span id="form-share-twitter" class="mr-1">
+                                            <a
+                                                    target="_blank"
+                                                    href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.bflow.vn"
+                                            >
+                                                <img
+                                                        src="{% static 'form/config/images/twitter.svg' %}"
+                                                        alt="twitter"
+                                                        style="width: 30px;object-fit: cover;background-repeat: no-repeat;"
+                                                >
+                                            </a>
+                                        </span>
+                                        <span id="form-share-linkedin" class="mr-1">
+                                            <a
+                                                    href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.bflow.vn"
+                                                    target="_blank"
+                                            >
+                                                <img
+                                                        src="{% static 'form/config/images/linkedin.svg' %}"
+                                                        alt="linkedin"
+                                                        style="width: 30px;object-fit: cover;background-repeat: no-repeat;"
+                                                >
+                                            </a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="publish-form-type-embed" class="publish-data" style="display: none;">
+                    <div
+                            class="h-50p w-100 d-flex justify-content-start align-items-center"
+                            style="color: #00ab66; background-color: #ebfcf5;margin-bottom: 10px;padding: 10px;border: 1px solid #f1f1f1;box-shadow: 0 0.25rem 0.375rem 0.125rem #d9d9d9"
+                    >
+                        <p style="flex: 80%;">
+                            {% trans 'Public users can access this form and submit responses.' %}
+                        </p>
+                        <div
+                                class="type-data-head-action"
+                                style="flex-basis: calc(20%); display: flex; justify-content: end; align-items: center;"
+                        >
+                            <div class="form-check form-switch">
+                                <input type="checkbox" class="form-check-input" id="iframe-form-enabled">
+                                <label class="form-check-label" for="iframe-form-enabled">
+                                    {% trans 'Enable' %}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="publish-form-type-data" style="height: calc(100% - 50px - 10px)!important;">
+                        <div class="publish-type-sub">
+                            <p class="type-sub-title">{% trans 'Embed' %}</p>
+                            <div class="type-sub-item active">{% trans 'IFrame' %}</div>
+                            <div class="type-sub-item disable">{% trans 'Javascript' %}</div>
+                            <div class="type-sub-item disable">{% trans 'HyperLink' %}</div>
+                            <div class="type-sub-item disable">{% trans 'Modal Box' %}</div>
+                        </div>
+                        <div class="publish-type-data">
+                            <div
+                                    class="type-data-head d-flex justify-content-start align-items-center"
+                                    style="border-bottom: 1px solid #f1f1f1;height: 100px;"
+                            >
+                                <div class="type-data-head-title" style="flex-basis: 100%;">
+                                    <p>{% trans 'IFrame' %}</p>
+                                    <span style="font-size: 0.8rem">
+                                        {% trans 'Use this code to embed the form as an iframe on a web page.' %}
+                                    </span>
+                                    <br/>
+                                    <small class="text-muted">{% trans 'All changes are automatically saved to the server' %}</small>
+                                </div>
+                            </div>
+                            <div class="type-data-body" style="height: calc(100% - 100px);overflow-y: scroll;">
+                                <div class="w-100">
+                                    <div class="form-group m-0">
+                                        <label for="idx-iframe-url" style="display: none" class="form-label"></label>
+                                        <textarea
+                                                id="idx-iframe-url" class="form-control" rows="4" readonly
+                                                data-url="{% url 'FormPublishedRuntimeIFrame' form_code='__form_code__' %}"
+                                        ></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+:root {
+    --bg-color: #fff;
+    --padding: 10px;
+    --border-radius: 15px;
+    --bg-image: url("01-modern/bg.jpg");
+    --bg-blur-background-color: rgb(255, 255, 255, 0.4);
+
+    --title-font-family: "Merienda", cursive, serif;
+    --title-color: #fff;
+    --title-background-color: #d32029;
+    --title-border-radius: 15px 15px 0 0;
+
+    --head-sub-border-style: hidden hidden dashed hidden;
+    --head-sub-border-color: #d32029;
+    --head-sub-border-width: 1px;
+    --head-sub-padding: 0 0 25px;
+
+    --foot-sub-border-style: dashed hidden hidden hidden;
+    --foot-sub-border-color: #d32029;
+
+    --content-border-radius: 0;
+
+    --button-background-color: #ff3d3d;
+    --button-border-radius: 5px;
+    --button-padding: 0.7rem 4rem;
+    --button-border: 1px solid #ff0000;
+    --button-color: #ffebeb;
+    --button--hover-background-color: #cc0000;
+    --button--hover-color: #fff;
+    --button--hover-border: 1px solid #cc0000;
+    --button--hover-box-shadow: 0 0 5px 0.3rem rgb(255, 0, 0, 0.15);
+}

@@ -17,6 +17,7 @@ from rest_framework.response import Response
 from .apis import RespData, PermCheck
 from .apps_code_to_txt import AppsCodeToList
 from .exceptions import handle_exception_all_view
+from .http import HttpRequestControl
 from .msg import AuthMsg, ServerMsg
 from .breadcrumb import BreadcrumbView
 from .menus import SpaceItem, SpaceGroup
@@ -173,21 +174,9 @@ def mask_view(**parent_kwargs):
                 return OutLayoutRender(request=request).render_503()
 
             if settings.UI_ALLOW_AUTO_TENANT:
-                url_skip_check = ['/404', '/503', '/introduce', '/terms', '/help-and-support']
-                if request.path not in url_skip_check:
-                    meta_hosts = request.META['HTTP_HOST']
-                    if meta_hosts and settings.UI_DOMAIN in meta_hosts:
-                        sub_code = meta_hosts.split(settings.UI_DOMAIN)[0]
-                        if sub_code.endswith("."):
-                            sub_code = sub_code[:-1]
-
-                        if "*" not in settings.UI_SUB_ALLOWED and sub_code not in settings.UI_SUB_ALLOWED:
-                            return OutLayoutRender(request=request).render_404()
-
-                        if sub_code in settings.UI_SUB_DENIED:
-                            return OutLayoutRender(request=request).render_404()
-                    else:
-                        return OutLayoutRender(request=request).render_404()
+                state_http = HttpRequestControl(request=request).check()
+                if not state_http:
+                    return OutLayoutRender(request=request).render_404()
 
             ctx = {}
             pk = kwargs.get('pk', None)
@@ -211,6 +200,7 @@ def mask_view(**parent_kwargs):
                 real_path=request.path,
             )
             url_pattern_keys = parent_kwargs.get('url_pattern_keys', [])
+            enable_page_content_css = parent_kwargs.get('enable_page_content_css', True)  # auto add page_content.css
 
             # check login with request.user | auto redirect login page when expired
             if login_require:
@@ -324,6 +314,7 @@ def mask_view(**parent_kwargs):
                                 ctx['ga_config'] = {
                                     'script': settings.GA_SCRIPT, 'code': settings.GA_CODE
                                 } if settings.GA_COLLECTION_ENABLED else {}
+                                ctx['enable_page_content_css'] = enable_page_content_css
                                 ctx['is_debug_src'] = settings.DEBUG
                                 ctx['is_debug'] = settings.DEBUG_JS
                                 # ctx['is_notify_key'] = 1 if is_notify_key is True else 0

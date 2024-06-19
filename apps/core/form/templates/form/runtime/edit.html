@@ -1,0 +1,20 @@
+{% extends 'form/runtime/base.html' %}
+{% load i18n static form_runtime %}
+
+{% block Contents %}
+    {% random_idx as formIdx %}
+    <form
+            data-url="{% url 'FormSubmittedUpdate' form_code=code use_at=use_at pk=pk %}"
+            data-method="PUT"
+            id="{{ formIdx }}"
+            data-user-current-name="{{ user_current.full_name }}"
+    >
+        {% csrf_token %}
+        {{ html_text | safe }}
+        {{ submitted_data|json_script:"submitted_data_idx" }}
+    </form>
+{% endblock %}
+
+{% block jsContent %}
+    <script src="{% static 'form/runtime/js/edit.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% load i18n define_action %}
+
+{% assign_out_random instructionIdx as rInstructionIdx %}
+
+<div class="form-group mb-3">
+    <label for="{{ rInstructionIdx }}" class="form-label">{% trans 'Instructions' %}</label>
+    <textarea id="{{ rInstructionIdx }}" rows="3" class="form-control" name="instruction"></textarea>
+</div>

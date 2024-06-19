@@ -1,0 +1,18 @@
+{% load i18n define_action %}
+
+{% assign_out_random fieldSizeIdx as rFieldSizeIdx %}
+
+<div class="form-group mb-3">
+    <label for="{{ rFieldSizeIdx }}" class="form-label">{% trans 'Field size' %}</label>
+    <select
+            id="{{ rFieldSizeIdx }}"
+            class="input-radio-select"
+            name="size"
+    >
+        <option value="extra-small">{% trans 'Extra small' %}</option>
+        <option value="small">{% trans 'Small' %}</option>
+        <option value="medium">{% trans 'Medium' %}</option>
+        <option value="large">{% trans 'Large' %}</option>
+        <option value="extra-large">{% trans 'Extra large' %}</option>
+    </select>
+</div>

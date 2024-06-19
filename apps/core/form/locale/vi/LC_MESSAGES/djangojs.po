@@ -1,0 +1,130 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 00:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "Updated config field configuration successfully"
+msgstr "Cập nhật cấu hình trường dữ liệu thành công"
+
+#
+msgid "No changes"
+msgstr "Không có thay đổi"
+
+#
+msgid "\"Validation\" is turned off when \"Visibility\" is hidden or disabled"
+msgstr "\"Xác thực\" bị tắt vì \"Khả năng hiển thị\" bị ẩn hoặc bị tắt"
+
+#
+msgid "Delete field"
+msgstr "Xoá trường"
+
+#
+msgid "Are you sure about deleting?"
+msgstr "Bạn có chắc chắn về việc xóa?"
+
+#
+msgid "Yes, delete it"
+msgstr "Đồng ý xoá"
+
+#
+msgid "Cancel"
+msgstr "Huỷ"
+
+#
+msgid "deleted"
+msgstr "đã xoá"
+
+#
+msgid "Clone field"
+msgstr "Nhân đôi trường"
+
+#
+msgid "Are you sure about cloning?"
+msgstr "Bạn có chắc chắn về việc nhân đôi?"
+
+#
+msgid "Yes, clone it"
+msgstr "Đồng ý nhân đôi"
+
+#
+msgid "Entries Data"
+msgstr "Dữ liệu đã nhập"
+
+#
+msgid "Created time"
+msgstr "Thời gian tạo ra"
+
+#
+msgid "Referrer Name"
+msgstr "Theo dõi giới thiệu"
+
+#
+msgid "User created"
+msgstr "Người tạo"
+
+#
+msgid "All"
+msgstr "Tất cả"
+
+#
+msgid "Export to Excel"
+msgstr "Xuất bản thành Excel"
+
+#
+msgid "Preview"
+msgstr "Xem trước"
+
+#
+msgid "Form title"
+msgstr "Tiêu đề biểu mẫu"
+
+#
+msgid "Form descriptions"
+msgstr "Mô tả của biểu mẫu"
+
+#
+msgid "Phone number"
+msgstr "Số điện thoại"
+
+#
+msgid "Region code"
+msgstr "Mã vùng"
+
+#
+msgid "Value number"
+msgstr "Giá trị số"
+
+#
+msgid "Unit code"
+msgstr "Đơn vị"
+
+#
+msgid "Some configuration data is not correct"
+msgstr "Một số cấu hình chưa đầy đủ hoặc chính xác"
+
+#
+msgid "Turn off"
+msgstr "Huỷ kích hoạt"
+
+#
+msgid "The form must have at least one required data field"
+msgstr "Biểu mẫu phải có ít nhất một trường dữ liệu bắt buộc"
+
+#
+msgid "The form requires at least one input field"
+msgstr "Biểu mẫu yêu cầu ít nhất một trường dữ liệu đầu vào"

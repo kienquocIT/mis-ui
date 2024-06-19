@@ -1,0 +1,19 @@
+:root {
+    --bg-color: unset;
+    --bg-image: url("03-forest-nature/bg.jpg");
+    --bg-blur-background-color: rgb(255, 255, 255, 0.5);
+    --border: 0;
+
+    --input-border-color: #8c8c8c;
+    --input-bg-color: rgb(239, 219, 255, 0.25);
+
+    --button-background-color: #955cfa;
+    --button-border: 1px solid #955cfa;
+    --button--hover-background-color: #7429f8;
+    --button--hover-border: 1px solid #7429f8;
+    --button--hover-box-shadow: 0 0 3px 0.125rem #e0d0fd;
+}
+
+.form-item-instruction {
+    color: #494949;
+}

@@ -1,0 +1,44 @@
+{% load i18n define_action %}
+
+{% assign_out_random inputTypeIdx as rInputTypeIdx %}
+{% assign_out_random inputTypeCustomValueIdx as rInputTypeCustomValueIdx %}
+
+<div class="form-group mb-3">
+    <label for="{{ rInputTypeIdx }}" class="form-label">{% trans 'Input type' %}</label>
+    <select id="{{ rInputTypeIdx }}" class="form-select" name="input_type">
+        <option value="any-character" selected>{% trans 'Any character' %}</option>
+        <option value="letters-only">{% trans 'Letters only' %}</option>
+        <option value="letters-number">{% trans 'Letters and Number' %}</option>
+        <option value="letters-number-space">{% trans 'Letters, Number and Spaces' %}</option>
+        <option value="letters-space">{% trans 'Letters and Space' %}</option>
+        <option value="custom">{% trans 'Custom Entry Format' %}</option>
+    </select>
+    <div class="form-group" style="display: none;">
+        <label for="rInputTypeCustomValueIdx" class="d-none"></label>
+        <input
+                type="text"
+                id="{{ rInputTypeCustomValueIdx }}"
+                class="form-control mt-1"
+                name="input_type_value"
+                placeholder="{% trans 'Enter custom regex' %}"
+        />
+        <small class="form-text text-muted">
+            {% trans 'Knowledge' %}:
+            <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions" target="_blank">Mozilla</a>
+            |
+            <a href="https://www.w3schools.com/jsref/jsref_obj_regexp.asp" target="_blank">W3schools</a>
+        </small>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function (){
+        $(`select#{{ rInputTypeIdx }}`).on('change', function (){
+            if ($(this).val() === 'custom'){
+                $(this).siblings('.form-group').slideDown().find('input[name="input_type_value"]').prop('required', true);
+            } else {
+                $(this).siblings('.form-group').slideUp().find('input[name="input_type_value"]').prop('required', false);
+            }
+        })
+    })
+</script>

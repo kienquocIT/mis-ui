@@ -52,3 +52,39 @@ msgstr "Tài khoản không được liên kết với nhân viên. Vui lòng li
 #
 msgid "Admin"
 msgstr "Quản trị viên"
+
+#
+msgid "Unsaved changes?"
+msgstr "Thay đổi chưa được lưu?"
+
+#
+msgid "You have made changes."
+msgstr "Bạn đã thực hiện các thay đổi"
+
+#
+msgid "Do you want to discard them?"
+msgstr "Bạn có muốn hủy chúng không?"
+
+#
+msgid "Discard unsaved changes"
+msgstr "Loại bỏ thay đổi"
+
+#
+msgid "Close"
+msgstr "Đóng"
+
+#
+msgid "Copied"
+msgstr "Đã sao chép"
+
+#
+msgid "Update"
+msgstr "Cập nhật"
+
+#
+msgid "Are you sure you want to duplicate it?"
+msgstr "Bạn có muốn nhân bản chúng?"
+
+#
+msgid "Duplicate"
+msgstr "Nhân bản"

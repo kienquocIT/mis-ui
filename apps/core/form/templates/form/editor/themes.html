@@ -1,0 +1,80 @@
+{% load static i18n %}
+
+<div
+        id="config-themes"
+        data-url="{% url 'FormDetailThemeAPI' pk=pk %}"
+>
+    <div id="config-themes-sub">
+        <div class="preview-header">
+            <span class="preview-theme-selected">{% trans 'Themes' %}</span>
+            <div class="preview-device">
+                <select class="input-radio-select" id="select-device-display">
+                    <option value="pc" selected>PC</option>
+                    <option value="table">Tablet</option>
+                    <option value="mobile">Mobile</option>
+                </select>
+            </div>
+            <div class="preview-device-structure">
+                <select class="input-radio-select" id="select-device-structure">
+                    <option value="horizontal" selected>Horizontal</option>
+                    <option value="vertical">Vertical</option>
+                </select>
+            </div>
+            <div class="preview-action">
+                <button
+                        class="btn btn-primary no-transform"
+                        id="apply-config-theme"
+                        data-bs-toggle="tooltip"
+                        title="{% trans 'All changes are automatically saved to the server' %}"
+                >{% trans 'Apply' %}</button>
+                <button class="btn btn-icon" style="color: #fff" id="close-config-theme">
+                    <span class="icon"><i class="fa-solid fa-xmark"></i></span>
+                </button>
+            </div>
+        </div>
+        <div class="preview-body">
+            <div class="apply-preview">
+                <iframe
+                        src="{% url 'FormPublishDetailViewIFrame' %}"
+                        data-format-url="{% url 'FormSanitizeHTMLAPI' %}"
+                        id="iframe-preview" class="apply-preview-device"
+                        width="100%" height="100%" frameborder="0"
+                ></iframe>
+            </div>
+            <div class="block-split">
+                <button class="block-split-btn">
+                    <i class="fa-solid fa-caret-right"></i>
+                </button>
+            </div>
+            <div class="theme-list">
+                <div class="theme-list-sub">
+                    <div class="theme-item" data-css-url="{% static 'form/runtime/themes/00-simple/theme.css' %}" data-code="simple">
+                        <div class="theme-item-sub">
+                            <p>Simple</p>
+                            <img src="{% static 'form/runtime/themes/00-simple/preview.png' %}" alt="">
+                        </div>
+                    </div>
+                    <div class="theme-item" data-css-url="{% static 'form/runtime/themes/01-modern/theme.css' %}" data-code="modern">
+                        <div class="theme-item-sub">
+                            <p>Modern</p>
+                            <img src="{% static 'form/runtime/themes/01-modern/preview.png' %}" alt="">
+                        </div>
+                    </div>
+                    <div class="theme-item" data-css-url="{% static 'form/runtime/themes/02-d-tech/theme.css' %}" data-code="d-tech">
+                        <div class="theme-item-sub">
+                            <p>Digital Technical</p>
+                            <img src="{% static 'form/runtime/themes/02-d-tech/preview.png' %}" alt="">
+                        </div>
+                    </div>
+                    <div class="theme-item" data-css-url="{% static 'form/runtime/themes/03-forest-nature/theme.css' %}" data-code="forest-nature">
+                        <div class="theme-item-sub">
+                            <p>Forest nature</p>
+                            <img src="{% static 'form/runtime/themes/03-forest-nature/preview.png' %}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="clear: both"></div>
+        </div>
+    </div>
+</div>

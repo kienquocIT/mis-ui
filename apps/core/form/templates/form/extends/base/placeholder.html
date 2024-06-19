@@ -1,0 +1,8 @@
+{% load i18n define_action %}
+
+{% assign_out_random placeholderTextIdx as rPlaceholderText %}
+
+<div class="form-group mb-3">
+    <label for="{{ rPlaceholderText }}" class="form-label">{% trans 'Placeholder text' %}</label>
+    <input type="text" class="form-control" id="{{ rPlaceholderText }}" name="place_holder"/>
+</div>

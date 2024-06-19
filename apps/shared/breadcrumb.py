@@ -337,6 +337,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
     MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
     IMPORT_LIST_PAGE = BreadcrumbChildren(_('Import List'), 'FImportListView')
+    FORM_LIST_PAGE = BreadcrumbChildren(_('Forms'), 'FormListView')
+    FORM_ENTRIES_LIST_PAGE = BreadcrumbChildren(_('Entries Data'))
 
 
 class BreadcrumbView:
@@ -869,3 +871,8 @@ class BreadcrumbView:
     IMPORT_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.IMPORT_LIST_PAGE]
     IMPORT_LIST_PAGE = IMPORT_LIST + [BreadcrumbItem.BASTION_LIST]
     IMPORT_CREATE_PAGE = IMPORT_LIST + [BreadcrumbItem.BASTION_CREATE]
+
+    FORM_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.FORM_LIST_PAGE]
+    FORM_CREATE = FORM_LIST + [BreadcrumbItem.BASTION_CREATE]
+    FORM_UPDATE = FORM_LIST + [BreadcrumbItem.BASTION_UPDATE]
+    FORM_ENTRIES_LIST = FORM_LIST + [BreadcrumbItem.FORM_ENTRIES_LIST_PAGE]

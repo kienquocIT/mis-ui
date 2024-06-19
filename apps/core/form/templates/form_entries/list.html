@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block cssHeader %}
+    <style>
+        #idxPageContent {
+            padding: 0 !important;
+        }
+
+        .dtb-header-toolbar {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .tbl-footer-toolbar {
+            width: calc(100% - 20px);
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .dt-buttons {
+            margin-right: 10px;
+        }
+    </style>
+
+    <style>
+        table.table-border-head {
+            border-collapse: collapse !important;
+        }
+
+        table.table-border-head tr td {
+            border: 1px solid #f2f5f6;
+        }
+
+        table.table-border-head tr th {
+            border: 1px solid #dce2e5;
+            border-collapse: collapse;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .text-align-center {
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block pageAction %}
+    <a href="{% url 'FormUpdateView' pk=pk %}">
+        <button class="btn btn-outline-primary no-transform">
+        <span>
+            <span>{% trans 'Design form' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-paintbrush"></i>
+            </span>
+        </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <table
+            id="form-entries-list"
+            class="table nowrap w-100 table-border-head"
+            data-url="{% url 'FormEntriesListAPI' pk=pk %}"
+            data-url-config="{% url 'FormDetailForEntriesAPI' pk=pk %}"
+            data-url-ref-name-list="{% url 'FormEntriesRefNameListAPI' pk=pk %}"
+    >
+        <thead>
+        <tr></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+{% endblock %}
+
+{% block jsHeaderUnCompress %}
+    <script src="{% static 'vendors/xlsx/dist/xlsx.full.min.js' %}"></script>
+    <script src="{% static 'vendors/excelJS/exceljs.min.js' %}"></script>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'form/entries/list.js' %}"></script>
+{% endblock %}

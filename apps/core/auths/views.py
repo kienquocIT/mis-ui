@@ -15,7 +15,8 @@ from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, ServerMsg, TypeCh
 from apps.core.account.models import User
 
 from .forms import AuthLoginForm
-from ...shared.decorators import OutLayoutRender
+from apps.shared.csrf import CSRFCheckSessionAuthentication, APIAllowAny
+from apps.shared.decorators import OutLayoutRender
 
 
 def check_home_domain(request):
@@ -217,7 +218,9 @@ class MyLanguageAPI(APIView):
         return {}, status.HTTP_403_FORBIDDEN
 
 
-class ForgotPasswordView(APIView):
+class ForgotPasswordView(View):
+    authentication_classes = [AllowAny]
+
     def get(self, request, *args, **kwargs):
         if request.user and not isinstance(request.user, AnonymousUser):
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
@@ -229,6 +232,16 @@ class ForgotPasswordView(APIView):
             return OutLayoutRender(request=request).render_404()
         ctx = {'ui_domain': settings.UI_DOMAIN, 'captcha_enabled': False}
         return render(request, 'auths/forgot_passwd.html', ctx)
+
+
+class ForgotPasswordAPI(APIView):
+    # default if user is unauthenticated so csrf check was skipped.
+    # Keep CSRFCheckSessionAuthentication at view post without authenticated
+    # Keep APIAllowAny at view post without permit action after check authenticated
+    # if you aren't expert flow permission_classes and authentication_classes
+    # please discuss with leader or using bastion option (not override classes)
+    permission_classes = [APIAllowAny]  # force skip check permit action when skip authenticated
+    authentication_classes = [CSRFCheckSessionAuthentication]  # force check csrf
 
     @mask_view(login_require=False, is_api=True)
     def post(self, request, *args, **kwargs):
@@ -243,6 +256,14 @@ class ForgotPasswordView(APIView):
 
 
 class ForgotPasswordDetailAPI(APIView):
+    # default if user is unauthenticated so csrf check was skipped.
+    # Keep CSRFCheckSessionAuthentication at view post without authenticated
+    # Keep APIAllowAny at view post without permit action after check authenticated
+    # if you aren't expert flow permission_classes and authentication_classes
+    # please discuss with leader or using bastion option (not override classes)
+    permission_classes = [APIAllowAny]  # force skip check permit action when skip authenticated
+    authentication_classes = [CSRFCheckSessionAuthentication]  # force check csrf
+
     @mask_view(login_require=False, is_api=True)
     def get(self, request, *args, pk, **kwargs):
         # refresh push OTP

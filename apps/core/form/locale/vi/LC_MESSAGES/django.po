@@ -1,0 +1,611 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 00:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "Properties"
+msgstr "Thuộc tính"
+
+#
+msgid "Start building!"
+msgstr "Bắt đầu xây dựng"
+
+#
+msgid "Drag fields from left panel and drop here to add them to your form."
+msgstr "Kéo các trường từ bảng điều khiển bên trái và thả vào đây để thêm chúng vào biểu mẫu của bạn."
+
+#
+msgid "Toggle message warning"
+msgstr "Ẩn/Hiện ô cảnh báo"
+
+#
+msgid "Got it, don't show again"
+msgstr "Đã hiểu, không hiển thị lại"
+
+#
+msgid "All configurations for fields will be temporarily stored in the browser until the save document is called"
+msgstr "Tất cả các cấu hình của trường dữ liệu sẽ lưu tạm trên trình duyệt cho tới khi lưu phiếu được gọi"
+
+#
+msgid "Note that reloading the page will lose the newly edited configurations"
+msgstr "Lưu ý tải lại trang sẽ làm mất các cấu hình mới chưa được gọi lưu phiếu"
+
+#
+msgid "Save and Close"
+msgstr "Lưu và đóng"
+
+#
+msgid "Hide field label"
+msgstr "Ẩn tiêu đề của trường dữ liệu"
+
+#
+msgid "Instructions"
+msgstr "Mô tả - Hướng dẫn"
+
+#
+msgid "Field size"
+msgstr "Kích thước trường dữ liệu"
+
+#
+msgid "Field number size"
+msgstr "Kích thước trường dữ liệu số"
+
+#
+msgid "Placeholder text"
+msgstr "Văn bản giữ chỗ"
+
+#
+msgid "Small"
+msgstr "Nhỏ"
+
+#
+msgid "Medium"
+msgstr "Vừa"
+
+#
+msgid "Large"
+msgstr "Lớn"
+
+#
+msgid "Initial value"
+msgstr "Giá trị ban đầu"
+
+#
+msgid "Character limit"
+msgstr "Giới hạn ký tự"
+
+#
+msgid "Min"
+msgstr "Tối thiểu"
+
+#
+msgid "Max"
+msgstr "Tối đa"
+
+#
+msgid "Validation"
+msgstr "Kiểm tra dữ liệu"
+
+#
+msgid "Required"
+msgstr "Yêu cầu"
+
+#
+msgid "Unique"
+msgstr "Duy nhất"
+
+#
+msgid "Visibility"
+msgstr "Khả năng hiển thị"
+
+#
+msgid "Hide"
+msgstr "Ẩn"
+
+#
+msgid "Disable"
+msgstr "Vô hiệu hoá"
+
+#
+msgid "Input type"
+msgstr "Kiểu dữ liệu đầu vào"
+
+#
+msgid "Any character"
+msgstr "Tất cả ký tự"
+
+#
+msgid "Letters only"
+msgstr "Chỉ chữ cái"
+
+#
+msgid "Letters and Number"
+msgstr "Chữ cái và số"
+
+#
+msgid "Letters, Number and Spaces"
+msgstr "Chữ cái, số và khoảng trắng"
+
+#
+msgid "Letters and Space"
+msgstr "Chữ cái và khoảng trắng"
+
+#
+msgid "Custom Entry Format"
+msgstr "Định dạng tuỳ chỉnh"
+
+#
+msgid "Input Text Case"
+msgstr "Chuyển đổi văn bản đầu vào"
+
+#
+msgid "Enter custom regex"
+msgstr "Nhập biểu thức chính quy tuỳ chỉnh"
+
+#
+msgid "Knowledge"
+msgstr "Kiến thức"
+
+#
+msgid "Auto confirm"
+msgstr "Tự động xác nhận"
+
+#
+msgid "Click to show/hide list"
+msgstr "Nhấn vào để hiển thị/ẩn danh sách"
+
+#
+msgid "Changes to this configuration will not be reflected in real-time until saved"
+msgstr "Các thay đổi trong cấu hình này sẽ không được phản ánh ngay lập tức cho đến khi được lưu"
+
+#
+msgid "Label Placement"
+msgstr "Vị trí nhãn"
+
+#
+msgid "Instruction Placement"
+msgstr "Vị trí mô tả - hướng dẫn"
+
+#
+msgid "Top"
+msgstr "Phía trên"
+
+#
+msgid "Bottom"
+msgstr "Phía dưới"
+
+#
+msgid "Left"
+msgstr "Bên trái"
+
+#
+msgid "Right"
+msgstr "Bên phải"
+
+#
+msgid "Unset"
+msgstr "Không thiết lập"
+
+#
+msgid "Lower"
+msgstr "Chuyển thành chữ thường"
+
+#
+msgid "Upper"
+msgstr "Chuyển thành chữ hoa"
+
+#
+msgid "Capitalize"
+msgstr "Viết hoa chữ cái đầu tiên"
+
+#
+msgid "Scale automatically to fill full of the width"
+msgstr "Tự động điều chỉnh kích thước để chiếm toàn bộ chiều rộng"
+
+#
+msgid "Type Count"
+msgstr "Kiểu đếm"
+
+#
+msgid "Characters"
+msgstr "Ký tự"
+
+#
+msgid "Words"
+msgstr "Từ"
+
+#
+msgid "Set the MIN is negative numbers to allow users to enter negative numbers"
+msgstr "Đặt giới hạn dưới là số âm để cho phép người dùng nhập số âm"
+
+#
+msgid "Minimize"
+msgstr "Thu gọn"
+
+#
+msgid "Maximize"
+msgstr "Phóng to"
+
+#
+msgid "Expand"
+msgstr "Mở rộng"
+
+#
+msgid "Alert Preferences"
+msgstr "Tuỳ chọn cảnh báo"
+
+#
+msgid "Email Notification"
+msgstr "Thông báo qua thư điện tử"
+
+#
+msgid "Embed Form"
+msgstr "Nhúng biểu mẫu"
+
+#
+msgid "Unit"
+msgstr "Đơn vị"
+
+#
+msgid "Unit placement"
+msgstr "Vị trí đơn vị"
+
+#
+msgid "Extra small"
+msgstr "Cực nhỏ"
+
+#
+msgid "Extra large"
+msgstr "Cực lớn"
+
+#
+msgid "Validate the value type"
+msgstr "Xác thực loại giá trị"
+
+#
+msgid "Integers"
+msgstr "Số nguyên"
+
+#
+msgid "Float"
+msgstr "Số thực"
+
+#
+msgid "Basic fields"
+msgstr "Trường cơ bản"
+
+#
+msgid "Advance fields"
+msgstr "Trường nâng cao"
+
+#
+msgid  "Submit"
+msgstr "Gửi"
+
+#
+msgid "Do not submit confidential information such as credit card details, mobile and ATM PINs, OTPs, account passwords, etc."
+msgstr "Không gửi thông tin bí mật như chi tiết thẻ tín dụng, mã PIN di động và ATM, OTP, mật khẩu tài khoản, v.v."
+
+#
+msgid "Report Abuse"
+msgstr "Báo cáo lạm dụng"
+
+#
+msgid "Powered by"
+msgstr "Được cung cấp bởi"
+
+#
+msgid "Published Form"
+msgstr "Biểu mẫu đã xuất bản"
+
+#
+msgid "Enable"
+msgstr "Kích hoạt"
+
+#
+msgid "Form Permalink (URL)"
+msgstr "Biểu mẫu liên kết cố định (URL)"
+
+#
+msgid "QR Code"
+msgstr "Mã QR"
+
+#
+msgid "Share Publicly"
+msgstr "Chia sẻ công khai"
+
+#
+msgid "Share your form as a public link or privately within your organization."
+msgstr "Chia sẻ biểu mẫu của bạn dưới dạng liên kết công khai hoặc riêng tư trong tổ chức của bạn."
+
+#
+msgid "All changes are automatically saved to the server"
+msgstr "Tất cả thay đổi được lưu tự động vào máy chủ"
+
+#
+msgid "Share With"
+msgstr "Chia sẻ với"
+
+#
+msgid "Embed"
+msgstr "Nhúng"
+
+#
+msgid "Embed your form on a website using the embed codes that suits your need."
+msgstr "Nhúng biểu mẫu của bạn vào trang web bằng cách sử dụng mã nhúng phù hợp với nhu cầu của bạn."
+
+#
+msgid "Email Campaigns"
+msgstr "Chiến dịch email"
+
+#
+msgid "Share your form with a list of contacts using email campaign software."
+msgstr "Chia sẻ biểu mẫu của bạn với danh sách liên hệ bằng phần mềm chiến dịch email."
+
+#
+msgid "Track Entries"
+msgstr "Theo dõi phản hồi"
+
+#
+msgid "Use advanced tracking codes in your forms to measure your campaign metrics."
+msgstr "Sử dụng mã theo dõi nâng cao trong biểu mẫu để đo lường số liệu chiến dịch của bạn."
+
+#
+msgid "Public"
+msgstr "Công khai"
+
+#
+msgid "Specific Users"
+msgstr "Người dùng cụ thể"
+
+#
+msgid "All Users"
+msgstr "Tất cả người dùng"
+
+#
+msgid "Share this QR code with your audience to let them access the form directly on their devices."
+msgstr "Chia sẻ mã QR này với khán giả của bạn để cho phép họ truy cập biểu mẫu trực tiếp trên thiết bị của họ."
+
+#
+msgid "Track referrals"
+msgstr "Theo dõi giới thiệu"
+
+#
+msgid "You can append parameters to your URL to track referrals."
+msgstr "Bạn có thể thêm các tham số vào URL của mình để theo dõi các lượt giới thiệu."
+
+#
+msgid "Prefill form fields"
+msgstr "Điền trước các trường biểu mẫu"
+
+#
+msgid "You can append parameters to your URL to prefill form fields."
+msgstr "Bạn có thể nối thêm các tham số vào URL của mình vào các trường biểu mẫu điền trước."
+
+#
+msgid "Share on social media."
+msgstr "Chia sẻ trên phương tiện truyền thông xã hội."
+
+#
+msgid "Share this form on your social networks."
+msgstr "Chia sẻ biểu mẫu này trên mạng xã hội của bạn."
+
+#
+msgid "Access Form"
+msgstr "Truy cập biểu mẫu"
+
+#
+msgid "This form has no published data."
+msgstr "Biểu mẫu này chưa có dữ liệu công bố."
+
+#
+msgid "Create publish form"
+msgstr "Tạo công bố biểu mẫu"
+
+#
+msgid "Public users can access this form and submit responses."
+msgstr "Người dùng công cộng có thể truy cập biểu mẫu này và gửi phản hồi."
+
+#
+msgid "Use this code to embed the form as an iframe on a web page."
+msgstr "Sử dụng mã này để nhúng biểu mẫu dưới dạng iframe trên trang web."
+
+#
+msgid "Form title"
+msgstr "Tiêu đề biểu mẫu"
+
+#
+msgid "Form descriptions"
+msgstr "Mô tả biểu mẫu"
+
+#
+msgid "Forms"
+msgstr "Biểu mẫu"
+
+#
+msgid "Entries Data"
+msgstr "Dữ liệu đã nhập"
+
+#
+msgid "Switch account"
+msgstr "Đổi tài khoản"
+
+#
+msgid "Require user login before submitting data"
+msgstr "Yêu cầu người dùng đăng nhập trước khi gửi dữ liệu"
+
+#
+msgid "When the value is off, the anonymous user can submit data."
+msgstr "Khi tắt, người dùng ẩn danh có thể gửi dữ liệu."
+
+#
+msgid "When the value is turned on, only logged-in users can submit data."
+msgstr "Khi bật, chỉ người dùng đã đăng nhập mới có thể gửi dữ liệu."
+
+#
+msgid "Min length"
+msgstr "Độ dài tối thiểu"
+
+#
+msgid "Max length"
+msgstr "Độ dài tối đa"
+
+#
+msgid "Name of field"
+msgstr "Tên đại diện của trường"
+
+#
+msgid "Corresponds to a stored data field"
+msgstr "Tương ứng với trường dữ liệu được lưu trữ"
+
+#
+msgid "Employs this name to autofill form fields"
+msgstr "Sử dụng tên này để cấu hình tự động điền dữ liệu"
+
+#
+msgid "Width - px"
+msgstr "Độ dài - px"
+
+#
+msgid "Text align"
+msgstr "Căn chỉnh văn bản"
+
+#
+msgid "Center"
+msgstr "Trung tâm"
+
+#
+msgid "Label of unit at report"
+msgstr "Tiêu đề của đơn vị tại báo cáo"
+
+#
+msgid "Title for report"
+msgstr "Tiêu đề tại báo cáo"
+
+#
+msgid "Title main value for report"
+msgstr "Tiêu đề dữ liệu chính tại báo cáo"
+
+#
+msgid "Title region value for report"
+msgstr "Tiêu đề dữ liệu vùng/lãnh thổ tại báo"
+
+#
+msgid "The name represented in the report of the value"
+msgstr "Tên đại diện cho dữ liệu được thể hiện trong báo cáo"
+
+#
+msgid "The default setting is displayed in the report"
+msgstr "Cài đặt mặc định được hiển thị trong báo cáo"
+
+#
+msgid "Display referrer name"
+msgstr "Hiển thị cột theo dõi"
+
+#
+msgid "Display creator name"
+msgstr "Hiển thị cột người tạo"
+
+#
+msgid "The default configuration for hiding/showing columns on the website's Entries page."
+msgstr "Cấu hình mặc định để ẩn/hiển thị các cột trên trang Mục dữ liệu đã nhập."
+
+#
+msgid "These information columns will still be included in the Excel export."
+msgstr "Các cột thông tin này sẽ vẫn được đưa vào bản xuất Excel."
+
+#
+msgid "Enabled region value"
+msgstr "Bật dữ liệu vùng lãnh thổ"
+
+#
+msgid "Region visible"
+msgstr "Hiển thị dữ liệu vùng lãnh thổ"
+
+#
+msgid "Allowed region list"
+msgstr "Vùng lãnh thổ được phép chọn"
+
+#
+msgid "Region default"
+msgstr "Vùng lãnh thổ mặc định"
+
+#
+msgid "Domain allow validation"
+msgstr "Cho phép tên miền"
+
+#
+msgid "Domain restrict validation"
+msgstr "Hạn chế tên miền"
+
+#
+msgid "Allow"
+msgstr "Cho phép"
+
+#
+msgid "Restrict"
+msgstr "Hạn chế"
+
+#
+msgid "eg"
+msgstr "ví dụ"
+
+#
+msgid "Design form"
+msgstr "Thiết kế biểu mẫu"
+
+#
+msgid "Allows submitting data only one time per user"
+msgstr "Chỉ cho phép gửi dữ liệu mỗi người một lần"
+
+#
+msgid "This feature is available when the require authentication option is on"
+msgstr "Tính năng này chỉ khả dụng khi Yêu cầu người dùng đăng nhập được bật"
+
+#
+msgid "Allows edit submitted data of user"
+msgstr "Cho phép chỉnh sửa dữ liệu đã gửi"
+
+#
+msgid "Theme mode"
+msgstr "Chế độ hiển thị"
+
+#
+msgid "System"
+msgstr "Hệ thống"
+
+#
+msgid "Light"
+msgstr "Sáng"
+
+#
+msgid "Dark"
+msgstr "Tối"
+
+#
+msgid "Date published"
+msgstr "Ngày công bố"
+
+#
+msgid "Start"
+msgstr "Bắt đầu"
+
+#
+msgid "End"
+msgstr "Kết thúc"
+

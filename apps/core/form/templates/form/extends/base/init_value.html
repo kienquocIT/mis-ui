@@ -1,0 +1,8 @@
+{% load i18n define_action %}
+
+{% assign_out_random initValueIdx as rInitValueIdx %}
+
+<div class="form-group mb-3">
+    <label for="{{ rInitValueIdx }}" class="form-label">{% trans 'Initial value' %}</label>
+    <input type="text" class="form-control" id="{{ rInitValueIdx }}" name="init_value"/>
+</div>

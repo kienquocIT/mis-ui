@@ -5,12 +5,15 @@ from apps.core.auths.views import (
     AuthLogin, AuthLogout, TenantLoginChoice,
     SwitchCompanyCurrentView, SpaceChangeView,
     MyLanguageAPI,
-    AuthLoginSelectTenant, ForgotPasswordView, ChangePasswordView, ChangePasswordAPI, ForgotPasswordDetailAPI,
+    AuthLoginSelectTenant,
+    ForgotPasswordView, ForgotPasswordAPI, ForgotPasswordDetailAPI,
+    ChangePasswordView, ChangePasswordAPI,
 )
 
 urlpatterns = [
     path('login', AuthLogin.as_view(), name='AuthLogin'),
     path('forgot-password', ForgotPasswordView.as_view(), name='ForgotPasswordView'),
+    path('forgot-password/api', ForgotPasswordAPI.as_view(), name='ForgotPasswordAPI'),
     path('forgot-password/<str:pk>/api', ForgotPasswordDetailAPI.as_view(), name='ForgotPasswordDetailAPI'),
     path('login/select-tenant', AuthLoginSelectTenant.as_view(), name='AuthLoginSelectTenant'),
     path('login/oauth2', AuthOAuth2Login.as_view(), name='AuthOAuth2Login'),

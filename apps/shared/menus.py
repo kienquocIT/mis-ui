@@ -215,6 +215,10 @@ class MenusCoreConfigurations:
                 name='Import Data', code='menu_import_data', view_name='FImportCreateView',
                 icon='<i class="fa-solid fa-file-import"></i>'
             ),
+            MenuCommon(
+                name='Forms', code='menu_form_data', view_name='FormListView',
+                icon='<i class="fa-brands fa-wpforms"></i>'
+            ),
         ]
     )
     INVENTORY_DATA_CONFIG = MenuCommon(

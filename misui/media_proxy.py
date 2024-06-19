@@ -1,5 +1,6 @@
 import datetime
 import json
+import re
 
 import requests
 
@@ -11,9 +12,12 @@ from requests.exceptions import ConnectionError, SSLError, Timeout
 
 from apps.shared import RandomGenerate
 from apps.shared.apis.api import APIUtil
+from apps.shared.csrf import APIAllowAny
 
 
 class MediaProxyView(APIView):
+    permission_classes = [APIAllowAny]
+
     proxy_host = settings.API_DOMAIN_SIMPLE
     source = ''
     DEFAULT_HTTP_ACCEPT = 'application/json'
@@ -102,37 +106,51 @@ class MediaProxyView(APIView):
     def create_error_response(self, body, status):
         return Response(body, status)
 
+    def valid_before_proxy(self, request, path) -> bool:
+        if path.startswith('media/public/'):
+            regex_public_global = 'media/public/[0-9a-f]{12}4[0-9a-f]{3}[89ab][0-9a-f]{15}/global/'
+            arr = re.split(regex_public_global, path)
+            if len(arr) == 2 and arr[0] == '':
+                sub_path = arr[1]
+                if sub_path.startswith('logo'):  # skip authentication when get logo
+                    return True
+        if request.user and request.user.is_authenticated:  # another must be authenticated
+            return True
+        return False
+
     def proxy(self, request, path):
         url = self.get_request_url(request, path)
         data = self.get_request_data(request)
         headers = self.get_headers(request)
 
-        try:
-            response = requests.request(
-                method=request.method,
-                url=url,
-                data=data,
-                headers=headers,
-                timeout=self.TIMEOUT,
-            )
-        except (ConnectionError, SSLError):
-            status = requests.status_codes.codes.bad_gateway
-            return self.create_error_response(
-                {
-                    'code': status,
-                    'error': 'Bad gateway',
-                }, status
-            )
-        except (Timeout):
-            status = requests.status_codes.codes.gateway_timeout
-            return self.create_error_response(
-                {
-                    'code': status,
-                    'error': 'Gateway timed out',
-                }, status
-            )
+        if self.valid_before_proxy(request, path):
+            try:
+                response = requests.request(
+                    method=request.method,
+                    url=url,
+                    data=data,
+                    headers=headers,
+                    timeout=self.TIMEOUT,
+                )
+            except (ConnectionError, SSLError):
+                status = requests.status_codes.codes.bad_gateway
+                return self.create_error_response(
+                    {
+                        'code': status,
+                        'error': 'Bad gateway',
+                    }, status
+                )
+            except (Timeout):
+                status = requests.status_codes.codes.gateway_timeout
+                return self.create_error_response(
+                    {
+                        'code': status,
+                        'error': 'Gateway timed out',
+                    }, status
+                )
 
-        return self.create_response(response)
+            return self.create_response(response)
+        return HttpResponse(status=404)
 
     def get(self, request, *args, path, **kwargs):
         return self.proxy(request, 'media/' + path)

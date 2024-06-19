@@ -607,9 +607,15 @@ function LoadDetailCompany(frm, option) {
 
             if (data1['config']?.['cost_per_warehouse']) {
                 $('#cost-per-warehouse').prop('checked', true);
+                $('#cost-per-warehouse').trigger('change')
             }
-            if (data1['config']?.['cost_per_lot_batch']) {
-                $('#cost-per-lot-batch').prop('checked', true);
+            if (data1['config']?.['cost_per_lot']) {
+                $('#cost-per-lot').prop('checked', true);
+                $('#cost-per-lot').trigger('change')
+            }
+            if (data1['config']?.['cost_per_project']) {
+                $('#cost-per-prj').prop('checked', true);
+                $('#cost-per-prj').trigger('change')
             }
 
             $('#idxLanguage').val(data1['config']['language']).trigger('change.select2');
@@ -664,5 +670,40 @@ $("#btn-test-email-connection").on('click', function (event) {
                     $('#verify-status').attr('class', 'fas fa-times-circle text-danger')
                 }
             )
+    }
+})
+
+$('#cost-per-warehouse').on('change', function () {
+    if ($(this).prop('checked')) {
+        $('#cost-per-lot').prop('disabled', false)
+        $('#cost-per-prj').prop('disabled', true)
+    }
+    else {
+        if (!$('#cost-per-lot').prop('checked')) {
+            $('#cost-per-prj').prop('disabled', false)
+        }
+    }
+})
+
+$('#cost-per-lot').on('change', function () {
+    if ($(this).prop('checked')) {
+        $('#cost-per-warehouse').prop('disabled', false)
+        $('#cost-per-prj').prop('disabled', true)
+    }
+    else {
+        if (!$('#cost-per-warehouse').prop('checked')) {
+            $('#cost-per-prj').prop('disabled', false)
+        }
+    }
+})
+
+$('#cost-per-prj').on('change', function () {
+    if ($(this).prop('checked')) {
+        $('#cost-per-warehouse').prop('disabled', true)
+        $('#cost-per-lot').prop('disabled', true)
+    }
+    else {
+        $('#cost-per-warehouse').prop('disabled', false)
+        $('#cost-per-lot').prop('disabled', false)
     }
 })

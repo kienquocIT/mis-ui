@@ -686,6 +686,13 @@ class OpportunityLoadDetail {
         let ele_sale_team_members = $('#card-member.tag-change .card');
         let ele_lost_other_reason = $('#check-lost-reason');
 
+        if ($('#new_opp_title').length !== 0) {
+            data_form['title'] = $('#new_opp_title').val()
+            if (!data_form['title']) {
+                $.fn.notifyB({description: "Missing Opp title"}, 'failure');
+            }
+        }
+
         data_form['win_rate'] = parseFloat($('#input-rate').val());
         data_form['is_input_rate'] = !!$('#check-input-rate').is(':checked');
         ele_customer.val() !== undefined ? data_form['customer'] = ele_customer.val() : undefined;

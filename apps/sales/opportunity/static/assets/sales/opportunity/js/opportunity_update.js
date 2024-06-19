@@ -1,4 +1,18 @@
 $(document).ready(function () {
+    const opp_title_Ele = $('#header-title')
+    opp_title_Ele.on('mouseenter', function () {
+        $(this).append('<button type="button" id="edit_opp_title" class="ml-2 btn btn-floating btn-icon btn-flush-primary btn-xs"><span class="icon"><i class="bi bi-pencil-square"></i></span></button>')
+    })
+    opp_title_Ele.on('mouseleave', function () {
+        $(this).find('button').remove()
+    })
+    $(document).on('click', '#edit_opp_title', function () {
+        let old_title = opp_title_Ele.text()
+        opp_title_Ele.closest('div').addClass('col-12').html(`
+            <input style="min-height: 50px; font-weight: bolder; font-size: xx-large" id="new_opp_title" class="text-primary form-control text-center" value="${old_title}">
+        `)
+    })
+
     let trans_script = $('#trans-script')
     let eleFrmPermit = $('#permit-member');
     $(document).on('click', '#btnOpenPermit', function () {

@@ -98,11 +98,7 @@ class QuotationLoadDataHandle {
         // Delete all shipping rows
         deletePromotionRows(tableProduct, false, true);
         // ReCheck Config when change Opportunity
-        let check_config = QuotationCheckConfigHandle.checkConfig(0);
-        // load again total products if after check config the price change
-        if (check_config?.['is_make_price_change'] === true) {
-            QuotationCalculateCaseHandle.calculateAllRowsTableProduct($(tableProduct));
-        }
+        QuotationCheckConfigHandle.checkConfig(0);
     };
 
     static loadInitCustomer() {
@@ -1830,25 +1826,14 @@ class QuotationLoadDataHandle {
         if (data?.['opportunity'] && data?.['sale_person']) {
             QuotationLoadDataHandle.salePersonSelectEle.empty();
             QuotationLoadDataHandle.opportunitySelectEle.empty();
-            new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                data_inherit: [{
-                    "id": data?.['sale_person']?.['id'],
-                    "full_name": data?.['sale_person']?.['full_name'] || '',
-                    "first_name": data?.['sale_person']?.['first_name'] || '',
-                    "last_name": data?.['sale_person']?.['last_name'] || '',
-                    "email": data?.['sale_person']?.['email'] || '',
-                    "is_active": data?.['sale_person']?.['is_active'] || false,
-                    "selected": true,
-                }],
-                data_opp: [{
-                    "id": data?.['opportunity']?.['id'] || '',
-                    "title": data?.['opportunity']?.['title'] || '',
-                    "code": data?.['opportunity']?.['code'] || '',
-                    "selected": true,
-                }]
-            }).init();
+            QuotationLoadDataHandle.salePersonSelectEle.initSelect2({
+                    data: data?.['sale_person'],
+                    'allowClear': true,
+                });
+            QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
+                    data: data?.['opportunity'],
+                    'allowClear': true,
+                });
         }
         QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
         QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
@@ -3245,29 +3230,25 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row?.['title']}</span>`
+                        if (row?.['title'] && row?.['code']) {
+                            return `<span class="badge badge-primary badge-sm">${row?.['code'] ? row?.['code'] : ''}</span>
+                                    <p class="table-row-title">${row?.['title']}</p>`;
+                        }
+                        return `<p>--</p>`;
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        if (row?.['code']) {
-                            return `<span class="badge badge-primary table-row-code">${row?.['code']}</span>`;
+                        if (row?.['opportunity']?.['title'] && row?.['opportunity']?.['code']) {
+                            return `<span class="badge badge-secondary badge-sm">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>
+                                    <p class="table-row-customer">${row?.['opportunity']?.['title']}</p>`;
                         }
                         return `<p>--</p>`;
                     },
                 },
                 {
                     targets: 3,
-                    render: (data, type, row) => {
-                        if (row?.['opportunity']?.['title']) {
-                            return `<p class="table-row-customer">${row?.['opportunity']?.['title']}</p>`;
-                        }
-                        return `<p>--</p>`;
-                    },
-                },
-                {
-                    targets: 4,
                     render: (data, type, row) => {
                         if (row?.['customer']?.['title']) {
                             return `<p class="table-row-customer">${row?.['customer']?.['title']}</p>`;

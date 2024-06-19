@@ -77,7 +77,7 @@ $(function () {
 
 // Action on change dropdown opportunity
         QuotationLoadDataHandle.opportunitySelectEle.on('change', function () {
-            QuotationLoadDataHandle.loadDataByOpportunity(this);
+            QuotationLoadDataHandle.loadDataByOpportunity();
         });
 
 // Action on change dropdown customer

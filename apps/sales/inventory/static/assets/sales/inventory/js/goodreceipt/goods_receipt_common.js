@@ -6,63 +6,12 @@ class GRLoadDataHandle {
     static IASelectEle = $('#box-good-receipt-inventory-adjustment');
     static initPOProductEle = $('#data-init-purchase-order-products');
     static PRDataEle = $('#purchase_requests_data');
-    // static submitDataPRWHEle = $('#data-submit-pr-warehouse');
-    static finalRevenueBeforeTax = document.getElementById('good-receipt-final-revenue-before-tax');
+    static btnAddLot = $('#btn-add-manage-lot');
+    static btnAddSerial = $('#btn-add-manage-serial');
+    static btnAddIALot = $('#btn-add-ia-lot');
+    static btnAddIASerial = $('#btn-add-ia-serial');
     static transEle = $('#app-trans-factory');
     static urlEle = $('#url-factory');
-
-    static loadMoreInformation(ele, is_span = false) {
-        let optionSelected;
-        if (is_span === false) {
-            optionSelected = ele;
-        } else {
-            optionSelected = ele[0]
-        }
-        let eleInfo = ele[0].closest('.more-information-group').querySelector('.more-information');
-        let dropdownContent = ele[0].closest('.more-information-group').querySelector('.dropdown-menu');
-        dropdownContent.innerHTML = ``;
-        eleInfo.setAttribute('disabled', true);
-        let link = "";
-        if (optionSelected) {
-            let data = {};
-            if (is_span === false) {
-                data = SelectDDControl.get_data_from_idx(ele, ele.val());
-            } else {
-                let eleData = optionSelected.querySelector('.data-info');
-                if (eleData) {
-                    data = JSON.parse(eleData.value)
-                }
-            }
-            if (Object.keys(data).length !== 0) {
-                // remove attr disabled
-                if (eleInfo) {
-                    eleInfo.removeAttribute('disabled');
-                }
-                // end
-                let info = ``;
-                info += `<h6 class="dropdown-header header-wth-bg">${GRLoadDataHandle.transEle.attr('data-more-information')}</h6>`;
-                for (let key in data) {
-                    if (['id', 'title', 'name', 'fullname', 'full_name', 'code'].includes(key)) {
-                        if (key === 'id') {
-                            let linkDetail = ele.data('link-detail');
-                            if (linkDetail) {
-                                link = linkDetail.format_url_with_uuid(data[key]);
-                            }
-                        } else {
-                            info += `<div class="row mb-1"><h6><i>${key}</i></h6><p>${data[key]}</p></div>`;
-                        }
-                    }
-                }
-                info += `<div class="dropdown-divider"></div>
-                    <div class="row float-right">
-                        <a href="${link}" target="_blank" class="link-primary underline_hover">
-                            <span><span>${GRLoadDataHandle.transEle.attr('data-view-detail-info')}</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
-                        </a>
-                    </div>`;
-                dropdownContent.innerHTML = info;
-            }
-        }
-    };
 
     static loadBoxType(dataType = null) {
         let ele = GRLoadDataHandle.typeSelectEle;
@@ -133,7 +82,7 @@ class GRLoadDataHandle {
         let ele = GRLoadDataHandle.IASelectEle;
         ele.initSelect2({
             data: dataIA,
-            'dataParams': {'goods_receipt_ia__isnull': true},
+            'dataParams': {'state': false},
             disabled: !(ele.attr('data-url')),
         });
     };
@@ -207,15 +156,18 @@ class GRLoadDataHandle {
                             if (lot?.['id'] === checkedID) {
                                 isChecked = 'true';
                             }
-                            $(ele).append(`<a class="dropdown-item dropdown-item-lot" data-id="${lot?.['id']}" data-lot="${dataLot}" data-checked="${isChecked}" href="#">
-                                                <div class="d-flex">
-                                                    <span class="mr-2">${lot?.['lot_number']}</span>
-                                                    <span class="badge badge-soft-success">${lot?.['quantity_import']} <i>${uom}</i></span>
+                            $(ele).append(`<a class="dropdown-item dropdown-item-lot border border-grey mb-1" data-id="${lot?.['id']}" data-lot="${dataLot}" data-checked="${isChecked}" href="#">
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="badge badge-soft-blue">${lot?.['lot_number']}</span>
+                                                    <div class="d-flex">
+                                                        <span class="mr-2"><small>${lot?.['quantity_import']}</small></span>
+                                                        <span><small>${uom}</small></span>
+                                                    </div>
                                                 </div>
                                             </a>`);
                         }
                         if (ele.querySelector(".dropdown-item-lot[data-checked='true']")) {
-                            $(ele.querySelector(".dropdown-item-lot[data-checked='true']")).css('background-color', '#ebfcf5');
+                            $(ele.querySelector(".dropdown-item-lot[data-checked='true']")).css('background-color', '#eef6ff');
                         }
                     }
                 }
@@ -253,10 +205,13 @@ class GRLoadDataHandle {
                             if (lot?.['id'] === checkedID) {
                                 isChecked = 'true';
                             }
-                            $(ele).append(`<a class="dropdown-item dropdown-item-lot" data-id="${lot?.['id']}" data-lot="${dataLot}" data-checked="${isChecked}" href="#">
-                                                <div class="d-flex">
-                                                    <span class="mr-2">${lot?.['lot_number']}</span>
-                                                    <span class="badge badge-soft-success">${lot?.['quantity_import']} <i>${uom}</i></span>
+                            $(ele).append(`<a class="dropdown-item dropdown-item-lot border border-grey mb-1" data-id="${lot?.['id']}" data-lot="${dataLot}" data-checked="${isChecked}" href="#">
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="badge badge-soft-blue">${lot?.['lot_number']}</span>
+                                                    <div class="d-flex">
+                                                        <span class="mr-2"><small>${lot?.['quantity_import']}</small></span>
+                                                        <span><small>${uom}</small></span>
+                                                    </div>
                                                 </div>
                                             </a>`);
                         }
@@ -300,11 +255,19 @@ class GRLoadDataHandle {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (data.hasOwnProperty('purchase_order_product_list') && Array.isArray(data.purchase_order_product_list)) {
+                                let dataValid = [];
+                                for (let dataPOPro of data.purchase_order_product_list) {
+                                    if (dataPOPro?.['product'].hasOwnProperty('product_choice') && Array.isArray(dataPOPro?.['product']?.['product_choice'])) {
+                                        if (dataPOPro?.['product']?.['product_choice'].includes(1)) {  // has choice allow inventory
+                                            dataValid.push(dataPOPro);
+                                        }
+                                    }
+                                }
                                 if (is_detail === true) {
                                     let data_detail = JSON.parse($('#data-detail-page').val());
                                     if (GRLoadDataHandle.POSelectEle.val()) {
                                         for (let data_product of data_detail?.['goods_receipt_product']) {
-                                            for (let dataPOProduct of data.purchase_order_product_list) {
+                                            for (let dataPOProduct of dataValid) {
                                                 if (dataPOProduct?.['id'] === data_product?.['purchase_order_product_id']) {
                                                     dataPOProduct['quantity_import'] = data_product?.['quantity_import'];
                                                     // If PO have PR
@@ -333,9 +296,9 @@ class GRLoadDataHandle {
                                         }
                                     }
                                 }
-                                GRLoadDataHandle.initPOProductEle.val(JSON.stringify(data.purchase_order_product_list));
+                                GRLoadDataHandle.initPOProductEle.val(JSON.stringify(dataValid));
                                 GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
-                                GRDataTableHandle.tablePOProduct.DataTable().rows.add(data.purchase_order_product_list).draw();
+                                GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataValid).draw();
                             }
                         }
                     }
@@ -391,13 +354,12 @@ class GRLoadDataHandle {
         if (ele.checked === true) {
             is_checked = true;
         }
+        GRStoreDataHandle.storeDataAll();
         for (let eleCheck of GRDataTableHandle.tablePR[0].querySelectorAll('.table-row-checkbox')) {
             eleCheck.checked = false;
             let row = eleCheck.closest('tr');
             $(row).css('background-color', '');
         }
-        //
-        GRStoreDataHandle.storeDataAll();
         GRDataTableHandle.tableLot.DataTable().clear().draw();
         GRDataTableHandle.tableSerial.DataTable().clear().draw();
         $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
@@ -412,6 +374,7 @@ class GRLoadDataHandle {
     };
 
     static loadCheckWH(ele) {
+        let $form = $('#frm_good_receipt_create');
         let row = ele.closest('tr');
         let is_checked = false;
         if (ele.checked === true) {
@@ -431,6 +394,17 @@ class GRLoadDataHandle {
             $(row).css('background-color', '#ebfcf5');
         } else {
             $(row).css('background-color', '');
+        }
+        if ($form.attr('data-method').toLowerCase() !== 'get') {
+            let eleAdditional = row.querySelector('.table-row-checkbox-additional');
+            let eleImport = row.querySelector('.table-row-import');
+            if (eleAdditional && eleImport && !eleAdditional.hasAttribute('disabled')) {
+                if (eleAdditional.checked === true) {
+                    eleImport.removeAttribute('disabled');
+                } else {
+                    eleImport.setAttribute('disabled', 'true');
+                }
+            }
         }
     };
 
@@ -484,15 +458,16 @@ class GRLoadDataHandle {
                                 item['uom'] = dataStore?.['uom_order_actual'];
                             }
                             if (dataStore?.['warehouse_data']) {
-                                for (let dataPRWH of dataStore?.['warehouse_data']) {
-                                    if (dataPRWH?.['id'] === item?.['id']) {
-                                        item['quantity_import'] = dataPRWH?.['quantity_import'] ? dataPRWH?.['quantity_import'] : 0;
-                                        if (dataPRWH?.['lot_data']) {
-                                            item['lot_data'] = dataPRWH?.['lot_data'];
+                                for (let dataWH of dataStore?.['warehouse_data']) {
+                                    if (dataWH?.['id'] === item?.['id']) {
+                                        item['quantity_import'] = dataWH?.['quantity_import'] ? dataWH?.['quantity_import'] : 0;
+                                        if (dataWH?.['lot_data']) {
+                                            item['lot_data'] = dataWH?.['lot_data'];
                                         }
-                                        if (dataPRWH?.['serial_data']) {
-                                            item['serial_data'] = dataPRWH?.['serial_data'];
+                                        if (dataWH?.['serial_data']) {
+                                            item['serial_data'] = dataWH?.['serial_data'];
                                         }
+                                        item['is_additional'] = dataWH?.['is_additional'];
                                     }
                                 }
                             }
@@ -511,11 +486,16 @@ class GRLoadDataHandle {
         let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
         if (dataPOProductCheckedRaw) {
             let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
-            if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 1) {
-                GRLoadDataHandle.loadAreaLotSerial(true, false);
-            }
-            if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 2) {
-                GRLoadDataHandle.loadAreaLotSerial(false, true);
+            if ([1, 2].includes(dataPOProductChecked?.['product']?.['general_traceability_method'])) {
+                if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 1) {  // lot
+                    GRLoadDataHandle.loadAreaLotSerial(true, false);
+                }
+                if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 2) {  // serial
+                    GRLoadDataHandle.loadAreaLotSerial(false, true);
+                    for (let eleCheckAdditional of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-checkbox-additional')) {
+                        eleCheckAdditional.removeAttribute('disabled');
+                    }
+                }
             }
         }
     };
@@ -530,19 +510,41 @@ class GRLoadDataHandle {
                 GRLoadDataHandle.loadAreaIALotSerial(true, false);
             } else if (rowData?.['product']?.['general_traceability_method'] === 2) {  // serial
                 GRLoadDataHandle.loadAreaIALotSerial(false, true);
+                for (let eleCheckAdditional of GRDataTableHandle.tableIAProduct[0].querySelectorAll('.table-row-checkbox-additional')) {
+                    eleCheckAdditional.removeAttribute('disabled');
+                }
             }
         }
     };
 
     static loadNewRowsLotOrNewRowsSerial() {
+        let $form = $('#frm_good_receipt_create');
         let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
         if (dataPOProductCheckedRaw) {
             let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
-            if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 1) {
-                GRLoadDataHandle.loadNewRowsLot();
-            }
-            if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 2) {
-                GRLoadDataHandle.loadNewRowsSerial();
+            if ([1, 2].includes(dataPOProductChecked?.['product']?.['general_traceability_method'])) {
+                if ($form.attr('data-method').toLowerCase() !== 'get') {
+                    let boxWHChecked = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked');
+                    if (boxWHChecked) {
+                        let isAdditional = boxWHChecked.closest('tr').querySelector('.table-row-checkbox-additional').checked;
+                        if (isAdditional === true) {
+                            GRLoadDataHandle.btnAddLot[0].setAttribute('disabled', 'true');
+                            GRLoadDataHandle.btnAddSerial[0].setAttribute('disabled', 'true');
+                        } else {
+                            GRLoadDataHandle.btnAddLot[0].removeAttribute('disabled');
+                            GRLoadDataHandle.btnAddSerial[0].removeAttribute('disabled');
+                        }
+                    }
+                }
+                for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
+                    eleImport.setAttribute('disabled', 'true');
+                }
+                if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 1) {
+                    GRLoadDataHandle.loadNewRowsLot();
+                }
+                if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 2) {
+                    GRLoadDataHandle.loadNewRowsSerial();
+                }
             }
         }
     };
@@ -566,17 +568,16 @@ class GRLoadDataHandle {
         for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
             eleImport.setAttribute('disabled', 'true');
         }
-        // GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = '0';
-        // GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = '0';
-        // $('#btn-lot-serial-area')[0].setAttribute('hidden', 'true');
         $('#scroll-table-lot-serial')[0].removeAttribute('hidden');
         GRDataTableHandle.tableLot.DataTable().clear().draw();
         GRDataTableHandle.tableSerial.DataTable().clear().draw();
-        if (is_lot === true) {
+        if (is_lot === true) {  // lot
             $('#table-good-receipt-manage-lot-area')[0].removeAttribute('hidden');
+            $('#btn-add-manage-lot')[0].removeAttribute('disabled');
             $('#table-good-receipt-manage-serial-area')[0].setAttribute('hidden', 'true');
-        } else if (is_serial === true) {
+        } else if (is_serial === true) {  // serial
             $('#table-good-receipt-manage-serial-area')[0].removeAttribute('hidden');
+            $('#btn-add-manage-serial')[0].removeAttribute('disabled');
             $('#table-good-receipt-manage-lot-area')[0].setAttribute('hidden', 'true');
         }
     };
@@ -585,16 +586,19 @@ class GRLoadDataHandle {
         $('#scroll-table-ia-lot-serial')[0].removeAttribute('hidden');
         GRDataTableHandle.tableIALot.DataTable().clear().draw();
         GRDataTableHandle.tableIASerial.DataTable().clear().draw();
-        if (is_lot === true) {
+        if (is_lot === true) {  // lot
             $('#table-good-receipt-ia-lot-area')[0].removeAttribute('hidden');
+            $('#btn-add-ia-lot')[0].removeAttribute('disabled');
             $('#table-good-receipt-ia-serial-area')[0].setAttribute('hidden', 'true');
-        } else if (is_serial === true) {
+        } else if (is_serial === true) {  // serial
             $('#table-good-receipt-ia-serial-area')[0].removeAttribute('hidden');
+            $('#btn-add-ia-serial')[0].removeAttribute('disabled');
             $('#table-good-receipt-ia-lot-area')[0].setAttribute('hidden', 'true');
         }
     };
 
     static loadNewRowsLot() {
+        let $form = $('#frm_good_receipt_create');
         let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
         if (eleWHDataRaw) {
             let eleWHData = JSON.parse(eleWHDataRaw);
@@ -604,6 +608,9 @@ class GRLoadDataHandle {
                     GRLoadDataHandle.loadDDLot(newRow.querySelector('.dropdown-menu-lot'), lot_data?.['lot']);
                     GRLoadDataHandle.loadLotSerialDatePickerExist(newRow);
                 }
+            }
+            if ($form.attr('data-method').toLowerCase() === 'get') {
+                GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLot);
             }
         }
     };
@@ -675,7 +682,7 @@ class GRLoadDataHandle {
             let valid_lot = GRValidateHandle.validateLotNumberExistRow(eleLotNumber);
             if (valid_lot === true) {
                 ele.setAttribute('data-checked', 'true');
-                $(ele).css('background-color', '#ebfcf5');
+                $(ele).css('background-color', '#eef6ff');
                 if (eleImport) {
                     eleImport.value = '0';
                     GRLoadDataHandle.loadQuantityImport();
@@ -715,6 +722,7 @@ class GRLoadDataHandle {
     }
 
     static loadNewRowsSerial() {
+        let $form = $('#frm_good_receipt_create');
         let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
         if (eleWHDataRaw) {
             let eleWHData = JSON.parse(eleWHDataRaw);
@@ -727,6 +735,9 @@ class GRLoadDataHandle {
                 let row = this.node();
                 GRLoadDataHandle.loadLotSerialDatePickerExist(row);
             })
+            if ($form.attr('data-method').toLowerCase() === 'get') {
+                GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableSerial);
+            }
         }
     };
 
@@ -1141,6 +1152,67 @@ class GRLoadDataHandle {
         }
     };
 
+    static loadClearModalAreas() {
+        for (let eleCheck of GRDataTableHandle.tablePOProduct[0].querySelectorAll('.table-row-checkbox')) {
+            eleCheck.checked = false;
+        }
+        $('#scroll-table-pr')[0].setAttribute('hidden', 'true');
+        $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
+        GRDataTableHandle.tableWH.DataTable().clear().draw();
+    };
+
+    static loadCheckIsAdditional(ele) {
+        let $form = $('#frm_good_receipt_create');
+        if ($form.attr('data-method').toLowerCase() !== 'get') {
+            let row = ele.closest('tr');
+            row.querySelector('.table-row-import').value = '0';
+            if (ele.checked === true) {
+                GRDataTableHandle.tableLot.DataTable().clear().draw();
+                GRDataTableHandle.tableSerial.DataTable().clear().draw();
+                GRLoadDataHandle.btnAddLot[0].setAttribute('disabled', 'true');
+                GRLoadDataHandle.btnAddSerial[0].setAttribute('disabled', 'true');
+                row.querySelector('.table-row-import').removeAttribute('disabled');
+            } else {
+                GRLoadDataHandle.btnAddLot[0].removeAttribute('disabled');
+                GRLoadDataHandle.btnAddSerial[0].removeAttribute('disabled');
+                row.querySelector('.table-row-import').setAttribute('disabled', 'true');
+            }
+            GRStoreDataHandle.storeDataAll();
+        }
+        return true;
+    };
+
+    static loadCheckIAIsAdditional(ele) {
+        let $form = $('#frm_good_receipt_create');
+        if ($form.attr('data-method').toLowerCase() !== 'get') {
+            let row = ele.closest('tr');
+            row.querySelector('.table-row-import').value = '0';
+            if (ele.checked === true) {
+                GRDataTableHandle.tableIALot.DataTable().clear().draw();
+                GRDataTableHandle.tableIASerial.DataTable().clear().draw();
+                GRLoadDataHandle.btnAddIALot[0].setAttribute('disabled', 'true');
+                GRLoadDataHandle.btnAddIASerial[0].setAttribute('disabled', 'true');
+                row.querySelector('.table-row-import').removeAttribute('disabled');
+            } else {
+                GRLoadDataHandle.btnAddIALot[0].removeAttribute('disabled');
+                GRLoadDataHandle.btnAddIASerial[0].removeAttribute('disabled');
+                row.querySelector('.table-row-import').setAttribute('disabled', 'true');
+            }
+            GRStoreDataHandle.storeIADataAll();
+        }
+        return true;
+    };
+
+    static loadCssToDtb(tableID) {
+        let tableIDWrapper = tableID + '_wrapper';
+        let tableWrapper = document.getElementById(tableIDWrapper);
+        if (tableWrapper) {
+            let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+            if (headerToolbar) {
+                headerToolbar.classList.add('hidden');
+            }
+        }
+    };
 
     // LOAD DETAIL
     static loadDetailPage(data) {
@@ -1240,6 +1312,7 @@ class GRLoadDataHandle {
                 if (dataGRProduct?.['product']?.['id'] === dataIAProduct?.['product']?.['id']) {
                     for (let dataWH of dataGRProduct?.['warehouse_data']) {
                         if (dataWH?.['warehouse']?.['id'] === dataIAProduct?.['warehouse']?.['id']) {
+                            dataIAProduct['is_additional'] = dataWH?.['is_additional'];
                             if (dataIAProduct?.['product']?.['general_traceability_method'] === 0) {
 
                             }
@@ -1310,6 +1383,30 @@ class GRLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.del-row')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-lot-number')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-import')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-vendor-serial-number')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-serial-number')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-expire-date')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-manufacture-date')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-warranty-start')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-warranty-end')) {
             ele.setAttribute('disabled', 'true');
         }
     };
@@ -1402,6 +1499,8 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-po-product');
             },
         });
     };
@@ -1469,11 +1568,13 @@ class GRDataTableHandle {
                                         </div>`;
                             }
                         }
-                        return `<span class="table-row-import text-primary"><b>${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</b></span>`;
+                        return `<b><span class="table-row-import text-primary">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span></b>`;
                     }
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-purchase-request');
             },
         });
     };
@@ -1514,7 +1615,13 @@ class GRDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-note">${row?.['remark'] ? row?.['remark'] : ''}</span>`;
+                        let checked = ``;
+                        if (row?.['is_additional'] === true) {
+                            checked = `checked`;
+                        }
+                        return `<div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" disabled ${checked}>
+                                </div>`;
                     }
                 },
                 {
@@ -1533,6 +1640,8 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-warehouse');
             },
         });
     };
@@ -1551,7 +1660,7 @@ class GRDataTableHandle {
                         return `<div class="row">
                                     <div class="input-group">
                                         <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">${GRLoadDataHandle.transEle.attr('data-select')}</button>
-                                        <ul class="dropdown-menu dropdown-bordered dropdown-menu-lot"></ul>
+                                        <ul class="dropdown-menu dropdown-bordered dropdown-menu-lot w-250p"></ul>
                                         <input type="text" class="form-control table-row-lot-number" data-row="${dataRow}" value="${row?.['lot_number'] ? row?.['lot_number'] : ''}">
                                     </div>
                                 </div>`;
@@ -1590,6 +1699,8 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-manage-lot');
             },
         });
     };
@@ -1658,6 +1769,8 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-manage-serial');
             },
         });
     };
@@ -1720,7 +1833,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '16.9270833333%',
+                    width: '15%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
@@ -1877,7 +1990,7 @@ class GRDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['uom']?.['title']}</span>`;
+                        return `<span class="table-row-item">${row?.['warehouse']?.['title']}</span>`;
                     }
                 },
                 {
@@ -1889,11 +2002,23 @@ class GRDataTableHandle {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-item">${row?.['warehouse']?.['title']}</span>`;
+                        return `<span class="table-row-uom">${row?.['uom']?.['title']}</span>`;
                     }
                 },
                 {
                     targets: 5,
+                    render: (data, type, row) => {
+                        let checked = ``;
+                        if (row?.['is_additional'] === true) {
+                            checked = `checked`;
+                        }
+                        return `<div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" disabled ${checked}>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 6,
                     render: (data, type, row) => {
                         if (row?.['product']?.['general_traceability_method'] === 0) {  // Not lot or serial
                             return `<div class="row">
@@ -1908,6 +2033,8 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-ia-product');
             },
         });
     };
@@ -1926,7 +2053,7 @@ class GRDataTableHandle {
                         return `<div class="row">
                                     <div class="input-group">
                                         <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">${GRLoadDataHandle.transEle.attr('data-select')}</button>
-                                        <ul class="dropdown-menu dropdown-bordered dropdown-menu-lot"></ul>
+                                        <ul class="dropdown-menu dropdown-bordered dropdown-menu-lot w-250p"></ul>
                                         <input type="text" class="form-control table-row-lot-number" data-row="${dataRow}" value="${row?.['lot_number'] ? row?.['lot_number'] : ''}">
                                     </div>
                                 </div>`;
@@ -1965,6 +2092,8 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-ia-lot');
             },
         });
     };
@@ -2033,6 +2162,8 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-ia-serial');
             },
         });
     };
@@ -2131,7 +2262,7 @@ class GRDataTableHandle {
                                     <input 
                                         type="text" 
                                         class="form-control mask-money table-row-price" 
-                                        value="${row?.['product_unit_price']}"
+                                        value="${row?.['product_cost_price']}"
                                         data-return-type="number"
                                     >
                                     </div>`;
@@ -2340,12 +2471,14 @@ class GRStoreDataHandle {
             table.DataTable().rows().every(function () {
                 let row = this.node();
                 let quantityImport = parseFloat(row.querySelector('.table-row-import').value);
+                let isAdditional = row.querySelector('.table-row-checkbox-additional').checked;
                 let dataRowRaw = row.querySelector('.table-row-checkbox')?.getAttribute('data-row');
                 if (dataRowRaw) {
                     if (quantityImport > 0) {
                         let dataRow = JSON.parse(dataRowRaw);
                         dataRow['warehouse'] = dataRow?.['id'];
                         dataRow['quantity_import'] = quantityImport;
+                        dataRow['is_additional'] = isAdditional;
                         quantityImportTotal += quantityImport;
                         PRProductID = dataRow?.['purchase_request_product_id'];
                         POProductID = dataRow?.['purchase_order_product_id'];
@@ -2629,36 +2762,55 @@ class GRValidateHandle {
         let lot_number = ele.value;
         if (lot_number !== '') {
             let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
-            if (dataPOProductCheckedRaw) {
+            let dataWHCheckedRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
+            if (dataPOProductCheckedRaw && dataWHCheckedRaw) {
                 let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
-                $.fn.callAjax2({
-                        'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-lot'),
-                        'method': 'GET',
-                        'data': {
-                            'product_warehouse__product_id': dataPOProductChecked?.['product']?.['id'],
-                            'lot_number': lot_number
-                        },
-                        'isDropdown': true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
-                                if (data.warehouse_lot_list.length > 0) {
-                                    ele.value = '';
-                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
-                                    if (eleImport) {
-                                        eleImport.value = '0';
+                let dataWHChecked = JSON.parse(dataWHCheckedRaw);
+                if (dataPOProductChecked && dataWHChecked) {
+                    let productID = dataPOProductChecked?.['product']?.['id'];
+                    let whID = dataWHChecked?.['id'];
+                    $.fn.callAjax2({
+                            'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-lot'),
+                            'method': 'GET',
+                            'data': {'lot_number': lot_number},
+                            'isDropdown': true,
+                        }
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
+                                    for (let wh_lot of data?.['warehouse_lot_list']) {
+                                        if (wh_lot?.['product_warehouse']) {
+                                            if (wh_lot?.['product_warehouse']?.['product'] && wh_lot?.['product_warehouse']?.['warehouse']) {
+                                                if (wh_lot?.['product_warehouse']?.['product']?.['id'] === productID && wh_lot?.['product_warehouse']?.['warehouse']?.['id'] === whID) {
+                                                    ele.value = '';
+                                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
+                                                    if (eleImport) {
+                                                        eleImport.value = '0';
+                                                    }
+                                                    GRLoadDataHandle.loadQuantityImport();
+                                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
+                                                    return false
+                                                }
+                                                if (wh_lot?.['product_warehouse']?.['product']?.['id'] !== productID) {
+                                                    ele.value = '';
+                                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
+                                                    if (eleImport) {
+                                                        eleImport.value = '0';
+                                                    }
+                                                    GRLoadDataHandle.loadQuantityImport();
+                                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
+                                                    return false
+                                                }
+                                            }
+                                        }
                                     }
-                                    GRLoadDataHandle.loadQuantityImport();
-                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
-                                    return false
                                 }
                             }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
         return true
@@ -2670,34 +2822,54 @@ class GRValidateHandle {
             let dataIAProductCheckedRaw = GRDataTableHandle.tableIAProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
             if (dataIAProductCheckedRaw) {
                 let dataIAProductChecked = JSON.parse(dataIAProductCheckedRaw);
-                $.fn.callAjax2({
-                        'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-lot'),
-                        'method': 'GET',
-                        'data': {
-                            'product_warehouse__product_id': dataIAProductChecked?.['product']?.['id'],
-                            'lot_number': lot_number
-                        },
-                        'isDropdown': true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
-                                if (data.warehouse_lot_list.length > 0) {
-                                    ele.value = '';
-                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
-                                    if (eleImport) {
-                                        eleImport.value = '0';
+                if (dataIAProductChecked) {
+                    let productID = dataIAProductChecked?.['product']?.['id'];
+                    let whID = dataIAProductChecked?.['warehouse']?.['id'];
+                    $.fn.callAjax2({
+                            'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-lot'),
+                            'method': 'GET',
+                            'data': {
+                                'product_warehouse__product_id': dataIAProductChecked?.['product']?.['id'],
+                                'lot_number': lot_number
+                            },
+                            'isDropdown': true,
+                        }
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
+                                    for (let wh_lot of data?.['warehouse_lot_list']) {
+                                        if (wh_lot?.['product_warehouse']) {
+                                            if (wh_lot?.['product_warehouse']?.['product'] && wh_lot?.['product_warehouse']?.['warehouse']) {
+                                                if (wh_lot?.['product_warehouse']?.['product']?.['id'] === productID && wh_lot?.['product_warehouse']?.['warehouse']?.['id'] === whID) {
+                                                    ele.value = '';
+                                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
+                                                    if (eleImport) {
+                                                        eleImport.value = '0';
+                                                    }
+                                                    GRLoadDataHandle.loadIAQuantityImport();
+                                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
+                                                    return false
+                                                }
+                                                if (wh_lot?.['product_warehouse']?.['product']?.['id'] !== productID) {
+                                                    ele.value = '';
+                                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
+                                                    if (eleImport) {
+                                                        eleImport.value = '0';
+                                                    }
+                                                    GRLoadDataHandle.loadIAQuantityImport();
+                                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
+                                                    return false
+                                                }
+                                            }
+                                        }
                                     }
-                                    GRLoadDataHandle.loadIAQuantityImport();
-                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
-                                    return false
                                 }
                             }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
         return true
@@ -2870,6 +3042,16 @@ class GRValidateHandle {
         return true;
     };
 
+    static validateNumber(ele) {
+        let value = ele.value;
+        // Replace non-digit characters with an empty string
+        value = value.replace(/[^0-9.]/g, '');
+        // Remove unnecessary zeros from the integer part
+        value = value.replace("-", "").replace(/^0+(?=\d)/, '');
+        // Update value of input
+        ele.value = value;
+    };
+
 }
 
 // Submit Form
@@ -2884,7 +3066,13 @@ class GRSubmitHandle {
                 let row = this.node();
                 let rowIndex = table.DataTable().row(row).index();
                 let $row = table.DataTable().row(rowIndex);
-                let dataRow = $row.data();
+                let dataRowRaw = $row.data();
+                let dataRow = {};
+                for (let key in dataRowRaw) {
+                    if (dataRowRaw.hasOwnProperty(key)) {
+                        dataRow[key] = dataRowRaw[key];
+                    }
+                }
                 order++;
                 let quantityImport = 0;
                 if (dataRow?.['product']?.['product_choice'].includes(1) || dataRow?.['purchase_request_products_data'].length > 0) { // If PO Product have inventory choice or PO have PR
@@ -3001,6 +3189,7 @@ class GRSubmitHandle {
                 let quantityImport = parseFloat(row.querySelector('.table-row-import').value);
                 if (quantityImport >= dataRow['quantity_ia']) {
                     dataRow['quantity_import'] = quantityImport;
+                    dataRow['is_additional'] = row.querySelector('.table-row-checkbox-additional').checked;
                     result.push(dataRow);
                 } else {
                     $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-ia-quantity-valid')}, 'failure');
@@ -3018,6 +3207,7 @@ class GRSubmitHandle {
                 'quantity_import',
                 'lot_data',
                 'serial_data',
+                'is_additional',
             ]
             filterFieldList(field_list, warehouse);
             for (let lot of warehouse?.['lot_data'] ? warehouse?.['lot_data'] : []) {
@@ -3089,17 +3279,14 @@ class GRSubmitHandle {
             }
         }
         if (type === '2') { // for IA
-            let table = GRDataTableHandle.tableLineDetailIA[0];
-            if (table.querySelector('.dataTables_empty')) {
-                return []
-            }
-            let tableBody = table.tBodies[0];
-            for (let i = 0; i < tableBody.rows.length; i++) {
+            let table = GRDataTableHandle.tableLineDetailIA;
+            table.DataTable().rows().every(function () {
                 let rowData = {};
-                let row = tableBody.rows[i];
+                let row = this.node();
                 let dataRowRaw = row?.querySelector('.table-row-order')?.getAttribute('data-row');
                 if (dataRowRaw) {
                     let dataRow = JSON.parse(dataRowRaw);
+                    rowData['ia_item'] = dataRow?.['id'];
                     let eleProduct = row.querySelector('.table-row-item');
                     if (eleProduct) { // PRODUCT
                         let dataInfo = {}
@@ -3149,18 +3336,31 @@ class GRSubmitHandle {
                         if ($(eleWH).val()) {
                             let dataInfo = SelectDDControl.get_data_from_idx($(eleWH), $(eleWH).val());
                             if (dataInfo) {
-                                rowData['warehouse'] = dataInfo.id;
-                                rowData['warehouse_data'] = [{'warehouse': dataInfo.id}];
+                                rowData['warehouse'] = dataInfo?.['id'];
+                                rowData['warehouse_data'] = [{
+                                    'warehouse': dataInfo?.['id'],
+                                    'is_additional': dataRow?.['is_additional'],
+                                }];
                                 if (dataRow?.['product']?.['general_traceability_method'] === 1) {
+                                    let lot_data = [];
+                                    if (dataRow?.['lot_data']) {
+                                        lot_data = dataRow?.['lot_data'];
+                                    }
                                     rowData['warehouse_data'] = [{
-                                        'warehouse': dataInfo.id,
-                                        'lot_data': dataRow?.['lot_data'],
+                                        'warehouse': dataInfo?.['id'],
+                                        'is_additional': dataRow?.['is_additional'],
+                                        'lot_data': lot_data,
                                     }]
                                 }
                                 if (dataRow?.['product']?.['general_traceability_method'] === 2) {
+                                    let serial_data = [];
+                                    if (dataRow?.['serial_data']) {
+                                        serial_data = dataRow?.['serial_data'];
+                                    }
                                     rowData['warehouse_data'] = [{
-                                        'warehouse': dataInfo.id,
-                                        'serial_data': dataRow?.['serial_data'],
+                                        'warehouse': dataInfo?.['id'],
+                                        'is_additional': dataRow?.['is_additional'],
+                                        'serial_data': serial_data,
                                     }]
                                 }
                                 GRSubmitHandle.setupDataWHLotSerial(rowData);
@@ -3177,10 +3377,11 @@ class GRSubmitHandle {
                         if (eleOrder) {
                             rowData['order'] = parseInt(eleOrder.innerHTML);
                         }
+                        rowData['is_additional'] = dataRow?.['is_additional'];
                     }
                 }
                 result.push(rowData);
-            }
+            });
         }
         return result
     };

@@ -69,7 +69,7 @@ $(function () {
                             if (row?.['date_received']) {
                                 return `<p>${moment(row?.['date_received']).format('DD/MM/YYYY')}</p>`;
                             }
-                            return `<p></p>`;
+                            return `<p>--</p>`;
                         }
                     },
                     {
@@ -91,14 +91,14 @@ $(function () {
                         className: 'action-center',
                         render: (data, type, row) => {
                             const link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            let isChange = ``;
-                            if (![2, 3].includes(row?.['system_status'])) {
-                                isChange = `<a class="dropdown-item" href="${link}">${transEle.attr('data-change')}</a><div class="dropdown-divider"></div>`;
+                            let isEdit = ``;
+                            if (![2, 3, 4].includes(row?.['system_status'])) {
+                                isEdit = `<a class="dropdown-item" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${transEle.attr('data-change')}</span></a>`;
                             }
                             return `<div class="dropdown">
-                                    <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
-                                        ${isChange}
+                                        ${isEdit}
                                     </div>
                                 </div>`;
                         },

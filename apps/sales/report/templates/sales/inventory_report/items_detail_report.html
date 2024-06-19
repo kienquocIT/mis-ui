@@ -5,9 +5,6 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <style>
-        td:hover {
-            font-weight: bolder;
-        }
         th {
             font-size: medium !important;
         }
@@ -22,28 +19,15 @@
             position: sticky;
             left: 0;
         }
-        .second-col-x {
-            min-width: 500px;
-            position: sticky;
-            left: 200px;
-        }
-        thead .first-col {
-            background-color: rgba(197, 197, 197, var(--bs-bg-opacity)) !important;
-        }
-        thead .second-col {
-            background-color: rgba(197, 197, 197, var(--bs-bg-opacity)) !important;
+        thead th, thead .first-col {
+            background: #007D88 !important;
+            color: white !important;
         }
         tbody .first-col {
-            background-color: #fff;
-        }
-        tbody .second-col {
-            background-color: #fff;
+            background: white !important;
         }
         tbody .first-col-x {
-            background-color: #eaeaea;
-        }
-        tbody .second-col-x {
-            background-color: #eaeaea;
+            background: #f5f5f5;
         }
         .table-wrap {
             width: 100%;
@@ -64,15 +48,13 @@
             position: sticky;
             left: 0;
         }
-        .table-wrap .fixed_header .second-col {
-            position: sticky;
-            left: 200px;
-        }
     </style>
 {% endblock %}
 {% block pageAction %}{% endblock %}
 {% block pageContent %}
     {{ data.data.current_period | json_script:"current_period" }}
+    {{ data.data.definition_inventory_valuation | json_script:"definition_inventory_valuation" }}
+
     <script id="trans-script"
             data-trans-m1th="{% trans 'January' %}"
             data-trans-m2th="{% trans 'February' %}"
@@ -91,9 +73,15 @@
             data-trans-gross-profit="{% trans 'Gross profit' %}"
             data-trans-we="{% trans 'Weighted average' %}"
             data-trans-ob="{% trans 'Opening balance' %}"
+            data-trans-eb="{% trans 'Ending balance' %}"
             data-trans-grc="{% trans 'Goods receipt' %}"
             data-trans-grt="{% trans 'Goods return' %}"
             data-trans-dlvr="{% trans 'Delivery' %}"
+            data-trans-gis="{% trans 'Goods issue' %}"
+            data-trans-gtf="{% trans 'Goods transfer' %}"
+            data-trans-sure-confirm="{% trans 'Are you sure to calculate ending cumulative value?' %}"
+            data-trans-sure="{% trans 'Sure' %}"
+            data-trans-cancel="{% trans 'Cancel' %}"
     ></script>
 
     <script id="url-script"
@@ -101,68 +89,104 @@
     ></script>
 
     <div class="row">
-        <div class="col-12 col-lg-3 col-md-3">
-            <div class="form-group">
-                <label class="form-label" for="items_select">{% trans 'Product' %}</label>
-                <select class="form-select select2 select-multiple" id="items_select" multiple
-                        data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
-            </div>
-        </div>
-        <div class="col-12 col-lg-2 col-md-2">
-            <div class="form-group">
-                <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
-                <select class="form-select select2 select-multiple" id="warehouses_select" multiple
-                        data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
-            </div>
-        </div>
-        <div class="col-12 col-lg-3 col-md-3">
-            <div class="row">
-                <div class="col-6">
-                    <div class="form-group">
-                        <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
-                        <select class="form-select select2" id="period-select"
-                                data-url="{% url 'PeriodsConfigListAPI' %}"
-                                data-method="GET"
-                        ></select>
+        <div class="col-12 col-md-12 col-lg-12">
+            <div id="btn-collapse" class="card">
+                <div class="card-header bg-primary-light-5">
+                    <h6>
+                        <span class="text-primary">
+                            <span>
+                                <span class="icon"><span class="feather-icon"><i class="bi bi-funnel"></i></span></span>
+                                {% trans 'Filter' %}
+                            </span>
+                        </span>
+                        <button type="button" data-bs-toggle="collapse" data-bs-target="#filter_area" aria-expanded="false" aria-controls="collapse-area" class="btn btn-rounded btn-icon btn-xs">
+                            <span class="icon">
+                                <i class="fas fa-angle-double-up text-primary"></i>
+                            </span>
+                        </button>
+                    </h6>
+                    <div class="card-action-wrap">
+                        <button type="button" class="btn btn-gradient-primary" id="btn-view">
+                            <span>
+                                <span>{% trans 'View' %}</span>
+                                <span class="icon">
+                                    <span class="feather-icon"><i class="fas fa-eye"></i></span>
+                                </span>
+                            </span>
+                        </button>
+                        <div class="btn-group" role="group">
+                            <button id="btn-action" type="button" class="btn btn-gradient-dark w-100 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {% trans 'Action' %}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btn-action">
+                                <a class="dropdown-item" id="btn-calculate" href="#"><i class="bi bi-calculator"></i> <span>{% trans 'Calculate ending cumulative value' %}</span></a>
+                                <a class="dropdown-item disabled" id="btn-export" href="#"><i class="bi bi-file-earmark-spreadsheet"></i> <span>{% trans 'Export to excel' %}</span></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="form-group">
-                        <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
-                        <select id="period-month" class="form-select"></select>
+                <div id="filter_area" class="collapse show">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-lg-4 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="items_select">{% trans 'Product' %}</label>
+                                    <select class="form-select select2 select-multiple" id="items_select" multiple
+                                            data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-4 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
+                                    <select class="form-select select2 select-multiple" id="warehouses_select" multiple
+                                            data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-2 col-md-4">
+                                <div class="form-group">
+                                    <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
+                                    <select class="form-select select2" id="period-select"
+                                            data-url="{% url 'PeriodsConfigListAPI' %}"
+                                            data-method="GET"
+                                    ></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-2 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
+                                    <select id="period-month" class="form-select"></select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-12 col-lg-4 col-md-4">
-            <button type="button" class="btn btn-gradient-primary mt-5" id="btn-view"><span><span>{% trans 'View' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-eye"></i></span></span></span></button>
         </div>
     </div>
-    <div class="row mt-5">
+    <div class="row mt-3 mb-3">
         <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
             <div class="custom-scroll">
-                <div class="table-wrap" style="max-height: 65vh">
-                    <table class="table nowrap w-100 fixed_header" id="items_detail_report_table">
+                <div class="table-wrap" style="max-height: 80vh">
+                    <table hidden class="table nowrap w-100 fixed_header" id="items_detail_report_table">
                         <thead class="row-fixed">
-                            <tr class="bg-secondary-light-3">
-                                <th class="border-1 first-col">{% trans 'Code' %}</th>
-                                <th class="border-1 second-col">{% trans 'Name' %}</th>
-                                <th class="border-1">{% trans 'Valuation method' %}</th>
-                                <th class="border-1">{% trans 'Warehouse' %}</th>
-                                <th class="border-1">{% trans 'System date' %}</th>
-                                <th class="border-1" hidden>{% trans 'Posting date' %}</th>
-                                <th class="border-1" hidden>{% trans 'Document date' %}</th>
-                                <th class="border-1">{% trans 'Trans description' %}</th>
-                                <th class="border-1">{% trans 'Trans code' %}</th>
-                                <th class="border-1">{% trans 'In quantity' %}</th>
-                                <th class="border-1">{% trans 'In cost' %}</th>
-                                <th class="border-1">{% trans 'In value' %}</th>
-                                <th class="border-1">{% trans 'Out quantity' %}</th>
-                                <th class="border-1">{% trans 'Out cost' %}</th>
-                                <th class="border-1">{% trans 'Out value' %}</th>
-                                <th class="border-1">{% trans 'Cumulative quantity' %}</th>
-                                <th class="border-1">{% trans 'Cumulative cost' %}</th>
-                                <th class="border-1">{% trans 'Cumulative value' %}</th>
+                            <tr>
+                                <th class="first-col border-1">{% trans 'Product' %}</th>
+                                <th>{% trans 'Valuation method' %}</th>
+                                <th>{% trans 'Warehouse' %}</th>
+                                <th>{% trans 'System date' %}</th>
+                                <th hidden>{% trans 'Posting date' %}</th>
+                                <th hidden>{% trans 'Document date' %}</th>
+                                <th>{% trans 'Trans description' %}</th>
+                                <th>{% trans 'Trans code' %}</th>
+                                <th>{% trans 'In quantity' %}</th>
+                                <th>{% trans 'In cost' %}</th>
+                                <th>{% trans 'In value' %}</th>
+                                <th>{% trans 'Out quantity' %}</th>
+                                <th>{% trans 'Out cost' %}</th>
+                                <th>{% trans 'Out value' %}</th>
+                                <th>{% trans 'Cumulative quantity' %}</th>
+                                <th>{% trans 'Cumulative cost' %}</th>
+                                <th>{% trans 'Cumulative value' %}</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -177,6 +201,7 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
 
     <script src="{% static 'assets/sales/inventory_report/js/items_detail.js' %}"></script>
 {% endblock %}

@@ -885,7 +885,6 @@ function getDataForm() {
         })
         data['sale_default_uom'] = $('#sale-select-box-default-uom option:selected').attr('value');
         data['sale_tax'] = $('#sale-select-box-tax-code option:selected').attr('value');
-        data['sale_cost'] = parseFloat($('#sale-cost').attr('value'));
         data['sale_price_list'] = sale_product_price_list;
         data['sale_currency_using'] = currency_primary;
 
@@ -898,7 +897,6 @@ function getDataForm() {
     } else {
         data['sale_default_uom'] = null;
         data['sale_tax'] = null;
-        data['sale_cost'] = null;
         data['sale_price_list'] = [];
         data['sale_currency_using'] = null;
     }
@@ -1055,7 +1053,6 @@ function LoadDetailProduct(option) {
                     let sale_information = product_detail['sale_information'];
                     loadSaleDefaultUom(sale_information['default_uom']);
                     loadSaleTaxCode(sale_information['tax']);
-                    $('#sale-cost').attr('value', sale_information['sale_product_cost']);
 
                     let price_list_filter = []
                     for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {

@@ -4,6 +4,7 @@ from .msg import LeaveMsg, BaseMsg
 from .msg.workflow import WorkflowMsg
 
 __all__ = [
+    'LEAD_STATUS',
     'COMPANY_SIZE',
     'CUSTOMER_REVENUE',
     'PICKING_STATE',
@@ -13,7 +14,17 @@ __all__ = [
     'ROLE_CUSTOMER',
     'PAID_BY',
     'SYSTEM_STATUS',
-    'LEAVE_ACTION'
+    'LEAVE_ACTION',
+    'DEPENDENCIES_TYPE'
+]
+
+LEAD_STATUS = [
+    {"value": 1, "name": _('Prospect')},
+    {"value": 2, "name": _('Open - not contacted')},
+    {"value": 3, "name": _('Working')},
+    {"value": 4, "name": _('Opportunity created')},
+    {"value": 5, "name": _('Disqualified')},
+    {"value": 6, "name": _('Not a target')},
 ]
 
 CUSTOMER_REVENUE = [
@@ -86,3 +97,8 @@ LEAVE_ACTION = {
     1: LeaveMsg.LEAVE_ACTION_INS,
     2: LeaveMsg.LEAVE_ACTION_DES,
 }
+
+DEPENDENCIES_TYPE = (
+    (0, _("Start to start")),
+    (1, _("Finish to start"))
+)

@@ -76,7 +76,7 @@
                         </div>
                         <div class="col-12 col-md-5 col-lg-5">
                             <div class="row">
-                                <div class="col-12 col-md-4 col-lg-4">
+                                <div class="col-12 col-md-5 col-lg-5">
                                     <div class="form-group">
                                         <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
                                         <div class="input-affix-wrapper">
@@ -88,7 +88,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-4 col-lg-4">
+                                <div class="col-12 col-md-6 col-lg-6">
                                     <div class="form-group">
                                         <label class="form-label" for="purchase-order-status-delivered">{% trans 'Delivered status' %}</label>
                                         <div class="input-group">
@@ -191,7 +191,7 @@
                             <div id="table-purchase-order-product-request-area" hidden>
                                 <table
                                     id="datable-purchase-order-product-request"
-                                    class="table nowrap min-w-1920p w-100 mb-5"
+                                    class="table nowrap min-w-1680p w-100 mb-5"
                                     data-url=""
                                     data-method="get"
                                 >
@@ -200,10 +200,10 @@
                                         <th></th>
                                         <th>{% trans 'Product' %}</th>
                                         <th>{% trans 'Description' %}</th>
-                                        <th>UOM (PR)</th>
+                                        <th>{% trans 'UOM' %} (PR)</th>
                                         <th>{% trans 'Quantity' %} (PR)</th>
                                         <th>{% trans 'Stock' %}</th>
-                                        <th>UOM (PO)</th>
+                                        <th>{% trans 'UOM' %} (PO)</th>
                                         <th>{% trans 'Quantity' %} (PO)</th>
                                         <th>{% trans 'Unit Price' %}</th>
                                         <th>{% trans 'Tax' %}</th>
@@ -216,9 +216,9 @@
                                     <tr>
                                         <th colspan="7"></th>
                                         <th colspan="4">
-                                            <div class="row">
+                                            <div class="row mb-2">
                                                 <div class="col-6">
-                                                    <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
+                                                    <p style="text-align: right">{% trans 'Pretax Amount' %}:</p>
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
@@ -229,7 +229,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-6">
-                                                    <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
+                                                    <p style="text-align: right">{% trans 'Taxes' %}:</p>
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
@@ -240,11 +240,11 @@
                                             <hr class="bg-teal">
                                             <div class="row">
                                                 <div class="col-6">
-                                                    <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
+                                                    <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
-                                                    <span class="mask-money font-3 purchase-order-product-total" data-init-money="0"></span>
+                                                    <b><span class="mask-money font-3 purchase-order-product-total" data-init-money="0"></span></b>
                                                     <input type="text" class="form-control purchase-order-product-total-raw" value="0" hidden>
                                                 </div>
                                             </div>
@@ -257,7 +257,7 @@
                             <div id="table-purchase-order-product-add-area">
                                 <table
                                     id="datable-purchase-order-product-add"
-                                    class="table nowrap min-w-1920p w-100 mb-5"
+                                    class="table nowrap min-w-1600p w-100 mb-5"
                                     data-url=""
                                     data-method="get"
                                 >
@@ -280,9 +280,9 @@
                                     <tr>
                                         <th colspan="5"></th>
                                         <th colspan="4">
-                                            <div class="row">
+                                            <div class="row mb-2">
                                                 <div class="col-6">
-                                                    <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
+                                                    <p style="text-align: right">{% trans 'Pretax Amount' %}:</p>
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
@@ -293,7 +293,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-6">
-                                                    <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
+                                                    <p style="text-align: right">{% trans 'Taxes' %}:</p>
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
@@ -304,11 +304,11 @@
                                             <hr class="bg-teal">
                                             <div class="row">
                                                 <div class="col-6">
-                                                    <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
+                                                    <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
-                                                    <span class="mask-money font-3 purchase-order-product-total" data-init-money="0"></span>
+                                                    <b><span class="mask-money font-3 purchase-order-product-total" data-init-money="0"></span></b>
                                                     <input type="text" class="form-control purchase-order-product-total-raw" value="0" hidden>
                                                 </div>
                                             </div>
@@ -355,7 +355,7 @@
             <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="row ml-2"><h6>{% trans 'Select items from purchase request' %}</h6></div>
+                        <div class="row ml-2"><h6 class="text-primary"><b>{% trans 'Select items from purchase request' %}</b></h6></div>
                         <div class="row mb-1">
                             <div class="col-4"></div>
                             <div class="col-8">
@@ -364,7 +364,7 @@
                                     <label
                                         class="form-check-label"
                                         for="merge-same-product"
-                                    >{% trans 'Merge same product in 1 line, convert to reference unit if there is more 1 UoM' %}</label>
+                                    >{% trans 'Merge same product in 1 line, convert to reference unit if there is more 1 UOM' %}</label>
                                 </div>
                             </div>
                         </div>
@@ -403,12 +403,12 @@
                                             <tr>
                                                 <th class="w-5"></th>
                                                 <th class="w-5"></th>
-                                                <th class="w-30">{% trans 'Product' %}</th>
-                                                <th class="w-10">{% trans 'PR Code' %}</th>
-                                                <th class="w-10">{% trans 'UOM' %}</th>
-                                                <th class="w-10">{% trans 'Quantity' %}</th>
-                                                <th class="w-10">{% trans 'Remain (PO)' %}</th>
-                                                <th class="w-20">{% trans 'Quantity order' %}</th>
+                                                <th class="w-40">{% trans 'Product' %}</th>
+                                                <th class="w-5">{% trans 'PR code' %}</th>
+                                                <th class="w-5">{% trans 'UOM' %}</th>
+                                                <th class="w-5">{% trans 'Quantity' %}</th>
+                                                <th class="w-5">{% trans 'Remain (PO)' %}</th>
+                                                <th class="w-30">{% trans 'Quantity order' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -425,14 +425,14 @@
                                         >
                                             <thead>
                                             <tr>
-                                                <th class="w-10"></th>
-                                                <th class="w-10"></th>
-                                                <th class="w-20">{% trans 'Product' %}</th>
-                                                <th class="w-10">{% trans 'PR Code' %}</th>
-                                                <th class="w-10">{% trans 'Unit Of Measure' %}</th>
-                                                <th class="w-10">{% trans 'Quantity' %}</th>
-                                                <th class="w-10">{% trans 'Remain (PO)' %}</th>
-                                                <th class="w-20">{% trans 'Quantity order' %}</th>
+                                                <th class="w-5"></th>
+                                                <th class="w-5"></th>
+                                                <th class="w-40">{% trans 'Product' %}</th>
+                                                <th class="w-5">{% trans 'PR code' %}</th>
+                                                <th class="w-5">{% trans 'UOM' %}</th>
+                                                <th class="w-5">{% trans 'Quantity' %}</th>
+                                                <th class="w-5">{% trans 'Remain (PO)' %}</th>
+                                                <th class="w-30">{% trans 'Quantity order' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -455,7 +455,7 @@
             <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="row mb-2"><h6>{% trans 'Select purchase quotation' %}</h6></div>
+                        <div class="row mb-2"><h6 class="text-primary"><b>{% trans 'Select purchase quotation' %}</b></h6></div>
                         <div class="row" hidden>
                             <label for="filterByPurchaseRequest" class="col-sm-3 col-form-label">{% trans 'PQ Request' %}</label>
                             <div class="col-sm-6">

@@ -13,3 +13,11 @@ def cls_name_of_bastion_field(has_opp, has_prj, has_inherit):
     if counter_true == 1:
         return 'col-12'
     return 'hidden'
+
+
+@register.simple_tag
+def override_list_form_app(list_from_app, new_list_from_app):
+    if new_list_from_app:
+        return new_list_from_app
+    return list_from_app
+

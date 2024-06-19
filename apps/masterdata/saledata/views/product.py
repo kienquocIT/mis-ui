@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI, PermCheck
+from apps.shared.msg import MDMsg
 
 
 class ProductMasterDataList(View):
@@ -206,6 +207,19 @@ class ProductCreate(View):
         }, status.HTTP_200_OK
 
 
+class ProductQuickCreateAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_QUICK_CREATE).post(request.data)
+        if resp.state:
+            resp.result['message'] = MDMsg.PRODUCT_CREATE
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
+
+
 class ProductListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -288,7 +302,7 @@ class ProductDetailAPI(APIView):
         return resp.auto_return()
 
 
-# Product List use for Sale Apps
+# Products use for sale/ purchase/ inventory applications
 class ProductForSaleListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -300,6 +314,17 @@ class ProductForSaleListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SALE_LIST).get(data)
         return resp.auto_return(key_success='product_sale_list')
+
+
+class ProductForSaleDetailAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SALE_DETAIL.push_id(pk)).get()
+        return resp.auto_return()
 
 
 class UnitOfMeasureOfGroupLaborListAPI(APIView):

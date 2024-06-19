@@ -222,6 +222,29 @@ COLUMNS_SALEDATA_ACCOUNT.add_column(
     },
 )
 COLUMNS_SALEDATA_ACCOUNT.add_column(
+    name=_('Account Type Selection'), data={
+        'name': _('Account Type Selection'),
+        'input_name': 'account_type_selection',
+        'type': 'select',
+        'data_list': [
+            (0, _('individual')),
+            (1, _('organization')),
+        ],
+        'select2_config': {},
+        'remarks': [
+            _(
+                "Account type selection, chosen from: 0 (individual), 1 (organization)"
+            ),
+        ],
+        'input_attrs': {
+            'kwargs': {
+                'type': 'text',
+                'pattern': '[0-1]'
+            },
+        },
+    },
+)
+COLUMNS_SALEDATA_ACCOUNT.add_column(
     name=_('Account Group'), data={
         'name': _('Account Group'),
         'input_name': 'account_group',

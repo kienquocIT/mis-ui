@@ -22,6 +22,7 @@ $(document).ready(function () {
         2: "Fail",
         3: "Pending",
     }
+    let $transFact = $('#app-trans-factory');
 
     // INIT DATATABLE APP LIST
     let LIST_APP_URL = $table.attr('data-app-list');
@@ -215,31 +216,31 @@ $(document).ready(function () {
                                 return '';
                             }
                         }, {
-                            title: 'title',
+                            title: $transFact.attr('data-title'),
                             data: 'title',
                             render: (data, type, row, meta) => {
                                 return `<button class="btn-collapse-doc-wf btn btn-icon btn-rounded mr-1"><span class="icon"><i class="icon-collapse-doc-wf fas fa-caret-right text-secondary"></i></span></button> ${data}`;
                             }
                         }, {
-                            title: 'Date applied',
+                            title: $transFact.attr('data-date-applied'),
                             data: 'date_applied',
                             render: (data, type, row, meta) => {
                                 return data ? data : '_';
                             }
                         }, {
-                            title: 'Active',
+                            title: $transFact.attr('data-active'),
                             data: 'is_active',
                             render: (data, type, row, meta) => {
                                 if (data === true) return `<span class="badge-status"><span class="badge badge-info badge-indicator"></span><span class="badge-label">Working</span></span>`;
                                 return `<span class="badge-status"><span class="badge badge-secondary badge-indicator"></span><span class="badge-label">Deactivate</span></span>`;
                             }
                         }, {
-                            title: 'Wait complete', // data: 'is_active',
+                            title: $transFact.attr('data-wait-complete'), // data: 'is_active',
                             render: (data, type, row, meta) => {
                                 return `<span class="badge badge-soft-warning">0</span>`;
                             }
                         }, {
-                            title: 'Action',
+                            title: $transFact.attr('data-action'),
                             render: (data, type, row, meta) => {
                                 let btnEdit = `<a href="${SetupFormSubmit.getUrlDetailWithID(urlWorkflowDetail, row.id)}"><button class="btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="far fa-edit"></i></span></button></a>`
                                 let btnDelete = `<button class="btn-delete-wf btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`

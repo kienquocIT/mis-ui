@@ -50,7 +50,12 @@ class InventoryAdjustmentCreate(View):
         breadcrumb='INVENTORY_ADJUSTMENT_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp1 = ServerAPI(user=request.user, url=ApiURL.COMPANY_CONFIG).get()
+        return {
+            'data': {
+                'definition_inventory_valuation': resp1.result['definition_inventory_valuation']
+            },
+        }, status.HTTP_200_OK
 
 
 class InventoryAdjustmentDetail(View):

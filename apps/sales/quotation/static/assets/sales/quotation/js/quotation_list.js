@@ -23,10 +23,10 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength:50,
-                columns: [  // 100, 350, 250, 200, 150, 200, 150, 100 (1500p)
+                columns: [  // (1280p)
                     {
                         targets: 0,
-                        width: '6.66%',
+                        width: '5%',
                         render: (data, type, row) => {
                             const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`
@@ -34,7 +34,7 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '23.33%',
+                        width: '20%',
                         render: (data, type, row) => {
                             const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
@@ -42,7 +42,7 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '16.66%',
+                        width: '20%',
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
                             if (Object.keys(row?.['customer']).length !== 0) {
@@ -53,11 +53,11 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '13.33%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
                             if (Object.keys(row?.['sale_person']).length !== 0) {
-                                ele = `<p>${row?.['sale_person']?.['full_name']}</p>`;
+                                ele = `<div class="row"><span class="badge badge-primary badge-outline">${row?.['sale_person']?.['full_name']}</span></div>`;
                             }
                             return ele;
                         }
@@ -74,14 +74,14 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '13.33%',
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money" data-init-money="${parseFloat(row?.['indicator_revenue'])}"></span>`;
                         }
                     },
                     {
                         targets: 6,
-                        width: '10%',
+                        width: '8%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
                             let sttData = [
@@ -96,18 +96,18 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '6.66%',
+                        width: '5%',
                         className: 'action-center',
                         render: (data, type, row) => {
                             const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            let isChange = ``;
-                            if (![2, 3].includes(row?.['system_status'])) {
-                                isChange = `<a class="dropdown-item" href="${link}">${transEle.attr('data-change')}</a><div class="dropdown-divider"></div>`;
+                            let isEdit = ``;
+                            if (![2, 3, 4].includes(row?.['system_status'])) {
+                                isEdit = `<a class="dropdown-item" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${transEle.attr('data-change')}</span></a>`;
                             }
                             return `<div class="dropdown">
-                                    <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
-                                        ${isChange}
+                                        ${isEdit}
                                     </div>
                                 </div>`;
                         },

@@ -5,6 +5,15 @@ from rest_framework.views import APIView
 from apps.shared.apis import RespData
 from apps.shared.constant import TYPE_CUSTOMER, ROLE_CUSTOMER
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, PermCheck, TypeCheck
+from apps.shared.msg import BaseMsg
+
+SYSTEM_STATUS = (
+    (0, BaseMsg.DRAFT),
+    (1, BaseMsg.CREATED),
+    (2, BaseMsg.ADDED),
+    (3, BaseMsg.FINISH),
+    (4, BaseMsg.CANCEL),
+)
 
 
 def create_update_opportunity(request, url, msg):
@@ -66,6 +75,7 @@ class OpportunityDetail(View):
                    'type_customer': TYPE_CUSTOMER,
                    'role_customer': ROLE_CUSTOMER,
                    'list_from_app': 'task.opportunitytask.create',
+                   'stt_sys': SYSTEM_STATUS,
                }, status.HTTP_200_OK
 
 
@@ -86,6 +96,7 @@ class OpportunityUpdate(View):
             'type_customer': TYPE_CUSTOMER,
             'role_customer': ROLE_CUSTOMER,
             'list_from_app': 'task.opportunitytask.create',
+            'stt_sys': SYSTEM_STATUS,
         }
         return result, status.HTTP_200_OK
 

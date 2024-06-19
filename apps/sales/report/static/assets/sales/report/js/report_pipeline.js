@@ -10,7 +10,6 @@ $(function () {
         let checkWin100 = $('#checkbox-show-win-100');
         let eleAreaPeriodAll = $('#area-period-all');
         let eleFiscalYear = $('#data-fiscal-year');
-        let btnView = $('#btn-view');
         let $table = $('#table_report_pipeline_list');
         let dataQuarter = JSON.parse($('#filter_quarter').text());
         let dataMonth = JSON.parse($('#filter_month').text());
@@ -22,10 +21,10 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength: 50,
-                columns: [  // 150,150,150,320,100,100,100,100,290,290,290,130,130,130,130 (2560p)
+                columns: [  // 120,120,120,240,120,120,120,120,200,200,200,60,60,60,60 (1920p)
                     {
                         targets: 0,
-                        width: '5.859375%',
+                        width: '4%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 0) {
                                 return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
@@ -36,35 +35,58 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '5.859375%',
+                        width: '5%',
                         render: (data, type, row) => {
-                            return `<div class="row"><span class="badge badge-primary badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
+                            if (row?.['employee_inherit']?.['full_name']) {
+                                let target = `.cl-emp-${row?.['employee_inherit']?.['id'].replace(/-/g, "")}`;
+                                return `<div class="d-flex">
+                                        <span class="badge badge-primary mr-2">${row?.['employee_inherit']?.['code'] ? row?.['employee_inherit']?.['code'] : ''}</span>
+                                        <span class="badge badge-primary badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span>
+                                        <small><button 
+                                            type="button" 
+                                            class="btn btn-icon btn-xs group-emp-parent" 
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="${target}"
+                                            data-bs-placement="top"
+                                            aria-expanded="false"
+                                            aria-controls="newGroup"
+                                        >
+                                            <span class="icon"><small><i class="fas fa-chevron-right mt-2"></i></small></span>
+                                        </button></small>
+                                    </div>`
+                            }
+                            return `<p></p>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '5.859375%',
+                        width: '6.25%',
                         render: (data, type, row) => {
-                            return `<div class="row"><span class="badge badge-soft-primary">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span></div>`;
+                            if (row?.['opportunity']?.['code'] && row?.['employee_inherit_id']) {
+                                let dataGr = 'cl-emp-' + row?.['employee_inherit_id'].replace(/-/g, "");
+                                return `<div class="group-emp-child" data-group-target="${dataGr}"><span class="badge badge-secondary badge-sm">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span><p>${row?.['opportunity']?.['title'] ? row?.['opportunity']?.['title'] : ''}</p></div>`;
+                            }
+                            return `<p></p>`;
+
                         }
                     },
                     {
                         targets: 3,
-                        width: '12.5%',
+                        width: '12%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['customer']?.['title'] ? row?.['opportunity']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 4,
-                        width: '4%',
+                        width: '6.25%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['stage']?.['indicator'] ? row?.['opportunity']?.['stage']?.['indicator'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 5,
-                        width: '4%',
+                        width: '6.25%',
                         render: (data, type, row) => {
                             if ([0, 1, 2].includes(row?.['type_group_by'])) {
                                 return `<p></p>`;
@@ -82,7 +104,7 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '4%',
+                        width: '6.25%',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['open_date']) {
                                 return `<p>${moment(row?.['opportunity']?.['open_date'] ? row?.['opportunity']?.['open_date'] : '').format('DD/MM/YYYY')}</p>`;
@@ -93,7 +115,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '4%',
+                        width: '6.25%',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['close_date']) {
                                 return `<p>${moment(row?.['opportunity']?.['close_date'] ? row?.['opportunity']?.['close_date'] : '').format('DD/MM/YYYY')}</p>`;
@@ -104,7 +126,7 @@ $(function () {
                     },
                     {
                         targets: 8,
-                        width: '11.328125%',
+                        width: '11%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span></b>`;
@@ -114,7 +136,7 @@ $(function () {
                     },
                     {
                         targets: 9,
-                        width: '11.328125%',
+                        width: '11%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['forecast_value'])}"></span></b>`;
@@ -124,7 +146,7 @@ $(function () {
                     },
                     {
                         targets: 10,
-                        width: '11.328125%',
+                        width: '11%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span></b>`;
@@ -134,7 +156,7 @@ $(function () {
                     },
                     {
                         targets: 11,
-                        width: '5.078125%',
+                        width: '2%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p></b>`;
@@ -144,7 +166,7 @@ $(function () {
                     },
                     {
                         targets: 12,
-                        width: '5.078125%',
+                        width: '2%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['email'] ? row?.['opportunity']?.['email'] : '0'}</p></b>`;
@@ -154,7 +176,7 @@ $(function () {
                     },
                     {
                         targets: 13,
-                        width: '5.078125%',
+                        width: '2%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p></b>`;
@@ -164,7 +186,7 @@ $(function () {
                     },
                     {
                         targets: 14,
-                        width: '5.078125%',
+                        width: '2%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p></b>`;
@@ -173,13 +195,41 @@ $(function () {
                         }
                     },
                 ],
+                rowCallback(row, data, index) {
+                    if (data?.['type_group_by'] === 1) {
+                        row.classList.add('bg-light');
+                    }
+                },
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
+                    // add css to Dtb
+                    loadCssToDtb('table_report_pipeline_list');
+                    // setup groupChild to groupParent
+                    for (let eleGroupChild of $table[0].querySelectorAll('.group-emp-child')) {
+                        let classCl = eleGroupChild.getAttribute('data-group-target');
+                        let row = eleGroupChild.closest('tr');
+                        $(row).addClass(classCl);
+                        $(row).addClass('collapse');
+                    }
+                    $table.on('click', '.group-emp-parent', function () {
+                        $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
+                    });
                 },
             });
         }
         loadDbl();
+
+        function loadCssToDtb(tableID) {
+            let tableIDWrapper = tableID + '_wrapper';
+            let tableWrapper = document.getElementById(tableIDWrapper);
+            if (tableWrapper) {
+                let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+                if (headerToolbar) {
+                    headerToolbar.classList.add('hidden');
+                }
+            }
+        }
 
         function setupDataLoadTable(dataList) {
             let result = [];
@@ -408,6 +458,7 @@ $(function () {
                         for (let data of dataList) {  // push data opp
                             if (data?.['employee_inherit']?.['id'] === employeeKey) {
                                 data['group'] = {};
+                                data['employee_inherit_id'] = data?.['employee_inherit']?.['id'];
                                 data['employee_inherit'] = {};
                                 if (isShowWin100 === false) {  // if not check show data have 100% win rate then pass
                                     if (data?.['opportunity']?.['win_rate']) {
@@ -454,7 +505,7 @@ $(function () {
                             let currentDate = new Date();
                             let currentMonth = currentDate.getMonth() + 1;
                             boxMonth.val(currentMonth).trigger('change');
-                            btnView.click();
+                            $('#btn-apply-vb').click();
                         }
                     }
                 }
@@ -660,9 +711,27 @@ $(function () {
             });
         }
 
-        $('#btn-collapse').click(function () {
-            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
-        });
+        function loadFilter(listData, $eleShow) {
+            if (listData.length > 0) {
+                $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
+            }
+        }
+
+        function getListTxtMultiSelect2 ($ele) {
+            let result = [];
+            if ($ele.val() && $ele.val().length > 0) {
+                let selectedValues = $ele.val();
+                let tempDiv = document.createElement('div');
+                tempDiv.innerHTML = $ele[0].innerHTML;
+                for (let val of selectedValues) {
+                    let option = tempDiv.querySelector(`option[value="${val}"]`);
+                    if (option) {
+                        result.push(option.textContent);
+                    }
+                }
+            }
+            return result;
+        }
 
         // load init
         function initData() {
@@ -684,6 +753,7 @@ $(function () {
                     format: 'DD/MM/YYYY',
                 },
                 maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
                 autoApply: true,
                 autoUpdateInput: false,
             }).on('apply.daterangepicker', function (ev, picker) {
@@ -694,6 +764,21 @@ $(function () {
 
         // mask money
         $.fn.initMaskMoney2();
+
+        // Prevent dropdown from closing when clicking inside the dropdown
+        $('.dropdown-menu').on('click', function (e) {
+            e.stopPropagation();
+        });
+
+        // Prevent the dropdown from closing when clicking outside it
+        $('.btn-group').on('hide.bs.dropdown', function (e) {
+            e.preventDefault();
+        });
+
+        // Reopen dropdown on button click
+        $('.btn-group').on('click', '.btn', function (e) {
+            $(this).siblings('.dropdown-menu').toggleClass('show');
+        });
 
         // Events
         boxGroup.on('change', function() {
@@ -714,20 +799,36 @@ $(function () {
             }
         });
 
-        btnView.on('click', function () {
+        $('#btn-apply-vb, #btn-apply-date').on('click', function () {
+            this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
-            if (boxGroup.val()) {
+            let listViewBy = [];
+            let listDate = [];
+            if (boxGroup.val() && boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
+                let listTxt = getListTxtMultiSelect2(boxGroup);
+                for (let txt of listTxt) {
+                    listViewBy.push(txt);
+                }
             }
-            if (boxEmployee.val()) {
+            if (boxEmployee.val() && boxEmployee.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
+                let listTxt = getListTxtMultiSelect2(boxEmployee);
+                for (let txt of listTxt) {
+                    listViewBy.push(txt);
+                }
             }
+            loadFilter(listViewBy, $('#card-filter-vb'));
             let eleCheck = eleAreaPeriodAll[0].querySelector('.check-period:checked');
             if (eleCheck.classList.contains('check-quarter')) {  // quarter
                 if (boxQuarter.val()) {
                     let {startDate, endDate} = getQuarterRange(parseInt(boxQuarter.val()));
                     dataParams['opportunity__close_date__gte'] = startDate;
                     dataParams['opportunity__close_date__lte'] = endDate;
+                    let dataQuarter = SelectDDControl.get_data_from_idx(boxQuarter, boxQuarter.val());
+                    if (dataQuarter) {
+                        listDate.push(dataQuarter?.['title']);
+                    }
                 }
             }
             if (eleCheck.classList.contains('check-month')) {  // month
@@ -737,6 +838,7 @@ $(function () {
                         let {startDate, endDate} = getMonthRange(parseInt(boxMonth.val()), parseInt(dataMonth?.['year']));
                         dataParams['opportunity__close_date__gte'] = startDate;
                         dataParams['opportunity__close_date__lte'] = endDate;
+                        listDate.push(dataMonth?.['title']);
                     }
                 }
             }
@@ -744,12 +846,15 @@ $(function () {
                 if (boxFrom.val()) {
                     let startDate = getDateFrom();
                     dataParams['opportunity__close_date__gte'] = startDate;
+                    listDate.push(boxFrom.val());
                 }
                 if (boxTo.val()) {
                     let endDate = getDateTo();
                     dataParams['opportunity__close_date__lte'] = endDate;
+                    listDate.push(boxTo.val());
                 }
             }
+            loadFilter(listDate, $('#card-filter-date'));
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
@@ -766,6 +871,10 @@ $(function () {
                     }
                 }
             )
+        });
+
+        $('#btn-cancel-vb, #btn-cancel-date').on('click', function () {
+            this.closest('.dropdown-menu').classList.remove('show');
         });
 
 

@@ -280,8 +280,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # product
     PRODUCT_LIST = StringUrl('saledata/products')
+    PRODUCT_QUICK_CREATE = StringUrl('saledata/product-quick-create')
     PRODUCT_DETAIL = StringUrl('saledata/product/{pk}')
-    PRODUCT_SALE_LIST = StringUrl('saledata/products-sale')
+    PRODUCT_SALE_LIST = StringUrl('saledata/products-sale/list')
+    PRODUCT_SALE_DETAIL = StringUrl('saledata/products-sale')
     PRODUCT_VARIANT_LIST = StringUrl('saledata/products-variants')
 
     # advance payment
@@ -378,6 +380,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WAREHOUSE_LIST_FOR_INVENTORY_ADJUSTMENT = StringUrl('saledata/warehouses-for-inventory-adjustment')
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
     WAREHOUSE_PRODUCT_LIST = StringUrl('saledata/warehouses-products')
+    WAREHOUSE_PRODUCT_LIST_FOR_GOODS_TRANSFER = StringUrl('saledata/warehouses-products-for-goods-transfer')
     WAREHOUSE_LOT_LIST = StringUrl('saledata/warehouses-lots')
     WAREHOUSE_SERIAL_LIST = StringUrl('saledata/warehouses-serials')
     WAREHOUSE_STOCK_PRODUCT = StringUrl('saledata/warehouses/check/{product_id}/{uom_id}')
@@ -465,6 +468,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_LIST = StringUrl('inventory/goods-receipt/list')
     GOODS_RECEIPT_DETAIL = StringUrl('inventory/goods-receipt')
     GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
+
+    GOODS_DETAIL_LIST = StringUrl('inventory/goods-detail/list')
+    GOODS_DETAIL_DETAIL = StringUrl('inventory/goods-detail/{pk}')
+    UPDATE_GOODS_DETAIL_DATA_LIST = StringUrl('inventory/update-detail-data/list')
+
+
     INVENTORY_ADJUSTMENT_LIST = StringUrl('inventory/inventory-adjustments')
     INVENTORY_ADJUSTMENT_DETAIL = StringUrl('inventory/inventory-adjustment/{pk}')
     INVENTORY_ADJUSTMENT_PRODUCT_LIST = StringUrl('inventory/inventory-adjustment/product/list/{ia_id}')
@@ -532,6 +541,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     BALANCE_INIT_LIST = StringUrl('report/balance-init/list')
     REPORT_INVENTORY_LIST = StringUrl('report/inventory/list')
     REPORT_GENERAL_LIST = StringUrl('report/general/list')
+    PO_REPORT_LIST = StringUrl('report/po-report/list')
 
     # Final Acceptance
     FINAL_ACCEPTANCE_LIST = StringUrl('acceptance/final-acceptance/list')
@@ -556,6 +566,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REVENUE_PLAN_LIST = StringUrl('revenue-plans/list')
     REVENUE_PLAN_DETAIL = StringUrl('revenue-plans/detail/{pk}')
 
+    LEAD_LIST = StringUrl('lead/list')
+    LEAD_LIST_FOR_OPP = StringUrl('lead/list-for-opp')
+    LEAD_CHART = StringUrl('lead/chart-data')
+    LEAD_DETAIL = StringUrl('lead/detail/{pk}')
+    LEAD_STAGE_LIST = StringUrl('lead/list-lead-stage')
+
     # AR Invoice
     DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')
     AR_INVOICE_LIST = StringUrl('ar-invoice/list')
@@ -569,10 +585,36 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Goods Return
     SALE_ORDER_LIST_FOR_GOODS_RETURN = StringUrl('inventory/sale-orders-for-goods-return/list')
     DELIVERY_LIST_FOR_GOODS_RETURN = StringUrl('inventory/get-deliveries-for-goods-return')
-    DELIVERY_PRODUCTS_FOR_GOODS_RETURN = StringUrl('inventory/get-delivery-products-for-goods-return/{pk}')
     GOODS_RETURN_LIST = StringUrl('inventory/goods-return/list')
     GOODS_RETURN_DETAIL = StringUrl('inventory/goods-return/{pk}')
+
+    # Goods Registration
+    GOODS_REGISTRATION_LIST = StringUrl('inventory/goods-registration/list')
+    GOODS_REGISTRATION_DETAIL = StringUrl('inventory/goods-registration/{pk}')
 
     INVOICE_SIGN_LIST = StringUrl('ar-invoice/sign/list')
     INVENTORY_INTERACT_LIST = StringUrl('saledata/warehouses/config-interact')
     INVENTORY_INTERACT_DETAIL = StringUrl('saledata/warehouses/config-interact/{pk}')
+
+    # Diagram
+    DIAGRAM_LIST = StringUrl('diagram/list')
+
+    # Project
+    PROJECT_LIST = StringUrl('project/list')
+    PROJECT_DETAIL = StringUrl('project/detail/{pk}')
+    PROJECT_EDIT = StringUrl('project/edit/{pk}')
+    PROJECT_GROUP_LIST = StringUrl('project/group/list')
+    PROJECT_GROUP_DD_LIST = StringUrl('project/group/list-dd')
+    PROJECT_GROUP_DETAIL = StringUrl('project/group/detail')
+    PROJECT_WORK_LIST = StringUrl('project/work/list')
+    PROJECT_WORK_DETAIL = StringUrl('project/work/detail')
+    PROJECT_MEMBER_ADD = StringUrl('project/{pk}/member/add')
+    PROJECT_MEMBER_DETAIL = StringUrl('project/{pk}/member/detail/{pk_member}')
+    PROJECT_UPDATE_ORDER = StringUrl('project/update-order/{pk}')
+    PROJECT_TASK_LIST = StringUrl('project/assign-task-list/{pk_pj}')
+    PROJECT_TASK_LINK = StringUrl('project/assign-task-link/{pk}')
+
+    # Folder
+    FOLDER_LIST = StringUrl('attachment/folder/list')
+    FOLDER_DETAIL = StringUrl('attachment/folder')
+    FOLDER_UPLOAD_FILE_LIST = StringUrl('attachment/folder-upload-file/list')

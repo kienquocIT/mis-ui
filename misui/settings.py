@@ -80,6 +80,8 @@ INSTALLED_APPS = \
         'apps.core.printer',
         'apps.core.mailer',
         'apps.core.fimport',
+        'apps.core.diagram',
+        'apps.core.attachment',
         'apps.core.form',
     ] + [  # Another Application
         'apps.masterdata.saledata',
@@ -98,7 +100,9 @@ INSTALLED_APPS = \
         'apps.sales.dashboard',
         'apps.sales.revenueplan',
         'apps.sales.arinvoice',
-        'apps.sales.apinvoice'
+        'apps.sales.apinvoice',
+        'apps.sales.lead',
+        'apps.sales.project',
     ] + [  # e-office Application
         'apps.eoffice.leave',
         'apps.eoffice.businesstrip',

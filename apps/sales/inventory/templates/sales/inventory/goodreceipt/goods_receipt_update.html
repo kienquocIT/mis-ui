@@ -60,12 +60,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-4 col-lg-4">
+                                <div class="col-12 col-md-5 col-lg-5">
                                     <div class="form-group">
-                                        <label class="form-label" for="good-receipt-date-received">{% trans 'Date' %}</label>
+                                        <label class="form-label required" for="good-receipt-date-received">{% trans 'Date' %}</label>
                                         <div class="input-affix-wrapper">
                                             <input type="text" name="date-received" id="good-receipt-date-received"
-                                                   class="form-control date-picker" autocomplete="off">
+                                                   class="form-control date-picker" autocomplete="off" required>
                                             <div class="input-suffix">
                                                 <i class="far fa-calendar"></i>
                                             </div>
@@ -236,7 +236,7 @@
                             <div class="row">
                                 <table
                                     id="datable-good-receipt-line-detail-po"
-                                    class="table nowrap min-w-1920p w-100 mb-5"
+                                    class="table nowrap min-w-1600p w-100 mb-5"
                                     data-url=""
                                     data-method="get"
                                 >
@@ -259,9 +259,9 @@
                                     <tr>
                                         <th colspan="5"></th>
                                         <th colspan="4">
-                                            <div class="row">
+                                            <div class="row mb-2">
                                                 <div class="col-6">
-                                                    <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
+                                                    <p style="text-align: right">{% trans 'Pretax Amount' %}:</p>
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
@@ -272,7 +272,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-6">
-                                                    <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
+                                                    <p style="text-align: right">{% trans 'Taxes' %}:</p>
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
@@ -283,11 +283,11 @@
                                             <hr class="bg-teal">
                                             <div class="row">
                                                 <div class="col-6">
-                                                    <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
+                                                    <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
-                                                    <span class="mask-money font-3 good-receipt-product-total" data-init-money="0"></span>
+                                                    <b><span class="mask-money font-3 good-receipt-product-total" data-init-money="0"></span></b>
                                                     <input type="text" class="form-control good-receipt-product-total-raw" value="0" hidden>
                                                 </div>
                                             </div>
@@ -326,7 +326,7 @@
                                         <th>{% trans 'UOM' %}</th>
                                         <th>{% trans 'Quantity' %}</th>
                                         <th>{% trans 'Warehouse' %}</th>
-                                        <th>{% trans 'Unit Cost' %}</th>
+                                        <th>{% trans 'Unit cost' %}</th>
                                         <th>{% trans 'Subtotal Price' %}</th>
                                     </tr>
                                     </thead>
@@ -334,7 +334,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="row">
+                            <div class="row mt-2">
                                 <div class="col-12 col-md-6 col-lg-6">
                                     <button
                                         type="button"
@@ -414,12 +414,12 @@
                                             <thead>
                                             <tr>
                                                 <th class="w-5"></th>
-                                                <th class="w-20">PR</th>
-                                                <th class="w-15">{% trans 'UOM' %}</th>
-                                                <th class="w-15">{% trans 'Quantity' %}</th>
-                                                <th class="w-15">{% trans 'Received' %}</th>
-                                                <th class="w-15">{% trans 'Remain' %}</th>
-                                                <th class="w-15">{% trans 'This time' %}</th>
+                                                <th class="w-45">PR</th>
+                                                <th class="w-10">{% trans 'UOM' %}</th>
+                                                <th class="w-10">{% trans 'Quantity' %}</th>
+                                                <th class="w-10">{% trans 'Received' %}</th>
+                                                <th class="w-10">{% trans 'Remain' %}</th>
+                                                <th class="w-10">{% trans 'This time' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -434,15 +434,15 @@
                                         <table
                                             id="datable-good-receipt-warehouse"
                                             class="table nowrap w-100"
-                                            data-url="{% url 'WareHouseListAPI' %}"
+                                            data-url="{% url 'WareHouseListAPI' %}?interact=1"
                                             data-method="GET"
                                         >
                                             <thead>
                                             <tr>
                                                 <th class="w-5"></th>
-                                                <th class="w-20">{% trans 'Code' %} WH</th>
-                                                <th class="w-30">{% trans 'Name' %} WH</th>
-                                                <th class="w-20">{% trans 'Note' %}</th>
+                                                <th class="w-20">{% trans 'Warehouse Code' %}</th>
+                                                <th class="w-35">{% trans 'Warehouse Name' %}</th>
+                                                <th class="w-15">{% trans 'Enter data later' %}</th>
                                                 <th class="w-20">{% trans 'Quantity' %}</th>
                                                 <th class="w-5">{% trans 'UOM' %}</th>
                                             </tr>
@@ -473,9 +473,8 @@
                                                 <tbody>
                                                 </tbody>
                                             </table>
-
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-manage-lot">
-                                                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new' %}</span></span>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-lot">
+                                                <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
                                             </button>
                                         </div>
 
@@ -500,9 +499,8 @@
                                                 <tbody>
                                                 </tbody>
                                             </table>
-
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-manage-serial">
-                                                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new' %}</span></span>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-serial">
+                                                <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
                                             </button>
                                         </div>
                                     </div>
@@ -537,10 +535,11 @@
                                             <tr>
                                                 <th class="w-5"></th>
                                                 <th class="w-30">{% trans 'Product' %}</th>
-                                                <th class="w-10">{% trans 'UOM' %}</th>
-                                                <th class="w-10">{% trans 'Quantity' %}</th>
                                                 <th class="w-30">{% trans 'Warehouse' %}</th>
-                                                <th class="w-15">{% trans 'This time' %}</th>
+                                                <th class="w-5">{% trans 'Quantity' %}</th>
+                                                <th class="w-5">{% trans 'UOM' %}</th>
+                                                <th class="w-5">{% trans 'Enter data later' %}</th>
+                                                <th class="w-20">{% trans 'This time' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -572,8 +571,8 @@
                                                 </tbody>
                                             </table>
 
-                                            <button type="button" class="btn btn-outline-primary" id="btn-add-ia-lot">
-                                                <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-ia-lot">
+                                                <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
                                             </button>
                                         </div>
 
@@ -599,8 +598,8 @@
                                                 </tbody>
                                             </table>
 
-                                            <button type="button" class="btn btn-outline-primary" id="btn-add-ia-serial">
-                                                <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-ia-serial">
+                                                <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
                                             </button>
                                         </div>
                                     </div>

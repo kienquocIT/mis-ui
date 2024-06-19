@@ -238,6 +238,7 @@ $(document).ready(function () {
             timepicker: false,
             showDropdowns: false,
             minYear: 2023,
+            autoApply: true,
             locale: {
                 format: 'DD/MM/YYYY'
             },
@@ -297,6 +298,7 @@ $(document).ready(function () {
         formData.pretax_amount = parseInt(formData.pretax_amount)
         formData.taxes = parseInt(formData.taxes)
         formData.total_amount = parseInt(formData.total_amount)
+        formData.employee_inherit_id = $('input[name="employee_inherit_id"]').val()
         if (method === 'post') formData.system_status = 1
 
         // WindowControl.showLoading();

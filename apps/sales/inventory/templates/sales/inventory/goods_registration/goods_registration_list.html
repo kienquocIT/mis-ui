@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Goods registration list' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <div>
+        <table id="goods_registration_list" class="table nowrap w-100 mb-5" data-method="GET"
+               data-url="{% url 'GoodsRegistrationListAPI' %}"
+               data-url-detail="{% url 'GoodsRegistrationDetail' '0' %}"
+        >
+            <thead>
+            <th></th>
+            <th>{% trans "Code" %}</th>
+            <th>{% trans "Title" %}</th>
+            <th>{% trans "Sale person" %}</th>
+            <th>{% trans "Date created" %}</th>
+            </thead>
+        </table>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/inventory/js/goods_registration/goods_registration_list.js' %}"></script>
+{% endblock %}

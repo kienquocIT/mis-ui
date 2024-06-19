@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Final acceptance' %}{% endblock %}
+{% block title %}{% trans 'Final acceptance update' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
-
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_final_acceptance_update" hidden>
+    <button class="btn btn-outline-primary" type="submit" form="frm_final_acceptance_update" id="btn-save" hidden>
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -29,10 +28,10 @@
         <div class="row">
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="row form-group">
-                    <div class="col-12 col-md-3 col-lg-3">
+                    <div class="col-12 col-md-4 col-lg-4">
                         <label class="form-label" for="employee_inherit_id">{% trans 'Employee inherit' %}</label>
                     </div>
-                    <div class="col-12 col-md-9 col-lg-9">
+                    <div class="col-12 col-md-8 col-lg-8">
                         <select
                                 class="form-select"
                                 id="employee_inherit_id"
@@ -45,10 +44,10 @@
                     </div>
                 </div>
                 <div class="row form-group">
-                    <div class="col-12 col-md-3 col-lg-3">
+                    <div class="col-12 col-md-4 col-lg-4">
                         <label class="form-label" for="box-final-acceptance-so">{% trans 'Sale Order' %}</label>
                     </div>
-                    <div class="col-12 col-md-9 col-lg-9">
+                    <div class="col-12 col-md-8 col-lg-8">
                         <select
                                 class="form-select"
                                 id="box-final-acceptance-so"
@@ -62,10 +61,10 @@
             </div>
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="row form-group">
-                    <div class="col-12 col-md-3 col-lg-3">
+                    <div class="col-12 col-md-4 col-lg-4">
                         <label class="form-label" for="opportunity_id">{% trans 'Opportunity' %}</label>
                     </div>
-                    <div class="col-12 col-md-9 col-lg-9">
+                    <div class="col-12 col-md-8 col-lg-8">
                         <select
                                 class="form-select"
                                 id="opportunity_id"
@@ -77,14 +76,14 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-8 col-lg-8">
                         <div class="row form-group">
                             <div class="col-12 col-md-3 col-lg-3">
-                                <label class="form-label" for="final-acceptance-date-save">{% trans 'Date' %}</label>
+                                <label class="form-label" for="final-acceptance-date-approved">{% trans 'Date' %}</label>
                             </div>
                             <div class="col-12 col-md-9 col-lg-9">
                                 <div class="input-affix-wrapper">
-                                    <input type="text" name="date_save" id="final-acceptance-date-save"
+                                    <input type="text" name="date_save" id="final-acceptance-date-approved"
                                            class="form-control date-picker" autocomplete="off" disabled>
                                     <div class="input-suffix">
                                         <i class="far fa-calendar"></i>
@@ -93,17 +92,17 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="d-flex justify-content-end">
-                    <button
-                            type="button"
-                            class="btn btn-outline-primary"
-                            id="btn-refresh-data"
-                    >
-                    <span><span>{% trans 'Refresh' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-sync-alt"></i></span></span></span>
-                    </button>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="d-flex justify-content-end">
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-primary"
+                                    id="btn-refresh-data"
+                            >
+                            <span><span class="icon"><span class="feather-icon"><i class="fas fa-redo-alt"></i></span></span><span>{% trans 'Refresh' %}</span></span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -130,14 +129,22 @@
                 </tbody>
             </table>
         </div>
-
-        <input
-            type="hidden"
-            id="app-trans-factory"
-            data-select-so="{% trans 'Please select sale order' %}"
-        >
     </form>
 {% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+            type="text"
+            id="app-trans-factory"
+            data-select-so="{% trans 'Please select sale order' %}"
+    >
+    <input
+            type="text"
+            id="app-data-factory"
+            data-detail=""
+    >
+{% endblock %}
+
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

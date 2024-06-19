@@ -177,6 +177,12 @@ class AppsCodeToList:
                 'is_active': True,
             },
         },
+        'project': {
+            'project': {
+                'title': _('Project'),
+                'is_active': True,
+            }
+        }
     }
 
     @classmethod

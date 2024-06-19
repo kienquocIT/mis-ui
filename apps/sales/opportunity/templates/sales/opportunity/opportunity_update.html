@@ -285,7 +285,7 @@
         </div>
     </div>
 
-    {% include 'sales/task/extend/task-form.html' %}
+    {% include 'sales/task/extend/task-form.html' with has_prj=False%}
 
     <div class="modal fade" id="send-email" tabindex="-1" role="dialog"
          aria-labelledby="createOpportunityEmailModalForms" aria-hidden="true">
@@ -687,11 +687,15 @@
             data-trans-valid="{% trans "Valid" %}"
             data-trans-invalid="{% trans "invalid" %}"
             data-forbidden="{% trans "Forbidden" %}"
+            data-cancel-quo="{% trans "Please cancel current quotation" %}"
+            data-cancel-so="{% trans "Please cancel current sale order" %}"
+            data-cancel-quo-so="{% trans "Please cancel current quotation, sale order" %}"
     ></script>
     <input
             type="text"
             id="data-detail"
     >
+    {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

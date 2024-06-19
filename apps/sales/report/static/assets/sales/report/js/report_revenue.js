@@ -20,8 +20,6 @@ $(function () {
                     url: $table.attr('data-url'),
                     data: {
                         "is_initial": false,
-                        "group_inherit__is_delete": false,
-                        "sale_order__system_status": 3,
                     },
                     // dataSrc: 'data.report_revenue_list',
                     dataSrc: function (resp) {
@@ -54,31 +52,28 @@ $(function () {
                         placeholder: $transFact.attr('data-filter-customer'),
                     },
                 ],
-                columns: [  // 180,180,180,90,240,240,270,270,270 (1920p)
+                columns: [  // 112,112,112,60,192,192,160,160,160 (1600p)
                     {
                         targets: 0,
-                        width: '9.375%',
+                        width: '5%',
                         render: (data, type, row) => {
-                            return `<div class="row"><span class="badge badge-primary">${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</span></div>`;
+                            return `<div class="d-flex">
+                                        <span class="badge badge-primary mr-2">${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</span>
+                                        <span class="badge badge-primary badge-outline">${row?.['sale_order']?.['employee_inherit']?.['full_name'] ? row?.['sale_order']?.['employee_inherit']?.['full_name'] : ''}</span>
+                                    </div>`;
                         }
                     },
                     {
                         targets: 1,
-                        width: '9.375%',
+                        width: '12%',
                         render: (data, type, row) => {
-                            return `<div class="row"><span class="badge badge-primary badge-outline">${row?.['sale_order']?.['employee_inherit']?.['full_name'] ? row?.['sale_order']?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
+                            return `<span class="badge badge-secondary badge-sm">${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</span>
+                                    <p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '9.375%',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</p>`;
-                        }
-                    },
-                    {
-                        targets: 3,
-                        width: '4.6875%',
+                        width: '3%',
                         render: (data, type, row) => {
                             if (row?.['date_approved']) {
                                 return `<p>${moment(row?.['date_approved'] ? row?.['date_approved'] : '').format('DD/MM/YYYY')}</p>`;
@@ -88,36 +83,29 @@ $(function () {
                         }
                     },
                     {
-                        targets: 4,
-                        width: '12.5%',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
-                        }
-                    },
-                    {
-                        targets: 5,
-                        width: '12.5%',
+                        targets: 3,
+                        width: '12%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
-                        targets: 6,
-                        width: '14.0625%',
+                        targets: 4,
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
-                        targets: 7,
-                        width: '14.0625%',
+                        targets: 5,
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
-                        targets: 8,
-                        width: '14.0625%',
+                        targets: 6,
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
                         }
@@ -127,8 +115,21 @@ $(function () {
                     // mask money
                     $.fn.initMaskMoney2();
                     loadTotal();
+                    // add css to Dtb
+                    loadCssToDtb('table_report_revenue_list');
                 },
             });
+        }
+
+        function loadCssToDtb(tableID) {
+            let tableIDWrapper = tableID + '_wrapper';
+            let tableWrapper = document.getElementById(tableIDWrapper);
+            if (tableWrapper) {
+                let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+                if (headerToolbar) {
+                    headerToolbar.classList.add('hidden');
+                }
+            }
         }
 
         function loadTotal() {
@@ -183,8 +184,6 @@ $(function () {
                                             'method': $table.attr('data-method'),
                                             'data': {
                                                 'is_initial': false,
-                                                "group_inherit__is_delete": false,
-                                                "sale_order__system_status": 3,
                                                 'date_approved__gte': startDate,
                                                 'date_approved__lte': endDate,
                                             },
@@ -273,9 +272,27 @@ $(function () {
             });
         }
 
-        $('#btn-collapse').click(function () {
-            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
-        });
+        function loadFilter(listData, $eleShow) {
+            if (listData.length > 0) {
+                $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
+            }
+        }
+
+        function getListTxtMultiSelect2 ($ele) {
+            let result = [];
+            if ($ele.val() && $ele.val().length > 0) {
+                let selectedValues = $ele.val();
+                let tempDiv = document.createElement('div');
+                tempDiv.innerHTML = $ele[0].innerHTML;
+                for (let val of selectedValues) {
+                    let option = tempDiv.querySelector(`option[value="${val}"]`);
+                    if (option) {
+                        result.push(option.textContent);
+                    }
+                }
+            }
+            return result;
+        }
 
         // load init
         function initData() {
@@ -297,6 +314,7 @@ $(function () {
                     format: 'DD/MM/YYYY',
                 },
                 maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
                 autoApply: true,
                 autoUpdateInput: false,
             }).on('apply.daterangepicker', function (ev, picker) {
@@ -307,6 +325,21 @@ $(function () {
 
         // mask money
         $.fn.initMaskMoney2();
+
+        // Prevent dropdown from closing when clicking inside the dropdown
+        $('.dropdown-menu').on('click', function (e) {
+            e.stopPropagation();
+        });
+
+        // Prevent the dropdown from closing when clicking outside it
+        $('.btn-group').on('hide.bs.dropdown', function (e) {
+            e.preventDefault();
+        });
+
+        // Reopen dropdown on button click
+        $('.btn-group').on('click', '.btn', function (e) {
+            $(this).siblings('.dropdown-menu').toggleClass('show');
+        });
 
         // Events
         boxGroup.on('change', function() {
@@ -320,25 +353,38 @@ $(function () {
             loadTotal();
         });
 
-        btnView.on('click', function () {
+        $('#btn-apply-vb, #btn-apply-date').on('click', function () {
+            this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
             dataParams['is_initial'] = false;
-            dataParams['group_inherit__is_delete'] = false;
-            dataParams['sale_order__system_status'] = 3;
-            if (boxGroup.val()) {
+            let listViewBy = [];
+            let listDate = [];
+            if (boxGroup.val() && boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
+                let listTxt = getListTxtMultiSelect2(boxGroup);
+                for (let txt of listTxt) {
+                    listViewBy.push(txt);
+                }
             }
-            if (boxEmployee.val()) {
+            if (boxEmployee.val() && boxEmployee.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
+                let listTxt = getListTxtMultiSelect2(boxEmployee);
+                for (let txt of listTxt) {
+                    listViewBy.push(txt);
+                }
             }
+            loadFilter(listViewBy, $('#card-filter-vb'));
             if (boxStart.val()) {
                 let dateStart = moment(boxStart.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
                 dataParams['date_approved__gte'] = formatStartDate(dateStart);
+                listDate.push(boxStart.val());
             }
             if (boxEnd.val()) {
                 let dateEnd = moment(boxEnd.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
                 dataParams['date_approved__lte'] = formatEndDate(dateEnd);
+                listDate.push(boxEnd.val());
             }
+            loadFilter(listDate, $('#card-filter-date'));
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
@@ -357,6 +403,10 @@ $(function () {
                     }
                 }
             )
+        });
+
+        $('#btn-cancel-vb, #btn-cancel-date').on('click', function () {
+            this.closest('.dropdown-menu').classList.remove('show');
         });
 
 

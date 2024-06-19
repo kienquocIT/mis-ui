@@ -1706,6 +1706,7 @@ $bootstrap-icons-map: (
   "filetype-json": "\f791",
   "filetype-pptx": "\f792",
   "filetype-xlsx": "\f793",
+  "floppy2": "\F7E4",
 );
 
 .bi-123::before { content: map-get($bootstrap-icons-map, "123"); }
@@ -3391,3 +3392,5 @@ $bootstrap-icons-map: (
 .bi-filetype-json::before { content: map-get($bootstrap-icons-map, "filetype-json"); }
 .bi-filetype-pptx::before { content: map-get($bootstrap-icons-map, "filetype-pptx"); }
 .bi-filetype-xlsx::before { content: map-get($bootstrap-icons-map, "filetype-xlsx"); }
+//custom
+.bi-floppy2::before { content: map-get($bootstrap-icons-map, "floppy2"); }

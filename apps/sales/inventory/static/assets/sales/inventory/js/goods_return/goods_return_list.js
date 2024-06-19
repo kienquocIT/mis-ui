@@ -27,7 +27,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
                             return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
@@ -35,7 +35,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-25',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
                             return `<a href="${link}" class="text-primary"><b>${row.title}</b></a>`;
@@ -43,37 +43,44 @@ $(document).ready(function () {
                     },
                     {
                         data: 'customer',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-20',
                         render: (data, type, row) => {
                             return `${row?.['sale_order']?.['customer']?.['name']}`
                         }
                     },
                     {
                         data: 'sale_person',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-20',
                         render: (data, type, row) => {
                             return `${row?.['sale_order']?.['sale_person']?.['fullname']}`
                         }
                     },
                     {
                         data: 'sale_order',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `${row?.['sale_order']?.['title']} - <span class="text-blue"><i class="bi bi-truck"></i>&nbsp;<b>${row?.['delivery']?.['code']}</b></span>`
+                            return `<span class="badge badge-secondary badge-sm">${row?.['sale_order']?.['code']}</span>&nbsp;${row?.['sale_order']?.['title']} - <span class="text-blue"><i class="bi bi-truck"></i>&nbsp;<b>${row?.['delivery']?.['code']}</b></span>`
                         }
                     },
                     {
                         data: 'date_created',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `${row.date_created.split(' ')[0]}`
+                            return `${moment(row.date_created.split(' ')[0]).format('DD/MM/YYYY')}`
                         }
                     },
                     {
-                        data: 'status',
+                        data: 'system_status',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="badge-success badge">Done</span>`
+                            let color = [
+                                'badge-secondary',
+                                'badge-primary',
+                                'badge-indigo',
+                                'badge-success',
+                                'badge-danger'
+                            ]
+                            return `<span class="badge w-100 ${color[row?.['raw_system_status']]}">${data}</span>`
                         }
                     },
                 ],

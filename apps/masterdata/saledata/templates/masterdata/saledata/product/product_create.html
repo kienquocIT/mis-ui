@@ -53,13 +53,19 @@
                 </div>
                 <div class="col-12 col-md-9 col-lg-9">
                     <div class="row">
-                        <div class="col-12 col-md-3 col-lg-3">
+                        <div class="col-12 col-md-2 col-lg-2">
                             <div class="form-group">
                                 <label class="form-label required" for="code">{% trans "Product Code" %}</label>
                                 <input type="text" id="code" class="form-control" oninput="this.value=this.value.toUpperCase()" required>
                             </div>
                         </div>
-                        <div class="col-12 col-md-9 col-lg-9">
+                        <div class="col-12 col-md-2 col-lg-2">
+                            <div class="form-group">
+                                <label class="form-label" for="part-number">{% trans "Part number" %}</label>
+                                <input type="text" id="part-number" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-8 col-lg-8">
                             <div class="form-group">
                                 <label class="form-label required" for="title">{% trans "Product Name" %}</label>
                                 <input type="text" id="title" placeholder="Input Product Name" class="form-control">
@@ -224,12 +230,6 @@
                             <label class="form-label required">{% trans "Tax Code" %}</label>
                             <select id="sale-select-box-tax-code" class="form-select" data-method="GET"
                                     data-url="{% url "TaxListAPI" %}"></select>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-3 col-lg-3">
-                        <div class="form-group">
-                            <label class="form-label">{% trans "Cost" %}</label>
-                            <input id="sale-cost" data-return-type="number" type="text" class="form-control mask-money">
                         </div>
                     </div>
                 </div>

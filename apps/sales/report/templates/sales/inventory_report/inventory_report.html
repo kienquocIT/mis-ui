@@ -5,15 +5,9 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <style>
-        td:hover {
-            font-weight: bolder;
-        }
         th {
-            color: white !important;
             font-size: medium !important;
         }
-    </style>
-    <style>
         .custom-scroll {
             position: relative;
             margin: auto;
@@ -23,28 +17,15 @@
             position: sticky;
             left: 0;
         }
-        .second-col-x {
-            min-width: 500px;
-            position: sticky;
-            left: 350px;
-        }
-        thead .first-col {
-            background-color: #0095a4;
-        }
-        thead .second-col {
-            background-color: #0095a4;
+        thead th, thead .first-col {
+            background: #007D88 !important;
+            color: white !important;
         }
         tbody .first-col {
-            background-color: #fff;
-        }
-        tbody .second-col {
-            background-color: #fff;
+            background: white;
         }
         tbody .first-col-x {
-            background-color: #eaeaea;
-        }
-        tbody .second-col-x {
-            background-color: #eaeaea;
+            background: #f5f5f5;
         }
         .table-wrap {
             width: 100%;
@@ -65,15 +46,15 @@
             position: sticky;
             left: 0;
         }
-        .table-wrap .fixed_header .second-col {
-            position: sticky;
-            left: 350px;
+        .detail-row {
+            background-color: rgba(245, 250, 255, var(--bs-text-opacity)) !important;
         }
     </style>
 {% endblock %}
 {% block pageAction %}{% endblock %}
 {% block pageContent %}
     {{ data.data.current_period | json_script:"current_period" }}
+    {{ data.data.definition_inventory_valuation | json_script:"definition_inventory_valuation" }}
 
     <script id="trans-script"
             data-trans-m1th="{% trans 'January' %}"
@@ -91,6 +72,14 @@
             data-trans-revenue="{% trans 'Revenue' %}"
             data-trans-net-profit="{% trans 'Net income' %}"
             data-trans-gross-profit="{% trans 'Gross profit' %}"
+            data-trans-we="{% trans 'Weighted average' %}"
+            data-trans-ob="{% trans 'Opening balance' %}"
+            data-trans-grc="{% trans 'Goods receipt' %}"
+            data-trans-grt="{% trans 'Goods return' %}"
+            data-trans-dlvr="{% trans 'Delivery' %}"
+            data-trans-gis="{% trans 'Goods issue' %}"
+            data-trans-gtf="{% trans 'Goods transfer' %}"
+            data-trans-no-info="{% trans 'Have not done. Please finish in Goods Detail.' %}"
     ></script>
 
     <script id="url-script"
@@ -98,85 +87,114 @@
     ></script>
 
     <div class="row">
-        <div class="col-12 col-lg-2 col-md-2">
-            <div class="form-group">
-                <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
-                <select class="form-select select2 select-multiple" id="warehouses_select" multiple
-                        data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
-            </div>
-        </div>
-        <div class="col-12 col-lg-3 col-md-3">
-            <div class="form-group">
-                <label class="form-label" for="items_select">{% trans 'Product' %}</label>
-                <select class="form-select select2 select-multiple" id="items_select" multiple
-                        data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
-            </div>
-        </div>
-        <div class="col-12 col-lg-3 col-md-3">
-            <div class="row">
-                <div class="col-6">
-                    <div class="form-group">
-                        <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
-                        <select class="form-select select2" id="period-select"
-                                data-url="{% url 'PeriodsConfigListAPI' %}"
-                                data-method="GET"
-                        ></select>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="form-group">
-                        <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
-                        <select id="period-month" class="form-select"></select>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-lg-2 col-md-2">
-            <div class="row">
-                <div class="col-6">
-                    <div class="form-group">
-                        <label class="form-label" for="period-day-from">{% trans 'From' %}</label>
-                        <span class="input-affix-wrapper">
-                            <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
-                            <input type="number" id="period-day-from" class="form-control">
+        <div class="col-12 col-md-12 col-lg-12">
+            <div id="btn-collapse" class="card">
+                <div class="card-header bg-primary-light-5">
+                    <h6>
+                        <span class="text-primary">
+                            <span>
+                                <span class="icon"><span class="feather-icon"><i class="bi bi-funnel"></i></span></span>
+                                {% trans 'Filter' %}
+                            </span>
                         </span>
+                        <button type="button" data-bs-toggle="collapse" data-bs-target="#filter_area" aria-expanded="false" aria-controls="collapse-area" class="btn btn-rounded btn-icon btn-xs">
+                            <span class="icon">
+                                <i class="fas fa-angle-double-up text-primary"></i>
+                            </span>
+                        </button>
+                    </h6>
+                    <div class="card-action-wrap">
+                        <div class="btn-group" role="group">
+                            <button id="btn-view-group" type="button" class="btn btn-gradient-primary w-100 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {% trans 'View' %}&nbsp;<i class="fas fa-eye"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btn-action">
+                                <a class="dropdown-item" id="btn-view" href="#"><i class="far fa-window-maximize"></i> <span>{% trans 'General' %}</span></a>
+                                <a class="dropdown-item" id="btn-view-detail" href="#"><i class="fas fa-list-ul"></i> <span>{% trans 'Detail' %}</span></a>
+                            </div>
+                        </div>
+
+                        <div class="btn-group" role="group">
+                            <button id="btn-action" type="button" class="btn btn-gradient-dark w-100 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {% trans 'Action' %}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btn-action">
+                                <a class="dropdown-item disabled" id="btn-export" href="#"><i class="bi bi-file-earmark-spreadsheet"></i> <span>{% trans 'Export to excel' %}</span></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="form-group">
-                        <label class="form-label" for="period-day-to">{% trans 'To' %}</label>
-                        <span class="input-affix-wrapper">
-                            <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
-                            <input type="number" id="period-day-to" class="form-control">
-                        </span>
+                <div id="filter_area" class="collapse show">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-lg-3 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
+                                    <select class="form-select select2 select-multiple" id="warehouses_select" multiple
+                                            data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-3 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="items_select">{% trans 'Product' %}</label>
+                                    <select class="form-select select2 select-multiple" id="items_select" multiple
+                                            data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-2 col-md-6">
+                                <div class="form-group">
+                                    <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
+                                    <select class="form-select select2" id="period-select"
+                                            data-url="{% url 'PeriodsConfigListAPI' %}"
+                                            data-method="GET"
+                                    ></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-2 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
+                                    <select id="period-month" class="form-select"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-1 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label" for="period-day-from">{% trans 'From' %}</label>
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
+                                        <input type="number" min="1" max="31" id="period-day-from" class="form-control">
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-1 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label" for="period-day-to">{% trans 'To' %}</label>
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
+                                        <input type="number" min="1" max="31" id="period-day-to" class="form-control">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-12 col-lg-2 col-md-2">
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="show-detail-cb">
-                <label class="form-check-label" for="show-detail-cb">{% trans 'Show detail' %}</label>
-            </div>
-            <button type="button" class="btn btn-gradient-primary mt-2" id="btn-view"><span><span>{% trans 'View' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-eye"></i></span></span></span></button>
         </div>
     </div>
-    <div class="row mt-5">
+    <div class="row mt-3 mb-3">
         <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
             <div class="custom-scroll">
-                <div class="table-wrap" style="max-height: 65vh">
+                <div class="table-wrap" style="max-height: 80vh">
                     <table hidden class="table nowrap w-100 fixed_header" id="table-inventory-report">
                         <thead class="row-fixed">
-                            <tr style="background: #0095a4;">
-                                <th class="border-1 first-col" rowspan="3" colspan="3">{% trans 'Code' %}</th>
-                                <th class="border-1 second-col" rowspan="3" colspan="3">{% trans 'Name' %}</th>
+                            <tr>
+                                <th class="first-col" rowspan="3" colspan="3">{% trans 'Product' %}</th>
                                 <th class="border-1" rowspan="3" colspan="3">{% trans 'UoM' %}</th>
                                 <th class="border-1" colspan="2">{% trans 'OPENING' %}</th>
                                 <th class="border-1" colspan="2">{% trans 'INPUT' %}</th>
                                 <th class="border-1" colspan="2">{% trans 'OUTPUT' %}</th>
                                 <th class="border-1" colspan="2">{% trans 'ENDING' %}</th>
                             </tr>
-                            <tr style="background: #0095a4;">
+                            <tr>
                                 <th class="border-1">{% trans 'Quantity' %}</th>
                                 <th class="border-1">{% trans 'Value' %}</th>
                                 <th class="border-1">{% trans 'Quantity' %}</th>
@@ -186,7 +204,7 @@
                                 <th class="border-1">{% trans 'Quantity' %}</th>
                                 <th class="border-1">{% trans 'Value' %}</th>
                             </tr>
-                            <tr style="background: #0095a4;">
+                            <tr>
                                 <th class="border-1"><span id="opening-total-quantity">0</span></th>
                                 <th class="border-1"><span id="opening-total-value" class="mask-money" data-init-money="0"></span></th>
                                 <th class="border-1"><span id="in-total-quantity">0</span></th>
@@ -201,9 +219,8 @@
                     </table>
                     <table hidden class="table nowrap w-100 fixed_header" id="table-inventory-report-detail">
                         <thead class="row-fixed">
-                            <tr style="background: #0095a4;">
-                                <th class="border-1 first-col" rowspan="3" colspan="3">{% trans 'Code' %}</th>
-                                <th class="border-1 second-col" rowspan="3" colspan="3">{% trans 'Name' %}</th>
+                            <tr>
+                                <th class="border-1 first-col" rowspan="3" colspan="3">{% trans 'Product' %}</th>
                                 <th class="border-1" rowspan="3" colspan="3">{% trans 'UoM' %}</th>
                                 <th class="border-1" rowspan="3" colspan="3">{% trans 'Date' %}</th>
                                 <th class="border-1" rowspan="3" colspan="3">{% trans 'LOT' %}</th>
@@ -213,7 +230,7 @@
                                 <th class="border-1" colspan="2">{% trans 'OUTPUT' %}</th>
                                 <th class="border-1" colspan="2">{% trans 'ENDING' %}</th>
                             </tr>
-                            <tr style="background: #0095a4;">
+                            <tr>
                                 <th class="border-1">{% trans 'Quantity' %}</th>
                                 <th class="border-1">{% trans 'Value' %}</th>
                                 <th class="border-1">{% trans 'Quantity' %}</th>
@@ -223,7 +240,7 @@
                                 <th class="border-1">{% trans 'Quantity' %}</th>
                                 <th class="border-1">{% trans 'Value' %}</th>
                             </tr>
-                            <tr style="background: #0095a4;">
+                            <tr>
                                 <th class="border-1"><span id="opening-total-quantity">0</span></th>
                                 <th class="border-1"><span id="opening-total-value" class="mask-money" data-init-money="0"></span></th>
                                 <th class="border-1"><span id="in-total-quantity">0</span></th>

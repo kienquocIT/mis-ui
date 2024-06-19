@@ -15,5 +15,6 @@ urlpatterns = [
     path('printer/', include('apps.core.printer.urls')),
     path('mailer/', include('apps.core.mailer.urls')),
     path('import/', include('apps.core.fimport.urls')),
+    path('diagram/', include('apps.core.diagram.urls')),
     path('form/', include('apps.core.form.urls')),
 ]

@@ -5,8 +5,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, ConditionFormset, SaleMsg, InputMappingProperties
-from apps.shared.msg import BaseMsg, SOMsg
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
+from apps.shared.msg import BaseMsg, SOMsg, AppMsg
 
 SYSTEM_STATUS = (
     (0, BaseMsg.DRAFT),
@@ -40,6 +40,16 @@ PAYMENT_DATE_TYPE = (
     (5, SOMsg.PAYMENT_DATE_TYPE_MONTH),
     (6, SOMsg.PAYMENT_DATE_TYPE_ORDER),
 )
+
+DIAGRAM_APP = {
+    "quotation.quotation": AppMsg.APP_QUOTATION,
+    "saleorder.saleorder": AppMsg.APP_SALE_ORDER,
+    "purchasing.purchaserequest": AppMsg.APP_PURCHASE_REQUEST,
+    "purchasing.purchaseorder": AppMsg.APP_PURCHASE_ORDER,
+    "inventory.goodsreceipt": AppMsg.APP_GOODS_RECEIPT,
+    "delivery.orderdeliverysub": AppMsg.APP_DELIVERY,
+    "inventory.goodsreturn": AppMsg.APP_GOODS_RETURN,
+}
 
 
 def create_sale_order(request, url, msg):
@@ -81,11 +91,10 @@ class SaleOrderCreate(View):
         data_copy_to = request.GET.get('data_copy_to', "")
         opportunity = request.GET.get('opportunity', "")
         result = {
-            'data': {
-                'employee_current': json.dumps(request.user.employee_current_data),
-                'data_copy_to': data_copy_to,
-                'opportunity': opportunity,
-            },
+            'employee_current': request.user.employee_current_data,
+            'data_copy_to': data_copy_to,
+            'opportunity': json.loads(opportunity) if opportunity else {},
+
             'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
             'form_id': 'frm_quotation_create',
             'list_from_app': 'saleorder.saleorder.create',
@@ -137,12 +146,16 @@ class SaleOrderDetail(View):
         breadcrumb='SALE_ORDER_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
-        return {'data': {'doc_id': pk},
-                'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
-                'form_id': 'frm_quotation_create',
-                'payment_term_stage': PAYMENT_TERM_STAGE,
-                'payment_date_type': PAYMENT_DATE_TYPE,
-                }, status.HTTP_200_OK
+        return {
+                   'data': {'doc_id': pk},
+                   'employee_current': request.user.employee_current_data,
+                   'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
+                   'form_id': 'frm_quotation_create',
+                   'payment_term_stage': PAYMENT_TERM_STAGE,
+                   'payment_date_type': PAYMENT_DATE_TYPE,
+                   'stt_sys': SYSTEM_STATUS,
+                   'dia_app': DIAGRAM_APP,
+               }, status.HTTP_200_OK
 
 
 class SaleOrderUpdate(View):

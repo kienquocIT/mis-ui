@@ -6,6 +6,7 @@ $(document).ready(function () {
     const dtb_wh_product_Ele = $('#table-add-item-wh');
     const btn_save_modal = $('#save-modal')
     const modal_add_balance = $('#modal-add-balance')
+    const trans_script = $('#trans-script')
 
     if (period_setup_sw_start_using_time !== '""') {
         form_balance_Ele.prop('hidden', false)
@@ -26,7 +27,7 @@ $(document).ready(function () {
                         dataSrc: function (resp) {
                             let data = $.fn.switcherResp(resp);
                             if (data && resp.data.hasOwnProperty('balance_init_list')) {
-                                console.log(resp.data['balance_init_list'])
+                                // console.log(resp.data['balance_init_list'])
                                 return resp.data['balance_init_list'] ? resp.data['balance_init_list'] : []
                             }
                             throw Error('Call data raise errors.')
@@ -66,7 +67,7 @@ $(document).ready(function () {
                         {
                             className: 'wrap-text text-right',
                             render: (data, type, row) => {
-                                return `<a href="#" class="text-secondary"><i class="far fa-trash-alt"></i></a>`;
+                                return ``;
                             }
                         },
                     ],
@@ -216,17 +217,17 @@ $(document).ready(function () {
                 }
                 dtb_wh_product_Ele.find('tbody').append(`
                     <tr class="sn-input-label">
-                        <td class="text-primary" colspan="4"><b>Input serial number</b></td>
+                        <td class="text-primary" colspan="4"><b>${trans_script.attr('data-trans-input-sn')}</b></td>
                     </tr>
                     <tr class="sn-input-label">
                         <td class="w-40">
                             <div class="row">
                                 <div class="col-1"></div>
                                 <div class="col-5">
-                                    <span class="text-muted">Vendor serial No.</span>
+                                    <span class="text-muted">${trans_script.attr('data-trans-vendor-sn-no')}</span>
                                 </div>
                                 <div class="col-6">
-                                    <span class="text-muted">Serial No.</span>
+                                    <span class="text-muted">${trans_script.attr('data-trans-sn-no')}</span>
                                </div>
                            </div>
                         </td>
@@ -234,20 +235,20 @@ $(document).ready(function () {
                         <td class="w-25">
                             <div class="row">
                                 <div class="col-6">
-                                    <span class="text-muted">Expire date</span>
+                                    <span class="text-muted">${trans_script.attr('data-trans-sn-exp')}</span>
                                 </div>
                                 <div class="col-6">
-                                    <span class="text-muted">Manufacture date</span>
+                                    <span class="text-muted">${trans_script.attr('data-trans-sn-manu')}</span>
                                 </div>
                             </div>
                         </td>
                         <td class="w-25">
                             <div class="row">
                                 <div class="col-6">
-                                    <span class="text-muted">Warranty start date</span>
+                                    <span class="text-muted">${trans_script.attr('data-trans-sn-warranty-start')}</span>
                                 </div>
                                 <div class="col-6">
-                                    <span class="text-muted">Warranty end date</span>
+                                    <span class="text-muted">${trans_script.attr('data-trans-sn-warranty-end')}</span>
                                 </div>
                             </div>
                         </td>
@@ -271,16 +272,16 @@ $(document).ready(function () {
         function loadRowLOT() {
             dtb_wh_product_Ele.find('tbody').append(`
                 <tr class="lot-input-label">
-                    <td class="text-primary" colspan="4"><b>Input LOT</b>&nbsp;<span><a href="#" class="text-secondary add-row-lot"><i class="bi bi-plus-circle"></i></a></span></td>
+                    <td class="text-primary" colspan="4"><b>${trans_script.attr('data-trans-input-lot')}</b>&nbsp;<span><a href="#" class="text-secondary add-row-lot"><i class="bi bi-plus-circle"></i></a></span></td>
                 </tr>
                 <tr class="lot-input-label">
                     <td class="w-40">
                         <div class="row">
                             <div class="col-8">
-                                <span class="text-muted">Lot number</span>
+                                <span class="text-muted">${trans_script.attr('data-trans-lot-no')}</span>
                             </div>
                             <div class="col-4">
-                                <span class="text-muted">Quantity</span>
+                                <span class="text-muted">${trans_script.attr('data-trans-lot-quantity')}</span>
                             </div>
                        </div>
                     </td>
@@ -288,10 +289,10 @@ $(document).ready(function () {
                     <td class="w-25">
                         <div class="row">
                             <div class="col-6">
-                                <span class="text-muted">Expiration date</span>
+                                <span class="text-muted">${trans_script.attr('data-trans-lot-exp')}</span>
                             </div>
                             <div class="col-6">
-                                <span class="text-muted">Manufacturing date</span>
+                                <span class="text-muted">${trans_script.attr('data-trans-lot-manu')}</span>
                             </div>
                         </div>
                     </td>
@@ -403,10 +404,10 @@ $(document).ready(function () {
                 <td class="w-25">
                     <div class="row">
                         <div class="col-6">
-                            <input type="text" class="form-control date-time-input lot-expire-date-input">
+                            <input type="text" class="form-control date-time-${trans_script.attr('data-trans-input-lot')}-expire-date-input">
                         </div>
                         <div class="col-6">
-                            <input type="text" class="form-control date-time-input lot-manufacture-date-input">
+                            <input type="text" class="form-control date-time-${trans_script.attr('data-trans-input-lot')}-manufacture-date-input">
                         </div>
                     </div>
                 </td>

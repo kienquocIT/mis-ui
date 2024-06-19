@@ -243,6 +243,7 @@ class Task_in_opps {
                 singleDatePicker: true,
                 timePicker: false,
                 showDropdowns: true,
+                autoApply: true,
                 locale: {
                     format: 'DD/MM/YYYY'
                 }

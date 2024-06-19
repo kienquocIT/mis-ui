@@ -1,14 +1,11 @@
 from django.views import View
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
 
 
 class GoodsReturnList(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/inventory/goods_return/goods_return_list.html',
@@ -20,8 +17,6 @@ class GoodsReturnList(View):
 
 
 class GoodsReturnListAPI(APIView):
-    permission_classes = [IsAuthenticated] # noqa
-
     @mask_view(
         auth_require=True,
         is_api=True,
@@ -37,7 +32,7 @@ class GoodsReturnListAPI(APIView):
     def post(self, request, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_LIST).post(request.data)
         if resp.state:
-            resp.result['message'] = SaleMsg.GRT_INVOICE_CREATE
+            resp.result['message'] = SaleMsg.GRT_CREATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -50,17 +45,12 @@ class GoodsReturnCreate(View):
         breadcrumb='GOODS_RETURN_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST + f"?interact=1").get()
         return {
-            'data': {
-                'warehouse_list': resp1.result,
-            },
+            'data': {},
         }, status.HTTP_200_OK
 
 
 class GoodsReturnDetail(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/inventory/goods_return/goods_return_detail.html',
@@ -72,21 +62,21 @@ class GoodsReturnDetail(View):
 
 
 class GoodsReturnUpdate(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
-        template='sales/inventory/goods_return/goods_return_detail.html',
+        template='sales/inventory/goods_return/goods_return_update.html',
         breadcrumb='GOODS_RETURN_UPDATE_PAGE',
         menu_active='menu_goods_return',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_RETURN
+        return {
+            'data': {},
+            'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_goods_return_update'
+        }, status.HTTP_200_OK
 
 
 class GoodsReturnDetailAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         is_api=True,
@@ -103,7 +93,7 @@ class GoodsReturnDetailAPI(APIView):
         data = request.data
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_DETAIL.fill_key(pk=pk)).put(data)
         if resp.state:
-            resp.result['message'] = SaleMsg.GRT_INVOICE_UPDATE
+            resp.result['message'] = SaleMsg.GRT_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -129,14 +119,3 @@ class DeliveryListForGoodsReturnAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST_FOR_GOODS_RETURN).get(params)
         return resp.auto_return(key_success='delivery_list')
-
-
-class DeliveryProductsForGoodsReturnAPI(APIView):
-    @mask_view(
-        login_require=True,
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_PRODUCTS_FOR_GOODS_RETURN.fill_key(pk=pk)).get()
-        return resp.auto_return(key_success='delivery_products_list')

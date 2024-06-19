@@ -57,10 +57,9 @@ class QuotationCreate(View):
     def get(self, request, *args, **kwargs):
         opportunity = request.GET.get('opportunity', "")
         ctx = {
-            'data': {
-                'employee_current': json.dumps(request.user.employee_current_data),
-                'opportunity': opportunity,
-            },
+            'employee_current': request.user.employee_current_data,
+            'opportunity': json.loads(opportunity) if opportunity else {},
+
             'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
             'form_id': 'frm_quotation_create',
             'list_from_app': 'quotation.quotation.create',
@@ -101,10 +100,8 @@ class QuotationDetail(View):
     )
     def get(self, request, pk, *args, **kwargs):
         return {
-                   'data': {
-                       'doc_id': pk,
-                       'employee_current': json.dumps(request.user.employee_current_data),
-                   },
+                   'data': {'doc_id': pk},
+                   'employee_current': request.user.employee_current_data,
                    'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
                    'form_id': 'frm_quotation_create',
                }, status.HTTP_200_OK
@@ -169,7 +166,7 @@ class QuotationConfigDetail(View):
         auth_require=True,
         template='sales/quotation/config/quotation_config.html',
         menu_active='menu_quotation_config',
-        breadcrumb='QUOTATION_CONFIG',
+        breadcrumb='SALE_ORDER_CONFIG',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -257,16 +254,3 @@ class QuotationIndicatorRestoreAPI(APIView):
             pk=pk,
             msg=SaleMsg.QUOTATION_INDICATOR_RESTORE
         )
-
-
-class QuotationPrint(View):
-    permission_classes = [IsAuthenticated]
-
-    @mask_view(
-        auth_require=True,
-        template='sales/quotation/quotation_print.html',
-        menu_active='menu_quotation_list',
-        breadcrumb='QUOTATION_DETAIL_PAGE',
-    )
-    def get(self, request, pk, *args, **kwargs):
-        return {'data': {'doc_id': pk}}, status.HTTP_200_OK

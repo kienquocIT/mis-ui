@@ -1,0 +1,65 @@
+{% load static i18n %}
+<div class="modal fade" id="modal_employee_list" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Add member to team" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table nowrap w-100" id="dtbMember" data-method="GET"
+                           data-url="{% url 'EmployeeListAPI' %}">
+                        <thead>
+                        <tr>
+                            <th class="w-10"></th>
+                            <th class="w-20">{% trans "Employee Code" %}</th>
+                            <th class="w-30">{% trans "Employee Name" %}</th>
+                            <th class="w-30">{% trans "Group" %}</th>
+                            <th class="w-10"></th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="add-member">{% trans "Add" %}</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="hidden member-tags">
+    <div class="member-item col-md-12 col-lg-6 col-xl-4">
+        <div class="card" data-manual-hide="false" data-footer-show="always">
+            <div class="card-header card-header-action">
+                <div class="hidden-md ">
+                    <div class="avatar avatar-rounded avatar-xs avatar-primary avatar-rounded" data-bs-toggle="tooltip"
+                         data-bs-placement="bottom" title="System Admin">
+                        <span class="initial-wrap"></span>
+                    </div>
+                </div>
+                <div class="ml-1 card-main-title">
+                    <p></p>
+                    <p><small><a href=""></a></small></p>
+                </div>
+                <div class="card-action-wrap">
+                    <button class="btn btn-xs btn-icon btn-rounded btn-flush-dark flush-soft-hover card-action-edit"
+                            type="button">
+                            <span class="icon">
+                                <i class="fa-solid fa-pen"></i>
+                            </span>
+                    </button>
+                    <a class="btn btn-xs btn-icon btn-rounded btn-flush-dark flush-soft-hover card-action card-action-close hidden">
+                        <span class="icon">
+                            <i class="fa-solid fa-xmark"></i>
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <script type="application/json" class="card-permit-data">[]</script>
+        </div>
+    </div>
+</div>

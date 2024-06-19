@@ -250,6 +250,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Goods receipt detail'))
     GOODS_RECEIPT_UPDATE_PAGE = BreadcrumbChildren(_('Goods receipt update'))
 
+    # Goods detail
+    GOODS_DETAIL_PAGE = BreadcrumbChildren(_('Goods detail'), 'GoodsDetail')
+
     # Purchase request config
     PURCHASE_REQUEST_CONFIG_PAGE = BreadcrumbChildren(_('Purchase Request'), 'PurchaseRequestConfig')
 
@@ -328,17 +331,33 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     REPORT_CUSTOMER_LIST_PAGE = BreadcrumbChildren(_('Customer report'), 'ReportCustomerList')
     REPORT_PIPELINE_LIST_PAGE = BreadcrumbChildren(_('Pipeline report'), 'ReportPipelineList')
     REPORT_CASHFLOW_LIST_PAGE = BreadcrumbChildren(_('Cashflow report'), 'ReportCashflowList')
+    REPORT_INVENTORY_LIST_PAGE = BreadcrumbChildren(_('Inventory Report'), 'ReportInventoryList')
+    REPORT_INVENTORY_DETAIL_LIST_PAGE = BreadcrumbChildren(_('Items Detail Report'), 'ReportInventoryDetailList')
+    REPORT_PURCHASING_LIST_PAGE = BreadcrumbChildren(_('Purchase order report'), 'PurchaseOrderReportList')
 
     GOODS_RETURN_LIST_PAGE = BreadcrumbChildren(_('Goods return list'), 'GoodsReturnList')
     GOODS_RETURN_CREATE_PAGE = BreadcrumbChildren(_('Goods return create'), 'GoodsReturnCreate')
     GOODS_RETURN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     GOODS_RETURN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    GOODS_REGISTRATION_LIST_PAGE = BreadcrumbChildren(_('Goods registration list'), 'GoodsRegistrationList')
+    GOODS_REGISTRATION_CREATE_PAGE = BreadcrumbChildren(_('Goods registration create'), 'GoodsRegistrationCreate')
+    GOODS_REGISTRATION_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    GOODS_REGISTRATION_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
+    LEAD_LIST_PAGE = BreadcrumbChildren(_('Lead list'), 'LeadList')
+    LEAD_CREATE_PAGE = BreadcrumbChildren(_('Lead create'), 'LeadCreate')
+    LEAD_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    LEAD_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
     MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
     IMPORT_LIST_PAGE = BreadcrumbChildren(_('Import List'), 'FImportListView')
     FORM_LIST_PAGE = BreadcrumbChildren(_('Forms'), 'FormListView')
     FORM_ENTRIES_LIST_PAGE = BreadcrumbChildren(_('Entries Data'))
+
+    # PROJECT
+    PROJECT_LIST = BreadcrumbChildren(_('Project list'), 'ProjectList')
 
 
 class BreadcrumbView:
@@ -739,6 +758,9 @@ class BreadcrumbView:
     GOODS_RECEIPT_DETAIL_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     GOODS_RECEIPT_UPDATE_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
+    # Goods detail
+    GOODS_DETAIL_PAGE = [BreadcrumbItem.GOODS_DETAIL_PAGE]
+
     # e-office Leave
     LEAVE_CONFIG_PAGE = [
         BreadcrumbItem.HOME_PAGE,
@@ -767,6 +789,7 @@ class BreadcrumbView:
     GOODS_TRANSFER_LIST_PAGE = [BreadcrumbItem.GOODS_TRANSFER_LIST_PAGE]
     GOODS_TRANSFER_CREATE_PAGE = GOODS_TRANSFER_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     GOODS_TRANSFER_DETAIL_PAGE = GOODS_TRANSFER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    GOODS_TRANSFER_UPDATE_PAGE = GOODS_TRANSFER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     # Goods issue
     GOODS_ISSUE_LIST_PAGE = [BreadcrumbItem.GOODS_ISSUE_LIST_PAGE]
@@ -781,7 +804,7 @@ class BreadcrumbView:
     BUSINESS_TRIP_EDIT = BUSINESS_TRIP_REQUEST_LIST + [BreadcrumbItem.BASTION_UPDATE]
 
     # Final acceptance
-    FINAL_ACCEPTANCE_LIST_PAGE = [BreadcrumbItem.FINAL_ACCEPTANCE_LIST_PAGE]
+    FINAL_ACCEPTANCE_LIST_PAGE = [BreadcrumbItem.FINAL_ACCEPTANCE_LIST_PAGE] + [BreadcrumbItem.BASTION_DETAIL]
 
     # Calendar
     CALENDAR_LIST_PAGE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.CALENDAR_LIST_PAGE]
@@ -853,11 +876,30 @@ class BreadcrumbView:
     REPORT_CASHFLOW_LIST_PAGE = [
         BreadcrumbItem.REPORT_CASHFLOW_LIST_PAGE
     ]
+    REPORT_INVENTORY_LIST_PAGE = [
+        BreadcrumbItem.REPORT_INVENTORY_LIST_PAGE
+    ]
+    REPORT_INVENTORY_DETAIL_LIST_PAGE = [
+        BreadcrumbItem.REPORT_INVENTORY_DETAIL_LIST_PAGE
+    ]
+    REPORT_PURCHASING_LIST_PAGE = [
+        BreadcrumbItem.REPORT_PURCHASING_LIST_PAGE
+    ]
 
     GOODS_RETURN_LIST_PAGE = [BreadcrumbItem.GOODS_RETURN_LIST_PAGE]
     GOODS_RETURN_CREATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     GOODS_RETURN_DETAIL_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     GOODS_RETURN_UPDATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    GOODS_REGISTRATION_LIST_PAGE = [BreadcrumbItem.GOODS_REGISTRATION_LIST_PAGE]
+    GOODS_REGISTRATION_CREATE_PAGE = GOODS_REGISTRATION_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    GOODS_REGISTRATION_DETAIL_PAGE = GOODS_REGISTRATION_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    GOODS_REGISTRATION_UPDATE_PAGE = GOODS_REGISTRATION_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    LEAD_LIST_PAGE = [BreadcrumbItem.LEAD_LIST_PAGE]
+    LEAD_CREATE_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    LEAD_DETAIL_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    LEAD_UPDATE_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     PRINTER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PRINTER_CONFIG_LIST_PAGE]
     PRINTER_CONFIG_LIST_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]
@@ -871,6 +913,12 @@ class BreadcrumbView:
     IMPORT_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.IMPORT_LIST_PAGE]
     IMPORT_LIST_PAGE = IMPORT_LIST + [BreadcrumbItem.BASTION_LIST]
     IMPORT_CREATE_PAGE = IMPORT_LIST + [BreadcrumbItem.BASTION_CREATE]
+
+    # project
+    PROJECT_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_LIST]
+    PROJECT_CREATE_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_CREATE]
+    PROJECT_DETAIL_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    PROJECT_UPDATE_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_UPDATE]
 
     FORM_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.FORM_LIST_PAGE]
     FORM_CREATE = FORM_LIST + [BreadcrumbItem.BASTION_CREATE]

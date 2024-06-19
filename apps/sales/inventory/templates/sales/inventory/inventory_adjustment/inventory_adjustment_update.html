@@ -101,30 +101,32 @@
                                        data-method="GET"
                                        class="table nowrap w-100" id="table-line-detail">
                                     <thead>
-                                    <th>{% trans 'Product name' %}</th>
-                                    <th>{% trans 'Warehouse' %}</th>
-                                    <th>{% trans 'Unit Of Measure' %}</th>
-                                    <th>{% trans 'Booked quantity' %}</th>
-                                    <th class="required">{% trans 'Counted quantity' %}</th>
-                                    <th>{% trans 'Difference' %}</th>
-                                    <th>{% trans 'Select for actions' %}</th>
-                                    <th>{% trans 'Action type' %}</th>
-                                    <th>{% trans 'Action status' %}</th>
+                                    <tr>
+                                        <th>{% trans 'Product name' %}</th>
+                                        <th>{% trans 'Warehouse' %}</th>
+                                        <th>{% trans 'Unit Of Measure' %}</th>
+                                        <th>{% trans 'Booked quantity' %}</th>
+                                        <th class="required">{% trans 'Counted quantity' %}</th>
+                                        <th class="text-center">{% trans 'Difference' %}</th>
+                                        <th class="text-center">{% trans 'Select for actions' %}</th>
+                                        <th class="text-center">{% trans 'Action type' %}</th>
+                                        <th class="text-center">{% trans 'Action status' %}</th>
+                                    </tr>
                                     </thead>
                                     <tbody></tbody>
                                 </table>
                             </div>
                         </div>
-                        <div class="btn-group dropdown">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {% trans 'Actions' %}
-                            </button>
-                            <div class="dropdown-menu dropdown-bordered">
-                                <a class="dropdown-item" id="get-increase-items-btn" href="#"><i class="bi bi-arrow-up"></i><span>&nbsp;&nbsp;{% trans 'Get Increase Items' %}</span></a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" id="get-decrease-items-btn" href="#"><i class="bi bi-arrow-down"></i></i><span>&nbsp;&nbsp;{% trans 'Get Decrease Items' %}</span></a>
-                            </div>
-                        </div>
+{#                        <div class="btn-group dropdown">#}
+{#                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
+{#                                {% trans 'Actions' %}#}
+{#                            </button>#}
+{#                            <div class="dropdown-menu dropdown-bordered">#}
+{#                                <a class="dropdown-item" id="get-increase-items-btn" href="#"><i class="bi bi-arrow-up"></i><span>&nbsp;&nbsp;{% trans 'Get Increase Items' %}</span></a>#}
+{#                                <div class="dropdown-divider"></div>#}
+{#                                <a class="dropdown-item" id="get-decrease-items-btn" href="#"><i class="bi bi-arrow-down"></i></i><span>&nbsp;&nbsp;{% trans 'Get Decrease Items' %}</span></a>#}
+{#                            </div>#}
+{#                        </div>#}
                     </div>
                     <div class="tab-pane fade" id="tab_block_attachment">
                         <div class="row">

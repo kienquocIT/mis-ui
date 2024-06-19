@@ -1,0 +1,96 @@
+{% load static i18n %}
+<div class="modal fade" id="work_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Project work' %}</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 col-md-6 form-group">
+                        <label for="workTitle" class="form-label required">{% trans 'Title' %}</label>
+                        <input type="text" name="title" id="workTitle" class="form-control" required>
+                    </div>
+                    <div class="col-xs-12 col-md-6 form-group">
+                        <label for="workStartDate" class="form-label">{% trans 'Start date' %}</label>
+                        <div class="input-affix-wrapper">
+                            <input type="text" id="workStartDate" name="w_start_date" class="form-control date-picker"
+                                   autocomplete="off">
+                            <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 form-group">
+                        <label for="workEndDate" class="form-label">{% trans 'End date' %}</label>
+                        <div class="input-affix-wrapper">
+                            <input type="text" id="workEndDate" name="w_end_date" class="form-control date-picker"
+                                   autocomplete="off">
+                            <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 form-group">
+                        <label for="select_project_group"
+                               class="form-label">{% trans 'Project group' %}</label>
+                        <select class="form-select" name="project_group" id="select_project_group"
+                                data-url="{% url 'ProjectGroupDDListAPI' %}"
+                                data-keyResp="pj_group_list" data-keyText="group.title" data-keyId="group.id"
+                                data-params="{'project': '{{ data.pk }}'}" data-allowClear="true"
+                        >
+                        </select>
+                    </div>
+                    <div class="col-xs-12 col-md-6 form-group">
+                        <label for="select_relationships_type"
+                               class="form-label">{% trans 'Types of Relationships' %}</label>
+                        <select class="form-select" id="select_relationships_type">
+                            <option value=""></option>
+                            {% for value, name in data.dependencies_list %}
+                                <option value="{{ value }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xs-12 col-md-6 form-group">
+                        <label for="select_project_work"
+                               class="form-label">{% trans "Parents Work" %}</label>
+                        <select class="form-select" name="project_work" id="select_project_work"
+                                data-url="{% url 'ProjectWorkListAPI' %}"
+                                data-keyResp="pj_work_list" data-keyText="title" data-keyId="id"
+                                data-params="{'list_from_app': '{{ data.list_from_app|escape }}', 'project': '{{ data.pk }}'}"
+                                data-allowClear="true"
+                        >
+                        </select>
+                    </div>
+                    <div class="col-xs-12 col-md-12">
+                        <p class="mt-2 toggle-notes">
+                            <i class="fa-solid fa-info font-3"></i>
+                            <span>
+                                {% trans 'Explanation of Types of Relationships' %}
+                            </span>
+
+                        </p>
+                        <figure>
+                            <blockquote class="blockquote content-notes">
+                                <p>{% trans "Start to Start (SS) - You can only start work B when work A has started." %}</p>
+                                <p>{% trans "Finish to Start (FS) - You can only start work B when work A has finished." %}</p>
+                            </blockquote>
+                        </figure>
+                    </div>
+                    <div class="col-xs-12 col-md-6 form-group mt-3">
+                        <label for="workWeight" class="form-label">{% trans 'Work weight' %}</label>
+                        <span class="input-affix-wrapper">
+                            <input type="text" id="workWeight" name="w_weight" class="form-control" autocomplete="off">
+                            <span class="input-suffix"><i class="fa-solid fa-percent"></i></span>
+                        </span>
+                    </div>
+                </div>
+                <input type="hidden" id="workRate" name="w_rate" class="form-control" autocomplete="off">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary float-left" id="btn-work-add">
+                    {% trans 'Add' %}
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% trans 'Close' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

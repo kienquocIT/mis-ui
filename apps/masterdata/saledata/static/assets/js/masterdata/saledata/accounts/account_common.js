@@ -436,17 +436,11 @@ function LoadDetail(option) {
 
                 if (data.account_type_selection === 0) {
                     inputIndividualEle.prop('checked', true);
-                    $('#parent-account-div-id').prop('hidden', true);
-                    $('#account-tax-code-label-id').removeClass('required');
-                    $('#total_employees_label').removeClass('required');
-                    $("#tax-code-label").removeClass("required");
                 } else if (data.account_type_selection === 1) {
                     inputOrganizationEle.prop('checked', true);
-                    $('#parent-account-div-id').prop('hidden', false);
-                    $('#account-tax-code-label-id').addClass('required');
-                    $('#total_employees_label').addClass('required');
-                    $("#tax-code-label").addClass("required");
                 }
+                inputIndividualEle.trigger('change')
+                inputOrganizationEle.trigger('change')
 
                 load_shipping_address_mapped(data);
                 load_billing_address_mapped(data);
@@ -526,7 +520,7 @@ save_shipping_address.on('click', function () {
         let detail_shipping_address = shipping_address_modal.val();
         let city = shipping_city.find(`option:selected`).text();
         let district = shipping_district.find(`option:selected`).text();
-        let ward = shipping_district.find(`option:selected`).text();
+        let ward = shipping_ward.find(`option:selected`).text();
 
         let selectedVal = shipping_city.val();
         let dataBackup = SelectDDControl.get_data_from_idx(shipping_city, selectedVal);
@@ -543,6 +537,7 @@ save_shipping_address.on('click', function () {
             } else {
                 shipping_address = detail_shipping_address + ', ' + ward + ', ' + district + ', ' + city;
             }
+            // console.log(detail_shipping_address, ward, district, city)
 
             $('#modal-shipping-address').modal('hide');
             shipping_address_modal.val('');
@@ -861,6 +856,8 @@ class AccountHandle {
         loadShippingDistrict();
         loadShippingWard();
         loadContactOwner();
+        inputIndividualEle.trigger('change')
+        inputOrganizationEle.trigger('change')
     }
     combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle));
@@ -1081,10 +1078,10 @@ function dataTableActivity(data) {
                         'saleorder.saleorder': transEle.attr('data-sale-order'),
                     }
                     let appMapBadge = {
-                        'opportunity.opportunity': "badge-soft-sky",
-                        'opportunity.opportunitymeeting': "badge-soft-warning",
-                        'quotation.quotation': "badge-soft-primary",
-                        'saleorder.saleorder': "badge-soft-success",
+                        'opportunity.opportunity': "badge-indigo badge-outline",
+                        'opportunity.opportunitymeeting': "badge-warning badge-outline",
+                        'quotation.quotation': "badge-primary badge-outline",
+                        'saleorder.saleorder': "badge-success badge-outline",
                     }
                     let appMapIcon = {
                         'opportunity.opportunity': "far fa-lightbulb",
@@ -1092,12 +1089,6 @@ function dataTableActivity(data) {
                         'quotation.quotation': "fas fa-file-invoice-dollar",
                         'saleorder.saleorder': "fas fa-file-invoice",
                     }
-                    // return `<div class="row">
-                    //             <div class="d-flex">
-                    //                 <small><i class="${appMapIcon[row?.['app_code']]} mt-2 mr-2"></i></small>
-                    //                 <span class="badge ${appMapBadge[row?.['app_code']]}">${appMapTrans[row?.['app_code']]}</span>
-                    //             </div>
-                    //         </div>`;
                     return `<span class="badge ${appMapBadge[row?.['app_code']]}">
                                 <span>
                                     <span class="icon"><span class="feather-icon"><small><i class="${appMapIcon[row?.['app_code']]}"></i></small></span></span>

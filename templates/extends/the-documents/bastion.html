@@ -5,6 +5,8 @@
     {% if not prj_title %}{% trans 'Project' as prj_title %}{% endif %}
     {% if not inherit_title %}{% trans 'Inheritor' as inherit_title %}{% endif %}
 
+    {% override_list_form_app data.list_from_app new_list_from_app as resolve_list_from_app %}
+
     <div
             class="accordion accordion-card accordion-soft accordion-icon my-3"
             id="bastionFieldTheDocument"
@@ -21,9 +23,9 @@
 
             {# Project flag #}
             data-has_prj="{{ has_prj|parse_0_or_1 }}"
-            data-prj_disabled="{{ opp_disabled|parse_0_or_1 }}"
-            data-prj_required="{{ opp_required|parse_0_or_1 }}"
-            data-prj_readonly="{{ opp_required|parse_0_or_1 }}"
+            data-prj_disabled="{{ prj_disabled|parse_0_or_1 }}"
+            data-prj_required="{{ prj_required|parse_0_or_1 }}"
+            data-prj_readonly="{{ prj_required|parse_0_or_1 }}"
             data-prj_hidden="{{ prj_hidden|parse_0_or_1 }}"
             data-prj_title="{{ prj_title }}"
 
@@ -126,7 +128,7 @@
                                                             data-url="{% url 'OpportunityListAPI' %}"
                                                             data-method="GET"
                                                             data-keyResp="opportunity_list"
-                                                            data-params='{"list_from_app": "{{ data.list_from_app }}", "is_close_lost":"false", "is_deal_close":"false"}'
+                                                            data-params='{"list_from_app": "{{ resolve_list_from_app }}", "is_close_lost":"false", "is_deal_close":"false"}'
                                                             data-keyText="code"
 
                                                             data-url-info-detail="{% url 'OpportunityDetail' pk='__pk__' %}"
@@ -143,8 +145,9 @@
                                         </div>
                                     {% endif %}
                                 {% elif item == 'prj' %}
+
                                     {% if has_prj == True %}
-                                        <div class="{{ clsNameBastionField }}">
+                                        <div class="col-xs-12">
                                             <div class="form-group">
                                                 <label
                                                         for="project_id"
@@ -156,7 +159,11 @@
                                                         name="project_id"
                                                         id="project_id"
                                                         class="form-select {% if prj_hidden %} d-none {% endif %}"
-                                                        data-params='{"list_from_app": "{{ data.list_from_app }}"}'
+                                                        data-url="{% url 'ProjectListAPI' %}"
+                                                        data-method="GET"
+                                                        data-keyResp="project_list"
+                                                        data-params='{"list_from_app": "{{ resolve_list_from_app }}"}'
+                                                        data-keyText="code"
                                                         {% if prj_required == True %} required {% endif %}
                                                         {% if prj_disabled == True %} disabled {% endif %}
                                                         {% if prj_readonly == True %} readonly {% endif %}
@@ -166,7 +173,7 @@
                                     {% endif %}
                                 {% elif item == 'inherit' %}
                                     {% if has_inherit == True %}
-                                        <div class="{{ clsNameBastionField }}">
+                                        <div class="{% if has_prj == True %}col-xs-12{% else %}{{ clsNameBastionField }}{% endif %}">
                                             <div class="form-group">
                                                 <label
                                                         for="employee_inherit_id"
@@ -180,7 +187,7 @@
                                                             id="employee_inherit_id"
                                                             class="form-select {% if inherit_hidden %} d-none {% endif %}"
                                                             data-url="{% url 'EmployeeListAPI' %}"
-                                                            data-params='{"list_from_app": "{{ data.list_from_app }}"}'
+                                                            data-params='{"list_from_app": "{{ resolve_list_from_app }}"}'
                                                             data-keyResp="employee_list"
                                                             data-keyText="full_name"
 

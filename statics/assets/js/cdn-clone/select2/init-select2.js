@@ -736,9 +736,14 @@ class SelectDDControl {
             if (!this._config) this._config = this.config();
             this.renderDataOnload(this._config);
             return this.ele.select2(this._config).on('change', function (e) {
-                if ($(this).closest('form').length > 0) {
-                    if ($(this).valid()) $(this).closest(".form-group").removeClass("has-error");
-                    else $(this).closest(".form-group").addClass("has-error");
+                const frm$ = $(this).closest('form');
+                if (frm$.length > 0) {
+                    // Make sure form was initialized before call valid().
+                    // Because valid() was called, form not initialized, form is creating validate with empty config!
+                    if (frm$.data('validator')){
+                        if ($(this).valid()) $(this).closest(".form-group").removeClass("has-error");
+                        else $(this).closest(".form-group").addClass("has-error");
+                    }
                 }
                 clsThis.loadInfoMore($(this));
             });

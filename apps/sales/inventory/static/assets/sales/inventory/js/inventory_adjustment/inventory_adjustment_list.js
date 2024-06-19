@@ -27,10 +27,10 @@ $(document).ready(function () {
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text w-10',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}" class="badge badge-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
@@ -42,7 +42,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'warehouses',
-                        className: 'wrap-text w-25',
+                        className: 'wrap-text w-20',
                         render: (data, type, row) => {
                             let html = ``;
                             for (let i = 0; i < row?.['warehouses'].length; i++) {
@@ -59,10 +59,10 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'date_created',
+                        data: 'state',
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-green">${row.system_status}</span>`
+                            return `<span class="badge-primary badge">${data}</span>`
                         }
                     },
                 ],

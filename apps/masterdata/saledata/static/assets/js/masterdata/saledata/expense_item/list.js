@@ -14,6 +14,9 @@ $(document).ready(function () {
             },
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
+                if (!frm.dataForm?.['expense_parent']) {
+                    delete frm.dataForm?.['expense_parent']
+                }
                 $.fn.callAjax2({
                     url: frm.dataUrl,
                     method: frm.dataMethod,

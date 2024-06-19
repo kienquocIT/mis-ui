@@ -1,0 +1,50 @@
+{% load static i18n %}
+<div class="modal fade" id="group_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Group' %}</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 col-md-6 form-group">
+                        <label for="groupTitle" class="form-label required">{% trans 'Title' %}</label>
+                        <input type="text" name="title" id="groupTitle" class="form-control" required>
+                    </div>
+                    <div class="col-xs-12 col-md-6 form-group">
+                        <label for="groupStartDate" class="form-label">{% trans 'Start date' %}</label>
+                        <div class="input-affix-wrapper">
+                            <input type="text" id="groupStartDate" name="gr_start_date" class="form-control date-picker"
+                                   autocomplete="off">
+                            <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 form-group">
+                        <label for="groupStartDate" class="form-label">{% trans 'End date' %}</label>
+                        <div class="input-affix-wrapper">
+                            <input type="text" id="groupEndDate" name="gr_end_date" class="form-control date-picker"
+                                   autocomplete="off">
+                            <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 form-group">
+                        <label for="groupWeight" class="form-label">{% trans 'Group weight' %}</label>
+                        <span class="input-affix-wrapper">
+                            <input type="text" id="groupWeight" name="gr_weight" class="form-control" autocomplete="off">
+                            <span class="input-suffix"><i class="fa-solid fa-percent"></i></span>
+                        </span>
+                    </div>
+                </div>
+                <input type="hidden" id="groupRate" name="gr_weight" class="form-control" autocomplete="off">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary float-left" id="btn-group-add">
+                    {% trans 'Add' %}
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% trans 'Close' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

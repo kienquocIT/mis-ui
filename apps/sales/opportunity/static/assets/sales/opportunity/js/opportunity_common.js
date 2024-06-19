@@ -29,7 +29,8 @@ class OpportunityLoadDropdown {
                 let list_result = []
                 if (!config) {
                     resp.data[keyResp].map(function (item) {
-                        if (item.group.id === $('#employee_current_group').val() && list_account_manager.includes(item.id)) {
+                        // if (item.group.id === $('#employee_current_group').val() && list_account_manager.includes(item.id)) {
+                        if (list_account_manager.includes(item.id)) {
                             list_result.push(item)
                         }
                     })
@@ -444,7 +445,7 @@ class OpportunityLoadDetail {
                 if (item?.['is_deal_closed']) {
                     ele_first_stage.addClass('stage-close')
                     ele_first_stage.find('.dropdown-menu').empty();
-                    if (is_close_lost || is_deal_close) {
+                    if (is_deal_close) {
                         ele_first_stage.find('.dropdown-menu').append(
                             `<div class="form-check form-switch">
                                 <input type="checkbox" class="form-check-input" id="input-close-deal" checked>
@@ -685,6 +686,13 @@ class OpportunityLoadDetail {
         let ele_sale_team_members = $('#card-member.tag-change .card');
         let ele_lost_other_reason = $('#check-lost-reason');
 
+        if ($('#new_opp_title').length !== 0) {
+            data_form['title'] = $('#new_opp_title').val()
+            if (!data_form['title']) {
+                $.fn.notifyB({description: "Missing Opp title"}, 'failure');
+            }
+        }
+
         data_form['win_rate'] = parseFloat($('#input-rate').val());
         data_form['is_input_rate'] = !!$('#check-input-rate').is(':checked');
         ele_customer.val() !== undefined ? data_form['customer'] = ele_customer.val() : undefined;
@@ -864,6 +872,180 @@ class OpportunityLoadDetail {
     }
 }
 
+class OpportunityActivity {
+    static loadDblActivityLogs() {
+        let $table = $('#table-timeline');
+        let pk = $.fn.getPkDetail();
+        let urlFactory = $('#url-factory');
+        let transEle = $('#trans-factory');
+        $table.DataTable().clear().destroy()
+        $table.DataTableDefault({
+            rowIdx: true,
+            ajax: {
+                url: $table.attr('data-url-logs_list'),
+                type: 'GET',
+                data: {'opportunity': pk},
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('activity_logs_list')) {
+                        return resp.data['activity_logs_list'] ? resp.data['activity_logs_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    render: () => {
+                        return ``
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        let appMapTrans = {
+                            'quotation.quotation': transEle.attr('data-trans-quotation'),
+                            'saleorder.saleorder': transEle.attr('data-trans-sale-order'),
+                            'cashoutflow.advancepayment': transEle.attr('data-trans-advance'),
+                            'cashoutflow.payment': transEle.attr('data-trans-payment'),
+                            'cashoutflow.returnadvance': transEle.attr('data-trans-return'),
+                            'task.opportunitytask': transEle.attr('data-trans-task'),
+                        }
+                        let appMapBadge = {
+                            'quotation.quotation': "badge-primary badge-outline",
+                            'saleorder.saleorder': "badge-success badge-outline",
+                            'cashoutflow.advancepayment': "badge-pink badge-outline",
+                            'cashoutflow.payment': "badge-violet badge-outline",
+                            'cashoutflow.returnadvance': "badge-purple badge-outline",
+                            'task.opportunitytask': "badge-secondary badge-outline",
+                        }
+                        let typeMapActivity = {
+                            1: transEle.attr('data-trans-task'),
+                            2: transEle.attr('data-trans-call'),
+                            3: transEle.attr('data-trans-email'),
+                            4: transEle.attr('data-trans-meeting'),
+                        }
+                        let typeMapIcon = {
+                            0: "fas fa-file-alt",
+                            1: "fas fa-tasks",
+                            2: "fas fa-phone-alt",
+                            3: "far fa-envelope",
+                            4: "fas fa-users",
+                        }
+
+                        if ([0, 1].includes(row?.['log_type'])) {
+                            if (row?.['app_code']) {
+                                return `<span class="badge ${appMapBadge[row?.['app_code']]}">
+                                                    <span>
+                                                        <span class="icon"><span class="feather-icon"><small><i class="${typeMapIcon[row?.['log_type']]}"></i></small></span></span>
+                                                        ${appMapTrans[row?.['app_code']]}
+                                                    </span>
+                                                </span>`;
+                            }
+                        } else {
+                            let status = '';
+                            let badgeType = 'badge-soft-smoke';
+                            if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
+                                status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
+                            }
+                            if (Object.keys(row?.['task']).length > 0) {
+                                badgeType = 'badge-soft-sky';
+                            }
+                            return `<span class="badge ${badgeType}">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
+                        }
+                        return `<p></p>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        let urlMapApp = {
+                            'quotation.quotation': urlFactory.attr('data-url-quotation-detail'),
+                            'saleorder.saleorder': urlFactory.attr('data-url-sale-order-detail'),
+                            'cashoutflow.advancepayment': urlFactory.attr('data-url-advance-detail'),
+                            'cashoutflow.payment': urlFactory.attr('data-url-payment-detail'),
+                            'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
+                            'task.opportunitytask': urlFactory.attr('data-url-return-detail'),
+                        }
+                        let link = '';
+                        let title = '';
+                        if ([0, 1].includes(row?.['log_type'])) {
+                            if (row?.['app_code'] && row?.['doc_data']?.['id'] && row?.['doc_data']?.['title']) {
+                                link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_data']?.['id']);
+                                return `<a href="${link}" target="_blank"><p>${row?.['doc_data']?.['title']}</p></a>`;
+                            } else {
+                                return `<p>--</p>`;
+                            }
+                        }
+                        if (row?.['log_type'] === 1) {
+                            title = row?.['task']?.['subject'];
+                            return `<a href="#" class="show-task-detail" data-task-id="${row?.['task']['id']}"><p>${title}</p></a>`;
+                        } else if (row?.['log_type'] === 2) {
+                            title = row?.['call_log']?.['subject'];
+                            return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-call-log" class="detail-call-log-button text-primary" data-id="${row?.['call_log']['id']}"><p>${title}</p></a>`;
+                        } else if (row?.['log_type'] === 3) {
+                            title = row?.['email']?.['subject'];
+                            return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-send-email" class="detail-email-button text-primary" data-id="${row?.['email']['id']}"><p>${title}</p></a>`;
+                        } else if (row?.['log_type'] === 4) {
+                            title = row?.['meeting']?.['subject'];
+                            return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-meeting" class="detail-meeting-button text-primary" data-id="${row?.['meeting']['id']}"><p>${title}</p></a>`;
+                        }
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        let code = '';
+                        if ([0, 1].includes(row?.['log_type'])) {
+                            if (row?.['app_code'] && row?.['doc_data']?.['code']) {
+                                return `<span class="badge badge-primary">${row?.['doc_data']?.['code']}</span>`;
+                            }
+                        }
+                        return `<p>--</p>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        if (row?.['app_code'] && [0, 1].includes(row?.['log_type'])) {
+                            if (row?.['log_type'] === 0 && row?.['doc_data']?.['system_status']) {
+                                let sttTxt = JSON.parse($('#stt_sys').text());
+                                let sttMapBadge = [
+                                    "soft-light",
+                                    "soft-primary",
+                                    "soft-info",
+                                    "soft-success",
+                                    "soft-danger",
+                                ]
+                                return `<div class="row"><span class="badge badge-${sttMapBadge[row?.['doc_data']?.['system_status']]}">${sttTxt[row?.['doc_data']?.['system_status']][1]}</span></div>`;
+                            }
+                            if (row?.['log_type'] === 1 && row?.['doc_data']?.['task_status']) {
+                                return `<div class="row"><span class="badge badge-soft-pink">${row?.['doc_data']?.['task_status']}</span></div>`;
+                            }
+                        }
+                        return `<p>--</p>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+                        return $x.fn.displayRelativeTime(row?.['date_created'], {
+                            'outputFormat': 'DD-MM-YYYY',
+                        });
+                    }
+                }
+            ],
+            rowCallback: (row, data, index) => {
+                $('.show-task-detail', row).on('click', function () {
+                    const taskObj = data?.["task"]
+                    displayTaskView($("#url-factory").attr("data-task_detail").format_url_with_uuid(taskObj.id))
+                })
+            }
+        });
+    };
+}
+
 // function in page list
 
 function loadDtbOpportunityList() {
@@ -879,6 +1061,7 @@ function loadDtbOpportunityList() {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('opportunity_list')) {
+                        console.log(resp.data['opportunity_list'])
                         return resp.data['opportunity_list'] ? resp.data['opportunity_list'] : [];
                     }
                     throw Error('Call data raise errors.')

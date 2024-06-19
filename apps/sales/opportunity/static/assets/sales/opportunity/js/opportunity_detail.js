@@ -31,6 +31,50 @@ $(document).ready(function () {
 
     // Promise.all
 
+    function loadLeadList(datasource) {
+        if (!$.fn.DataTable.isDataTable('#lead-list-table')) {
+            let dtb = $('#lead-list-table');
+            dtb.DataTableDefault({
+                rowIdx: true,
+                data: datasource,
+                columns: [
+                    {
+                        'render': () => {
+                            return ``;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['lead'].id);
+                            return `<a href="${link}"><span class="badge badge-soft-primary w-70">${row?.['lead'].code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['lead'].id);
+                            return `<a href="${link}">${row?.['lead']?.['title']}</a>`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            return `<span class="badge badge-sm badge-blue">${row?.['lead']?.['source']}</span>`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            return `${row?.['lead']?.['contact_name']}`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            return `${moment(row?.['lead']?.['date_created'].split(' ')[0]).format('DD/MM/YYYY')}`;
+                        }
+                    },
+                ],
+            });
+        }
+    }
+
     let prm_config = $.fn.callAjax2({
         url: urlFactory.data('url-config'),
         method: 'GET'
@@ -60,10 +104,25 @@ $(document).ready(function () {
         (errs) => {}
     )
 
+    let prm_lead = $.fn.callAjax2({
+        url: $('#lead-list-table').attr('data-url') + `?opp_id=${pk}`,
+        method: 'GET'
+    }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && typeof data === 'object' && data.hasOwnProperty('lead_list')) {
+                console.log(data?.['lead_list'])
+                return data?.['lead_list'];
+            }
+            return {};
+        },
+        (errs) => {}
+    )
+
     let list_stage_condition = []
     let config_is_input_rate = null;
     $x.fn.showLoadingPage()
-    Promise.all([prm_detail, prm_config]).then(
+    Promise.all([prm_detail, prm_config, prm_lead]).then(
         (results) => {
             $x.fn.hideLoadingPage();
             const opportunity_detail_data = results[0];
@@ -712,7 +771,7 @@ $(document).ready(function () {
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     $('#create-new-call-log').hide();
-                                    loadDblActivityLogs();
+                                    OpportunityActivity.loadDblActivityLogs();
                                 }
                             },
                             (errs) => {
@@ -793,7 +852,7 @@ $(document).ready(function () {
                             if (data) {
                                 $.fn.notifyB({description: "Successfully"}, 'success')
                                 $('#detail-call-log').modal('hide')
-                                loadDblActivityLogs();
+                                OpportunityActivity.loadDblActivityLogs();
                             }
                         },(errs) => {
                             $.fn.notifyB({description: errs.data.errors}, 'failure');
@@ -886,7 +945,7 @@ $(document).ready(function () {
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     $('#send-email').hide();
-                                    loadDblActivityLogs();
+                                    OpportunityActivity.loadDblActivityLogs();
                                 }
                             },
                             (errs) => {
@@ -943,7 +1002,7 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
-                            loadDblActivityLogs();
+                            OpportunityActivity.loadDblActivityLogs();
                         }
                     },
                     (errs) => {
@@ -1038,8 +1097,8 @@ $(document).ready(function () {
                 $('#meeting-employee-attended-select-box option').remove();
 
                 loadMeetingSaleCodeList();
-                loadMeetingAddress(opportunity_detail_data?.['customer']?.['shipping_address'] ? obj_selected?.['customer']?.['shipping_address'] : [])
-                loadCustomerMember(opportunity_detail_data?.['customer']?.['contact_mapped'] ? obj_selected?.['customer']?.['contact_mapped'] : [])
+                loadMeetingAddress(opportunity_detail_data?.['customer']?.['shipping_address'] ? opportunity_detail_data?.['customer']?.['shipping_address'] : [])
+                loadCustomerMember(opportunity_detail_data?.['customer']?.['contact_mapped'] ? opportunity_detail_data?.['customer']?.['contact_mapped'] : [])
                 loadEmployeeAttended();
             })
 
@@ -1125,7 +1184,7 @@ $(document).ready(function () {
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     $('#create-meeting').hide();
-                                    loadDblActivityLogs();
+                                    OpportunityActivity.loadDblActivityLogs();
                                 }
                             },
                             (errs) => {
@@ -1235,7 +1294,7 @@ $(document).ready(function () {
                             if (data) {
                                 $.fn.notifyB({description: "Successfully"}, 'success')
                                 $('#detail-meeting').modal('hide')
-                                loadDblActivityLogs();
+                                OpportunityActivity.loadDblActivityLogs();
                             }
                         },(errs) => {
                             $.fn.notifyB({description: errs.data.errors}, 'failure');
@@ -1374,152 +1433,7 @@ $(document).ready(function () {
                         })
             }
 
-            function loadDblActivityLogs() {
-                let $table = table_timeline;
-                let urlMapApp = {
-                    'quotation.quotation': urlFactory.attr('data-url-quotation-detail'),
-                    'saleorder.saleorder': urlFactory.attr('data-url-sale-order-detail'),
-                    'cashoutflow.advancepayment': urlFactory.attr('data-url-advance-detail'),
-                    'cashoutflow.payment': urlFactory.attr('data-url-payment-detail'),
-                    'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
-                }
-                let appMapTrans = {
-                    'quotation.quotation': transEle.attr('data-trans-quotation'),
-                    'saleorder.saleorder': transEle.attr('data-trans-sale-order'),
-                    'cashoutflow.advancepayment': transEle.attr('data-trans-advance'),
-                    'cashoutflow.payment': transEle.attr('data-trans-payment'),
-                    'cashoutflow.returnadvance': transEle.attr('data-trans-return'),
-                }
-                let appMapBadge = {
-                    'quotation.quotation': "badge-soft-primary",
-                    'saleorder.saleorder': "badge-soft-success",
-                    'cashoutflow.advancepayment': "badge-soft-pink",
-                    'cashoutflow.payment': "badge-soft-violet",
-                    'cashoutflow.returnadvance': "badge-soft-purple",
-                }
-                let typeMapActivity = {
-                    1: transEle.attr('data-trans-task'),
-                    2: transEle.attr('data-trans-call'),
-                    3: transEle.attr('data-trans-email'),
-                    4: transEle.attr('data-trans-meeting'),
-                }
-                let typeMapIcon = {
-                    0: `<i class="fas fa-file-alt"></i>`,
-                    1: `<i class="fas fa-tasks"></i>`,
-                    2: `<i class="fas fa-phone-alt"></i>`,
-                    3: `<i class="far fa-envelope"></i>`,
-                    4: `<i class="fas fa-users"></i>`,
-                }
-                $table.DataTable().clear().destroy()
-                $table.DataTableDefault({
-                    rowIdx: true,
-                    ajax: {
-                        url: $table.attr('data-url-logs_list'),
-                        type: 'GET',
-                        data: {'opportunity': pk},
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('activity_logs_list')) {
-                                return resp.data['activity_logs_list'] ? resp.data['activity_logs_list'] : []
-                            }
-                            throw Error('Call data raise errors.')
-                        },
-                    },
-                    columnDefs: [],
-                    columns: [
-                        {
-                            targets: 0,
-                            render: () => {
-                                return ``
-                            }
-                        },
-                        {
-                            targets: 1,
-                            render: (data, type, row) => {
-                                if (row?.['log_type'] === 0) {
-                                    if (row?.['app_code']) {
-                                        let status = ``;
-                                        if (row?.['app_code'] === 'quotation.quotation') {
-                                            if (opportunity_detail_data?.['quotation']?.['id'] === row?.['doc_id']) {
-                                                status = `<small class="text-green">${transEle.attr('data-trans-valid')}</small>`
-                                            } else {
-                                                status = `<small class="text-red">${transEle.attr('data-trans-invalid')}</small>`
-                                            }
-                                        }
-
-                                        return `<div class="d-flex justify-content-start">
-                                            <span class="badge ${appMapBadge[row?.['app_code']]} mr-2">${appMapTrans[row?.['app_code']]}</span>
-                                            ${status}
-                                        </div>`;
-                                    }
-                                } else {
-                                    let status = '';
-                                    let badgeType = 'badge-soft-smoke';
-                                    if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
-                                        status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
-                                    }
-                                    if (Object.keys(row?.['task']).length > 0) {
-                                        badgeType = 'badge-soft-sky';
-                                    }
-                                    return `<span class="badge ${badgeType}">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
-                                }
-                                return `<p></p>`;
-                            }
-                        },
-                        {
-                            targets: 2,
-                            render: (data, type, row) => {
-                                let link = '';
-                                let title = '';
-                                if (row?.['log_type'] === 0) {
-                                    if (row?.['app_code'] && row?.['doc_id']) {
-                                        link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_id']);
-                                        title = row?.['title'];
-                                        return `<a href="${link}" target="_blank"><p>${title}</p></a>`;
-                                    } else {
-                                        return `<p></p>`;
-                                    }
-                                }
-                                if (row?.['log_type'] === 1) {
-                                    title = row?.['task']?.['subject'];
-                                    return `<a href="#" class="show-task-detail" data-task-id="${row?.['task']['id']}"><p>${title}</p></a>`;
-                                } else if (row?.['log_type'] === 2) {
-                                    title = row?.['call_log']?.['subject'];
-                                    return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-call-log" class="detail-call-log-button text-primary" data-id="${row?.['call_log']['id']}"><p>${title}</p></a>`;
-                                } else if (row?.['log_type'] === 3) {
-                                    title = row?.['email']?.['subject'];
-                                    return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-send-email" class="detail-email-button text-primary" data-id="${row?.['email']['id']}"><p>${title}</p></a>`;
-                                } else if (row?.['log_type'] === 4) {
-                                    title = row?.['meeting']?.['subject'];
-                                    return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-meeting" class="detail-meeting-button text-primary" data-id="${row?.['meeting']['id']}"><p>${title}</p></a>`;
-                                }
-                            }
-                        },
-                        {
-                            targets: 3,
-                            render: (data, type, row) => {
-                                return typeMapIcon[row?.['log_type']];
-                            }
-                        },
-                        {
-                            targets: 4,
-                            render: (data, type, row) => {
-                                return $x.fn.displayRelativeTime(row?.['date_created'], {
-                                    'outputFormat': 'DD-MM-YYYY',
-                                });
-                            }
-                        }
-                    ],
-                    rowCallback: (row, data, index) => {
-                        $('.show-task-detail', row).on('click', function(){
-                            const taskObj = data?.["task"]
-                            displayTaskView($("#url-factory").attr("data-task_detail").format_url_with_uuid(taskObj.id))
-                        })
-                    }
-                });
-            }
-
-            loadDblActivityLogs();
+            OpportunityActivity.loadDblActivityLogs();
 
             function checkPermissionAppRelated() {
                 let $dataDetail = $('#data-detail');
@@ -1567,7 +1481,7 @@ $(document).ready(function () {
             }
 
             // for task
-            Task_in_opps.init(opportunity_detail_data, loadDblActivityLogs)
+            Task_in_opps.init(opportunity_detail_data, OpportunityActivity.loadDblActivityLogs)
 
             // event create related features
             $('#dropdown-menu-relate-app #create-advance-payment-shortcut').on('click', function () {
@@ -1599,6 +1513,7 @@ $(document).ready(function () {
                         'quotation.quotation': 'quotation.quotation.create',
                         'saleorder.saleorder': 'saleorder.saleorder.create',
                     };
+                    let tableData = table_timeline.DataTable().rows().data().toArray();
                     $.fn.callAjax2({
                             'url': $('#script-url').attr('data-url-opp-list'),
                             'method': 'GET',
@@ -1610,17 +1525,28 @@ $(document).ready(function () {
                             let data = $.fn.switcherResp(resp);
                             if (data) {
                                 if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                                    let countCheck = 0;
-                                    for (let opp of data.opportunity_list) {
-                                        countCheck++;
+                                    for (let opp of data.opportunity_list) {  // check employee has opp permission on quotation/ sale order
                                         if (opp?.['id'] === detail?.['id']) {
+                                            // check opp already has quotation/ sale order
+                                            for (let tData of tableData) {
+                                                if (label === 'quotation.quotation') {
+                                                    if (tData?.['app_code'] === 'saleorder.saleorder' && [1, 2, 3].includes(tData?.['doc_data']?.['system_status'])) {
+                                                        $.fn.notifyB({description: transEle.attr('data-cancel-quo-so')}, 'failure');
+                                                        return false
+                                                    }
+                                                }
+                                                if (tData?.['app_code'] === label && [1, 2, 3].includes(tData?.['doc_data']?.['system_status'])) {
+                                                    let errTxt = transEle.attr('data-cancel-quo');
+                                                    if (label === 'saleorder.saleorder') {
+                                                        errTxt = transEle.attr('data-cancel-so');
+                                                    }
+                                                    $.fn.notifyB({description: errTxt}, 'failure');
+                                                    return false
+                                                }
+                                            }
                                             let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
                                             window.open(url, '_blank');
                                             return true;
-                                        }
-                                        if (countCheck >= data.opportunity_list.length) {
-                                            $.fn.notifyB({description: transEle.attr('data-forbidden')}, 'failure');
-                                            return false
                                         }
                                     }
                                     $.fn.notifyB({description: transEle.attr('data-forbidden')}, 'failure');
@@ -1709,6 +1635,12 @@ $(document).ready(function () {
 
                 $('#create-return-advance-shortcut').attr('data-opportunity_mapped', encodeURIComponent(JSON.stringify({'id': dataInitSaleCode?.['id'], 'code': dataInitSaleCode?.['code'], 'title': dataInitSaleCode?.['title']})))
             })
+
+            loadLeadList(results[2])
         }
     )
+
+    $('#btn-refresh-activity').on('click', function () {
+        OpportunityActivity.loadDblActivityLogs();
+    });
 })

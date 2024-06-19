@@ -1745,8 +1745,10 @@ class WFRTControl {
         if (actionSelected !== undefined && taskID && urlBase) {
             if (actionSelected === '1') {  // Approve: check if next node is out form need select person before submit
                 return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
+            } else if (actionSelected === '2') {  // Reject: check if remark before submit
+                return WFRTControl.callActionRejectReturn(urlBase, taskID, dataSubmit, dataSuccessReload);
             } else if (actionSelected === '3') {  // Return: check if remark before submit
-                return WFRTControl.callActionReturn(urlBase, taskID, dataSubmit, dataSuccessReload);
+                return WFRTControl.callActionRejectReturn(urlBase, taskID, dataSubmit, dataSuccessReload);
             } else if (actionSelected === '4') {  // Receive: check if next node is out form need select person before submit
                 return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
             } else {
@@ -1770,7 +1772,8 @@ class WFRTControl {
                 WindowControl.showLoading();
                 setTimeout(function () {
                     // Redirect to the previous page
-                    window.history.back();
+                    let urlBack = window.location.href.replace('update', 'detail');
+                    window.location.replace(urlBack);
                 }, 1000);
             }
         }
@@ -1818,51 +1821,74 @@ class WFRTControl {
     static callAjaxActionWFAfterFinish(urlBase, runtimeID, dataSubmit, dataSuccessReload, urlRedirect = null) {
         let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, runtimeID);
         Swal.fire({
-            title: $.fn.transEle.attr('data-msg-are-u-sure'),
-            text: $.fn.transEle.attr('data-warning-can-not-undo'),
-            icon: "warning",
+            input: "textarea",
+            inputLabel: $.fn.transEle.attr('data-reason-cancel'),
+            inputPlaceholder: $.fn.transEle.attr('data-reason-type-here'),
+            inputAttributes: {
+                "aria-label": $.fn.transEle.attr('data-reason-type-here'),
+                "maxlength": "255" // Set the maximum length attribute
+            },
             allowOutsideClick: false,
             showConfirmButton: true,
             confirmButtonText: $.fn.transEle.attr('data-confirm'),
             showCancelButton: true,
             cancelButtonText: $.fn.transEle.attr('data-cancel'),
+            inputValidator: (value) => {
+                if (value.length > 255) {
+                    return 'Maximum length exceeded (255 characters)';
+                }
+            },
         }).then((result) => {
-            if (result.isConfirmed) {
-                WindowControl.showLoading();
-                return $.fn.callAjax2({
-                    'url': urlData,
-                    'method': 'PUT',
-                    'data': dataSubmit,
-                }).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data?.['status'] === 200) {
-                        $.fn.notifyB({
-                            'description': $.fn.transEle.attr('data-action-wf') + ': ' + $.fn.transEle.attr('data-success'),
-                        }, 'success');
-                        if (!(dataSuccessReload === 'false' || dataSuccessReload === false)) {
+            if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                dataSubmit['remark'] = result.value;
+                Swal.fire({
+                    title: $.fn.transEle.attr('data-msg-are-u-sure'),
+                    text: $.fn.transEle.attr('data-warning-can-not-undo'),
+                    icon: "warning",
+                    allowOutsideClick: false,
+                    showConfirmButton: true,
+                    confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                    showCancelButton: true,
+                    cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        WindowControl.showLoading();
+                        return $.fn.callAjax2({
+                            'url': urlData,
+                            'method': 'PUT',
+                            'data': dataSubmit,
+                        }).then((resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data?.['status'] === 200) {
+                                $.fn.notifyB({
+                                    'description': $.fn.transEle.attr('data-action-wf') + ': ' + $.fn.transEle.attr('data-success'),
+                                }, 'success');
+                                if (!(dataSuccessReload === 'false' || dataSuccessReload === false)) {
+                                    setTimeout(() => {
+                                        if (!urlRedirect) {
+                                            window.location.reload()
+                                        } else {
+                                            window.location.replace(urlRedirect);
+                                        }
+                                    }, 1000)
+                                }
+                            }
                             setTimeout(() => {
-                                if (!urlRedirect) {
-                                    window.location.reload()
-                                } else {
+                                WindowControl.hideLoading();
+                                if (urlRedirect) {
                                     window.location.replace(urlRedirect);
                                 }
                             }, 1000)
-                        }
+                        }, (err) => {
+                            setTimeout(() => {
+                                WindowControl.hideLoading();
+                            }, 1000)
+                            $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                        });
                     }
-                    setTimeout(() => {
-                        WindowControl.hideLoading();
-                        if (urlRedirect) {
-                            window.location.replace(urlRedirect);
-                        }
-                    }, 1000)
-                }, (err) => {
-                    setTimeout(() => {
-                        WindowControl.hideLoading();
-                    }, 1000)
-                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
-                });
+                })
             }
-        })
+        });
     }
 
     static callAjaxOpenCRAfterFinish(urlBase, runtimeID, dataSubmit, dataSuccessReload, urlRedirect = null) {
@@ -1895,13 +1921,17 @@ class WFRTControl {
         });
     }
 
-    static callActionReturn(urlBase, taskID, dataSubmit, dataSuccessReload) {
+    static callActionRejectReturn(urlBase, taskID, dataSubmit, dataSuccessReload) {
+        let label = $.fn.transEle.attr('data-reason-reject');
+        if (dataSubmit?.['action'] === '3') {
+            label = $.fn.transEle.attr('data-reason-return');
+        }
         Swal.fire({
             input: "textarea",
-            inputLabel: $.fn.transEle.attr('data-returned-content'),
-            inputPlaceholder: $.fn.transEle.attr('data-type-content'),
+            inputLabel: label,
+            inputPlaceholder: $.fn.transEle.attr('data-reason-type-here'),
             inputAttributes: {
-                "aria-label": "Type your message here",
+                "aria-label": $.fn.transEle.attr('data-reason-type-here'),
                 "maxlength": "255" // Set the maximum length attribute
             },
             allowOutsideClick: false,
@@ -1918,6 +1948,9 @@ class WFRTControl {
             if (result.dismiss === Swal.DismissReason.timer || result.value) {
                 dataSubmit['remark'] = result.value;
                 return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
+            } else {
+                $.fn.notifyB({description: "remark is required"}, 'failure');
+                return false;
             }
         });
     }
@@ -1927,7 +1960,7 @@ class WFRTControl {
         if (collabOutForm && collabOutForm.length > 0) {
             Swal.fire({
                 title: $.fn.transEle.attr('data-select-next-node-collab'),
-                html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
+                html: String(WFRTControl.setupHTMLSelectCollab(collabOutForm)),
                 allowOutsideClick: false,
                 showConfirmButton: true,
                 confirmButtonText: $.fn.transEle.attr('data-confirm'),
@@ -1964,7 +1997,6 @@ class WFRTControl {
 
     static callWFSubmitForm(_form) {
         let IDRuntime = WFRTControl.getRuntimeWF();
-        let collabOutForm = WFRTControl.getCollabOutFormData();
         let eleDocChange = $('#documentCR');
         let $eleCode = $('#documentCode');
         let currentEmployee = $x.fn.getEmployeeCurrentID();
@@ -1994,7 +2026,7 @@ class WFRTControl {
                     cancelButtonText: $.fn.transEle.attr('data-cancel'),
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        WFRTControl.callAjaxWFCreate(_form);
+                        WFRTControl.submitCheckCollabNextNode(_form);
                     }
                 })
             }
@@ -2030,57 +2062,11 @@ class WFRTControl {
                         let saveStatus = eleChecked.getAttribute('data-status');
                         if (saveStatus) {
                             _form.dataForm['system_status'] = parseInt(saveStatus);
-                            if (collabOutForm && collabOutForm.length > 0) {  // Have collaborator -> select collaborator then submit
-                                if (_form.dataForm['system_status'] === 0) {
-                                    WFRTControl.callAjaxWFCreate(_form);
-                                }
-                                if (_form.dataForm['system_status'] === 1) {
-                                    Swal.fire({
-                                        title: $.fn.transEle.attr('data-select-next-node-collab'),
-                                        html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
-                                        allowOutsideClick: false,
-                                        showConfirmButton: true,
-                                        confirmButtonText: $.fn.transEle.attr('data-confirm'),
-                                        showCancelButton: true,
-                                        cancelButtonText: $.fn.transEle.attr('data-cancel'),
-                                        didOpen: () => {
-                                            // Add event listener after the modal is shown
-                                            let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
-                                            checkboxes.forEach((checkbox) => {
-                                                checkbox.addEventListener('click', function () {
-                                                    let checked = checkbox.checked;
-                                                    for (let eleCheck of checkboxes) {
-                                                        eleCheck.checked = false;
-                                                    }
-                                                    checkbox.checked = checked;
-                                                });
-                                            });
-                                        }
-                                    }).then((result) => {
-                                        if (result.dismiss === Swal.DismissReason.timer || result.value) {
-                                            let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
-                                            if (eleChecked) {
-                                                if (_form.dataMethod.toLowerCase() === 'post') {
-                                                    _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
-                                                }
-                                                if (_form.dataMethod.toLowerCase() === 'put') {
-                                                    if (_form.dataForm.hasOwnProperty('system_status')) {
-                                                        _form.dataForm['system_status'] = 1;
-                                                    }
-                                                }
-                                            } else {
-                                                return "You need to select one person!";
-                                            }
-                                            WFRTControl.callAjaxWFCreate(_form);
-                                        }
-                                    });
-                                }
-                            } else {  // No collaborator -> original submit
-                                WFRTControl.callAjaxWFCreate(_form);
-                            }
+                            WFRTControl.submitCheckCollabNextNode(_form);
                         }
                     } else {
-                        return "You need to select one!";
+                        $.fn.notifyB({description: $.fn.transEle.attr('data-need-one-option')}, 'failure');
+                        return false;
                     }
                 }
             });
@@ -2161,7 +2147,59 @@ class WFRTControl {
         )
     }
 
-    static setupHTMLCollabNextNode(collabOutForm) {
+    static submitCheckCollabNextNode(_form) {
+        let collabOutForm = WFRTControl.getCollabOutFormData();
+        if (collabOutForm && collabOutForm.length > 0) {  // Have collaborator -> select collaborator then submit
+            if (_form.dataForm['system_status'] === 0) {
+                WFRTControl.callAjaxWFCreate(_form);
+            }
+            if ([1, 3].includes(_form.dataForm['system_status'])) {
+                Swal.fire({
+                    title: $.fn.transEle.attr('data-select-next-node-collab'),
+                    html: String(WFRTControl.setupHTMLSelectCollab(collabOutForm)),
+                    allowOutsideClick: false,
+                    showConfirmButton: true,
+                    confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                    showCancelButton: true,
+                    cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                    didOpen: () => {
+                        // Add event listener after the modal is shown
+                        let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
+                        checkboxes.forEach((checkbox) => {
+                            checkbox.addEventListener('click', function () {
+                                let checked = checkbox.checked;
+                                for (let eleCheck of checkboxes) {
+                                    eleCheck.checked = false;
+                                }
+                                checkbox.checked = checked;
+                            });
+                        });
+                    }
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                        let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
+                        if (eleChecked) {
+                            if (_form.dataMethod.toLowerCase() === 'post') {
+                                _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+                            }
+                            if (_form.dataMethod.toLowerCase() === 'put') {
+                                if (_form.dataForm.hasOwnProperty('system_status')) {
+                                    _form.dataForm['system_status'] = 1;
+                                }
+                            }
+                        } else {
+                            return "You need to select one person!";
+                        }
+                        WFRTControl.callAjaxWFCreate(_form);
+                    }
+                });
+            }
+        } else {  // No collaborator -> original submit
+            WFRTControl.callAjaxWFCreate(_form);
+        }
+    }
+
+    static setupHTMLSelectCollab(collabOutForm) {
         let htmlCustom = ``;
         for (let collab of collabOutForm) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
@@ -2199,25 +2237,35 @@ class WFRTControl {
         return htmlCustom;
     }
 
-    static setupHTMLWFNonApply() {
-        return `<div class="card card-wth-progress mb-3">
-                    <div class="progress progress-bar-xs">
-                        <div class="progress-bar bg-red w-20" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <div class="card-body">
-                        <i class="fas fa-robot"></i>
-                        <p>${$.fn.transEle.attr('data-canceled-by-creator')}</p>
-                    </div>
-                </div>
-                <div class="card card-wth-progress">
-                    <div class="progress progress-bar-xs">
-                        <div class="progress-bar bg-success w-20" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <div class="card-body">
-                        <i class="fas fa-robot"></i>
-                        <p>${$.fn.transEle.attr('data-finish-wf-non-apply')}</p>
-                    </div>
-                </div>`;
+    static setupHTMLNonWF(is_cancel = false) {
+        let htmlBody = "";
+        let htmlFinish = `<div class="row">
+                            <div class="d-flex">
+                                <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
+                                <small><p class="text-success">${$.fn.transEle.attr('data-finish-wf-non-apply')}</p></small>
+                            </div>
+                        </div>`;
+        let htmlCancel = `<div class="row mb-3">
+                            <div class="d-flex">
+                                <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
+                                <small><p class="text-red">${$.fn.transEle.attr('data-canceled-by-creator')}</p></small>
+                            </div>
+                        </div>`;
+        htmlBody = htmlFinish;
+        if (is_cancel === true) {
+            htmlBody = htmlCancel + htmlFinish;
+        }
+        return `<div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="hk-ribbon-type-1 start-touch">` + `<span>${$.fn.transEle.attr('data-node-completed')}</span></div>
+                            <br>
+                            <div class="card-body mt-5">
+                                ${htmlBody}
+                            </div>
+                        </div>
+                        </div>
+                    </div>`;
     }
 
     static setWFRuntimeID(runtime_id) {
@@ -2237,11 +2285,15 @@ class WFRTControl {
                     // khi phiếu trong trạng thái đã tạo ( state > 1) thì button save không có hiệu lực
                     if (data['runtime_detail']?.['state'] >= 1) $('#idxRealAction .btn[type="submit"][form]').not('.btn-wf-after-finish').addClass('hidden');
                     // Finish with workflow non-apply -> show idxDataRuntimeNotFound
-                    if (data['runtime_detail']?.['state'] === 3) $('#idxDataRuntimeNotFound').removeClass('hidden');
+                    let $dataRTNotFound = $('#idxDataRuntimeNotFound')
+                    if (data['runtime_detail']?.['state'] === 3) $dataRTNotFound.removeClass('hidden');
+                    $dataRTNotFound.empty().append(
+                        WFRTControl.setupHTMLNonWF(false)
+                    )
                     let eleStatus = $('#systemStatus');
-                    if (eleStatus.attr('data-status') === '4') {  // if rejected after finish with workflow non-apply
-                        $('#idxDataRuntimeNotFound').empty().append(
-                            WFRTControl.setupHTMLWFNonApply()
+                    if (eleStatus.attr('data-status') === '4') {  // if canceled after finish with workflow non-apply
+                        $dataRTNotFound.empty().append(
+                            WFRTControl.setupHTMLNonWF(true)
                         )
                     }
                     let actionMySelf = data['runtime_detail']['action_myself'];
@@ -2302,30 +2354,46 @@ class WFRTControl {
         globeWFRuntimeID = runtime_id;
     }
 
-    static setWFInitialData(app_code) {
-        if (app_code) {
-            let btn = $('#btnLogShow');
-            btn.removeClass('hidden');
-            let url = btn.attr('data-url-current-wf');
-            $.fn.callAjax2({
-                'url': url,
-                'method': 'GET',
-                'data': {'code': app_code},
-            }).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data?.['app_list'].length === 1) {  // check only 1 wf config for application
-                    let WFconfig = data?.['app_list'][0];
-                    if (WFconfig?.['mode'] !== 0) {  // check if wf mode is not unapply (0)
-                        let workflow_current = WFconfig?.['workflow_currently'];
-                        if (workflow_current) {
-                            // zones handler
-                            WFRTControl.activeButtonOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
-                            // collab out form handler
-                            WFRTControl.setCollabOutFormData(workflow_current['collab_out_form']);
-                        }
+    static setWFInitialData(app_code, data_method) {
+        if (app_code && data_method) {
+            let isCheck = false;
+            if (data_method.toLowerCase() === 'post') {
+                isCheck = true;
+            }
+            if (data_method.toLowerCase() === 'put') {
+                let eleCR = $('#documentCR');
+                if (eleCR) {
+                    if (eleCR.attr('data-status') === '5') {
+                        isCheck = true;
                     }
                 }
-            })
+            }
+            if (isCheck === true) {
+                let btn = $('#btnLogShow');
+                btn.removeClass('hidden');
+                let url = btn.attr('data-url-current-wf');
+                $.fn.callAjax2({
+                    'url': url,
+                    'method': 'GET',
+                    'data': {'code': app_code},
+                }).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data?.['app_list'].length === 1) {  // check only 1 wf config for application
+                        let WFconfig = data?.['app_list'][0];
+                        if (WFconfig?.['mode'] !== 0) {  // check if wf mode is not unapply (0)
+                            let workflow_current = WFconfig?.['workflow_currently'];
+                            if (workflow_current) {
+                                // zones handler
+                                if (window.location.href.includes('/create/')) {
+                                    WFRTControl.activeButtonOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
+                                }
+                                // collab out form handler
+                                WFRTControl.setCollabOutFormData(workflow_current['collab_out_form']);
+                            }
+                        }
+                    }
+                })
+            }
         }
     }
 
@@ -2635,8 +2703,6 @@ class WFRTControl {
             WFRTControl.setZoneHiddenData(zonesHiddenData);
             WFRTControl.setIsEditAllZoneData(isEditAllZone);
             if (zonesData && Array.isArray(zonesData) && zonesHiddenData && Array.isArray(zonesHiddenData)) {
-                // $('#btn-active-edit-zone-wf').removeClass('hidden');
-                // $('#btn-active-edit-zone-wf').click();
                 WFRTControl.activeZoneInDoc();
             }
         }
@@ -2743,22 +2809,10 @@ class WFRTControl {
         let btnEnableCR = $('#btnEnableCR');
         if (eleRealAction) {
             if (btnCancel.length <= 0 && btnEnableCR.length <= 0) {
-                $(eleRealAction).append(`<button class="btn btn-outline-blue btn-wf-after-finish" id="btnEnableCR" data-value="1">
-                                            <span>
-                                                <span>${$.fn.transEle.attr('data-change-request')}</span>
-                                                <span class="icon">
-                                                    <i class="fa-regular fa-pen-to-square"></i>
-                                                </span>
-                                            </span>
-                                        </button>
-                                        <button class="btn btn-outline-danger btn-wf-after-finish" id="btnCancel" data-value="2">
-                                            <span>
-                                                <span>${$.fn.transEle.attr('data-cancel')}</span>
-                                                <span class="icon">
-                                                    <i class="fas fa-times"></i>
-                                                </span>
-                                            </span>
-                                        </button>`);
+                $(eleRealAction).append(`<div class="btn-group btn-group-rounded" role="group" aria-label="Basic example">
+                                            <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>
+                                            <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>
+                                        </div>`);
                 // add event
                 eleRealAction.on('click', '.btn-wf-after-finish', function () {
                     return WFRTControl.callActionWF($(this));
@@ -2774,22 +2828,10 @@ class WFRTControl {
         let formID = globeFormMappedZone;
         if (eleRealAction && formID) {
             if (btnSaveCR.length <= 0 && btnCancelCR.length <= 0) {
-                $(eleRealAction).append(`<button class="btn btn-outline-blue btn-wf-after-finish" type="submit" form="${formID}" id="btnSaveCR" data-value="3">
-                                            <span>
-                                                <span>${$.fn.transEle.attr('data-save-change')}</span>
-                                                <span class="icon">
-                                                    <i class="fa-regular fa-floppy-disk"></i>
-                                                </span>
-                                            </span>
-                                        </button>
-                                        <button class="btn btn-outline-secondary btn-wf-after-finish" id="btnCancelCR" data-value="4">
-                                            <span>
-                                                <span>${$.fn.transEle.attr('data-go-back')}</span>
-                                                <span class="icon">
-                                                    <i class="fas fa-arrow-left"></i>
-                                                </span>
-                                            </span>
-                                        </button>`);
+                $(eleRealAction).append(`<div class="btn-group btn-group-rounded" role="group" aria-label="Basic example">
+                                            <button class="btn btn-outline-primary btn-wf-after-finish" type="submit" form="${formID}" id="btnSaveCR" data-value="3">${$.fn.transEle.attr('data-save-change')}</button>
+                                            <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancelCR" data-value="4">${$.fn.transEle.attr('data-go-back')}</button>
+                                        </div>`);
                 // Add event
                 eleRealAction.on('click', '.btn-wf-after-finish', function () {
                     return WFRTControl.callActionWF($(this));
@@ -7018,6 +7060,161 @@ class CommentControl {
 
         this.opts.comment_id ? this.fetch_room_of_idx(this.opts.comment_id) : this.fetch_all();
     }
+}
+
+class DiagramControl {
+    static setBtnDiagram(appCode) {
+        if (window.location.href.includes('/detail/')) {
+            let $btnLog = $('#btnLogShow');
+            let urlDiagram = globeDiagramList;
+            if ($btnLog && $btnLog.length > 0) {
+                let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
+                                <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
+                                    <div class="offcanvas-header"></div>
+                                    <div class="offcanvas-body">
+                                        <div class="d-flex justify-content-start">
+                                            <button type="button" class="btn btn-icon mt-3 bm-sm btn-sm" data-bs-dismiss="offcanvas" aria-label="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
+                                            <button type="button" class="btn btn-icon mt-3 bm-sm btn-sm" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-redo-alt"></i></span></button>
+                                        </div>
+                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="min-w-1600p position-relative overflow-y-scroll">
+                                            <div class="card-group h-800p" id="flowchart_diagram"></div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                $btnLog.after(htmlBase);
+                // set event
+                $('#btnDiagram, #btnRefreshDiagram').on('click', function () {
+                    if (window.location.href.includes('/detail/')) {
+                        // Split the URL by '/'
+                        let parts = window.location.href.split('/');
+                        let pk = DiagramControl.extractUUID(window.location.href);
+                        $.fn.callAjax2({
+                                'url': $(this).attr('data-url'),
+                                'method': $(this).attr('data-method'),
+                                'data': {'app_code': appCode, 'doc_id': pk},
+                                isLoading: true,
+                            }
+                        ).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    if (data.hasOwnProperty('diagram_list') && Array.isArray(data.diagram_list)) {
+                                        if (data.diagram_list.length > 0) {
+                                            let data_diagram = data.diagram_list[0];
+                                            DiagramControl.loadDiagram(data_diagram);
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                    }
+                })
+            }
+        }
+    };
+
+    static loadDiagram(data_diagram) {
+        let $chartDiagram = $('#flowchart_diagram');
+        $chartDiagram.empty();
+        let html = "";
+        let sttTxt = JSON.parse($('#stt_sys').text());
+        let diaTxt = JSON.parse($('#dia_app').text());
+        let sttMapBadge = [
+            "soft-light",
+            "soft-primary",
+            "soft-info",
+            "soft-success",
+            "soft-danger",
+        ]
+        // prefix
+        let htmlPrefix = DiagramControl.loadPrefixSuffix(data_diagram?.['prefix'], sttTxt, diaTxt, sttMapBadge);
+        // main doc
+        let docData = data_diagram?.['doc_data'];
+        let htmlMain = `<div class="card">
+                                <div class="card-header bg-primary">
+                                    <h6 class="text-white">${diaTxt[data_diagram?.['app_code']]}</h6>
+                                </div>
+                                <div class="card-body bg-soft-success">
+                                    <div class="card border-green clone" data-drag="1" title="card-1" id="control-1">
+                                        <div class="card-header card-header-wth-text">
+                                            <div>
+                                                <div class="row"><small>${docData?.['title'] ? docData?.['title'] : docData?.['code']}</small></div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-5">
+                                                <div class="row"><small>${$.fn.transEle.attr('data-code')}: ${docData?.['code']}</small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-quantity')}: ${docData?.['quantity']}</small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-total')}: <span class="mask-money" data-init-money="${parseFloat(docData?.['total'] ? docData?.['total'] : '0')}"></span></small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-reference')}: ${docData?.['reference'] ? docData?.['reference'] : ''}</small></div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-muted d-flex justify-content-between">
+                                            <small><span class="badge badge-${sttMapBadge[docData?.['system_status']]}">${sttTxt[docData?.['system_status']][1]}</span></small>
+                                            <small>${moment(docData?.['date_created']).format('DD/MM/YYYY')}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+        // suffix
+        let htmlSuffix = DiagramControl.loadPrefixSuffix(data_diagram?.['suffix'], sttTxt, diaTxt, sttMapBadge);
+        // result
+        html += htmlPrefix;
+        html += htmlMain;
+        html += htmlSuffix;
+        $chartDiagram.html(html);
+        // mask money
+        $.fn.initMaskMoney2();
+    };
+
+    static loadPrefixSuffix(data_pre_suf, sttTxt, diaTxt, sttMapBadge) {
+        let htmlPreSuffix = "";
+        for (let key in data_pre_suf) {
+            let htmlChild = "";
+            // if (data_pre_suf[key].length > 0) {
+                for (let data_record of data_pre_suf[key]) {
+                    htmlChild += `<div class="card border-green clone" data-drag="1" title="card-1" id="control-1">
+                                        <div class="card-header card-header-wth-text">
+                                            <div>
+                                                <div class="row"><small>${data_record?.['title'] ? data_record?.['title'] : data_record?.['code']}</small></div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-5">
+                                                <div class="row"><small>${$.fn.transEle.attr('data-code')}: ${data_record?.['code']}</small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-quantity')}: ${data_record?.['quantity']}</small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-total')}: <span class="mask-money" data-init-money="${parseFloat(data_record?.['total'] ? data_record?.['total'] : '0')}"></span></small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-reference')}: ${data_record?.['reference'] ? data_record?.['reference'] : ''}</small></div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-muted d-flex justify-content-between">
+                                            <small><span class="badge badge-${sttMapBadge[data_record?.['system_status']]}">${sttTxt[data_record?.['system_status']][1]}</span></small>
+                                            <small>${moment(data_record?.['date_created']).format('DD/MM/YYYY')}</small>
+                                        </div>
+                                    </div>`;
+                }
+                htmlPreSuffix += `<div class="card">
+                                    <div class="card-header bg-primary">
+                                        <h6 class="text-white">${diaTxt[key]}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        ${htmlChild}
+                                    </div>
+                                </div>`;
+            // }
+        }
+        return htmlPreSuffix;
+    };
+
+    static extractUUID(url) {
+        let regex = /\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/;
+        let match = url.match(regex);
+        if (match && match[1]) {
+            return match[1];
+        } else {
+            return null;
+        }
+    };
 }
 
 let $x = {

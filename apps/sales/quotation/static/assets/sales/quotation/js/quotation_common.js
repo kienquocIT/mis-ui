@@ -666,6 +666,7 @@ class QuotationLoadDataHandle {
         }
     };
 
+    // PRODUCT
     static loadAddRowProductGr() {
         let tableProduct = $('#datable-quotation-create-product');
         let order = tableProduct[0].querySelectorAll('.table-row-group').length + 1;
@@ -1817,7 +1818,7 @@ class QuotationLoadDataHandle {
         }
     };
 
-    // LOAD DETAIL
+    // LOAD DATA DETAIL
     static loadDetailQuotation(data, is_copy = false) {
         let form = document.getElementById('frm_quotation_create');
         if (data?.['title'] && is_copy === false) {
@@ -2358,17 +2359,11 @@ class QuotationDataTableHandle {
                                 link = linkDetail.format_url_with_uuid(row?.['promotion']?.['id']);
                             }
                             return `<div class="row">
-                                    <div class="input-group">
-                                    <span class="input-affix-wrapper">
-                                        <span class="input-prefix">
-                                            <a href="${link}" target="_blank">
-                                                <i class="fas fa-gift text-primary"></i>
-                                            </a>
-                                        </span>
-                                        <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product_title}" data-id="${row.promotion.id}" data-is-promotion-on-row="${row.is_promotion_on_row}" data-id-product="${row.product.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
-                                    </span>
-                                </div>
-                                </div>`;
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-gift text-primary mr-2"></i>
+                                            <p data-id="${row?.['promotion']?.['id']}" data-is-promotion-on-row="${row.is_promotion_on_row}" data-id-product="${row?.['product']?.['id']}">${row?.['product_title']}</p>
+                                        </div>
+                                    </div>`;
                         } else if (itemType === 2) { // SHIPPING
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
@@ -2405,7 +2400,7 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_products_data";
                         }
                         return `<div class="row">
-                                    <span class="table-row-description" data-zone="${dataZone}">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span>
+                                    <p class="table-row-description" data-zone="${dataZone}">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</p>
                                 </div>`;
                     }
                 },
@@ -2590,22 +2585,7 @@ class QuotationDataTableHandle {
                                         hidden
                                     >`;
                         } else {  // promotion || shipping
-                            return `<select class="form-select table-row-tax disabled-custom-show" disabled>
-                                        <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
-                                    </select>
-                                    <input
-                                        type="text"
-                                        class="form-control mask-money table-row-tax-amount"
-                                        value="${row?.['product_tax_amount']}"
-                                        data-return-type="number"
-                                        hidden
-                                    >
-                                    <input
-                                        type="text"
-                                        class="form-control table-row-tax-amount-raw"
-                                        value="${row?.['product_tax_amount']}"
-                                        hidden
-                                    >`;
+                            return `<p>--</p>`;
                         }
                     }
                 },

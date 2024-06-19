@@ -734,9 +734,9 @@ $(function () {
             };
             if (promotionResult.is_discount === true) { // DISCOUNT
                 if (promotionResult.row_apply_index !== null) { // on Specific product
-                    let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
+                    // let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-                    QuotationLoadDataHandle.loadBoxQuotationTax(selectTaxID, promotionResult.value_tax);
+                    // QuotationLoadDataHandle.loadBoxQuotationTax(selectTaxID, promotionResult.value_tax);
                     // Get the desired position
                     let afterRow = tableProduct.DataTable().row(promotionResult.row_apply_index).node();
                     // Remove the new row and re-insert it at the desired position
@@ -749,8 +749,8 @@ $(function () {
                     QuotationStoreDataHandle.storeProduct(newRow);
                 } else { // on Whole order
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-                    QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
-                    QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
+                    // QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
+                    // QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
                     // Re Calculate all data
                     QuotationCalculateCaseHandle.commonCalculate(tableProduct, newRow, true, false, false);
                     // Re Calculate Tax on Total
@@ -778,7 +778,7 @@ $(function () {
                     // load data dropdown
                     QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')));
                     QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
-                    QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
+                    // QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
                     // Load disabled
                     QuotationLoadDataHandle.loadRowDisabled(newRow);
                     // store data

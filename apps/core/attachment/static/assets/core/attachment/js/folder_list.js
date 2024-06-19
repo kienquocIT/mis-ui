@@ -215,7 +215,7 @@ $(function () {
 
         function loadFolderParent(dataList) {
             for (let dataFolder of dataList) {
-                $folderTree.append(`<div class="d-flex justify-content-start folder-wrapper">
+                $folderTree.append(`<div class="d-flex justify-content-start align-items-center folder-wrapper">
                                         <small><button 
                                             type="button" 
                                             class="btn btn-icon btn-xs folder-cl" 
@@ -225,7 +225,7 @@ $(function () {
                                             data-bs-placement="top"
                                             aria-expanded="false"
                                         >
-                                            <span class="icon"><small><i class="fas fa-chevron-right mt-2 text-white"></i></small></span>
+                                            <span class="icon"><small><i class="fas fa-chevron-right text-white"></i></small></span>
                                         </button></small>
                                         <button type="button" class="btn folder-btn" data-id="${dataFolder?.['id']}" data-parent-id="${dataFolder?.['parent_n_id'] ? dataFolder?.['parent_n_id'] : ''}">
                                             <span>
@@ -257,7 +257,7 @@ $(function () {
             let htmlChild = ``;
             for (let dataFolder of dataList) {
                 let childID = "folder-" + dataFolder?.['id'].replace(/-/g, "");
-                htmlChild += `<div class="d-flex justify-content-start folder-wrapper" style="margin-left: ${margin}">
+                htmlChild += `<div class="d-flex justify-content-start align-items-center folder-wrapper" style="margin-left: ${margin}">
                                     <small><button 
                                         type="button" 
                                         class="btn btn-icon btn-xs folder-cl" 
@@ -267,7 +267,7 @@ $(function () {
                                         data-bs-placement="top"
                                         aria-expanded="false"
                                     >
-                                        <span class="icon"><small><i class="fas fa-chevron-right mt-2 text-white"></i></small></span>
+                                        <span class="icon"><small><i class="fas fa-chevron-right text-white"></i></small></span>
                                     </button></small>
                                     <button type="button" class="btn folder-btn" data-id="${dataFolder?.['id']}" data-parent-id="${dataFolder?.['parent_n_id'] ? dataFolder?.['parent_n_id'] : ''}">
                                         <span>
@@ -298,36 +298,8 @@ $(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         loadFolderContent(data?.['child_n'], data?.['file']);
-
-                        if (!['btn-back', 'btn-next', 'btn-refresh'].includes($eleFolder[0].id)) {
-                            // reset path
-                            if ($eleFolder[0].closest('#folder-tree')) {
-                                loadFolderPath(3);
-                            }
-                            // set next path
-                            loadFolderPath(0, data);
-                            // set data-list for $folderHistory
-                            let listHistory = [];
-                            if ($folderHistory.attr('data-list')) {
-                                listHistory = JSON.parse($folderHistory.attr('data-list'));
-                            }
-                            for (let dataHis of listHistory) {
-                                delete dataHis['is_current'];
-                            }
-                            data['is_current'] = true;
-                            listHistory.push(data);
-                            $folderHistory.attr('data-list', JSON.stringify(listHistory));
-                            // set data-list for $folderHistoryPath
-                            let listHistoryPath = [];
-                            if ($folderHistoryPath.attr('data-list')) {
-                                listHistoryPath = JSON.parse($folderHistoryPath.attr('data-list'));
-                            }
-                            for (let dataHisPath of listHistoryPath) {
-                                delete dataHisPath['is_current'];
-                            }
-                            listHistoryPath.push({'path': $folderPath[0].innerHTML, 'is_current': true});
-                            $folderHistoryPath.attr('data-list', JSON.stringify(listHistoryPath));
-                        }
+                        // // set next path
+                        // loadFolderPath(data);
                     }
                 }
             )
@@ -389,25 +361,11 @@ $(function () {
             return true;
         }
 
-        function loadFolderPath(load_type, dataFd = {}) {
-            if (load_type === 0) {  // next path
-                $folderPath.append(`<i class="fas fa-angle-right mr-2 ml-2"></i><button type="button" class="btn btn-flush-secondary flush-soft-hover btn-rounded btn-lg text-black folder-btn" data-id="${dataFd?.['id']}">${dataFd?.['title']}</button>`);
+        function loadFolderPath(dataFd) {
+            let list_path = []
+            if (dataFd?.['parent_n']?.['id']) {
+
             }
-            if (load_type === 1) {  // back path
-                let lastIcon = $folderPath[0].querySelector('i:last-of-type');
-                if (lastIcon) {
-                    $folderPath[0].removeChild(lastIcon);
-                }
-                let lastSpan = $folderPath[0].querySelector('span:last-of-type');
-                if (lastSpan) {
-                    $folderPath[0].removeChild(lastSpan);
-                }
-            }
-            if (load_type === 3) {  // reset path
-                $folderPath.empty();
-                $folderPath.append(`<button type="button" class="btn btn-flush-secondary flush-soft-hover btn-rounded btn-lg text-black folder-btn">My files</button>`);
-            }
-            return true;
         }
 
 

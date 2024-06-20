@@ -2012,14 +2012,14 @@ class QuotationLoadDataHandle {
                     let dataRow = JSON.parse(row.querySelector('.table-row-order')?.getAttribute('data-row'));
                     $(row.querySelector('.table-row-item')).empty();
                     if (table[0].id === "datable-quotation-create-product") {  // product
-                        QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')));
-                        $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id'] ? dataRow?.['product']?.['id'] : '');
-                        let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
-                        if (boxRender) {
-                            boxRender.innerHTML = dataRow?.['product']?.['title'] ? dataRow?.['product']?.['title'] : '';
-                            boxRender.setAttribute('title', dataRow?.['product']?.['title'] ? dataRow?.['product']?.['title'] : '');
-                        }
                         if (row.querySelector('.table-row-item')) {
+                            QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')));
+                            $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id'] ? dataRow?.['product']?.['id'] : '');
+                            let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
+                            if (boxRender) {
+                                boxRender.innerHTML = dataRow?.['product']?.['title'] ? dataRow?.['product']?.['title'] : '';
+                                boxRender.setAttribute('title', dataRow?.['product']?.['title'] ? dataRow?.['product']?.['title'] : '');
+                            }
                             QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
                         }
                     }
@@ -2244,7 +2244,7 @@ class QuotationDataTableHandle {
                                 link = linkDetail.format_url_with_uuid(row?.['promotion']?.['id']);
                             }
                             return `<a href="${link}" target="_blank"><span class="badge badge-primary badge-sm"><span><span class="icon"><i class="fas fa-gift"></i></span>Promotion</span></span></a>
-                                    <p class="table-row-promotion" data-id="${row?.['promotion']?.['id']}" data-is-promotion-on-row="${row.is_promotion_on_row}" data-id-product="${row?.['product']?.['id']}">${row?.['promotion']?.['title']}</p>`;
+                                    <p class="table-row-promotion" data-id="${row?.['promotion']?.['id']}" data-is-promotion-on-row="${row?.['is_promotion_on_row']}" data-id-product="${row?.['product']?.['id']}">${row?.['promotion']?.['title']}</p>`;
                         } else if (itemType === 2) { // SHIPPING
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
@@ -2944,11 +2944,11 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        if (row?.['is_pass'] === true) {
-                            return `<button type="button" class="btn btn-primary apply-promotion" data-promotion-condition="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-bs-dismiss="modal">${QuotationLoadDataHandle.transEle.attr('data-apply')}</button>`;
-                        } else {
-                            return `<button type="button" class="btn btn-primary apply-promotion" disabled>${QuotationLoadDataHandle.transEle.attr('data-apply')}</button>`;
+                        let disabled = ``;
+                        if (row?.['is_pass'] === false) {
+                            disabled = `disabled`;
                         }
+                        return `<button type="button" class="btn btn-primary btn-sm apply-promotion" data-promotion-condition="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-bs-dismiss="modal" ${disabled}>${QuotationLoadDataHandle.transEle.attr('data-apply')}</button>`;
                     },
                 }
             ],

@@ -10,26 +10,20 @@ class POLoadDataHandle {
     static eleDivTablePRProductMerge = $('#table-purchase-request-product-merge-area');
     static transEle = $('#app-trans-factory');
 
-    static loadBoxSupplier(dataCustomer = {}) {
-        let ele = POLoadDataHandle.supplierSelectEle;
-        ele.initSelect2({
-            data: dataCustomer,
-            'dataParams': {'account_types_mapped__account_type_order': 1},
-            'allowClear': true,
-            disabled: !(ele.attr('data-url')),
-        });
-    };
-
-    static loadBoxContact(dataContact = {}, supplierID = null) {
-        let ele = POLoadDataHandle.contactSelectEle;
-        ele.initSelect2({
-            data: dataContact,
-            'dataParams': {'account_name_id': supplierID},
-            disabled: !(ele.attr('data-url')),
-            callbackTextDisplay: function (item) {
-                return item?.['fullname'] || '';
-            },
-        });
+    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false) {
+        let opts = {'allowClear': isClear};
+        $ele.empty();
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        $ele.initSelect2(opts);
+        return true;
     };
 
     static loadInitProduct() {
@@ -97,34 +91,19 @@ class POLoadDataHandle {
                 }
                 // load UOM
                 if (uom && Object.keys(data?.['unit_of_measure']).length !== 0 && Object.keys(data?.['uom_group']).length !== 0) {
-                    POLoadDataHandle.loadBoxUOM($(uom), data?.['unit_of_measure'], data?.['uom_group']?.['id']);
+                    POLoadDataHandle.loadInitS2($(uom), [data?.['unit_of_measure']], {'group': data?.['uom_group']?.['id']});
                 } else {
-                    POLoadDataHandle.loadBoxUOM($(uom));
+                    POLoadDataHandle.loadInitS2($(uom));
                 }
                 // load TAX
                 if (tax && data?.['tax']) {
-                    POLoadDataHandle.loadBoxTax($(tax), data?.['tax']);
+                    POLoadDataHandle.loadInitS2($(tax), [data?.['tax']]);
                 } else {
-                    POLoadDataHandle.loadBoxTax($(tax));
+                    POLoadDataHandle.loadInitS2($(tax));
                 }
             }
             $.fn.initMaskMoney2();
         }
-    };
-
-    static loadBoxUOM(ele, dataUOM = {}, uom_group_id = null) {
-        ele.initSelect2({
-            data: dataUOM,
-            'dataParams': {'group': uom_group_id},
-            disabled: !(ele.attr('data-url')),
-        });
-    };
-
-    static loadBoxTax(ele, dataTax = {}) {
-        ele.initSelect2({
-            data: dataTax,
-            disabled: !(ele.attr('data-url')),
-        });
     };
 
     static loadModalPurchaseRequestTable(is_clear_all = false) {
@@ -276,9 +255,9 @@ class POLoadDataHandle {
         }
         // clear supplier, contact
         POLoadDataHandle.supplierSelectEle.empty();
-        POLoadDataHandle.loadBoxSupplier();
+        POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [], {'account_types_mapped__account_type_order': 1}, null, true);
         POLoadDataHandle.contactSelectEle.empty();
-        POLoadDataHandle.loadBoxContact();
+        POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle);
         POLoadDataHandle.loadResetPQAndPriceList();
         // uncheck merge product
         let eleMergeProduct = $('#merge-same-product');
@@ -528,8 +507,8 @@ class POLoadDataHandle {
                 boxRender.innerHTML = dataRow?.['product']?.['title'];
                 boxRender.setAttribute('title', dataRow?.['product']?.['title']);
             }
-            POLoadDataHandle.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')), dataRow?.['uom_order_actual'], dataRow?.['uom_order_actual']?.['uom_group']?.['id']);
-            POLoadDataHandle.loadBoxTax($(row.querySelector('.table-row-tax')), dataRow?.['tax']);
+            POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom-order-actual')), [dataRow?.['uom_order_actual']], {'group': dataRow?.['uom_order_actual']?.['uom_group']?.['id']});
+            POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax']]);
         }
     };
 
@@ -621,7 +600,7 @@ class POLoadDataHandle {
                                                 // Price && UOM must follow PQ checked
                                                 $(elePrice).attr('value', String(parseFloat(price?.['unit_price'])));
                                                 $(eleUOM).empty();
-                                                POLoadDataHandle.loadBoxUOM($(eleUOM), price?.['uom'], price?.['uom']?.['uom_group']?.['id']);
+                                                POLoadDataHandle.loadInitS2($(eleUOM), [price?.['uom']], {'group': price?.['uom']?.['uom_group']?.['id']});
                                                 $(eleUOM).change();
                                                 $(eleUOM).attr('disabled', 'true');
                                             }
@@ -728,10 +707,10 @@ class POLoadDataHandle {
         POLoadDataHandle.supplierSelectEle.empty();
         POLoadDataHandle.contactSelectEle.empty();
         if (ele.checked === true) {
-            let supplier = JSON.parse(ele.getAttribute('data-supplier'));
+            let supplierData = JSON.parse(ele.getAttribute('data-supplier'));
             // load supplier by Purchase Quotation
-            POLoadDataHandle.loadBoxSupplier(supplier);
-            POLoadDataHandle.loadBoxContact(supplier?.['owner'], supplier?.['id']);
+            POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [supplierData], {'account_types_mapped__account_type_order': 1}, null, true);
+            POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle, [supplierData?.['owner']], {'account_name_id': supplierData?.['id']});
         }
         return true
     };
@@ -780,7 +759,7 @@ class POLoadDataHandle {
         }
         let newRow = $table.DataTable().row.add(dataAdd).draw().node();
         // init select2
-        POLoadDataHandle.loadBoxTax($(newRow.querySelector('.table-row-tax')));
+        POLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
         // init datePicker
         $(newRow.querySelector('.table-row-due-date')).daterangepicker({
             singleDatePicker: true,
@@ -924,8 +903,8 @@ class POLoadDataHandle {
         POLoadDataHandle.loadAllTablesDisabled();
         POLoadDataHandle.loadTotals(data);
 
-        POLoadDataHandle.loadBoxSupplier(data?.['supplier_data']);
-        POLoadDataHandle.loadBoxContact(data?.['contact_data']);
+        POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [data?.['supplier_data']], {'account_types_mapped__account_type_order': 1}, null, true);
+        POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle, [data?.['contact_data']]);
     };
 
     static loadDataShowPRPQ(data) {
@@ -1199,7 +1178,7 @@ class POLoadDataHandle {
                 if (eleRemark.getAttribute('data-row')) {
                     let dataRow = JSON.parse(eleRemark.getAttribute('data-row'));
                     if (row.querySelector('.table-row-tax')) {
-                        POLoadDataHandle.loadBoxTax($(row.querySelector('.table-row-tax')), dataRow?.['tax']);
+                        POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax']]);
                     }
                 }
             }

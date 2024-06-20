@@ -709,9 +709,9 @@ $(function () {
                     if (promotionParse.hasOwnProperty('discount_rate_on_order')) {
                         if (promotionParse.discount_rate_on_order !== null) {
                             if (promotionParse.is_before_tax === true) {
-                                promotionHandle.reCalculateIfPromotion(tableProduct, promotionParse.discount_rate_on_order, promotionParse?.['product_price']);
+                                promotionHandle.calculatePromotion(tableProduct, promotionParse.discount_rate_on_order, promotionParse?.['product_price']);
                             } else {
-                                promotionHandle.reCalculateIfPromotion(tableProduct, promotionParse.discount_rate_on_order, promotionParse?.['product_price'], false)
+                                promotionHandle.calculatePromotion(tableProduct, promotionParse.discount_rate_on_order, promotionParse?.['product_price'], false)
                             }
                         }
                     }
@@ -728,7 +728,7 @@ $(function () {
                     // Remove the new row and re-insert it at the desired position
                     $(newRow).detach().insertAfter(afterRow);
                     // load data dropdown
-                    QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')));
+                    // QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')));
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
                     // Load disabled
@@ -810,7 +810,7 @@ $(function () {
             QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
             QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
             // Re Calculate after add shipping (pretax, discount, total)
-            shippingHandle.reCalculateIfShipping(shippingPrice);
+            shippingHandle.calculateShipping(shippingPrice);
             // Load disabled
             QuotationLoadDataHandle.loadRowDisabled(newRow);
             // ReOrder STT
@@ -901,7 +901,7 @@ $(function () {
         formSubmit.submit(function (e) {
             e.preventDefault();
             if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method') === "POST") { // HAS PROMOTION => Check condition again
-                promotionHandle.checkPromotionIfSubmit('data-init-quotation-create-promotion', QuotationLoadDataHandle.customerSelectEle.val());
+                promotionHandle.checkPromotionSubmit('data-init-quotation-create-promotion', QuotationLoadDataHandle.customerSelectEle.val());
                 // Check promotion then Submit Form
                 submitCheckPromotion();
             } else { // NO PROMOTION => submit normal

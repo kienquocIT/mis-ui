@@ -2358,12 +2358,8 @@ class QuotationDataTableHandle {
                             if (linkDetail) {
                                 link = linkDetail.format_url_with_uuid(row?.['promotion']?.['id']);
                             }
-                            return `<div class="row">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-gift text-primary mr-2"></i>
-                                            <p data-id="${row?.['promotion']?.['id']}" data-is-promotion-on-row="${row.is_promotion_on_row}" data-id-product="${row?.['product']?.['id']}">${row?.['product_title']}</p>
-                                        </div>
-                                    </div>`;
+                            return `<a href="${link}" target="_blank"><span class="badge badge-primary badge-sm"><span><span class="icon"><i class="fas fa-gift"></i></span>Promotion</span></span></a>
+                                    <p class="table-row-promotion" data-id="${row?.['promotion']?.['id']}" data-is-promotion-on-row="${row.is_promotion_on_row}" data-id-product="${row?.['product']?.['id']}">${row?.['promotion']?.['title']}</p>`;
                         } else if (itemType === 2) { // SHIPPING
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
@@ -2371,18 +2367,8 @@ class QuotationDataTableHandle {
                                 link = linkDetail.format_url_with_uuid(row?.['shipping']?.['id']);
                             }
                             let price_margin = row?.['shipping']?.['shipping_price_margin'] ? row?.['shipping']?.['shipping_price_margin'] : "0";
-                            return `<div class="row">
-                                    <div class="input-group">
-                                    <span class="input-affix-wrapper">
-                                        <span class="input-prefix">
-                                            <a href="${link}" target="_blank">
-                                                <i class="fas fa-shipping-fast text-primary"></i>
-                                            </a>
-                                        </span>
-                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row?.['product_title']}" data-id="${row?.['shipping']?.['id']}" data-shipping-price-margin="${price_margin}" data-bs-toggle="tooltip" title="${row?.['product_title']}" disabled>
-                                    </span>
-                                </div>
-                                </div>`;
+                            return `<a href="${link}" target="_blank"><span class="badge badge-primary badge-sm"><span><span class="icon"><i class="fas fa-gift"></i></span>Promotion</span></span></a>
+                                    <p class="table-row-shipping" data-id="${row?.['shipping']?.['id']}" data-shipping-price-margin="${price_margin}">${row?.['product_title']}</p>`;
                         }
                     }
                 },
@@ -2547,46 +2533,37 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
-                        let taxID = "";
-                        let taxRate = "0";
-                        if (row?.['tax']) {
-                            taxID = row?.['tax']?.['id'];
-                            taxRate = row?.['tax']?.['value'];
-                        }
-                        let itemType = 0  // product
+                        let disabled = ``;
                         if (row.hasOwnProperty('product') && row.hasOwnProperty('promotion') && row.hasOwnProperty('shipping')) {
                             if (Object.keys(row['promotion']).length > 0) {
-                                itemType = 1  // promotion
+                                disabled = `disabled`;
                             }
                             if (Object.keys(row['shipping']).length > 0) {
-                                itemType = 2  // shipping
+                                disabled = `disabled`;
                             }
                         }
-                        if (itemType === 0) {  // product
-                            return `<select 
-                                        class="form-select table-row-tax"
-                                        data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
-                                        data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
-                                        data-keyResp="tax_list"
-                                        data-zone="${dataZone}"
-                                     >
-                                    </select>
-                                    <input
-                                        type="text"
-                                        class="form-control mask-money table-row-tax-amount"
-                                        value="${row?.['product_tax_amount']}"
-                                        data-return-type="number"
-                                        hidden
-                                    >
-                                    <input
-                                        type="text"
-                                        class="form-control table-row-tax-amount-raw"
-                                        value="${row?.['product_tax_amount']}"
-                                        hidden
-                                    >`;
-                        } else {  // promotion || shipping
-                            return `<p>--</p>`;
-                        }
+                        return `<select 
+                                    class="form-select table-row-tax"
+                                    data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
+                                    data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-keyResp="tax_list"
+                                    data-zone="${dataZone}"
+                                    ${disabled}
+                                 >
+                                </select>
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-tax-amount"
+                                    value="${row?.['product_tax_amount']}"
+                                    data-return-type="number"
+                                    hidden
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-tax-amount-raw"
+                                    value="${row?.['product_tax_amount']}"
+                                    hidden
+                                >`;
                     }
                 },
                 {
@@ -3107,14 +3084,14 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.title}</span>`
+                        return `<span class="table-row-title">${row?.['title']}</span>`
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        if (row.is_pass === true) {
-                            return `<button type="button" class="btn btn-primary apply-promotion" data-promotion-condition="${JSON.stringify(row.condition).replace(/"/g, "&quot;")}" data-promotion-id="${row.id}" data-bs-dismiss="modal">${QuotationLoadDataHandle.transEle.attr('data-apply')}</button>`;
+                        if (row?.['is_pass'] === true) {
+                            return `<button type="button" class="btn btn-primary apply-promotion" data-promotion-condition="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-bs-dismiss="modal">${QuotationLoadDataHandle.transEle.attr('data-apply')}</button>`;
                         } else {
                             return `<button type="button" class="btn btn-primary apply-promotion" disabled>${QuotationLoadDataHandle.transEle.attr('data-apply')}</button>`;
                         }
@@ -4759,7 +4736,8 @@ class promotionHandle {
         return weekNumber;
     }
 
-    static getPromotionResult(condition) {
+    static getPromotionResult(promotionData) {
+        let condition = promotionData?.['condition'];
         let result = {
             'product_quantity': 0,
             'product_price': 0
@@ -4783,7 +4761,6 @@ class promotionHandle {
             if (condition?.['is_on_product'] === true) { // discount on specific product
                 let row = tableProd.DataTable().row(condition?.['row_apply_index']).node();
                 let taxSelected = row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex];
-                // let taxValue = taxSelected.getAttribute('data-value')
                 taxID = taxSelected.value;
                 if (condition?.['is_on_percent'] === true) { // discount by percent
                     let subtotal = row.querySelector('.table-row-subtotal-raw').value;
@@ -4884,6 +4861,8 @@ class promotionHandle {
                 }
             }
             return {
+                'id': promotionData?.['id'],
+                'title': promotionData?.['title'],
                 'row_apply_index': condition?.['row_apply_index'],
                 'is_discount': true,
                 'is_gift': false,
@@ -4900,6 +4879,8 @@ class promotionHandle {
             }
         } else if (condition?.['is_gift'] === true) { // GIFT
             return {
+                'id': promotionData?.['id'],
+                'title': promotionData?.['title'],
                 'row_apply_index': condition?.['row_apply_index'],
                 'is_discount': false,
                 'is_gift': true,

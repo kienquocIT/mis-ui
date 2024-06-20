@@ -383,6 +383,7 @@ class OpportunityLoadDetail {
 
     static async loadDetailCommon(opportunity_detail) {
         $.fn.compareStatusShowPageAction(opportunity_detail);
+        // console.log(opportunity_detail)
         let stage_obj = await OpportunityLoadDetail.loadStage(opportunity_detail.stage, opportunity_detail.is_close_lost, opportunity_detail.is_deal_close);
         let ele_header = $('#header-title');
         ele_header.text(opportunity_detail.title);

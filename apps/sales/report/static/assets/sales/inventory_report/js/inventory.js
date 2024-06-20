@@ -205,9 +205,9 @@ $(document).ready(function () {
                         if (warehouses_select_Ele.val().length === 0) {
                             if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                 table_inventory_report.find('tbody').append(`
-                                    <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #f5f5f5">
+                                    <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #e9f3f3">
                                         <td class="border-1 first-col-x" colspan="3">
-                                            <span class="text-primary "><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
+                                            <i class="fas fa-warehouse text-primary"></i>&nbsp;<span class="text-primary"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                         </td>
                                         <td class="" colspan="3"></td>
                                         <td class=""><b><span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></b></td>
@@ -223,7 +223,7 @@ $(document).ready(function () {
                                 table_inventory_report.find('tbody').append(`
                                     <tr>
                                         <td class="border-1 first-col" colspan="3">
-                                            <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
+                                            <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
                                             &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                         </td>
                                         <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
@@ -253,7 +253,7 @@ $(document).ready(function () {
                                 current_wh_row.after(`
                                     <tr>
                                         <td class="border-1 first-col" colspan="3">
-                                            <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
+                                            <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
                                             &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                         </td>
                                         <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
@@ -299,9 +299,9 @@ $(document).ready(function () {
                             if (warehouses_select_Ele.val().includes(warehouse_activities?.['warehouse']?.['id'])) {
                                 if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                     table_inventory_report.find('tbody').append(`
-                                        <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #f5f5f5">
+                                        <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #e9f3f3">
                                             <td class="border-1 first-col-x" colspan="3">
-                                                <span class="text-primary "><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
+                                                <i class="fas fa-warehouse text-primary"></i>&nbsp;<span class="text-primary"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                             </td> 
                                             <td class="" colspan="3"></td>
                                             <td class=""><b><span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></b></td>
@@ -317,7 +317,7 @@ $(document).ready(function () {
                                     table_inventory_report.find('tbody').append(`
                                         <tr>
                                             <td class="border-1 first-col" colspan="3">
-                                                <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
+                                                <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
                                                 &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                             </td>
                                             <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
@@ -346,7 +346,7 @@ $(document).ready(function () {
                                     current_wh_row.after(`
                                         <tr>
                                             <td class="border-1 first-col" colspan="3">
-                                                <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
+                                                <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
                                                 &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                             </td>
                                             <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
@@ -470,9 +470,9 @@ $(document).ready(function () {
                         if (warehouses_select_Ele.val().length === 0) {
                             if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                 table_inventory_report.find('tbody').append(`
-                                    <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #f5f5f5">
+                                    <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #e9f3f3">
                                         <td class="border-1 first-col-x" colspan="3">
-                                            <span class="text-primary "><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
+                                            <i class="fas fa-warehouse text-primary"></i>&nbsp;<span class="text-primary"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                         </td>
                                         <td class="" colspan="3"></td>
                                         <td class="" colspan="3"></td>
@@ -540,7 +540,7 @@ $(document).ready(function () {
                                 table_inventory_report.find('tbody').append(`
                                     <tr class="${no_info}">
                                         <td class="border-1 first-col" colspan="3">
-                                            <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
+                                            <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
                                             &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                         </td>
                                         <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
@@ -623,7 +623,7 @@ $(document).ready(function () {
                                 current_wh_row.after(`
                                     <tr class="${no_info}">
                                         <td class="border-1 first-col" colspan="3">
-                                            <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
+                                            <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
                                             &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                         </td>
                                         <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
@@ -674,9 +674,9 @@ $(document).ready(function () {
                             if (warehouses_select_Ele.val().includes(warehouse_activities?.['warehouse']?.['id'])) {
                                 if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                     table_inventory_report.find('tbody').append(`
-                                        <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #f5f5f5">
+                                        <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #e9f3f3">
                                             <td class="border-1 first-col-x" colspan="3">
-                                                <span class="text-primary "><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
+                                                <i class="fas fa-warehouse text-primary"></i>&nbsp;<span class="text-primary"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                             </td>
                                             <td class="" colspan="3"></td>
                                             <td class="" colspan="3"></td>
@@ -744,7 +744,7 @@ $(document).ready(function () {
                                     table_inventory_report.find('tbody').append(`
                                         <tr class="${no_info}">
                                             <td class="border-1 first-col" colspan="3">
-                                                <span class="badge badge-secondary badge-sm">${warehouse_activities?.['product']?.['code']}</span>
+                                                <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
                                                 &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                             </td>
                                             <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
@@ -828,7 +828,7 @@ $(document).ready(function () {
                                     current_wh_row.after(`
                                         <tr class="${no_info}">
                                             <td class="border-1 first-col" colspan="3">
-                                                <span>${warehouse_activities?.['product']?.['code']}</span>
+                                                <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
                                                 &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
                                             </td>
                                             <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>

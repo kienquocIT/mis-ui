@@ -18,7 +18,7 @@ $(function () {
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         QuotationLoadDataHandle.loadInitQuotationProduct();
         if (formSubmit[0].classList.contains('sale-order')) {
-            QuotationLoadDataHandle.loadBoxSOQuotation();
+            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.quotationSelectEle);
         }
         // init first time indicator
         indicatorHandle.loadQuotationIndicator('quotation-indicator-data', true);
@@ -154,18 +154,18 @@ $(function () {
                 {'id': 2, 'title': 'Serial number'},
             ];
             let $modal = $(this);
-            QuotationLoadDataHandle.loadInitS2($boxPType, $modal, [], {'is_default': true});
-            QuotationLoadDataHandle.loadInitS2($boxPCategory, $modal);
-            QuotationLoadDataHandle.loadInitS2($boxPUomGr, $modal);
-            QuotationLoadDataHandle.loadInitS2($boxPUom, $modal);
-            QuotationLoadDataHandle.loadInitS2($boxPTax, $modal);
-            QuotationLoadDataHandle.loadInitS2($boxPMethod, $modal, dataMethod);
+            QuotationLoadDataHandle.loadInitS2($boxPType, [], {'is_default': true}, $modal);
+            QuotationLoadDataHandle.loadInitS2($boxPCategory, [], {}, $modal);
+            QuotationLoadDataHandle.loadInitS2($boxPUomGr, [], {}, $modal);
+            QuotationLoadDataHandle.loadInitS2($boxPUom, [], {}, $modal);
+            QuotationLoadDataHandle.loadInitS2($boxPTax, [], {}, $modal);
+            QuotationLoadDataHandle.loadInitS2($boxPMethod, dataMethod, {}, $modal);
         });
 
         $('#add-product-uom-group').on('change', function () {
             let $boxPUom = $('#add-product-uom');
             let $modal = $('#addQuickProduct');
-            QuotationLoadDataHandle.loadInitS2($boxPUom, $modal, [], {'group': $(this).val()});
+            QuotationLoadDataHandle.loadInitS2($boxPUom, [], {'group': $(this).val()}, $modal);
         });
 
         $('#btn-save-product').on('click', function () {
@@ -382,42 +382,6 @@ $(function () {
             }
         });
 
-// Action on check expense option (filter expense item or purchasing item)
-        tableExpense.on('click', '.checkbox-expense-item, .checkbox-purchasing-item', function() {
-            let eleExpenseDropDownID = $(this)[0].closest('tr').querySelector('.expense-option-list').id;
-            let jqueryId = '#' + eleExpenseDropDownID;
-            $(jqueryId).empty();
-            if ($(this).hasClass('checkbox-expense-item')) {
-                let otherCheckbox = $(this)[0].closest('tr').querySelector('.checkbox-purchasing-item');
-                if ($(this)[0].checked === true) {
-                    if (otherCheckbox.checked === true) {
-                        QuotationLoadDataHandle.loadBoxQuotationExpense(eleExpenseDropDownID);
-                        QuotationLoadDataHandle.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
-                    } else if (otherCheckbox.checked === false) {
-                        QuotationLoadDataHandle.loadBoxQuotationExpense(eleExpenseDropDownID);
-                    }
-                } else if ($(this)[0].checked === false) {
-                    if (otherCheckbox.checked === true) {
-                        QuotationLoadDataHandle.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
-                    }
-                }
-           } else if ($(this).hasClass('checkbox-purchasing-item')) {
-                let otherCheckbox = $(this)[0].closest('tr').querySelector('.checkbox-expense-item');
-                if ($(this)[0].checked === true) {
-                    if (otherCheckbox.checked === true) {
-                        QuotationLoadDataHandle.loadBoxQuotationExpense(eleExpenseDropDownID);
-                        QuotationLoadDataHandle.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
-                    } else if (otherCheckbox.checked === false) {
-                        QuotationLoadDataHandle.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
-                    }
-                } else if ($(this)[0].checked === false) {
-                    if (otherCheckbox.checked === true) {
-                        QuotationLoadDataHandle.loadBoxQuotationExpense(eleExpenseDropDownID);
-                    }
-                }
-           }
-        });
-
 // Action on delete row expense
         tableExpense.on('click', '.del-row', function (e) {
             e.stopPropagation();
@@ -448,8 +412,8 @@ $(function () {
             if (this.classList.contains('table-row-labor-item')) {
                 if ($(this).val()) {
                     let dataSelected = SelectDDControl.get_data_from_idx($(this), $(this).val());
-                    QuotationLoadDataHandle.loadBoxQuotationExpense($(row.querySelector('.table-row-item')), dataSelected?.['expense_item']);
-                    QuotationLoadDataHandle.loadBoxQuotationUOM($(row.querySelector('.table-row-uom')), dataSelected?.['uom']);
+                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataSelected?.['expense_item']]);
+                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataSelected?.['uom']]);
                     if (dataSelected?.['price_list'].length > 0) {
                        $(row.querySelector('.table-row-price')).attr('value', String(dataSelected?.['price_list'][0]?.['price_value']));
                     }
@@ -723,9 +687,10 @@ $(function () {
                 "is_shipping": false,
                 "shipping": {},
             };
-            if (promotionParse.is_discount === true) { // DISCOUNT
-                if (promotionParse.row_apply_index !== null) { // on Specific product
+            if (promotionParse?.['is_discount'] === true) { // DISCOUNT
+                if (promotionParse?.['row_apply_index'] !== null) { // on Specific product
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
                     // Get the desired position
                     let afterRow = tableProduct.DataTable().row(promotionParse.row_apply_index).node();
@@ -739,7 +704,7 @@ $(function () {
                     QuotationStoreDataHandle.storeProduct(newRow);
                 } else { // on Whole order
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-                    // QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
+                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
                     // Re Calculate all data
                     QuotationCalculateCaseHandle.commonCalculate(tableProduct, newRow, true, false, false);
@@ -767,7 +732,7 @@ $(function () {
                     $(newRow).detach().insertAfter(afterRow);
                     // load data dropdown
                     QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')));
-                    QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
+                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
                     // Load disabled
                     QuotationLoadDataHandle.loadRowDisabled(newRow);
@@ -845,8 +810,8 @@ $(function () {
                 }
             };
             let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-            QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
-            QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
+            QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
+            QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
             // Re Calculate after add shipping (pretax, discount, total)
             shippingHandle.reCalculateIfShipping(shippingPrice);
             // Load disabled

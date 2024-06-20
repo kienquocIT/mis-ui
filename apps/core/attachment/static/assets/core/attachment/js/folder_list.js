@@ -139,17 +139,17 @@ $(function () {
 
 
         // FUNCTIONS
-        function loadInitS2($ele, $modal = null, data = [], dataParams = {}) {
+        function loadInitS2($ele, data = [], dataParams = {}, $modal = null) {
             let opts = {'allowClear': true};
             $ele.empty();
-            if ($modal) {
-                opts['dropdownParent'] = $modal;
-            }
             if (data.length > 0) {
                 opts['data'] = data;
             }
             if (Object.keys(dataParams).length !== 0) {
                 opts['dataParams'] = dataParams;
+            }
+            if ($modal) {
+                opts['dropdownParent'] = $modal;
             }
             $ele.initSelect2(opts);
             return true;

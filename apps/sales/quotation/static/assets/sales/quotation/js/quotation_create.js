@@ -632,8 +632,7 @@ $(function () {
 // Action on click button Check Available Promotion (show list promotions)
         $('#btn-check-promotion').on('click', function() {
             if (QuotationLoadDataHandle.customerSelectEle.val()) {
-                // destroy dataTable then call API load-check again
-                QuotationDataTableHandle.loadTableQuotationPromotion('data-init-quotation-create-promotion', QuotationLoadDataHandle.customerSelectEle.val())
+                promotionHandle.callPromotion(QuotationLoadDataHandle.customerSelectEle.val(), 0);
             } else {
                 $('#datable-quotation-create-promotion').DataTable().destroy();
                 QuotationDataTableHandle.dataTablePromotion();
@@ -901,7 +900,7 @@ $(function () {
         formSubmit.submit(function (e) {
             e.preventDefault();
             if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method') === "POST") { // HAS PROMOTION => Check condition again
-                promotionHandle.checkPromotionSubmit('data-init-quotation-create-promotion', QuotationLoadDataHandle.customerSelectEle.val());
+                promotionHandle.callPromotion(QuotationLoadDataHandle.customerSelectEle.val(), 1);
                 // Check promotion then Submit Form
                 submitCheckPromotion();
             } else { // NO PROMOTION => submit normal

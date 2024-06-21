@@ -2957,84 +2957,6 @@ class QuotationDataTableHandle {
         });
     };
 
-    static loadTableQuotationPromotion(promotion_id, customer_id = null, is_submit_check = false) {
-        let jqueryId = '#' + promotion_id;
-        let ele = $(jqueryId);
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        let passList = [];
-        let failList = [];
-        let checkList = [];
-        if (customer_id) {
-            $.fn.callAjax2({
-                    'url': url,
-                    'method': method,
-                    'data': {'customer_type': 0},
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('promotion_check_list') && Array.isArray(data.promotion_check_list)) {
-                            let dataAllCus = data.promotion_check_list;
-                            $.fn.callAjax2({
-                                    'url': url,
-                                    'method': method,
-                                    'data': {'customers_map_promotion__id': customer_id},
-                                    'isDropdown': true,
-                                }
-                            ).then(
-                                (resp) => {
-                                    let data2 = $.fn.switcherResp(resp);
-                                    if (data2) {
-                                        if (data2.hasOwnProperty('promotion_check_list') && Array.isArray(data2.promotion_check_list)) {
-                                            let dataFinal = dataAllCus.concat(data2.promotion_check_list)
-                                            $('#datable-quotation-create-promotion').DataTable().destroy();
-                                            dataFinal.map(function (item) {
-                                                if (!checkList.includes(item?.['id'])) {
-                                                    let check = promotionHandle.checkPromotionValid(item, customer_id);
-                                                    if (check?.['is_pass'] === true) {
-                                                        item['is_pass'] = true;
-                                                        item['condition'] = check?.['condition'];
-                                                        passList.push(item);
-                                                    } else {
-                                                        item['is_pass'] = false;
-                                                        failList.push(item);
-                                                        if (is_submit_check === true) { // check again promotion limit when submit
-                                                            let tableProduct = document.getElementById('datable-quotation-create-product');
-                                                            let rowPromotion = tableProduct.querySelector('.table-row-promotion');
-                                                            if (rowPromotion) {
-                                                                if (item?.['id'] === rowPromotion.getAttribute('data-id')) {
-                                                                    // Delete Promotion Row & ReCalculate Total
-                                                                    deletePromotionRows($(tableProduct), true, false);
-                                                                    QuotationCalculateCaseHandle.updateTotal(tableProduct[0]);
-                                                                    return true
-                                                                } else {
-                                                                    return true
-                                                                }
-                                                            } else {
-                                                                return true
-                                                            }
-                                                        }
-                                                    }
-                                                    checkList.push(item?.['id'])
-                                                }
-                                            })
-                                            passList = passList.concat(failList);
-                                            QuotationDataTableHandle.dataTablePromotion(passList);
-                                        }
-                                    }
-                                }
-                            )
-                        }
-                    }
-                }
-            )
-        }
-        return true
-    };
-
     static dataTableCopyQuotation(data) {
         // init dataTable
         let $tables = $('#datable-copy-quotation');
@@ -4220,6 +4142,54 @@ class indicatorHandle {
 
 // Promotion
 class promotionHandle {
+    static callPromotion(customer_id = null, type_check) {
+        let $ele = $('#data-init-quotation-create-promotion');
+        if (customer_id) {
+            $.fn.callAjax2({
+                    'url': $ele.attr('data-url'),
+                    'method': $ele.attr('data-method'),
+                    'data': {'customer_type': 0},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('promotion_check_list') && Array.isArray(data.promotion_check_list)) {
+                            let dataAllCus = data.promotion_check_list;
+                            $.fn.callAjax2({
+                                    'url': $ele.attr('data-url'),
+                                    'method': $ele.attr('data-method'),
+                                    'data': {'customers_map_promotion__id': customer_id},
+                                    'isDropdown': true,
+                                }
+                            ).then(
+                                (resp) => {
+                                    let data2 = $.fn.switcherResp(resp);
+                                    if (data2) {
+                                        if (data2.hasOwnProperty('promotion_check_list') && Array.isArray(data2.promotion_check_list)) {
+                                            let dataFinal = dataAllCus.concat(data2.promotion_check_list)
+                                            if (type_check === 0) {
+                                                promotionHandle.checkOnWorking(dataFinal, customer_id);
+                                            }
+                                            if (type_check === 1) {
+                                                promotionHandle.checkOnSubmit(dataFinal, customer_id);
+                                            }
+
+
+
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+            )
+        }
+        return true
+    };
+
     static checkPromotionValid(data_promotion, customer_id = null) {
         let result = {'is_pass': false};
         let pretaxRaw = null;
@@ -4931,50 +4901,48 @@ class promotionHandle {
         }
     };
 
-    static checkPromotionSubmit(promotion_id, customer_id = null) {
-        let jqueryId = '#' + promotion_id;
-        let ele = $(jqueryId);
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        let checkList = [];
-        if (customer_id) {
-            let data_filter = {
-                'customer_type': 0,
-                'customers_map_promotion__id': customer_id
-            };
-            $.fn.callAjax(url, method, data_filter).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('promotion_check_list') && Array.isArray(data.promotion_check_list)) {
-                            let check_length = 0;
-                            let eleCheck = $('#quotation-check-promotion');
-                            data.promotion_check_list.map(function (item) {
-                                if (!checkList.includes(item.id)) {
-                                    let check = promotionHandle.checkPromotionValid(item, customer_id);
-                                    if (check.is_pass === false) {
-                                        let tableProduct = document.getElementById('datable-quotation-create-product');
-                                        let rowPromotion = tableProduct.querySelector('.table-row-promotion');
-                                        if (rowPromotion) {
-                                            if (item.id === rowPromotion.getAttribute('data-id')) {
-                                                eleCheck.val('false');
-                                            }
-                                        }
-                                    }
-                                    checkList.push(item.id)
-                                }
-                                check_length++;
-                                if (check_length === data?.['promotion_check_list'].length) {
-                                    if (!eleCheck.val()) {
-                                        eleCheck.val('true');
-                                    }
-                                }
-                            })
-                        }
+    static checkOnWorking(dataPromotion, customer_id) {
+        let passList = [];
+        let failList = [];
+        $('#datable-quotation-create-promotion').DataTable().destroy();
+        dataPromotion.map(function (item) {
+            let check = promotionHandle.checkPromotionValid(item, customer_id);
+            if (check?.['is_pass'] === true) {
+                item['is_pass'] = true;
+                item['condition'] = check?.['condition'];
+                passList.push(item);
+            } else {
+                item['is_pass'] = false;
+                failList.push(item);
+            }
+        })
+        passList = passList.concat(failList);
+        QuotationDataTableHandle.dataTablePromotion(passList);
+        return true;
+    };
+
+    static checkOnSubmit(dataPromotion, customer_id) {
+        let check_length = 0;
+        let eleCheck = $('#quotation-check-promotion');
+        dataPromotion.map(function (item) {
+            let check = promotionHandle.checkPromotionValid(item, customer_id);
+            if (check?.['is_pass'] === false) {
+                let tableProduct = document.getElementById('datable-quotation-create-product');
+                let rowPromotion = tableProduct.querySelector('.table-row-promotion');
+                if (rowPromotion) {
+                    if (item?.['id'] === rowPromotion.getAttribute('data-id')) {
+                        eleCheck.val('false');
                     }
                 }
-            )
-        }
+            }
+            check_length++;
+            if (check_length === dataPromotion.length) {
+                if (!eleCheck.val()) {
+                    eleCheck.val('true');
+                }
+            }
+        })
+        return true;
     };
 }
 

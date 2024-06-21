@@ -143,7 +143,7 @@
         data-url-redirect="{% url 'FolderList' %}"
     >
     <input type="file" id="uploadOpen"/>
-
+    {{ data.employee_current|json_script:'employee_current' }}
 {% endblock %}
 
 {% block jsFooter %}

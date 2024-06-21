@@ -6928,11 +6928,11 @@ msgstr "TỒN ĐẦU"
 
 #
 msgid "INPUT"
-msgstr "NHẬP"
+msgstr "NHẬP VÀO"
 
 #
 msgid "OUTPUT"
-msgstr "XUẤT"
+msgstr "XUẤT RA"
 
 #
 msgid "ENDING"
@@ -7801,3 +7801,11 @@ msgstr "Giao dịch"
 #
 msgid "Estimated gross profit"
 msgstr "Lợi nhuận dự kiến"
+
+#
+msgid "PRODUCT"
+msgstr "SẢN PHẨM"
+
+#
+msgid "INVENTORY UOM"
+msgstr "ĐƠN VỊ KHO"

@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    const table_inventory_report = $('#table-inventory-report')
+    const table_inventory_report_detail = $('#table-inventory-report-detail')
+
     const current_period_Ele = $('#current_period')
     const items_select_Ele = $('#items_select')
     const warehouses_select_Ele = $('#warehouses_select')
@@ -159,12 +162,581 @@ $(document).ready(function () {
     }
     LoadWarehouseSelectBox(warehouses_select_Ele)
 
+    function RenderTableWithParameter(table, data_list=[], data_wh=[]) {
+        table.DataTable().clear().destroy()
+        table.DataTableDefault({
+            dom: '',
+            paging: false,
+            reloadCurrency: true,
+            data: data_list,
+            columns: [
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<button class="btn btn-custom btn-primary btn-rounded btn-sm w-25">
+                                        <span>
+                                            <span class="icon">
+                                                <span class="feather-icon"><i class="fas fa-warehouse"></i></span>
+                                            </span>
+                                            <span>${row?.['warehouse_code']}</span>
+                                        </span>
+                                    </button>&nbsp;
+                                    <span class="text-primary ${row?.['type']}"><b>${row?.['warehouse_title']}</b></span>`
+                        }
+                        else {
+                            return `<button type="button" class="btn btn-light btn-rounded btn-sm w-25">
+                                        <span>
+                                            <span>${row?.['product_code']}</span>
+                                        </span>
+                                    </button>&nbsp;
+                                    <span class="${row?.['type']}">${row?.['product_title']}</span>&nbsp;
+                                    <span class="text-blue small fw-bold">${row?.['product_lot_number'] ? row?.['product_lot_number'] : ''}</span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return ``
+                        }
+                        else {
+                            return `<span>${row?.['uom_title']}</span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-opening-quantity-span wh-open-quantity-${row?.['warehouse_id']}">0</span></b>`
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill opening-quantity-span prd-open-quantity-${row?.['warehouse_id']}">${row?.['prd_open_quantity']}</span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-opening-value-span mask-money wh-open-value-${row?.['warehouse_id']}" data-init-money="0"></span></b>`
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill opening-value-span mask-money prd-open-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_open_value']}"></span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill text-primary wh-in-quantity-span wh-in-quantity-${row?.['warehouse_id']}">0</span></b>`
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill in-quantity-span prd-in-quantity-${row?.['warehouse_id']}">${row?.['prd_in_quantity']}</span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-in-value-span mask-money wh-in-value-${row?.['warehouse_id']}" data-init-money="0"></span></b>`
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill in-quantity-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_in_value']}"></span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-out-quantity-span wh-out-quantity-${row?.['warehouse_id']}">0</span></b>`
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill out-quantity-span prd-out-quantity-${row?.['warehouse_id']}">${row?.['prd_out_quantity']}</span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-out-value-span mask-money wh-out-value-${row?.['warehouse_id']}" data-init-money="0"></span></b>`
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill out-quantity-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_out_value']}"></span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-ending-quantity-span wh-end-quantity-${row?.['warehouse_id']}">0</span></b>`
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill ending-quantity-span prd-end-quantity-${row?.['warehouse_id']}">${row?.['prd_end_quantity']}</span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-ending-value-span mask-money wh-end-value-${row?.['warehouse_id']}" data-init-money="0"></span></b>`
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill ending-value-span mask-money prd-end-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_end_value']}"></span>`
+                        }
+                    }
+                },
+            ],
+            initComplete: function(settings, json) {
+                table.find('tbody tr').each(function () {
+                    $(this).find('td:eq(0)').css({
+                        'min-width': '400px'
+                    })
+                    $(this).find('td:eq(1)').css({
+                        'min-width': '100px'
+                    })
+                    $(this).find('td:eq(2)').css({
+                        'min-width': '50px'
+                    })
+                    $(this).find('td:eq(3)').css({
+                        'min-width': '200px'
+                    })
+                    $(this).find('td:eq(4)').css({
+                        'min-width': '50px'
+                    })
+                    $(this).find('td:eq(5)').css({
+                        'min-width': '200px'
+                    })
+                    $(this).find('td:eq(6)').css({
+                        'min-width': '50px'
+                    })
+                    $(this).find('td:eq(7)').css({
+                        'min-width': '200px'
+                    })
+                    $(this).find('td:eq(8)').css({
+                        'min-width': '50px'
+                    })
+                    $(this).find('td:eq(9)').css({
+                        'min-width': '200px'
+                    })
+                })
+
+                let sum_wh_open_quantity = 0;
+                let sum_wh_open_value = 0;
+                let sum_wh_in_quantity = 0;
+                let sum_wh_in_value = 0;
+                let sum_wh_out_quantity = 0;
+                let sum_wh_out_value = 0;
+                let sum_wh_end_quantity = 0;
+                let sum_wh_end_value = 0;
+
+                for (const wh of data_wh) {
+                    let wh_open_quantity = 0
+                    table.find(`.prd-open-quantity-${wh}`).each(function () {
+                        wh_open_quantity += parseFloat($(this).text())
+                    })
+                    table.find(`.wh-open-quantity-${wh}`).text(wh_open_quantity)
+
+                    let wh_open_value = 0
+                    table.find(`.prd-open-value-${wh}`).each(function () {
+                        wh_open_value += parseFloat($(this).attr('data-init-money'))
+                    })
+                    table.find(`.wh-open-value-${wh}`).attr('data-init-money', wh_open_value)
+
+                    let wh_in_quantity = 0
+                    table.find(`.prd-in-quantity-${wh}`).each(function () {
+                        wh_in_quantity += parseFloat($(this).text())
+                    })
+                    table.find(`.wh-in-quantity-${wh}`).text(wh_in_quantity)
+
+                    let wh_in_value = 0
+                    table.find(`.prd-in-value-${wh}`).each(function () {
+                        wh_in_value += parseFloat($(this).attr('data-init-money'))
+                    })
+                    table.find(`.wh-in-value-${wh}`).attr('data-init-money', wh_in_value)
+
+                    let wh_out_quantity = 0
+                    table.find(`.prd-out-quantity-${wh}`).each(function () {
+                        wh_out_quantity += parseFloat($(this).text())
+                    })
+                    table.find(`.wh-out-quantity-${wh}`).text(wh_out_quantity)
+
+                    let wh_out_value = 0
+                    table.find(`.prd-out-value-${wh}`).each(function () {
+                        wh_out_value += parseFloat($(this).attr('data-init-money'))
+                    })
+                    table.find(`.wh-out-value-${wh}`).attr('data-init-money', wh_out_value)
+
+                    let wh_end_quantity = 0
+                    table.find(`.prd-end-quantity-${wh}`).each(function () {
+                        wh_end_quantity += parseFloat($(this).text())
+                    })
+                    table.find(`.wh-end-quantity-${wh}`).text(wh_end_quantity)
+
+                    let wh_end_value = 0
+                    table.find(`.prd-end-value-${wh}`).each(function () {
+                        wh_end_value += parseFloat($(this).attr('data-init-money'))
+                    })
+                    table.find(`.wh-end-value-${wh}`).attr('data-init-money', wh_end_value)
+
+                    sum_wh_open_quantity += wh_open_quantity;
+                    sum_wh_open_value += wh_open_value;
+                    sum_wh_in_quantity += wh_in_quantity;
+                    sum_wh_in_value += wh_in_value;
+                    sum_wh_out_quantity += wh_out_quantity;
+                    sum_wh_out_value += wh_out_value;
+                    sum_wh_end_quantity += wh_end_quantity;
+                    sum_wh_end_value += wh_end_value;
+                }
+
+                $('#table-inventory-report #opening-total-quantity').text(sum_wh_open_quantity)
+                $('#table-inventory-report #opening-total-value').attr('data-init-money', sum_wh_open_value)
+                $('#table-inventory-report #in-total-quantity').text(sum_wh_in_quantity)
+                $('#table-inventory-report #in-total-value').attr('data-init-money', sum_wh_in_value)
+                $('#table-inventory-report #out-total-quantity').text(sum_wh_out_quantity)
+                $('#table-inventory-report #out-total-value').attr('data-init-money', sum_wh_out_value)
+                $('#table-inventory-report #ending-total-quantity').text(sum_wh_end_quantity)
+                $('#table-inventory-report #ending-total-value').attr('data-init-money', sum_wh_end_value)
+
+                MatchTooltip()
+            },
+        });
+    }
+
+    function RenderTableDetailWithParameter(table, data_list=[], data_wh=[]) {
+        console.log(data_list)
+        table.DataTable().clear().destroy()
+        table.DataTableDefault({
+            dom: '',
+            paging: false,
+            reloadCurrency: true,
+            data: data_list,
+            columns: [
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<button class="btn btn-custom btn-primary btn-rounded btn-sm w-25">
+                                        <span>
+                                            <span class="icon">
+                                                <span class="feather-icon"><i class="fas fa-warehouse"></i></span>
+                                            </span>
+                                            <span>${row?.['warehouse_code']}</span>
+                                        </span>
+                                    </button>&nbsp;
+                                    <span class="text-primary ${row?.['type']}"><b>${row?.['warehouse_title']}</b></span>`
+                        }
+                        else if (row?.['type'] === 'detail_row') {
+                            return `<span class="badge badge-indicator inv-action ${row?.['bg_in']} ${row?.['bg_out']}"></span>`
+                        }
+                        else {
+                            return `<button type="button" class="btn btn-light btn-rounded btn-sm w-25">
+                                        <span>
+                                            <span>${row?.['product_code']}</span>
+                                        </span>
+                                    </button>&nbsp;
+                                    <span class="${row?.['type']}" data-is-no-info="${row?.['is_no_info']}">${row?.['product_title']}</span>&nbsp;
+                                    <span class="text-blue small fw-bold">${row?.['product_lot_number'] ? row?.['product_lot_number'] : ''}</span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return ``
+                        }
+                        else if (row?.['type'] === 'detail_row') {
+                            return ``
+                        }
+                        else {
+                            return `<span>${row?.['uom_title']}</span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'detail_row') {
+                            return `<span>${row?.['date']}</span>`
+                        }
+                        return ''
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'detail_row') {
+                            if (row?.['lot_number']) {
+                                return `<span class="text-blue"><i class="bi bi-bookmark"></i>&nbsp;${row?.['lot_number']}</span>`
+                            }
+                        }
+                        return ''
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'detail_row') {
+                            if (row?.['expired_date']) {
+                                return `<span class="text-primary"><i class="bi bi-calendar2-x"></i>&nbsp;${row?.['expired_date']}</span>`
+                            }
+                        }
+                        return ''
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-opening-quantity-span wh-open-quantity-${row?.['warehouse_id']}">0</span></b>`
+                        }
+                        else if (row?.['type'] === 'detail_row') {
+                            return ``
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill opening-quantity-span prd-open-quantity-${row?.['warehouse_id']}">${row?.['prd_open_quantity']}</span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-opening-value-span mask-money wh-open-value-${row?.['warehouse_id']}" data-init-money="0"></span></b>`
+                        }
+                        else if (row?.['type'] === 'detail_row') {
+                            return ``
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill opening-value-span mask-money prd-open-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_open_value']}"></span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill text-primary wh-in-quantity-span wh-in-quantity-${row?.['warehouse_id']}">0</span></b>`
+                        }
+                        else if (row?.['type'] === 'detail_row') {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill">${row?.['in_quantity']}</span>`
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill in-quantity-span prd-in-quantity-${row?.['warehouse_id']}">${row?.['prd_in_quantity']}</span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-in-value-span mask-money wh-in-value-${row?.['warehouse_id']}" data-init-money="0"></span></b>`
+                        }
+                        else if (row?.['type'] === 'detail_row') {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill mask-money" data-init-money="${row?.['in_value']}"></span>`
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill in-quantity-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_in_value']}"></span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-out-quantity-span wh-out-quantity-${row?.['warehouse_id']}">0</span></b>`
+                        }
+                        else if (row?.['type'] === 'detail_row') {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill">${row?.['out_quantity']}</span>`
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill out-quantity-span prd-out-quantity-${row?.['warehouse_id']}">${row?.['prd_out_quantity']}</span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-out-value-span mask-money wh-out-value-${row?.['warehouse_id']}" data-init-money="0"></span></b>`
+                        }
+                        else if (row?.['type'] === 'detail_row') {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill mask-money" data-init-money="${row?.['out_value']}"></span>`
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill out-quantity-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_out_value']}"></span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-ending-quantity-span wh-end-quantity-${row?.['warehouse_id']}">0</span></b>`
+                        }
+                        else if (row?.['type'] === 'detail_row') {
+                            return ``
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill ending-quantity-span prd-end-quantity-${row?.['warehouse_id']}">${row?.['prd_end_quantity']}</span>`
+                        }
+                    }
+                },
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        if (row?.['type'] === 'warehouse_row') {
+                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-ending-value-span mask-money wh-end-value-${row?.['warehouse_id']}" data-init-money="0"></span></b>`
+                        }
+                        else if (row?.['type'] === 'detail_row') {
+                            return ``
+                        }
+                        else {
+                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill ending-value-span mask-money prd-end-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_end_value']}"></span>`
+                        }
+                    }
+                },
+            ],
+            initComplete: function(settings, json) {
+                table.find('tbody tr').each(function () {
+                    $(this).find('td:eq(0)').css({
+                        'min-width': '400px'
+                    })
+                    $(this).find('td:eq(1)').css({
+                        'min-width': '100px'
+                    })
+                    $(this).find('td:eq(2)').css({
+                        'min-width': '100px'
+                    })
+                    $(this).find('td:eq(3)').css({
+                        'min-width': '100px'
+                    })
+                    $(this).find('td:eq(4)').css({
+                        'min-width': '100px'
+                    })
+                    $(this).find('td:eq(5)').css({
+                        'min-width': '50px'
+                    })
+                    $(this).find('td:eq(6)').css({
+                        'min-width': '200px'
+                    })
+                    $(this).find('td:eq(7)').css({
+                        'min-width': '50px'
+                    })
+                    $(this).find('td:eq(8)').css({
+                        'min-width': '200px'
+                    })
+                    $(this).find('td:eq(9)').css({
+                        'min-width': '50px'
+                    })
+                    $(this).find('td:eq(10)').css({
+                        'min-width': '200px'
+                    })
+                    $(this).find('td:eq(11)').css({
+                        'min-width': '50px'
+                    })
+                    $(this).find('td:eq(12)').css({
+                        'min-width': '200px'
+                    })
+                })
+
+                let sum_wh_open_quantity = 0;
+                let sum_wh_open_value = 0;
+                let sum_wh_in_quantity = 0;
+                let sum_wh_in_value = 0;
+                let sum_wh_out_quantity = 0;
+                let sum_wh_out_value = 0;
+                let sum_wh_end_quantity = 0;
+                let sum_wh_end_value = 0;
+
+                for (const wh of data_wh) {
+                    let wh_open_quantity = 0
+                    table.find(`.prd-open-quantity-${wh}`).each(function () {
+                        wh_open_quantity += parseFloat($(this).text())
+                    })
+                    table.find(`.wh-open-quantity-${wh}`).text(wh_open_quantity)
+
+                    let wh_open_value = 0
+                    table.find(`.prd-open-value-${wh}`).each(function () {
+                        wh_open_value += parseFloat($(this).attr('data-init-money'))
+                    })
+                    table.find(`.wh-open-value-${wh}`).attr('data-init-money', wh_open_value)
+
+                    let wh_in_quantity = 0
+                    table.find(`.prd-in-quantity-${wh}`).each(function () {
+                        wh_in_quantity += parseFloat($(this).text())
+                    })
+                    table.find(`.wh-in-quantity-${wh}`).text(wh_in_quantity)
+
+                    let wh_in_value = 0
+                    table.find(`.prd-in-value-${wh}`).each(function () {
+                        wh_in_value += parseFloat($(this).attr('data-init-money'))
+                    })
+                    table.find(`.wh-in-value-${wh}`).attr('data-init-money', wh_in_value)
+
+                    let wh_out_quantity = 0
+                    table.find(`.prd-out-quantity-${wh}`).each(function () {
+                        wh_out_quantity += parseFloat($(this).text())
+                    })
+                    table.find(`.wh-out-quantity-${wh}`).text(wh_out_quantity)
+
+                    let wh_out_value = 0
+                    table.find(`.prd-out-value-${wh}`).each(function () {
+                        wh_out_value += parseFloat($(this).attr('data-init-money'))
+                    })
+                    table.find(`.wh-out-value-${wh}`).attr('data-init-money', wh_out_value)
+
+                    let wh_end_quantity = 0
+                    table.find(`.prd-end-quantity-${wh}`).each(function () {
+                        wh_end_quantity += parseFloat($(this).text())
+                    })
+                    table.find(`.wh-end-quantity-${wh}`).text(wh_end_quantity)
+
+                    let wh_end_value = 0
+                    table.find(`.prd-end-value-${wh}`).each(function () {
+                        wh_end_value += parseFloat($(this).attr('data-init-money'))
+                    })
+                    table.find(`.wh-end-value-${wh}`).attr('data-init-money', wh_end_value)
+
+                    sum_wh_open_quantity += wh_open_quantity;
+                    sum_wh_open_value += wh_open_value;
+                    sum_wh_in_quantity += wh_in_quantity;
+                    sum_wh_in_value += wh_in_value;
+                    sum_wh_out_quantity += wh_out_quantity;
+                    sum_wh_out_value += wh_out_value;
+                    sum_wh_end_quantity += wh_end_quantity;
+                    sum_wh_end_value += wh_end_value;
+                }
+
+                $('#table-inventory-report-detail #opening-total-quantity').text(sum_wh_open_quantity)
+                $('#table-inventory-report-detail #opening-total-value').attr('data-init-money', sum_wh_open_value)
+                $('#table-inventory-report-detail #in-total-quantity').text(sum_wh_in_quantity)
+                $('#table-inventory-report-detail #in-total-value').attr('data-init-money', sum_wh_in_value)
+                $('#table-inventory-report-detail #out-total-quantity').text(sum_wh_out_quantity)
+                $('#table-inventory-report-detail #out-total-value').attr('data-init-money', sum_wh_out_value)
+                $('#table-inventory-report-detail #ending-total-quantity').text(sum_wh_end_quantity)
+                $('#table-inventory-report-detail #ending-total-value').attr('data-init-money', sum_wh_end_value)
+
+                MatchTooltip()
+            },
+        });
+    }
+
     $('#btn-view').on('click', function () {
-        $('table thead').find('span').text('0')
-        $('table thead').find('span').attr('data-init-money', 0)
+        $('table thead #thead-value').find('span').text('0')
+        $('table thead #thead-value').find('span').attr('data-init-money', 0)
         $('table tbody').html('')
-        const table_inventory_report = $('#table-inventory-report')
-        $('#table-inventory-report-detail').prop('hidden', true)
+        table_inventory_report.prop('hidden', false)
+        table_inventory_report_detail.prop('hidden', true)
         if (periodMonthEle.val()) {
             WindowControl.showLoading();
             let dataParam = {}
@@ -193,204 +765,106 @@ $(document).ready(function () {
                     // console.log(results[0])
                     $('#btn-collapse').trigger('click')
                     table_inventory_report.find('tbody').html('')
-                    let opening_sum_quantity = 0
-                    let in_sum_quantity = 0
-                    let out_sum_quantity = 0
-                    let ending_sum_quantity = 0
-                    let opening_sum_value = 0
-                    let in_sum_value = 0
-                    let out_sum_value = 0
-                    let ending_sum_value = 0
+                    let table_inventory_report_wh_row = []
+                    let table_inventory_report_data = []
                     for (const warehouse_activities of results[0]) {
                         if (warehouses_select_Ele.val().length === 0) {
-                            if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
-                                table_inventory_report.find('tbody').append(`
-                                    <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #e9f3f3">
-                                        <td class="border-1 first-col-x" colspan="3">
-                                            <i class="fas fa-warehouse text-primary"></i>&nbsp;<span class="text-primary"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
-                                        </td>
-                                        <td class="" colspan="3"></td>
-                                        <td class=""><b><span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></b></td>
-                                        <td class=""><b><span class="wh-opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></b></td>
-                                        <td class=""><b><span class="wh-in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></b></td>
-                                        <td class=""><b><span class="wh-in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></b></td>
-                                        <td class=""><b><span class="wh-out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></b></td>
-                                        <td class=""><b><span class="wh-out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></b></td>
-                                        <td class=""><b><span class="wh-ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></b></td>
-                                        <td class=""><b><span class="wh-ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></b></td>                     
-                                    </tr>
-                                `)
-                                table_inventory_report.find('tbody').append(`
-                                    <tr>
-                                        <td class="border-1 first-col" colspan="3">
-                                            <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
-                                            &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
-                                        </td>
-                                        <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
-                                        <td class=""><span class="opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></td>
-                                        <td class=""><span class="opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></td>
-                                        <td class=""><span class="in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></td>
-                                        <td class=""><span class="in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></td>
-                                        <td class=""><span class="out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></td>
-                                        <td class=""><span class="out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></td>
-                                        <td class=""><span class="ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></td>
-                                        <td class=""><span class="ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></td>
-                                    </tr>
-                                `)
-
-                                PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
-                                opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
-                                in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
-                                out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
-                                ending_sum_quantity += warehouse_activities?.['stock_activities']?.['ending_balance_quantity']
-                                opening_sum_value += warehouse_activities?.['stock_activities']?.['opening_balance_value']
-                                in_sum_value += warehouse_activities?.['stock_activities']?.['sum_in_value']
-                                out_sum_value += warehouse_activities?.['stock_activities']?.['sum_out_value']
-                                ending_sum_value += warehouse_activities?.['stock_activities']?.['ending_balance_value']
+                            if (!table_inventory_report_wh_row.includes(warehouse_activities?.['warehouse']?.['id'])) {
+                                table_inventory_report_wh_row.push(warehouse_activities?.['warehouse']?.['id'])
+                                table_inventory_report_data.push({
+                                    'type': 'warehouse_row',
+                                    'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
+                                    'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
+                                    'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                })
+                                table_inventory_report_data.push({
+                                    'type': 'product_row',
+                                    'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
+                                    'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
+                                    'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                    'product_code': `${warehouse_activities?.['product']?.['code']}`,
+                                    'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                    'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
+                                    'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
+                                    'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
+                                    'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
+                                    'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
+                                    'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
+                                    'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
+                                    'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
+                                    'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`
+                                })
                             }
                             else {
-                                let current_wh_row = table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`)
-                                current_wh_row.after(`
-                                    <tr>
-                                        <td class="border-1 first-col" colspan="3">
-                                            <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
-                                            &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
-                                        </td>
-                                        <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
-                                        <td class=""><span class="opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></td>
-                                        <td class=""><span class="opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></td>
-                                        <td class=""><span class="in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></td>
-                                        <td class=""><span class="in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></td>
-                                        <td class=""><span class="out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></td>
-                                        <td class=""><span class="out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></td>
-                                        <td class=""><span class="ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></td>
-                                        <td class=""><span class="ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></td>
-                                    </tr>
-                                `)
-
-                                current_wh_row.find('.wh-opening-quantity-span').text(parseFloat(current_wh_row.find('.wh-opening-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['opening_balance_quantity'])
-                                current_wh_row.find('.wh-opening-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-opening-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['opening_balance_value'])
-                                current_wh_row.find('.wh-in-quantity-span').text(parseFloat(current_wh_row.find('.wh-in-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['sum_in_quantity'])
-                                current_wh_row.find('.wh-in-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-in-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['sum_in_value'])
-                                current_wh_row.find('.wh-out-quantity-span').text(parseFloat(current_wh_row.find('.wh-out-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['sum_out_quantity'])
-                                current_wh_row.find('.wh-out-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-out-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['sum_out_value'])
-                                current_wh_row.find('.wh-ending-quantity-span').text(parseFloat(current_wh_row.find('.wh-ending-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['ending_balance_quantity'])
-                                current_wh_row.find('.wh-ending-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-ending-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['ending_balance_value'])
-
-                                PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
-                                opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
-                                in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
-                                out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
-                                ending_sum_quantity += warehouse_activities?.['stock_activities']?.['ending_balance_quantity']
-                                opening_sum_value += warehouse_activities?.['stock_activities']?.['opening_balance_value']
-                                in_sum_value += warehouse_activities?.['stock_activities']?.['sum_in_value']
-                                out_sum_value += warehouse_activities?.['stock_activities']?.['sum_out_value']
-                                ending_sum_value += warehouse_activities?.['stock_activities']?.['ending_balance_value']
+                                table_inventory_report_data.push({
+                                    'type': 'product_row',
+                                    'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
+                                    'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
+                                    'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                    'product_code': `${warehouse_activities?.['product']?.['code']}`,
+                                    'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                    'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
+                                    'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
+                                    'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
+                                    'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
+                                    'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
+                                    'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
+                                    'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
+                                    'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
+                                    'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`
+                                })
                             }
-                            $('#table-inventory-report #opening-total-quantity').text(opening_sum_quantity)
-                            $('#table-inventory-report #opening-total-value').attr('data-init-money', opening_sum_value)
-                            $('#table-inventory-report #in-total-quantity').text(in_sum_quantity)
-                            $('#table-inventory-report #in-total-value').attr('data-init-money', in_sum_value)
-                            $('#table-inventory-report #out-total-quantity').text(out_sum_quantity)
-                            $('#table-inventory-report #out-total-value').attr('data-init-money', out_sum_value)
-                            $('#table-inventory-report #ending-total-quantity').text(ending_sum_quantity)
-                            $('#table-inventory-report #ending-total-value').attr('data-init-money', ending_sum_value)
-                        } else {
+                        }
+                        else {
                             if (warehouses_select_Ele.val().includes(warehouse_activities?.['warehouse']?.['id'])) {
-                                if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
-                                    table_inventory_report.find('tbody').append(`
-                                        <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #e9f3f3">
-                                            <td class="border-1 first-col-x" colspan="3">
-                                                <i class="fas fa-warehouse text-primary"></i>&nbsp;<span class="text-primary"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
-                                            </td> 
-                                            <td class="" colspan="3"></td>
-                                            <td class=""><b><span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></b></td>
-                                            <td class=""><b><span class="wh-opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></b></td>
-                                            <td class=""><b><span class="wh-in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></b></td>
-                                            <td class=""><b><span class="wh-in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></b></td>
-                                            <td class=""><b><span class="wh-out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></b></td>
-                                            <td class=""><b><span class="wh-out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></b></td>
-                                            <td class=""><b><span class="wh-ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></b></td>
-                                            <td class=""><b><span class="wh-ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></b></td>                             
-                                        </tr>
-                                    `)
-                                    table_inventory_report.find('tbody').append(`
-                                        <tr>
-                                            <td class="border-1 first-col" colspan="3">
-                                                <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
-                                                &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
-                                            </td>
-                                            <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
-                                            <td class=""><span class="opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></td>
-                                            <td class=""><span class="opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></td>
-                                            <td class=""><span class="in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></td>
-                                            <td class=""><span class="in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></td>
-                                            <td class=""><span class="out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></td>
-                                            <td class=""><span class="out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></td>
-                                            <td class=""><span class="ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></td>
-                                            <td class=""><span class="ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></td>
-                                        </tr>
-                                    `)
-
-                                    PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
-                                    opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
-                                    in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
-                                    out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
-                                    ending_sum_quantity += warehouse_activities?.['stock_activities']?.['ending_balance_quantity']
-                                    opening_sum_value += warehouse_activities?.['stock_activities']?.['opening_balance_value']
-                                    in_sum_value += warehouse_activities?.['stock_activities']?.['sum_in_value']
-                                    out_sum_value += warehouse_activities?.['stock_activities']?.['sum_out_value']
-                                    ending_sum_value += warehouse_activities?.['stock_activities']?.['ending_balance_value']
+                                if (!table_inventory_report_wh_row.includes(warehouse_activities?.['warehouse']?.['id'])) {
+                                    table_inventory_report_wh_row.push(warehouse_activities?.['warehouse']?.['id'])
+                                    table_inventory_report_data.push({
+                                        'type': 'warehouse_row',
+                                        'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
+                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
+                                        'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                    })
+                                    table_inventory_report_data.push({
+                                        'type': 'product_row',
+                                        'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
+                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
+                                        'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                        'product_code': `${warehouse_activities?.['product']?.['code']}`,
+                                        'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                        'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
+                                        'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
+                                        'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
+                                        'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
+                                        'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
+                                        'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
+                                        'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
+                                        'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
+                                        'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`
+                                    })
                                 } else {
-                                    let current_wh_row = table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`)
-                                    current_wh_row.after(`
-                                        <tr>
-                                            <td class="border-1 first-col" colspan="3">
-                                                <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
-                                                &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
-                                            </td>
-                                            <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
-                                            <td class=""><span class="opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></td>
-                                            <td class=""><span class="opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></td>
-                                            <td class=""><span class="in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></td>
-                                            <td class=""><span class="in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></td>
-                                            <td class=""><span class="out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></td>
-                                            <td class=""><span class="out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></td>
-                                            <td class=""><span class="ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></td>
-                                            <td class=""><span class="ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></td>
-                                        </tr>
-                                    `)
-
-                                    current_wh_row.find('.wh-opening-quantity-span').text(parseFloat(current_wh_row.find('.wh-opening-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['opening_balance_quantity'])
-                                    current_wh_row.find('.wh-opening-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-opening-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['opening_balance_value'])
-                                    current_wh_row.find('.wh-in-quantity-span').text(parseFloat(current_wh_row.find('.wh-in-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['sum_in_quantity'])
-                                    current_wh_row.find('.wh-in-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-in-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['sum_in_value'])
-                                    current_wh_row.find('.wh-out-quantity-span').text(parseFloat(current_wh_row.find('.wh-out-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['sum_out_quantity'])
-                                    current_wh_row.find('.wh-out-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-out-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['sum_out_value'])
-                                    current_wh_row.find('.wh-ending-quantity-span').text(parseFloat(current_wh_row.find('.wh-ending-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['ending_balance_quantity'])
-                                    current_wh_row.find('.wh-ending-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-ending-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['ending_balance_value'])
-
-                                    PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
-                                    opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
-                                    in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
-                                    out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
-                                    ending_sum_quantity += warehouse_activities?.['stock_activities']?.['ending_balance_quantity']
-                                    opening_sum_value += warehouse_activities?.['stock_activities']?.['opening_balance_value']
-                                    in_sum_value += warehouse_activities?.['stock_activities']?.['sum_in_value']
-                                    out_sum_value += warehouse_activities?.['stock_activities']?.['sum_out_value']
-                                    ending_sum_value += warehouse_activities?.['stock_activities']?.['ending_balance_value']
+                                    table_inventory_report_data.push({
+                                        'type': 'product_row',
+                                        'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
+                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
+                                        'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                        'product_code': `${warehouse_activities?.['product']?.['code']}`,
+                                        'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                        'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
+                                        'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
+                                        'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
+                                        'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
+                                        'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
+                                        'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
+                                        'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
+                                        'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
+                                        'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`
+                                    })
                                 }
-                                $('#table-inventory-report #opening-total-quantity').text(opening_sum_quantity)
-                                $('#table-inventory-report #opening-total-value').attr('data-init-money', opening_sum_value)
-                                $('#table-inventory-report #in-total-quantity').text(in_sum_quantity)
-                                $('#table-inventory-report #in-total-value').attr('data-init-money', in_sum_value)
-                                $('#table-inventory-report #out-total-quantity').text(out_sum_quantity)
-                                $('#table-inventory-report #out-total-value').attr('data-init-money', out_sum_value)
-                                $('#table-inventory-report #ending-total-quantity').text(ending_sum_quantity)
-                                $('#table-inventory-report #ending-total-value').attr('data-init-money', ending_sum_value)
                             }
                         }
                     }
+                    RenderTableWithParameter(table_inventory_report, table_inventory_report_data, table_inventory_report_wh_row)
                     $.fn.initMaskMoney2()
                     setTimeout(
                         () => {
@@ -412,7 +886,6 @@ $(document).ready(function () {
                                 table_inventory_report.find('tbody .out-value-span').prop('hidden', condition3)
                                 table_inventory_report.find('tbody .wh-out-value-span').prop('hidden', condition3)
                             }
-                            table_inventory_report.prop('hidden', false)
                         },
                         500
                     )
@@ -425,11 +898,11 @@ $(document).ready(function () {
     $('#btn-view').trigger('click')
 
     $('#btn-view-detail').on('click', function () {
-        $('table thead').find('span').text('0')
-        $('table thead').find('span').attr('data-init-money', 0)
+        $('table thead #thead-value').find('span').text('0')
+        $('table thead #thead-value').find('span').attr('data-init-money', 0)
         $('table tbody').html('')
-        const table_inventory_report = $('#table-inventory-report-detail')
-        $('#table-inventory-report').prop('hidden', true)
+        table_inventory_report_detail.prop('hidden', false)
+        table_inventory_report.prop('hidden', true)
         if (periodMonthEle.val()) {
             WindowControl.showLoading();
             let dataParam = {}
@@ -455,428 +928,292 @@ $(document).ready(function () {
 
             Promise.all([inventory_detail_list_ajax]).then(
                 (results) => {
-                    console.log(results[0])
+                    // console.log(results[0])
                     $('#btn-collapse').trigger('click')
-                    table_inventory_report.find('tbody').html('')
-                    let opening_sum_quantity = 0
-                    let in_sum_quantity = 0
-                    let out_sum_quantity = 0
-                    let ending_sum_quantity = 0
-                    let opening_sum_value = 0
-                    let in_sum_value = 0
-                    let out_sum_value = 0
-                    let ending_sum_value = 0
+                    table_inventory_report_detail.find('tbody').html('')
+                    let table_inventory_report_wh_row = []
+                    let table_inventory_report_data = []
                     for (const warehouse_activities of results[0]) {
                         if (warehouses_select_Ele.val().length === 0) {
-                            if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
-                                table_inventory_report.find('tbody').append(`
-                                    <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #e9f3f3">
-                                        <td class="border-1 first-col-x" colspan="3">
-                                            <i class="fas fa-warehouse text-primary"></i>&nbsp;<span class="text-primary"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
-                                        </td>
-                                        <td class="" colspan="3"></td>
-                                        <td class="" colspan="3"></td>
-                                        <td class="" colspan="3"></td>
-                                        <td class="" colspan="3"></td>
-                                        <td class=""><b><span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></b></td>
-                                        <td class=""><b><span class="wh-opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></b></td>
-                                        <td class=""><b><span class="wh-in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></b></td>
-                                        <td class=""><b><span class="wh-in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></b></td>
-                                        <td class=""><b><span class="wh-out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></b></td>
-                                        <td class=""><b><span class="wh-out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></b></td>
-                                        <td class=""><b><span class="wh-ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></b></td>
-                                        <td class=""><b><span class="wh-ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></b></td>                            
-                                    </tr>
-                                `)
-                                let detail_html = ``
+                            if (!table_inventory_report_wh_row.includes(warehouse_activities?.['warehouse']?.['id'])) {
+                                table_inventory_report_wh_row.push(warehouse_activities?.['warehouse']?.['id'])
+                                table_inventory_report_data.push({
+                                    'type': 'warehouse_row',
+                                    'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
+                                    'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
+                                    'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                })
+                                
                                 let in_quantity_enough = 0
+                                let detail_data = []
                                 for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
                                     in_quantity_enough += activity?.['in_quantity'] ? parseFloat(activity?.['in_quantity']) : 0
                                     let bg_in = ''
                                     let bg_out = ''
                                     if (activity?.['trans_title'] === 'Goods receipt') {
-                                        bg_in = 'text-primary'
+                                        bg_in = 'badge-soft-primary'
                                     }
                                     if (activity?.['trans_title'] === 'Goods return') {
-                                        bg_in = 'text-blue'
+                                        bg_in = 'badge-soft-blue'
                                     }
                                     if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'text-danger'
+                                        bg_out = 'badge-soft-danger'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
-                                        bg_in = 'text-green'
+                                        bg_in = 'badge-soft-green'
                                     }
                                     if (activity?.['trans_title'] === 'Goods issue') {
-                                        bg_out = 'text-orange'
+                                        bg_out = 'badge-soft-orange'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
-                                        bg_in = 'text-purple small gtf-in'
+                                        bg_in = 'badge-soft-purple small gtf-in'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                        bg_out = 'text-purple small gtf-out'
+                                        bg_out = 'badge-soft-purple small gtf-out'
                                     }
-                                    detail_html += `
-                                        <tr class="detail-row">
-                                            <td class="border-1 first-col" colspan="3"><span></span></td>
-                                            <td class="" colspan="3"><span></span></td>
-                                            <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
-                                            <td class="" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                            <td class="" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
-                                            <td class=""></td>
-                                            <td class=""></td>
-                                            <td class="${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>
-                                            <td class="${bg_in}"><span class="in-value-span-detail mask-money" data-init-money="${activity?.['in_value']}"></span></td>
-                                            <td class="${bg_out}"><span class="out-quantity-span-detail">${activity?.['out_quantity']}</span></td>
-                                            <td class="${bg_out}"><span class="out-value-span-detail mask-money" data-init-money="${activity?.['out_value']}"></span></td>
-                                            <td class=""></td>
-                                            <td class=""></td>
-                                        </tr>
-                                    `
+                                    detail_data.push({
+                                        'type': 'detail_row',
+                                        'date': moment(activity?.['system_date']).format("DD/MM/YYYY"),
+                                        'lot_number': activity?.['lot_number'],
+                                        'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
+                                        'bg_in': bg_in,
+                                        'in_quantity': activity?.['in_quantity'],
+                                        'in_value': activity?.['in_value'],
+                                        'bg_out': bg_out,
+                                        'out_quantity': activity?.['out_quantity'],
+                                        'out_value': activity?.['out_value']
+                                    })
                                 }
-                                let no_info = ''
-                                if (in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity'])) {
-                                    no_info = 'no-info'
-                                }
-                                table_inventory_report.find('tbody').append(`
-                                    <tr class="${no_info}">
-                                        <td class="border-1 first-col" colspan="3">
-                                            <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
-                                            &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
-                                        </td>
-                                        <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
-                                        <td class="" colspan="3"></td>
-                                        <td class="" colspan="3"></td>
-                                        <td class="" colspan="3"></td>
-                                        <td class=""><span class="opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></td>
-                                        <td class=""><span class="opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></td>
-                                        <td class=""><span class="in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></td>
-                                        <td class=""><span class="in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></td>
-                                        <td class=""><span class="out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></td>
-                                        <td class=""><span class="out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></td>
-                                        <td class=""><span class="ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></td>
-                                        <td class=""><span class="ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></td>
-                                    </tr>
-                                    ${detail_html}
-                                `)
 
-                                PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
-                                opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
-                                in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
-                                out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
-                                ending_sum_quantity += warehouse_activities?.['stock_activities']?.['ending_balance_quantity']
-                                opening_sum_value += warehouse_activities?.['stock_activities']?.['opening_balance_value']
-                                in_sum_value += warehouse_activities?.['stock_activities']?.['sum_in_value']
-                                out_sum_value += warehouse_activities?.['stock_activities']?.['sum_out_value']
-                                ending_sum_value += warehouse_activities?.['stock_activities']?.['ending_balance_value']
+                                let no_info = in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity']) ? 'no-info' : ''
+                                
+                                table_inventory_report_data.push({
+                                    'is_no_info': no_info,
+                                    'type': 'product_row',
+                                    'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
+                                    'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
+                                    'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                    'product_code': `${warehouse_activities?.['product']?.['code']}`,
+                                    'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                    'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
+                                    'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
+                                    'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
+                                    'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
+                                    'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
+                                    'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
+                                    'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
+                                    'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
+                                    'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`
+                                })
+                                table_inventory_report_data = table_inventory_report_data.concat(detail_data)
                             }
                             else {
-                                let detail_html = ``
                                 let in_quantity_enough = 0
+                                let detail_data = []
                                 for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
                                     in_quantity_enough += activity?.['in_quantity'] ? parseFloat(activity?.['in_quantity']) : 0
                                     let bg_in = ''
                                     let bg_out = ''
                                     if (activity?.['trans_title'] === 'Goods receipt') {
-                                        bg_in = 'text-primary'
+                                        bg_in = 'badge-soft-primary'
                                     }
                                     if (activity?.['trans_title'] === 'Goods return') {
-                                        bg_in = 'text-blue'
+                                        bg_in = 'badge-soft-blue'
                                     }
                                     if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'text-danger'
+                                        bg_out = 'badge-soft-danger'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
-                                        bg_in = 'text-green'
+                                        bg_in = 'badge-soft-green'
                                     }
                                     if (activity?.['trans_title'] === 'Goods issue') {
-                                        bg_out = 'text-orange'
+                                        bg_out = 'badge-soft-orange'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
-                                        bg_in = 'text-purple small gtf-in'
+                                        bg_in = 'badge-soft-purple small gtf-in'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                        bg_out = 'text-purple small gtf-out'
+                                        bg_out = 'badge-soft-purple small gtf-out'
                                     }
-                                    detail_html += `
-                                        <tr class="detail-row">
-                                            <td class="border-1 first-col" colspan="3"><span></span></td>
-                                            <td class="" colspan="3"><span></span></td>
-                                            <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
-                                            <td class="" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                            <td class="" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
-                                            <td class=""></td>
-                                            <td class=""></td>
-                                            <td class="${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>
-                                            <td class="${bg_in}"><span class="in-value-span-detail mask-money" data-init-money="${activity?.['in_value']}"></span></td>
-                                            <td class="${bg_out}"><span class="out-quantity-span-detail">${activity?.['out_quantity']}</span></td>
-                                            <td class="${bg_out}"><span class="out-value-span-detail mask-money" data-init-money="${activity?.['out_value']}"></span></td>
-                                            <td class=""></td>
-                                            <td class=""></td>
-                                        </tr>
-                                    `
+                                    detail_data.push({
+                                        'type': 'detail_row',
+                                        'date': moment(activity?.['system_date']).format("DD/MM/YYYY"),
+                                        'lot_number': activity?.['lot_number'],
+                                        'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
+                                        'bg_in': bg_in,
+                                        'in_quantity': activity?.['in_quantity'],
+                                        'in_value': activity?.['in_value'],
+                                        'bg_out': bg_out,
+                                        'out_quantity': activity?.['out_quantity'],
+                                        'out_value': activity?.['out_value']
+                                    })
                                 }
-                                let no_info = ''
-                                if (in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity'])) {
-                                    no_info = 'no-info'
-                                }
-                                let current_wh_row = table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`)
-                                current_wh_row.after(`
-                                    <tr class="${no_info}">
-                                        <td class="border-1 first-col" colspan="3">
-                                            <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
-                                            &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
-                                        </td>
-                                        <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
-                                        <td class="" colspan="3"></td>
-                                        <td class="" colspan="3"></td>
-                                        <td class="" colspan="3"></td>
-                                        <td class=""><span class="opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></td>
-                                        <td class=""><span class="opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></td>
-                                        <td class=""><span class="in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></td>
-                                        <td class=""><span class="in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></td>
-                                        <td class=""><span class="out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></td>
-                                        <td class=""><span class="out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></td>
-                                        <td class=""><span class="ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></td>
-                                        <td class=""><span class="ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></td>
-                                    </tr>
-                                    ${detail_html}
-                                `)
 
-                                current_wh_row.find('.wh-opening-quantity-span').text(parseFloat(current_wh_row.find('.wh-opening-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['opening_balance_quantity'])
-                                current_wh_row.find('.wh-opening-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-opening-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['opening_balance_value'])
-                                current_wh_row.find('.wh-in-quantity-span').text(parseFloat(current_wh_row.find('.wh-in-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['sum_in_quantity'])
-                                current_wh_row.find('.wh-in-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-in-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['sum_in_value'])
-                                current_wh_row.find('.wh-out-quantity-span').text(parseFloat(current_wh_row.find('.wh-out-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['sum_out_quantity'])
-                                current_wh_row.find('.wh-out-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-out-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['sum_out_value'])
-                                current_wh_row.find('.wh-ending-quantity-span').text(parseFloat(current_wh_row.find('.wh-ending-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['ending_balance_quantity'])
-                                current_wh_row.find('.wh-ending-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-ending-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['ending_balance_value'])
+                                let no_info = in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity']) ? 'no-info' : ''
 
-                                PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
-                                opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
-                                in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
-                                out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
-                                ending_sum_quantity += warehouse_activities?.['stock_activities']?.['ending_balance_quantity']
-                                opening_sum_value += warehouse_activities?.['stock_activities']?.['opening_balance_value']
-                                in_sum_value += warehouse_activities?.['stock_activities']?.['sum_in_value']
-                                out_sum_value += warehouse_activities?.['stock_activities']?.['sum_out_value']
-                                ending_sum_value += warehouse_activities?.['stock_activities']?.['ending_balance_value']
+                                table_inventory_report_data.push({
+                                    'is_no_info': no_info,
+                                    'type': 'product_row',
+                                    'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
+                                    'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
+                                    'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                    'product_code': `${warehouse_activities?.['product']?.['code']}`,
+                                    'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                    'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
+                                    'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
+                                    'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
+                                    'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
+                                    'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
+                                    'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
+                                    'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
+                                    'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
+                                    'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`
+                                })
+                                table_inventory_report_data = table_inventory_report_data.concat(detail_data)
                             }
-                            $('#table-inventory-report-detail #opening-total-quantity').text(opening_sum_quantity)
-                            $('#table-inventory-report-detail #opening-total-value').attr('data-init-money', opening_sum_value)
-                            $('#table-inventory-report-detail #in-total-quantity').text(in_sum_quantity)
-                            $('#table-inventory-report-detail #in-total-value').attr('data-init-money', in_sum_value)
-                            $('#table-inventory-report-detail #out-total-quantity').text(out_sum_quantity)
-                            $('#table-inventory-report-detail #out-total-value').attr('data-init-money', out_sum_value)
-                            $('#table-inventory-report-detail #ending-total-quantity').text(ending_sum_quantity)
-                            $('#table-inventory-report-detail #ending-total-value').attr('data-init-money', ending_sum_value)
                         }
                         else {
                             if (warehouses_select_Ele.val().includes(warehouse_activities?.['warehouse']?.['id'])) {
-                                if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
-                                    table_inventory_report.find('tbody').append(`
-                                        <tr class="wh-row-${warehouse_activities?.['warehouse']?.['id']}" style="background-color: #e9f3f3">
-                                            <td class="border-1 first-col-x" colspan="3">
-                                                <i class="fas fa-warehouse text-primary"></i>&nbsp;<span class="text-primary"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
-                                            </td>
-                                            <td class="" colspan="3"></td>
-                                            <td class="" colspan="3"></td>
-                                            <td class="" colspan="3"></td>
-                                            <td class="" colspan="3"></td>
-                                            <td class=""><b><span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></b></td>
-                                            <td class=""><b><span class="wh-opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></b></td>
-                                            <td class=""><b><span class="wh-in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></b></td>
-                                            <td class=""><b><span class="wh-in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></b></td>
-                                            <td class=""><b><span class="wh-out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></b></td>
-                                            <td class=""><b><span class="wh-out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></b></td>
-                                            <td class=""><b><span class="wh-ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></b></td>
-                                            <td class=""><b><span class="wh-ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></b></td>                           
-                                        </tr>
-                                    `)
-                                    let detail_html = ``
+                                if (!table_inventory_report_wh_row.includes(warehouse_activities?.['warehouse']?.['id'])) {
+                                    table_inventory_report_wh_row.push(warehouse_activities?.['warehouse']?.['id'])
+                                    table_inventory_report_data.push({
+                                            'type': 'warehouse_row',
+                                            'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
+                                            'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
+                                            'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                        })
+
                                     let in_quantity_enough = 0
+                                    let detail_data = []
                                     for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
                                         in_quantity_enough += activity?.['in_quantity'] ? parseFloat(activity?.['in_quantity']) : 0
                                         let bg_in = ''
                                         let bg_out = ''
                                         if (activity?.['trans_title'] === 'Goods receipt') {
-                                            bg_in = 'text-primary'
+                                            bg_in = 'badge-soft-primary'
                                         }
                                         if (activity?.['trans_title'] === 'Goods return') {
-                                        bg_in = 'text-blue'
-                                    }
+                                            bg_in = 'badge-soft-blue'
+                                        }
                                         if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'text-danger'
-                                    }
+                                            bg_out = 'badge-soft-danger'
+                                        }
                                         if (activity?.['trans_title'] === 'Goods receipt (IA)') {
-                                        bg_in = 'text-green'
-                                    }
+                                            bg_in = 'badge-soft-green'
+                                        }
                                         if (activity?.['trans_title'] === 'Goods issue') {
-                                        bg_out = 'text-orange'
-                                    }
+                                            bg_out = 'badge-soft-orange'
+                                        }
                                         if (activity?.['trans_title'] === 'Goods transfer (in)') {
-                                        bg_in = 'text-purple small gtf-in'
-                                    }
+                                            bg_in = 'badge-soft-purple small gtf-in'
+                                        }
                                         if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                        bg_out = 'text-purple small gtf-out'
+                                            bg_out = 'badge-soft-purple small gtf-out'
+                                        }
+                                        detail_data.push({
+                                            'type': 'detail_row',
+                                            'date': moment(activity?.['system_date']).format("DD/MM/YYYY"),
+                                            'lot_number': activity?.['lot_number'],
+                                            'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
+                                            'bg_in': bg_in,
+                                            'in_quantity': activity?.['in_quantity'],
+                                            'in_value': activity?.['in_value'],
+                                            'bg_out': bg_out,
+                                            'out_quantity': activity?.['out_quantity'],
+                                            'out_value': activity?.['out_value']
+                                        })
                                     }
-                                        detail_html += `
-                                            <tr class="detail-row">
-                                                <td class="border-1 first-col" colspan="3"><span></span></td>
-                                                <td class="" colspan="3"><span></span></td>
-                                                <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
-                                                <td class="" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                                <td class="" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
-                                                <td class=""></td>
-                                                <td class=""></td>
-                                                <td class="${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>
-                                                <td class="${bg_in}"><span class="in-value-span-detail mask-money" data-init-money="${activity?.['in_value']}"></span></td>
-                                                <td class="${bg_out}"><span class="out-quantity-span-detail">${activity?.['out_quantity']}</span></td>
-                                                <td class="${bg_out}"><span class="out-value-span-detail mask-money" data-init-money="${activity?.['out_value']}"></span></td>
-                                                <td class=""></td>
-                                                <td class=""></td>
-                                            </tr>
-                                        `
-                                    }
-                                    let no_info = ''
-                                    if (in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity'])) {
-                                        no_info = 'no-info'
-                                    }
-                                    table_inventory_report.find('tbody').append(`
-                                        <tr class="${no_info}">
-                                            <td class="border-1 first-col" colspan="3">
-                                                <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
-                                                &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
-                                            </td>
-                                            <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
-                                            <td class="" colspan="3"></td>
-                                            <td class="" colspan="3"></td>
-                                            <td class="" colspan="3"></td>
-                                            <td class=""><span class="opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></td>
-                                            <td class=""><span class="opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></td>
-                                            <td class=""><span class="in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></td>
-                                            <td class=""><span class="in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></td>
-                                            <td class=""><span class="out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></td>
-                                            <td class=""><span class="out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></td>
-                                            <td class=""><span class="ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></td>
-                                            <td class=""><span class="ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></td>
-                                        </tr>
-                                        ${detail_html}
-                                    `)
 
-                                    PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
-                                    opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
-                                    in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
-                                    out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
-                                    ending_sum_quantity += warehouse_activities?.['stock_activities']?.['ending_balance_quantity']
-                                    opening_sum_value += warehouse_activities?.['stock_activities']?.['opening_balance_value']
-                                    in_sum_value += warehouse_activities?.['stock_activities']?.['sum_in_value']
-                                    out_sum_value += warehouse_activities?.['stock_activities']?.['sum_out_value']
-                                    ending_sum_value += warehouse_activities?.['stock_activities']?.['ending_balance_value']
+                                    let no_info = in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity']) ? 'no-info' : ''
+
+                                    table_inventory_report_data.push({
+                                        'is_no_info': no_info,
+                                        'type': 'product_row',
+                                        'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
+                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
+                                        'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                        'product_code': `${warehouse_activities?.['product']?.['code']}`,
+                                        'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                        'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
+                                        'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
+                                        'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
+                                        'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
+                                        'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
+                                        'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
+                                        'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
+                                        'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
+                                        'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`
+                                    })
+                                    table_inventory_report_data = table_inventory_report_data.concat(detail_data)
                                 }
                                 else {
-                                    let detail_html = ``
                                     let in_quantity_enough = 0
+                                    let detail_data = []
                                     for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
                                         in_quantity_enough += activity?.['in_quantity'] ? parseFloat(activity?.['in_quantity']) : 0
                                         let bg_in = ''
                                         let bg_out = ''
                                         if (activity?.['trans_title'] === 'Goods receipt') {
-                                            bg_in = 'text-primary'
+                                            bg_in = 'badge-soft-primary'
                                         }
                                         if (activity?.['trans_title'] === 'Goods return') {
-                                            bg_in = 'text-blue'
+                                            bg_in = 'badge-soft-blue'
                                         }
                                         if (activity?.['trans_title'] === 'Delivery') {
-                                            bg_out = 'text-danger'
+                                            bg_out = 'badge-soft-danger'
                                         }
                                         if (activity?.['trans_title'] === 'Goods receipt (IA)') {
-                                            bg_in = 'text-green'
+                                            bg_in = 'badge-soft-green'
                                         }
                                         if (activity?.['trans_title'] === 'Goods issue') {
-                                            bg_out = 'text-orange'
+                                            bg_out = 'badge-soft-orange'
                                         }
                                         if (activity?.['trans_title'] === 'Goods transfer (in)') {
-                                            bg_in = 'text-purple small gtf-in'
+                                            bg_in = 'badge-soft-purple small gtf-in'
                                         }
                                         if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                            bg_out = 'text-purple small gtf-out'
+                                            bg_out = 'badge-soft-purple small gtf-out'
                                         }
-                                        detail_html += `
-                                            <tr class="detail-row">
-                                                <td class="border-1 first-col" colspan="3"><span></span></td>
-                                                <td class="" colspan="3"><span></span></td>
-                                                <td class="" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
-                                                <td class="" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                                <td class="" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
-                                                <td class=""></td>
-                                                <td class=""></td>
-                                                <td class="${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>
-                                                <td class="${bg_in}"><span class="in-value-span-detail mask-money" data-init-money="${activity?.['in_value']}"></span></td>
-                                                <td class="${bg_out}"><span class="out-quantity-span-detail">${activity?.['out_quantity']}</span></td>
-                                                <td class="${bg_out}"><span class="out-value-span-detail mask-money" data-init-money="${activity?.['out_value']}"></span></td>
-                                                <td class=""></td>
-                                                <td class=""></td>
-                                            </tr>
-                                        `
+                                        detail_data.push({
+                                            'type': 'detail_row',
+                                            'date': moment(activity?.['system_date']).format("DD/MM/YYYY"),
+                                            'lot_number': activity?.['lot_number'],
+                                            'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
+                                            'bg_in': bg_in,
+                                            'in_quantity': activity?.['in_quantity'],
+                                            'in_value': activity?.['in_value'],
+                                            'bg_out': bg_out,
+                                            'out_quantity': activity?.['out_quantity'],
+                                            'out_value': activity?.['out_value']
+                                        })
                                     }
 
-                                    let no_info = ''
-                                    if (in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity'])) {
-                                        no_info = 'no-info'
-                                    }
-                                    let current_wh_row = table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`)
-                                    current_wh_row.after(`
-                                        <tr class="${no_info}">
-                                            <td class="border-1 first-col" colspan="3">
-                                                <span class="badge badge-secondary badge-sm w-20">${warehouse_activities?.['product']?.['code']}</span>
-                                                &nbsp;<span>${warehouse_activities?.['product']?.['title']}</span>&nbsp;<span class="text-blue small fw-bold">${warehouse_activities?.['product']?.['lot_number']}</span>
-                                            </td>
-                                            <td class="" colspan="3"><span>${warehouse_activities?.['product']?.['uom']?.['title']}</span></td>
-                                            <td class="" colspan="3"></td>
-                                            <td class="" colspan="3"></td>
-                                            <td class="" colspan="3"></td>
-                                            <td class=""><span class="opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></td>
-                                            <td class=""><span class="opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></td>
-                                            <td class=""><span class="in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></td>
-                                            <td class=""><span class="in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></td>
-                                            <td class=""><span class="out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></td>
-                                            <td class=""><span class="out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></td>
-                                            <td class=""><span class="ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></td>
-                                            <td class=""><span class="ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></td>
-                                        </tr>
-                                        ${detail_html}
-                                    `)
+                                    let no_info = in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity']) ? 'no-info' : ''
 
-                                    current_wh_row.find('.wh-opening-quantity-span').text(parseFloat(current_wh_row.find('.wh-opening-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['opening_balance_quantity'])
-                                    current_wh_row.find('.wh-opening-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-opening-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['opening_balance_value'])
-                                    current_wh_row.find('.wh-in-quantity-span').text(parseFloat(current_wh_row.find('.wh-in-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['sum_in_quantity'])
-                                    current_wh_row.find('.wh-in-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-in-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['sum_in_value'])
-                                    current_wh_row.find('.wh-out-quantity-span').text(parseFloat(current_wh_row.find('.wh-out-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['sum_out_quantity'])
-                                    current_wh_row.find('.wh-out-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-out-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['sum_out_value'])
-                                    current_wh_row.find('.wh-ending-quantity-span').text(parseFloat(current_wh_row.find('.wh-ending-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['ending_balance_quantity'])
-                                    current_wh_row.find('.wh-ending-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-ending-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['ending_balance_value'])
-
-                                    PERIODIC_CLOSED = warehouse_activities?.['stock_activities']?.['periodic_closed']
-                                    opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
-                                    in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
-                                    out_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_out_quantity']
-                                    ending_sum_quantity += warehouse_activities?.['stock_activities']?.['ending_balance_quantity']
-                                    opening_sum_value += warehouse_activities?.['stock_activities']?.['opening_balance_value']
-                                    in_sum_value += warehouse_activities?.['stock_activities']?.['sum_in_value']
-                                    out_sum_value += warehouse_activities?.['stock_activities']?.['sum_out_value']
-                                    ending_sum_value += warehouse_activities?.['stock_activities']?.['ending_balance_value']
+                                    table_inventory_report_data.push({
+                                        'is_no_info': no_info,
+                                        'type': 'product_row',
+                                        'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
+                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
+                                        'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                        'product_code': `${warehouse_activities?.['product']?.['code']}`,
+                                        'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                        'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
+                                        'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
+                                        'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
+                                        'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
+                                        'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
+                                        'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
+                                        'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
+                                        'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
+                                        'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`
+                                    })
+                                    table_inventory_report_data = table_inventory_report_data.concat(detail_data)
                                 }
-                                $('#table-inventory-report-detail #opening-total-quantity').text(opening_sum_quantity)
-                                $('#table-inventory-report-detail #opening-total-value').attr('data-init-money', opening_sum_value)
-                                $('#table-inventory-report-detail #in-total-quantity').text(in_sum_quantity)
-                                $('#table-inventory-report-detail #in-total-value').attr('data-init-money', in_sum_value)
-                                $('#table-inventory-report-detail #out-total-quantity').text(out_sum_quantity)
-                                $('#table-inventory-report-detail #out-total-value').attr('data-init-money', out_sum_value)
-                                $('#table-inventory-report-detail #ending-total-quantity').text(ending_sum_quantity)
-                                $('#table-inventory-report-detail #ending-total-value').attr('data-init-money', ending_sum_value)
                             }
                         }
                     }
+                    RenderTableDetailWithParameter(table_inventory_report_detail, table_inventory_report_data, table_inventory_report_wh_row)
                     $.fn.initMaskMoney2()
                     setTimeout(
                         () => {
@@ -898,11 +1235,9 @@ $(document).ready(function () {
                                 table_inventory_report.find('tbody .out-value-span').prop('hidden', condition3)
                                 table_inventory_report.find('tbody .wh-out-value-span').prop('hidden', condition3)
                             }
-                            table_inventory_report.prop('hidden', false)
                         },
                         500
                     )
-                    MatchTooltip()
                 })
         }
         else {
@@ -911,44 +1246,44 @@ $(document).ready(function () {
     })
 
     function MatchTooltip() {
-        $('#table-inventory-report-detail').find('td').each(function () {
-            if ($(this).attr('class').includes('text-primary')) {
-                $(this).attr('data-bs-toggle', 'tooltip')
-                $(this).attr('data-bs-placement', 'top')
-                $(this).attr('title', trans_script.attr('data-trans-grc'))
+        table_inventory_report_detail.find('.inv-action').each(function () {
+            if ($(this).attr('class').includes('badge-soft-primary')) {
+                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
+                $(this).closest('tr').attr('data-bs-placement', 'top')
+                $(this).closest('tr').attr('title', trans_script.attr('data-trans-grc'))
             }
-            if ($(this).attr('class').includes('text-blue')) {
-                $(this).attr('data-bs-toggle', 'tooltip')
-                $(this).attr('data-bs-placement', 'top')
-                $(this).attr('title', trans_script.attr('data-trans-grt'))
+            if ($(this).attr('class').includes('badge-soft-blue')) {
+                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
+                $(this).closest('tr').attr('data-bs-placement', 'top')
+                $(this).closest('tr').attr('title', trans_script.attr('data-trans-grt'))
             }
-            if ($(this).attr('class').includes('text-danger')) {
-                $(this).attr('data-bs-toggle', 'tooltip')
-                $(this).attr('data-bs-placement', 'top')
-                $(this).attr('title', trans_script.attr('data-trans-dlvr'))
+            if ($(this).attr('class').includes('badge-soft-danger')) {
+                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
+                $(this).closest('tr').attr('data-bs-placement', 'top')
+                $(this).closest('tr').attr('title', trans_script.attr('data-trans-dlvr'))
             }
-            if ($(this).attr('class').includes('text-green')) {
-                $(this).attr('data-bs-toggle', 'tooltip')
-                $(this).attr('data-bs-placement', 'top')
-                $(this).attr('title', `${trans_script.attr('data-trans-grc')} (IA)`)
+            if ($(this).attr('class').includes('badge-soft-green')) {
+                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
+                $(this).closest('tr').attr('data-bs-placement', 'top')
+                $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-grc')} (IA)`)
             }
-            if ($(this).attr('class').includes('text-orange')) {
-                $(this).attr('data-bs-toggle', 'tooltip')
-                $(this).attr('data-bs-placement', 'top')
-                $(this).attr('title', trans_script.attr('data-trans-gis'))
+            if ($(this).attr('class').includes('badge-soft-orange')) {
+                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
+                $(this).closest('tr').attr('data-bs-placement', 'top')
+                $(this).closest('tr').attr('title', trans_script.attr('data-trans-gis'))
             }
-            if ($(this).attr('class').includes('text-purple small gtf-in')) {
-                $(this).attr('data-bs-toggle', 'tooltip')
-                $(this).attr('data-bs-placement', 'top')
-                $(this).attr('title', `${trans_script.attr('data-trans-gtf')} (IN)`)
+            if ($(this).attr('class').includes('badge-soft-purple small gtf-in')) {
+                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
+                $(this).closest('tr').attr('data-bs-placement', 'top')
+                $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-gtf')} (IN)`)
             }
-            if ($(this).attr('class').includes('text-purple small gtf-out')) {
-                $(this).attr('data-bs-toggle', 'tooltip')
-                $(this).attr('data-bs-placement', 'top')
-                $(this).attr('title', `${trans_script.attr('data-trans-gtf')} (OUT)`)
+            if ($(this).attr('class').includes('badge-soft-purple small gtf-out')) {
+                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
+                $(this).closest('tr').attr('data-bs-placement', 'top')
+                $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-gtf')} (OUT)`)
             }
         })
-        $('#table-inventory-report-detail').find('.no-info').each(function () {
+        table_inventory_report_detail.find('.no-info').each(function () {
             $(this).find('.in-quantity-span').addClass('required')
             $(this).find('.in-quantity-span').attr('data-bs-toggle', 'tooltip').attr('data-bs-placement', 'top').attr('title', trans_script.attr('data-trans-no-info'))
         })

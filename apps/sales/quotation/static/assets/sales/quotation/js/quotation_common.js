@@ -969,39 +969,29 @@ class QuotationLoadDataHandle {
                 transJSON['Valid'] = QuotationLoadDataHandle.transEle.attr('data-valid');
                 $(priceList).empty();
                 let htmlDD = ``;
-                if (Array.isArray(data.price_list) && data.price_list.length > 0) {
-                    for (let i = 0; i < data.price_list.length; i++) {
-                        if (data.price_list[i]?.['price_type'] === 0) { // PRICE TYPE IS PRODUCT (SALE)
-                            if (data.price_list[i].is_default === true) { // check GENERAL_PRICE_LIST OF PRODUCT then set general_price
-                                general_price_id = data.price_list[i].id;
-                                general_price = parseFloat(data.price_list[i].value);
-                            }
-                            if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // If Valid Price
-                                if (data.price_list[i].id === account_price_id) { // check CUSTOMER_PRICE then set customer_price
-                                    customer_price = parseFloat(data.price_list[i].value);
-                                    htmlDD += `<a class="dropdown-item table-row-price-option option-btn-checked text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
+                if (Array.isArray(data?.['price_list']) && data?.['price_list'].length > 0) {
+                    for (let priceData of data?.['price_list']) {
+                        if (priceData?.['is_default'] === true) { // check GENERAL_PRICE_LIST OF PRODUCT then set general_price
+                            general_price_id = priceData?.['id'];
+                            general_price = parseFloat(priceData?.['value']);
+                        }
+                        if (!["Expired", "Invalid"].includes(priceData?.['price_status'])) { // If Valid Price
+                            if (priceData?.['id'] === account_price_id) { // check CUSTOMER_PRICE then set customer_price
+                                customer_price = parseFloat(priceData?.['value']);
+                                htmlDD += `<a class="dropdown-item table-row-price-option option-btn-checked text-black border border-grey mb-1" data-value="${parseFloat(priceData?.['value'])}">
                                                             <div class="d-flex justify-content-between">
-                                                                <span class="mr-5">${data.price_list[i].title}</span>
-                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
+                                                                <span class="mr-5">${priceData?.['title']}</span>
+                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(priceData?.['value'])}"></span>
                                                             </div>
                                                         </a>`;
-                                } else {
-                                    htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
+                            } else {
+                                htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(priceData?.['value'])}">
                                                             <div class="d-flex justify-content-between">
-                                                                <span class="mr-5">${data.price_list[i].title}</span>
-                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
+                                                                <span class="mr-5">${priceData?.['title']}</span>
+                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(priceData?.['value'])}"></span>
                                                             </div>
                                                         </a>`;
-                                }
                             }
-                        } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
-                            general_price = parseFloat(data.price_list[i].value);
-                            htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="d-flex justify-content-between">
-                                                        <span class="mr-5">${data.price_list[i].title}</span>
-                                                        <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
-                                                    </div>
-                                                </a>`;
                         }
                     }
                 }
@@ -4190,6 +4180,50 @@ class promotionHandle {
         return true
     };
 
+    static checkOnWorking(dataPromotion, customer_id) {
+        let passList = [];
+        let failList = [];
+        $('#datable-quotation-create-promotion').DataTable().destroy();
+        dataPromotion.map(function (item) {
+            let check = promotionHandle.checkPromotionValid(item, customer_id);
+            if (check?.['is_pass'] === true) {
+                item['is_pass'] = true;
+                item['condition'] = check?.['condition'];
+                passList.push(item);
+            } else {
+                item['is_pass'] = false;
+                failList.push(item);
+            }
+        })
+        passList = passList.concat(failList);
+        QuotationDataTableHandle.dataTablePromotion(passList);
+        return true;
+    };
+
+    static checkOnSubmit(dataPromotion, customer_id) {
+        let check_length = 0;
+        let eleCheck = $('#quotation-check-promotion');
+        dataPromotion.map(function (item) {
+            let check = promotionHandle.checkPromotionValid(item, customer_id);
+            if (check?.['is_pass'] === false) {
+                let tableProduct = document.getElementById('datable-quotation-create-product');
+                let rowPromotion = tableProduct.querySelector('.table-row-promotion');
+                if (rowPromotion) {
+                    if (item?.['id'] === rowPromotion.getAttribute('data-id')) {
+                        eleCheck.val('false');
+                    }
+                }
+            }
+            check_length++;
+            if (check_length === dataPromotion.length) {
+                if (!eleCheck.val()) {
+                    eleCheck.val('true');
+                }
+            }
+        })
+        return true;
+    };
+
     static checkPromotionValid(data_promotion, customer_id = null) {
         let result = {'is_pass': false};
         let pretaxRaw = null;
@@ -4901,49 +4935,6 @@ class promotionHandle {
         }
     };
 
-    static checkOnWorking(dataPromotion, customer_id) {
-        let passList = [];
-        let failList = [];
-        $('#datable-quotation-create-promotion').DataTable().destroy();
-        dataPromotion.map(function (item) {
-            let check = promotionHandle.checkPromotionValid(item, customer_id);
-            if (check?.['is_pass'] === true) {
-                item['is_pass'] = true;
-                item['condition'] = check?.['condition'];
-                passList.push(item);
-            } else {
-                item['is_pass'] = false;
-                failList.push(item);
-            }
-        })
-        passList = passList.concat(failList);
-        QuotationDataTableHandle.dataTablePromotion(passList);
-        return true;
-    };
-
-    static checkOnSubmit(dataPromotion, customer_id) {
-        let check_length = 0;
-        let eleCheck = $('#quotation-check-promotion');
-        dataPromotion.map(function (item) {
-            let check = promotionHandle.checkPromotionValid(item, customer_id);
-            if (check?.['is_pass'] === false) {
-                let tableProduct = document.getElementById('datable-quotation-create-product');
-                let rowPromotion = tableProduct.querySelector('.table-row-promotion');
-                if (rowPromotion) {
-                    if (item?.['id'] === rowPromotion.getAttribute('data-id')) {
-                        eleCheck.val('false');
-                    }
-                }
-            }
-            check_length++;
-            if (check_length === dataPromotion.length) {
-                if (!eleCheck.val()) {
-                    eleCheck.val('true');
-                }
-            }
-        })
-        return true;
-    };
 }
 
 // Shipping

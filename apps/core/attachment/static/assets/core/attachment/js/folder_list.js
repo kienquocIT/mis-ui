@@ -84,9 +84,6 @@ $(function () {
             }
             $(this).addClass('clicked');
             $(this).closest('.folder-wrapper').css('background-color', '#f7f7f7');
-            for (let btn of $folderMenu[0].querySelectorAll('.btn-action')) {
-                btn.removeAttribute('disabled');
-            }
         });
 
         $folderContent.on('dblclick', '.folder-btn', function () {
@@ -298,8 +295,8 @@ $(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         loadFolderContent(data?.['child_n'], data?.['file']);
-                        // // set next path
-                        // loadFolderPath(data);
+                        // set path
+                        loadFolderPath(data)
                     }
                 }
             )
@@ -362,9 +359,32 @@ $(function () {
         }
 
         function loadFolderPath(dataFd) {
-            let list_path = []
-            if (dataFd?.['parent_n']?.['id']) {
+            let listPath = [dataFd]
+            recursionPath(dataFd, listPath);
+        }
 
+        function recursionPath(dataFd, listPath) {
+            if (dataFd?.['parent_n']?.['id']) {
+                let urlDetail = $urlFact.attr('data-url-detail').format_url_with_uuid(dataFd?.['parent_n']?.['id']);
+                $.fn.callAjax2({
+                    url: urlDetail,
+                    method: 'GET',
+                    isLoading: false,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            listPath.push(data);
+                            recursionPath(data, listPath);
+                        }
+                    }
+                )
+            } else {
+                $folderPath.empty();
+                $folderPath.append(`<button type="button" class="btn btn-flush-secondary flush-soft-hover btn-rounded btn-lg text-black">My files</button>`);
+                for (let path of listPath.reverse()) {
+                    $folderPath.append(`<i class="fas fa-angle-right ml-2 mr-2"></i><button type="button" class="btn btn-flush-secondary flush-soft-hover btn-rounded btn-lg text-black folder-btn" data-id="${path?.['id']}">${path?.['title']}</button>`);
+                }
             }
         }
 

@@ -1,0 +1,13 @@
+{% load i18n define_action string_utils %}
+
+{% assign_out_random titleIdx as rTitleIdx %}
+{% assign_out_random hideTitleIdx as rHideTitleIdx %}
+
+<div class="form-group mb-3">
+    <label for="{{ rTitleIdx }}" class="form-label">{% trans 'Title' %}</label>
+    <input type="text" id="{{ rTitleIdx }}" name="label" class="form-control"/>
+    <div class="form-check mt-1">
+        <input type="checkbox" class="form-check-input" id="{{ rHideTitleIdx }}" name="is_hide_label"/>
+        <label class="form-check-label" for="{{ rHideTitleIdx }}">{% trans 'Hide field label' %}</label>
+    </div>
+</div>

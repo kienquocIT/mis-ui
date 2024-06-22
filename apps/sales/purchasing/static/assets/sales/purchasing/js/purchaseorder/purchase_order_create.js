@@ -17,8 +17,8 @@ $(function () {
 
         // Load init
         if (formSubmit.attr('data-method').toLowerCase() === 'post') {
-            POLoadDataHandle.loadBoxSupplier();
-            POLoadDataHandle.loadBoxContact();
+            POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [], {'account_types_mapped__account_type_order': 1}, null, true);
+            POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle);
             POLoadDataHandle.loadInitProduct();
             PODataTableHandle.dataTablePurchaseRequest();
             PODataTableHandle.dataTablePurchaseRequestProduct();
@@ -62,12 +62,12 @@ $(function () {
                 let dataSelected = SelectDDControl.get_data_from_idx(POLoadDataHandle.supplierSelectEle, $(this).val());
                 if (dataSelected) {
                     POLoadDataHandle.contactSelectEle.empty();
-                    POLoadDataHandle.loadBoxContact(dataSelected?.['owner'], dataSelected?.['id']);
+                    POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle, [dataSelected?.['owner']], {'account_name_id': dataSelected?.['id']});
                     document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped']?.['id'];
                 }
             } else { // No Value => load again contact
                 POLoadDataHandle.contactSelectEle.empty();
-                POLoadDataHandle.loadBoxContact();
+                POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle);
             }
             POLoadDataHandle.loadResetPQAndPriceList();
             if (POLoadDataHandle.PRDataEle.val()) {
@@ -261,7 +261,10 @@ $(function () {
             POLoadDataHandle.loadAddPaymentStage();
         });
 
-        tablePaymentStage.on('change', '.table-row-value-before-tax, .table-row-tax', function () {
+        tablePaymentStage.on('change', '.table-row-ratio, .table-row-value-before-tax, .table-row-tax', function () {
+            if ($(this).hasClass('table-row-ratio')) {
+                POLoadDataHandle.loadChangePaymentRate(this);
+            }
             if ($(this).hasClass('table-row-value-before-tax')) {
                 POValidateHandle.validatePOPSValue(this);
             }

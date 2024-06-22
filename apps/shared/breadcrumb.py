@@ -340,9 +340,24 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RETURN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     GOODS_RETURN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    GOODS_REGISTRATION_LIST_PAGE = BreadcrumbChildren(_('Goods registration list'), 'GoodsRegistrationList')
+    GOODS_REGISTRATION_CREATE_PAGE = BreadcrumbChildren(_('Goods registration create'), 'GoodsRegistrationCreate')
+    GOODS_REGISTRATION_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    GOODS_REGISTRATION_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
+    LEAD_LIST_PAGE = BreadcrumbChildren(_('Lead list'), 'LeadList')
+    LEAD_CREATE_PAGE = BreadcrumbChildren(_('Lead create'), 'LeadCreate')
+    LEAD_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    LEAD_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
     MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
     IMPORT_LIST_PAGE = BreadcrumbChildren(_('Import List'), 'FImportListView')
+    FORM_LIST_PAGE = BreadcrumbChildren(_('Forms'), 'FormListView')
+    FORM_ENTRIES_LIST_PAGE = BreadcrumbChildren(_('Entries Data'))
+
+    # PROJECT
+    PROJECT_LIST = BreadcrumbChildren(_('Project list'), 'ProjectList')
 
 
 class BreadcrumbView:
@@ -876,6 +891,16 @@ class BreadcrumbView:
     GOODS_RETURN_DETAIL_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     GOODS_RETURN_UPDATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
+    GOODS_REGISTRATION_LIST_PAGE = [BreadcrumbItem.GOODS_REGISTRATION_LIST_PAGE]
+    GOODS_REGISTRATION_CREATE_PAGE = GOODS_REGISTRATION_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    GOODS_REGISTRATION_DETAIL_PAGE = GOODS_REGISTRATION_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    GOODS_REGISTRATION_UPDATE_PAGE = GOODS_REGISTRATION_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    LEAD_LIST_PAGE = [BreadcrumbItem.LEAD_LIST_PAGE]
+    LEAD_CREATE_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    LEAD_DETAIL_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    LEAD_UPDATE_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
     PRINTER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PRINTER_CONFIG_LIST_PAGE]
     PRINTER_CONFIG_LIST_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]
     PRINTER_CONFIG_CREATE_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_CREATE]
@@ -888,3 +913,14 @@ class BreadcrumbView:
     IMPORT_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.IMPORT_LIST_PAGE]
     IMPORT_LIST_PAGE = IMPORT_LIST + [BreadcrumbItem.BASTION_LIST]
     IMPORT_CREATE_PAGE = IMPORT_LIST + [BreadcrumbItem.BASTION_CREATE]
+
+    # project
+    PROJECT_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_LIST]
+    PROJECT_CREATE_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_CREATE]
+    PROJECT_DETAIL_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    PROJECT_UPDATE_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    FORM_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.FORM_LIST_PAGE]
+    FORM_CREATE = FORM_LIST + [BreadcrumbItem.BASTION_CREATE]
+    FORM_UPDATE = FORM_LIST + [BreadcrumbItem.BASTION_UPDATE]
+    FORM_ENTRIES_LIST = FORM_LIST + [BreadcrumbItem.FORM_ENTRIES_LIST_PAGE]

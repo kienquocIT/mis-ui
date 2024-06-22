@@ -1,0 +1,112 @@
+{% load i18n %}
+
+<div class="more-config">
+    <button
+            class="btn btn-icon btn-xs btn-flush-dark btn-setting-item"
+            id="btn-setting-item-hide"
+            data-bs-toggle="tooltip"
+            title="{% trans 'Minimize' %}"
+            type="button"
+    >
+                <span class="icon">
+                    <i class="fa-solid fa-compress"></i>
+                </span>
+    </button>
+    <button
+            class="btn btn-icon btn-xs"
+            style="display:none;"
+            id="btn-setting-item-show"
+            data-bs-toggle="tooltip"
+            title="{% trans 'Expand' %}"
+            type="button"
+    >
+                <span class="icon">
+                    <i class="fa-solid fa-toolbox"></i>
+                </span>
+    </button>
+    <div id="more-config-sub">
+        <button
+                class="btn btn-icon btn-xs btn-flush-dark btn-setting-item"
+                type="button"
+        >
+                <span class="icon">
+                    <i class="fa-solid fa-check"></i>
+                </span>
+        </button>
+        <div
+                class="group-setting-item bg-white" id="group-auto-confirm"
+                data-bs-toggle="tooltip"
+                title="{% trans 'Alert Preferences' %}"
+        >
+            <div class="chip chip-primary chip-ticked mr-1">
+                <label
+                        class="form-check-label" for="auto-confirm-clone" style="display:none;"
+                >{% trans 'Clone' %}</label>
+                <input type="checkbox" id="auto-confirm-clone">
+                <span><span class="chip-text">{% trans 'Clone' %}</span></span>
+            </div>
+            <div class="chip chip-primary chip-ticked mr-1">
+                <label
+                        class="form-check-label" for="auto-confirm-delete" style="display:none;"
+                >{% trans 'Delete' %}</label>
+                <input type="checkbox" id="auto-confirm-delete">
+                <span><span class="chip-text">{% trans 'Delete' %}</span></span>
+            </div>
+        </div>
+
+        <button
+                id="btn-config-theme"
+                class="btn btn-icon btn-xs btn-flush-dark btn-setting-item"
+                data-bs-toggle="tooltip"
+                title="{% trans 'Themes' %}"
+                type="button"
+        >
+                <span class="icon">
+                    <i class="fa-solid fa-palette"></i>
+                </span>
+        </button>
+
+        {% if 'mail' not in toolbarHide %}
+            <button
+                    class="btn btn-icon btn-xs btn-flush-dark btn-setting-item"
+                    data-bs-toggle="tooltip"
+                    title="{% trans 'Email Notification' %}"
+                    type="button"
+            >
+                    <span class="icon">
+                        <i class="fa-regular fa-envelope"></i>
+                    </span>
+            </button>
+        {% endif %}
+
+        {% if 'embed' not in toolbarHide %}
+            <button
+                    class="btn btn-icon btn-xs btn-flush-dark btn-setting-item"
+                    data-bs-toggle="tooltip"
+                    title="{% trans 'Embed Form' %}"
+                    type="button"
+                    id="btn-embed-form"
+            >
+                    <span class="icon">
+                        <i class="fa-solid fa-code"></i>
+                    </span>
+            </button>
+        {% endif %}
+
+        {% if 'access-form' not in toolbarHide %}
+            <a
+                    data-href="{% url 'FormPublishDetailView' pk='__pk__' %}"
+                    target="_blank"
+                    id="btn-access-form"
+                    data-bs-toggle="tooltip"
+                    title="{% trans 'Preview' %}"
+            >
+                <button class="btn btn-icon btn-xs btn-flush-dark btn-setting-item" type="button">
+                    <span class="icon">
+                        <i class="fa-solid fa-square-up-right"></i>
+                    </span>
+                </button>
+            </a>
+        {% endif %}
+    </div>
+</div>

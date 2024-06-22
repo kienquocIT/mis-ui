@@ -12,41 +12,27 @@
     {% csrf_token %}
 
     <div class="row">
-        <div class="col-12 col-md-10 col-lg-10">
-            <div class="row">
-                <div class="col-12 col-md-4 col-lg-4">
-                    <div class="card border-blue">
-                        <div class="card-body">
-                            <h5><span class="mask-money" id="report-revenue-revenue" data-init-money="0"></span></h5>
-                            <span class="text-blue">{% trans 'Revenue' %}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4 col-lg-4">
-                    <div class="card border-yellow">
-                        <div class="card-body">
-                            <h5><span class="mask-money" id="report-revenue-gross-profit" data-init-money="0"></span></h5>
-                            <span class="text-yellow">{% trans 'Gross profit' %}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4 col-lg-4">
-                    <div class="card border-green">
-                        <div class="card-body">
-                            <h5><span class="mask-money" id="report-revenue-net-income" data-init-money="0"></span></h5>
-                            <span class="text-green">{% trans 'Net income' %}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="col-12 col-md-3 col-lg-3 border-right">
+            <h5><b><span class="mask-money" id="report-revenue-revenue" data-init-money="0"></span></b></h5>
+            <b><p class="text-blue">{% trans 'Revenue' %}</p></b>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3 border-right">
+            <h5><b><span class="mask-money" id="report-revenue-gross-profit" data-init-money="0"></span></b></h5>
+            <b><p class="text-yellow">{% trans 'Gross profit' %}</p></b>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3 border-right">
+            <h5><b><span class="mask-money" id="report-revenue-net-income" data-init-money="0"></span></b></h5>
+            <b><p class="text-green">{% trans 'Net income' %}</p></b>
         </div>
     </div>
+
+    <br>
 
     <div class="row">
         <div class="col-12 col-md-2 col-lg-2">
             <div class="card">
                 <div class="card-header card-header-action h-45p">
-                    <span class="badge badge-light">
+                    <span class="badge badge-light badge-sm">
                         <span>
                             <span class="icon"><span class="feather-icon"><i class="fas fa-filter"></i></span></span>
                             {% trans 'Filter' %}
@@ -66,7 +52,7 @@
                             </div>
                             <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
                                 <div class="btn-group dropend">
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-chevron-right text-blue"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-caret-right"></i></span></button>
                                     <div class="dropdown-menu w-300p">
                                         <div class="form-group">
                                             <label class="form-label" for="box-report-revenue-group">{% trans 'Group' %}</label>
@@ -113,7 +99,7 @@
                             </div>
                             <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
                                 <div class="btn-group dropend">
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-chevron-right text-blue"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-caret-right"></i></span></button>
                                     <div class="dropdown-menu w-300p">
                                         <div class="form-group w-60">
                                             <label class="form-label" for="report-revenue-date-from">{% trans 'From' %}</label>
@@ -150,18 +136,16 @@
         <div class="col-12 col-md-10 col-lg-10">
             <table
                     id="table_report_revenue_list"
-                    class="table nowrap min-w-1600p w-100 mb-5"
+                    class="table nowrap min-w-1280p w-100 mb-5"
                     data-url="{% url 'ReportRevenueListAPI' %}"
                     data-method="get"
             >
                 <thead>
                 <tr>
-                    <th>{% trans 'Employee Code' %}</th>
-                    <th>{% trans 'Employee name' %}</th>
-                    <th>{% trans 'Sale order code' %}</th>
+                    <th>{% trans 'Employee' %}</th>
+                    <th>{% trans 'Sale order' %}</th>
                     <th>{% trans 'Date' %}</th>
-                    <th>{% trans 'Sale order name' %}</th>
-                    <th>{% trans 'Customer name' %}</th>
+                    <th>{% trans 'Customer' %}</th>
                     <th>{% trans 'Revenue' %}</th>
                     <th>{% trans 'Gross profit' %}</th>
                     <th>{% trans 'Net income' %}</th>

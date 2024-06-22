@@ -91,10 +91,12 @@ class RandomGenerate:
             length=12,
             allow_upper=True, allow_digits=True, allow_special=False, allow_space=False,
             require_upper=False, require_digits=False, require_special=False,
+            start_letter=False,
     ):
         """
         Always allow lowercase character then append more option character to choices
         Args:
+            start_letter:
             length:
             allow_upper: Allow uppercase character exist in choices
             allow_digits: Allow digits character exist in choices
@@ -120,7 +122,10 @@ class RandomGenerate:
                 arr_choices += string.whitespace
 
             # generate
-            result = "".join([random.choice(arr_choices) for _idx in range(0, length)])
+            if start_letter:
+                result = random.choice(string.ascii_letters) + "".join([random.choice(arr_choices) for _idx in range(0, length - 1)])
+            else:
+                result = "".join([random.choice(arr_choices) for _idx in range(0, length)])
 
             # check required
             idx_used = []

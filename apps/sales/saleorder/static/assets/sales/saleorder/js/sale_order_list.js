@@ -55,7 +55,7 @@ $(function () {
                                         </div>`;
                                 }
                                 if (row?.['is_change'] === true && row?.['document_root_id'] && row?.['system_status'] !== 3) {
-                                    return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-blue">${row?.['code']} <span class="badge-child badge-child-blue">${row?.['document_change_order'] ? row?.['document_change_order'] : 0}</span></span></a></div>`;
+                                    return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-secondary">${row?.['code']} <span class="badge-child badge-child-blue">${row?.['document_change_order'] ? row?.['document_change_order'] : 0}</span></span></a></div>`;
                                 }
                                 return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']}</span></a></div>`;
                             }
@@ -145,18 +145,18 @@ $(function () {
                         render: (data, type, row) => {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);
                             const $elmTrans = $('#trans-factory')
-                            let isChange = ``;
+                            let isEdit = ``;
                             let isDelivery = ``;
-                            if (![2, 3].includes(row?.['system_status'])) {
-                                isChange = `<a class="dropdown-item" href="${link}">${$elmTrans.attr('data-change')}</a><div class="dropdown-divider"></div>`;
+                            if (![2, 3, 4].includes(row?.['system_status'])) {
+                                isEdit = `<a class="dropdown-item" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${$elmTrans.attr('data-change')}</span></a>`;
                             }
                             if (!row.delivery_call && [2, 3].includes(row?.['system_status'])) {
-                                isDelivery = `<a class="dropdown-item" href="#" id="create_delivery">${$elmTrans.attr('data-delivery')}</a>`;
+                                isDelivery = `<a class="dropdown-item" href="#" id="create_delivery"><i class="dropdown-icon fas fa-truck text-primary"></i><span>${$elmTrans.attr('data-delivery')}</span></a>`;
                             }
                             return `<div class="dropdown">
-                                    <button class="btn btn-icon btn-rounded btn-soft-light btn-xs" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="fas fa-ellipsis-h"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
-                                        ${isChange}
+                                        ${isEdit}
                                         ${isDelivery}
                                     </div>
                                 </div>`;
@@ -209,7 +209,7 @@ $(function () {
                                             let newRow = tableDtb.row.add(data).node();
                                             $(newRow).addClass(classCl.slice(1));
                                             $(newRow).addClass('collapse');
-                                            $(newRow).css('background-color', '#eef6ff');
+                                            $(newRow).css('background-color', '#eaeaea');
                                             $(newRow).detach().insertAfter(rowChange);
                                         }
                                     }

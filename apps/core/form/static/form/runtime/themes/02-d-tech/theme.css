@@ -1,0 +1,12 @@
+:root {
+    --bg-color: rgba(255, 255, 255, 0.7);
+    --border-radius: 15px;
+    --title-color: #007d88;
+    --bg-image: url("02-d-tech/bg.jpg");
+
+    --input-border-color: #007d88;
+    --input-bg-color: rgb(0, 125, 136, 0.15);
+    --input-color: #003f44;
+    --input--focus-border: 1px solid #003f44;
+    --input--focus-box-shadow: 0 0 0 0.125rem rgb(0, 125, 136, 0.15);
+}

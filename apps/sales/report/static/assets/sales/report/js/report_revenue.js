@@ -52,31 +52,28 @@ $(function () {
                         placeholder: $transFact.attr('data-filter-customer'),
                     },
                 ],
-                columns: [  // 112,112,112,60,192,192,160,160,160 (1600p)
+                columns: [
                     {
                         targets: 0,
-                        width: '7%',
+                        width: '5%',
                         render: (data, type, row) => {
-                            return `<div class="row"><span class="badge badge-primary">${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</span></div>`;
+                            return `<div class="d-flex">
+                                        <span class="badge badge-primary mr-2">${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</span>
+                                        <span class="badge badge-primary badge-outline">${row?.['sale_order']?.['employee_inherit']?.['full_name'] ? row?.['sale_order']?.['employee_inherit']?.['full_name'] : ''}</span>
+                                    </div>`;
                         }
                     },
                     {
                         targets: 1,
-                        width: '7%',
+                        width: '12%',
                         render: (data, type, row) => {
-                            return `<div class="row"><span class="badge badge-primary badge-outline">${row?.['sale_order']?.['employee_inherit']?.['full_name'] ? row?.['sale_order']?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
+                            return `<span class="badge badge-secondary badge-sm">${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</span>
+                                    <p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '7%',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</p>`;
-                        }
-                    },
-                    {
-                        targets: 3,
-                        width: '3.75%',
+                        width: '3%',
                         render: (data, type, row) => {
                             if (row?.['date_approved']) {
                                 return `<p>${moment(row?.['date_approved'] ? row?.['date_approved'] : '').format('DD/MM/YYYY')}</p>`;
@@ -86,36 +83,29 @@ $(function () {
                         }
                     },
                     {
-                        targets: 4,
-                        width: '12%',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
-                        }
-                    },
-                    {
-                        targets: 5,
+                        targets: 3,
                         width: '12%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
-                        targets: 6,
-                        width: '10%',
+                        targets: 4,
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
-                        targets: 7,
-                        width: '10%',
+                        targets: 5,
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
-                        targets: 8,
-                        width: '10%',
+                        targets: 6,
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
                         }
@@ -285,7 +275,25 @@ $(function () {
         function loadFilter(listData, $eleShow) {
             if (listData.length > 0) {
                 $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
+            } else {
+                $eleShow.html(``);
             }
+        }
+
+        function getListTxtMultiSelect2 ($ele) {
+            let result = [];
+            if ($ele.val() && $ele.val().length > 0) {
+                let selectedValues = $ele.val();
+                let tempDiv = document.createElement('div');
+                tempDiv.innerHTML = $ele[0].innerHTML;
+                for (let val of selectedValues) {
+                    let option = tempDiv.querySelector(`option[value="${val}"]`);
+                    if (option) {
+                        result.push(option.textContent);
+                    }
+                }
+            }
+            return result;
         }
 
         // load init
@@ -321,18 +329,8 @@ $(function () {
         $.fn.initMaskMoney2();
 
         // Prevent dropdown from closing when clicking inside the dropdown
-        $('.dropdown-menu').on('click', function (e) {
+        $('.dropdown-menu').on('click', '.form-group', function (e) {
             e.stopPropagation();
-        });
-
-        // Prevent the dropdown from closing when clicking outside it
-        $('.btn-group').on('hide.bs.dropdown', function (e) {
-            e.preventDefault();
-        });
-
-        // Reopen dropdown on button click
-        $('.btn-group').on('click', '.btn', function (e) {
-            $(this).siblings('.dropdown-menu').toggleClass('show');
         });
 
         // Events
@@ -355,14 +353,16 @@ $(function () {
             let listDate = [];
             if (boxGroup.val() && boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
-                for (let text of boxGroup[0].innerText.split("\n")) {
-                    listViewBy.push(text);
+                let listTxt = getListTxtMultiSelect2(boxGroup);
+                for (let txt of listTxt) {
+                    listViewBy.push(txt);
                 }
             }
             if (boxEmployee.val() && boxEmployee.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
-                for (let text of boxEmployee[0].innerText.split("\n")) {
-                    listViewBy.push(text);
+                let listTxt = getListTxtMultiSelect2(boxEmployee);
+                for (let txt of listTxt) {
+                    listViewBy.push(txt);
                 }
             }
             loadFilter(listViewBy, $('#card-filter-vb'));

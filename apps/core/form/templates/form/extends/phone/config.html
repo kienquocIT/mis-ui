@@ -1,0 +1,132 @@
+{% load i18n string_utils define_action %}
+
+<div class="drawer-config d-none" id="form-phone">
+    <form>
+        {% csrf_token %}
+
+        {% assign_out_random nameIdx as rNameIdx %}
+        <div class="form-group mb-3">
+            <label for="{{ rNameIdx }}" class="form-label">
+                {% trans 'Name of field' %}
+            </label>
+            <input type="text" class="form-control" id="{{ rNameIdx }}" name="name">
+            <small class="form-text text-muted">
+                {% trans 'Corresponds to a stored data field' %}.
+                {% trans 'Employs this name to autofill form fields' %}.
+            </small>
+        </div>
+
+        <hr style="background-color: #2a3746"/>
+
+        {% include 'form/extends/base/title.html' %}
+
+        {% include 'form/extends/base/instruction.html' %}
+        {% include 'form/extends/base/size.html' %}
+        {% include 'form/extends/base/placeholder.html' %}
+
+        <div class="form-group mb-3">
+            {% assign_out_random titleForReportIdx as rTitleForReportIdx %}
+            <label for="{{ rTitleForReportIdx }}" class="form-label">{% trans 'Title main value for report' %}</label>
+            <input type="text" id="{{ rTitleForReportIdx }}" name="label_for_report" class="form-control"/>
+            <small class="form-text text-muted">{% trans 'The name represented in the report of the value' %}</small>
+        </div>
+
+        <hr style="background-color: #2a3746"/>
+
+        <div class="form-group mb-3">
+            {% assign_out_random enableRegionValue as rEnableRegionValue %}
+            <div class="form-check form-switch">
+                <input type="checkbox" class="form-check-input" id="{{ rEnableRegionValue }}" name="region_enable">
+                <label
+                        class="form-check-label" for="{{ rEnableRegionValue }}"
+                >{% trans 'Enabled region value' %}</label>
+            </div>
+        </div>
+
+        <div id="region-group" style="display:none;">
+            <div class="form-group mb-3">
+                <div class="form-check form-switch">
+                    {% assign_out_random regionVisible as rRegionVisible %}
+
+                    <input type="checkbox" class="form-check-input" id="{{ rRegionVisible }}" name="region_visible">
+                    <label class="form-check-label" for="{{ rRegionVisible }}">{% trans 'Region visible' %}</label>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                {% assign_out_random regionAllowed as rRegionAllowed %}
+                <label class="form-label" for="{{ rRegionAllowed }}">{% trans 'Allowed region list' %}</label>
+                <select class="select2 form-select" multiple id="{{ rRegionAllowed }}" name="region_allowed_list">
+                    <option value="1">(+1) Canada, United States</option>
+                    <option value="7">(+7) Russia</option>
+                    <option value="33">(+33) France</option>
+                    <option value="34">(+34) Spain</option>
+                    <option value="39">(+39) Italy</option>
+                    <option value="44">(+44) United Kingdom</option>
+                    <option value="49">(+49) Germany</option>
+                    <option value="52">(+52) Mexico</option>
+                    <option value="54">(+54) Argentina</option>
+                    <option value="55">(+55) Brazil</option>
+                    <option value="57">(+57) Colombia</option>
+                    <option value="61">(+61) Australia</option>
+                    <option value="62">(+62) Indonesia</option>
+                    <option value="64">(+64) New Zealand</option>
+                    <option value="66">(+66) Thailand</option>
+                    <option value="81">(+81) Japan</option>
+                    <option value="82">(+82) Korea</option>
+                    <option value="84" selected>(+84) Việt Nam</option>
+                    <option value="86">(+86) China</option>
+                    <option value="91">(+91) India</option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                {% assign_out_random regionDefault as rRegionDefault %}
+                <label class="form-label" for="{{ rRegionDefault }}">{% trans 'Region default' %}</label>
+                <select class="select2 form-select" id="{{ rRegionDefault }}" name="region_default">
+                    <option value="84" selected>(+84) Việt Nam</option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                {% assign_out_random titleRegionForReportIdx as rTitleRegionForReportIdx %}
+                <label
+                        for="{{ rTitleRegionForReportIdx }}" class="form-label"
+                >{% trans 'Title region value for report' %}</label>
+                <input
+                        type="text" id="{{ rTitleRegionForReportIdx }}" name="label_region_for_report"
+                        class="form-control"
+                />
+                <small class="form-text text-muted">{% trans 'The name represented in the report of the value' %}</small>
+            </div>
+        </div>
+
+        <hr style="background-color: #2a3746"/>
+
+        {% include 'form/extends/base/validation.html' with hasUnique=False %}
+    </form>
+</div>
+<script>
+    $(document).ready(function () {
+        let frm$ = $('#form-phone');
+        let regionGroup$ = $("#region-group");
+        const regionEnable$ = frm$.find('input[name="region_enable"]');
+        const regionList$ = frm$.find('select[name="region_allowed_list"]');
+        const regionDefault$ = frm$.find('select[name="region_default"]');
+
+        regionEnable$.on('change', function () {
+            const state = $(this).prop('checked');
+            if (state === true) regionGroup$.slideDown();
+            else regionGroup$.slideUp();
+        });
+        regionList$.on('change', function (){
+            regionDefault$.empty();
+            regionList$.val().map(
+                item => {
+                    let ele$ = regionList$.find(`option[value="${item}"]`);
+                    regionDefault$.append(new Option(ele$.text(), ele$.val(), false, false));
+                }
+            )
+        })
+    })
+</script>

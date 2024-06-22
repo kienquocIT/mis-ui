@@ -80,8 +80,7 @@ let elePermit = {
                 || (this.newRowDeleteEle.attr('data-allow') === 'true' ? this.newRowDeleteEle.prop('checked') : false)
             )
             && this.newRowRangeEle.val() && this.newRowRangeEle.val() !== ""
-            && (
-                !HandlePlanAppNew.hasSpaceChoice
+            && (!HandlePlanAppNew.hasSpaceChoice
                 || (
                     HandlePlanAppNew.hasSpaceChoice && this.newRowSpaceEle.val() && this.newRowSpaceEle.val() !== ""
                 )
@@ -144,7 +143,6 @@ let elePermit = {
         // On change
         this.newRowAppEle.on('change', function () {
             clsThis.resetNewRow();
-
             let appData = HandlePlanAppNew.getAppDetail($(this).val());
             if (appData && typeof appData === 'object') {
                 clsThis.newRowSpaceEle.prop('disabled', false).find('option[value=""]').prop('disabled', false);
@@ -746,21 +744,14 @@ class HandlePlanAppNew {
     }
 
     static setPlanAppByAppList(app_list, render_opt_app = false) {
-        if (render_opt_app === true) {
-            elePermit.newRowAppEle.find('option').remove();
-        }
-        if (app_list && Array.isArray(app_list)) {
-            app_list.map(
-                (item) => {
-                    HandlePlanAppNew.pushPlanApp(null, item, true);
-                    if (render_opt_app === true) {
-                        elePermit.newRowAppEle.append(
-                            `<option value="${item.id}">${item.title}</option>`
-                        )
-                    }
-                }
-            )
-        }
+        if (render_opt_app === true) elePermit.newRowAppEle.find('option').remove();
+        elePermit.newRowAppEle.append(`<option value="">--</option>`)
+        if (app_list && Array.isArray(app_list))
+            app_list.map((item) => {
+                HandlePlanAppNew.pushPlanApp(null, item, true);
+                if (render_opt_app === true)
+                    elePermit.newRowAppEle.append(`<option value="${item.id}">${item.title}</option>`)
+            })
     }
 
     static setPermissionByConfigured(permission_by_configured) {
@@ -805,11 +796,11 @@ class HandlePlanAppNew {
     static getHtmlSpace(app_id, data, allow_space) {
         if (!allow_space || allow_space === '*') allow_space = ['0', '1'];
         allow_space = $x.fn.keepExistInOther(allow_space, HandlePlanAppNew.spaceAllowOfApp);
-
         let opt_of_0 = HandlePlanAppNew.spaceAllowOfApp.indexOf("0") ? "" : `<option value="0" ${data === "0" ? "selected" : ""} ${allow_space.indexOf("0") === -1 ? "disabled" : ""}>${HandlePlanAppNew.spaceText["0"]}</option>`;
         let opt_of_1 = `<option value="1" ${data === "1" ? "selected" : ""} ${allow_space.indexOf("1") === -1 ? "disabled" : ""}>${HandlePlanAppNew.spaceText["1"]}</option>`;
 
-        return `<select class="form-select space-permit-select" id="range-${app_id}" ${HandlePlanAppNew.editEnabled !== true ? "disabled" : ""}>
+        return `<select class="form-select space-permit-select" id="range-${app_id}" ${
+            HandlePlanAppNew.editEnabled !== true ? "disabled" : ""}>
             ${opt_of_0} ${opt_of_1}
         </select>`;
     }
@@ -1019,7 +1010,6 @@ class HandlePlanAppNew {
             let urlBase = elePermit.newRowAppEle.attr('data-base-url');
             elePermit.newRowAppEle.attr('data-url', urlBase.replaceAll('__pk__', instance_id));
         }
-
         if (HandlePlanAppNew.editEnabled === true) {
             if (HandlePlanAppNew.manual_app_list_and_not_plan_app === true) {
                 $x.fn.showLoadingPage();
@@ -1039,7 +1029,7 @@ class HandlePlanAppNew {
                         let keyResp = elePermit.newRowAppEle.attr('data-keyResp');
                         if (data && typeof data === 'object' && data.hasOwnProperty(keyResp)) {
                             HandlePlanAppNew.setPlanAppByAppList(data[keyResp], true);
-                            clsThis.renderTablePermissionSelected(instance_id);
+                            clsThis.renderTablePermissionSelected(true, instance_id);
                             elePermit.newRowAppEle.trigger('change');
                             return data[keyResp];
                         }
@@ -1050,7 +1040,8 @@ class HandlePlanAppNew {
                         $x.fn.hideLoadingPage();
                     }
                 )
-            } else {
+            }
+            else {
                 elePermit.newRowAppEle.initSelect2();
                 clsThis.renderTablePermissionSelected(instance_id);
             }
@@ -1075,38 +1066,43 @@ class HandlePlanAppNew {
             let dtb = HandlePlanAppNew.dtb;
             if ($.fn.DataTable.isDataTable('#' + dtb.attr('id'))) {
                 clearOldData === true ? dtb.DataTable().clear().draw() : null;
-                dtb.DataTable().rows.add(permission_selected ? permission_selected : HandlePlanAppNew.permission_by_configured).draw();
+                // dtb.DataTable().rows.add(permission_selected ? permission_selected : HandlePlanAppNew.permission_by_configured).draw();
+                // a.Dell đã thay thế dòng này :D vì khi click member lần 2 thì object của permission_selected ko
+                // chính xác nữa
+                let newData = HandlePlanAppNew.permission_by_configured
+                if (permission_selected && typeof permission_selected === 'object') newData = permission_selected
+                dtb.DataTable().rows.add(newData).draw();
                 initCompleteFunc();
             } else {
+                let dataList = HandlePlanAppNew.permission_by_configured.map(
+                    (item) => {
+                        let appID = item?.['app_id'] || null;
+                        let appData = appID ? HandlePlanAppNew.getAppDetail(appID) : {};
+                        return {
+                            ...item,
+                            'appData': appData,
+                        }
+                    }
+                ).sort(
+                    (a, b) => {
+                        let aAppDataTitle = a?.['appData']?.['title'] || null;
+                        let bAppDataTitle = b?.['appData']?.['title'] || null;
+                        if (aAppDataTitle && bAppDataTitle && typeof aAppDataTitle === 'string' && typeof bAppDataTitle === 'string') {
+                            return aAppDataTitle.localeCompare(bAppDataTitle);
+                        } else if (aAppDataTitle) return true;
+                        else if (bAppDataTitle) return false;
+                        return true;
+                    }
+                )
                 dtb.DataTableDefault({
-                    data: HandlePlanAppNew.permission_by_configured.map(
-                        (item) => {
-                            let appID = item?.['app_id'] || null;
-                            let appData =  appID ? HandlePlanAppNew.getAppDetail(appID) : {};
-                            return {
-                                ...item,
-                                'appData': appData,
-                            }
-                        }
-                    ).sort(
-                        (a, b) => {
-                            let aAppDataTitle = a?.['appData']?.['title'] || null;
-                            let bAppDataTitle = b?.['appData']?.['title'] || null;
-                            if (aAppDataTitle && bAppDataTitle && typeof aAppDataTitle === 'string' && typeof bAppDataTitle === 'string'){
-                                return aAppDataTitle.localeCompare(bAppDataTitle);
-                            }
-                            else if (aAppDataTitle) return true;
-                            else if (bAppDataTitle) return false;
-                            return true;
-                        }
-                    ),
+                    data: dataList,
                     rowIdx: true,
                     autoWidth: false,
                     columns: [
                         {
                             width: "5%",
                             render: (data, type, row) => {
-                                if (!row.hasOwnProperty('appData')){
+                                if (!row.hasOwnProperty('appData') && row?.['app_id']){
                                     row.appData = (row.app_id ? HandlePlanAppNew.getAppDetail(row.app_id) : {}) || {};
                                 }
                                 return ``;
@@ -1117,7 +1113,8 @@ class HandlePlanAppNew {
                             render: (data, type, row) => {
                                 if (data && typeof data === 'object' && data.hasOwnProperty('title')) {
                                     return `<span class="badge badge-primary">${data.title}</span>`;
-                                } else row.app_data_not_found = true;
+                                }
+                                else row['app_data_not_found'] = true;
                                 return `<span class="badge badge-secondary app-title">_</span>`;
                             },
                         }, {
@@ -1240,7 +1237,7 @@ class HandlePlanAppNew {
                             width: (HandlePlanAppNew.hasSpaceChoice === true ? "12%" : "0%"),
                             data: "space",
                             render: (data, type, row) => {
-                                if (!data) {
+                                if (data === null) {
                                     row.space = "0"
                                     data = "0";
                                 }
@@ -1289,7 +1286,8 @@ class HandlePlanAppNew {
                                     }
                                 )
                             }
-                        } else {
+                        }
+                        else {
                             $(row).removeClass(cls_err).addClass(cls_pass);
                         }
 

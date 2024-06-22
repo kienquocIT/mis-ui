@@ -49,22 +49,22 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'sale_person w-20',
-                        className: 'wrap-text',
+                        data: 'sale_person',
+                        className: 'wrap-text w-20',
                         render: (data, type, row) => {
                             return `${row?.['sale_order']?.['sale_person']?.['fullname']}`
                         }
                     },
                     {
-                        data: 'sale_order w-10',
-                        className: 'wrap-text',
+                        data: 'sale_order',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             return `<span class="badge badge-secondary badge-sm">${row?.['sale_order']?.['code']}</span>&nbsp;${row?.['sale_order']?.['title']} - <span class="text-blue"><i class="bi bi-truck"></i>&nbsp;<b>${row?.['delivery']?.['code']}</b></span>`
                         }
                     },
                     {
-                        data: 'date_created w-10',
-                        className: 'wrap-text',
+                        data: 'date_created',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             return `${moment(row.date_created.split(' ')[0]).format('DD/MM/YYYY')}`
                         }

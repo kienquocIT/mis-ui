@@ -137,6 +137,24 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ROLE_DETAIL_PK = StringUrl('hr/role/{pk}')
     ROLE_DETAIL_APP_LIST = StringUrl('hr/role/{pk}/app')
 
+    # form
+    FORM_LIST = StringUrl('form/list')
+    FORM_DETAIL = StringUrl('form/detail/{pk}')
+    FORM_DETAIL_THEME = StringUrl('form/detail/{pk}/theme')
+    FORM_DETAIL_TURN_ON_OFF = StringUrl('form/detail/{pk}/turn-on-off')
+    FORM_DETAIL_DUPLICATE = StringUrl('form/detail/{pk}/duplicate')
+    FORM_DETAIL_FOR_ENTRIES = StringUrl('form/detail/{pk}/for-entries')
+    FORM_PUBLISHED_FORM_DETAIL = StringUrl('form/published/form/{pk}')
+    FORM_PUBLISHED_DETAIL = StringUrl('form/published/{pk}')
+    FORM_PUBLISHED_RUNTIME_DETAIL = StringUrl('form/runtime/submit/{tenant_code}/{form_code}/{use_at}')
+    FORM_PUBLISHED_RUNTIME_DETAIL_WITH_SUBMITTED = StringUrl(
+        'form/runtime/submit/{tenant_code}/{form_code}/{use_at}/{pk}'
+    )
+    FORM_PUBLISHED_RUNTIME_CHECK_SUBMITTED = StringUrl('form/runtime/submitted/data/{tenant_code}/{form_code}')
+    FORM_SANITIZE_HTML = StringUrl('form/sanitize-html')
+    FORM_ENTRIES_LIST = StringUrl('form/entries/{pk}/list')
+    FORM_ENTRIES_REF_NAME_LIST = StringUrl('form/entries/{pk}/ref-name/list')
+
     # comment
     COMMENT_LIST = StringUrl('comment/doc/{pk_doc}/{pk_app}/list')
     COMMENT_REPLIES_LIST = StringUrl('comment/reply/{pk}/list')
@@ -262,8 +280,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # product
     PRODUCT_LIST = StringUrl('saledata/products')
+    PRODUCT_QUICK_CREATE = StringUrl('saledata/product-quick-create')
     PRODUCT_DETAIL = StringUrl('saledata/product/{pk}')
-    PRODUCT_SALE_LIST = StringUrl('saledata/products-sale')
+    PRODUCT_SALE_LIST = StringUrl('saledata/products-sale/list')
+    PRODUCT_SALE_DETAIL = StringUrl('saledata/products-sale')
     PRODUCT_VARIANT_LIST = StringUrl('saledata/products-variants')
 
     # advance payment
@@ -546,6 +566,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REVENUE_PLAN_LIST = StringUrl('revenue-plans/list')
     REVENUE_PLAN_DETAIL = StringUrl('revenue-plans/detail/{pk}')
 
+    LEAD_LIST = StringUrl('lead/list')
+    LEAD_LIST_FOR_OPP = StringUrl('lead/list-for-opp')
+    LEAD_CHART = StringUrl('lead/chart-data')
+    LEAD_DETAIL = StringUrl('lead/detail/{pk}')
+    LEAD_STAGE_LIST = StringUrl('lead/list-lead-stage')
+
     # AR Invoice
     DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')
     AR_INVOICE_LIST = StringUrl('ar-invoice/list')
@@ -562,9 +588,33 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_RETURN_LIST = StringUrl('inventory/goods-return/list')
     GOODS_RETURN_DETAIL = StringUrl('inventory/goods-return/{pk}')
 
+    # Goods Registration
+    GOODS_REGISTRATION_LIST = StringUrl('inventory/goods-registration/list')
+    GOODS_REGISTRATION_DETAIL = StringUrl('inventory/goods-registration/{pk}')
+
     INVOICE_SIGN_LIST = StringUrl('ar-invoice/sign/list')
     INVENTORY_INTERACT_LIST = StringUrl('saledata/warehouses/config-interact')
     INVENTORY_INTERACT_DETAIL = StringUrl('saledata/warehouses/config-interact/{pk}')
 
     # Diagram
     DIAGRAM_LIST = StringUrl('diagram/list')
+
+    # Project
+    PROJECT_LIST = StringUrl('project/list')
+    PROJECT_DETAIL = StringUrl('project/detail/{pk}')
+    PROJECT_EDIT = StringUrl('project/edit/{pk}')
+    PROJECT_GROUP_LIST = StringUrl('project/group/list')
+    PROJECT_GROUP_DD_LIST = StringUrl('project/group/list-dd')
+    PROJECT_GROUP_DETAIL = StringUrl('project/group/detail')
+    PROJECT_WORK_LIST = StringUrl('project/work/list')
+    PROJECT_WORK_DETAIL = StringUrl('project/work/detail')
+    PROJECT_MEMBER_ADD = StringUrl('project/{pk}/member/add')
+    PROJECT_MEMBER_DETAIL = StringUrl('project/{pk}/member/detail/{pk_member}')
+    PROJECT_UPDATE_ORDER = StringUrl('project/update-order/{pk}')
+    PROJECT_TASK_LIST = StringUrl('project/assign-task-list/{pk_pj}')
+    PROJECT_TASK_LINK = StringUrl('project/assign-task-link/{pk}')
+
+    # Folder
+    FOLDER_LIST = StringUrl('attachment/folder/list')
+    FOLDER_DETAIL = StringUrl('attachment/folder')
+    FOLDER_UPLOAD_FILE_LIST = StringUrl('attachment/folder-upload-file/list')

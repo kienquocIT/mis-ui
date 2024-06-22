@@ -1,0 +1,124 @@
+{% load i18n string_utils define_action %}
+
+<div class="drawer-config d-none" id="form-email">
+    <form>
+        {% csrf_token %}
+
+        {% assign_out_random nameIdx as rNameIdx %}
+        <div class="form-group mb-3">
+            <label for="{{ rNameIdx }}" class="form-label">
+                {% trans 'Name of field' %}
+            </label>
+            <input type="text" class="form-control" id="{{ rNameIdx }}" name="name">
+            <small class="form-text text-muted">
+                {% trans 'Corresponds to a stored data field' %}.
+                {% trans 'Employs this name to autofill form fields' %}.
+            </small>
+        </div>
+
+        <hr style="background-color: #2a3746"/>
+
+        {% include 'form/extends/base/title.html' %}
+
+        {% include 'form/extends/base/instruction.html' %}
+        {% include 'form/extends/base/size.html' %}
+        {% include 'form/extends/base/placeholder.html' %}
+
+        <hr style="background-color: #2a3746"/>
+
+        <div class="form-group mb-3">
+            {% assign_out_random initValueIdx as rInitValueIdx %}
+            <label for="{{ rInitValueIdx }}" class="form-label">{% trans 'Initial value' %}</label>
+            <input type="email" class="form-control" id="{{ rInitValueIdx }}" name="init_value"/>
+        </div>
+
+        <div class="d-flex">
+            <div style="flex-basis: calc(50% - 5px);margin-right: 5px;">
+                <div class="form-group mb-3">
+                    {% assign_out_random domainAllowValidation as rDomainAllowValidation %}
+                    <label for="{{ rDomainAllowValidation }}" class="form-label">{% trans 'Domain allow validation' %}</label>
+                    <select
+                            id="{{ rDomainAllowValidation }}"
+                            class="input-radio-select"
+                             name="domain_allow_validation"
+                    >
+                        <option value="unset">-</option>
+                        <option value="allow">{% trans 'Allow' %}</option>
+                    </select>
+                </div>
+                <div id="domain-allow-validation-sub" style="display:none;">
+                    <div class="form-group mb-3">
+                        {% assign_out_random domainValidationData as rDomainValidationData %}
+                        <label for="{{ rDomainValidationData }}" class="hidden"></label>
+                        <textarea id="{{ rDomainValidationData }}" name="domain_allow_validation_data" rows="3" class="form-control"></textarea>
+                        <small class="form-text text-muted">
+                            {% trans 'eg' %}: example.com, example.vn
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div style="flex-basis: calc(50% - 5px);margin-left: 5px;">
+                <div class="form-group mb-3">
+                    {% assign_out_random domainRestrictValidation as rDomainRestrictValidation %}
+                    <label for="{{ rDomainRestrictValidation }}" class="form-label">{% trans 'Domain restrict validation' %}</label>
+                    <select
+                            id="{{ rDomainRestrictValidation }}"
+                            class="input-radio-select"
+                             name="domain_restrict_validation"
+                    >
+                        <option value="unset">-</option>
+                        <option value="restrict">{% trans 'Restrict' %}</option>
+                    </select>
+                </div>
+                <div id="domain-restrict-validation-sub" style="display:none;">
+                    <div class="form-group mb-3">
+                        {% assign_out_random domainRestrictValidationData as rDomainRestrictValidationData %}
+                        <label for="{{ rDomainRestrictValidationData }}" class="hidden"></label>
+                        <textarea id="{{ rDomainRestrictValidationData }}" name="domain_restrict_validation_data" rows="3" class="form-control"></textarea>
+                        <small class="form-text text-muted">
+                            {% trans 'eg' %}: example.com, example.vn
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group mb-3" style="width: 200px">
+            {% assign_out_random maxIdx as rMaxIdx %}
+            <label class="form-label" for="{{ rMaxIdx }}">{% trans 'Max length' %}</label>
+            <input type="number" class="form-control" id="{{ rMaxIdx }}" name="max"/>
+        </div>
+
+        <hr style="background-color: #2a3746"/>
+
+        {% include 'form/extends/base/validation.html' with hasUnique=False %}
+
+        <hr style="background-color: #2a3746"/>
+
+        {% include 'form/extends/base/visibility.html' %}
+
+        <hr style="background-color: #2a3746"/>
+
+        {% include 'form/extends/base/input_text_case.html' with hasCapitalize=False %}
+    </form>
+</div>
+
+<script>
+    $(document).ready(function (){
+        const frm$ = $('#form-email');
+        const domainAllowValid$ = frm$.find('[name="domain_allow_validation"]');
+        const domainAllowValidSub$ = frm$.find('#domain-allow-validation-sub');
+
+        domainAllowValid$.on('change', function (){
+            if ($(this).val() === 'unset') domainAllowValidSub$.slideUp();
+            else domainAllowValidSub$.slideDown();
+        })
+
+        const domainRestrictValid$ = frm$.find('[name="domain_restrict_validation"]');
+        const domainRestrictValidSub$ = frm$.find('#domain-restrict-validation-sub');
+
+        domainRestrictValid$.on('change', function (){
+            if ($(this).val() === 'unset') domainRestrictValidSub$.slideUp();
+            else domainRestrictValidSub$.slideDown();
+        })
+    })
+</script>

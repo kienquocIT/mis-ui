@@ -1,4 +1,18 @@
 $(document).ready(function () {
+    const opp_title_Ele = $('#header-title')
+    opp_title_Ele.on('mouseenter', function () {
+        $(this).append('<button type="button" id="edit_opp_title" class="ml-2 btn btn-floating btn-icon btn-flush-primary btn-xs"><span class="icon"><i class="bi bi-pencil-square"></i></span></button>')
+    })
+    opp_title_Ele.on('mouseleave', function () {
+        $(this).find('button').remove()
+    })
+    $(document).on('click', '#edit_opp_title', function () {
+        let old_title = opp_title_Ele.text()
+        opp_title_Ele.closest('div').addClass('col-12').html(`
+            <input style="min-height: 50px; font-weight: bolder; font-size: xx-large" id="new_opp_title" class="text-primary form-control text-center" value="${old_title}">
+        `)
+    })
+
     let trans_script = $('#trans-script')
     let eleFrmPermit = $('#permit-member');
     $(document).on('click', '#btnOpenPermit', function () {
@@ -31,6 +45,50 @@ $(document).ready(function () {
 
     // Promise.all
 
+    function loadLeadList(datasource) {
+        if (!$.fn.DataTable.isDataTable('#lead-list-table')) {
+            let dtb = $('#lead-list-table');
+            dtb.DataTableDefault({
+                rowIdx: true,
+                data: datasource,
+                columns: [
+                    {
+                        'render': () => {
+                            return ``;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['lead'].id);
+                            return `<a href="${link}"><span class="badge badge-soft-primary w-70">${row?.['lead'].code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['lead'].id);
+                            return `<a href="${link}">${row?.['lead']?.['title']}</a>`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            return `<span class="badge badge-sm badge-blue">${row?.['lead']?.['source']}</span>`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            return `${row?.['lead']?.['contact_name']}`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            return `${moment(row?.['lead']?.['date_created'].split(' ')[0]).format('DD/MM/YYYY')}`;
+                        }
+                    },
+                ],
+            });
+        }
+    }
+
     let prm_config = $.fn.callAjax2({
         url: urlFactory.data('url-config'),
         method: 'GET'
@@ -60,10 +118,25 @@ $(document).ready(function () {
         (errs) => {}
     )
 
+    let prm_lead = $.fn.callAjax2({
+        url: $('#lead-list-table').attr('data-url') + `?opp_id=${pk}`,
+        method: 'GET'
+    }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && typeof data === 'object' && data.hasOwnProperty('lead_list')) {
+                console.log(data?.['lead_list'])
+                return data?.['lead_list'];
+            }
+            return {};
+        },
+        (errs) => {}
+    )
+
     let list_stage_condition = []
     let config_is_input_rate = null;
     $x.fn.showLoadingPage()
-    Promise.all([prm_detail, prm_config]).then(
+    Promise.all([prm_detail, prm_config, prm_lead]).then(
         (results) => {
             $x.fn.hideLoadingPage();
             const opportunity_detail_data = results[0];
@@ -721,7 +794,7 @@ $(document).ready(function () {
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     $('#create-new-call-log').hide();
-                                    loadDblActivityLogs();
+                                    OpportunityActivity.loadDblActivityLogs();
                                 }
                             },
                             (errs) => {
@@ -803,7 +876,7 @@ $(document).ready(function () {
                             if (data) {
                                 $.fn.notifyB({description: "Successfully"}, 'success')
                                 $('#detail-call-log').modal('hide')
-                                loadDblActivityLogs();
+                                OpportunityActivity.loadDblActivityLogs();
                             }
                         },(errs) => {
                             $.fn.notifyB({description: errs.data.errors}, 'failure');
@@ -896,7 +969,7 @@ $(document).ready(function () {
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     $('#send-email').hide();
-                                    loadDblActivityLogs();
+                                    OpportunityActivity.loadDblActivityLogs();
                                 }
                             },
                             (errs) => {
@@ -953,7 +1026,7 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
-                            loadDblActivityLogs();
+                            OpportunityActivity.loadDblActivityLogs();
                         }
                     },
                     (errs) => {
@@ -1115,7 +1188,7 @@ $(document).ready(function () {
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     $('#create-meeting').hide();
-                                    loadDblActivityLogs();
+                                    OpportunityActivity.loadDblActivityLogs();
                                 }
                             },
                             (errs) => {
@@ -1226,7 +1299,7 @@ $(document).ready(function () {
                             if (data) {
                                 $.fn.notifyB({description: "Successfully"}, 'success')
                                 $('#detail-meeting').modal('hide')
-                                loadDblActivityLogs();
+                                OpportunityActivity.loadDblActivityLogs();
                             }
                         },(errs) => {
                             $.fn.notifyB({description: errs.data.errors}, 'failure');
@@ -1370,172 +1443,7 @@ $(document).ready(function () {
                         })
             }
 
-            function loadDblActivityLogs() {
-                let $table = table_timeline;
-                let urlMapApp = {
-                    'quotation.quotation': urlFactory.attr('data-url-quotation-detail'),
-                    'saleorder.saleorder': urlFactory.attr('data-url-sale-order-detail'),
-                    'cashoutflow.advancepayment': urlFactory.attr('data-url-advance-detail'),
-                    'cashoutflow.payment': urlFactory.attr('data-url-payment-detail'),
-                    'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
-                }
-                let appMapTrans = {
-                    'quotation.quotation': transEle.attr('data-trans-quotation'),
-                    'saleorder.saleorder': transEle.attr('data-trans-sale-order'),
-                    'cashoutflow.advancepayment': transEle.attr('data-trans-advance'),
-                    'cashoutflow.payment': transEle.attr('data-trans-payment'),
-                    'cashoutflow.returnadvance': transEle.attr('data-trans-return'),
-                }
-                let appMapBadge = {
-                    'quotation.quotation': "badge-primary badge-outline",
-                    'saleorder.saleorder': "badge-success badge-outline",
-                    'cashoutflow.advancepayment': "badge-pink badge-outline",
-                    'cashoutflow.payment': "badge-violet badge-outline",
-                    'cashoutflow.returnadvance': "badge-purple badge-outline",
-                }
-                let typeMapActivity = {
-                    1: transEle.attr('data-trans-task'),
-                    2: transEle.attr('data-trans-call'),
-                    3: transEle.attr('data-trans-email'),
-                    4: transEle.attr('data-trans-meeting'),
-                }
-                let typeMapIcon = {
-                    0: "fas fa-file-alt",
-                    1: "fas fa-tasks",
-                    2: "fas fa-phone-alt",
-                    3: "far fa-envelope",
-                    4: "fas fa-users",
-                }
-                $table.DataTable().clear().destroy()
-                $table.DataTableDefault({
-                    rowIdx: true,
-                    ajax: {
-                        url: $table.attr('data-url-logs_list'),
-                        type: 'GET',
-                        data: {'opportunity': pk},
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('activity_logs_list')) {
-                                // console.log(resp.data['activity_logs_list'])
-                                return resp.data['activity_logs_list'] ? resp.data['activity_logs_list'] : []
-                            }
-                            throw Error('Call data raise errors.')
-                        },
-                    },
-                    columnDefs: [],
-                    columns: [
-                        {
-                            targets: 0,
-                            render: () => {
-                                return ``
-                            }
-                        },
-                        {
-                            targets: 1,
-                            render: (data, type, row) => {
-                                if (row?.['log_type'] === 0) {
-                                    if (row?.['app_code']) {
-                                        return `<span class="badge ${appMapBadge[row?.['app_code']]}">
-                                                    <span>
-                                                        <span class="icon"><span class="feather-icon"><small><i class="${typeMapIcon[row?.['log_type']]}"></i></small></span></span>
-                                                        ${appMapTrans[row?.['app_code']]}
-                                                    </span>
-                                                </span>`;
-                                    }
-                                } else {
-                                    let status = '';
-                                    let badgeType = 'badge-soft-smoke';
-                                    if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
-                                        status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
-                                    }
-                                    if (Object.keys(row?.['task']).length > 0) {
-                                        badgeType = 'badge-soft-sky';
-                                    }
-                                    return `<span class="badge ${badgeType}">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
-                                }
-                                return `<p></p>`;
-                            }
-                        },
-                        {
-                            targets: 2,
-                            render: (data, type, row) => {
-                                let link = '';
-                                let title = '';
-                                if (row?.['log_type'] === 0) {
-                                    if (row?.['app_code'] && row?.['doc_id']) {
-                                        link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_id']);
-                                        title = row?.['doc_data']?.['title'];
-                                        return `<a href="${link}" target="_blank"><p>${title}</p></a>`;
-                                    } else {
-                                        return `<p></p>`;
-                                    }
-                                }
-                                if (row?.['log_type'] === 1) {
-                                    title = row?.['task']?.['subject'];
-                                    return `<a href="#" class="show-task-detail" data-task-id="${row?.['task']['id']}"><p>${title}</p></a>`;
-                                } else if (row?.['log_type'] === 2) {
-                                    title = row?.['call_log']?.['subject'];
-                                    return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-call-log" class="detail-call-log-button text-primary" data-id="${row?.['call_log']['id']}"><p>${title}</p></a>`;
-                                } else if (row?.['log_type'] === 3) {
-                                    title = row?.['email']?.['subject'];
-                                    return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-send-email" class="detail-email-button text-primary" data-id="${row?.['email']['id']}"><p>${title}</p></a>`;
-                                } else if (row?.['log_type'] === 4) {
-                                    title = row?.['meeting']?.['subject'];
-                                    return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-meeting" class="detail-meeting-button text-primary" data-id="${row?.['meeting']['id']}"><p>${title}</p></a>`;
-                                }
-                            }
-                        },
-                        {
-                            targets: 3,
-                            render: (data, type, row) => {
-                                let link = '';
-                                let code = '';
-                                if (row?.['log_type'] === 0) {
-                                    if (row?.['app_code'] && row?.['doc_id']) {
-                                        link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_id']);
-                                        code = row?.['doc_data']?.['code'];
-                                        return `<a href="${link}" target="_blank"><span class="badge badge-primary">${code}</span></a>`;
-                                    }
-                                }
-                                return `<p>--</p>`;
-                            }
-                        },
-                        {
-                            targets: 4,
-                            render: (data, type, row) => {
-                                if (row?.['app_code']) {
-                                    let sttTxt = JSON.parse($('#stt_sys').text())
-                                    let sttData = [
-                                        "soft-light",
-                                        "soft-primary",
-                                        "soft-info",
-                                        "soft-success",
-                                        "soft-danger",
-                                    ]
-                                    return `<div class="row"><span class="badge badge-${sttData[row?.['doc_data']?.['system_status']]}">${sttTxt[row?.['doc_data']?.['system_status']][1]}</span></div>`;
-                                }
-                                return `<p>--</p>`;
-                            }
-                        },
-                        {
-                            targets: 5,
-                            render: (data, type, row) => {
-                                return $x.fn.displayRelativeTime(row?.['date_created'], {
-                                    'outputFormat': 'DD-MM-YYYY',
-                                });
-                            }
-                        }
-                    ],
-                    rowCallback: (row, data, index) => {
-                        $('.show-task-detail', row).on('click', function(){
-                            const taskObj = data?.["task"]
-                            displayTaskView($("#url-factory").attr("data-task_detail").format_url_with_uuid(taskObj.id))
-                        })
-                    }
-                });
-            }
-
-            loadDblActivityLogs();
+            OpportunityActivity.loadDblActivityLogs();
 
             function checkPermissionAppRelated() {
                 let $dataDetail = $('#data-detail');
@@ -1583,7 +1491,7 @@ $(document).ready(function () {
             }
 
             // for task
-            Task_in_opps.init(opportunity_detail_data, loadDblActivityLogs)
+            Task_in_opps.init(opportunity_detail_data, OpportunityActivity.loadDblActivityLogs)
 
             // event create related features
             $('#dropdown-menu-relate-app #create-advance-payment-shortcut').on('click', function () {
@@ -1737,8 +1645,14 @@ $(document).ready(function () {
 
                 $('#create-return-advance-shortcut').attr('data-opportunity_mapped', encodeURIComponent(JSON.stringify({'id': dataInitSaleCode?.['id'], 'code': dataInitSaleCode?.['code'], 'title': dataInitSaleCode?.['title']})))
             })
+
+            loadLeadList(results[2])
         }
     )
+
+    $('#btn-refresh-activity').on('click', function () {
+        OpportunityActivity.loadDblActivityLogs();
+    });
 
     // submit form edit
     new SetupFormSubmit(frmDetail).validate({

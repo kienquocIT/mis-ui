@@ -1,11 +1,25 @@
 $(document).ready(function () {
     new AccountHandle().load();
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = urlParams.get('name');
+    const industry_id = urlParams.get('industry_id');
+    const industry_title = urlParams.get('industry_title');
+    const total_employees = urlParams.get('total_employees');
+    const revenue = urlParams.get('revenue');
+
+    $('#inp-account-name').val(name)
+    loadIndustry({'id': industry_id, 'title': industry_title})
+    $('#select-box-industry')
+    $('#select-box-total-emp').val(total_employees)
+    $('#select-box-annual-revenue').val(revenue)
+
+
     let frm = $('#form-create-account')
     frm.submit(function (event) {
         event.preventDefault();
         let combinesData = new AccountHandle().combinesData($(this));
-        console.log(combinesData)
+        // console.log(combinesData)
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)

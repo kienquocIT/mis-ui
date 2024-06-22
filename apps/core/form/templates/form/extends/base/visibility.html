@@ -1,0 +1,12 @@
+{% load i18n define_action %}
+
+{% assign_out_random visibilityIdx as rVisibilityIdx %}
+
+<div class="form-group mb-3">
+    <label class="form-label" for="{{ rVisibilityIdx }}">{% trans 'Visibility' %}</label>
+    <select id="{{ rVisibilityIdx }}" class="input-radio-select" name="visibility">
+        <option value="unset" selected title="{% trans 'Unset' %}">-</option>
+        <option value="hide">{% trans 'Hide' %}</option>
+        <option value="disable">{% trans 'Disable' %}</option>
+    </select>
+</div>

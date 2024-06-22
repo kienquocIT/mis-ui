@@ -16,16 +16,17 @@ from .saleorder import SOMsg
 from .report import ReportMsg
 from .templates import TemplateMsg
 from .application import AppMsg
+from .core import CoreMsg
+from .masterdata import MDMsg
 
 
 class BaseMsg:
     NOT_FOUND = _('The record is not found')
     EXCEPTION = _('The process raise exception')
     SUCCESS = _('Successful')
-    CREATE = _('create')
-    UPDATE = _('update')
-    DELETE = _('delete')
-    SUCCESSFULLY = _('successfully')
+    CREATE = _('Create')
+    UPDATE = _('Update')
+    DELETE = _('Delete')
     DRAFT = _('Draft')
     CREATED = _('Created')
     ADDED = _('Added')

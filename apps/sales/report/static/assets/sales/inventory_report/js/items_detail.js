@@ -14,6 +14,9 @@ $(document).ready(function () {
         periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
     }
     const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
+    if ($definition_inventory_valuation === '0') {
+        $('#btn-calculate').remove()
+    }
     let PERIODIC_CLOSED = false
 
     function getMonthOrder(space_month, fiscal_year) {
@@ -144,13 +147,19 @@ $(document).ready(function () {
                     items_detail_report_table_Ele.DataTable().clear().destroy()
                     items_detail_report_table_Ele.find('tbody').html('')
                     for (const item of results[0]) {
+                        let regis_html = ''
+                        if (item?.['sale_order']?.['code']) {
+                            regis_html = `<span class="text-purple"><i class="bi bi-bookmarks-fill"></i>${item?.['sale_order']?.['code']}</span>`
+                        }
                         let cumulative_quantity = 0
                         let cumulative_value = 0
                         items_detail_report_table_Ele.find('tbody').append(
-                            `<tr class="main-row" style="background-color: #eaeaea">
+                            `<tr class="main-row" style="background-color: #f5f5f5">
                                 <td class="first-col-x border-1">
-                                    <span class="badge badge-primary">${item?.['product']?.['code']}</span>
-                                    <span class="text-primary small"><b>${item?.['product']?.['title']}</b></span>
+                                    <span class="badge badge-secondary">${item?.['product']?.['code']}</span>
+                                    <span class="text-secondary fw-bold">${item?.['product']?.['title']}</span>&nbsp;
+                                    <span class="text-blue small fw-bold">${item?.['product']?.['lot_number']}</span>&nbsp;
+                                    ${regis_html}
                                 </td>
                                 <td><span class="text-primary small">${trans_script.attr('data-trans-we')}</span></td>
                                 <td></td>
@@ -489,26 +498,30 @@ $(document).ready(function () {
                     setTimeout(
                         () => {
                             WindowControl.hideLoading();
-                            let condition1 = $definition_inventory_valuation === '1' && PERIODIC_CLOSED === false
-                            let condition2 = $definition_inventory_valuation === '1'
+                            if ($definition_inventory_valuation === '1') {
+                                let condition1 = $definition_inventory_valuation === '1' && PERIODIC_CLOSED === false
+                                let condition2 = $definition_inventory_valuation === '1'
+                                let condition3 = $definition_inventory_valuation === '0'
 
-                            items_detail_report_table_Ele.find('tbody .main-row').each(function () {
-                                $(this).find('td:eq(15) span').prop('hidden', condition1)
-                                $(this).find('td:eq(16) span').prop('hidden', condition1)
-                            })
-                            items_detail_report_table_Ele.find('tbody .eb-row').prop('hidden', condition1)
+                                items_detail_report_table_Ele.find('tbody .main-row').each(function () {
+                                    $(this).find('td:eq(15) span').prop('hidden', condition1)
+                                    $(this).find('td:eq(16) span').prop('hidden', condition1)
+                                })
+                                items_detail_report_table_Ele.find('tbody .eb-row').prop('hidden', condition1)
 
-                            items_detail_report_table_Ele.find('tbody .detail-in').each(function () {
-                                $(this).find('td:eq(15) span').prop('hidden', condition2)
-                                $(this).find('td:eq(16) span').prop('hidden', condition2)
-                            })
-                            items_detail_report_table_Ele.find('tbody .detail-out').each(function () {
-                                $(this).find('td:eq(12) span').prop('hidden', condition2)
-                                $(this).find('td:eq(13) span').prop('hidden', condition2)
-                                $(this).find('td:eq(15) span').prop('hidden', condition2)
-                                $(this).find('td:eq(16) span').prop('hidden', condition2)
-                            })
+                                items_detail_report_table_Ele.find('tbody .detail-in').each(function () {
+                                    $(this).find('td:eq(15) span').prop('hidden', condition2)
+                                    $(this).find('td:eq(16) span').prop('hidden', condition2)
+                                })
+                                items_detail_report_table_Ele.find('tbody .detail-out').each(function () {
+                                    $(this).find('td:eq(12) span').prop('hidden', condition2)
+                                    $(this).find('td:eq(13) span').prop('hidden', condition2)
+                                    $(this).find('td:eq(15) span').prop('hidden', condition2)
+                                    $(this).find('td:eq(16) span').prop('hidden', condition2)
+                                })
 
+                                items_detail_report_table_Ele.find('tbody .eb-row').prop('hidden', condition3)
+                            }
                             items_detail_report_table_Ele.prop('hidden', false)
                         },
                         500
@@ -569,13 +582,19 @@ $(document).ready(function () {
                             items_detail_report_table_Ele.DataTable().clear().destroy()
                             items_detail_report_table_Ele.find('tbody').html('')
                             for (const item of results[0]) {
+                                let regis_html = ''
+                                if (item?.['sale_order']?.['code']) {
+                                    regis_html = `<span class="text-purple"><i class="bi bi-bookmarks-fill"></i>${item?.['sale_order']?.['code']}</span>`
+                                }
                                 let cumulative_quantity = 0
                                 let cumulative_value = 0
                                 items_detail_report_table_Ele.find('tbody').append(
-                                    `<tr class="main-row" style="background-color: #eaeaea">
+                                    `<tr class="main-row" style="background-color: #f5f5f5">
                                         <td class="first-col-x border-1">
-                                            <span class="badge badge-primary">${item?.['product']?.['code']}</span>
-                                            <span class="text-primary small"><b>${item?.['product']?.['title']}</b></span>
+                                            <span class="badge badge-secondary">${item?.['product']?.['code']}</span>
+                                            <span class="text-secondary fw-bold">${item?.['product']?.['title']}</span>&nbsp;
+                                            <span class="text-blue small fw-bold">${item?.['product']?.['lot_number']}</span>&nbsp;
+                                            ${regis_html}
                                         </td>
                                         <td><span class="text-primary small">${trans_script.attr('data-trans-we')}</span></td>
                                         <td></td>
@@ -687,8 +706,7 @@ $(document).ready(function () {
                                                             <td><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
                                                         </tr>`
                                                     )
-                                                }
-                                                else {
+                                                } else {
                                                     let text_color = ''
                                                     if (activity?.['trans_title'] === 'Delivery') {
                                                         text_color = 'danger'
@@ -751,8 +769,7 @@ $(document).ready(function () {
                                                 </tr>`
                                             )
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         let ob_label = `<span class="text-secondary">${trans_script.attr('data-trans-ob')}</span>`
                                         cumulative_quantity += stock_activity?.['ending_balance_quantity']
                                         cumulative_value += stock_activity?.['ending_balance_value']
@@ -841,8 +858,7 @@ $(document).ready(function () {
                                                         <td><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
                                                     </tr>`
                                                 )
-                                            }
-                                            else {
+                                            } else {
                                                 let text_color = ''
                                                 if (activity?.['trans_title'] === 'Delivery') {
                                                     text_color = 'danger'
@@ -914,26 +930,27 @@ $(document).ready(function () {
                             setTimeout(
                                 () => {
                                     WindowControl.hideLoading();
-                                    let condition1 = $definition_inventory_valuation === '1' && PERIODIC_CLOSED === false
-                                    let condition2 = $definition_inventory_valuation === '1'
+                                    if ($definition_inventory_valuation === '1') {
+                                        let condition1 = $definition_inventory_valuation === '1' && PERIODIC_CLOSED === false
+                                        let condition2 = $definition_inventory_valuation === '1'
 
-                                    items_detail_report_table_Ele.find('tbody .main-row').each(function () {
-                                        $(this).find('td:eq(15) span').prop('hidden', condition1)
-                                        $(this).find('td:eq(16) span').prop('hidden', condition1)
-                                    })
-                                    items_detail_report_table_Ele.find('tbody .eb-row').prop('hidden', condition1)
+                                        items_detail_report_table_Ele.find('tbody .main-row').each(function () {
+                                            $(this).find('td:eq(15) span').prop('hidden', condition1)
+                                            $(this).find('td:eq(16) span').prop('hidden', condition1)
+                                        })
+                                        items_detail_report_table_Ele.find('tbody .eb-row').prop('hidden', condition1)
 
-                                    items_detail_report_table_Ele.find('tbody .detail-in').each(function () {
-                                        $(this).find('td:eq(15) span').prop('hidden', condition2)
-                                        $(this).find('td:eq(16) span').prop('hidden', condition2)
-                                    })
-                                    items_detail_report_table_Ele.find('tbody .detail-out').each(function () {
-                                        $(this).find('td:eq(12) span').prop('hidden', condition2)
-                                        $(this).find('td:eq(13) span').prop('hidden', condition2)
-                                        $(this).find('td:eq(15) span').prop('hidden', condition2)
-                                        $(this).find('td:eq(16) span').prop('hidden', condition2)
-                                    })
-
+                                        items_detail_report_table_Ele.find('tbody .detail-in').each(function () {
+                                            $(this).find('td:eq(15) span').prop('hidden', condition2)
+                                            $(this).find('td:eq(16) span').prop('hidden', condition2)
+                                        })
+                                        items_detail_report_table_Ele.find('tbody .detail-out').each(function () {
+                                            $(this).find('td:eq(12) span').prop('hidden', condition2)
+                                            $(this).find('td:eq(13) span').prop('hidden', condition2)
+                                            $(this).find('td:eq(15) span').prop('hidden', condition2)
+                                            $(this).find('td:eq(16) span').prop('hidden', condition2)
+                                        })
+                                    }
                                     items_detail_report_table_Ele.prop('hidden', false)
                                 },
                                 500

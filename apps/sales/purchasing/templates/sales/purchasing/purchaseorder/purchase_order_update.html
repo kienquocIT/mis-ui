@@ -68,6 +68,7 @@
                                         data-link-detail="{% url 'ContactDetail' 1 %}"
                                         name="contact"
                                         data-keyResp="contact_list"
+                                        data-keyText="fullname"
                                         required
                                 ></select>
                             </div>
@@ -186,7 +187,7 @@
                             <div id="table-purchase-order-product-request-area" hidden>
                                 <table
                                     id="datable-purchase-order-product-request"
-                                    class="table nowrap min-w-1920p w-100 mb-5"
+                                    class="table nowrap min-w-1680p w-100 mb-5"
                                     data-url=""
                                     data-method="get"
                                 >
@@ -211,9 +212,9 @@
                                     <tr>
                                         <th colspan="7"></th>
                                         <th colspan="4">
-                                            <div class="row">
+                                            <div class="row mb-2">
                                                 <div class="col-6">
-                                                    <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
+                                                    <p style="text-align: right">{% trans 'Pretax Amount' %}:</p>
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
@@ -224,7 +225,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-6">
-                                                    <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
+                                                    <p style="text-align: right">{% trans 'Taxes' %}:</p>
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
@@ -235,11 +236,11 @@
                                             <hr class="bg-teal">
                                             <div class="row">
                                                 <div class="col-6">
-                                                    <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
+                                                    <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
-                                                    <span class="mask-money font-3 purchase-order-product-total" data-init-money="0"></span>
+                                                    <b><span class="mask-money font-3 purchase-order-product-total" data-init-money="0"></span></b>
                                                     <input type="text" class="form-control purchase-order-product-total-raw" value="0" hidden>
                                                 </div>
                                             </div>
@@ -250,7 +251,7 @@
                                 <div class="row">
                                     <div class="col-12 col-md-6 col-lg-6">
                                         <button type="button" class="btn btn-outline-primary" id="btn-add-product-purchase-order-if-request">
-                                            <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
                                         </button>
                                     </div>
                                 </div>
@@ -259,7 +260,7 @@
                             <div id="table-purchase-order-product-add-area">
                                 <table
                                     id="datable-purchase-order-product-add"
-                                    class="table nowrap min-w-1920p w-100 mb-5"
+                                    class="table nowrap min-w-1600p w-100 mb-5"
                                     data-url=""
                                     data-method="get"
                                 >
@@ -282,9 +283,9 @@
                                     <tr>
                                         <th colspan="5"></th>
                                         <th colspan="4">
-                                            <div class="row">
+                                            <div class="row mb-2">
                                                 <div class="col-6">
-                                                    <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
+                                                    <p style="text-align: right">{% trans 'Pretax Amount' %}:</p>
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
@@ -295,7 +296,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-6">
-                                                    <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
+                                                    <p style="text-align: right">{% trans 'Taxes' %}:</p>
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
@@ -306,11 +307,11 @@
                                             <hr class="bg-teal">
                                             <div class="row">
                                                 <div class="col-6">
-                                                    <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
+                                                    <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
-                                                    <span class="mask-money font-3 purchase-order-product-total" data-init-money="0"></span>
+                                                    <b><span class="mask-money font-3 purchase-order-product-total" data-init-money="0"></span></b>
                                                     <input type="text" class="form-control purchase-order-product-total-raw" value="0" hidden>
                                                 </div>
                                             </div>
@@ -321,7 +322,7 @@
                                 <div class="row">
                                     <div class="col-12 col-md-6 col-lg-6">
                                         <button type="button" class="btn btn-outline-primary" id="btn-add-product-purchase-order">
-                                            <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
                                         </button>
                                     </div>
                                 </div>
@@ -352,7 +353,7 @@
                         <div class="row">
                             <div class="col-12 col-md-6 col-lg-6">
                                 <button type="button" class="btn btn-outline-primary" id="btn-add-po-payment-stage">
-                                    <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
                                 </button>
                             </div>
                         </div>

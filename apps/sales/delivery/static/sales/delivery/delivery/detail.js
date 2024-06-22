@@ -40,10 +40,10 @@ $(async function () {
                 'url': url,
                 'method': 'get',
                 'data': {
-                    'product_id': prod_data?.product_data?.id,
+                    'product_id': prod_data?.['product_data']?.['id'],
                 }
             }).then((req) => {
-                const isKey = `${prod_data?.product_data?.id}.${prod_data?.uom_data?.id}`
+                const isKey = `${prod_data?.['product_data']?.['id']}.${prod_data?.['uom_data']?.['id']}`
                 let temp = _this.getWarehouseList
                 const res = $.fn.switcherResp(req);
                 const table = $('#productStockDetail')
@@ -53,121 +53,30 @@ $(async function () {
                 // nếu có hoạt động picking kiểm tra có thông tin delivery_data ko.
                 // nếu có tạo thêm key là picked. mục đích show lên popup mục get cho user thấy.
                 let newData = []
-                for (let [idx, item] of isData.entries()) {
-                    item.picked = 0
-                    if (!config.is_picking && !config.is_partial_ship) { // TH: none_picking_one_delivery
-                        // config 1, 2
-                        if (prod_data?.['delivery_data'].length > 0) {
-                            for (const val of prod_data?.['delivery_data']) {
-                                if (val?.['warehouse'] === item?.['warehouse']?.['id']
-                                    && val?.['uom'] === prod_data?.['uom_data']?.['id']
-                                ) {
-                                    item.picked = val.stock;
-                                }
+                for (let [idx, pwh] of isData.entries()) {
+                    pwh.picked = 0
+                    let finalRate = 1;
+                    if (pwh?.['uom'] && prod_data?.['uom_data']) {
+                        pwh['uom_stock'] = pwh?.['uom'];
+                        pwh['uom_delivery'] = prod_data?.['uom_data'];
+                        if (pwh?.['uom_stock']?.['ratio'] && pwh?.['uom_delivery']?.['ratio']) {
+                            if (pwh?.['uom_delivery']?.['ratio'] > 0) {
+                                finalRate = pwh?.['uom_stock']?.['ratio'] / pwh?.['uom_delivery']?.['ratio'];
                             }
                         }
-                        let finalUOMRate = 1;
-                        let uomInventoryRatio = item?.['uom']?.['ratio'];
-                        let uomDeliveryRatio = prod_data?.['uom_data']?.['ratio'];
-                        if (uomInventoryRatio && uomDeliveryRatio) {
-                            finalUOMRate = uomInventoryRatio / uomDeliveryRatio
-                        }
-                        item['stock_amount'] = item?.['stock_amount'] * finalUOMRate;
-                        if (prod_data?.['uom_data']) {
-                            item['uom_so'] = prod_data?.['uom_data'];
-                        }
                     }
-                    else if (!config.is_picking && config.is_partial_ship) { // TH: none_picking_many_delivery
-                        // config 2
-                        let finalUOMRate = 1;
-                        let uomInventoryRatio = item?.['uom']?.['ratio'];
-                        let uomDeliveryRatio = prod_data?.['uom_data']?.['ratio'];
-                        if (uomInventoryRatio && uomDeliveryRatio) {
-                            finalUOMRate = uomInventoryRatio / uomDeliveryRatio
-                        }
-                        item['stock_amount'] = item?.['stock_amount'] * finalUOMRate;
-                        if (prod_data?.['uom_data']) {
-                            item['uom_so'] = prod_data?.['uom_data'];
-                        }
+                    if (!config?.['is_picking'] && config?.['is_partial_ship']) { // TH config 2: none_picking_many_delivery
+                        pwh['stock_amount'] = pwh?.['stock_amount'] * finalRate;
                         if (prod_data?.['delivery_data']) {
-                            for (let val of prod_data?.['delivery_data']) {
-                                if (val?.['warehouse'] === item?.['warehouse']?.['id']
-                                    && val?.['uom'] === prod_data?.['uom_data']?.['id']
-                                ) { // Check if warehouse of product warehouse in list warehouse have picked
-                                    if (prod_data?.['picked_quantity']) {
-                                        item['picked'] = prod_data?.['picked_quantity'];
-                                    }
-                                    if (val?.['lot_data']) {
-                                        item['lot_data'] = val?.['lot_data'];
-                                    }
-                                    if (val?.['serial_data']) {
-                                        item['serial_data'] = val?.['serial_data'];
-                                    }
-                                    break;
-                                }
-                            }
+                            prodTable.loadProductWHModal(pwh, prod_data);
                         }
                     }
-                    else if ((config.is_picking && !config.is_partial_ship) && prod_data?.['delivery_data']) { // TH: has_picking_one_delivery
-                        // config 3
-                        item['stock_amount'] = item?.['picked_ready'];
-                        if (prod_data?.['picked_quantity']) {
-                            item['picked'] = prod_data?.['picked_quantity'];
-                        }
-                        if (prod_data?.['uom_data']) {
-                            item['uom_so'] = prod_data?.['uom_data'];
-                        }
-                        for (let val of prod_data?.['delivery_data']) {
-                            if (val?.['warehouse'] === item?.['warehouse']?.['id']
-                                && val?.['uom'] === prod_data?.['uom_data']?.['id']
-                            ) { // Check if warehouse of product warehouse in list warehouse have picked
-                                if (val?.['lot_data']) {
-                                    item['lot_data'] = val?.['lot_data'];
-                                }
-                                if (val?.['serial_data']) {
-                                    item['serial_data'] = val?.['serial_data'];
-                                }
-                                break;
-                            }
-                        }
-                        // change column name stock -> picked
-                        if (!table.hasClass('dataTable')) {
-                            let columnStock = table[0]?.querySelector('.stock-picked-exchange');
-                            if (columnStock) {
-                                columnStock.innerHTML = $trans.attr('data-picked-ready');
-                            }
-                        }
-                    }
-                    else if ((config.is_picking && config.is_partial_ship) && prod_data?.['delivery_data']) { // TH: has_picking_many_delivery
-                        // config 4
+                    if ((config?.['is_picking'] && config?.['is_partial_ship']) && prod_data?.['delivery_data']) { // TH config 4: has_picking_many_delivery
                         // nếu ready quantity > 0 => có hàng để giao
                         // lấy delivery
+                        pwh['stock_amount'] = pwh?.['picked_ready'] * finalRate;
                         if (prod_data?.['ready_quantity'] > 0) {
-                            for (let val of prod_data?.['delivery_data']) {
-                                if (val?.['warehouse'] === item?.['warehouse']?.['id']
-                                    && val?.['uom'] === prod_data?.['uom_data']?.['id']
-                                ) { // Check if warehouse of product warehouse in list warehouse have picked
-                                    // item['stock_amount'] = prod_data?.['ready_quantity'];
-                                    item['stock_amount'] = item?.['picked_ready'];
-                                    if (prod_data?.['picked_quantity']) {
-                                        item['picked'] = prod_data?.['picked_quantity'];
-                                    }
-                                    if (prod_data?.['uom_data']) {
-                                        item['uom_so'] = prod_data?.['uom_data'];
-                                    }
-                                    if (val?.['lot_data']) {
-                                        item['lot_data'] = val?.['lot_data'];
-                                    }
-                                    if (val?.['serial_data']) {
-                                        item['serial_data'] = val?.['serial_data'];
-                                    }
-                                } else {
-                                    item['stock_amount'] = item?.['picked_ready'];
-                                    if (prod_data?.['uom_data']) {
-                                        item['uom_so'] = prod_data?.['uom_data'];
-                                    }
-                                }
-                            }
+                            prodTable.loadProductWHModal(pwh, prod_data);
                         }
                         // change column name stock -> picked
                         if (!table.hasClass('dataTable')) {
@@ -179,10 +88,10 @@ $(async function () {
                     }
                     // Check if table $('#productStockDetail') is not DataTable & page is update page => set lot_data, serial_data = []
                     if (!table.hasClass('dataTable') && $form.attr('data-method').toLowerCase() === 'put') {
-                        item['lot_data'] = [];
-                        item['serial_data'] = [];
+                        pwh['lot_data'] = [];
+                        pwh['serial_data'] = [];
                     }
-                    newData.push(item);
+                    newData.push(pwh);
                 }
                 table.not('.dataTable').DataTableDefault({
                     data: newData,
@@ -230,7 +139,7 @@ $(async function () {
                         },
                         {
                             targets: 2,
-                            class: 'w-30 text-center',
+                            class: 'w-40 text-center',
                             data: 'warehouse',
                             render: (row, type, data) => {
                                 return `<p>${row?.['title']}</p>`;
@@ -238,7 +147,7 @@ $(async function () {
                         },
                         {
                             targets: 3,
-                            class: 'w-25 text-center',
+                            class: 'w-5 text-center',
                             data: 'stock_amount',
                             render: (row, type, data) => {
                                 return `<p class="table-row-stock">${row}</p>`;
@@ -246,16 +155,16 @@ $(async function () {
                         },
                         {
                             targets: 4,
-                            class: 'w-20 text-center',
+                            class: 'w-30 text-center',
                             data: 'picked',
                             render: (row, type, data, meta) => {
                                 if ($form.attr('data-method').toLowerCase() === 'put') {
-                                    let disabled = data.product_amount <= 0 ? 'disabled' : '';
+                                    let disabled = data?.['product_amount'] <= 0 ? 'disabled' : '';
                                     // condition 1 for config 3, condition 2 for config 4
-                                    if (config.is_picking && !config.is_partial_ship ||
-                                        (config.is_picking && config.is_partial_ship && data.picked_ready === 0)
+                                    if (config?.['is_picking'] && !config?.['is_partial_ship'] ||
+                                        (config?.['is_picking'] && config?.['is_partial_ship'] && data?.['picked_ready'] === 0)
                                     ) disabled = 'disabled';
-                                    if ([1, 2].includes(prod_data?.['product_data']?.['general_traceability_method'])) {
+                                    if ([1, 2].includes(data?.['product']?.['general_traceability_method'])) {
                                         disabled = 'disabled';
                                     }
                                     return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
@@ -266,18 +175,19 @@ $(async function () {
                         },
                         {
                             targets: 5,
-                            class: 'w-10 text-center',
-                            data: 'uom_so',
+                            class: 'w-5 text-center',
+                            data: 'uom_delivery',
                             render: (row, type, data) => {
-                                return `<span class="table-row-uom">${row?.['title'] ? row?.['title'] : ''}</span>`;
+                                return `<span class="table-row-uom-delivery">${row?.['title'] ? row?.['title'] : ''}</span>`;
                             }
                         },
                     ],
                     rowCallback(row, data, index) {
                         $(`input.form-control`, row).on('blur', function (e) {
                             e.preventDefault();
-                            if (this.value > 0) {
-                                if (this.value > data?.['product_amount']) {
+                            let eleStock = row.querySelector('.table-row-stock');
+                            if (parseFloat(this.value) > 0 && eleStock) {
+                                if (parseFloat(this.value) > parseFloat(eleStock.innerHTML)) {
                                     $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
                                     this.value = 0;
                                     data.picked = this.value;
@@ -451,7 +361,7 @@ $(async function () {
                         if (picked > 0) {
                             sub_delivery_data.push({
                                 'warehouse': item?.['warehouse']?.['id'],
-                                'uom': prod_data.uom_data.id,
+                                'uom': prod_data?.['uom_data']?.['id'],
                                 'stock': picked,
                                 'lot_data': item?.['lot_data'] ? item?.['lot_data'] : [],
                                 'serial_data': item?.['serial_data'] ? item?.['serial_data'] : [],
@@ -471,6 +381,26 @@ $(async function () {
                     $('#warehouseStockModal').modal('hide');
                 })
             })
+        }
+
+        loadProductWHModal(pwh, prod_data) {
+            for (let val of prod_data?.['delivery_data']) {
+                if (val?.['warehouse'] === pwh?.['warehouse']?.['id']) {
+                    if (val?.['stock'] && prod_data?.['picked_quantity']) {
+                        if (prod_data?.['picked_quantity'] > 0) {
+                            pwh['picked'] = val?.['stock'];
+                        }
+                    }
+                    if (val?.['lot_data']) {
+                        pwh['lot_data'] = val?.['lot_data'];
+                    }
+                    if (val?.['serial_data']) {
+                        pwh['serial_data'] = val?.['serial_data'];
+                    }
+                    break;
+                }
+            }
+            return true;
         }
 
         initTableProd() {

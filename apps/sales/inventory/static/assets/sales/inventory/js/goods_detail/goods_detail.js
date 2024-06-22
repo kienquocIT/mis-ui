@@ -5,11 +5,8 @@ $(document).ready(function () {
     const $wh = $('#wh')
     const $status = $('#status')
     const $table_serial = $('#table-serial')
-    const $table_lot = $('#table-lot')
     const $trans_script = $('#trans-url')
-    const $add_new_row_lot = $('#add-new-row-lot')
     const $filter_btn = $('#filter-btn')
-    const $see_current_btn = $('#see-current')
 
     function loadProductCategory(data) {
         $prd_category.initSelect2({
@@ -115,7 +112,7 @@ $(document).ready(function () {
                     data: 'product',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-primary badge-sm w-25">${data?.['code']}</span>&nbsp;<span>${data?.['title']}</span>`;
+                        return `<span class="badge badge-primary w-25">${data?.['code']}</span>&nbsp;<span class="fw-bold">${data?.['title']}</span>`;
                     }
                 },
                 {
@@ -129,7 +126,10 @@ $(document).ready(function () {
                     data: 'goods_receipt',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span>${moment(data?.['date_approved'].split(' ')[0]).format('DD/MM/YYYY')}</span>`;
+                        if (data?.['date_approved']) {
+                            return `<span>${moment(data?.['date_approved'].split(' ')[0]).format('DD/MM/YYYY')}</span>`;
+                        }
+                        return ``
                     }
                 },
                 {
@@ -174,33 +174,6 @@ $(document).ready(function () {
                                     <span class="icon"><i class="bi bi-box-arrow-up-right"></i></span>
                                 </button>
                                 <script class="serial_list_data">${JSON.stringify(data)}</script>
-                            `;
-                        }
-                        return ``
-                    }
-                },
-                {
-                    data: 'lot_list',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        if (row?.['product']?.['type'] === 1) {
-                            let status = row?.['status'] ? $trans_script.attr('data-trans-done') : $trans_script.attr('data-trans-not-yet')
-                            let color = row?.['status'] ? 'badge badge-soft-success w-70' : 'badge badge-soft-warning w-70'
-                            return `
-                                <span class="${color} row-status">${status}</span>
-                                <button type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal-lot"
-                                        class="btn-open-modal-lot btn btn-icon btn-rounded btn-flush-light flush-hover btn-xs"
-                                        data-quantity-import="${row?.['quantity_import']}"
-                                        data-product-id="${row?.['product']?.['id']}"
-                                        data-warehouse-id="${row?.['warehouse']?.['id']}"
-                                        data-goods-receipt-id="${row?.['goods_receipt']?.['id']}"
-                                        data-status="${row?.['status']}"
-                                        >
-                                    <span class="icon"><i class="bi bi-box-arrow-up-right"></i></span>
-                                </button>
-                                <script class="lot_list_data">${JSON.stringify(data)}</script>
                             `;
                         }
                         return ``
@@ -350,86 +323,6 @@ $(document).ready(function () {
         loadSerialTable(table_data, product_id, warehouse_id, goods_receipt_id)
     })
 
-    function loadLotTable(data, product_id, warehouse_id, goods_receipt_id, goods_receipt_quantity, status) {
-        $table_lot.DataTable().clear().destroy()
-        $table_lot.DataTableDefault({
-            dom: '',
-            rowIdx: true,
-            paging: false,
-            data: data,
-            columns: [
-                {
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },
-                {
-                    data: 'lot_number',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<input disabled readonly data-raw="${data ? data : ''}" data-lot-id="${row?.['id']}" class="form-control lot_number" value="${data ? data : ''}">`;
-                    }
-                },
-                {
-                    data: 'quantity_import',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<span class="quantity_import">${row?.['raw_quantity_import']}</span>&nbsp;<span hidden class="current">(${$trans_script.attr('data-trans-curent')}: ${data ? data : 0})</span>`;
-                    }
-                },
-                {
-                    data: 'expire_date',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<input disabled readonly data-raw="${data ? moment(data.split(' ')[0]).format('DD/MM/YYYY') : ''}" class="date-input form-control expire_date" value="${data ? moment(data.split(' ')[0]).format('DD/MM/YYYY') : ''}">`;
-                    }
-                },
-                {
-                    data: 'manufacture_date',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<input disabled readonly data-raw="${data ? moment(data.split(' ')[0]).format('DD/MM/YYYY') : ''}" class="date-input form-control manufacture_date" value="${data ? moment(data.split(' ')[0]).format('DD/MM/YYYY') : ''}">`;
-                    }
-                },
-                {
-                    data: '',
-                    className: 'wrap-text text-center',
-                    render: (data, type, row) => {
-                        return `<button type="button" class="btn-edit btn btn-icon btn-flush-primary flush-hover btn-xs">
-                                    <span class="icon"><i class="bi bi-pencil-square"></i></span>
-                                </button>
-                                <button hidden type="button" class="btn-rollback btn btn-icon btn-flush-secondary flush-hover btn-xs">
-                                    <span class="icon"><i class="fas fa-undo-alt"></i></span>
-                                </button>
-                        `;
-                    }
-                },
-            ],
-            initComplete: function () {
-                $('.date-input').each(function () {
-                    LoadDate($(this), $(this).val() === '')
-                })
-                $table_lot.attr('data-product-id', product_id)
-                $table_lot.attr('data-warehouse-id', warehouse_id)
-                $table_lot.attr('data-goods-receipt-id', goods_receipt_id)
-                $table_lot.attr('data-goods-receipt-quantity', goods_receipt_quantity)
-                $add_new_row_lot.closest('div').prop('hidden', parseInt(status))
-            }
-        });
-    }
-
-    $(document).on("click", '.btn-open-modal-lot', function () {
-        let table_data = $(this).closest('td').find('.lot_list_data').text() ? JSON.parse($(this).closest('td').find('.lot_list_data').text()) : []
-        let product_id = $(this).attr('data-product-id')
-        let warehouse_id = $(this).attr('data-warehouse-id')
-        let goods_receipt_id = $(this).attr('data-goods-receipt-id')
-        let goods_receipt_quantity = $(this).attr('data-quantity-import')
-        let status = $(this).attr('data-status')
-        loadLotTable(table_data, product_id, warehouse_id, goods_receipt_id, goods_receipt_quantity, status)
-    })
-
     function LoadDate(ele, is_null=false) {
         ele.daterangepicker({
             singleDatePicker: true,
@@ -449,7 +342,7 @@ $(document).ready(function () {
 
     $(document).on("click", '.btn-edit', function () {
         $(this).closest('tbody').find('tr').each(function () {
-            if ($(this).find('input:first-child').attr('data-lot-id') || $(this).find('input:first-child').attr('data-serial-id')) {
+            if ($(this).find('input:first-child').attr('data-serial-id')) {
                 $(this).closest('tr input').prop('disabled', true).prop('readonly', true)
             }
         })
@@ -474,43 +367,6 @@ $(document).ready(function () {
                 $(this).attr('class', 'badge badge-soft-secondary gr-code')
             }
         });
-    });
-
-    $add_new_row_lot.on('click', function () {
-        $table_lot.find('tbody .dataTables_empty').closest('tr').remove()
-        let index = $table_lot.find('tbody tr').length + 1
-        $table_lot.find('tbody').append(`
-            <tr>
-                <td class="index">${index}</td>
-                <td>
-                    <input data-lot-id="" class="form-control lot_number">
-                </td>
-                <td>
-                    <input type="number" class="form-control quantity_import">
-                </td>
-                <td>
-                    <input class="date-input form-control expire_date">
-                </td>
-                <td>
-                    <input class="date-input form-control manufacture_date">
-                </td>
-                <td class="text-center">
-                    <button type="button" class="btn-delete btn btn-icon btn-flush-danger flush-hover btn-xs">
-                        <span class="icon"><i class="far fa-trash-alt"></i></span>
-                    </button>
-                </td>
-            </tr>
-        `)
-        $('.date-input').each(function () {
-            LoadDate($(this), $(this).val() === '')
-        })
-    })
-
-    $(document).on("click", '.btn-delete', function () {
-        $(this).closest('tr').remove();
-        $table_lot.find('tbody tr').each(function (index) {
-            $(this).find('.index').text(index+1)
-        })
     });
 
     function combinesDataSerial(frmEle) {
@@ -569,77 +425,11 @@ $(document).ready(function () {
         }
     })
 
-    function combinesDataLot(frmEle) {
-        let frm = new SetupFormSubmit($(frmEle))
-        frm.dataForm['product_id'] = frmEle.find('#table-lot').attr('data-product-id')
-        frm.dataForm['warehouse_id'] = frmEle.find('#table-lot').attr('data-warehouse-id')
-        frm.dataForm['goods_receipt_id'] = frmEle.find('#table-lot').attr('data-goods-receipt-id')
-        frm.dataForm['gr_quantity_import'] = frmEle.find('#table-lot').attr('data-goods-receipt-quantity')
-        frm.dataForm['is_lot_update'] = true
-        frm.dataForm['lot_data'] = []
-        $table_lot.find('tbody tr').each(function () {
-            frm.dataForm['lot_data'].push({
-                "lot_id": $(this).find('.lot_number').attr('data-lot-id') !== "null" ? $(this).find('.lot_number').attr('data-lot-id') : null,
-                "lot_number": $(this).find('.lot_number').val(),
-                "quantity_import": $(this).find('.quantity_import').val() ? $(this).find('.quantity_import').val() : $(this).find('.quantity_import').text(),
-                "expire_date": $(this).find('.expire_date').val() ? moment($(this).find('.expire_date').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null,
-                "manufacture_date": $(this).find('.manufacture_date').val() ? moment($(this).find('.manufacture_date').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
-            })
-        })
-        return {
-            url: frm.dataUrl,
-            method: frm.dataMethod,
-            data: frm.dataForm,
-            urlRedirect: frm.dataUrlRedirect,
-        };
-    }
-
-    $('#form-lot').submit(function (event) {
-        event.preventDefault();
-        let combinesData = combinesDataLot($(this));
-        if (combinesData) {
-            WindowControl.showLoading();
-            $.fn.callAjax2(combinesData)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            setTimeout(() => {
-                                window.location.replace($(this).attr('data-url-redirect'));
-                                location.reload.bind(location);
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        setTimeout(
-                            () => {
-                                WindowControl.hideLoading();
-                            },
-                            1000
-                        )
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    }
-                )
-        }
-    })
-
     $filter_btn.on('click', function () {
         let category_list = $prd_category.val()
         let product_list = $prd.val()
         let warehouse_list = $wh.val()
         let status_list = $status.val()
         loadMainTable(category_list, product_list, warehouse_list, status_list)
-    })
-
-    $see_current_btn.on('click', function () {
-        if ($see_current_btn.html() === '<i class="bi bi-eye"></i>') {
-            $see_current_btn.html('<i class="bi bi-eye-slash"></i>')
-            $('.current').prop('hidden', true)
-        }
-        else {
-            $see_current_btn.html('<i class="bi bi-eye"></i>')
-            $('.current').prop('hidden', false)
-        }
     })
 })

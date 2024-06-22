@@ -29,46 +29,42 @@ $(function () {
                     },
                 },
                 data: data ? data : [],
+                autoWidth: true,
+                scrollX: true,
                 pageLength: 50,
                 columns: [
                     {
                         targets: 0,
-                        class: 'w-5',
+                        width: '30%',
                         render: (data, type, row) => {
-                            return `<div class="row"><span class="badge badge-primary">${row?.['customer']?.['code'] ? row?.['customer']?.['code'] : ''}</span></div>`;
+                            return `<span class="badge badge-secondary badge-sm">${row?.['customer']?.['code'] ? row?.['customer']?.['code'] : ''}</span>
+                                    <p>${row?.['customer']?.['title'] ? row?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 1,
-                        class: 'w-20',
-                        render: (data, type, row) => {
-                            return `<p class="text-primary">${row?.['customer']?.['title'] ? row?.['customer']?.['title'] : ''}</p>`;
-                        }
-                    },
-                    {
-                        targets: 2,
-                        class: 'w-15',
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<p>${row?.['customer']?.['industry']?.['title'] ? row?.['customer']?.['industry']?.['title'] : ''}</p>`;
                         }
                     },
                     {
-                        targets: 3,
-                        class: 'w-20',
+                        targets: 2,
+                        width: '18%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
-                        targets: 4,
-                        class: 'w-20',
+                        targets: 3,
+                        width: '18%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
-                        targets: 5,
-                        class: 'w-20',
+                        targets: 4,
+                        width: '18%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
                         }
@@ -259,7 +255,25 @@ $(function () {
         function loadFilter(listData, $eleShow) {
             if (listData.length > 0) {
                 $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
+            } else {
+                $eleShow.html(``);
             }
+        }
+
+        function getListTxtMultiSelect2 ($ele) {
+            let result = [];
+            if ($ele.val() && $ele.val().length > 0) {
+                let selectedValues = $ele.val();
+                let tempDiv = document.createElement('div');
+                tempDiv.innerHTML = $ele[0].innerHTML;
+                for (let val of selectedValues) {
+                    let option = tempDiv.querySelector(`option[value="${val}"]`);
+                    if (option) {
+                        result.push(option.textContent);
+                    }
+                }
+            }
+            return result;
         }
 
         // load init
@@ -297,18 +311,8 @@ $(function () {
         $.fn.initMaskMoney2();
 
         // Prevent dropdown from closing when clicking inside the dropdown
-        $('.dropdown-menu').on('click', function (e) {
+        $('.dropdown-menu').on('click', '.form-group', function (e) {
             e.stopPropagation();
-        });
-
-        // Prevent the dropdown from closing when clicking outside it
-        $('.btn-group').on('hide.bs.dropdown', function (e) {
-            e.preventDefault();
-        });
-
-        // Reopen dropdown on button click
-        $('.btn-group').on('click', '.btn', function (e) {
-            $(this).siblings('.dropdown-menu').toggleClass('show');
         });
 
         // Events
@@ -333,22 +337,25 @@ $(function () {
             let dataParams = {};
             let listViewBy = [];
             let listDate = [];
+            if (boxCustomer.val() && boxCustomer.val().length > 0) {
+                dataParams['customer_id__in'] = boxCustomer.val().join(',');
+                let listTxt = getListTxtMultiSelect2(boxCustomer);
+                for (let txt of listTxt) {
+                    listViewBy.push(txt);
+                }
+            }
             if (boxGroup.val() && boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
-                for (let text of boxGroup[0].innerText.split("\n")) {
-                    listViewBy.push(text);
+                let listTxt = getListTxtMultiSelect2(boxGroup);
+                for (let txt of listTxt) {
+                    listViewBy.push(txt);
                 }
             }
             if (boxEmployee.val() && boxEmployee.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
-                for (let text of boxEmployee[0].innerText.split("\n")) {
-                    listViewBy.push(text);
-                }
-            }
-            if (boxCustomer.val() && boxCustomer.val().length > 0) {
-                dataParams['customer_id__in'] = boxCustomer.val().join(',');
-                for (let text of boxCustomer[0].innerText.split("\n")) {
-                    listViewBy.push(text);
+                let listTxt = getListTxtMultiSelect2(boxEmployee);
+                for (let txt of listTxt) {
+                    listViewBy.push(txt);
                 }
             }
             loadFilter(listViewBy, $('#card-filter-vb'));

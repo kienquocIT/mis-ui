@@ -7,44 +7,54 @@ class SetupFormSubmit {
         return null;
     }
 
+    static serializerInput(input$, toObject = false) {
+        let item = {
+            'name': $(input$).attr('name'),
+            'value': $(input$).val(),
+        }
+
+        let dataType = $(input$).attr('data-type');
+        switch (dataType) {
+            case 'json':
+                try {
+                    item['value'] = JSON.parse(item['value']);
+                } catch (err) {
+                }
+                break
+            case 'date':
+                item['value'] = moment(
+                    item['value'],
+                    $(input$).attr('data-date-format') || 'DD-MM-YYYY',
+                ).format('YYYY-MM-DD');
+                break
+            case 'datetime':
+                item['value'] = moment(
+                    item['value'],
+                    $(input$).attr('data-date-format') || 'DD-MM-YYYY HH:mm:ss',
+                ).format('YYYY-MM-DD HH:mm:ss');
+                break
+        }
+        if ($(input$).is(':checkbox')) item['value'] = $(input$).prop('checked');
+
+        if (toObject === true) {
+            let TempItem = {};
+            TempItem[item.name] = item.value;
+            return TempItem;
+        }
+        return item;
+    }
+
     static serializerObject(formSelected) {
         const queryExclude = ':not([dont_serialize]):not([name^="DataTables_"])';
 
         let obj = {};
-        formSelected.find(queryExclude).find(':input[name]:not(disabled)').each(function (){
-            let item = {
-                'name': $(this).attr('name'),
-                'value': $(this).val(),
-            }
-
-            let dataType = $(this).attr('data-type');
-            switch (dataType) {
-                case 'json':
-                    try {
-                        item['value'] = JSON.parse(item['value']);
-                    } catch (err){}
-                    break
-                case 'date':
-                    item['value'] = moment(
-                        item['value'],
-                        $(this).attr('data-date-format') || 'DD-MM-YYYY',
-                    ).format('YYYY-MM-DD');
-                    break
-                case 'datetime':
-                    item['value'] = moment(
-                        item['value'],
-                        $(this).attr('data-date-format') || 'DD-MM-YYYY HH:mm:ss',
-                    ).format('YYYY-MM-DD HH:mm:ss');
-                    break
-            }
-            if ($(this).is(':checkbox')) item['value'] = $(this).prop('checked');
-
+        formSelected.find(queryExclude).find(':input[name]:not(disabled)').each(function () {
+            let item = SetupFormSubmit.serializerInput($(this));
             if (item.name in obj) {
                 obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];
                 obj[item.name].push(item.value);
             } else obj[item.name] = item.value;
         })
-
         return obj;
     }
 
@@ -104,7 +114,13 @@ class SetupFormSubmit {
         return null;
     }
 
-    static call_validate(ele$, configs){
+    static reset_form(ele$) {
+        $(ele$).find('.is-invalid').removeClass('is-invalid');
+        $(ele$).find('.is-valid').removeClass('is-valid');
+        $(ele$).find('.form-error-msg').remove();
+    }
+
+    static call_validate(ele$, configs) {
         let validator = $(ele$).validate({
             focusInvalid: true,
             validClass: "is-valid",
@@ -115,6 +131,7 @@ class SetupFormSubmit {
             },
             errorPlacement: function (error, element) {
                 // error.insertAfter(element);
+                error.addClass('form-error-msg')
                 error.css({'color': "red"})
 
                 //
@@ -122,8 +139,8 @@ class SetupFormSubmit {
                 let insertAfterEle = parentEle.hasClass('input-group') || parentEle.hasClass('input-affix-wrapper') ? parentEle : element;
 
                 //
-                if (insertAfterEle.siblings('.select2-container').length > 0){
-                  insertAfterEle.parent().append(error);
+                if (insertAfterEle.siblings('.select2-container').length > 0) {
+                    insertAfterEle.parent().append(error);
                 } else error.insertAfter(insertAfterEle);
             },
             onsubmit: false,
@@ -245,9 +262,9 @@ class UrlGatewayReverse {
         return urlData;
     }
 
-    static get_url_pk_app(doc_id, app_id, params){
+    static get_url_pk_app(doc_id, app_id, params) {
         let urlData = '#';
-        if (app_id && doc_id){
+        if (app_id && doc_id) {
             urlData = globeGatewayPKMiddleDetailView
                 .replaceAll('__pk_app__', app_id)
                 .replaceAll('__pk_doc__', doc_id) + "?" + $.param(params);
@@ -255,28 +272,28 @@ class UrlGatewayReverse {
         return urlData;
     }
 
-    static get_app_translate_full(){
+    static get_app_translate_full() {
         let appNameTranslate = $("#app_name_translate").text();
-        return appNameTranslate ? JSON.parse(appNameTranslate): {};
+        return appNameTranslate ? JSON.parse(appNameTranslate) : {};
     }
 
-    static get_app_name(code_app){
-         if (code_app){
+    static get_app_name(code_app) {
+        if (code_app) {
             let _arr = code_app.split(".");
-            if (_arr.length === 2){
+            if (_arr.length === 2) {
                 let appNameTranslate = UrlGatewayReverse.get_app_translate_full()
                 let appData = appNameTranslate?.[_arr[0].toLowerCase()];
-                if (appData && typeof appData === 'object'){
+                if (appData && typeof appData === 'object') {
                     let featureData = appNameTranslate?.[_arr[0].toLowerCase()][_arr[1].toLowerCase()];
-                    if (featureData && typeof  featureData === 'object') return featureData;
+                    if (featureData && typeof featureData === 'object') return featureData;
                 }
             }
         }
         return {};
     }
 
-    static get_app_name_pk_app(pk_app){
-        if (pk_app){
+    static get_app_name_pk_app(pk_app) {
+        if (pk_app) {
             let appNameTranslate = UrlGatewayReverse.get_app_translate_full()
             let appData = appNameTranslate?.[pk_app];
             if (appData) return appData;
@@ -284,8 +301,8 @@ class UrlGatewayReverse {
         return {}
     }
 
-    static has_active_app(appData){
-        if (appData){
+    static has_active_app(appData) {
+        if (appData) {
             if (appData && appData.hasOwnProperty('is_active')) return appData['is_active'];
         }
         return true;
@@ -490,7 +507,7 @@ class NotifyController {
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
-                    if (data){
+                    if (data) {
                         let counter = Number.parseInt(clsThis.bellCount.text());
                         if (counter > 0) counter -= 1;
 
@@ -503,13 +520,14 @@ class NotifyController {
                         btnEle$.closest('.bell-menu-item').find('.notify-flag-unseen').remove();
                         btnEle$.fadeOut({
                             'duration': 'fast',
-                            'always': function (){
-                               btnEle$.remove();
+                            'always': function () {
+                                btnEle$.remove();
                             }
                         });
                     }
                 },
-                (errs) => {},
+                (errs) => {
+                },
             );
         }
     }
@@ -528,27 +546,27 @@ class NotifyController {
             let dataMethod = $(this).attr('data-method');
 
             let appNameTranslate = $("#app_name_translate").text();
-            appNameTranslate = appNameTranslate ? JSON.parse(appNameTranslate): {};
+            appNameTranslate = appNameTranslate ? JSON.parse(appNameTranslate) : {};
 
-            function resolve_app_name(_code_app){
-                if (_code_app){
+            function resolve_app_name(_code_app) {
+                if (_code_app) {
                     let appData = UrlGatewayReverse.get_app_name(_code_app);
                     if (appData && appData.hasOwnProperty('title')) return appData['title'];
                 }
                 return _code_app;
             }
 
-            function has_active_app(_code_app){
-                if (_code_app){
+            function has_active_app(_code_app) {
+                if (_code_app) {
                     let appData = UrlGatewayReverse.get_app_name(_code_app);
                     return UrlGatewayReverse.has_active_app(appData);
                 }
                 return true;
             }
 
-            function minimal_msg(item){
+            function minimal_msg(item) {
                 let msg = item?.['msg'];
-                if (msg.length > 100){
+                if (msg.length > 100) {
                     let minimal_txt = msg.slice(0, 100);
                     let more_txt = msg.slice(100);
                     return `<div class="mb-1">
@@ -586,13 +604,13 @@ class NotifyController {
                         let btnSeenItem = item?.['is_done'] === true ? `` : `
                             <button class="btn btn-xs btn-primary text-no-capital btn-seen-notify"><i class="fa-brands fa-readme"></i> ${dataArea.attr('data-msg-seen')}</button>
                         `;
-                        let btn_reply_mentions = !item?.['comment_mentions_id'] ? ``: `
+                        let btn_reply_mentions = !item?.['comment_mentions_id'] ? `` : `
                             <button 
                                 class="btn btn-xs btn-primary text-no-capital btn-notify-reply-comment" 
                                 type="button"
                             ><i class="fa-solid fa-reply"></i> ${dataArea.attr('data-msg-reply')}</button>
                         `;
-                        let btn_goto = has_active_app(item?.['doc_app']) !== true ?  `` : `
+                        let btn_goto = has_active_app(item?.['doc_app']) !== true ? `` : `
                             <a href="${urlData}" class="btn btn-xs btn-primary text-no-capital" type="button"><i class="fa-solid fa-right-to-bracket"></i> ${dataArea.attr('data-msg-goto')} </a>
                         `;
                         let tmp = `
@@ -643,7 +661,7 @@ class NotifyController {
                     {'imgReplace': globeAvatarNotFoundImg},
                 );
 
-                dataArea.find('button.btn-notify-reply-comment').on('click', function (event){
+                dataArea.find('button.btn-notify-reply-comment').on('click', function (event) {
                     // event.stopPropagation();
 
                     let bellNotifyItem = $(this).closest('.bell-menu-item');
@@ -663,7 +681,7 @@ class NotifyController {
                     modalEle.modal('show');
                 });
 
-                dataArea.find('button.btn-seen-notify').on('click', function (event){
+                dataArea.find('button.btn-seen-notify').on('click', function (event) {
                     event.stopPropagation();
 
                     let bellNotifyItem = $(this).closest('.bell-menu-item');
@@ -673,7 +691,7 @@ class NotifyController {
                     if (isDone === false) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx), $(this));
                 })
 
-                dataArea.find('button.notify-btn-show-full-msg').on('click', function (event){
+                dataArea.find('button.notify-btn-show-full-msg').on('click', function (event) {
                     event.stopPropagation();
 
                     $(this).siblings('.notify-minimal-msg').fadeOut('fast');
@@ -1621,8 +1639,8 @@ class ListeningEventController {
         })
     }
 
-    static listenImageLoad(imgEle = null, opts={}){
-        function resolve_title_tooltip(_ele){
+    static listenImageLoad(imgEle = null, opts = {}) {
+        function resolve_title_tooltip(_ele) {
             let parentTxt = '';
             if ($(_ele).parent().attr('data-toggle') === 'tooltip' || $(_ele).parent().attr('data-bs-toggle') === 'tooltip') {
                 parentTxt = $(_ele).parent().attr('title');
@@ -1633,7 +1651,7 @@ class ListeningEventController {
         let imgReplace = opts?.['imgReplace'] || globeFileNotFoundImg;
         (
             imgEle ? imgEle : $('img')
-        ).each(function (){
+        ).each(function () {
             if ($(this)[0].complete === true && $(this)[0].naturalWidth === 0 && $(this)[0].naturalHeight === 0) {
                 $(this).attr('data-old-src', $(this).attr('src'));
                 $(this).attr('src', imgReplace);
@@ -1642,7 +1660,7 @@ class ListeningEventController {
                 $(this).tooltip();
             }
 
-            $(this).on('error', function() {
+            $(this).on('error', function () {
                 $(this).attr('data-old-src', $(this).attr('src'));
                 $(this).attr('data-toggle', 'tooltip');
                 $(this).attr('title', resolve_title_tooltip($(this)));
@@ -1754,7 +1772,8 @@ class WFRTControl {
                 WindowControl.showLoading();
                 setTimeout(function () {
                     // Redirect to the previous page
-                    window.history.back();
+                    let urlBack = window.location.href.replace('update', 'detail');
+                    window.location.replace(urlBack);
                 }, 1000);
             }
         }
@@ -2240,6 +2259,7 @@ class WFRTControl {
                     <div class="col-12">
                         <div class="card">
                             <div class="hk-ribbon-type-1 start-touch">` + `<span>${$.fn.transEle.attr('data-node-completed')}</span></div>
+                            <br>
                             <div class="card-body mt-5">
                                 ${htmlBody}
                             </div>
@@ -2483,7 +2503,7 @@ class WFRTControl {
                 }
 
                 // case: input is Files
-                if ($(this).hasClass('dm-uploader-ids')){
+                if ($(this).hasClass('dm-uploader-ids')) {
                     let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
                     uploaderEle.dmUploader('disable');
                 }
@@ -2523,7 +2543,7 @@ class WFRTControl {
                                         });
 
                                         // case: input is Files
-                                        if ($(this).hasClass('dm-uploader-ids')){
+                                        if ($(this).hasClass('dm-uploader-ids')) {
                                             let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
                                             uploaderEle.dmUploader('disable');
                                         }
@@ -2538,7 +2558,7 @@ class WFRTControl {
                                         });
 
                                         // case: input is Files
-                                        if ($(this).hasClass('dm-uploader-ids')){
+                                        if ($(this).hasClass('dm-uploader-ids')) {
                                             let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
                                             uploaderEle.dmUploader('enable');
                                         }
@@ -2604,28 +2624,28 @@ class WFRTControl {
             // add button save at zones
             // idFormID
             if (zonesData.length > 0) {  // check if user has zone edit then show button save at zones
-            if (window.location.href.includes('/update/')) {
-                let idFormID = globeFormMappedZone;
-                if (idFormID) {
-                    DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
-                    $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
-                        DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
-                    });
-
-                    let actionList = WFRTControl.getActionsList();
-                    let actionBubble = null;
-                    if (actionList.includes(1)) {
-                        actionBubble = 1;
-                    } else if (actionList.includes(4)) {
-                        actionBubble = 4;
-                    }
-                    if (actionBubble) {
-                        $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden').on('click', function () {
+                if (window.location.href.includes('/update/')) {
+                    let idFormID = globeFormMappedZone;
+                    if (idFormID) {
+                        DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
+                        $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
                             DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
                         });
+
+                        let actionList = WFRTControl.getActionsList();
+                        let actionBubble = null;
+                        if (actionList.includes(1)) {
+                            actionBubble = 1;
+                        } else if (actionList.includes(4)) {
+                            actionBubble = 4;
+                        }
+                        if (actionBubble) {
+                            $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden').on('click', function () {
+                                DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
+                            });
+                        }
                     }
                 }
-            }
             }
         }
     }
@@ -2789,22 +2809,10 @@ class WFRTControl {
         let btnEnableCR = $('#btnEnableCR');
         if (eleRealAction) {
             if (btnCancel.length <= 0 && btnEnableCR.length <= 0) {
-                $(eleRealAction).append(`<button class="btn btn-outline-blue btn-wf-after-finish" id="btnEnableCR" data-value="1">
-                                            <span>
-                                                <span>${$.fn.transEle.attr('data-change-request')}</span>
-                                                <span class="icon">
-                                                    <i class="fa-regular fa-pen-to-square"></i>
-                                                </span>
-                                            </span>
-                                        </button>
-                                        <button class="btn btn-outline-danger btn-wf-after-finish" id="btnCancel" data-value="2">
-                                            <span>
-                                                <span>${$.fn.transEle.attr('data-cancel')}</span>
-                                                <span class="icon">
-                                                    <i class="fas fa-times"></i>
-                                                </span>
-                                            </span>
-                                        </button>`);
+                $(eleRealAction).append(`<div class="btn-group btn-group-rounded" role="group" aria-label="Basic example">
+                                            <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>
+                                            <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>
+                                        </div>`);
                 // add event
                 eleRealAction.on('click', '.btn-wf-after-finish', function () {
                     return WFRTControl.callActionWF($(this));
@@ -2820,22 +2828,10 @@ class WFRTControl {
         let formID = globeFormMappedZone;
         if (eleRealAction && formID) {
             if (btnSaveCR.length <= 0 && btnCancelCR.length <= 0) {
-                $(eleRealAction).append(`<button class="btn btn-outline-blue btn-wf-after-finish" type="submit" form="${formID}" id="btnSaveCR" data-value="3">
-                                            <span>
-                                                <span>${$.fn.transEle.attr('data-save-change')}</span>
-                                                <span class="icon">
-                                                    <i class="fa-regular fa-floppy-disk"></i>
-                                                </span>
-                                            </span>
-                                        </button>
-                                        <button class="btn btn-outline-secondary btn-wf-after-finish" id="btnCancelCR" data-value="4">
-                                            <span>
-                                                <span>${$.fn.transEle.attr('data-go-back')}</span>
-                                                <span class="icon">
-                                                    <i class="fas fa-arrow-left"></i>
-                                                </span>
-                                            </span>
-                                        </button>`);
+                $(eleRealAction).append(`<div class="btn-group btn-group-rounded" role="group" aria-label="Basic example">
+                                            <button class="btn btn-outline-primary btn-wf-after-finish" type="submit" form="${formID}" id="btnSaveCR" data-value="3">${$.fn.transEle.attr('data-save-change')}</button>
+                                            <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancelCR" data-value="4">${$.fn.transEle.attr('data-go-back')}</button>
+                                        </div>`);
                 // Add event
                 eleRealAction.on('click', '.btn-wf-after-finish', function () {
                     return WFRTControl.callActionWF($(this));
@@ -3157,7 +3153,7 @@ class UtilControl {
         return data;
     }
 
-    static notifyErrors(errs, opts={}) {
+    static notifyErrors(errs, opts = {}) {
         let confirmOpts = $.extend(
             {
                 'keyNotMatch': '',
@@ -3167,13 +3163,22 @@ class UtilControl {
             opts
         )
 
-        function resolveDataNotify(key, data){
-            if (confirmOpts.isShowKey === true){
-                if (confirmOpts.replaceKey){
-                    if (confirmOpts.replaceKey.hasOwnProperty(key)) return {'title': confirmOpts.replaceKey[key], 'description': data}
-                    if (typeof confirmOpts.keyNotMatch === "string") return {'title': confirmOpts.keyNotMatch, 'description': data}
+        function resolveDataNotify(key, data) {
+            if (confirmOpts.isShowKey === true) {
+                if (confirmOpts.replaceKey) {
+                    if (confirmOpts.replaceKey.hasOwnProperty(key)) return {
+                        'title': confirmOpts.replaceKey[key],
+                        'description': data
+                    }
+                    if (typeof confirmOpts.keyNotMatch === "string") return {
+                        'title': confirmOpts.keyNotMatch,
+                        'description': data
+                    }
                 }
-                return {'title': key, 'description': data}
+                return {
+                    'title': key,
+                    'description': data
+                }
             }
             return {'description': data}
         }
@@ -3303,8 +3308,8 @@ class UtilControl {
         return result;
     }
 
-    static flattenObjectParams(obj, parentKey = '', result = {}){
-        if (Array.isArray(obj)){
+    static flattenObjectParams(obj, parentKey = '', result = {}) {
+        if (Array.isArray(obj)) {
             result[parentKey] = obj;
         } else {
             for (let key in obj) {
@@ -3323,7 +3328,7 @@ class UtilControl {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    static escapeHTML(txt){
+    static escapeHTML(txt) {
         return txt
             .toString()
             .replace(/&/g, '&amp;')
@@ -3352,7 +3357,7 @@ class DTBControl {
         let rowData = $x.fn.getRowData($(clsThis));
         let newData = func(clsThis, rowIdx, rowData);
         let dtbAfter = dtb.row(rowIdx).data(newData);
-        if (isDraw === true) dtbAfter.draw(false, true);
+        if (isDraw === true) dtbAfter.draw(false);
         return dtbAfter;
     }
 
@@ -3930,7 +3935,7 @@ class DTBControl {
 
     static parseDomDtl(opts) {
         // header Toolbar class name
-        let headerToolbarClsName = opts['headerToolbarClsName'] || 'my-2';
+        let headerToolbarClsName = opts['headerToolbarClsName'] || 'mt-2';
 
         // stateDefaultPageControl: disable all toolbar
         let stateDefaultPageControl = typeof opts?.['stateDefaultPageControl'] === 'boolean' ? opts?.['stateDefaultPageControl'] : true;
@@ -3970,7 +3975,7 @@ class DTBControl {
             visibleButton: false, // button
         }
         // show or hide button
-        if (opts.hasOwnProperty('visibleButton')){
+        if (opts.hasOwnProperty('visibleButton')) {
             if ($.fn.isBoolean(opts['visibleButton'])) utilsDom.visibleButton = opts['visibleButton'];
             delete opts['visibleButton']
         }
@@ -4123,7 +4128,7 @@ class DTBControl {
                             // re-configure (assign other config) to d
                             if (ajaxDataCallback instanceof Function) {
                                 Object.assign(d, ajaxDataCallback(d));
-                            } else if (ajaxDataCallback instanceof Object){
+                            } else if (ajaxDataCallback instanceof Object) {
                                 Object.assign(d, ajaxDataCallback)
                             }
 
@@ -4474,16 +4479,16 @@ class WindowControl {
 
     static showLoading(opts) {
         // loadingTitleAction: GET (default), CREATE, UPDATE, DELETE
-        function resolve_title(){
+        function resolve_title() {
             let title = '';
             let loadingTitleKeepDefault = opts?.['loadingTitleKeepDefault'] || true;
-            if (loadingTitleKeepDefault === true){
+            if (loadingTitleKeepDefault === true) {
                 let loadingTitleAction = opts?.['loadingTitleAction'] || 'GET';
-                if (loadingTitleAction === 'GET'){
+                if (loadingTitleAction === 'GET') {
                     title += $.fn.transEle.attr('data-loading');
-                } else if (loadingTitleAction === 'CREATE'){
+                } else if (loadingTitleAction === 'CREATE') {
                     title += $.fn.transEle.attr('data-loading-creating');
-                } else if (loadingTitleAction === 'UPDATE'){
+                } else if (loadingTitleAction === 'UPDATE') {
                     title += $.fn.transEle.attr('data-loading-updating');
                 } else if (loadingTitleAction === "DELETE") {
                     title += $.fn.transEle.attr('data-loading-deleting');
@@ -4629,6 +4634,34 @@ class WindowControl {
         })
     }
 
+    static showTimeOut(props) {
+        if (Swal.isVisible()) Swal.close();  // force close when another showing
+
+        let {
+            callback,
+            ...opts
+        } = {
+            'callback': function () {
+            },
+            ...props
+        };
+        Swal.fire({
+            timer: 400,
+            timerProgressBar: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+                $('.swal2-actions.swal2-loading').css('margin-top', 0);
+                $('.swal2-popup').css('background', 'unset');
+            },
+            ...opts,
+        }).then((result) => {
+            setTimeout(() => {
+                callback();
+            });
+        });
+    }
+
     static showUnauthenticated(opts, isRedirect = true) {
         if (isRedirect === true) {
             Swal.fire({
@@ -4684,7 +4717,7 @@ class WindowControl {
         })
     }
 
-    static scrollToIdx(idxStrOr$, parentEleStrOr$='#idxPageContent .simplebar-content-wrapper'){
+    static scrollToIdx(idxStrOr$, parentEleStrOr$ = '#idxPageContent .simplebar-content-wrapper') {
         const ele$ = idxStrOr$ instanceof jQuery ? idxStrOr$ : $(idxStrOr$);
         let parent$ = parentEleStrOr$ instanceof jQuery ? parentEleStrOr$ : $(parentEleStrOr$);
         let offsetTop = ele$.offset().top;
@@ -4702,6 +4735,18 @@ class WindowControl {
                 if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
             });
         return result;
+    }
+
+    static getPropertiesValue(propertyName) {
+        const root = document.querySelector(':root');
+        return getComputedStyle(root).getPropertyValue(propertyName);
+    }
+
+    static scrollToCus(scroller$, selected$, duration) {
+        let parentOffset = scroller$.offset().top;
+        let elementOffset = $(selected$).offset().top;
+        let scrollPosition = elementOffset - parentOffset + scroller$.scrollTop() - (scroller$.height() / 2) + ($(selected$).height() / 2);
+        scroller$.animate({scrollTop: scrollPosition}, duration ?? 'slow');
     }
 }
 
@@ -4748,9 +4793,9 @@ class PersonControl {
         `;
     }
 
-    static getEmployeeCurrentID(default_val=null){
+    static getEmployeeCurrentID(default_val = null) {
         let ele = $('#idx-link-to-current-employee');
-        if (ele.length > 0){
+        if (ele.length > 0) {
             return ele.attr('data-value-id');
         }
         return default_val;
@@ -4820,7 +4865,7 @@ class DocumentControl {
         return data['config']?.['currency_rule'];
     }
 
-    static async getCompanyCurrencyFull(){
+    static async getCompanyCurrencyFull() {
         let data = await DocumentControl.getCompanyConfig();
         return data['config'];
     }
@@ -5039,8 +5084,10 @@ class DocumentControl {
     }
 }
 
-class ExcelToJSON {
-    parseFile(file, callback_render, callback_error = null) {
+class ExcelSheetJSController {
+    // https://docs.sheetjs.com/
+
+    static parseFileToJSON(file, callback_render, callback_error = null) {
         let reader = new FileReader();
 
         reader.onload = function (e) {
@@ -5062,7 +5109,285 @@ class ExcelToJSON {
 
         reader.readAsBinaryString(file);
     }
+
+    static download(workbook, fileName, Props, writeOpt, callbackComplete) {
+        Props = {
+            Author: "Bflow",
+            LastAuthor: "Bflow",
+            Keywords: 'bflow, bflow-export, export, excel',
+            Company: 'Bflow.vn',
+            Title: 'Bflow Export Data',
+            Subject: 'Bflow Export Data',
+            ProgramName: 'Bflow',
+            ...Props,
+        }
+        workbook.Props = Props;
+
+        if (!fileName.endsWith('.xlsx')) fileName += '.xlsx';
+        writeOpt = {
+            compression: true,
+            ...writeOpt
+        }
+        XLSX.writeFile(workbook, fileName, writeOpt);
+
+        if (typeof callbackComplete === "function") callbackComplete()
+    }
+
+    static _convertWidthColsJSON(data){
+        let widthArr = [];
+        let colPropertiesTmp = {
+            'wch': 10,
+        }
+        data.map(
+            item => {
+                Object.keys(item).map(
+                    (key, idx) => {
+                        let itemOfIndex = widthArr?.[idx] || {...colPropertiesTmp};
+                        let wData = Math.max(
+                            itemOfIndex.wch,
+                            key.toString().length,
+                            item[key].toString().length
+                        );
+                        itemOfIndex['wch'] = wData <= 40 ? wData : 40;
+                        widthArr[idx] = itemOfIndex;
+                    }
+                )
+            }
+        )
+        return widthArr;
+    }
+
+    static _convertWidthColsArray(data){
+        let widthArr = [];
+        let colPropertiesTmp = {
+            'wch': 10,
+        }
+        data.map(
+            item => {
+                Object.keys(item).map(
+                    (key, idx) => {
+                        let itemOfIndex = widthArr?.[idx] || {...colPropertiesTmp};
+                        let wData = Math.max(
+                            itemOfIndex.wch,
+                            key.toString().length,
+                            item[key].toString().length
+                        );
+                        itemOfIndex['wch'] = wData <= 40 ? wData : 40;
+                        widthArr[idx] = itemOfIndex;
+                    }
+                )
+            }
+        )
+        return widthArr;
+    }
+
+    static createWorkbook(opts, dataType, callback = () => {}) {
+        opts = {
+            'sheetName': 'Data',
+            'data': [],
+            '!cols': [],
+            '!merges': [],
+            ...opts
+        }
+        if (XLSX) {
+            if (Array.isArray(opts.data)) {
+                const workbook = XLSX.utils.book_new();
+                let worksheet = null;
+                let widthCols = opts['!cols'];
+                let merges = opts['!merges'];
+
+                switch (dataType) {
+                    case 'json':
+                        worksheet = XLSX.utils.json_to_sheet(opts.data);
+                        if (Array.isArray(widthCols) && widthCols.length === 0) {
+                            widthCols = this._convertWidthColsJSON(opts.data, dataType);
+                        }
+                        break
+                    case 'array':
+                        worksheet = XLSX.utils.aoa_to_sheet(opts.data);
+                        if (Array.isArray(widthCols) && widthCols.length === 0) {
+                            widthCols = this._convertWidthColsArray(opts.data, dataType);
+                        }
+                        break
+                    default:
+                        throw Error(`Create Workbook: Worksheet not support type "${dataType}" convert!`);
+                }
+
+                if (worksheet) {
+                    if (opts['!cols']) worksheet["!cols"] = widthCols;
+
+                    // [{"s":{"r":0,"c":0},"e":{"r":1,"c":0}}] : Gộp cột A từ hàng 1 đến hàng 2
+                    if (merges) worksheet['!merges'] = merges;
+
+                    if (callback && typeof callback === 'function') callback(workbook, worksheet);
+
+                    XLSX.utils.book_append_sheet(workbook, worksheet, opts.sheetName);
+                    return workbook;
+                } else throw Error('Create Workbook: The worksheet must be required');
+            } else throw Error('Create Workbook: The data of sheet must be array object');
+        } else throw Error('Create Workbook: The library is not found');
+    }
 }
+
+class ExcelJSController {
+    // https://www.npmjs.com/package/exceljs
+
+    static indexToCoord(r, c) {
+        return String.fromCharCode(65 + c) + (r + 1);
+    }
+
+    static indexToCoordRange(coord1, coord2) {
+        const data1 = ExcelJSController.indexToCoord(coord1.r, coord1.c);
+        const data2 = ExcelJSController.indexToCoord(coord2.r, coord2.c);
+        return data1 + ':' + data2;
+    }
+
+    static async download(opts){
+        let {
+            workbook, fileName, wbProps, callback
+        } = {
+            'workbook': null,
+            'fileName': 'download.xlsx',
+            'wbProps': {},
+            'callback': () => {},
+            ...opts,
+        }
+
+        if (!fileName.endsWith('.xlsx')) fileName += '.xlsx';
+
+        wbProps = {
+            'creator': 'Bflow.vn',
+            'lastModifiedBy': 'Bflow',
+            'created': new Date(),
+            'modified': new Date(),
+            'lastPrinted': null,
+            ...wbProps,
+        }
+        Object.keys(wbProps).map(
+            propertyKey => {
+                workbook[propertyKey] = wbProps[propertyKey];
+            }
+        )
+
+        let buffer = await workbook.xlsx.writeBuffer();
+        let blob = new Blob([buffer], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+        let link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+        URL.revokeObjectURL(link.href);
+
+        if (callback && typeof callback === 'function') callback();
+    }
+
+    static styleCell(worksheet, opts) {
+        let {
+            fullBorder, cellCallback
+        } = {
+            'fullBorder': true,
+            cellCallback: (cell, colNumber, row, rowNumber) => {},
+            ...opts
+        };
+        const styleFullBorder = {
+                top: {style: 'thin'},
+                left: {style: 'thin'},
+                bottom: {style: 'thin'},
+                right: {style: 'thin'}
+            };
+        worksheet.eachRow(function (row, rowNumber) {
+            row.eachCell(function (cell, colNumber) {
+                if (fullBorder) cell.border = styleFullBorder;
+                cellCallback(cell, colNumber, row, rowNumber);
+            });
+        });
+    }
+
+    static convertWidthColsArray(data, opts) {
+        let {
+            minWch,
+            maxWch,
+            appendWch
+        } = {
+            minWch: 3,
+            maxWch: 40,
+            appendWch: 2,
+            ...opts
+        };
+        let colWidth = [];
+        data.map(
+            dataItem => {
+                dataItem.map(
+                    (subItem, idx) => {
+                        let currentByIdx = colWidth?.[idx] || 0;
+                        if (currentByIdx === undefined) {
+                            currentByIdx = minWch;
+                        }
+                        let currentLength = subItem.length;
+
+                        if (currentLength > currentByIdx) {
+                            colWidth[idx] = currentLength > maxWch ? maxWch : currentLength;
+                        }
+                    }
+                )
+            }
+        )
+        return colWidth.map(item => item + appendWch);
+    }
+
+    static createWorkbook(opts) {
+        let {
+            sheetName,
+            data,
+            cols,
+            merges,
+            styles,
+            callback,
+        } = {
+            'sheetName': 'Data',
+            'data': [],  // [[1,2,3],[4,5,6]]
+            'cols': [],  // Width Of Columns: [3, 40, 10]
+            'merges': [],  // ["A1:A2", "B1:C1"]
+            'styles': [], // [["A1", {"alignment": {vertical: 'middle', horizontal: 'left'}}], ]
+            'callback': (workbook, worksheet) => {},
+            ...opts
+        }
+
+        if (ExcelJS) {
+            const workbook = new ExcelJS.Workbook();
+
+            const worksheet = workbook.addWorksheet(sheetName);
+
+            data.map(dataItem => worksheet.addRow(dataItem))
+
+            worksheet.columns = Array.from(
+                cols.map(
+                    colItem => {
+                        return {
+                            width: colItem
+                        }
+                    }
+                )
+            )
+
+            merges.map(mergeItem => worksheet.mergeCells(mergeItem))
+
+            styles.map(styleItem => {
+                let [coord, config] = styleItem;
+                let cell = worksheet.getCell(coord);
+                Object.keys(config).map(
+                    propertyKey => {
+                        cell[propertyKey] = config[propertyKey];
+                    }
+                )
+            });
+
+            if (callback && typeof callback === 'function') callback(workbook, worksheet);
+
+            return workbook;
+        } else throw Error('Create Workbook: The library is not found');
+    }
+}
+
 
 class DateTimeControl {
     static defaultFormatDatetime = 'YYYY-MM-DD hh:mm:ss';
@@ -5138,11 +5463,13 @@ class Beautiful {
 }
 
 class FileControl {
-    static get_val(input_val, default_empty=null){
-        if (input_val){
+    static get_val(input_val, default_empty = null) {
+        if (input_val) {
             let result = [];
             input_val.split(",").map(
-                (item) => {if (item && UtilControl.checkUUID4(item)) result.push(item);}
+                (item) => {
+                    if (item && UtilControl.checkUUID4(item)) result.push(item);
+                }
             )
             return result;
         }
@@ -5186,11 +5513,11 @@ class FileControl {
         return `${data.value.toFixed(round)} ${data.typeCode}`;
     }
 
-    static resolve_ids(ids){
+    static resolve_ids(ids) {
         let result = [];
         ids.split(",").map(
             (item) => {
-                if (item){
+                if (item) {
                     result.push(item.trim());
                 }
             }
@@ -5239,7 +5566,7 @@ class FileControl {
         let allowType = config.allowedTypes;
         if (allowType && allowType !== '*') {
             let inputFileEle = this.ele$.find('.dm-uploader input[type="file"]');
-            if (inputFileEle.length > 0){
+            if (inputFileEle.length > 0) {
                 if (allowType.endsWith("/*")) {
                     acceptData.push(allowType);
                 } else {
@@ -5271,7 +5598,7 @@ class FileControl {
         this.ele$.find('.instruction-upload-file-text').append(htmlOfType, htmlOfSize);
     }
 
-    ui_check_id_exist(id){
+    ui_check_id_exist(id) {
         let inputEle = this.ele$.find('.dm-uploader-ids');
         return inputEle.val().indexOf(id) !== -1;
     }
@@ -5285,8 +5612,8 @@ class FileControl {
         }
     }
 
-    ui_remove_id(id){
-        if (this.init_opts.enable_remove === true){
+    ui_remove_id(id) {
+        if (this.init_opts.enable_remove === true) {
             let inputEle = this.ele$.find('.dm-uploader-ids');
             let ids = inputEle.val();
             if (typeof ids === 'string' && ids.indexOf(id) !== -1) {
@@ -5306,7 +5633,7 @@ class FileControl {
 
     ui_remove_line_file_by_id(id) {
         let itemEle = this.ele$.find(`.dm-uploader-result-list .dm-uploader-result-item[data-file-id="${id}"]`);
-        if (itemEle.length > 0){
+        if (itemEle.length > 0) {
             this.ui_remove_id(itemEle.attr('data-file-id'));
             itemEle.remove();
         }
@@ -5352,14 +5679,14 @@ class FileControl {
         let selectedGroup = modalEle.find('.selected-file-cloud');
         let tblEle = modalEle.find('table.select-file-cloud');
 
-        function refresh_dtb(){
+        function refresh_dtb() {
             tblEle.DataTable().rows().clear();
             selectedGroup.empty().closest('.selected-file-cloud-group').fadeOut();
         }
 
         modalEle.on('show.bs.modal', function () {
             if (tblEle.length === 1) {
-                if($.fn.DataTable.isDataTable(tblEle)){
+                if ($.fn.DataTable.isDataTable(tblEle)) {
                     refresh_dtb();
                     tblEle.DataTable().ajax.reload();
                 } else {
@@ -5448,10 +5775,10 @@ class FileControl {
                                 }
                             })
                         },
-                        initComplete: function (settings, json){
-                            modalEle.find('button.save-change-file-cloud').on('click', function (){
+                        initComplete: function (settings, json) {
+                            modalEle.find('button.save-change-file-cloud').on('click', function () {
                                 let ids = {};
-                                selectedGroup.find('.selected-file-cloud-item').each(function (){
+                                selectedGroup.find('.selected-file-cloud-item').each(function () {
                                     ids[$(this).attr('data-id')] = JSON.parse($(this).find('script').text());
                                 })
                                 let skipFileName = [];
@@ -5462,7 +5789,7 @@ class FileControl {
                                         else clsThis.ui_load_file_data(ids[key]);
                                     }
                                 )
-                                if (skipFileName.length > 0){
+                                if (skipFileName.length > 0) {
                                     Swal.fire({
                                         position: "top-end",
                                         icon: "info",
@@ -5479,12 +5806,12 @@ class FileControl {
         })
     }
 
-    event_for_destroy(element, hide_or_show){
+    event_for_destroy(element, hide_or_show) {
         let itemEle = $(element).closest('.dad-file-control-group').find('.dm-uploader-result-list').find('button.btn-destroy-file').addClass('d-none');
-        if (itemEle.length > 0){
+        if (itemEle.length > 0) {
             if (hide_or_show === 'hide') {
                 itemEle.addClass('d-none')
-            } else if (hide_or_show === 'show'){
+            } else if (hide_or_show === 'show') {
                 itemEle.removeClass('d-none')
             }
         }
@@ -5492,8 +5819,8 @@ class FileControl {
 
     ui_load_file_data(fileData) {
         let file_id = fileData?.['id'];
-        if (file_id){
-            if (!this.ui_check_id_exist(file_id)){
+        if (file_id) {
+            if (!this.ui_check_id_exist(file_id)) {
                 let f_obj = new File([""], fileData.file_name, {
                     name: fileData.file_name,
                     type: fileData.file_type,
@@ -5568,20 +5895,24 @@ class FileControl {
             onUploadError: function (id, xhr, status, message) {
                 clsThis.ui_multi_update_file_progress(id, 0, 'state-f-error');
             },
-            onFallbackMode: function () {},
-            onFileTypeError: function (file) {},
-            onFileSizeError: function (file) {},
-            onFileExtError: function (file) {},
-            onDestroy: function (){
+            onFallbackMode: function () {
+            },
+            onFileTypeError: function (file) {
+            },
+            onFileSizeError: function (file) {
+            },
+            onFileExtError: function (file) {
+            },
+            onDestroy: function () {
                 $(element).addClass('d-none');
                 this.onDisableDaD();
             },
-            onDisableDaD: function (){
+            onDisableDaD: function () {
                 $(this).find('input[type="file"]').prop('disabled', true).prop('readonly', true);
                 $(this).find('button.btn-select-cloud').prop('disabled', true).prop('readonly', true);
                 clsThis.event_for_destroy(this, 'hide');
             },
-            onEnableDaD: function (){
+            onEnableDaD: function () {
                 $(this).find('input[type="file"]').prop('disabled', false).prop('readonly', false);
                 $(this).find('button.btn-select-cloud').prop('disabled', false).prop('readonly', false);
                 clsThis.event_for_destroy(this, 'show');
@@ -5602,8 +5933,8 @@ class FileControl {
         let clsThis = this;
         const config = this.config;
 
-        if (!this.ele$.hasClass('dad-file-control-group')){
-            this.ele$.find('.dad-file-control-group').each(function (){
+        if (!this.ele$.hasClass('dad-file-control-group')) {
+            this.ele$.find('.dad-file-control-group').each(function () {
                 new FileControl(
                     $(this),
                     config,
@@ -5620,7 +5951,7 @@ class FileControl {
                         'disabled': false,
                         'enable_choose_file': true,
                         'enable_remove': true,
-                    }: {
+                    } : {
                         'readonly': true,
                         'disabled': true,
                         'enable_choose_file': false,
@@ -5639,7 +5970,7 @@ class FileControl {
                 if (dmUploaderEle.length > 0 && dmResults.length > 0) {
                     dmUploaderEle.dmUploader({
                         ...config,
-                        extraData: async function(fileId, fileData){
+                        extraData: async function (fileId, fileData) {
                             return await Swal.fire({
                                 input: "text",
                                 title: groupEle.attr('data-msg-description-file'),
@@ -5674,9 +6005,9 @@ class FileControl {
                         headers: {
                             'X-CSRFToken': clsThis.ele$.find('input[name="csrfmiddlewaretoken"]').val()
                         },
-                        onUploadSuccess: function (id, data){
+                        onUploadSuccess: function (id, data) {
                             let fileData = data?.['data']?.['file_detail'] || null;
-                            if (typeof fileData === 'object' && fileData.hasOwnProperty('id')){
+                            if (typeof fileData === 'object' && fileData.hasOwnProperty('id')) {
                                 config.onUploadSuccess(id, data);
                                 let eleItem = clsThis.ele$.find(`.dm-uploader-result-item[data-file-id="${id}"]`);
                                 eleItem.attr('data-file-id', data);
@@ -5706,9 +6037,9 @@ class FileControl {
                                     ${opts.name ? 'name="' + opts.name + '"' : ''} 
                                     value="" 
                                     class="dm-uploader-ids hidden" 
-                                    ${opts.readonly ? "readonly": ""}
-                                    ${opts.disabled ? "disabled": ""}
-                                    ${opts.required ? "required": "" }
+                                    ${opts.readonly ? "readonly" : ""}
+                                    ${opts.disabled ? "disabled" : ""}
+                                    ${opts.required ? "required" : ""}
                                 />
                             `);
 
@@ -5719,18 +6050,18 @@ class FileControl {
                             clsThis.ui_update_input_file(config);
 
                             // resolve exist data
-                            if (Array.isArray(opts.data) && opts.data.length > 0){
+                            if (Array.isArray(opts.data) && opts.data.length > 0) {
                                 opts.data.map((item) => clsThis.ui_load_file_data(item))
                             } else {
                                 clsThis.ele$.find('.dm-uploader-no-files').show();
                             }
 
                             // show choose file
-                            if (!opts.enable_choose_file){
+                            if (!opts.enable_choose_file) {
                                 dmUploaderEle.remove();
                             }
                             // show remove file exist
-                            if (!opts.enable_remove){
+                            if (!opts.enable_remove) {
                                 clsThis.ele$.find('button.btn-destroy-file').remove()
                             }
                         },
@@ -5772,9 +6103,14 @@ class FileControl {
 }
 
 class CommentControl {
-    constructor(ele$, opts={}) {
-        let {owner_id, btn_goto_enabled, swalOpts} = {
-            owner_id: $x.fn.getEmployeeCurrentID(), btn_goto_enabled: true,
+    constructor(ele$, opts = {}) {
+        let {
+            owner_id,
+            btn_goto_enabled,
+            swalOpts
+        } = {
+            owner_id: $x.fn.getEmployeeCurrentID(),
+            btn_goto_enabled: true,
             swalOpts: {'allowOutsideClick': true},
             ...opts
         }
@@ -5797,7 +6133,7 @@ class CommentControl {
         this.url_employee_detail = ele$.attr('data-url-employee-detail')
     }
 
-    __current_page(data){
+    __current_page(data) {
         let next = data.page_next;
         let previous = data.page_previous;
         let current = 0;
@@ -5813,20 +6149,20 @@ class CommentControl {
         }
     }
 
-    get_url_replies(pk){
+    get_url_replies(pk) {
         let urlBase = this.ele$.attr('data-url-replies');
         return urlBase && pk ? urlBase.replace('__pk__', pk) : null;
     }
 
-    item_add_event(eleItem$, has_replies=true) {
+    item_add_event(eleItem$, has_replies = true) {
         let clsThis = this;
         let pk = eleItem$.attr('data-comment-id');
         let urlResolved = clsThis.get_url_replies(pk);
 
-        eleItem$.find('.icon-collapse').on('click', function (){
+        eleItem$.find('.icon-collapse').on('click', function () {
             $(this).find('.fa-solid').toggleClass('d-none');
 
-            if (!$(this).find('.fa-chevron-right').hasClass('d-none')){
+            if (!$(this).find('.fa-chevron-right').hasClass('d-none')) {
                 eleItem$.find('.comment-content').fadeOut('fast');
                 eleItem$.find('.comment-mentions').fadeOut('fast');
                 eleItem$.find('.comment-replies').fadeOut('fast');
@@ -5839,25 +6175,30 @@ class CommentControl {
 
         });
 
-        if (has_replies ===  true){
+        if (has_replies === true) {
             let commentRepliesEle = eleItem$.find('.comment-replies');
             let eleReplyComment = eleItem$.find('.comment-reply-new');
 
-            function loadData(btnThis, opts={}){
+            function loadData(btnThis, opts = {}) {
                 let {
-                    override_url, override_push_ele_group, force_run,
-                    success_callback, fail_callback,
+                    override_url,
+                    override_push_ele_group,
+                    force_run,
+                    success_callback,
+                    fail_callback,
                 } = {
                     override_url: urlResolved,
                     override_push_ele_group: commentRepliesEle,
                     force_run: false,
-                    success_callback: function (){},
-                    fail_callback: function (){},
+                    success_callback: function () {
+                    },
+                    fail_callback: function () {
+                    },
                     ...opts
                 }
 
                 let stateDataUrl = !!$(btnThis).attr('data-url');
-                if (stateDataUrl === false || force_run === true){
+                if (stateDataUrl === false || force_run === true) {
                     if (override_url) {
                         $(btnThis).attr('data-url', override_url);
                         $.fn.callAjax2({
@@ -5866,7 +6207,7 @@ class CommentControl {
                         }).then(
                             resp => {
                                 let data = $.fn.switcherResp(resp);
-                                if (data){
+                                if (data) {
                                     success_callback(resp);
                                     let replies_list = data?.['comment_replies_list'] || [];
                                     replies_list.map(
@@ -5890,26 +6231,26 @@ class CommentControl {
             }
 
             let btnShowReplies = eleItem$.find('.btn-comment-action-show-replies');
-            btnShowReplies.on('click', function (){
+            btnShowReplies.on('click', function () {
                 let counter = Number.parseInt($(this).attr('data-counter'));
                 if (counter > 0) {
                     commentRepliesEle.fadeToggle({
                         duration: 'fast',
-                        start: function (){
+                        start: function () {
                             if (!!$(btnShowReplies).attr('data-url') === false) commentRepliesEle.empty();
                         },
-                        always: function (){
+                        always: function () {
                             if (commentRepliesEle.is(':visible') === true) loadData(btnShowReplies);
                         },
                     });
                 }
             })
 
-            eleItem$.find('.btn-comment-reply-new').on('click', function (){
-                if (eleReplyComment.length > 0){
+            eleItem$.find('.btn-comment-reply-new').on('click', function () {
+                if (eleReplyComment.length > 0) {
                     if (urlResolved) {
                         eleReplyComment.fadeToggle('fast');
-                        if (!$(this).attr('data-url')){
+                        if (!$(this).attr('data-url')) {
                             $(this).attr('data-url', urlResolved);
                             clsThis.init_box_comment({
                                 urlSubmit: urlResolved,
@@ -5933,18 +6274,18 @@ class CommentControl {
                 }
             })
 
-            eleItem$.siblings('.btn-comment-load-full').on('click', function (){
+            eleItem$.siblings('.btn-comment-load-full').on('click', function () {
                 let parentEle = $(this).parent();
-                if (parentEle.hasClass('comment-replies')){
+                if (parentEle.hasClass('comment-replies')) {
                     let eleItemParent = parentEle.closest('.comment-item');
                     let urlSelected = eleItemParent.attr('data-comment-id');
                     let eleRepliesParent = eleItemParent.find('.comment-replies');
-                    if (urlSelected && eleRepliesParent.length > 0){
+                    if (urlSelected && eleRepliesParent.length > 0) {
                         loadData(btnShowReplies, {
                             override_url: clsThis.get_url_replies(urlSelected),
                             override_push_ele_group: eleRepliesParent,
                             force_run: true,
-                            success_callback: function (){
+                            success_callback: function () {
                                 $(this).remove();
                                 eleRepliesParent.empty();
                             },
@@ -5952,7 +6293,7 @@ class CommentControl {
                     }
                 } else if (parentEle.hasClass('comment-list')) {
                     clsThis.fetch_all({}, {
-                        success_callback: function (){
+                        success_callback: function () {
                             $(this).remove();
                             parentEle.empty();
                         },
@@ -5970,10 +6311,13 @@ class CommentControl {
         if (clsThis.owner_id) eleItem$.find(`[data-mention-id="${clsThis.owner_id}"]`).addClass('mentions-is-me');
     }
 
-    item_get_html(kwargs, opts={}){
+    item_get_html(kwargs, opts = {}) {
         let clsThis = this;
         let {
-            action_enabled, replies_enabled, mentions_enabled, add_comment_enabled,
+            action_enabled,
+            replies_enabled,
+            mentions_enabled,
+            add_comment_enabled,
             btn_full_enabled,
         } = {
             mentions_enabled: true,
@@ -5985,17 +6329,17 @@ class CommentControl {
         }
 
         // mentions
-        function getFullHTMLMentionsPerson(_mentions, _mentions_data){
+        function getFullHTMLMentionsPerson(_mentions, _mentions_data) {
             let htmlMentionsFullPerson = [];
             if (
                 _mentions && typeof _mentions === 'object' && typeof Array.isArray(_mentions)
                 && _mentions_data && typeof _mentions_data === 'object'
-            ){
+            ) {
                 _mentions.map(
                     (item) => {
-                        if (item){
+                        if (item) {
                             let _data_tmp = _mentions_data?.[item] || {};
-                            if (_data_tmp){
+                            if (_data_tmp) {
                                 htmlMentionsFullPerson.push(
                                     `<a href="${clsThis.url_employee_detail.replace('__pk__', item)}" target="_blank">
                                         <img src="${_data_tmp?.['avatar_img'] || clsThis.default_person_avt}" 
@@ -6014,8 +6358,8 @@ class CommentControl {
         let htmlMentions = ``;
         if (mentions_enabled === true) {
             let htmlMentionsGot = getFullHTMLMentionsPerson(kwargs?.['mentions'] || [], kwargs?.['mentions_data'] || {});
-            if (htmlMentionsGot.length > 0){
-                htmlMentions =  `
+            if (htmlMentionsGot.length > 0) {
+                htmlMentions = `
                 <div class="comment-mentions">
                     ${htmlMentionsGot.join("")}
                     <small>${clsThis.ele$.attr('data-msg-been-mentioned')}</small>
@@ -6025,20 +6369,20 @@ class CommentControl {
         }
 
         // latest reply datetime
-        function getHTMLLatestReplyDatetime(){
+        function getHTMLLatestReplyDatetime() {
             let replies_latest = kwargs['replies_latest'] || null;
             let relateTime = $x.fn.displayRelativeTime(replies_latest, {
-                'callback': function (data){
+                'callback': function (data) {
                     return `${data.relate} (${data.output})`
                 }
             })
-            return  replies_latest ? `<small class="d-flex align-items-center">${clsThis.ele$.attr('data-msg-latest')}: ${relateTime} </small>` : ``;
+            return replies_latest ? `<small class="d-flex align-items-center">${clsThis.ele$.attr('data-msg-latest')}: ${relateTime} </small>` : ``;
         }
 
         // action
-        function getFullPersonReplied(){
+        function getFullPersonReplied() {
             let replies_persons = kwargs?.['replies_persons'] || {};
-            if (replies_persons && typeof replies_persons === 'object'){
+            if (replies_persons && typeof replies_persons === 'object') {
                 return Object.keys(replies_persons).map(
                     (idx) => {
                         let dataOfIdx = replies_persons[idx];
@@ -6092,7 +6436,7 @@ class CommentControl {
         ` : ``;
 
         // date created
-        function getHTMLDateCreated(){
+        function getHTMLDateCreated() {
             return `
                 <small class="px-2">-</small>
                 <small class="mr-1">${kwargs?.['date_relative'] || ''}</small>
@@ -6101,7 +6445,7 @@ class CommentControl {
         }
 
         // btn load full
-        function getHTMLBtnLoadFull(){
+        function getHTMLBtnLoadFull() {
             return btn_full_enabled === true ? `<button class="btn btn-xs btn-primary my-1 btn-comment-load-full">${clsThis.ele$.attr('data-msg-full')}</button>` : ``;
         }
 
@@ -6138,11 +6482,17 @@ class CommentControl {
         `;
     }
 
-    init_box_comment(opts){
+    init_box_comment(opts) {
         let clsThis = this;
         let {
-            urlSubmit, textarea, frmInsideAdd, showingMentions,
-            render_comment_opts, render_record_showing, rendered_scroll_top, rendered_plus_replies_ele,
+            urlSubmit,
+            textarea,
+            frmInsideAdd,
+            showingMentions,
+            render_comment_opts,
+            render_record_showing,
+            rendered_scroll_top,
+            rendered_plus_replies_ele,
         } = {
             urlSubmit: null,
             textarea: this.ele_add.find('textarea'),
@@ -6156,7 +6506,7 @@ class CommentControl {
         }
         let inputMentions = frmInsideAdd.find('input[name="mentions"]');
 
-        function setupDisplayMentionsInEditor(item){
+        function setupDisplayMentionsInEditor(item) {
             return `
                 <a 
                     href="${clsThis.url_employee_detail.replace('__pk__', item.id)}" 
@@ -6165,7 +6515,7 @@ class CommentControl {
             `;
         }
 
-        function setupDisplayMentionsInSummary(item){
+        function setupDisplayMentionsInSummary(item) {
             return $(`
                 <span class="mentions-display-txt">
                     <a 
@@ -6181,9 +6531,9 @@ class CommentControl {
 
         let tinymceEditor = null;
 
-        textarea.tinymce( {
+        textarea.tinymce({
             branding: false,
-            readonly : 0,
+            readonly: 0,
             menubar: false,
             height: 120,
             plugins: 'advlist autolink lists insertdatetime hr emoticons table mention link media image preview tabfocus visualchars visualblocks wordcount',
@@ -6191,7 +6541,7 @@ class CommentControl {
             pagebreak_split_block: true,
             pagebreak_separator: '<span class="page-break-here"><!-- my page break --></span>',
             toolbar_groups: {
-                formatting : {
+                formatting: {
                     icon: 'more-drawer',
                     tooltip: 'My group of buttons',
                     items: 'outdent indent hr insertdatetime | visualblocks visualchars wordcount removeformat | preview'
@@ -6220,24 +6570,24 @@ class CommentControl {
                                 )
                             }
                         )
-                       $.fn.callAjax2({
-                           url: clsThis.ele$.attr('data-mentions') + '?' + params,
-                           cache: true,
-                       }).then(
-                           (resp) => {
-                               let data = $.fn.switcherResp(resp);
-                               if (data){
-                                   let resource = (data?.['employee_list'] || []).map(
-                                       (item) => {
-                                           if (!item.avatar_img) item.avatar_img = clsThis.default_person_avt;
-                                           return UtilControl.flattenObject(item);
-                                       }
-                                   )
-                                   process(resource);
-                               }
-                           },
-                           (errs) => console.log(errs),
-                       )
+                        $.fn.callAjax2({
+                            url: clsThis.ele$.attr('data-mentions') + '?' + params,
+                            cache: true,
+                        }).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    let resource = (data?.['employee_list'] || []).map(
+                                        (item) => {
+                                            if (!item.avatar_img) item.avatar_img = clsThis.default_person_avt;
+                                            return UtilControl.flattenObject(item);
+                                        }
+                                    )
+                                    process(resource);
+                                }
+                            },
+                            (errs) => console.log(errs),
+                        )
                     }
                 },
                 insert: function (item) {
@@ -6251,7 +6601,7 @@ class CommentControl {
                         data-group-title="${item?.['group__title'] || ''}"
                     >${setupDisplayMentionsInEditor(item)}</span>\u200B&nbsp;`
                 },
-                render: function(item) {
+                render: function (item) {
                     return `
                         <li style="cursor: pointer;" class="d-flex align-items-center">
                             <img src="${item.avatar_img}" width="20px" alt="" class="m-3"/>
@@ -6265,16 +6615,16 @@ class CommentControl {
                     `
                     // <div><small>${item.email} - ${item.code}</small></div>
                 },
-                renderDropdown: function() {
+                renderDropdown: function () {
                     return '<ul class="rte-autocomplete dropdown-menu mention-person-list"></ul>';
                 },
                 matcher: function (item) {
                     return item;
                 },
             },
-            setup: function(editor) {
+            setup: function (editor) {
                 tinymceEditor = editor;
-                editor.on('change', function() {
+                editor.on('change', function () {
                     let content = editor.getContent();
 
                     let parser = new DOMParser();
@@ -6283,13 +6633,13 @@ class CommentControl {
                     let mentionsIds = [];
                     let mentionsTxt = [];
                     let mentions = doc.querySelectorAll('[data-mention="true"]');
-                    Array.from(mentions).map(function(mention) {
+                    Array.from(mentions).map(function (mention) {
                         let idx = mention.getAttribute('data-mention-id');
                         let email = mention.getAttribute('data-mention-email');
                         let fullName = mention.getAttribute('data-mention-full-name');
                         let code = mention.getAttribute('data-mention-code');
                         let groupTitle = mention.getAttribute('data-group-title');
-                        if (mentionsIds.indexOf(idx) === -1){
+                        if (mentionsIds.indexOf(idx) === -1) {
                             mentionsIds.push(idx);
                             mentionsTxt.push(setupDisplayMentionsInSummary({
                                 'id': idx,
@@ -6314,7 +6664,7 @@ class CommentControl {
                         showingMentions.fadeIn('fast');
                     }
                 });
-                editor.on('keydown', function(e) {
+                editor.on('keydown', function (e) {
                     if (e.key === 'Backspace' || e.key === 'Delete') {
                         let node = editor.selection.getNode();
                         if (node.getAttribute("data-mention") === "true") {
@@ -6325,13 +6675,13 @@ class CommentControl {
                         }
                     }
                 });
-                editor.on('init', function (){
+                editor.on('init', function () {
                     // https://www.tiny.cloud/blog/tinymce-and-modal-windows/
                     // Include the following JavaScript into your tiny.init script to prevent the Bootstrap dialog from blocking focus:
                     document.addEventListener('focusin', (e) => {
-                         if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+                        if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
                             e.stopImmediatePropagation();
-                         }
+                        }
                     })
                 })
             },
@@ -6341,12 +6691,12 @@ class CommentControl {
             link_default_protocol: 'https',
         });
 
-        frmInsideAdd.on('submit', function (event){
+        frmInsideAdd.on('submit', function (event) {
             $(this).find('button[type=submit]').prop('disabled', true);
             event.preventDefault();
 
             let url = urlSubmit;
-            if (!urlSubmit){
+            if (!urlSubmit) {
                 let doc_id = $(this).find('input[name="doc_id"]').val();
                 let app_id = $(this).find('input[name="application"]').val();
                 url = $(this).attr('data-url').replace('__pk_doc__', doc_id).replace('__pk_app__', app_id)
@@ -6362,7 +6712,7 @@ class CommentControl {
             };
             let method = $(this).attr('data-method');
 
-            if (url && method && data){
+            if (url && method && data) {
                 $.fn.callAjax2({
                     url: url,
                     method: method,
@@ -6371,7 +6721,7 @@ class CommentControl {
                 }).then(
                     resp => {
                         let data = $.fn.switcherResp(resp);
-                        if (data){
+                        if (data) {
                             // reset editor
                             textarea.tinymce().setContent('');
                             if (tinymceEditor) tinymceEditor.fire('change');
@@ -6389,9 +6739,9 @@ class CommentControl {
                             if (rendered_scroll_top === true) clsThis.ele_list$.scrollTop(0);
 
                             // increase records of replies
-                            if (rendered_plus_replies_ele){
+                            if (rendered_plus_replies_ele) {
                                 let counter = Number.parseInt(rendered_plus_replies_ele.attr('data-counter'));
-                                if (counter === 0){
+                                if (counter === 0) {
                                     rendered_plus_replies_ele.attr('data-url', 'resolve-with-zero');
                                 }
                                 counter += 1;
@@ -6414,18 +6764,18 @@ class CommentControl {
         })
     }
 
-    init_structure(){
+    init_structure() {
         let clsThis = this;
-        if (this.ele$.attr('data-structure-inited') !== 'true'){
+        if (this.ele$.attr('data-structure-inited') !== 'true') {
             this.ele$.attr('data-structure-inited', 'true');
 
-            function resolve_btn_goto(){
+            function resolve_btn_goto() {
                 let appIdx = clsThis.ele$.find('input[name="application"]').val();
                 let docIdx = clsThis.ele$.find('input[name="doc_id"]').val();
 
-                if (appIdx && docIdx){
+                if (appIdx && docIdx) {
                     let appData = UrlGatewayReverse.get_app_name_pk_app(appIdx);
-                    if (appData && typeof appData === 'object' && Object.keys(appData).length > 0 && UrlGatewayReverse.has_active_app(appData)){
+                    if (appData && typeof appData === 'object' && Object.keys(appData).length > 0 && UrlGatewayReverse.has_active_app(appData)) {
                         return UrlGatewayReverse.get_url_pk_app(docIdx, appIdx, {'redirect': true});
                     }
                 }
@@ -6434,13 +6784,13 @@ class CommentControl {
 
             // init event collapse/expand
             let ele_this = this.ele$;
-            this.ele_action_all.find('button[data-action="collapse-all"]').on('click', function (){
-                ele_this.find('.icon-collapse').filter(function (){
+            this.ele_action_all.find('button[data-action="collapse-all"]').on('click', function () {
+                ele_this.find('.icon-collapse').filter(function () {
                     return $(this).find('.fa-chevron-right').hasClass('d-none');
                 }).trigger('click');
             })
-            this.ele_action_all.find('button[data-action="expand-all"]').on('click', function (){
-                ele_this.find('.icon-collapse').filter(function (){
+            this.ele_action_all.find('button[data-action="expand-all"]').on('click', function () {
+                ele_this.find('.icon-collapse').filter(function () {
                     return $(this).find('.fa-chevron-up').hasClass('d-none');
                 }).trigger('click');
             })
@@ -6455,7 +6805,7 @@ class CommentControl {
             } else {
                 btnGoto.prop('disabled', true).fadeOut({
                     duration: 'fast',
-                    always: function (){
+                    always: function () {
                         $(this).remove();
                     }
                 });
@@ -6465,14 +6815,14 @@ class CommentControl {
             this.init_box_comment();
 
             // init collapse editor all
-            this.ele$.find('.comment-all-collapse-editor').on('click', function (){
+            this.ele$.find('.comment-all-collapse-editor').on('click', function () {
                 clsThis.ele_add.fadeToggle('fast');
                 $(this).find('.fa-solid').toggleClass('d-none');
             })
         }
     }
 
-    render_comment_item(data, opts={}) {
+    render_comment_item(data, opts = {}) {
         let {
             ap_or_pre,
             effect_newest,
@@ -6486,9 +6836,9 @@ class CommentControl {
             ...opts
         }
 
-        if (data && typeof data === 'object'){
+        if (data && typeof data === 'object') {
             let dateRelateData = UtilControl.displayRelativeTime(data.date_created, {
-                'callback': function (data){
+                'callback': function (data) {
                     return {
                         'relate': data.relate,
                         'output': data.output,
@@ -6528,13 +6878,13 @@ class CommentControl {
         }
     }
 
-    render_btn_load_more(){
+    render_btn_load_more() {
         let clsThis = this;
         let eleTotal = this.ele_action_all.find('.total-comment');
         let nextNum = eleTotal.attr('data-page-next');
-        if (nextNum && nextNum > 0){
+        if (nextNum && nextNum > 0) {
             let btnLoadMore = $(`<button class="btn btn-xs btn-light my-3 comment-load-more">${$.fn.transEle.attr('data-msg-show-more')}</button>`);
-            btnLoadMore.on('click', function (){
+            btnLoadMore.on('click', function () {
                 $(this).remove();
                 clsThis.fetch_all({
                     'page': nextNum,
@@ -6544,28 +6894,31 @@ class CommentControl {
         }
     }
 
-    render_record_showing(opts){
+    render_record_showing(opts) {
         let eleTotal = this.ele_action_all.find('.total-comment');
         let hasReloadAPI = opts?.['reloadAPI'] || false;
-        function get_num(_key, _attr){
-            if (_key){
+
+        function get_num(_key, _attr) {
+            if (_key) {
                 let _tmp = opts?.[_key];
                 if (Number.isInteger(_tmp)) return _tmp;
             }
             if (_attr) {
                 let _arrv = eleTotal.attr(_attr);
-                if (_arrv){
+                if (_arrv) {
                     try {
                         return Number.parseInt(_arrv);
-                    } catch (e){}
+                    } catch (e) {
+                    }
                 }
             }
             return 0;
         }
-        let plus_num= get_num('plus_num', null);
-        let total= get_num('total', 'data-total');
-        let current= get_num('current', 'data-page-current');
-        let next= get_num('next', 'data-page-next');
+
+        let plus_num = get_num('plus_num', null);
+        let total = get_num('total', 'data-total');
+        let current = get_num('current', 'data-page-current');
+        let next = get_num('next', 'data-page-next');
         let loaded = get_num(null, 'data-page-loaded');
 
         if (plus_num > 0) {
@@ -6582,19 +6935,22 @@ class CommentControl {
         eleTotal.attr('data-page-next', next);
 
         let recordTotal = eleTotal.attr('data-total');
-        let recordLoaded = next === 0 ? recordTotal: loaded;
+        let recordLoaded = next === 0 ? recordTotal : loaded;
         eleTotal.attr('data-page-loaded', recordLoaded);
         eleTotal.text(
             eleTotal.attr('data-pattern').replace("{}", `${recordLoaded}/${recordTotal}`)
         ).fadeIn('fast');
     }
 
-    fetch_all(params = {}, opts={}) {
+    fetch_all(params = {}, opts = {}) {
         let {
-            success_callback, fail_callback,
+            success_callback,
+            fail_callback,
         } = {
-            success_callback: function (){},
-            fail_callback: function (){},
+            success_callback: function () {
+            },
+            fail_callback: function () {
+            },
             ...opts
         }
         let clsThis = this;
@@ -6639,9 +6995,9 @@ class CommentControl {
 
     }
 
-    fetch_room_of_idx(commentIdx){
+    fetch_room_of_idx(commentIdx) {
         let clsThis = this;
-        if (commentIdx){
+        if (commentIdx) {
             $.fn.callAjax2({
                 url: clsThis.ele$.attr('data-url-room-reply').replaceAll('__pk__', commentIdx),
                 method: 'GET',
@@ -6649,24 +7005,24 @@ class CommentControl {
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
-                    if (data && data.hasOwnProperty('room_data')){
+                    if (data && data.hasOwnProperty('room_data')) {
                         let room_data = data.room_data;
-                        if (room_data){
+                        if (room_data) {
                             let siblingCount = room_data?.['siblings_count'] || 0;
                             // parent data
                             let parentData = room_data?.['parent'] || {};
-                            if (parentData && typeof parentData === 'object' && Object.keys(parentData).length > 0){
+                            if (parentData && typeof parentData === 'object' && Object.keys(parentData).length > 0) {
                                 let eleParent = clsThis.render_comment_item(parentData, {
                                     'get_html_opts': {
                                         'btn_full_enabled': siblingCount && siblingCount > 1 ? true : false,
                                     },
                                 });
                                 // child data
-                                if (eleParent.length > 0){
+                                if (eleParent.length > 0) {
                                     let childCount = room_data?.['children_count'] || 0;
                                     let childData = room_data?.['child'] || {};
                                     let eleRepliesOfChild = eleParent.find('.comment-replies');
-                                    if (childData && typeof childData === 'object' && Object.keys(childData).length > 0 && eleRepliesOfChild.length > 0){
+                                    if (childData && typeof childData === 'object' && Object.keys(childData).length > 0 && eleRepliesOfChild.length > 0) {
                                         clsThis.render_comment_item(childData, {
                                             'ele_push_group': eleRepliesOfChild,
                                             'get_html_opts': {
@@ -6683,12 +7039,13 @@ class CommentControl {
                         }
                     }
                 },
-                (errs) => {},
+                (errs) => {
+                },
             )
         }
     }
 
-    init(pk_doc, pk_app, opts={}) {
+    init(pk_doc, pk_app, opts = {}) {
         this.opts = {
             comment_id: null,
             ...opts
@@ -6705,6 +7062,161 @@ class CommentControl {
     }
 }
 
+class DiagramControl {
+    static setBtnDiagram(appCode) {
+        if (window.location.href.includes('/detail/')) {
+            let $btnLog = $('#btnLogShow');
+            let urlDiagram = globeDiagramList;
+            if ($btnLog && $btnLog.length > 0) {
+                let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
+                                <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
+                                    <div class="offcanvas-header"></div>
+                                    <div class="offcanvas-body">
+                                        <div class="d-flex justify-content-start">
+                                            <button type="button" class="btn btn-icon mt-3 bm-sm btn-sm" data-bs-dismiss="offcanvas" aria-label="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
+                                            <button type="button" class="btn btn-icon mt-3 bm-sm btn-sm" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-redo-alt"></i></span></button>
+                                        </div>
+                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="min-w-1600p position-relative overflow-y-scroll">
+                                            <div class="card-group h-800p" id="flowchart_diagram"></div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                $btnLog.after(htmlBase);
+                // set event
+                $('#btnDiagram, #btnRefreshDiagram').on('click', function () {
+                    if (window.location.href.includes('/detail/')) {
+                        // Split the URL by '/'
+                        let parts = window.location.href.split('/');
+                        let pk = DiagramControl.extractUUID(window.location.href);
+                        $.fn.callAjax2({
+                                'url': $(this).attr('data-url'),
+                                'method': $(this).attr('data-method'),
+                                'data': {'app_code': appCode, 'doc_id': pk},
+                                isLoading: true,
+                            }
+                        ).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    if (data.hasOwnProperty('diagram_list') && Array.isArray(data.diagram_list)) {
+                                        if (data.diagram_list.length > 0) {
+                                            let data_diagram = data.diagram_list[0];
+                                            DiagramControl.loadDiagram(data_diagram);
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                    }
+                })
+            }
+        }
+    };
+
+    static loadDiagram(data_diagram) {
+        let $chartDiagram = $('#flowchart_diagram');
+        $chartDiagram.empty();
+        let html = "";
+        let sttTxt = JSON.parse($('#stt_sys').text());
+        let diaTxt = JSON.parse($('#dia_app').text());
+        let sttMapBadge = [
+            "soft-light",
+            "soft-primary",
+            "soft-info",
+            "soft-success",
+            "soft-danger",
+        ]
+        // prefix
+        let htmlPrefix = DiagramControl.loadPrefixSuffix(data_diagram?.['prefix'], sttTxt, diaTxt, sttMapBadge);
+        // main doc
+        let docData = data_diagram?.['doc_data'];
+        let htmlMain = `<div class="card">
+                                <div class="card-header bg-primary">
+                                    <h6 class="text-white">${diaTxt[data_diagram?.['app_code']]}</h6>
+                                </div>
+                                <div class="card-body bg-soft-success">
+                                    <div class="card border-green clone" data-drag="1" title="card-1" id="control-1">
+                                        <div class="card-header card-header-wth-text">
+                                            <div>
+                                                <div class="row"><small>${docData?.['title'] ? docData?.['title'] : docData?.['code']}</small></div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-5">
+                                                <div class="row"><small>${$.fn.transEle.attr('data-code')}: ${docData?.['code']}</small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-quantity')}: ${docData?.['quantity']}</small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-total')}: <span class="mask-money" data-init-money="${parseFloat(docData?.['total'] ? docData?.['total'] : '0')}"></span></small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-reference')}: ${docData?.['reference'] ? docData?.['reference'] : ''}</small></div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-muted d-flex justify-content-between">
+                                            <small><span class="badge badge-${sttMapBadge[docData?.['system_status']]}">${sttTxt[docData?.['system_status']][1]}</span></small>
+                                            <small>${moment(docData?.['date_created']).format('DD/MM/YYYY')}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+        // suffix
+        let htmlSuffix = DiagramControl.loadPrefixSuffix(data_diagram?.['suffix'], sttTxt, diaTxt, sttMapBadge);
+        // result
+        html += htmlPrefix;
+        html += htmlMain;
+        html += htmlSuffix;
+        $chartDiagram.html(html);
+        // mask money
+        $.fn.initMaskMoney2();
+    };
+
+    static loadPrefixSuffix(data_pre_suf, sttTxt, diaTxt, sttMapBadge) {
+        let htmlPreSuffix = "";
+        for (let key in data_pre_suf) {
+            let htmlChild = "";
+            // if (data_pre_suf[key].length > 0) {
+                for (let data_record of data_pre_suf[key]) {
+                    htmlChild += `<div class="card border-green clone" data-drag="1" title="card-1" id="control-1">
+                                        <div class="card-header card-header-wth-text">
+                                            <div>
+                                                <div class="row"><small>${data_record?.['title'] ? data_record?.['title'] : data_record?.['code']}</small></div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-5">
+                                                <div class="row"><small>${$.fn.transEle.attr('data-code')}: ${data_record?.['code']}</small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-quantity')}: ${data_record?.['quantity']}</small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-total')}: <span class="mask-money" data-init-money="${parseFloat(data_record?.['total'] ? data_record?.['total'] : '0')}"></span></small></div>
+                                                <div class="row"><small>${$.fn.transEle.attr('data-reference')}: ${data_record?.['reference'] ? data_record?.['reference'] : ''}</small></div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-muted d-flex justify-content-between">
+                                            <small><span class="badge badge-${sttMapBadge[data_record?.['system_status']]}">${sttTxt[data_record?.['system_status']][1]}</span></small>
+                                            <small>${moment(data_record?.['date_created']).format('DD/MM/YYYY')}</small>
+                                        </div>
+                                    </div>`;
+                }
+                htmlPreSuffix += `<div class="card">
+                                    <div class="card-header bg-primary">
+                                        <h6 class="text-white">${diaTxt[key]}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        ${htmlChild}
+                                    </div>
+                                </div>`;
+            // }
+        }
+        return htmlPreSuffix;
+    };
+
+    static extractUUID(url) {
+        let regex = /\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/;
+        let match = url.match(regex);
+        if (match && match[1]) {
+            return match[1];
+        } else {
+            return null;
+        }
+    };
+}
+
 let $x = {
     cls: {
         frm: SetupFormSubmit,
@@ -6715,7 +7227,8 @@ let $x = {
         person: PersonControl,
         doc: DocumentControl,
         bastionField: BastionFieldControl,
-        excelToJSON: ExcelToJSON,
+        excelSheetJS: ExcelSheetJSController,
+        excelJS: ExcelJSController,
         datetime: DateTimeControl,
         file: FileControl,
         cmt: CommentControl,
@@ -6738,6 +7251,8 @@ let $x = {
         hideLoadingPage: WindowControl.hideLoading,
         showLoadingWaitResponse: WindowControl.showLoadingWaitResponse,
         hideLoadingWaitResponse: WindowControl.hideLoadingWaitResponse,
+        showNotFound: WindowControl.showNotFound,
+        showTimeOut: WindowControl.showTimeOut,
 
         shortNameGlobe: PersonControl.shortNameGlobe,
         renderAvatar: PersonControl.renderAvatar,
@@ -6791,16 +7306,18 @@ let $x = {
         pushHashUrl: WindowControl.pushHashUrl,
         scrollToIdx: WindowControl.scrollToIdx,
         findGetParameter: WindowControl.findGetParameter,
+        getPropertiesValue: WindowControl.getPropertiesValue,
+        scrollToCus: WindowControl.scrollToCus,
 
         numberWithCommas: DocumentControl.numberWithCommas,
     },
     opts: {
-        tinymce_extends: function (opts){
+        tinymce_extends: function (opts) {
             let config = {
                 ...$x.opts.tinymce,
                 ...opts,
                 content_style: $x.opts.tinymce.content_style + (opts?.['content_style'] || ''),
-                setup: function (editor){
+                setup: function (editor) {
                     $x.opts.tinymce.setup(editor);
                     let funcSetup = opts?.['setup'] || null;
                     if (funcSetup && funcSetup instanceof Function) funcSetup(editor);
@@ -6826,7 +7343,7 @@ let $x = {
                 )
             }
             let removePlugin = opts?.['removePlugin'] || [];
-            if (removePlugin && Array.isArray(removePlugin)){
+            if (removePlugin && Array.isArray(removePlugin)) {
                 removePlugin.map(
                     (item) => {
                         config['plugins'] = config['plugins'].replaceAll(item, '')
@@ -6873,7 +7390,7 @@ let $x = {
                     background-color: #f1f1f1;
                 }
             `,
-            mentions__get_url: function (url, params, query){
+            mentions__get_url: function (url, params, query) {
                 return url + '?' + $.param(
                     {
                         ...params,
@@ -7100,7 +7617,7 @@ var DataTableAction = {
         for (let key of keyArg) {
             let isValue = data[key.value] ? data[key.value] : '--'
             const keyParts = key.value.split('.')
-            if (keyParts.length >= 2){
+            if (keyParts.length >= 2) {
                 const temp = data[keyParts[0]]?.[keyParts[1]]
                 if (temp) isValue = temp
                 else isValue = '--'

@@ -1,0 +1,22 @@
+{% load i18n define_action %}
+
+{% assign_out_random validationRequiredIdx as rValidationRequiredIdx %}
+{% assign_out_random validationUniqueIdx as rValidationUniqueIdx %}
+{% assign_out_bool_str hasRequired True as rHasRequired %}
+{% assign_out_bool_str hasUnique True as rHasUnique %}
+
+<div class="form-group mb-3">
+    <label class="form-label">{% trans 'Validation' %}</label>
+    {% if rHasRequired == '1' %}
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="{{ rValidationRequiredIdx }}" name="required"/>
+            <label class="form-check-label" for="{{ rValidationRequiredIdx }}">{% trans 'Required' %}</label>
+        </div>
+    {% endif %}
+    {% if rHasUnique == '1' %}
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="{{ rValidationUniqueIdx }}" name="unique"/>
+            <label class="form-check-label" for="{{ rValidationUniqueIdx }}">{% trans 'Unique' %}</label>
+        </div>
+    {% endif %}
+</div>

@@ -47,6 +47,8 @@ DIAGRAM_APP = {
     "purchasing.purchaserequest": AppMsg.APP_PURCHASE_REQUEST,
     "purchasing.purchaseorder": AppMsg.APP_PURCHASE_ORDER,
     "inventory.goodsreceipt": AppMsg.APP_GOODS_RECEIPT,
+    "delivery.orderdeliverysub": AppMsg.APP_DELIVERY,
+    "inventory.goodsreturn": AppMsg.APP_GOODS_RETURN,
 }
 
 
@@ -146,6 +148,7 @@ class SaleOrderDetail(View):
     def get(self, request, pk, *args, **kwargs):
         return {
                    'data': {'doc_id': pk},
+                   'employee_current': request.user.employee_current_data,
                    'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
                    'form_id': 'frm_quotation_create',
                    'payment_term_stage': PAYMENT_TERM_STAGE,

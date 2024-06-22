@@ -215,6 +215,10 @@ class MenusCoreConfigurations:
                 name='Import Data', code='menu_import_data', view_name='FImportCreateView',
                 icon='<i class="fa-solid fa-file-import"></i>'
             ),
+            MenuCommon(
+                name='Forms', code='menu_form_data', view_name='FormListView',
+                icon='<i class="fa-brands fa-wpforms"></i>'
+            ),
         ]
     )
     INVENTORY_DATA_CONFIG = MenuCommon(
@@ -245,6 +249,10 @@ class MenusCRM:
     REVENUE_PLAN = MenuCommon(
         name='Revenue plan', code='menu_revenue_plan_list', view_name='RevenuePlanList',
         icon='<i class="fas fa-hand-holding-usd"></i>',
+    )
+    LEAD = MenuCommon(
+        name='Lead', code='menu_lead_list', view_name='LeadList',
+        icon='<i class="fa-solid fa-fire"></i>',
     )
     CALENDAR = MenuCommon(
         name='Calendar', code='menu_calendar', view_name='ProgrammeList',
@@ -414,6 +422,12 @@ class MenusInventory:
                 icon='<i class="fas fa-file-import"></i>',
             ),
             MenuCommon(
+                name='Goods registration',
+                code='menu_goods_registration_list',
+                view_name='GoodsRegistrationList',
+                icon='<i class="bi bi-ui-radios-grid"></i>',
+            ),
+            MenuCommon(
                 name='Goods detail',
                 code='menu_goods_detail_list',
                 view_name='GoodsDetail',
@@ -500,18 +514,18 @@ class MenuEOffice:
 
 class MenuDMS:
     WORK_SPACE = MenuCommon(
-        name='Work space', code='menu_DMS_work_space', view_name='', icon='<i class="fas fa-vector-square"></i>',
+        name='Work space', code='menu_dms_work_space', view_name='', icon='<i class="fas fa-laptop-house"></i>',
         child=[
             MenuCommon(
                 name='File',
-                code='menu_report_pipeline_list',
-                view_name='ReportPipelineList',
-                icon='<i class="far fa-file"></i>',
+                code='menu_folder_list',
+                view_name='FolderList',
+                icon='<i class="fas fa-file"></i>',
             )
         ],
     )
     MY_SPACE = MenuCommon(
-        name='My space', code='menu_DMS_my_space', view_name='', icon='<i class="fas fa-user-astronaut"></i>',
+        name='My space', code='menu_dms_my_space', view_name='', icon='<i class="fas fa-user"></i>',
         child=[],
     )
 
@@ -591,6 +605,16 @@ class MenusReport:
     )
 
 
+class MenusProject:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    LIST = MenuCommon(
+        name='Project list', code='menu_project', view_name='ProjectList',
+        icon='<i class="fa-solid fa-bars-progress"></i>',
+    )
+
+
 # Space Setup
 class SpaceCommon:
     name: str  # 'Sale'
@@ -638,6 +662,7 @@ class SpaceItem:
                 MenusCRM.HOME,
                 MenusCRM.DASHBOARD,
                 MenusCRM.REVENUE_PLAN,
+                MenusCRM.LEAD,
                 MenusCRM.CALENDAR,
                 MenusCRM.CONTACT,
                 MenusCRM.ACCOUNT,
@@ -652,6 +677,15 @@ class SpaceItem:
                 MenusCRM.SALE_ACTIVITIES,
                 MenusCRM.TASK,
             ],
+        ),
+        'project': SpaceCommon(
+            'Project',
+            'project',
+            icon='<i class="fa-solid fa-weight-scale"></i>',
+            menus=[
+                MenusProject.HOME,
+                MenusProject.LIST,
+            ]
         ),
         'purchase': SpaceCommon(
             'Purchasing',
@@ -755,6 +789,7 @@ class SpaceGroup:
     SPACE = SpaceCommon(
         'Space', 'space', child=[
             SpaceItem.mapping['crm'],
+            SpaceItem.mapping['project'],
             SpaceItem.mapping['purchase'],
             SpaceItem.mapping['inventory'],
             SpaceItem.mapping['hrm'],

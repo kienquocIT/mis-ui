@@ -34,7 +34,7 @@ def random_int(to_number: int) -> int:
 
 
 @register.simple_tag
-def random_str(length: int = 32, start_with_character: bool = False):
+def random_str(length: int = 32, start_with_character: bool = True):
     if start_with_character:
         return random.choice(string.ascii_letters) + "".join(
             [
@@ -262,3 +262,9 @@ def permit_mapping_pretty_json(value, app_by_id, exclude_key="", indent=4):
     except Exception as err:
         print(err)
     return '{}'
+
+
+@register.filter
+def split_list(data, order):
+    result = data.split(",")[int(order)]
+    return result

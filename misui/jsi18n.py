@@ -14,7 +14,12 @@ class JavaScriptCatalogCustomize(JavaScriptCatalog):
 
         if packages:
             if packages in I18N_JS_MATCH_APP:
-                kwargs['packages'] = I18N_JS_MATCH_APP[packages]
+                match_data = I18N_JS_MATCH_APP[packages]
+                if isinstance(match_data, list) and len(match_data) == 2:
+                    kwargs['packages'] = match_data[0]
+                    self.domain = match_data[1]
+                else:
+                    kwargs['packages'] = str(match_data)
             else:
                 kwargs['packages'] = ''
 
@@ -25,4 +30,6 @@ I18N_JS_MATCH_APP = {
     'hr': 'apps.core.hr',
     'fimport': 'apps.core.fimport',
     'mailer': 'apps.core.mailer',
+    'form': 'apps.core.form',
+    'form_runtime': ['apps.core.form', 'djangojs_runtime'],
 }

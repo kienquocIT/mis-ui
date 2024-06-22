@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+
+{% block pageContent %}
+
+    <form
+            data-url="{% url 'QuotationListAPI' %}"
+            data-method="POST"
+            id="frm_folder"
+            method="post"
+    >
+        {% csrf_token %}
+        <div class="row bg-primary">
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="row p-2">
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <button type="button" class="btn btn btn-white btn-floating btn-lg" aria-expanded="false" data-bs-toggle="dropdown">
+                            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
+                        </button>
+                        <div class="dropdown-menu w-210p">
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFolderMdl"><i class="dropdown-icon fas fa-folder-plus text-primary"></i><span>{% trans 'New folder' %}</span></a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#" id="upload-file" data-bs-toggle="modal" data-bs-target="#uploadFileMdl"><i class="dropdown-icon fas fa-file-upload text-primary"></i><span class="mt-2">{% trans 'Upload file' %}</span></a>
+                            <a class="dropdown-item" href="#" id="upload-folder"><i class="dropdown-icon fas fa-upload text-primary"></i><span>{% trans 'Upload folder' %}</span></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div data-simplebar class="nicescroll-bar h-800p">
+                        <div class="row" id="folder-tree"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-10 col-lg-10">
+                <div class="row p-2 w-60">
+                    <div class="input-group">
+                        <span class="input-affix-wrapper">
+                            <input type="text" class="form-control rounded-input" placeholder="Search">
+                            <span class="input-suffix"><i class="fas fa-search"></i></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="row bg-white rounded-8 p-2 h-90" style="margin: 16px 0" id="area-center">
+                    <div>
+                        <div class="d-flex align-items-center mb-3" id="folder-path">
+                            <button type="button" class="btn btn-flush-secondary flush-soft-hover btn-rounded btn-lg text-black">My files</button>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12 col-md-5 col-lg-5">
+                                <h6 class="text-primary ml-3">{% trans 'Name' %}</h6>
+                            </div>
+                            <div class="col-12 col-md-2 col-lg-2">
+                                <h6 class="text-primary">{% trans 'Owner' %}</h6>
+                            </div>
+                            <div class="col-12 col-md-2 col-lg-2">
+                                <h6 class="text-primary">{% trans 'Date modified' %}</h6>
+                            </div>
+                            <div class="col-12 col-md-2 col-lg-2">
+                                <h6 class="text-primary">{% trans 'Size' %}</h6>
+                            </div>
+                        </div>
+                        <div id="folder-content-body"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-area">
+            <div class="modal fade" id="addFolderMdl" tabindex="-1" role="dialog" aria-labelledby="addFolderMdl" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{% trans 'New folder' %}</h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="form-label required" for="add-folder-title">{% trans 'Title' %}</label>
+                                <input
+                                        type="text" class="form-control"
+                                        name="title"
+                                        id="add-folder-title"
+                                        required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="add-folder-box-parent">{% trans 'Parent folder' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="add-folder-box-parent"
+                                    data-url="{% url "FolderListAPI" %}"
+                                    data-method="GET"
+                                    name="parent_n"
+                                    data-keyResp="folder_list"
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-add-folder">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="uploadFileMdl" tabindex="-1" role="dialog" aria-labelledby="uploadFileMdl" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{% trans 'Upload file' %}</h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="attachment">{% include 'core/attachment/upload.html' %}</div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btn-upload-file">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+    >
+    <input
+        type="text"
+        id="app-url-factory"
+        data-url="{% url 'FolderListAPI' %}"
+        data-url-detail="{% url 'FolderDetailAPI' 1 %}"
+        data-url-redirect="{% url 'FolderList' %}"
+    >
+    <input type="file" id="uploadOpen"/>
+    {{ data.employee_current|json_script:'employee_current' }}
+{% endblock %}
+
+{% block jsFooter %}
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+
+    <script src="{% static 'assets/core/attachment/js/folder_list.js' %}"></script>
+
+    <script>
+        new $x.cls.file($('#attachment')).init({'name': 'attachment'});
+    </script>
+
+{% endblock %}

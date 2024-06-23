@@ -1589,7 +1589,7 @@ class QuotationLoadDataHandle {
                 }
             })
             // Re calculate
-            QuotationCalculateCaseHandle.calculateAllRowsTableCost($table);
+            QuotationCalculateCaseHandle.calculateAllRowsTableCost();
             // load cost list
             $table.DataTable().rows().every(function () {
                 let row = this.node();
@@ -1667,7 +1667,8 @@ class QuotationLoadDataHandle {
                     document.getElementById('customer-price-list').value = dataCopy?.['customer']?.['customer_price_list'];
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
                     QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
-                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+                    QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
+                    // QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
                     // Check promotion -> re calculate
                     QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
                     // Set form novalidate
@@ -1856,13 +1857,13 @@ class QuotationLoadDataHandle {
         }
     };
 
-    static loadDataTablesAndDropDowns(data, is_detail = false) {
-        QuotationLoadDataHandle.loadDataTables(data, is_detail);
+    static loadDataTablesAndDropDowns(data) {
+        QuotationLoadDataHandle.loadDataTables(data);
         QuotationLoadDataHandle.loadTableDropDowns();
         return true;
     };
 
-    static loadDataTables(data, is_detail = false) {
+    static loadDataTables(data) {
         let form = document.getElementById('frm_quotation_create');
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
@@ -1959,8 +1960,8 @@ class QuotationLoadDataHandle {
                 })
             }
         }
-        // load indicators & set attr disabled
-        if (is_detail === true) {
+        // load indicators & set attr disabled for detail page
+        if ($(form).attr('data-method').toLowerCase() === 'get') {
             // load indicators
             tableIndicator.DataTable().clear().draw();
             tableIndicator.DataTable().rows.add(indicators_data).draw();
@@ -2142,8 +2143,21 @@ class QuotationLoadDataHandle {
             for (let dataProduct of dataProductList) {
                 if (Object.keys(dataProduct?.['promotion']).length > 0) {
                     let check = promotionHandle.checkPromotionValid(dataProduct?.['promotion'], data?.['customer']?.['id']);
-                    let promotionResult = promotionHandle.getPromotionResult(check?.['condition']);
-                    promotionHandle.calculatePromotion(table, promotionResult?.['discount_rate_on_order'], promotionResult?.['product_price']);
+                    let promotionParse = promotionHandle.getPromotionResult(check);
+                    let tableProduct = $('#datable-quotation-create-product');
+                    if (promotionParse?.['is_discount'] === true) { // DISCOUNT
+                        if (promotionParse?.['row_apply_index'] === null) { // on Specific product
+                            if (promotionParse.hasOwnProperty('discount_rate_on_order')) {
+                                if (promotionParse.discount_rate_on_order !== null) {
+                                    if (promotionParse.is_before_tax === true) {
+                                        promotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price']);
+                                    } else {
+                                        promotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price'], false)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -3358,16 +3372,18 @@ class QuotationCalculateCaseHandle {
         if (table.id === 'datable-quotation-create-product') {
             if (tableProductWrapper) {
                 let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-                elePretaxAmount = tableProductFt.querySelector('.quotation-create-product-pretax-amount');
-                eleTaxes = tableProductFt.querySelector('.quotation-create-product-taxes');
-                eleTotal = tableProductFt.querySelector('.quotation-create-product-total');
-                eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount');
-                elePretaxAmountRaw = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
-                eleTaxesRaw = tableProductFt.querySelector('.quotation-create-product-taxes-raw');
-                eleTotalRaw = tableProductFt.querySelector('.quotation-create-product-total-raw');
-                eleDiscountRaw = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
-                eleDiscountRateTotal = tableProductFt.querySelector('.quotation-create-product-discount');
-                finalRevenueBeforeTax = tableProductFt.querySelector('.quotation-final-revenue-before-tax');
+                if (tableProductFt) {
+                    elePretaxAmount = tableProductFt.querySelector('.quotation-create-product-pretax-amount');
+                    eleTaxes = tableProductFt.querySelector('.quotation-create-product-taxes');
+                    eleTotal = tableProductFt.querySelector('.quotation-create-product-total');
+                    eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount');
+                    elePretaxAmountRaw = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+                    eleTaxesRaw = tableProductFt.querySelector('.quotation-create-product-taxes-raw');
+                    eleTotalRaw = tableProductFt.querySelector('.quotation-create-product-total-raw');
+                    eleDiscountRaw = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+                    eleDiscountRateTotal = tableProductFt.querySelector('.quotation-create-product-discount');
+                    finalRevenueBeforeTax = tableProductFt.querySelector('.quotation-final-revenue-before-tax');
+                }
             }
         } else if (table.id === 'datable-quotation-create-cost') {
             let tableCost = document.getElementById('datable-quotation-create-cost');
@@ -3616,23 +3632,24 @@ class QuotationCalculateCaseHandle {
         QuotationCalculateCaseHandle.updateTotal(table[0]);
     };
 
-    static calculateAllRowsTableProduct(table) {
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
+    static calculateAllRowsTableProduct() {
+        let $table = $('#datable-quotation-create-product');
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
             if (row.querySelector('.table-row-item')) {
-                QuotationCalculateCaseHandle.calculate(row);
+                QuotationCalculateCaseHandle.commonCalculate($table, row);
             }
-        }
-        QuotationCalculateCaseHandle.updateTotal(table[0]);
+        });
     };
 
-    static calculateAllRowsTableCost(table) {
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
+    static calculateAllRowsTableCost() {
+        let $table = $('#datable-quotation-create-cost');
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
             if (row.querySelector('.table-row-item')) {
-                QuotationCalculateCaseHandle.commonCalculate(table, row);
+                QuotationCalculateCaseHandle.commonCalculate($table, row);
             }
-        }
+        });
     };
 
 }

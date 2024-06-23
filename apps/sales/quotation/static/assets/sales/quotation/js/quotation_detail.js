@@ -19,11 +19,7 @@ $(function () {
                     // store && load data detail
                     eleDataDetail.val(JSON.stringify(data));
                     QuotationLoadDataHandle.loadDetailQuotation(data);
-                    if ($form.attr('data-method').toLowerCase() === 'get') {
-                        QuotationLoadDataHandle.loadDataTablesAndDropDowns(data, true);
-                    } else {
-                        QuotationLoadDataHandle.loadDataTablesAndDropDowns(data, false);
-                    }
+                    QuotationLoadDataHandle.loadDataTablesAndDropDowns(data);
 
                     // prepare for copy quotation to sale order
                     if (!$form.hasClass('sale-order')) { // QUOTATION PAGES

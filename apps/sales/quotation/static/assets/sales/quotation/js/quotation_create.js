@@ -606,7 +606,7 @@ $(function () {
                     document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
                     QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
-                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
                     // Check promotion -> re calculate
                     QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
                     // Set form novalidate
@@ -708,9 +708,9 @@ $(function () {
                     if (promotionParse.hasOwnProperty('discount_rate_on_order')) {
                         if (promotionParse.discount_rate_on_order !== null) {
                             if (promotionParse.is_before_tax === true) {
-                                promotionHandle.calculatePromotion(tableProduct, promotionParse.discount_rate_on_order, promotionParse?.['product_price']);
+                                promotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price']);
                             } else {
-                                promotionHandle.calculatePromotion(tableProduct, promotionParse.discount_rate_on_order, promotionParse?.['product_price'], false)
+                                promotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price'], false)
                             }
                         }
                     }

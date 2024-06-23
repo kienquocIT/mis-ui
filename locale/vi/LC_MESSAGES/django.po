@@ -7809,3 +7809,11 @@ msgstr "SẢN PHẨM"
 #
 msgid "INVENTORY UOM"
 msgstr "ĐƠN VỊ KHO"
+
+#
+msgid "SYSTEM DATE"
+msgstr "NGÀY HỆ THỐNG"
+
+#
+msgid "EXP DATE"
+msgstr "NGÀY HẾT HẠN"

@@ -191,7 +191,8 @@ $(document).ready(function () {
                                         </span>
                                     </button>&nbsp;
                                     <span class="${row?.['type']}">${row?.['product_title']}</span>&nbsp;
-                                    <span class="text-blue small fw-bold">${row?.['product_lot_number'] ? row?.['product_lot_number'] : ''}</span>`
+                                    <span class="text-blue small fw-bold">${row?.['product_lot_number'] ? row?.['product_lot_number'] : ''}</span>&nbsp;
+                                    `
                         }
                     }
                 },
@@ -412,7 +413,6 @@ $(document).ready(function () {
     }
 
     function RenderTableDetailWithParameter(table, data_list=[], data_wh=[]) {
-        console.log(data_list)
         table.DataTable().clear().destroy()
         table.DataTableDefault({
             dom: '',
@@ -784,6 +784,7 @@ $(document).ready(function () {
                                     'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
                                     'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                     'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                    'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
                                     'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
                                     'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
                                     'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
@@ -803,6 +804,7 @@ $(document).ready(function () {
                                     'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
                                     'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                     'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                    'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
                                     'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
                                     'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
                                     'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
@@ -832,6 +834,7 @@ $(document).ready(function () {
                                         'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
                                         'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                         'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                        'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
                                         'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
                                         'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
                                         'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
@@ -850,6 +853,7 @@ $(document).ready(function () {
                                         'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
                                         'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                         'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                        'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
                                         'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
                                         'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
                                         'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
@@ -995,6 +999,7 @@ $(document).ready(function () {
                                     'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
                                     'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                     'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                    'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
                                     'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
                                     'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
                                     'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
@@ -1059,6 +1064,7 @@ $(document).ready(function () {
                                     'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
                                     'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                     'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                    'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
                                     'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
                                     'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
                                     'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
@@ -1134,6 +1140,7 @@ $(document).ready(function () {
                                         'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
                                         'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                         'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                        'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
                                         'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
                                         'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
                                         'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
@@ -1198,6 +1205,7 @@ $(document).ready(function () {
                                         'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
                                         'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                         'product_title': `${warehouse_activities?.['product']?.['title']}`,
+                                        'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
                                         'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
                                         'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
                                         'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,

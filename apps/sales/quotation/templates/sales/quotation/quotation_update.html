@@ -34,7 +34,14 @@
         </div>
         <div class="col-12 col-md-6 col-lg-6">
             <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-outline-primary ml-3" id="print-document" hidden><span><span>{% trans 'Print' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-print"></i></span></span></span></button>
+                <button
+                        type="button"
+                        class="btn btn-outline-primary"
+                        id="btn-copy-quotation"
+                        data-bs-toggle="modal"
+                        data-bs-target="#quotationModalCenter"
+                        data-copy-type="copy-from"
+                ><span><span class="icon"><i class="far fa-copy"></i></span><span>{% trans 'Copy Quotation' %}</span></span></button>
             </div>
         </div>
     </div>
@@ -51,11 +58,16 @@
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
-                    <div class="collapse multi-collapse show" id="collapseExample">
-                        {% trans 'Select Sale Person' as inherit_title %}
-                        {% include 'extends/the-documents/bastion.html' with show_warning=True opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
-                        <br>
-                        <div class="card">
+                    {% trans 'Select Sale Person' as inherit_title %}
+                    {% include 'extends/the-documents/bastion.html' with show_warning=True opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                    <div class="card">
+                        <div class="card-header card-header-action bg-teal-light-5 h-40p">
+                            <h6 class="text-primary">{% trans 'Information' %}</h6>
+                            <div class="card-action-wrap">
+                                <a class="btn btn-xs btn-icon btn-rounded btn-flush-secondary flush-soft-hover"  data-bs-toggle="collapse" href="#collapseExample" aria-expanded="true"><span class="icon"><span class="feather-icon"><i data-feather="chevron-down"></i></span></span></a>
+                            </div>
+                        </div>
+                        <div class="collapse multi-collapse show" id="collapseExample">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-12 col-md-6 col-lg-6">
@@ -69,7 +81,7 @@
                                             >
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}</label>
+                                            <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Customer' %}</label>
                                             <select
                                                     class="form-select"
                                                     id="select-box-quotation-create-customer"
@@ -143,16 +155,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="d-flex justify-content-start mt-5">
-                                            <button
-                                                    type="button"
-                                                    class="btn btn-outline-primary"
-                                                    id="btn-copy-quotation"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#quotationModalCenter"
-                                                    data-copy-type="copy-from"
-                                            ><span><span class="icon"><i class="far fa-copy"></i></span><span>{% trans 'Copy Quotation' %}</span></span></button>
-                                        </div>
+
                                         <div
                                                 class="modal fade" id="quotationModalCenter" tabindex="-1"
                                                 role="dialog" aria-labelledby="quotationModalCenter"
@@ -217,22 +220,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row collapse-arrow mt-2 mb-2">
-                        <div class="d-flex justify-content-end">
-                            <button
-                                    type="button"
-                                    class="btn btn-icon btn-rounded flush-soft-hover"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#collapseExample"
-                                    data-bs-placement="top"
-                                    aria-expanded="false"
-                                    aria-controls="collapseExample"
-                                    id="btn-collapse"
-                            >
-                                <span class="icon"><small><i class="fas fa-angle-double-up text-primary collapse-icon"></i></small></span>
-                            </button>
                         </div>
                     </div>
                     <div class="row">

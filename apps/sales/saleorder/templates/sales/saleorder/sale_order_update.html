@@ -60,12 +60,16 @@
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
-                    <div class="collapse multi-collapse show" id="collapseExample">
-                        <div class="row">
-                            {% trans 'Select Sale Person' as inherit_title %}
-                            {% include 'extends/the-documents/bastion.html' with show_warning=True opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                    {% trans 'Select Sale Person' as inherit_title %}
+                    {% include 'extends/the-documents/bastion.html' with show_warning=True opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                    <div class="card">
+                        <div class="card-header card-header-action bg-teal-light-5 h-40p">
+                            <h6 class="text-primary">{% trans 'Information' %}</h6>
+                            <div class="card-action-wrap">
+                                <a class="btn btn-xs btn-icon btn-rounded btn-flush-secondary flush-soft-hover"  data-bs-toggle="collapse" href="#collapseExample" aria-expanded="true"><span class="icon"><span class="feather-icon"><i data-feather="chevron-down"></i></span></span></a>
+                            </div>
                         </div>
-                        <div class="card">
+                        <div class="collapse multi-collapse show" id="collapseExample">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-12 col-md-6 col-lg-6">
@@ -79,7 +83,7 @@
                                             >
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}</label>
+                                            <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Customer' %}</label>
                                             <select
                                                     class="form-select"
                                                     id="select-box-quotation-create-customer"
@@ -92,48 +96,56 @@
                                                     required
                                             ></select>
                                         </div>
-                                        <div class="form-group">
-                                            <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}</label>
-                                            <select
-                                                class="form-select"
-                                                id="select-box-quotation-create-contact"
-                                                data-url="{% url "ContactListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url 'ContactDetail' 1 %}"
-                                                name="contact"
-                                                data-keyResp="contact_list"
-                                                required
-                                            ></select>
-                                        </div>
                                     </div>
                                     <div class="col-12 col-md-6 col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="select-box-quotation-create-payment-term"
-                                                    data-url="{% url "PaymentsTermsListAPI" %}"
-                                                    data-link-detail=""
-                                                    data-method="GET"
-                                                    name="payment_term"
-                                                    data-keyResp="payment_terms_list"
-                                                    required
-                                            ></select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="select-box-quotation">{% trans 'Quotation' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="select-box-quotation"
-                                                    data-url="{% url "QuotationListAPI" %}"
-                                                    data-method="GET"
-                                                    data-link-detail="{% url "QuotationDetail" 1 %}"
-                                                    name="quotation"
-                                                    data-keyResp="quotation_list"
-                                                    disabled
-                                            ></select>
+                                        <div class="row">
+                                            <div class="col-12 col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Contact' %}</label>
+                                                    <select
+                                                        class="form-select"
+                                                        id="select-box-quotation-create-contact"
+                                                        data-url="{% url "ContactListAPI" %}"
+                                                        data-method="GET"
+                                                        data-link-detail="{% url 'ContactDetail' 1 %}"
+                                                        name="contact"
+                                                        data-keyResp="contact_list"
+                                                        required
+                                                    ></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
+                                                    <select
+                                                            class="form-select"
+                                                            id="select-box-quotation-create-payment-term"
+                                                            data-url="{% url "PaymentsTermsListAPI" %}"
+                                                            data-link-detail=""
+                                                            data-method="GET"
+                                                            name="payment_term"
+                                                            data-keyResp="payment_terms_list"
+                                                            required
+                                                    ></select>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="row">
+                                            <div class="col-12 col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="form-label" for="select-box-quotation">{% trans 'Quotation' %}</label>
+                                                    <select
+                                                            class="form-select"
+                                                            id="select-box-quotation"
+                                                            data-url="{% url "QuotationListAPI" %}"
+                                                            data-method="GET"
+                                                            data-link-detail="{% url "QuotationDetail" 1 %}"
+                                                            name="quotation"
+                                                            data-keyResp="quotation_list"
+                                                            readonly
+                                                    ></select>
+                                                </div>
+                                            </div>
                                             <div class="col-12 col-md-4 col-lg-4">
                                                 <div class="form-group">
                                                     <label class="form-label required" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
@@ -151,6 +163,9 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+
+                                        <div class="row">
                                             <div class="col-12 col-md-3 col-lg-3">
                                                 <div
                                                         class="modal fade" id="quotationModalCenter" tabindex="-1"
@@ -218,22 +233,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row collapse-arrow mt-2 mb-2">
-                        <div class="d-flex justify-content-end">
-                            <button
-                                    type="button"
-                                    class="btn btn-icon btn-rounded flush-soft-hover"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#collapseExample"
-                                    data-bs-placement="top"
-                                    aria-expanded="false"
-                                    aria-controls="collapseExample"
-                                    id="btn-collapse"
-                            >
-                                <span class="icon"><small><i class="fas fa-angle-double-up text-primary collapse-icon"></i></small></span>
-                            </button>
                         </div>
                     </div>
                     <div class="row">

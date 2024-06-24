@@ -887,6 +887,7 @@ class OpportunityActivity {
         let pk = $.fn.getPkDetail();
         let urlFactory = $('#url-factory');
         let transEle = $('#trans-factory');
+        let trans_script = $('#trans-script');
         $table.DataTable().clear().destroy()
         $table.DataTableDefault({
             rowIdx: true,
@@ -975,7 +976,7 @@ class OpportunityActivity {
                             'cashoutflow.advancepayment': urlFactory.attr('data-url-advance-detail'),
                             'cashoutflow.payment': urlFactory.attr('data-url-payment-detail'),
                             'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
-                            'task.opportunitytask': urlFactory.attr('data-url-return-detail'),
+                            'task.opportunitytask': urlFactory.attr('data-url-task'),
                         }
                         let link = '';
                         let title = '';

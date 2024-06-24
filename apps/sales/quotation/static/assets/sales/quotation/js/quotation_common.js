@@ -5927,13 +5927,6 @@ class QuotationSubmitHandle {
             quotation_expenses_data = 'sale_order_expenses_data';
             quotation_logistic_data = 'sale_order_logistic_data';
             quotation_indicators_data = 'sale_order_indicators_data';
-
-            let eleQuotation = $('#select-box-quotation');
-            if (eleQuotation) {
-                if (eleQuotation.val()) {
-                    _form.dataForm['quotation'] = eleQuotation.val()
-                }
-            }
         }
         let dateCreatedVal = $('#quotation-create-date-created').val();
         if (dateCreatedVal) {

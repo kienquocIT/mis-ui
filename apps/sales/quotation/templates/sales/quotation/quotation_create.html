@@ -32,6 +32,18 @@
                 </li>
             </ul>
         </div>
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="d-flex justify-content-end">
+                <button
+                        type="button"
+                        class="btn btn-outline-primary"
+                        id="btn-copy-quotation"
+                        data-bs-toggle="modal"
+                        data-bs-target="#quotationModalCenter"
+                        data-copy-type="copy-from"
+                ><span><span class="icon"><i class="far fa-copy"></i></span><span>{% trans 'Copy Quotation' %}</span></span></button>
+            </div>
+        </div>
     </div>
 
     <form
@@ -76,33 +88,39 @@
                                                     required
                                             ></select>
                                         </div>
-                                        <div class="form-group">
-                                            <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}</label>
-                                            <select
-                                                class="form-select"
-                                                id="select-box-quotation-create-contact"
-                                                data-url="{% url "ContactListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url 'ContactDetail' 1 %}"
-                                                name="contact"
-                                                data-keyResp="contact_list"
-                                                required
-                                            ></select>
-                                        </div>
                                     </div>
                                     <div class="col-12 col-md-6 col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="select-box-quotation-create-payment-term"
-                                                    data-url="{% url "PaymentsTermsListAPI" %}"
-                                                    data-link-detail=""
-                                                    data-method="GET"
-                                                    name="payment_term"
-                                                    data-keyResp="payment_terms_list"
-                                                    required
-                                            ></select>
+                                        <div class="row">
+                                            <div class="col-12 col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Contact' %}</label>
+                                                    <select
+                                                        class="form-select"
+                                                        id="select-box-quotation-create-contact"
+                                                        data-url="{% url "ContactListAPI" %}"
+                                                        data-method="GET"
+                                                        data-link-detail="{% url 'ContactDetail' 1 %}"
+                                                        name="contact"
+                                                        data-keyResp="contact_list"
+                                                        required
+                                                    ></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
+                                                    <select
+                                                            class="form-select"
+                                                            id="select-box-quotation-create-payment-term"
+                                                            data-url="{% url "PaymentsTermsListAPI" %}"
+                                                            data-link-detail=""
+                                                            data-method="GET"
+                                                            name="payment_term"
+                                                            data-keyResp="payment_terms_list"
+                                                            required
+                                                    ></select>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-12 col-md-4 col-lg-4">
@@ -131,16 +149,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="d-flex justify-content-start mt-5">
-                                            <button
-                                                    type="button"
-                                                    class="btn btn-outline-primary"
-                                                    id="btn-copy-quotation"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#quotationModalCenter"
-                                                    data-copy-type="copy-from"
-                                            ><span><span class="icon"><i class="far fa-copy"></i></span><span>{% trans 'Copy Quotation' %}</span></span></button>
-                                        </div>
+
                                         <div
                                                 class="modal fade" id="quotationModalCenter" tabindex="-1"
                                                 role="dialog" aria-labelledby="quotationModalCenter"

@@ -956,7 +956,7 @@ class OpportunityActivity {
                             let status = '';
                             let badgeType = 'badge-soft-smoke';
                             if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
-                                status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
+                                status = `<span class="badge badge-sm badge-soft-danger">${$('#trans-script').attr('data-trans-activity-cancelled')}</i>`
                             }
                             if (Object.keys(row?.['task']).length > 0) {
                                 badgeType = 'badge-soft-sky';

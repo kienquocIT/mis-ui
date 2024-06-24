@@ -13,10 +13,10 @@ class GRLoadDataHandle {
     static transEle = $('#app-trans-factory');
     static urlEle = $('#url-factory');
     static dataTypeGr = [
-        {
-            'id': 3,
-            'title': GRLoadDataHandle.transEle.attr('data-for-product')
-        },
+        // {
+        //     'id': 3,
+        //     'title': GRLoadDataHandle.transEle.attr('data-for-product')
+        // },
         {
             'id': 2,
             'title': GRLoadDataHandle.transEle.attr('data-for-ia')

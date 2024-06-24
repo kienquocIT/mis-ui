@@ -1007,7 +1007,7 @@ class POLoadDataHandle {
     static loadPRProductNotInPO(data) {
         let PRProductIDList = [];
         for (let PRProduct of data?.['purchase_request_products_data']) {
-            PRProductIDList.push(PRProduct?.['purchase_request_product']?.['id'])
+            PRProductIDList.push(PRProduct?.['purchase_request_product']?.['id']);
         }
         let PQCode = null;
         for (let PQ of data?.['purchase_quotations_data']) {
@@ -1533,6 +1533,7 @@ class PODataTableHandle {
             ordering: false,
             paging: false,
             info: false,
+            searching: false,
             autoWidth: true,
             scrollX: true,
             columns: [  // 25,325,325,100,100,100,125,125,300,125,270 (1920p)
@@ -1703,6 +1704,7 @@ class PODataTableHandle {
             ordering: false,
             paging: false,
             info: false,
+            searching: false,
             autoWidth: true,
             scrollX: true,
             columns: [  // 25,325,325,150,175,325,150,270,25 (1920p)
@@ -2275,6 +2277,20 @@ class POSubmitHandle {
                     if (eleOrder.getAttribute('data-row')) {
                         let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
                         rowData['purchase_request_products_data'] = dataRow?.['purchase_request_products_data'];
+                        if (rowData['purchase_request_products_data']) {
+                            for (let PRProductData of rowData['purchase_request_products_data']) {
+                                if (PRProductData?.['purchase_request_product']?.['id']) {
+                                    PRProductData['purchase_request_product'] = PRProductData?.['purchase_request_product']?.['id'];
+                                } else {
+                                    PRProductData['purchase_request_product'] = null;
+                                }
+                                if (PRProductData?.['uom_stock']?.['id']) {
+                                    PRProductData['uom_stock'] = PRProductData?.['uom_stock']?.['id'];
+                                } else {
+                                    PRProductData['uom_stock'] = null;
+                                }
+                            }
+                        }
                         // Check if stock > 0
                         if (rowData['stock'] > 0) {
                             rowData['purchase_request_products_data'].push({

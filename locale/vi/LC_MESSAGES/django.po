@@ -2037,7 +2037,7 @@ msgstr "Mức tồn kho tối đa"
 
 #
 msgid "Valuation Method"
-msgstr "Phương thức định giá"
+msgstr "PT định giá"
 
 #
 msgid "Warehouse Code"
@@ -6944,7 +6944,7 @@ msgstr "Xem chi tiết"
 
 #
 msgid "Valuation method"
-msgstr "Phương pháp tính"
+msgstr "PT định giá"
 
 #
 msgid "System date"
@@ -7036,11 +7036,11 @@ msgstr "Báo cáo tồn kho"
 
 #
 msgid "Cumulative quantity"
-msgstr "Số lượng tích luỹ"
+msgstr "SL tích luỹ"
 
 #
 msgid "Cumulative cost"
-msgstr "Đơn giá tích luỹ"
+msgstr "Giá cost tích luỹ"
 
 #
 msgid "Cumulative value"
@@ -7817,3 +7817,23 @@ msgstr "NGÀY HỆ THỐNG"
 #
 msgid "EXP DATE"
 msgstr "NGÀY HẾT HẠN"
+
+#
+msgid "I/O quantity"
+msgstr "SL nhập/xuất"
+
+#
+msgid "I/O cost"
+msgstr "Giá cost nhập/xuất"
+
+#
+msgid "I/O value"
+msgstr "Giá trị nhập/xuất"
+
+#
+msgid "Inventory UoM"
+msgstr "ĐV lưu kho"
+
+#
+msgid "Trans information"
+msgstr "Thông tin giao dịch"

@@ -82,6 +82,8 @@
             data-trans-sure-confirm="{% trans 'Are you sure to calculate ending cumulative value?' %}"
             data-trans-sure="{% trans 'Sure' %}"
             data-trans-cancel="{% trans 'Cancel' %}"
+            data-trans-vm="{% trans 'Valuation method' %}"
+            data-trans-uom="{% trans 'Inventory UoM' %}"
     ></script>
 
     <script id="url-script"
@@ -165,34 +167,22 @@
     </div>
     <div class="row mt-3 mb-3">
         <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
-            <div class="custom-scroll">
-                <div class="table-wrap" style="max-height: 80vh">
-                    <table hidden class="table nowrap w-100 fixed_header" id="items_detail_report_table">
-                        <thead class="row-fixed">
-                            <tr>
-                                <th class="first-col border-1">{% trans 'Product' %}</th>
-                                <th>{% trans 'Valuation method' %}</th>
-                                <th>{% trans 'Warehouse' %}</th>
-                                <th>{% trans 'System date' %}</th>
-                                <th hidden>{% trans 'Posting date' %}</th>
-                                <th hidden>{% trans 'Document date' %}</th>
-                                <th>{% trans 'Trans description' %}</th>
-                                <th>{% trans 'Trans code' %}</th>
-                                <th>{% trans 'In quantity' %}</th>
-                                <th>{% trans 'In cost' %}</th>
-                                <th>{% trans 'In value' %}</th>
-                                <th>{% trans 'Out quantity' %}</th>
-                                <th>{% trans 'Out cost' %}</th>
-                                <th>{% trans 'Out value' %}</th>
-                                <th>{% trans 'Cumulative quantity' %}</th>
-                                <th>{% trans 'Cumulative cost' %}</th>
-                                <th>{% trans 'Cumulative value' %}</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
+            <table hidden class="table table-hover nowrap w-100" id="items_detail_report_table">
+                <thead>
+                    <tr>
+                        <th class="border-1">{% trans 'Product' %}</th>
+                        <th class="border-1">{% trans 'System date' %}</th>
+                        <th class="border-1">{% trans 'Trans information' %}</th>
+                        <th class="border-1">{% trans 'I/O quantity' %}</th>
+                        <th class="border-1">{% trans 'I/O cost' %}</th>
+                        <th class="border-1">{% trans 'I/O value' %}</th>
+                        <th class="border-1">{% trans 'Cumulative quantity' %}</th>
+                        <th class="border-1">{% trans 'Cumulative cost' %}</th>
+                        <th class="border-1">{% trans 'Cumulative value' %}</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
     </div>
 {% endblock %}

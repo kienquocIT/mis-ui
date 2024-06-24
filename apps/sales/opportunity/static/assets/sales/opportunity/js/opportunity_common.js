@@ -939,7 +939,6 @@ class OpportunityActivity {
                         })
             };
 
-
     static loadDblActivityLogs() {
         let $table = $('#table-timeline');
         let pk = $.fn.getPkDetail();
@@ -1039,10 +1038,12 @@ class OpportunityActivity {
                         let title = '';
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code'] && row?.['doc_data']?.['id'] && row?.['doc_data']?.['title']) {
-                                link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_data']?.['id']);
-                                let result = `<a href="${link}" target="_blank"><p>${row?.['doc_data']?.['title']}</p></a>`;
+                                if (urlMapApp[row?.['app_code']]) {
+                                    link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_data']?.['id']);
+                                }
+                                let result = `<a href="${link}" target="_blank" class="link-primary underline_hover"><p>${row?.['doc_data']?.['title']}</p></a>`;
                                 if (row?.['log_type'] === 1) {
-                                    result = `<a href="#" target=""><p class="show-task-detail">${row?.['doc_data']?.['title']}</p></a>`;
+                                    result = `<a href="#" target="" class="link-primary underline_hover"><p class="show-task-detail">${row?.['doc_data']?.['title']}</p></a>`;
                                 }
                                 return result;
                             } else {
@@ -1108,7 +1109,7 @@ class OpportunityActivity {
             ],
             rowCallback: (row, data, index) => {
                 $('.show-task-detail', row).on('click', function () {
-                    const taskObj = data?.["doc_data"]
+                    const taskObj = data?.["doc_data"];
                     OpportunityActivity.displayTaskView($("#url-factory").attr("data-task_detail").format_url_with_uuid(taskObj.id))
                 })
             }

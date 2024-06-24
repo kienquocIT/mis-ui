@@ -1617,7 +1617,7 @@ class QuotationLoadDataHandle {
         }
     };
 
-    static loadCopyData(ele) {
+    static loadSetupCopy(ele) {
         let formSubmit = $('#frm_quotation_create');
         let divCopyOption = $('#copy-quotation-option');
         let tableCopyQuotationProduct = $('#datable-copy-quotation-product');
@@ -1663,17 +1663,7 @@ class QuotationLoadDataHandle {
                 }
                 // BEGIN COPY DATA
                 if (type === 'copy-from') { // COPY FROM (SALE ORDER CREATE -> CHOOSE QUOTATION)
-                    // Begin load data copy FROM
-                    document.getElementById('customer-price-list').value = dataCopy?.['customer']?.['customer_price_list'];
-                    QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-                    QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
-                    QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-                    // QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
-                    // Check promotion -> re calculate
-                    QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
-                    // Set form novalidate
-                    formSubmit[0].setAttribute('novalidate', 'novalidate');
-                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');
+                    QuotationLoadDataHandle.loadCopyData(dataCopy);
                 } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                     // create URL and add to href
                     let eleRedirect = document.getElementById('link-to-sale-order-create');
@@ -1684,6 +1674,21 @@ class QuotationLoadDataHandle {
                 }
             }
         }
+    };
+
+    static loadCopyData(dataCopy) {
+        let $form = $('#frm_quotation_create');
+        let tableProduct = $('#datable-quotation-create-product');
+        document.getElementById('customer-price-list').value = dataCopy?.['customer']?.['customer_price_list'];
+        QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
+        QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
+        QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
+        // Check promotion -> re calculate
+        QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
+        // Set form novalidate
+        $form[0].setAttribute('novalidate', 'novalidate');
+        $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');
+        return true;
     };
 
     static loadCssToDTScrollBody() {
@@ -3844,9 +3849,8 @@ class QuotationCheckConfigHandle {
 
 // Indicator
 class indicatorHandle {
-    static loadQuotationIndicator(indicator_id, is_load_init_indicator = false) {
-        let jqueryId = '#' + indicator_id;
-        let ele = $(jqueryId);
+    static loadQuotationIndicator(is_load_init = false) {
+        let ele = $('#quotation-indicator-data');
         if (!ele.val()) {
             let url = ele.attr('data-url');
             let method = ele.attr('data-method');
@@ -3861,7 +3865,7 @@ class indicatorHandle {
                     if (data) {
                         if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
                             ele.val(JSON.stringify(data.quotation_indicator_list));
-                            if (is_load_init_indicator === false) {
+                            if (is_load_init === false) {
                                 indicatorHandle.calculateIndicator(data.quotation_indicator_list);
                             }
                         }
@@ -3869,7 +3873,7 @@ class indicatorHandle {
                 }
             )
         } else {
-            if (is_load_init_indicator === false) {
+            if (is_load_init === false) {
                 let data_list = JSON.parse(ele.val());
                 indicatorHandle.calculateIndicator(data_list);
             }
@@ -3880,7 +3884,6 @@ class indicatorHandle {
         let result_list = [];
         let result_json = {};
         let revenueValue = 0;
-        let rateValue = 0;
         let formSubmit = $('#frm_quotation_create');
         let is_sale_order = false;
         let _form = new SetupFormSubmit(formSubmit);
@@ -3927,6 +3930,8 @@ class indicatorHandle {
         // Check special case
         indicatorHandle.checkSpecialCaseIndicator(data_form);
         for (let indicator of indicator_list) {
+            let rateValue = 0;
+
             let parse_formula = "";
             let formula_data = indicator.formula_data;
             for (let item of formula_data) {

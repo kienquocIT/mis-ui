@@ -37,6 +37,18 @@
         </div>
         <div class="col-12 col-md-6 col-lg-6">
             <div class="d-flex justify-content-end">
+                <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="{% trans 'Copy to sale order' %}">
+                <button
+                        type="button"
+                        class="btn btn-outline-primary mr-1"
+                        id="btn-copy-quotation"
+                        data-bs-toggle="modal"
+                        data-bs-target="#quotationModalCenter"
+                        data-copy-type="copy-to"
+                ><span><span class="icon"><i class="fas fa-angle-double-right"></i></span><span>{% trans 'Create Order' %}</span></span></button>
+                </span>
+
+
                 <button
                         type="button"
                         class="btn btn-outline-primary ml-3"
@@ -65,148 +77,140 @@
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
                     <div class="collapse multi-collapse show" id="collapseExample">
-                        <div class="row">
-                            {% trans 'Select Sale Person' as inherit_title %}
-                            {% include 'extends/the-documents/bastion.html' with has_opp=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
-                        </div>
-                        <div class="row">
-                            <div class="col-12 col-md-6 col-lg-6">
-                                <div class="form-group">
-                                    <label class="form-label required" for="quotation-create-title">{% trans 'Title' %}</label>
-                                    <input
-                                            type="text" class="form-control"
-                                            name="title"
-                                            id="quotation-create-title"
-                                            disabled
-                                    >
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}</label>
-                                    <select
-                                            class="form-select"
-                                            id="select-box-quotation-create-customer"
-                                            data-url="{% url "AccountForSaleListAPI" %}"
-                                            data-method="GET"
-                                            data-link-detail="{% url "AccountDetail" 1 %}"
-                                            name="customer"
-                                            data-keyResp="account_sale_list"
-                                            data-keyText="name"
-                                            disabled
-                                    ></select>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}</label>
-                                    <select
-                                        class="form-select"
-                                        id="select-box-quotation-create-contact"
-                                        data-url="{% url "ContactListAPI" %}"
-                                        data-method="GET"
-                                        data-link-detail="{% url 'ContactDetail' 1 %}"
-                                        name="contact"
-                                        data-keyResp="contact_list"
-                                        disabled
-                                    ></select>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-6">
-                                <div class="form-group">
-                                    <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
-                                    <select
-                                            class="form-select"
-                                            id="select-box-quotation-create-payment-term"
-                                            data-url="{% url "PaymentsTermsListAPI" %}"
-                                            data-link-detail=""
-                                            data-method="GET"
-                                            name="payment_term"
-                                            data-keyResp="payment_terms_list"
-                                            disabled
-                                    ></select>
-                                </div>
+                        {% trans 'Select Sale Person' as inherit_title %}
+                        {% include 'extends/the-documents/bastion.html' with has_opp=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                        <br>
+                        <div class="card">
+                            <div class="card-body">
                                 <div class="row">
-                                    <div class="col-12 col-md-4 col-lg-4">
+                                    <div class="col-12 col-md-6 col-lg-6">
                                         <div class="form-group">
-                                            <label class="form-label required" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
-                                            <div class="input-group">
-                                                <div class="input-affix-wrapper">
-                                                    <input
-                                                        type="text" class="form-control disabled-custom-show"
-                                                        placeholder="dd/mm/yyyy"
-                                                        name="date_created"
-                                                        id="quotation-create-date-created"
-                                                        disabled
-                                                    >
+                                            <label class="form-label required" for="quotation-create-title">{% trans 'Title' %}</label>
+                                            <input
+                                                    type="text" class="form-control"
+                                                    name="title"
+                                                    id="quotation-create-title"
+                                                    disabled
+                                            >
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}</label>
+                                            <select
+                                                    class="form-select"
+                                                    id="select-box-quotation-create-customer"
+                                                    data-url="{% url "AccountForSaleListAPI" %}"
+                                                    data-method="GET"
+                                                    data-link-detail="{% url "AccountDetail" 1 %}"
+                                                    name="customer"
+                                                    data-keyResp="account_sale_list"
+                                                    data-keyText="name"
+                                                    disabled
+                                            ></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}</label>
+                                            <select
+                                                class="form-select"
+                                                id="select-box-quotation-create-contact"
+                                                data-url="{% url "ContactListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url 'ContactDetail' 1 %}"
+                                                name="contact"
+                                                data-keyResp="contact_list"
+                                                disabled
+                                            ></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
+                                            <select
+                                                    class="form-select"
+                                                    id="select-box-quotation-create-payment-term"
+                                                    data-url="{% url "PaymentsTermsListAPI" %}"
+                                                    data-link-detail=""
+                                                    data-method="GET"
+                                                    name="payment_term"
+                                                    data-keyResp="payment_terms_list"
+                                                    disabled
+                                            ></select>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-md-4 col-lg-4">
+                                                <div class="form-group">
+                                                    <label class="form-label required" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
+                                                    <div class="input-group">
+                                                        <div class="input-affix-wrapper">
+                                                            <input
+                                                                type="text" class="form-control disabled-custom-show"
+                                                                placeholder="dd/mm/yyyy"
+                                                                name="date_created"
+                                                                id="quotation-create-date-created"
+                                                                disabled
+                                                            >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-5 col-lg-5">
+                                                <div class="border border-primary border-2 rounded-5 bg-green-light-5 p-2 mt-4 text-center">
+                                                    <div class="form-check form-check-lg mt-1">
+                                                        <input type="checkbox" class="form-check-input" id="quotation-customer-confirm" disabled>
+                                                        <label class="form-check-label text-primary" for="quotation-customer-confirm">{% trans 'Customer Confirm' %}</label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-12 col-md-4 col-lg-4">
-                                        <div class="border border-primary border-2 rounded-5 bg-green-light-5 p-2 mt-4 text-center">
-                                            <div class="form-check form-check-lg mt-1">
-                                                <input type="checkbox" class="form-check-input" id="quotation-customer-confirm" disabled>
-                                                <label class="form-check-label text-primary" for="quotation-customer-confirm">{% trans 'Customer Confirm' %}</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-start mt-5">
-                                    <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="{% trans 'Copy to sale order' %}">
-                                    <button
-                                            type="button"
-                                            class="btn btn-outline-primary"
-                                            id="btn-copy-quotation"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#quotationModalCenter"
-                                            data-copy-type="copy-to"
-                                    ><span><span class="icon"><i class="fas fa-angle-double-right"></i></span><span>{% trans 'Create Order' %}</span></span></button>
-                                    </span>
-                                </div>
-                                <div
-                                        class="modal fade" id="quotationModalCenter" tabindex="-1"
-                                        role="dialog" aria-labelledby="quotationModalCenter"
-                                        aria-hidden="true"
-                                >
-                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">{% trans 'Select Quotation' %}</h5>
-                                                <button
-                                                        type="button" class="btn-close"
-                                                        data-bs-dismiss="modal" aria-label="Close"
-                                                >
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="form-check" id="copy-quotation-option">
-                                                    <input type="checkbox" class="form-check-input check-option" id="customCheck1" checked>
-                                                    <label class="form-check-label" for="customCheck1">{% trans 'Copy all from quotation' %}</label>
+
+                                        <div
+                                                class="modal fade" id="quotationModalCenter" tabindex="-1"
+                                                role="dialog" aria-labelledby="quotationModalCenter"
+                                                aria-hidden="true"
+                                        >
+                                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">{% trans 'Select Quotation' %}</h5>
+                                                        <button
+                                                                type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"
+                                                        >
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-check" id="copy-quotation-option">
+                                                            <input type="checkbox" class="form-check-input check-option" id="customCheck1" checked>
+                                                            <label class="form-check-label" for="customCheck1">{% trans 'Copy all from quotation' %}</label>
+                                                        </div>
+                                                        <table
+                                                                id="datable-copy-quotation-product"
+                                                                class="table nowrap w-100 mb-5"
+                                                                hidden
+                                                        >
+                                                            <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th></th>
+                                                                <th>{% trans 'Product' %}</th>
+                                                                <th>{% trans 'Quantity' %}</th>
+                                                                <th>{% trans 'Input' %}</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button
+                                                                type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal"
+                                                        >{% trans 'Close' %}</button>
+                                                        <a target="_blank" class="link-primary underline_hover" id="link-to-sale-order-create" data-url="{% url "SaleOrderCreate" %}" hidden></a>
+                                                        <button type="button" class="btn btn-primary" id="btn-quotation-copy-confirm" data-copy-type="copy-to" data-bs-dismiss="modal">{% trans 'Copy' %}</button>
+                                                        <input type="text" id="data-copy-quotation-detail" hidden>
+                                                    </div>
                                                 </div>
-                                                <table
-                                                        id="datable-copy-quotation-product"
-                                                        class="table nowrap w-100 mb-5"
-                                                        hidden
-                                                >
-                                                    <thead>
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th></th>
-                                                        <th>{% trans 'Product' %}</th>
-                                                        <th>{% trans 'Quantity' %}</th>
-                                                        <th>{% trans 'Input' %}</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button
-                                                        type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal"
-                                                >{% trans 'Close' %}</button>
-                                                <a target="_blank" class="link-primary underline_hover" id="link-to-sale-order-create" data-url="{% url "SaleOrderCreate" %}" hidden></a>
-                                                <button type="button" class="btn btn-primary" id="btn-quotation-copy-confirm" data-copy-type="copy-to" data-bs-dismiss="modal">{% trans 'Copy' %}</button>
-                                                <input type="text" id="data-copy-quotation-detail" hidden>
                                             </div>
                                         </div>
                                     </div>

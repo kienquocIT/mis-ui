@@ -1208,7 +1208,7 @@ class GRLoadDataHandle {
             '3': GRLoadDataHandle.transEle.attr('data-for-product'),
         }
         let idAreaShow = String(data?.['goods_receipt_type'] + 1);
-        GRLoadDataHandle.loadInitS2(GRLoadDataHandle.typeSelectEle, [GRLoadDataHandle.dataTypeGr]);
+        GRLoadDataHandle.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGr);
         GRLoadDataHandle.typeSelectEle.val(idAreaShow);
         let boxRender = $('#good-receipt-type-area')[0]?.querySelector('.select2-selection__rendered');
         if (boxRender) {

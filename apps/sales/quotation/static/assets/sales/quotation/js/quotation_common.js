@@ -551,7 +551,7 @@ class QuotationLoadDataHandle {
         }
     };
 
-    // PRODUCT
+    // TABLE PRODUCT
     static loadAddRowProductGr() {
         let tableProduct = $('#datable-quotation-create-product');
         let order = tableProduct[0].querySelectorAll('.table-row-group').length + 1;
@@ -2187,6 +2187,7 @@ class QuotationDataTableHandle {
             ordering: false,
             paging: false,
             info: false,
+            searching: false,
             autoWidth: true,
             scrollX: true,
             columns: [  // 25,325,325,150,175,325,150,150,270,25 (1920p)
@@ -2486,6 +2487,7 @@ class QuotationDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
+            searching: false,
             columns: [
                 {
                     targets: 0,
@@ -2726,6 +2728,7 @@ class QuotationDataTableHandle {
             ordering: false,
             paging: false,
             info: false,
+            searching: false,
             autoWidth: true,
             scrollX: true,
             columns: [  // 50,300,300,100,150,250,100,200,50 (1500p)
@@ -3260,6 +3263,7 @@ class QuotationDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
+            searching: false,
             columns: [
                 {
                     targets: 0,

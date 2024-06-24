@@ -13,7 +13,7 @@ $(function () {
 
         // Load init
         if (formSubmit.attr('data-method') === 'POST') {
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.typeSelectEle, [GRLoadDataHandle.dataTypeGr]);
+            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGr);
             GRLoadDataHandle.loadBoxPO();
             GRLoadDataHandle.loadInitS2(GRLoadDataHandle.supplierSelectEle);
             GRLoadDataHandle.loadBoxIA();

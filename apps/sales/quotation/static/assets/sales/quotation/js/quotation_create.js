@@ -358,29 +358,6 @@ $(function () {
             QuotationLoadDataHandle.loadAddRowLabor();
         });
 
-// Action on click expense option
-        tableExpense.on('click', '.table-row-expense-option', function () {
-            let itemID = $(this)[0].getAttribute('data-value');
-            let itemTitle = $(this)[0].querySelector('.expense-title').innerHTML;
-            if (itemID && itemTitle) {
-                let row = $(this)[0].closest('tr');
-                let eleExpenseShow = row.querySelector('.table-row-item');
-                let eleExpenseDropdown = row.querySelector('.expense-option-list');
-                if (eleExpenseShow) {
-                    eleExpenseShow.value = itemTitle;
-                    eleExpenseShow.setAttribute('data-value', itemID);
-                    // make button option checked
-                    let allOption = $(row).find('.table-row-expense-option');
-                    if (allOption) {
-                        allOption.removeClass('option-btn-checked');
-                    }
-                    $(this).addClass('option-btn-checked');
-                    // load data expense selected
-                    QuotationLoadDataHandle.loadDataProductSelect($(eleExpenseDropdown));
-                }
-            }
-        });
-
 // Action on delete row expense
         tableExpense.on('click', '.del-row', function (e) {
             e.stopPropagation();

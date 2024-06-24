@@ -882,6 +882,64 @@ class OpportunityLoadDetail {
 }
 
 class OpportunityActivity {
+    static displayTaskView(url) {
+                if (url)
+                    $.fn.callAjax2({
+                        url: url,
+                        method: 'GET'
+                    })
+                        .then((resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                // enable side panel\
+                                if (!$('#drawer_task_create').hasClass('open'))
+                                    $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+                                resetFormTask()
+                                $('.title-create').addClass('hidden')
+                                $('.title-detail').removeClass('hidden')
+                                $('#inputTextTitle').val(data.title)
+                                $('#inputTextCode').val(data.code)
+                                $('#rangeValue').text(data['percent_completed'])
+                                $('#percent_completed').val(data['percent_completed'])
+                                $('#selectStatus').attr('data-onload', JSON.stringify(data.task_status)).append(
+                                    `<option value="${data.task_status.id}" selected>${data.task_status.title}</option>`
+                                ).trigger('change')
+                                $('#inputTextStartDate').val(
+                                    moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                                )
+                                $('#inputTextEndDate').val(
+                                    moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                                )
+                                $('#inputTextEstimate').val(data.estimate)
+                                $('#selectPriority').val(data.priority).trigger('change')
+                                $('.btn-log_work').addClass('disabled')
+                                // render label
+                                let htmlElm = $('.label-mark')
+                                htmlElm.html('')
+                                for (let item of data.label)
+                                    htmlElm.append($(`<span class="item-tag"><span>${item}</span></span>`))
+                                $('#inputAssigner').val(data.employee_created.full_name)
+                                    .attr('value', data.employee_created.id)
+                                if (data?.employee_inherit.hasOwnProperty("id"))
+                                    $('#employee_inherit_id').attr('data-onload', JSON.stringify(data.employee_inherit))
+                                        .append(`<option value="${data.employee_inherit.id}" selected>${
+                                            data.employee_inherit.full_name}</option>`).trigger("change")
+                                window.editor.setData(data.remark)
+                                window.checklist.setDataList = data.checklist
+                                window.checklist.render()
+                                $('.create-subtask, .create-checklist').addClass('hidden')
+                                if (data?.['task_log_work'].length) tabLogWork(data['task_log_work'])
+                                if (data?.['sub_task_list']) tabSubtask(data['sub_task_list'])
+                                if (data.attach) {
+                                    const fileDetail = data.attach[0]?.['files']
+                                    FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
+                                }
+                                $('.create-task').attr('disabled', true)
+                            }
+                        })
+            };
+
+
     static loadDblActivityLogs() {
         let $table = $('#table-timeline');
         let pk = $.fn.getPkDetail();
@@ -976,14 +1034,17 @@ class OpportunityActivity {
                             'cashoutflow.advancepayment': urlFactory.attr('data-url-advance-detail'),
                             'cashoutflow.payment': urlFactory.attr('data-url-payment-detail'),
                             'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
-                            'task.opportunitytask': urlFactory.attr('data-url-task'),
                         }
                         let link = '';
                         let title = '';
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code'] && row?.['doc_data']?.['id'] && row?.['doc_data']?.['title']) {
                                 link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_data']?.['id']);
-                                return `<a href="${link}" target="_blank"><p>${row?.['doc_data']?.['title']}</p></a>`;
+                                let result = `<a href="${link}" target="_blank"><p>${row?.['doc_data']?.['title']}</p></a>`;
+                                if (row?.['log_type'] === 1) {
+                                    result = `<a href="#" target=""><p class="show-task-detail">${row?.['doc_data']?.['title']}</p></a>`;
+                                }
+                                return result;
                             } else {
                                 return `<p>--</p>`;
                             }
@@ -1006,7 +1067,6 @@ class OpportunityActivity {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        let code = '';
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code'] && row?.['doc_data']?.['code']) {
                                 return `<span class="badge badge-primary">${row?.['doc_data']?.['code']}</span>`;
@@ -1048,8 +1108,8 @@ class OpportunityActivity {
             ],
             rowCallback: (row, data, index) => {
                 $('.show-task-detail', row).on('click', function () {
-                    const taskObj = data?.["task"]
-                    displayTaskView($("#url-factory").attr("data-task_detail").format_url_with_uuid(taskObj.id))
+                    const taskObj = data?.["doc_data"]
+                    OpportunityActivity.displayTaskView($("#url-factory").attr("data-task_detail").format_url_with_uuid(taskObj.id))
                 })
             }
         });

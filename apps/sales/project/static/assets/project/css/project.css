@@ -368,3 +368,51 @@
 #work_expense_tbl tr.active{
     background: var(--bs-table-hover-bg);
 }
+.work-expense-wrap, .work-expense-wrap tbody tr{
+    background: rgb(247 247 247 / 30%);
+}
+.WE-content > .btn{
+    float: left;
+}
+
+.min-w-1768p {
+    min-width: 1768px;
+}
+.toggle-ud{
+    width: 45px;
+    display:block;
+    margin: 0 auto;
+    position: relative;
+}
+.toggle-ud:before{
+    content:"";
+    height:1px;
+    width: 100px;
+    background:#007D88;
+    display:block;
+    position: absolute;
+    left: -100px;
+    top:50%;
+}
+
+.toggle-ud:after{
+    content:"";
+    height:1px;
+    width: 100px;
+    background:#007D88;
+    display:block;
+    position: absolute;
+    right: -100px;
+    top:50%;
+}
+.toggle-ud .btn{
+    transition: all .30s ease-in-out;
+    --webkit--transition: all .30s ease-in-out;
+}
+.toggle-ud:not(.is_show) .btn{
+    transform: rotate(180deg);
+    --webkit--transform: rotate(180deg);
+}
+.bt-0{
+    border-top: 0!important;
+}

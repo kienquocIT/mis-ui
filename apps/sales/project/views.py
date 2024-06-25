@@ -2,7 +2,7 @@ __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI',
            'ProjectEdit', 'ProjectEditAPI', 'ProjectCreateGroupAPI', 'ProjectGroupListAPI', 'ProjectWorkCreateAPI',
            'ProjectWorkListAPI', 'ProjectGroupDetailAPI', 'ProjectWorkDetailAPI', 'ProjectMemberAddAPI',
            'ProjectMemberDetailAPI', 'ProjectUpdateOrderAPI', 'ProjectTaskListAPI', 'ProjectGroupDDListAPI',
-           'ProjectTaskDetailAPI'
+           'ProjectTaskDetailAPI', 'ProjectWorkExpenseAPI'
            ]
 
 from django.views import View
@@ -364,3 +364,15 @@ class ProjectTaskDetailAPI(APIView):
             resp.result['message'] = f'{SaleMsg.PROJECT} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+class ProjectWorkExpenseAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_WORK_EXPENSE_LIST).get(params)
+        return resp.auto_return(key_success='work_expense_list')

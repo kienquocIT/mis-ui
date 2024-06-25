@@ -169,6 +169,18 @@ class ReportInventoryListAPI(APIView):
         return resp.auto_return(key_success='report_inventory_list')
 
 
+class ReportInventoryProductWarehouseViewAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_INVENTORY_PRD_WH_VIEW_LIST).get(data)
+        return resp.auto_return(key_success='report_inventory_prd_wh_list')
+
+
 # REPORT PIPELINE
 class ReportPipelineList(View):
 

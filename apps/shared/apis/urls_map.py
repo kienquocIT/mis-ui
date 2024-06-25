@@ -540,6 +540,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REPORT_INVENTORY_DETAIL_LIST = StringUrl('report/inventory-detail/list')
     BALANCE_INIT_LIST = StringUrl('report/balance-init/list')
     REPORT_INVENTORY_LIST = StringUrl('report/inventory/list')
+    REPORT_INVENTORY_PRD_WH_VIEW_LIST = StringUrl('report/product-warehouse-view/list')
     REPORT_GENERAL_LIST = StringUrl('report/general/list')
     PO_REPORT_LIST = StringUrl('report/po-report/list')
 
@@ -613,6 +614,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROJECT_UPDATE_ORDER = StringUrl('project/update-order/{pk}')
     PROJECT_TASK_LIST = StringUrl('project/assign-task-list/{pk_pj}')
     PROJECT_TASK_LINK = StringUrl('project/assign-task-link/{pk}')
+    PROJECT_WORK_EXPENSE_LIST = StringUrl('project/work-expense-list')
 
     # Folder
     FOLDER_LIST = StringUrl('attachment/folder/list')

@@ -238,11 +238,21 @@ class QuotationLoadDataHandle {
                 QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
                     'dataParams': {'employee_inherit': QuotationLoadDataHandle.salePersonSelectEle.val()},
                     'allowClear': true,
+                    templateResult: function (state) {
+                        let titleHTML = `<span>${state.data?.title ? state.data.title : "_"}</span>`
+                        let codeHTML = `<span class="badge badge-soft-primary mr-2">${state.text ? state.text : "_"}</span>`
+                        return $(`<span>${codeHTML} ${titleHTML}</span>`);
+                    },
                 });
             } else {
                 QuotationLoadDataHandle.opportunitySelectEle.empty();
                 QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
                     'allowClear': true,
+                    templateResult: function (state) {
+                        let titleHTML = `<span>${state.data?.title ? state.data.title : "_"}</span>`
+                        let codeHTML = `<span class="badge badge-soft-primary mr-2">${state.text ? state.text : "_"}</span>`
+                        return $(`<span>${codeHTML} ${titleHTML}</span>`);
+                    },
                 });
             }
             // load customer, contact, payment

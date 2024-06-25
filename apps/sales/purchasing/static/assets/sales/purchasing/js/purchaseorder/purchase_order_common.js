@@ -748,36 +748,6 @@ class POLoadDataHandle {
         return true
     };
 
-    static loadAddPaymentStage() {
-        let $table = $('#datable-po-payment-stage');
-        let dataAdd = {
-            'remark': '',
-            'payment_ratio': 0,
-            'value_before_tax': 0,
-            'tax': {},
-            'value_after_tax': 0,
-        }
-        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-        // init select2
-        POLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-        // init datePicker
-        $(newRow.querySelector('.table-row-due-date')).daterangepicker({
-            singleDatePicker: true,
-            timepicker: false,
-            showDropdowns: false,
-            minYear: 2023,
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-            maxYear: parseInt(moment().format('YYYY'), 10),
-            drops: 'up',
-            autoApply: true,
-        });
-        $(newRow.querySelector('.table-row-due-date')).val(null).trigger('change');
-        // init maskMoney
-        $.fn.initMaskMoney2();
-    };
-
     static loadCssToDTScrollBody() {
         let tableAddWrapper = document.getElementById('datable-purchase-order-product-add_wrapper');
         let tablePRWrapper = document.getElementById('datable-purchase-order-product-request_wrapper');
@@ -848,7 +818,38 @@ class POLoadDataHandle {
         }
     };
 
-    static loadChangePaymentRate(ele) {
+    // TABLE PAYMENT STAGE
+    static loadAddPaymentStage() {
+        let $table = $('#datable-po-payment-stage');
+        let dataAdd = {
+            'remark': '',
+            'payment_ratio': 0,
+            'value_before_tax': 0,
+            'tax': {},
+            'value_after_tax': 0,
+        }
+        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
+        // init select2
+        POLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+        // init datePicker
+        $(newRow.querySelector('.table-row-due-date')).daterangepicker({
+            singleDatePicker: true,
+            timepicker: false,
+            showDropdowns: false,
+            minYear: 2023,
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            drops: 'up',
+            autoApply: true,
+        });
+        $(newRow.querySelector('.table-row-due-date')).val(null).trigger('change');
+        // init maskMoney
+        $.fn.initMaskMoney2();
+    };
+
+    static loadChangePSRate(ele) {
         let tableWrapper = document.getElementById('datable-purchase-order-product-add_wrapper');
         if (POLoadDataHandle.PRDataEle.val()) { // PO PR products
             tableWrapper = document.getElementById('datable-purchase-order-product-request_wrapper');
@@ -866,6 +867,7 @@ class POLoadDataHandle {
                             $(eleValBT).attr('value', String(value));
                             // mask money
                             $.fn.initMaskMoney2();
+                            POCalculateHandle.calculateValueAfterTax(row);
                             let check = POValidateHandle.validatePOPSValue(eleValBT);
                             if (check === false) {
                                 ele.value = 0;
@@ -876,6 +878,17 @@ class POLoadDataHandle {
             }
         }
         return true;
+    };
+
+    static loadChangePSRateAllTbl() {
+        let $table = $('#datable-po-payment-stage');
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            let eleRate = row.querySelector('.table-row-ratio');
+            if (eleRate) {
+                POLoadDataHandle.loadChangePSRate(eleRate);
+            }
+        });
     };
 
     // LOAD DETAIL

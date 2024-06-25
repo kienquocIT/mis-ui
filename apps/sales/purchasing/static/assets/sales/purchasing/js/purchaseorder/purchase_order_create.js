@@ -203,6 +203,7 @@ $(function () {
             } else {
                 POCalculateHandle.calculateMain(tablePurchaseOrderProductAdd, row);
             }
+            POLoadDataHandle.loadChangePSRateAllTbl();
         });
 
         tablePurchaseOrderProductAdd.on('click', '.table-row-price-option', function () {
@@ -254,6 +255,7 @@ $(function () {
                 }
             }
             POCalculateHandle.calculateMain(tablePurchaseOrderProductRequest, row);
+            POLoadDataHandle.loadChangePSRateAllTbl();
         });
 
         // PAYMENT STAGE
@@ -263,7 +265,7 @@ $(function () {
 
         tablePaymentStage.on('change', '.table-row-ratio, .table-row-value-before-tax, .table-row-tax', function () {
             if ($(this).hasClass('table-row-ratio')) {
-                POLoadDataHandle.loadChangePaymentRate(this);
+                POLoadDataHandle.loadChangePSRate(this);
             }
             if ($(this).hasClass('table-row-value-before-tax')) {
                 POValidateHandle.validatePOPSValue(this);

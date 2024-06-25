@@ -132,3 +132,7 @@ msgstr "Thêm nhân công"
 #
 msgid "New"
 msgstr "Thêm"
+
+#
+msgid "Subtotal after tax"
+msgstr "Thành tiền sau thuế"

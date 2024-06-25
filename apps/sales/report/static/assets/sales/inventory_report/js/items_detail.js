@@ -117,7 +117,6 @@ $(document).ready(function () {
     LoadWarehouseSelectBox(warehouses_select_Ele)
 
     function RenderTableWithParameter(table, data_list=[]) {
-        console.log(data_list)
         table.DataTable().clear().destroy()
         table.DataTableDefault({
             dom: '',
@@ -130,13 +129,14 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'prd') {
                             let html = `
-                                <span class="badge badge-secondary badge-pill w-25">
+                                <span class="product-td badge badge-secondary badge-pill w-25" data-product-id="${row?.['product_id']}">
                                     <a tabindex="0"
+                                       data-bs-placement="bottom"
                                        data-bs-toggle="popover"
-                                       data-bs-trigger="hover"
+                                       data-bs-trigger="hover focus"
                                        data-bs-html="true"
                                        data-bs-content="- ${trans_script.attr('data-trans-uom')}: <span class='badge badge-soft-blue badge-pill'>${row?.['product_uom']}</span><br>- ${trans_script.attr('data-trans-vm')}: <span class='fst-italic'>${row?.['we']}<span>"
-                                       class="text-white d-inline-block popover-prd">
+                                       class="w-100 text-white d-inline-block popover-prd">
                                     ${row?.['product_code']}
                                     </a>
                                 </span>&nbsp;
@@ -177,7 +177,7 @@ $(document).ready(function () {
                                     <span class="badge badge-sm badge-primary badge-pill">
                                         ${row?.['warehouse_code']}
                                     </span>&nbsp;
-                                    <span class="text-primary fw-bold">${row?.['warehouse_title']}</span>
+                                    <span class="text-primary fw-bold wh-of-${row?.['product_id']}">${row?.['warehouse_title']}</span>
                             `
                         }
                         return ``
@@ -214,10 +214,16 @@ $(document).ready(function () {
                     className: 'text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
-                            return `<span class="text-secondary">${row?.['opening_balance_quantity']}</span>`
+                            return `<span style="font-size: medium" class="badge badge-pill text-secondary">${row?.['opening_balance_quantity']}</span>`
                         }
                         else if (row?.['row_type'] === 'log') {
-                            return `<span class="text-secondary">${row?.['current_quantity']}</span>`
+                            return `<span style="font-size: medium" class="badge badge-pill text-secondary current-quantity-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}">${row?.['current_quantity']}</span>`
+                        }
+                        else if (row?.['row_type'] === 'prd') {
+                            return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill sum-current-quantity-${row?.['product_id']}"></span>`
+                        }
+                        else if (row?.['row_type'] === 'wh') {
+                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-primary sum-current-quantity-of-wh-${row?.['product_id']}">${row?.['ending_balance_quantity']}</span>`
                         }
                         return ``
                     }
@@ -226,10 +232,16 @@ $(document).ready(function () {
                     className: 'text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
-                            return `<span class="mask-money" data-init-money="${row?.['opening_balance_cost']}"></span>`
+                            return `<span style="font-size: medium" class="badge badge-pill text-secondary mask-money" data-init-money="${row?.['opening_balance_cost']}"></span>`
                         }
                         else if (row?.['row_type'] === 'log') {
-                            return `<span class="text-secondary mask-money" data-init-money="${row?.['current_cost']}"></span>`
+                            return `<span style="font-size: medium" class="badge badge-pill text-secondary mask-money current-cost-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}" data-init-money="${row?.['current_cost']}"></span>`
+                        }
+                        else if (row?.['row_type'] === 'prd') {
+                            return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill mask-money sum-current-cost-${row?.['product_id']}" data-init-money=""></span>`
+                        }
+                        else if (row?.['row_type'] === 'wh') {
+                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-primary mask-money sum-current-cost-of-wh-${row?.['product_id']}" data-init-money="${row?.['ending_balance_cost']}"></span>`
                         }
                         return ``
                     }
@@ -238,10 +250,16 @@ $(document).ready(function () {
                     className: 'text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
-                            return `<span class="mask-money" data-init-money="${row?.['opening_balance_value']}"></span>`
+                            return `<span style="font-size: medium" class="badge badge-pill text-secondary mask-money" data-init-money="${row?.['opening_balance_value']}"></span>`
                         }
                         else if (row?.['row_type'] === 'log') {
-                            return `<span class="text-secondary mask-money" data-init-money="${row?.['current_value']}"></span>`
+                            return `<span style="font-size: medium" class="badge badge-pill text-secondary mask-money current-value-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}" data-init-money="${row?.['current_value']}"></span>`
+                        }
+                        else if (row?.['row_type'] === 'prd') {
+                            return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill mask-money sum-current-value-${row?.['product_id']}" data-init-money=""></span>`
+                        }
+                        else if (row?.['row_type'] === 'wh') {
+                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-primary mask-money sum-current-value-of-wh-${row?.['product_id']}" data-init-money="${row?.['ending_balance_value']}"></span>`
                         }
                         return ``
                     }
@@ -262,24 +280,51 @@ $(document).ready(function () {
                         'min-width': '100px'
                     })
                     $(this).find('td:eq(4)').css({
-                        'min-width': '200px'
+                        'min-width': '150px'
                     })
                     $(this).find('td:eq(5)').css({
-                        'min-width': '200px'
+                        'min-width': '150px'
                     })
                     $(this).find('td:eq(6)').css({
                         'min-width': '100px'
                     })
                     $(this).find('td:eq(7)').css({
-                        'min-width': '200px'
+                        'min-width': '150px'
                     })
                     $(this).find('td:eq(8)').css({
-                        'min-width': '200px'
+                        'min-width': '150px'
                     })
+                })
+
+                table.find('.product-td').each(function () {
+                    let product_id = $(this).attr('data-product-id')
+
+                    console.log(product_id)
+
+                    let sum_current_quantity = 0
+                    table.find(`.sum-current-quantity-of-wh-${product_id}`).each(function () {
+                        console.log($(this).text())
+                        sum_current_quantity += parseFloat($(this).text())
+                    })
+
+                    let sum_current_cost = 0
+                    table.find(`.sum-current-cost-of-wh-${product_id}`).each(function () {
+                        sum_current_cost += parseFloat($(this).attr('data-init-money'))
+                    })
+
+                    let sum_current_value = 0
+                    table.find(`.sum-current-value-of-wh-${product_id}`).each(function () {
+                        sum_current_value += parseFloat($(this).attr('data-init-money'))
+                    })
+
+                    table.find(`.sum-current-quantity-${product_id}`).text(sum_current_quantity)
+                    table.find(`.sum-current-cost-${product_id}`).attr('data-init-money', sum_current_cost)
+                    table.find(`.sum-current-value-${product_id}`).attr('data-init-money', sum_current_value)
                 })
 
                 const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
                 const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+                $('.popover-prd:first-child').trigger('hover')
             },
         });
     }
@@ -318,6 +363,7 @@ $(document).ready(function () {
                     for (const item of results[0]) {
                         table_inventory_report_data.push({
                             'row_type': 'prd',
+                            'product_id': item?.['product']?.['id'],
                             'product_code': item?.['product']?.['code'],
                             'product_title': item?.['product']?.['title'],
                             'product_uom': item?.['product']?.['uom']?.['title'],
@@ -330,12 +376,17 @@ $(document).ready(function () {
                                 if (warehouses_select_Ele.val().includes(stock_activity?.['warehouse_id'])) {
                                     table_inventory_report_data.push({
                                         'row_type': 'wh',
+                                        'product_id': item?.['product']?.['id'],
                                         'warehouse_id': stock_activity?.['warehouse_id'],
                                         'warehouse_code': stock_activity?.['warehouse_code'],
-                                        'warehouse_title': stock_activity?.['warehouse_title']
+                                        'warehouse_title': stock_activity?.['warehouse_title'],
+                                        'ending_balance_quantity': stock_activity?.['ending_balance_quantity'],
+                                        'ending_balance_cost': stock_activity?.['ending_balance_cost'],
+                                        'ending_balance_value': stock_activity?.['ending_balance_value'],
                                     })
                                     table_inventory_report_data.push({
                                         'row_type': 'open',
+                                        'product_id': item?.['product']?.['id'],
                                         'ob_label': trans_script.attr('data-trans-ob'),
                                         'opening_balance_quantity': stock_activity?.['opening_balance_quantity'],
                                         'opening_balance_cost': stock_activity?.['opening_balance_cost'],
@@ -376,6 +427,7 @@ $(document).ready(function () {
 
                                         table_inventory_report_data.push({
                                             'row_type': 'log',
+                                            'product_id': item?.['product']?.['id'],
                                             'text_color': text_color,
                                             'stock_type': activity?.['stock_type'],
                                             'trans_code': activity?.['trans_code'],
@@ -394,12 +446,17 @@ $(document).ready(function () {
                             else {
                                 table_inventory_report_data.push({
                                     'row_type': 'wh',
+                                    'product_id': item?.['product']?.['id'],
                                     'warehouse_id': stock_activity?.['warehouse_id'],
                                     'warehouse_code': stock_activity?.['warehouse_code'],
                                     'warehouse_title': stock_activity?.['warehouse_title'],
+                                    'ending_balance_quantity': stock_activity?.['ending_balance_quantity'],
+                                    'ending_balance_cost': stock_activity?.['ending_balance_cost'],
+                                    'ending_balance_value': stock_activity?.['ending_balance_value'],
                                 })
                                 table_inventory_report_data.push({
                                     'row_type': 'open',
+                                    'product_id': item?.['product']?.['id'],
                                     'ob_label': trans_script.attr('data-trans-ob'),
                                     'opening_balance_quantity': stock_activity?.['opening_balance_quantity'],
                                     'opening_balance_cost': stock_activity?.['opening_balance_cost'],
@@ -440,6 +497,7 @@ $(document).ready(function () {
 
                                     table_inventory_report_data.push({
                                         'row_type': 'log',
+                                        'product_id': item?.['product']?.['id'],
                                         'text_color': text_color,
                                         'stock_type': activity?.['stock_type'],
                                         'trans_code': activity?.['trans_code'],

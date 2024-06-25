@@ -781,7 +781,7 @@ $(document).ready(function () {
                     className: 'w-20',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'lot_row') {
-                            return `${row?.['lot_number']} (${row?.['quantity_import']})`
+                            return `<span class="text-blue fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['lot_number']}</span> (${row?.['quantity_import']})`
                         }
                         return `<span hidden>${JSON.stringify(row?.['lot_data'])}</span>`
                     }
@@ -796,10 +796,10 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-20 text-center',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'sn_row') {
-                            return `${row?.['vendor_serial_number']} (${row?.['serial_number']})`
+                            return `(${row?.['vendor_serial_number']})<br><span class="text-dark fw-bold"><i class="bi bi-upc"></i>&nbsp;${row?.['serial_number']}</span>`
                         }
                         return `<span hidden>${JSON.stringify(row?.['sn_data'])}</spanhidden>`
                     }

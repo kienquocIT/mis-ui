@@ -379,14 +379,13 @@ $(document).ready(function () {
 
                 const $attElm = $('[name="attach"]').val()
                 if ($attElm) formData.attach = [...$attElm]
-
                 let method = 'POST'
                 let url = form.attr('data-url')
+                formData.id = $('input[name="id"]', form).val()
                 if (formData.id && formData.id !== '') {
                     method = 'PUT'
                     url = $('#url-factory').attr('data-task-detail').format_url_with_uuid(formData.id)
                 }
-
                 $.fn.callAjax2({
                     'url': url,
                     'method': method,

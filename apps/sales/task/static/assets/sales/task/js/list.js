@@ -74,6 +74,7 @@ $(function () {
         }
         let callData = $.fn.callAjax2({'url': $urlFact.attr('data-task-list'), 'method': 'GET', 'data': params})
         if (isReturn) return callData
+        $x.fn.showLoadingPage();
         callData.then(
             (req) => {
                 let data = $.fn.switcherResp(req);
@@ -91,9 +92,11 @@ $(function () {
                     $('.btn-task-bar').data('task_info', temp)
                     $('#btn_load-more').prop('disabled', temp.page_next === 0)
                 }
+                $x.fn.hideLoadingPage();
             },
             (err) => {
-                console.log('call data error, ', err)
+                console.log('call data error, ', err);
+                $x.fn.hideLoadingPage();
             }
         );
     }

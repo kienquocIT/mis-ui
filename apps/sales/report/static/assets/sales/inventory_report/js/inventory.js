@@ -175,9 +175,9 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
                             if (row?.['warehouse_title']) {
-                                return `<span class="badge badge-primary badge-pill w-25">
-                                            ${row?.['warehouse_code']}
-                                        </span>&nbsp;
+                                return `<button type="button" data-bs-toggle="modal" data-bs-target="#view-prd-wh" data-wh-id="${row?.['warehouse_id']}" class="prd-wh-view btn btn-primary btn-rounded w-25">
+                                            <span data-bs-toggle="tooltip" data-bs-placement="bottom" title="Click to see detail this warehouse">${row?.['warehouse_code']}</span>
+                                        </button>&nbsp;
                                         <span class="text-primary ${row?.['type']}"><b>${row?.['warehouse_title']}</b></span>`
                             }
                             else {
@@ -442,9 +442,9 @@ $(document).ready(function () {
                     className: '',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
-                            return `<span class="badge badge-primary badge-pill w-25">
-                                        ${row?.['warehouse_code']}
-                                    </span>&nbsp;
+                            return `<button type="button" data-bs-toggle="modal" data-bs-target="#view-prd-wh" data-wh-id="${row?.['warehouse_id']}" class="prd-wh-view btn btn-primary btn-rounded w-25">
+                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom" title="Click to see detail this warehouse">${row?.['warehouse_code']}</span>
+                                    </button>&nbsp;
                                     <span class="text-primary ${row?.['type']}"><b>${row?.['warehouse_title']}</b></span>`
                         }
                         else if (row?.['type'] === 'detail_row') {
@@ -739,6 +739,79 @@ $(document).ready(function () {
 
                 MatchTooltip()
             },
+        });
+    }
+
+    function RenderTableViewProductWarehouse(table, data_list=[]) {
+        table.DataTable().clear().destroy()
+        table.DataTableDefault({
+            reloadCurrency: true,
+            data: data_list,
+            paging: false,
+            ordering: false,
+            columns: [
+                {
+                    className: 'w-30',
+                    render: (data, type, row) => {
+                        if (row?.['row_type'] === 'main_row') {
+                            return `<span class="${row?.['row_type']} badge badge-primary w-25">${row?.['product']?.['code']}</span>&nbsp;<span class="text-primary">${row?.['product']?.['title']}</span>`
+                        }
+                         return `<span hidden>${row?.['product']?.['code']}${row?.['product']?.['title']}</span>`
+                    }
+                },
+                {
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        if (row?.['row_type'] === 'main_row') {
+                            return `<span class="text-primary">${row?.['product']?.['uom']?.['title']}</span>`
+                        }
+                        return ``
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        if (row?.['row_type'] === 'main_row') {
+                            return `<span class="text-primary">${row?.['stock_amount']}</span>`
+                        }
+                        return ``
+                    }
+                },
+                {
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        if (row?.['row_type'] === 'lot_row') {
+                            return `${row?.['lot_number']} (${row?.['quantity_import']})`
+                        }
+                        return `<span hidden>${JSON.stringify(row?.['lot_data'])}</span>`
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        if (row?.['row_type'] === 'lot_row') {
+                            return `${row?.['expire_date']}`
+                        }
+                        return ``
+                    }
+                },
+                {
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        if (row?.['row_type'] === 'sn_row') {
+                            return `${row?.['vendor_serial_number']} (${row?.['serial_number']})`
+                        }
+                        return `<span hidden>${JSON.stringify(row?.['sn_data'])}</spanhidden>`
+                    }
+                },
+            ],
+            initComplete: function () {
+                table.find('.main_row').each(function () {
+                    $(this).closest('tr').css({
+                        'background-color': 'rgb(235, 245, 245)'
+                    })
+                })
+            }
         });
     }
 
@@ -1321,4 +1394,66 @@ $(document).ready(function () {
             $(this).find('.in-quantity-span').attr('data-bs-toggle', 'tooltip').attr('data-bs-placement', 'top').attr('title', trans_script.attr('data-trans-no-info'))
         })
     }
+
+    $(document).on('click', '.prd-wh-view', function () {
+        $('#view-prd-wh-title').text($(this).closest('td').find('.warehouse_row').text())
+        let dataParam = {}
+        dataParam['warehouse_id'] = $(this).attr('data-wh-id')
+        let warehouse_view_list_ajax = $.fn.callAjax2({
+            url: url_script.attr('data-url-inventory-list-view'),
+            data: dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_prd_wh_list')) {
+                    return data?.['report_inventory_prd_wh_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([warehouse_view_list_ajax]).then(
+            (results) => {
+                let data_view_list = []
+                for (const data of results[0]) {
+                    for (const lot of data?.['detail']?.['lot_data']) {
+                        lot.expire_date = moment(lot?.['expire_date'].split('T')[0]).format('DD/MM/YYYY')
+                    }
+
+                    data_view_list.push({
+                        'row_type': 'main_row',
+                        'id': data?.['id'],
+                        'product': data?.['product'],
+                        'stock_amount': data?.['stock_amount'],
+                        'lot_data': data?.['detail']?.['lot_data'],
+                        'sn_data': data?.['detail']?.['sn_data']
+                    })
+                    for (const lot of data?.['detail']?.['lot_data']) {
+                        data_view_list.push({
+                            'product': data?.['product'],
+                            'row_type': 'lot_row',
+                            'id': lot?.['id'],
+                            'lot_number': lot?.['lot_number'],
+                            'expire_date': lot?.['expire_date'],
+                            'quantity_import': lot?.['quantity_import']
+                        })
+                    }
+                    for (const sn of data?.['detail']?.['sn_data']) {
+                        data_view_list.push({
+                            'product': data?.['product'],
+                            'row_type': 'sn_row',
+                            'id': sn?.['id'],
+                            'vendor_serial_number': sn?.['vendor_serial_number'],
+                            'serial_number': sn?.['serial_number']
+                        })
+                    }
+                }
+
+                RenderTableViewProductWarehouse($('#view-prd-wh-table'), data_view_list)
+            })
+    })
 })

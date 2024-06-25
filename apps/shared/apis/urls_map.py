@@ -522,6 +522,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REPORT_INVENTORY_DETAIL_LIST = StringUrl('report/inventory-detail/list')
     BALANCE_INIT_LIST = StringUrl('report/balance-init/list')
     REPORT_INVENTORY_LIST = StringUrl('report/inventory/list')
+    REPORT_INVENTORY_PRD_WH_VIEW_LIST = StringUrl('report/product-warehouse-view/list')
     REPORT_GENERAL_LIST = StringUrl('report/general/list')
     PO_REPORT_LIST = StringUrl('report/po-report/list')
 

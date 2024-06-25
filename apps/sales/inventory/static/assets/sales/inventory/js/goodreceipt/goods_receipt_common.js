@@ -1418,9 +1418,9 @@ class GRDataTableHandle {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<div class="form-check">
                                     <input 
-                                        type="checkbox" 
+                                        type="radio" 
                                         class="form-check-input table-row-checkbox" 
-                                        data-id="${row.id}"
+                                        data-id="${row?.['id']}"
                                         data-row="${dataRow}"
                                     >
                                 </div>`
@@ -1490,9 +1490,9 @@ class GRDataTableHandle {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<div class="form-check">
                                     <input 
-                                        type="checkbox" 
+                                        type="radio" 
                                         class="form-check-input table-row-checkbox" 
-                                        data-id="${row.id}" 
+                                        data-id="${row?.['id']}" 
                                         data-row="${dataRow}"
                                     >
                                 </div>`
@@ -1564,9 +1564,9 @@ class GRDataTableHandle {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<div class="form-check">
                                     <input 
-                                        type="checkbox" 
+                                        type="radio" 
                                         class="form-check-input table-row-checkbox" 
-                                        data-id="${row.id}" 
+                                        data-id="${row?.['id']}" 
                                         data-row="${dataRow}"
                                     >
                                 </div>`
@@ -1933,9 +1933,9 @@ class GRDataTableHandle {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             return `<div class="form-check">
                                     <input 
-                                        type="checkbox" 
+                                        type="radio" 
                                         class="form-check-input table-row-checkbox" 
-                                        data-id="${row.id}"
+                                        data-id="${row?.['id']}"
                                         data-row="${dataRow}"
                                         disabled
                                     >

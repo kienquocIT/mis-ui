@@ -1712,7 +1712,7 @@ msgstr "Số"
 
 #
 msgid "Vendor"
-msgstr "Nhà cùng cấp"
+msgstr "Nhà cung cấp"
 
 #
 msgid "Date"
@@ -2037,7 +2037,7 @@ msgstr "Mức tồn kho tối đa"
 
 #
 msgid "Valuation Method"
-msgstr "Phương thức định giá"
+msgstr "PT định giá"
 
 #
 msgid "Warehouse Code"
@@ -3036,10 +3036,8 @@ msgid "Feature"
 msgstr "Tính năng"
 
 #
-msgid "The document approved because the feature config don't apply workflow"
-msgstr ""
-"Phiếu đã tự động chấp nhận bởi vì chức năng này không áp dụng Quy trình làm "
-"việc"
+msgid "Document is auto finished because the feature doesn't apply workflow"
+msgstr "Phiếu được tự động hoàn thành do chức năng không áp dụng quy trình"
 
 #
 msgid "Connection"
@@ -6944,7 +6942,7 @@ msgstr "Xem chi tiết"
 
 #
 msgid "Valuation method"
-msgstr "Phương pháp tính"
+msgstr "PT định giá"
 
 #
 msgid "System date"
@@ -7036,11 +7034,11 @@ msgstr "Báo cáo tồn kho"
 
 #
 msgid "Cumulative quantity"
-msgstr "Số lượng tích luỹ"
+msgstr "SL tích luỹ"
 
 #
 msgid "Cumulative cost"
-msgstr "Đơn giá tích luỹ"
+msgstr "Giá cost tích luỹ"
 
 #
 msgid "Cumulative value"
@@ -7320,7 +7318,7 @@ msgstr "Đến kho"
 
 #
 msgid "Stock quantity"
-msgstr "Số lượng tồn kho"
+msgstr "SL tồn kho"
 
 #
 msgid "Click the button besides input element to see detail (for serial/lot product)."
@@ -7817,3 +7815,23 @@ msgstr "NGÀY HỆ THỐNG"
 #
 msgid "EXP DATE"
 msgstr "NGÀY HẾT HẠN"
+
+#
+msgid "I/O quantity"
+msgstr "SL nhập/xuất"
+
+#
+msgid "I/O cost"
+msgstr "Giá cost nhập/xuất"
+
+#
+msgid "I/O value"
+msgstr "Giá trị nhập/xuất"
+
+#
+msgid "Inventory UoM"
+msgstr "ĐV lưu kho"
+
+#
+msgid "Trans information"
+msgstr "Thông tin giao dịch"

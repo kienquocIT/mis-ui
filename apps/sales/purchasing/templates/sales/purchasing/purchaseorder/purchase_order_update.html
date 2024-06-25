@@ -27,136 +27,131 @@
     >
         {% csrf_token %}
         <div class="container-fluid">
-            <div class="collapse multi-collapse show" id="collapseExample">
-                <div class="row" id="common-information-area">
-                    <div class="row">
-                        <div class="col-12 col-md-5 col-lg-5">
-                            <div class="form-group">
-                                <label class="form-label required" for="purchase-order-title">{% trans 'Title' %}</label>
-                                <div class="input-group">
-                                    <div class="input-affix-wrapper">
-                                        <input
-                                            type="text" class="form-control"
-                                            name="title"
-                                            id="purchase-order-title"
-                                            required
-                                        >
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label required" for="box-purchase-order-supplier">{% trans 'Supplier' %}</label>
-                                <select
-                                        class="form-select"
-                                        id="box-purchase-order-supplier"
-                                        data-url="{% url "AccountForSaleListAPI" %}"
-                                        data-method="GET"
-                                        data-link-detail="{% url "AccountDetail" 1 %}"
-                                        name="supplier"
-                                        data-keyResp="account_sale_list"
-                                        data-keyText="name"
-                                        required
-                                ></select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label required" for="box-purchase-order-contact">{% trans 'Select Contact' %}</label>
-                                <select
-                                        class="form-select"
-                                        id="box-purchase-order-contact"
-                                        data-url="{% url "ContactListAPI" %}"
-                                        data-method="GET"
-                                        data-link-detail="{% url 'ContactDetail' 1 %}"
-                                        name="contact"
-                                        data-keyResp="contact_list"
-                                        required
-                                ></select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-5 col-lg-5">
+            <div class="card">
+                <div class="card-header card-header-action bg-teal-light-5 h-40p">
+                    <h6 class="text-primary">{% trans 'Information' %}</h6>
+                    <div class="card-action-wrap">
+                        <a class="btn btn-xs btn-icon btn-rounded btn-flush-secondary flush-soft-hover"  data-bs-toggle="collapse" href="#collapseExample" aria-expanded="true"><span class="icon"><span class="feather-icon"><i data-feather="chevron-down"></i></span></span></a>
+                    </div>
+                </div>
+                <div class="collapse multi-collapse show" id="collapseExample">
+                    <div class="card-body">
+                        <div class="row" id="common-information-area">
                             <div class="row">
                                 <div class="col-12 col-md-5 col-lg-5">
                                     <div class="form-group">
-                                        <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
-                                        <div class="input-affix-wrapper">
-                                            <input type="text" name="delivered-date" id="purchase-order-date-delivered"
-                                                   class="form-control date-picker" autocomplete="off">
-                                            <div class="input-suffix">
-                                                <i class="far fa-calendar"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-6 col-lg-6">
-                                    <div class="form-group">
-                                        <label class="form-label" for="purchase-order-status-delivered">{% trans 'Delivered status' %}</label>
+                                        <label class="form-label required" for="purchase-order-title">{% trans 'Title' %}</label>
                                         <div class="input-group">
                                             <div class="input-affix-wrapper">
                                                 <input
                                                     type="text" class="form-control"
-                                                    name="status-delivered"
-                                                    id="purchase-order-status-delivered"
-                                                    value="None"
-                                                    data-value="0"
+                                                    name="title"
+                                                    id="purchase-order-title"
+                                                    required
                                                 >
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Purchase Request' %}</label>
-                                <div class="input-group input-group-wth-btn">
-                                    <div class="input-affix-wrapper">
-                                        <div class="form-control div-input" id="purchase-order-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
-                                        <input type="hidden" id="purchase_requests_data">
-                                        <div class="input-suffix">
-                                            <button
-                                                type="button"
-                                                class="btn btn-link"
-                                                id="btn-purchase-request-modal"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#purchaseRequestModalCenter"
-                                            ><i class="fas fa-ellipsis-h"></i></button>
-                                        </div>
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-purchase-order-supplier">{% trans 'Supplier' %}</label>
+                                        <select
+                                                class="form-select"
+                                                id="box-purchase-order-supplier"
+                                                data-url="{% url "AccountForSaleListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url "AccountDetail" 1 %}"
+                                                name="supplier"
+                                                data-keyResp="account_sale_list"
+                                                data-keyText="name"
+                                                required
+                                        ></select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-purchase-order-contact">{% trans 'Contact' %}</label>
+                                        <select
+                                                class="form-select"
+                                                id="box-purchase-order-contact"
+                                                data-url="{% url "ContactListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url 'ContactDetail' 1 %}"
+                                                name="contact"
+                                                data-keyResp="contact_list"
+                                                data-keyText="fullname"
+                                                required
+                                        ></select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Purchase quotation' %}</label>
-                                <div class="input-group input-group-wth-btn">
-                                    <div class="input-affix-wrapper">
-                                        <div class="form-control div-input" id="purchase-order-purchase-quotation" data-link-detail="{% url "PurchaseQuotationDetail" 1 %}"></div>
-                                        <input type="hidden" id="purchase_quotations_data">
-                                        <div class="input-suffix">
-                                            <button
-                                                type="button"
-                                                class="btn btn-link"
-                                                id="btn-purchase-quotation-modal"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#purchaseQuotationModalCenter"
-                                            ><i class="fas fa-ellipsis-h"></i></button>
+                                <div class="col-12 col-md-5 col-lg-5">
+                                    <div class="row">
+                                        <div class="col-12 col-md-5 col-lg-5">
+                                            <div class="form-group">
+                                                <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
+                                                <div class="input-affix-wrapper">
+                                                    <input type="text" name="delivered-date" id="purchase-order-date-delivered"
+                                                           class="form-control date-picker" autocomplete="off">
+                                                    <div class="input-suffix">
+                                                        <i class="far fa-calendar"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-6">
+                                            <div class="form-group">
+                                                <label class="form-label" for="purchase-order-status-delivered">{% trans 'Delivered status' %}</label>
+                                                <div class="input-group">
+                                                    <div class="input-affix-wrapper">
+                                                        <input
+                                                            type="text" class="form-control"
+                                                            name="status-delivered"
+                                                            id="purchase-order-status-delivered"
+                                                            value="None"
+                                                            data-value="0"
+                                                        >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Purchase Request' %}</label>
+                                        <div class="input-group input-group-wth-btn">
+                                            <div class="input-affix-wrapper">
+                                                <div class="form-control div-input" id="purchase-order-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}" readonly></div>
+                                                <input type="hidden" id="purchase_requests_data">
+                                                <div class="input-suffix">
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link"
+                                                        id="btn-purchase-request-modal"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#purchaseRequestModalCenter"
+                                                    ><i class="fas fa-ellipsis-h"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Purchase quotation' %}</label>
+                                        <div class="input-group input-group-wth-btn">
+                                            <div class="input-affix-wrapper">
+                                                <div class="form-control div-input" id="purchase-order-purchase-quotation" data-link-detail="{% url "PurchaseQuotationDetail" 1 %}" readonly></div>
+                                                <input type="hidden" id="purchase_quotations_data">
+                                                <div class="input-suffix">
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link"
+                                                        id="btn-purchase-quotation-modal"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#purchaseQuotationModalCenter"
+                                                    ><i class="fas fa-ellipsis-h"></i></button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="row collapse-arrow mt-2 mb-2">
-                <div class="d-flex justify-content-end">
-                    <button
-                            type="button"
-                            class="btn btn-icon btn-rounded flush-soft-hover"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#collapseExample"
-                            data-bs-placement="top"
-                            aria-expanded="false"
-                            aria-controls="collapseExample"
-                            id="btn-collapse"
-                    >
-                        <span class="icon"><small><i class="fas fa-angle-double-up text-primary collapse-icon"></i></small></span>
-                    </button>
                 </div>
             </div>
             <div class="row">
@@ -191,7 +186,7 @@
                                     data-method="get"
                                 >
                                     <thead>
-                                    <tr>
+                                    <tr class="bg-light">
                                         <th></th>
                                         <th>{% trans 'Product' %}</th>
                                         <th>{% trans 'Description' %}</th>
@@ -264,7 +259,7 @@
                                     data-method="get"
                                 >
                                     <thead>
-                                    <tr>
+                                    <tr class="bg-light">
                                         <th></th>
                                         <th>{% trans 'Product' %}</th>
                                         <th>{% trans 'Description' %}</th>
@@ -335,7 +330,7 @@
                                     class="table nowrap w-100 mb-5"
                             >
                                 <thead>
-                                <tr>
+                                <tr class="bg-light">
                                     <th class="w-25">{% trans 'Description' %}</th>
                                     <th class="w-10">% {% trans 'Payment' %}</th>
                                     <th class="w-20">{% trans 'Value before tax' %}</th>

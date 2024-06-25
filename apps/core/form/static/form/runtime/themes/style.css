@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Merienda:wght@300..900&display=swap');
+
+:root {
+    --bg-color: rgba(255, 255, 255);
+    --color: #000;
+    --border-radius: 15px;
+    --border: 1px solid #f1f1f1;
+    --box-shadow: unset;
+    --padding: 0;
+    --bg-image: unset;
+    --bg-blur-background-color: unset;
+
+    --title-color: #000;
+    --title-font-family: "Merienda", cursive, serif;
+    --title-text-align: center;
+    --title-background-color: unset;
+    --title-margin-bottom: 0;
+    --title-border-radius: 0;
+
+    --head-border-style: unset;
+    --head-border-color: unset;
+    --head-border-width: 1px;
+    --head-padding: 25px 25px 10px 25px;
+    --head-sub-border-style: unset;
+    --head-sub-border-color: unset;
+    --head-sub-border-width: 1px;
+    --head-sub-padding: unset;
+
+    --foot-border-style: unset;
+    --foot-border-color: unset;
+    --foot-border-width: 1px;
+    --foot-background-color: inherit;
+    --foot-color: inherit;
+    --foot-border-radius: inherit;
+    --foot-sub-border-style: unset;
+    --foot-sub-border-color: unset;
+    --foot-sub-border-width: 1px;
+    --foot-sub-padding: 25px 0;
+
+    --content-border-radius: 0 0 15px 15px;
+    --content-background-color: unset;
+
+    --input-border-color: #bfbfbf;
+    --input-bg-color: unset;
+    --input-color: #000;
+    --input--focus-border: 1px solid #008dcc;
+    --input--focus-box-shadow: 0 0 0 0.125rem rgb(0, 176, 255, 0.15);
+    --input-disabled-border-color: #7c7c7c;
+    --input-disabled-bg-color: #f4f4f4;
+    --input-disabled-color: #575757;
+
+    --button-background-color: #00b0ff;
+    --button-color: #fff;
+    --button-border: 1px solid #00b0ff;
+    --button-border-radius: 5px;
+    --button-padding: 0.7rem 4rem;
+    --button--hover-background-color: #009ee6;
+    --button--hover-color: #fff;
+    --button--hover-border: 1px solid #009ee6;
+    --button--hover-box-shadow: 0 0 3px 0.125rem #6bd1ff;
+}
+
+#bg {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: var(--bg-image);
+}
+
+#bg-blur {
+    background-color: var(--bg-blur-background-color);
+}
+
+.form-full {
+    background-color: var(--bg-color);
+    border-radius: var(--border-radius);
+    border: var(--border);
+    box-shadow: var(--box-shadow);
+    padding: var(--padding);
+    color: var(--color);
+    overflow: hidden;
+}
+
+.form-title {
+    overflow: hidden;
+    text-align: var(--title-text-align);
+    background-color: var(--title-background-color);
+    color: var(--title-color);
+    margin-bottom: var(--title-margin-bottom);
+    border-radius: var(--title-border-radius);
+
+    font-family: var(--title-font-family);
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.form-title-text {
+    color: var(--title-color);
+}
+
+.form-head {
+    border-style: var(--head-border-style);
+    border-color: var(--head-border-color);
+    border-width: var(--head-border-width);
+    padding: var(--head-padding);
+}
+
+.form-head .form-head-sub,
+.form-full .form-head-sub {
+    border-style: var(--head-sub-border-style);
+    border-color: var(--head-sub-border-color);
+    border-width: var(--head-sub-border-width);
+    padding: var(--head-sub-padding);
+}
+
+.form-foot {
+    border-style: var(--foot-border-style);
+    border-color: var(--foot-border-color);;
+    border-width: var(--foot-border-width);
+    background-color: var(--foot-background-color);
+    color: var(--foot-color);
+    border-radius: var(--foot-border-radius);
+    overflow: hidden;
+}
+
+.form-foot .form-foot-sub {
+    border-style: var(--foot-sub-border-style);
+    border-color: var(--foot-sub-border-color);
+    border-width: var(--foot-sub-border-width);
+    padding: var(--foot-sub-padding);
+}
+
+.form-content {
+    border-radius: var(--content-border-radius);
+    background-color: var(--content-background-color);
+}
+
+.form-full input,
+.form-full textarea,
+.form-full select {
+    border-color: var(--input-border-color);
+    background-color: var(--input-bg-color);
+    color: var(--input-color);
+    transition: border 0.5s ease-in-out, background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+    -webkit-transition: border 0.5s ease-in-out, background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+}
+
+.form-full input[disabled],
+.form-full textarea[disabled],
+.form-full select[disabled] {
+    border-color: var(--input-disabled-border-color);
+    background-color: var(--input-disabled-bg-color);
+    color: var(--input-disabled-color);
+    cursor: not-allowed;
+}
+
+.form-full input:focus,
+.form-full textarea:focus,
+.form-full select:focus {
+    border: var(--input--focus-border);
+    box-shadow: var(--input--focus-box-shadow);
+}
+
+.form-action button {
+    background-color: var(--button-background-color);
+    color: var(--button-color);
+    border: var(--button-border);
+    border-radius: var(--button-border-radius);
+    padding: var(--button-padding);
+    transition: box-shadow 0.2s, background-color 0.2s, color 0.2s, border 0.2s;
+}
+
+.form-action button:hover {
+    background-color: var(--button--hover-background-color);
+    color: var(--button--hover-color);
+    border: var(--button--hover-border);
+    box-shadow: var(--button--hover-box-shadow);
+}

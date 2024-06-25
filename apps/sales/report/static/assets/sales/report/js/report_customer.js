@@ -255,6 +255,8 @@ $(function () {
         function loadFilter(listData, $eleShow) {
             if (listData.length > 0) {
                 $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
+            } else {
+                $eleShow.html(``);
             }
         }
 
@@ -309,18 +311,8 @@ $(function () {
         $.fn.initMaskMoney2();
 
         // Prevent dropdown from closing when clicking inside the dropdown
-        $('.dropdown-menu').on('click', function (e) {
+        $('.dropdown-menu').on('click', '.form-group', function (e) {
             e.stopPropagation();
-        });
-
-        // Prevent the dropdown from closing when clicking outside it
-        $('.btn-group').on('hide.bs.dropdown', function (e) {
-            e.preventDefault();
-        });
-
-        // Reopen dropdown on button click
-        $('.btn-group').on('click', '.btn', function (e) {
-            $(this).siblings('.dropdown-menu').toggleClass('show');
         });
 
         // Events

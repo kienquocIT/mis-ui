@@ -1,0 +1,50 @@
+{% load i18n %}
+
+<div id="drawer-properties">
+    <div id="drawer-main">
+        <div class="drawer-header">
+                <span class="drawer-header-title">
+                    {% trans 'Properties' %}
+                </span>
+            <button class="btn btn-xl" id="drawer-close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="drawer-content">
+            <div class="drawer-config always-show border-1 drawer-warning-group">
+                <div class="w-100">
+                    <div class="p-3 border rounded bg-sun-light-5">
+                        <p class="mb-1">
+                            {% trans 'All configurations for fields will be temporarily stored in the browser until the save document is called' %}.
+                            <br>
+                            {% trans 'Note that reloading the page will lose the newly edited configurations' %}.
+                        </p>
+                        <div class="form-check">
+                            <input
+                                    type="checkbox" class="form-check-input form-not-check-change"
+                                    id="check-hide-warning"
+                            >
+                            <label
+                                    class="form-check-label text-primary" for="check-hide-warning"
+                            >{% trans "Got it, don't show again" %}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% include 'form/extends/form-title/config.html' %}
+            {% include 'form/extends/single-line/config.html' %}
+            {% include 'form/extends/multiple-line/config.html' %}
+            {% include 'form/extends/number/config.html' %}
+            {% include 'form/extends/phone/config.html' %}
+            {% include 'form/extends/email/config.html' %}
+        </div>
+        <div class="drawer-footer">
+            <button type="button" class="btn btn-sm btn-square btn-white no-transform px-5" id="drawer-cancel">
+                {% trans 'Cancel' %}
+            </button>
+            <button type="button" class="btn btn-sm btn-square btn-dark no-transform px-5" id="drawer-save">
+                {% trans 'Save' %}
+            </button>
+        </div>
+    </div>
+</div>

@@ -10,26 +10,20 @@ class POLoadDataHandle {
     static eleDivTablePRProductMerge = $('#table-purchase-request-product-merge-area');
     static transEle = $('#app-trans-factory');
 
-    static loadBoxSupplier(dataCustomer = {}) {
-        let ele = POLoadDataHandle.supplierSelectEle;
-        ele.initSelect2({
-            data: dataCustomer,
-            'dataParams': {'account_types_mapped__account_type_order': 1},
-            'allowClear': true,
-            disabled: !(ele.attr('data-url')),
-        });
-    };
-
-    static loadBoxContact(dataContact = {}, supplierID = null) {
-        let ele = POLoadDataHandle.contactSelectEle;
-        ele.initSelect2({
-            data: dataContact,
-            'dataParams': {'account_name_id': supplierID},
-            disabled: !(ele.attr('data-url')),
-            callbackTextDisplay: function (item) {
-                return item?.['fullname'] || '';
-            },
-        });
+    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false) {
+        let opts = {'allowClear': isClear};
+        $ele.empty();
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        $ele.initSelect2(opts);
+        return true;
     };
 
     static loadInitProduct() {
@@ -97,34 +91,19 @@ class POLoadDataHandle {
                 }
                 // load UOM
                 if (uom && Object.keys(data?.['unit_of_measure']).length !== 0 && Object.keys(data?.['uom_group']).length !== 0) {
-                    POLoadDataHandle.loadBoxUOM($(uom), data?.['unit_of_measure'], data?.['uom_group']?.['id']);
+                    POLoadDataHandle.loadInitS2($(uom), [data?.['unit_of_measure']], {'group': data?.['uom_group']?.['id']});
                 } else {
-                    POLoadDataHandle.loadBoxUOM($(uom));
+                    POLoadDataHandle.loadInitS2($(uom));
                 }
                 // load TAX
                 if (tax && data?.['tax']) {
-                    POLoadDataHandle.loadBoxTax($(tax), data?.['tax']);
+                    POLoadDataHandle.loadInitS2($(tax), [data?.['tax']]);
                 } else {
-                    POLoadDataHandle.loadBoxTax($(tax));
+                    POLoadDataHandle.loadInitS2($(tax));
                 }
             }
             $.fn.initMaskMoney2();
         }
-    };
-
-    static loadBoxUOM(ele, dataUOM = {}, uom_group_id = null) {
-        ele.initSelect2({
-            data: dataUOM,
-            'dataParams': {'group': uom_group_id},
-            disabled: !(ele.attr('data-url')),
-        });
-    };
-
-    static loadBoxTax(ele, dataTax = {}) {
-        ele.initSelect2({
-            data: dataTax,
-            disabled: !(ele.attr('data-url')),
-        });
     };
 
     static loadModalPurchaseRequestTable(is_clear_all = false) {
@@ -237,7 +216,7 @@ class POLoadDataHandle {
     static loadDataMergeProductTable() {
         let tableMerged = $('#datable-purchase-request-product-merge');
         tableMerged.DataTable().clear().draw();
-        let data = setupMergeProduct();
+        let data = POSubmitHandle.setupMergeProduct();
         tableMerged.DataTable().rows.add(data).draw();
         return true;
     };
@@ -276,9 +255,9 @@ class POLoadDataHandle {
         }
         // clear supplier, contact
         POLoadDataHandle.supplierSelectEle.empty();
-        POLoadDataHandle.loadBoxSupplier();
+        POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [], {'account_types_mapped__account_type_order': 1}, null, true);
         POLoadDataHandle.contactSelectEle.empty();
-        POLoadDataHandle.loadBoxContact();
+        POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle);
         POLoadDataHandle.loadResetPQAndPriceList();
         // uncheck merge product
         let eleMergeProduct = $('#merge-same-product');
@@ -440,7 +419,7 @@ class POLoadDataHandle {
         $tableProductPR.DataTable().destroy();
         PODataTableHandle.dataTablePurchaseOrderProductRequest();
         $tableProductAdd.DataTable().clear().draw();
-        let data = setupMergeProduct();
+        let data = POSubmitHandle.setupMergeProduct();
         POLoadDataHandle.eleDivTablePOProductAdd[0].setAttribute('hidden', 'true');
         POLoadDataHandle.eleDivTablePOProductRequest[0].removeAttribute('hidden');
         $tableProductPR.DataTable().rows.add(data).draw();
@@ -528,8 +507,8 @@ class POLoadDataHandle {
                 boxRender.innerHTML = dataRow?.['product']?.['title'];
                 boxRender.setAttribute('title', dataRow?.['product']?.['title']);
             }
-            POLoadDataHandle.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')), dataRow?.['uom_order_actual'], dataRow?.['uom_order_actual']?.['uom_group']?.['id']);
-            POLoadDataHandle.loadBoxTax($(row.querySelector('.table-row-tax')), dataRow?.['tax']);
+            POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom-order-actual')), [dataRow?.['uom_order_actual']], {'group': dataRow?.['uom_order_actual']?.['uom_group']?.['id']});
+            POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax']]);
         }
     };
 
@@ -621,7 +600,7 @@ class POLoadDataHandle {
                                                 // Price && UOM must follow PQ checked
                                                 $(elePrice).attr('value', String(parseFloat(price?.['unit_price'])));
                                                 $(eleUOM).empty();
-                                                POLoadDataHandle.loadBoxUOM($(eleUOM), price?.['uom'], price?.['uom']?.['uom_group']?.['id']);
+                                                POLoadDataHandle.loadInitS2($(eleUOM), [price?.['uom']], {'group': price?.['uom']?.['uom_group']?.['id']});
                                                 $(eleUOM).change();
                                                 $(eleUOM).attr('disabled', 'true');
                                             }
@@ -728,10 +707,10 @@ class POLoadDataHandle {
         POLoadDataHandle.supplierSelectEle.empty();
         POLoadDataHandle.contactSelectEle.empty();
         if (ele.checked === true) {
-            let supplier = JSON.parse(ele.getAttribute('data-supplier'));
+            let supplierData = JSON.parse(ele.getAttribute('data-supplier'));
             // load supplier by Purchase Quotation
-            POLoadDataHandle.loadBoxSupplier(supplier);
-            POLoadDataHandle.loadBoxContact(supplier?.['owner'], supplier?.['id']);
+            POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [supplierData], {'account_types_mapped__account_type_order': 1}, null, true);
+            POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle, [supplierData?.['owner']], {'account_name_id': supplierData?.['id']});
         }
         return true
     };
@@ -780,7 +759,7 @@ class POLoadDataHandle {
         }
         let newRow = $table.DataTable().row.add(dataAdd).draw().node();
         // init select2
-        POLoadDataHandle.loadBoxTax($(newRow.querySelector('.table-row-tax')));
+        POLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
         // init datePicker
         $(newRow.querySelector('.table-row-due-date')).daterangepicker({
             singleDatePicker: true,
@@ -924,8 +903,8 @@ class POLoadDataHandle {
         POLoadDataHandle.loadAllTablesDisabled();
         POLoadDataHandle.loadTotals(data);
 
-        POLoadDataHandle.loadBoxSupplier(data?.['supplier_data']);
-        POLoadDataHandle.loadBoxContact(data?.['contact_data']);
+        POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [data?.['supplier_data']], {'account_types_mapped__account_type_order': 1}, null, true);
+        POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle, [data?.['contact_data']]);
     };
 
     static loadDataShowPRPQ(data) {
@@ -1028,7 +1007,7 @@ class POLoadDataHandle {
     static loadPRProductNotInPO(data) {
         let PRProductIDList = [];
         for (let PRProduct of data?.['purchase_request_products_data']) {
-            PRProductIDList.push(PRProduct?.['purchase_request_product']?.['id'])
+            PRProductIDList.push(PRProduct?.['purchase_request_product']?.['id']);
         }
         let PQCode = null;
         for (let PQ of data?.['purchase_quotations_data']) {
@@ -1057,7 +1036,6 @@ class POLoadDataHandle {
     };
 
     static loadTablesDetailPage(data) {
-        let form = $('#frm_purchase_order_create');
         let tableProductAdd = $('#datable-purchase-order-product-add');
         let tableProductRequest = $('#datable-purchase-order-product-request');
         let tablePaymentStage = $('#datable-po-payment-stage');
@@ -1199,7 +1177,7 @@ class POLoadDataHandle {
                 if (eleRemark.getAttribute('data-row')) {
                     let dataRow = JSON.parse(eleRemark.getAttribute('data-row'));
                     if (row.querySelector('.table-row-tax')) {
-                        POLoadDataHandle.loadBoxTax($(row.querySelector('.table-row-tax')), dataRow?.['tax']);
+                        POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax']]);
                     }
                 }
             }
@@ -1554,6 +1532,7 @@ class PODataTableHandle {
             ordering: false,
             paging: false,
             info: false,
+            searching: false,
             autoWidth: true,
             scrollX: true,
             columns: [  // 25,325,325,100,100,100,125,125,300,125,270 (1920p)
@@ -1724,6 +1703,7 @@ class PODataTableHandle {
             ordering: false,
             paging: false,
             info: false,
+            searching: false,
             autoWidth: true,
             scrollX: true,
             columns: [  // 25,325,325,150,175,325,150,270,25 (1920p)
@@ -2179,28 +2159,139 @@ class POValidateHandle {
 
 // Submit Form
 class POSubmitHandle {
-
-    static setupDataPRProduct() {
-        let result = []
+    static setupMergeProduct() {
+        let data = [];
+        let dataJson = {};
         let table = $('#datable-purchase-request-product');
-        for (let eleChecked of table[0].querySelectorAll('.disabled-by-pq')) {
-            let sale_order_id = eleChecked.getAttribute('data-sale-order-product-id');
-            if (sale_order_id === "null") {
-                sale_order_id = null;
+        if (!table[0].querySelector('.dataTables_empty')) {
+            let order = 0;
+            let productMapUOMList = {};
+            // Setup smallest UOM from many UOM of PRs
+            for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked:not(.disabled-by-pq)')) {
+                let row = eleChecked.closest('tr');
+                let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
+                if (dataRowRaw) {
+                    let dataRow = JSON.parse(dataRowRaw);
+                    if (dataRow?.['product']?.['id'] && dataRow?.['uom']) {
+                        if (!productMapUOMList.hasOwnProperty(dataRow?.['product']?.['id'])) {
+                            productMapUOMList[dataRow?.['product']?.['id']] = [dataRow?.['uom']];
+                        } else {
+                            productMapUOMList[dataRow?.['product']?.['id']].push(dataRow?.['uom']);
+                        }
+                    }
+                }
             }
-            let row = eleChecked.closest('tr');
-            let quantity_order = parseFloat(row.querySelector('.table-row-quantity-order').value);
-            let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
-            if (dataRowRaw) {
-                let dataRow = JSON.parse(dataRowRaw);
-                result.push({
-                    'purchase_request_product': dataRow?.['id'],
-                    'sale_order_product': sale_order_id,
-                    'quantity_order': quantity_order,
-                })
+            for (let key in productMapUOMList) {
+                let uomApply = {};
+                for (let uom of productMapUOMList[key]) {
+                    if (Object.keys(uomApply).length === 0) {
+                        uomApply = uom;
+                    } else {
+                        if (uom?.['ratio'] && uomApply?.['ratio']) {
+                            if (uom?.['ratio'] < uomApply?.['ratio']) {
+                                uomApply = uom;
+                            }
+                        }
+                    }
+                }
+                productMapUOMList[key] = uomApply;
+            }
+            for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked:not(.disabled-by-pq)')) {
+                let row = eleChecked.closest('tr');
+                let sale_order_id = eleChecked.getAttribute('data-sale-order-product-id');
+                if (sale_order_id === "null") {
+                    sale_order_id = null;
+                }
+                let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
+                if (dataRowRaw) {
+                    let dataRow = JSON.parse(dataRowRaw);
+                    let tax = dataRow?.['tax'];
+                    let product_id = dataRow?.['product']?.['id'];
+                    let quantity = parseFloat(dataRow?.['quantity']);
+                    let quantity_order = parseFloat(row.querySelector('.table-row-quantity-order').value);
+                    let remain = (parseFloat(row.querySelector('.table-row-remain').innerHTML) - quantity_order);
+                    if (dataRow?.['uom']?.['ratio'] && productMapUOMList[product_id]?.['ratio']) {
+                        let finalRatio = (parseFloat(dataRow?.['uom']?.['ratio']) / parseFloat(productMapUOMList[product_id]?.['ratio']));
+                        quantity = (parseFloat(dataRow?.['quantity']) * finalRatio);
+                        quantity_order = (parseFloat(row.querySelector('.table-row-quantity-order').value) * finalRatio);
+                        remain = ((parseFloat(row.querySelector('.table-row-remain').innerHTML) * finalRatio) - quantity_order);
+                    }
+                    // origin data to check
+                    let quantity_origin = parseFloat(dataRow?.['quantity']);
+                    let quantity_order_origin = parseFloat(row.querySelector('.table-row-quantity-order').value);
+                    let remain_origin = (parseFloat(row.querySelector('.table-row-remain').innerHTML) - quantity_order);
+                    if (parseFloat(row.querySelector('.table-row-remain').innerHTML) > 0) {
+                        if (!dataJson.hasOwnProperty(product_id)) {
+                            order++
+                            dataJson[product_id] = {
+                                'id': dataRow?.['id'],
+                                'purchase_request_products_data': [{
+                                    'purchase_request_product': dataRow,
+                                    'sale_order_product': sale_order_id,
+                                    'quantity_order': quantity_order_origin,
+                                    'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
+                                }],
+                                'product': dataRow?.['product'],
+                                'uom_order_request': productMapUOMList[product_id],
+                                'uom_order_actual': productMapUOMList[product_id],
+                                'uom_list': [dataRow?.['uom']],
+                                'uom_id_list': [dataRow?.['uom']?.['id']],
+                                'tax': tax,
+                                'stock': 0,
+                                'product_title': dataRow?.['product']?.['title'],
+                                'code_list': [dataRow?.['purchase_request']?.['code']],
+                                'product_description': 'xxxxx',
+                                'product_quantity_request': quantity,
+                                'product_quantity_order_request': quantity_order,
+                                'product_quantity_order_actual': quantity_order,
+                                'remain': remain,
+                                'quantity_origin': quantity_origin,
+                                'quantity_order_origin': quantity_order_origin,
+                                'remain_origin': remain_origin,
+                                'product_unit_price': 0,
+                                'product_tax_title': '',
+                                'product_tax_amount': 0,
+                                'product_subtotal_price': 0,
+                                'order': order,
+                            };
+                        } else {
+                            if (!dataJson[product_id].code_list.includes(dataRow?.['purchase_request']?.['code'])) {
+                                dataJson[product_id].code_list.push(dataRow?.['purchase_request']?.['code']);
+                            }
+                            dataJson[product_id].purchase_request_products_data.push({
+                                'purchase_request_product': dataRow,
+                                'sale_order_product': sale_order_id,
+                                'quantity_order': quantity_order_origin,
+                                'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
+                            });
+                            dataJson[product_id].product_quantity_request += quantity;
+                            dataJson[product_id].product_quantity_order_request += quantity_order;
+                            dataJson[product_id].product_quantity_order_actual += quantity_order;
+                            dataJson[product_id].remain += remain;
+
+                            dataJson[product_id].quantity_origin += quantity_origin;
+                            dataJson[product_id].quantity_order_origin += quantity_order_origin;
+                            dataJson[product_id].remain_origin += remain_origin;
+                            dataJson[product_id].uom_list.push(dataRow?.['uom']);
+                            dataJson[product_id].uom_id_list.push(dataRow?.['uom']?.['id']);
+                        }
+                    }
+                }
+            }
+            for (let key in dataJson) {
+                if (dataJson[key]['uom_id_list'].length > 0 && areAllEqual(dataJson[key]['uom_id_list']) === true) {
+                    dataJson[key]['uom_order_request'] = dataJson[key]['uom_list'][0];
+                    dataJson[key]['uom_order_actual'] = dataJson[key]['uom_list'][0];
+
+                    dataJson[key]['product_quantity_request'] = dataJson[key]['quantity_origin'];
+                    dataJson[key]['product_quantity_order_request'] = dataJson[key]['quantity_order_origin'];
+                    dataJson[key]['product_quantity_order_actual'] = dataJson[key]['quantity_order_origin'];
+                    dataJson[key]['remain'] = dataJson[key]['remain_origin'];
+                }
+                data.push(dataJson[key]);
             }
         }
-        return result;
+        return data
     };
 
     static setupDataProduct() {
@@ -2222,9 +2313,9 @@ class POSubmitHandle {
                     dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                 }
                 if (dataInfo) {
-                    rowData['product'] = dataInfo.id;
-                    rowData['product_title'] = dataInfo.title;
-                    rowData['product_code'] = dataInfo.code;
+                    rowData['product'] = dataInfo?.['id'];
+                    rowData['product_title'] = dataInfo?.['title'];
+                    rowData['product_code'] = dataInfo?.['code'];
                 }
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
@@ -2233,13 +2324,13 @@ class POSubmitHandle {
                 let eleUOMRequest = row.querySelector('.table-row-uom-order-request');
                 if (eleUOMRequest) {
                     let dataInfo = JSON.parse(eleUOMRequest.querySelector('.data-info').value);
-                    rowData['uom_order_request'] = dataInfo.id;
+                    rowData['uom_order_request'] = dataInfo?.['id'];
                 }
                 let eleUOMOrder = row.querySelector('.table-row-uom-order-actual');
                 if ($(eleUOMOrder).val()) {
                     let dataInfo = SelectDDControl.get_data_from_idx($(eleUOMOrder), $(eleUOMOrder).val());
                     if (dataInfo) {
-                        rowData['uom_order_actual'] = dataInfo.id;
+                        rowData['uom_order_actual'] = dataInfo?.['id'];
                     }
                 }
                 let eleTax = row.querySelector('.table-row-tax');
@@ -2296,6 +2387,18 @@ class POSubmitHandle {
                     if (eleOrder.getAttribute('data-row')) {
                         let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
                         rowData['purchase_request_products_data'] = dataRow?.['purchase_request_products_data'];
+                        if (rowData['purchase_request_products_data']) {
+                            for (let PRProductData of rowData['purchase_request_products_data']) {
+                                if (PRProductData?.['purchase_request_product']?.['id']) {
+                                    PRProductData['purchase_request_product'] = PRProductData?.['purchase_request_product']?.['id'];
+                                }
+                                if (PRProductData?.['uom_stock']?.['id']) {
+                                    PRProductData['uom_stock'] = PRProductData?.['uom_stock']?.['id'];
+                                } else {
+                                    PRProductData['uom_stock'] = null;
+                                }
+                            }
+                        }
                         // Check if stock > 0
                         if (rowData['stock'] > 0) {
                             rowData['purchase_request_products_data'].push({
@@ -2424,141 +2527,6 @@ function areAllEqual(arr) {
         }
     }
     return true; // All elements are equal.
-}
-
-function setupMergeProduct() {
-    let data = [];
-    let dataJson = {};
-    let table = $('#datable-purchase-request-product');
-    if (!table[0].querySelector('.dataTables_empty')) {
-        let order = 0;
-        let productMapUOMList = {};
-        // Setup smallest UOM from many UOM of PRs
-        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked:not(.disabled-by-pq)')) {
-            let row = eleChecked.closest('tr');
-            let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
-            if (dataRowRaw) {
-                let dataRow = JSON.parse(dataRowRaw);
-                if (dataRow?.['product']?.['id'] && dataRow?.['uom']) {
-                    if (!productMapUOMList.hasOwnProperty(dataRow?.['product']?.['id'])) {
-                        productMapUOMList[dataRow?.['product']?.['id']] = [dataRow?.['uom']];
-                    } else {
-                        productMapUOMList[dataRow?.['product']?.['id']].push(dataRow?.['uom']);
-                    }
-                }
-            }
-        }
-        for (let key in productMapUOMList) {
-            let uomApply = {};
-            for (let uom of productMapUOMList[key]) {
-                if (Object.keys(uomApply).length === 0) {
-                    uomApply = uom;
-                } else {
-                    if (uom?.['ratio'] && uomApply?.['ratio']) {
-                        if (uom?.['ratio'] < uomApply?.['ratio']) {
-                            uomApply = uom;
-                        }
-                    }
-                }
-            }
-            productMapUOMList[key] = uomApply;
-        }
-        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked:not(.disabled-by-pq)')) {
-            let row = eleChecked.closest('tr');
-            let sale_order_id = eleChecked.getAttribute('data-sale-order-product-id');
-            if (sale_order_id === "null") {
-                sale_order_id = null;
-            }
-            let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
-            if (dataRowRaw) {
-                let dataRow = JSON.parse(dataRowRaw);
-                let tax = dataRow?.['tax'];
-                let product_id = dataRow?.['product']?.['id'];
-                let quantity = parseFloat(dataRow?.['quantity']);
-                let quantity_order = parseFloat(row.querySelector('.table-row-quantity-order').value);
-                let remain = (parseFloat(row.querySelector('.table-row-remain').innerHTML) - quantity_order);
-                if (dataRow?.['uom']?.['ratio'] && productMapUOMList[product_id]?.['ratio']) {
-                    let finalRatio = (parseFloat(dataRow?.['uom']?.['ratio']) / parseFloat(productMapUOMList[product_id]?.['ratio']));
-                    quantity = (parseFloat(dataRow?.['quantity']) * finalRatio);
-                    quantity_order = (parseFloat(row.querySelector('.table-row-quantity-order').value) * finalRatio);
-                    remain = ((parseFloat(row.querySelector('.table-row-remain').innerHTML) * finalRatio) - quantity_order);
-                }
-                // origin data to check
-                let quantity_origin = parseFloat(dataRow?.['quantity']);
-                let quantity_order_origin = parseFloat(row.querySelector('.table-row-quantity-order').value);
-                let remain_origin = (parseFloat(row.querySelector('.table-row-remain').innerHTML) - quantity_order);
-                if (parseFloat(row.querySelector('.table-row-remain').innerHTML) > 0) {
-                    if (!dataJson.hasOwnProperty(product_id)) {
-                        order++
-                        dataJson[product_id] = {
-                            'id': dataRow?.['id'],
-                            'purchase_request_products_data': [{
-                                'purchase_request_product': dataRow?.['id'],
-                                'sale_order_product': sale_order_id,
-                                'quantity_order': quantity_order_origin,
-                                'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
-                            }],
-                            'product': dataRow?.['product'],
-                            'uom_order_request': productMapUOMList[product_id],
-                            'uom_order_actual': productMapUOMList[product_id],
-                            'uom_list': [dataRow?.['uom']],
-                            'uom_id_list': [dataRow?.['uom']?.['id']],
-                            'tax': tax,
-                            'stock': 0,
-                            'product_title': dataRow?.['product']?.['title'],
-                            'code_list': [dataRow?.['purchase_request']?.['code']],
-                            'product_description': 'xxxxx',
-                            'product_quantity_request': quantity,
-                            'product_quantity_order_request': quantity_order,
-                            'product_quantity_order_actual': quantity_order,
-                            'remain': remain,
-                            'quantity_origin': quantity_origin,
-                            'quantity_order_origin': quantity_order_origin,
-                            'remain_origin': remain_origin,
-                            'product_unit_price': 0,
-                            'product_tax_title': '',
-                            'product_tax_amount': 0,
-                            'product_subtotal_price': 0,
-                            'order': order,
-                        };
-                    } else {
-                        if (!dataJson[product_id].code_list.includes(dataRow?.['purchase_request']?.['code'])) {
-                            dataJson[product_id].code_list.push(dataRow?.['purchase_request']?.['code']);
-                        }
-                        dataJson[product_id].purchase_request_products_data.push({
-                            'purchase_request_product': dataRow?.['id'],
-                            'sale_order_product': sale_order_id,
-                            'quantity_order': quantity_order_origin,
-                            'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
-                        });
-                        dataJson[product_id].product_quantity_request += quantity;
-                        dataJson[product_id].product_quantity_order_request += quantity_order;
-                        dataJson[product_id].product_quantity_order_actual += quantity_order;
-                        dataJson[product_id].remain += remain;
-
-                        dataJson[product_id].quantity_origin += quantity_origin;
-                        dataJson[product_id].quantity_order_origin += quantity_order_origin;
-                        dataJson[product_id].remain_origin += remain_origin;
-                        dataJson[product_id].uom_list.push(dataRow?.['uom']);
-                        dataJson[product_id].uom_id_list.push(dataRow?.['uom']?.['id']);
-                    }
-                }
-            }
-        }
-        for (let key in dataJson) {
-            if (dataJson[key]['uom_id_list'].length > 0 && areAllEqual(dataJson[key]['uom_id_list']) === true) {
-                dataJson[key]['uom_order_request'] = dataJson[key]['uom_list'][0];
-                dataJson[key]['uom_order_actual'] = dataJson[key]['uom_list'][0];
-
-                dataJson[key]['product_quantity_request'] = dataJson[key]['quantity_origin'];
-                dataJson[key]['product_quantity_order_request'] = dataJson[key]['quantity_order_origin'];
-                dataJson[key]['product_quantity_order_actual'] = dataJson[key]['quantity_order_origin'];
-                dataJson[key]['remain'] = dataJson[key]['remain_origin'];
-            }
-            data.push(dataJson[key]);
-        }
-    }
-    return data
 }
 
 function deleteRow(currentRow, table) {

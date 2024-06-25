@@ -713,6 +713,22 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
     overflow-y: hidden;
 }
 
+.min-w-100p {
+    min-width: 100px;
+}
+
+.min-w-150p {
+    min-width: 150px;
+}
+
+.min-w-200p {
+    min-width: 200px;
+}
+
+.min-w-250p {
+    min-width: 250px;
+}
+
 .min-w-300p {
     min-width: 300px;
 }

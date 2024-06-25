@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% load static i18n %}
+
+{% block pageAction %}
+    <button
+            class="btn btn-outline-primary"
+            type="button"
+            id="btn-save-document"
+            data-url="{% url 'FormCreateAPI' %}"
+            data-method="POST"
+            data-url-redirect="{% url 'FormListView' %}"
+    >
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block jsHeader %}
+    <script src="{% static 'vendors/jquery/dist/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'form/config/vendors/qrcode.min.js' %}"></script>
+{% endblock %}
+
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'form/runtime/scrollbar.css' %}">
+    <link rel="stylesheet" href="{% static 'form/config/css/scrollbar-textarea.css' %}">
+    <link rel="stylesheet" href="{% static 'form/config/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'form/runtime/runtime.css' %}">
+    <link rel="stylesheet" href="{% static 'form/config/css/more-config-toolbox.css' %}">
+    <link rel="stylesheet" href="{% static 'form/config/css/themes.css' %}">
+    <link rel="stylesheet" href="{% static 'form/config/css/embed_form.css' %}">
+{% endblock %}
+
+{% block pageContent %}
+    {% include 'form/editor.html' with toolbarHide='mail,embed,access-form' %}
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'form/config/form-lib.js' %}"></script>
+    <script src="{% static 'form/config/create.js' %}"></script>
+{% endblock %}

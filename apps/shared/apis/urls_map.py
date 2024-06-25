@@ -137,6 +137,24 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ROLE_DETAIL_PK = StringUrl('hr/role/{pk}')
     ROLE_DETAIL_APP_LIST = StringUrl('hr/role/{pk}/app')
 
+    # form
+    FORM_LIST = StringUrl('form/list')
+    FORM_DETAIL = StringUrl('form/detail/{pk}')
+    FORM_DETAIL_THEME = StringUrl('form/detail/{pk}/theme')
+    FORM_DETAIL_TURN_ON_OFF = StringUrl('form/detail/{pk}/turn-on-off')
+    FORM_DETAIL_DUPLICATE = StringUrl('form/detail/{pk}/duplicate')
+    FORM_DETAIL_FOR_ENTRIES = StringUrl('form/detail/{pk}/for-entries')
+    FORM_PUBLISHED_FORM_DETAIL = StringUrl('form/published/form/{pk}')
+    FORM_PUBLISHED_DETAIL = StringUrl('form/published/{pk}')
+    FORM_PUBLISHED_RUNTIME_DETAIL = StringUrl('form/runtime/submit/{tenant_code}/{form_code}/{use_at}')
+    FORM_PUBLISHED_RUNTIME_DETAIL_WITH_SUBMITTED = StringUrl(
+        'form/runtime/submit/{tenant_code}/{form_code}/{use_at}/{pk}'
+    )
+    FORM_PUBLISHED_RUNTIME_CHECK_SUBMITTED = StringUrl('form/runtime/submitted/data/{tenant_code}/{form_code}')
+    FORM_SANITIZE_HTML = StringUrl('form/sanitize-html')
+    FORM_ENTRIES_LIST = StringUrl('form/entries/{pk}/list')
+    FORM_ENTRIES_REF_NAME_LIST = StringUrl('form/entries/{pk}/ref-name/list')
+
     # comment
     COMMENT_LIST = StringUrl('comment/doc/{pk_doc}/{pk_app}/list')
     COMMENT_REPLIES_LIST = StringUrl('comment/reply/{pk}/list')

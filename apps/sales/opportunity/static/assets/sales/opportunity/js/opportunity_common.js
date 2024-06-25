@@ -882,11 +882,146 @@ class OpportunityLoadDetail {
 }
 
 class OpportunityActivity {
+    static tabLogWork(dataList) {
+        let $table = $('#table_log-work')
+        if ($table.hasClass('datatable'))
+            $table.DataTable().clear().rows.add(dataList).draw();
+        else
+            $table.DataTable({
+                searching: false,
+                ordering: false,
+                paginate: false,
+                info: false,
+                data: dataList,
+                columns: [
+                    {
+                        data: 'employee_created',
+                        targets: 0,
+                        width: "35%",
+                        render: (data, type, row) => {
+                            let avatar = ''
+                            let avClass = 'avatar-rounded avatar-xs avatar-' + $x.fn.randomColor()
+                            avatar = $x.fn.renderAvatar(data, avClass)
+                            return avatar;
+                        }
+                    },
+                    {
+                        data: 'start_date',
+                        targets: 1,
+                        width: "35%",
+                        render: (data, type, row) => {
+                            let date = moment(data, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+                            if (data !== row.end_date) {
+                                date += ' ~ '
+                                date += moment(row.end_date, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+                            }
+                            return date;
+                        }
+                    },
+                    {
+                        data: 'time_spent',
+                        targets: 2,
+                        width: "20%",
+                        render: (data, type, row) => {
+                            return data;
+                        }
+                    },
+                    {
+                        data: 'id',
+                        targets: 3,
+                        width: "10%",
+                        render: (data, type, row) => {
+                            return ''
+                        }
+                    }
+                ]
+            })
+    };
+
+    static tabSubtask(taskID) {
+        if (!taskID) return false
+        const $wrap = $('.wrap-subtask')
+        const url = $('#url-factory').attr('data-task_list')
+        $.fn.callAjax(url, 'GET', {parent_n: taskID})
+            .then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    for (let [key, item] of data.task_list.entries()) {
+                        const template = $(`<div class="d-flex justify-content-start align-items-center subtask_item">
+                                    <p>${item.title}</p>
+                                    <button class="btn btn-flush-primary btn-icon btn-rounded ml-auto flush-soft-hover" disabled>
+                                        <span><i class="fa-regular fa-trash-can fa-sm"></i></span>
+                                    </button>
+                                 </div>`);
+                        $wrap.append(template);
+                    }
+                }
+            })
+    };
+
+    static displayTaskView(url) {
+        if (url)
+            $.fn.callAjax2({
+                url: url,
+                method: 'GET'
+            })
+                .then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        // enable side panel\
+                        if (!$('#drawer_task_create').hasClass('open'))
+                            $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+                        resetFormTask()
+                        $('.title-create').addClass('hidden')
+                        $('.title-detail').removeClass('hidden')
+                        $('#inputTextTitle').val(data.title)
+                        $('#inputTextCode').val(data.code)
+                        $('#rangeValue').text(data['percent_completed'])
+                        $('#percent_completed').val(data['percent_completed'])
+                        $('#selectStatus').attr('data-onload', JSON.stringify(data.task_status)).append(
+                            `<option value="${data.task_status.id}" selected>${data.task_status.title}</option>`
+                        ).trigger('change')
+                        $('#inputTextStartDate').val(
+                            moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                        )
+                        $('#inputTextEndDate').val(
+                            moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                        )
+                        $('#inputTextEstimate').val(data.estimate)
+                        $('#selectPriority').val(data.priority).trigger('change')
+                        $('.btn-log_work').addClass('disabled')
+                        // render label
+                        let htmlElm = $('.label-mark')
+                        htmlElm.html('')
+                        for (let item of data.label)
+                            htmlElm.append($(`<span class="item-tag"><span>${item}</span></span>`))
+                        $('#inputAssigner').val(data.employee_created.full_name)
+                            .attr('value', data.employee_created.id)
+                        if (data?.employee_inherit.hasOwnProperty("id"))
+                            $('#employee_inherit_id').attr('data-onload', JSON.stringify(data.employee_inherit))
+                                .append(`<option value="${data.employee_inherit.id}" selected>${
+                                    data.employee_inherit.full_name}</option>`).trigger("change")
+                        window.editor.setData(data.remark)
+                        window.checklist.setDataList = data.checklist
+                        window.checklist.render()
+                        $('.create-subtask, .create-checklist').addClass('hidden')
+                        if (data?.['task_log_work'].length) OpportunityActivity.tabLogWork(data['task_log_work'])
+                        if (data?.['sub_task_list']) OpportunityActivity.tabSubtask(data['sub_task_list'])
+                        if (data.attach) {
+                            const fileDetail = data.attach[0]?.['files']
+                            FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
+                        }
+                        $('.create-task').attr('disabled', true)
+                    }
+                })
+    };
+
     static loadDblActivityLogs() {
         let $table = $('#table-timeline');
         let pk = $.fn.getPkDetail();
         let urlFactory = $('#url-factory');
         let transEle = $('#trans-factory');
+        let trans_script = $('#trans-script');
         $table.DataTable().clear().destroy()
         $table.DataTableDefault({
             rowIdx: true,
@@ -975,14 +1110,19 @@ class OpportunityActivity {
                             'cashoutflow.advancepayment': urlFactory.attr('data-url-advance-detail'),
                             'cashoutflow.payment': urlFactory.attr('data-url-payment-detail'),
                             'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
-                            'task.opportunitytask': urlFactory.attr('data-url-return-detail'),
                         }
                         let link = '';
                         let title = '';
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code'] && row?.['doc_data']?.['id'] && row?.['doc_data']?.['title']) {
-                                link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_data']?.['id']);
-                                return `<a href="${link}" target="_blank"><p>${row?.['doc_data']?.['title']}</p></a>`;
+                                if (urlMapApp[row?.['app_code']]) {
+                                    link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_data']?.['id']);
+                                }
+                                let result = `<a href="${link}" target="_blank" class="link-primary underline_hover"><p>${row?.['doc_data']?.['title']}</p></a>`;
+                                if (row?.['log_type'] === 1) {
+                                    result = `<a href="#" target="" class="link-primary underline_hover"><p class="show-task-detail">${row?.['doc_data']?.['title']}</p></a>`;
+                                }
+                                return result;
                             } else {
                                 return `<p>--</p>`;
                             }
@@ -1005,7 +1145,6 @@ class OpportunityActivity {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        let code = '';
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code'] && row?.['doc_data']?.['code']) {
                                 return `<span class="badge badge-primary">${row?.['doc_data']?.['code']}</span>`;
@@ -1047,8 +1186,8 @@ class OpportunityActivity {
             ],
             rowCallback: (row, data, index) => {
                 $('.show-task-detail', row).on('click', function () {
-                    const taskObj = data?.["task"]
-                    displayTaskView($("#url-factory").attr("data-task_detail").format_url_with_uuid(taskObj.id))
+                    const taskObj = data?.["doc_data"];
+                    OpportunityActivity.displayTaskView($("#url-factory").attr("data-task_detail").format_url_with_uuid(taskObj.id))
                 })
             }
         });

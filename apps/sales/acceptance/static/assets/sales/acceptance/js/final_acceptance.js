@@ -19,10 +19,10 @@ $(function () {
                 paging: false,
                 autoWidth: true,
                 scrollX: true,
-                columns: [  // (1920p)
+                columns: [
                     {
                         targets: 0,
-                        width: '10%',
+                        width: '15%',
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['acceptance_affect_by'] === 1) {
@@ -38,43 +38,30 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '5%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let faAffectBy = row?.['acceptance_affect_by'];
+                            let title = '';
                             let code = '';
                             if (row?.['is_sale_order'] === true) {
+                                title = row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : '';
                                 code = row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : '';
                             }
                             if (faAffectBy === 4) {
+                                title = row?.['payment']?.['title'] ? row?.['payment']?.['title'] : '';
                                 code = row?.['payment']?.['code'] ? row?.['payment']?.['code'] : '';
                             }
                             if (faAffectBy === 3) {
+                                title = row?.['delivery_sub']?.['title'] ? row?.['delivery_sub']?.['title'] : '';
                                 code = row?.['delivery_sub']?.['code'] ? row?.['delivery_sub']?.['code'] : '';
                             }
-                            return `<div class="row"><span class="badge badge-primary">${code}</span></div>`;
+                            return `<span class="badge badge-secondary badge-sm">${code}</span>
+                                    <p class="table-row-title">${title}</p>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '11%',
-                        render: (data, type, row) => {
-                            let faAffectBy = row?.['acceptance_affect_by'];
-                            let title = '';
-                            if (row?.['is_sale_order'] === true) {
-                                title = row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : '';
-                            }
-                            if (faAffectBy === 4) {
-                                title = row?.['payment']?.['title'] ? row?.['payment']?.['title'] : '';
-                            }
-                            if (faAffectBy === 3) {
-                                title = row?.['delivery_sub']?.['title'] ? row?.['delivery_sub']?.['title'] : '';
-                            }
-                            return `<p>${title}</p>`;
-                        }
-                    },
-                    {
-                        targets: 3,
-                        width: '13%',
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['acceptance_affect_by'] === 1) {
                                 return `<span class="mask-money table-row-planed-value" data-init-money="${parseFloat(row?.['indicator_value'])}"></span>`;
@@ -84,8 +71,8 @@ $(function () {
                         }
                     },
                     {
-                        targets: 4,
-                        width: '13%',
+                        targets: 3,
+                        width: '15%',
                         render: (data, type, row) => {
                             let dataFA = {};
                             if ($eleDataFact.attr('data-detail')) {
@@ -135,8 +122,8 @@ $(function () {
                         }
                     },
                     {
-                        targets: 5,
-                        width: '13%',
+                        targets: 4,
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['acceptance_affect_by'] === 1) {
                                 return `<span class="mask-money table-row-different-value" data-init-money="${parseFloat(row?.['different_value'])}"></span>`;
@@ -146,20 +133,20 @@ $(function () {
                         }
                     },
                     {
-                        targets: 6,
-                        width: '5%',
+                        targets: 5,
+                        width: '10%',
                         render: (data, type, row) => {
                             if (row?.['acceptance_affect_by'] === 1) {
                                 let rate = parseInt(row?.['rate_value'].toFixed(1));
-                                return `<p class="table-row-rate-value" data-value="${rate}">${rate} %</p>`;
+                                return `<p class="table-row-rate-value" data-value="${rate}">${rate}%</p>`;
                             } else {
                                 return `<p></p>`;
                             }
                         }
                     },
                     {
-                        targets: 7,
-                        width: '17%',
+                        targets: 6,
+                        width: '20%',
                         render: (data, type, row) => {
                             let dataFA = {};
                             if ($eleDataFact.attr('data-detail')) {
@@ -551,7 +538,7 @@ $(function () {
 
         function loadSO() {
             boxSO.empty();
-            let dataParams = {};
+            let dataParams = {'system_status': 3};
             if (boxOpp.val()) {
                 dataParams['opportunity_id'] = boxOpp.val();
             }

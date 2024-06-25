@@ -52,7 +52,7 @@ $(function () {
                         placeholder: $transFact.attr('data-filter-customer'),
                     },
                 ],
-                columns: [  // 112,112,112,60,192,192,160,160,160 (1600p)
+                columns: [
                     {
                         targets: 0,
                         width: '5%',
@@ -91,21 +91,21 @@ $(function () {
                     },
                     {
                         targets: 4,
-                        width: '10%',
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
                         targets: 5,
-                        width: '10%',
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
                         targets: 6,
-                        width: '10%',
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
                         }
@@ -275,6 +275,8 @@ $(function () {
         function loadFilter(listData, $eleShow) {
             if (listData.length > 0) {
                 $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
+            } else {
+                $eleShow.html(``);
             }
         }
 
@@ -327,18 +329,8 @@ $(function () {
         $.fn.initMaskMoney2();
 
         // Prevent dropdown from closing when clicking inside the dropdown
-        $('.dropdown-menu').on('click', function (e) {
+        $('.dropdown-menu').on('click', '.form-group', function (e) {
             e.stopPropagation();
-        });
-
-        // Prevent the dropdown from closing when clicking outside it
-        $('.btn-group').on('hide.bs.dropdown', function (e) {
-            e.preventDefault();
-        });
-
-        // Reopen dropdown on button click
-        $('.btn-group').on('click', '.btn', function (e) {
-            $(this).siblings('.dropdown-menu').toggleClass('show');
         });
 
         // Events

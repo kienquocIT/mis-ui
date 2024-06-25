@@ -1,0 +1,341 @@
+.form-full {
+    max-width: 700px;
+    min-width: 300px;
+    margin: 30px auto;
+}
+
+@media screen and (max-width: 576px) {
+    .form-full {
+        width: 90vw;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .form-full {
+        width: 80vw;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .form-full {
+        width: 70vw;
+    }
+}
+
+.hidden, [hidden] {
+    display: none !important;
+}
+
+.box {
+    box-shadow: 3px 3px 10px #d7d7d7;
+}
+
+.form-full * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.form-item {
+    position: relative;
+    padding: 25px 25px;
+    min-height: 100px;
+}
+
+.form-head {
+    min-height: unset;
+}
+
+.form-title {
+    padding: 30px 30px;
+    text-align: start;
+    vertical-align: middle;
+    margin-bottom: 10px;
+    min-height: unset;
+}
+
+.form-title .form-title-text {
+    font-size: 2rem;
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+.form-title .form-title-remark {
+    margin-top: 5px;
+}
+
+.form-title.multiple-page {
+    margin-bottom: 30px;
+}
+
+textarea {
+    resize: vertical;
+    transition: unset !important;
+}
+
+
+/* form item */
+.form-full [hidden] {
+    display: none;
+}
+
+.form-full label[data-required="true"]:after,
+.form-full label[required]:after,
+.form-full label.required:after{
+    content: "(*)";
+    color: red;
+    font-size: 0.8rem;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.form-full label {
+    font-size: 16px;
+}
+
+.form-item-instruction {
+    color: #7c7c7c;
+    font-size: 12px;
+}
+
+.form-full input,
+.form-full textarea,
+.form-full select
+{
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-transition: 0.2s;
+    transition: 0.2s;
+    outline: none;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-full input.text-upper,
+.form-full textarea.text-upper {
+    text-transform: uppercase;
+}
+
+.form-full input.text-lower,
+.form-full textarea.text-lower {
+    text-transform: lowercase;
+}
+
+.form-full input.text-capitalize,
+.form-full textarea.text-capitalize {
+    text-transform: capitalize;
+}
+
+.form-full input:focus,
+.form-full textarea:focus {
+    border: 1px solid #5ca8ff;
+    box-shadow: 0 0 0 0.125rem rgba(92, 168, 255, 0.16);
+}
+
+.form-full input.is-invalid,
+.form-full textarea.is-invalid {
+    border-color: #ff0000;
+}
+
+.form-full input.is-invalid:focus,
+.form-full textarea.is-invalid:focus {
+    border-color: #ff0000;
+    box-shadow: 0 0 0 0.125rem rgba(255, 0, 0, 0.15);
+
+}
+
+.form-full input.is-valid,
+.form-full textarea.is-valid {
+    border-color: #00d67f;
+}
+
+.form-full input.is-valid:focus,
+.form-full textarea.is-valid:focus {
+    border-color: #00d67f;
+    box-shadow: 0 0 0 0.125rem rgba(0, 214, 127, 0.15);
+}
+
+/* form item */
+.form-item.form-item--hide {
+    display: none;
+}
+
+.form-item.form-item--disable {
+}
+
+/* form item group */
+.form-item-group-input {}
+
+.form-item-group-input .form-input-xs {
+    font-size: 0.6rem;
+    padding: 4px 8px;
+}
+.form-item-group-input .form-input-sm {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+}
+.form-item-group-input .form-input-md {
+    font-size: 1.0rem;
+    padding: 8px 12px;
+}
+.form-item-group-input .form-input-lg {
+    font-size: 1.2rem;
+    padding: 10px 14px;
+}
+.form-item-group-input .form-input-xl {
+    font-size: 1.4rem;
+    padding: 14px 16px;
+}
+
+.form-item-group, .form-item-group-top {
+    width: 100%;
+}
+
+.form-item-group-top .form-item-group-label {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.form-item-group-top .form-item-group-input {
+    width: 100%;
+}
+
+.form-item-group-left {
+    display: flex;
+}
+
+.form-item-group-left .form-item-group-label {
+    width: 35%;
+    box-sizing: border-box;
+    margin-top: 3px;
+}
+
+.form-item-group-left .form-item-group-input {
+    width: 65%;
+    box-sizing: border-box;
+}
+
+.form-item-group-right {
+    display: flex;
+}
+
+.form-item-group-right .form-item-group-label {
+    width: 35%;
+    box-sizing: border-box;
+    margin-top: 3px;
+    padding-right: 10px;
+    text-align: right;
+}
+
+.form-item-group-right .form-item-group-input {
+    width: 65%;
+    box-sizing: border-box;
+}
+
+.form-item-label {
+    width: 100%;
+}
+
+.form-item-input {
+    width: 100%;
+}
+
+.form-item-instruction {
+    width: 100%;
+    display: block;
+}
+
+#contents {
+    height: 100%;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.form-foot {
+    text-align: center;
+}
+
+.form-foot .foot-warning-text {
+    margin-bottom: 10px;
+}
+
+.form-foot .foot-report-abuse {
+    margin-bottom: 10px;
+}
+
+.form-foot .foot-power-by {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-action {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.form-action button {
+    padding: 1rem 2rem;
+    border: 1px solid #f1f1f1;
+    cursor: pointer;
+    -webkit-transition: background-color 0.2s ease-out, color 0.2s ease-out;
+    -moz-transition: background-color 0.2s ease-out, color 0.2s ease-out;
+    -o-transition: background-color 0.2s ease-out, color 0.2s ease-out;
+    transition: background-color 0.2s ease-out, color 0.2s ease-out;
+}
+
+/* Only For Number */
+.form-item-input-parent {
+    display: flex;
+}
+
+.form-input-has-unit {
+    flex: auto;
+}
+
+.form-input-is-unit {
+    flex: initial;
+    margin-left: 5px;
+    border: 0 !important;
+}
+.form-input-is-unit.text-align-left { text-align: left;}
+.form-input-is-unit.text-align-center { text-align: center;}
+.form-input-is-unit.text-align-right { text-align: right;}
+.form-input-is-unit:disabled {
+    background-color: unset!important;
+}
+
+.form-item-group-input .form-input-unit-xs {
+    font-size: 0.6rem;
+    padding: 4px 0;
+}
+.form-item-group-input .form-input-unit-sm {
+    font-size: 0.8rem;
+    padding: 6px 0;
+}
+.form-item-group-input .form-input-unit-md {
+    font-size: 1.0rem;
+    padding: 8px 0;
+}
+.form-item-group-input .form-input-unit-lg {
+    font-size: 1.2rem;
+    padding: 10px 0;
+}
+.form-item-group-input .form-input-unit-xl {
+    font-size: 1.4rem;
+    padding: 14px 0;
+}
+
+/* -- Only For Number */
+.is-invalid > * {
+    color: red;
+    display: block;
+    font-size: small;
+}

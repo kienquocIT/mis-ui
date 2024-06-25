@@ -1,0 +1,23 @@
+{% load i18n define_action %}
+
+{% assign_out_random inputTextCaseIdx as rInputTextCaseIdx %}
+
+<div class="form-group mb-3">
+    <label for="{{ rInputTextCaseIdx }}" class="form-label">{% trans 'Input Text Case' %}</label>
+    <select
+            id="{{ rInputTextCaseIdx }}"
+            class="input-radio-select"
+            name="input_text_case"
+    >
+        <option value="unset" title="{% trans 'Unset' %}">-</option>
+        {% if hasLower != False %}
+            <option value="lower" title="{% trans 'Lower' %}">aa</option>
+        {% endif %}
+        {% if hasUpper != False %}
+            <option value="upper" title="{% trans 'Upper' %}">AA</option>
+        {% endif %}
+        {% if hasCapitalize != False %}
+            <option value="capitalize" title="{% trans 'Capitalize' %}">Aa</option>
+        {% endif %}
+    </select>
+</div>

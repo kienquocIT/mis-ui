@@ -1,0 +1,421 @@
+:root {
+    --draggable-width: 400px;
+    --draggable-padding: 10px;
+    --draggable-item-margin: 5px;
+    --draggable-item-height: 50px;
+    --draggable-item-color-helper: #56a2ff;
+    --drawer-properties-width: 30vw;
+    --drawer-properties-height: calc(100vh - 65px);
+
+    --sortable-item-color-selected: #69d096;
+    --sortable-item-bg-color-selected: #ddffec;
+    --sortable-padding-left-plus: 100px;
+}
+
+#group-containment {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #f1f1f1;
+}
+
+#draggable-parent {
+    width: var(--draggable-width);
+    float: left;
+    background-color: #f1f1f1;
+    height: 100%;
+    overflow: auto;
+    border-right: 1px solid #d3d3d3;
+}
+
+#draggable {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    padding: var(--draggable-padding);
+}
+
+.draggable-item {
+    flex: calc(50% - var(--draggable-item-margin) * 2);
+    width: 200px;
+    max-width: calc(50% - var(--draggable-item-margin) * 2);
+    max-height: var(--draggable-item-height);
+    margin: var(--draggable-item-margin);
+    background-color: #fff;
+    color: #004b52;
+    padding: 7px;
+    border: 1px solid #a2b4bb;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+#sortable-parent {
+    width: calc(100% - var(--draggable-width));
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#sortable-content {
+    margin: 0 auto;
+    padding-bottom: 50px;
+    padding-top: 30px;
+    transition: transform 700ms;
+}
+
+#sortable-content.drawer-showing {
+    transform: translateX(-50%);
+}
+
+#sortable {
+    min-height: 50px;
+    border: 1px solid #f1f1f1;
+    font-size: 14px;
+}
+
+.sortable-item {
+    border: 1px dashed #f1f1f1;
+}
+
+.sortable-item.form-item.form-item--hide {
+    /* force showing when editing form | auto hide when running form */
+    display: block !important;
+}
+
+.sortable-item.form-item .group--setting-group {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    content: 'hidden';
+    color: #e36f00;
+}
+
+.sortable-item:hover {
+    border-color: #c2c2c2;
+}
+
+#sortable-item-empty > * {
+    border: 1px dashed #c2c2c2;
+    padding: 20px 15px;
+    background-color: #fafafa;
+    text-align: center;
+}
+
+.item-dragging {
+    background-color: #f1f1f1;
+    border: 2px dashed #9a9a9a;
+    height: calc(15px + 30px * 2);
+}
+
+.item-sorting {
+    opacity: 0.5;
+    background-color: var(--sortable-item-color-selected);
+}
+
+.drag-item-start {
+    background-color: var(--draggable-item-color-helper);
+    color: #fff;
+    z-index: 99999;
+}
+
+.sortable-item:hover .group-control,
+.sortable-item .group-control:hover,
+.sortable-item .group-masker:hover ~ .group-control {
+    display: block;
+}
+
+.sortable-item .group-control {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: -31px;
+    width: 30px;
+    background-color: #fff;
+    transition: all 0.2s linear;
+    border-left: 0;
+}
+
+.group-control button {
+    width: 30px;
+    height: 30px;
+    border: 0;
+    color: #171717;
+    background-color: #fff;
+}
+
+.group-control button:not(:last-child) {
+    border-bottom: 2px solid #f1f1f1;
+}
+
+.group-control button.btn-setting:hover {
+    color: #00ab66;
+}
+
+.group-control button.btn-clone:hover {
+    color: #00ab66;
+}
+
+.group-control button.btn-remove:hover {
+    color: #ff3333;
+}
+
+.group-masker {
+    width: calc(100% + 5px);
+    height: 100%;
+    background-color: rgb(255, 255, 255, 0);
+    position: absolute;
+    top: 0;
+    left: -5px;
+    z-index: 1034;
+}
+
+.sortable-item.active {
+    background-color: var(--sortable-item-bg-color-selected);
+}
+
+.sortable-item.active .group-masker {
+    border-radius: 5px 0 0 5px;
+    border-style: solid;
+    border-color: var(--sortable-item-color-selected);
+    border-left: 5px;
+    border-left-style: solid;
+    border-left-color: var(--sortable-item-color-selected);
+}
+
+#drawer-properties {
+    display: none;
+    position: fixed;
+    right: 0;
+    top: 65px;
+    width: 100vw;
+    height: var(--drawer-properties-height);
+    background-color: rgba(77, 77, 77, 0.5);
+    z-index: 1035;
+    overflow: hidden;
+}
+
+#drawer-main {
+    width: 0;
+    height: var(--drawer-properties-height);
+    float: right;
+    opacity: 1;
+    background-color: #fff;
+    position: relative;
+}
+
+#drawer-properties .drawer-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 45px;
+    width: 100%;
+    background-color: #2a3746;
+    color: #fff;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+#drawer-properties .drawer-header-title {
+    color: #fff;
+    padding-left: 10px;
+}
+
+#drawer-properties #drawer-close {
+    margin-left: auto;
+    color: #fff;
+    padding-right: 10px;
+}
+
+#drawer-properties .drawer-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 45px;
+    width: 100%;
+    background-color: #f1f1f1;
+    color: #fff;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    box-shadow: 0 0 3px #bebebe;
+}
+
+#drawer-properties .drawer-footer * {
+    margin-right: 10px;
+}
+
+#drawer-properties .drawer-footer .v-separator {
+    margin: 0 10px 0 0;
+}
+
+#drawer-properties #drawer-cancel {
+    margin-right: 10px;
+}
+
+#drawer-properties .drawer-content {
+    margin-top: 45px;
+    height: calc(var(--drawer-properties-height) - 45px - 45px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    font-size: 11px !important;
+    padding-bottom: 30px;
+}
+
+.drawer-content label, .drawer-content input, .drawer-content div, .drawer-content select {
+    font-size: 14px;
+}
+
+.drawer-config {
+    width: 100%;
+    padding: 10px 0;
+}
+
+.drawer-config > * {
+    padding: 0 20px;
+}
+
+.radio-select-group {
+    display: flex;
+}
+
+.radio-select-group-full {
+    flex: auto;
+}
+
+.radio-select-group-full .radio-select-item {
+    width: 100%;
+    padding: 5px 0;
+}
+
+.radio-select-group-part {
+    align-items: flex-start;
+}
+
+.radio-select-group-part .radio-select-item {
+    width: auto;
+    padding: 5px 30px;
+}
+
+.radio-select-group ~ select {
+    display: none;
+}
+
+.radio-select-item {
+    background-color: #fff;
+    border: 1px solid #c0c0c0;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in;
+}
+
+.radio-select-item:not(.active):hover {
+    color: #009659;
+    background-color: rgba(227, 249, 209, 0.5);
+}
+
+.radio-select-item.active {
+    color: #006b40;
+    border-color: #00ab66;
+    background-color: rgba(227, 249, 209, 0.5);
+}
+
+.radio-select-item.active + .radio-select-item {
+    border-left: 0;
+}
+
+.radio-select-item:not(:last-child):not(.active) {
+    border-right: 0;
+}
+
+.radio-select-item:first-child {
+    border-radius: 5px 0 0 5px;
+}
+
+.radio-select-item:last-child {
+    border-radius: 0 5px 5px 0;
+}
+
+.chip.chip-ticked input:checked + span .chip-text {
+    margin-left: 0;
+}
+
+/* Table field group */
+#field-tab-group {
+    width: 100%;
+    margin-bottom: 10px;
+    background-color: #fff;
+}
+
+.field-tab.active {
+    border-bottom: 3px solid #6bb4ba;
+}
+
+#field-basic {
+    width: calc(50% - 5px);
+    float: left;
+    text-align: center;
+    padding: 10px;
+    /*cursor: pointer;*/
+    cursor: not-allowed;
+}
+
+#field-advance {
+    width: calc(50% - 5px);
+    float: left;
+    text-align: center;
+    padding: 10px;
+    /*cursor: pointer;*/
+    cursor: not-allowed;
+}
+
+#field-split {
+    width: 10px;
+    height: 3rem;
+    float: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#field-split div {
+    width: 2px;
+    height: 1rem;
+    background-color: #ababab;
+    border-radius: 5px;
+}
+
+.form-item {
+    background-color: #fff;
+    color: #000;
+}
+
+.form-title {
+    background-color: #fff;
+}
+
+.form-content {
+    background-color: #fff;
+    color: #000;
+}
+
+/* Sortables */
+.drag-item-image {
+    width: 1rem;
+    height: 1rem;
+}
+
+.drag-item-text {
+    margin-left: 10px;
+}
+/* -- Sortables */
+.flex-basic-100 {
+    flex-basis: 100%;
+}
+.flex-basic-40 {
+    flex-basis: 40%;
+}
+.flex-basic-60 {
+    flex-basis: 60%;
+}

@@ -55,7 +55,8 @@
                         <div class="card card-lg card-border box-vertical-blur">
                             <div class="card-body">
                                 <div class="w-100 mb-3" id="username-call-get">
-                                    <form data-url="" data-method="POST" id="frmGetOTP">
+                                    <form data-url="{% url 'ForgotPasswordAPI' %}" data-method="POST" id="frmGetOTP">
+                                        {% csrf_token %}
                                         <div class="d-none">
                                             <label for="inp-tenant-code"></label>
                                             <input type="text" name="tenant_code" id="inp-tenant-code" required>
@@ -350,13 +351,14 @@
                     ...validateFormOpts,
                     submitHandler: function (form, event) {
                         event.preventDefault();
-                        $.fn.callAjax(
+                        $.fn.forgotCallAjax(
                             $(form).attr('data-url'),
                             $(form).attr('data-method'),
                             {
                                 'tenant_code': $(form).find('input[name=tenant_code]').val(),
                                 'username': $(form).find('input[name=username]').val(),
                             },
+                            true,
                         ).then(
                             resp => {
                                 let data = resp?.['data'] || null;
@@ -401,7 +403,7 @@
                 $('#btnResendOTP').on('click', function (){
                     let clsThis = this;
                     if ($('#show-time-remaining').attr('data-counter') === '0'){
-                        $.fn.callAjax(
+                        $.fn.forgotCallAjax(
                             frmOTPValidate.attr('data-url'),
                             'GET',
                         ).then(
@@ -420,12 +422,13 @@
                     ...validateFormOpts,
                     submitHandler: function (form, event) {
                         event.preventDefault();
-                        $.fn.callAjax(
+                        $.fn.forgotCallAjax(
                             $(form).attr('data-url'),
                             $(form).attr('data-method'),
                             {
                                 'otp': $(form).find('input[name=otp]').val(),
                             },
+                            true,
                         ).then(
                             resp => {
                                 let data = resp?.['data'] || null;
@@ -971,7 +974,7 @@
                     swal.close();
                 }
             },
-            callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
+            forgotCallAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
                 return new Promise(function (resolve, reject) {
                     // Setup then Call Ajax
                     $.fn.cusShowLoading();
@@ -993,7 +996,7 @@
                             reject(jqXHR.responseJSON);
                         },
                     };
-                    if (method.toLowerCase() === 'get') ctx.data = data
+                    if (method.toLowerCase() === 'get') ctx.data = data;
                     $.ajax(ctx);
                 });
             },

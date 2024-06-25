@@ -1,0 +1,17 @@
+{% extends 'form/runtime/base.html' %}
+{% load i18n static form_runtime %}
+
+{% block Contents %}
+    {% random_idx as formIdx %}
+    <form
+            id="{{ formIdx }}"
+            data-user-current-name="{{ user_current.full_name }}"
+    >
+        {{ html_text | safe }}
+        {{ submitted_data|json_script:"submitted_data_idx" }}
+    </form>
+{% endblock %}
+
+{% block jsContent %}
+    <script src="{% static 'form/runtime/js/only_view.js' %}"></script>
+{% endblock %}

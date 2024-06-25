@@ -63,6 +63,8 @@ INSTALLED_APPS = \
         'compressor',
         'apps.sharedapp',
         'apps.log',
+        'django_celery_results',  # Listen celery task and record it to database.
+        'django_celery_beat',  # celery crontab
     ] + [  # Core Application
         'apps.core.account',
         'apps.core.auths',
@@ -80,6 +82,7 @@ INSTALLED_APPS = \
         'apps.core.fimport',
         'apps.core.diagram',
         'apps.core.attachment',
+        'apps.core.form',
     ] + [  # Another Application
         'apps.masterdata.saledata',
         'apps.masterdata.promotion',
@@ -181,6 +184,8 @@ LANGUAGE_CHOICE = (
     ('vi', 'Vietnamese'),
 )
 
+LANGUAGE_CHOICE_CODE = [item[0] for item in LANGUAGE_CHOICE]
+
 TIME_ZONE = 'Asia/Ho_Chi_Minh'
 
 USE_I18N = True
@@ -214,9 +219,10 @@ default_auto_field = 'django.db.models.BigAutoField'
 
 # REST API
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
@@ -230,6 +236,36 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'account.User'
 
 SESSION_COOKIE_AGE = 7 * 24 * 60 * 60  # 3 days expires
+
+# CELERY + RABBITMQ CONFIG
+CELERY_BROKER_URL = None  # 'amqp://guest:guest@127.0.0.1:5672//'
+CELERY_TASK_ALWAYS_EAGER = True  # allow executable task real-time (True) or push task to queue (False)
+CELERY_RESULT_EXTENDED = True
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'django-db'
+
+# CELERY BEAT
+CELERY_ENABLE_UTC = False
+CELERY_TIMEZONE = 'Asia/Ho_Chi_Minh'
+DJANGO_CELERY_BEAT_TZ_AWARE = False
+
+if os.environ.get('CELERY_ENABLED', '0') in [1, '1']:
+    CELERY_TASK_ALWAYS_EAGER = True if os.environ.get('CELERY_TASK_ALWAYS_EAGER', 0) in [1, '1'] else False
+
+    CELERY_BROKER_VHOST = os.environ.get('MSG_QUEUE_BROKER_VHOST', '/')
+    MSG_QUEUE_HOST = os.environ.get("MSG_QUEUE_HOST")  # '127.0.0.1' or host_name
+    MSG_QUEUE_PORT = os.environ.get("MSG_QUEUE_PORT")  # default '5672'
+    MSG_QUEUE_USER = os.environ.get("MSG_QUEUE_USER")  # default 'rabbitmq_user'
+    MSG_QUEUE_PASSWORD = os.environ.get("MSG_QUEUE_PASSWORD")  # default 'rabbitmq_password'
+    if MSG_QUEUE_HOST and MSG_QUEUE_PORT:
+        CELERY_BROKER_URL = f'amqp://{MSG_QUEUE_USER}:{MSG_QUEUE_PASSWORD}@{MSG_QUEUE_HOST}:{MSG_QUEUE_PORT}'
+    else:
+        raise ValueError('CELERY CONFIG must be required HOST & PORT.')
+
+# -- CELERY + RABBITMQ CONFIG
+
 
 # call API Config
 API_IP_OR_ADDR = '127.0.0.1'

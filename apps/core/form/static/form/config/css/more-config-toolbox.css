@@ -1,0 +1,64 @@
+.more-config {
+    position: fixed;
+    top: calc(50% - 160px / 2);
+    right: 0;
+    float: right;
+    box-shadow: 5px 5px 5px #d5d5d5;
+    padding: 0;
+    background-color: #fff;
+    border-radius: 10px;
+    transition: 0.2s;
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.8);
+}
+
+.more-config:hover {
+    transform: scale(1);
+}
+
+#more-config-sub {
+    display: flex;
+    flex-direction: column;
+}
+
+.btn-setting-item {
+    float: right;
+    width: 40px !important;
+    height: 40px !important;
+}
+
+.btn-setting-item .icon {
+    transition: 0.4s;
+    transform: scale(0.9);
+}
+
+.btn-setting-item:hover .icon {
+    transform: scale(1.2);
+}
+
+.group-setting-item {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    visibility: hidden;
+
+    position: absolute;
+    right: 40px;
+    top: 30px;
+    padding: 10px;
+    border-radius: 10px 0 0 10px;
+    transition: 0.2s;
+}
+
+.btn-setting-item:hover + .group-setting-item, .group-setting-item:hover {
+    visibility: unset;
+}
+
+#group-auto-confirm {
+    white-space: nowrap;
+}
+
+#group-auto-confirm > * {
+    flex: auto;
+}

@@ -24,5 +24,18 @@ $.extend($.validator.messages, {
     pattern: "Định dạng không hợp lệ.",
     accept: "Vui lòng chọn tệp có định dạng hợp lệ.",
     phone_vn: "Vui lòng nhập số điện thoại hợp lệ.",
+    phone: "Vui lòng nhập số điện thoại hợp lệ.",
     json: "Vùng lòng nhập json hợp lệ.",
+    lessThanEqual: function (value, element){
+        let valueMax = $(value).val();
+        return $.validator.format(`Vui lòng nhập giá trị nhỏ hơn hoặc bằng ${valueMax}.`)
+    },
+    greaterThanEqual: function (value, element){
+        let valueMin = $(value).val();
+        return $.validator.format(`Vui lòng nhập giá trị lớn hơn hoặc bằng ${valueMin}.`)
+    },
+    counterWordsMax: `Chỉ có thể chấp nhận tối đa {0} từ.`,
+    counterWordsMin: `Chỉ có thể chấp nhận tối thiểu {0} từ.`,
+    allow_emailDomainValidation: `Tên miền không được chấp nhận.`,
+    restrict_emailDomainValidation: `Tên miền bị hạn chế.`,
 });

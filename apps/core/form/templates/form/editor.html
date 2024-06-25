@@ -1,0 +1,82 @@
+{% load i18n %}
+
+<div id="group-containment" class="position-relative">
+    <div id="draggable-parent">
+        <div id="field-tab-group">
+            <div id="field-basic" class="field-tab active no-transform">{% trans 'Basic fields' %}</div>
+            <div id="field-split">
+                <div></div>
+            </div>
+            <div id="field-advance" class="field-tab no-transform">{% trans 'Advance fields' %}</div>
+            <div style="clear:both;"></div>
+        </div>
+        <div id="draggable">
+            {% include 'form/extends/single-line/drag.html' %}
+            {% include 'form/extends/multiple-line/drag.html' %}
+            {% include 'form/extends/number/drag.html' %}
+            {% include 'form/extends/phone/drag.html' %}
+            {% include 'form/extends/email/drag.html' %}
+        </div>
+    </div>
+    <div id="sortable-parent">
+        <div id="sortable-content" class="form-full">
+            <div
+                    id="head-sortable"
+                    class="sortable-item form-item form-title"
+                    data-code="form-title"
+            >
+                <h1 id="form-title" class="form-title-text"></h1>
+                <small id="form-title-remark" class="form-title-remark" style="display: block;"></small>
+                <div class="group-masker"></div>
+            </div>
+            <div
+                    id="idx-form-head"
+                    class="form-item form-head"
+                    style="display: none;"
+            >
+                <div class="form-head-sub">
+                    <span id="form-head--current-user-name">{{ request.user }}</span>
+                        <a
+                                href="{% url 'AuthLogout' %}?next="
+                                id="btnSwitchAccount"
+                                style="margin-left: 10px;text-decoration: none;"
+                        >
+                            {% trans 'Switch account' %}
+                        </a>
+                </div>
+                <div class="group-masker"></div>
+            </div>
+            <div
+                    id="sortable"
+                    class="form-content"
+            >
+                <div class="form-item" id="sortable-item-empty">
+                    <div>
+                        <h3>{% trans 'Start building!' %}</h3>
+                        <p>{% trans 'Drag fields from left panel and drop here to add them to your form.' %}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-action d-none">
+                <button type="submit">{% trans 'Submit' %}</button>
+            </div>
+            <div class="form-item form-foot" style="display: none;">
+                <div class="form-foot-sub">
+                    <p class="foot-warning-text">
+                        {% trans 'Do not submit confidential information such as credit card details, mobile and ATM PINs, OTPs, account passwords, etc.' %}
+                    </p>
+                    <a href="#" class="foot-report-abuse">{% trans 'Report Abuse' %}</a>
+                    <div class="foot-power-by">
+                        <span style="margin-right: 1rem;">{% trans 'Powered by' %}</span>
+                        <img src="https://www.bflow.vn/images/logo/logo_180x180.png" alt="" style="width: 100px;"/>
+                    </div>
+                </div>
+                <div class="group-masker"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'form/editor/properties-drawer.html' %}
+{% include 'form/editor/more-config-toolbox.html' with toolbarHide=toolbarHide %}
+{% include 'form/editor/themes.html' %}
+{% include 'form/editor/embed_form.html' %}

@@ -52,10 +52,16 @@
         <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/plugins/drawer.css' %}" rel="stylesheet" type="text/css">
-        <link href="{% static 'assets/css/plugins/datatable/dist/css/table-advance-1.css' %}" rel="stylesheet" type="text/css">
+        <link
+                href="{% static 'assets/css/plugins/datatable/dist/css/table-advance-1.css' %}" rel="stylesheet"
+                type="text/css"
+        >
         <link href="{% static 'vendors/timeline-me/jquery.timelineMe.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'vendors/timeline-me/timelineMe.custom.css' %}" rel="stylesheet" type="text/css">
-        <link href="{% static 'vendors/dm-uploader/dist/css/jquery.dm-uploader.min.css' %}" rel="stylesheet" type="text/css">
+        <link
+                href="{% static 'vendors/dm-uploader/dist/css/jquery.dm-uploader.min.css' %}" rel="stylesheet"
+                type="text/css"
+        >
 
         <style>
             html, body {
@@ -69,9 +75,7 @@
                 -ms-text-size-adjust: 100%;
                 text-size-adjust: 100%;
 
-                {#font: 400 16px/24px "Roboto", "Google Sans", "Roboto Mono", sans-serif;#}
-
-                font-family: "Inter", sans-serif;
+            {#font: 400 16px/24px "Roboto", "Google Sans", "Roboto Mono", sans-serif;#} font-family: "Inter", sans-serif;
                 font-optical-sizing: auto;
                 font-weight: 400;
                 font-style: normal;
@@ -141,14 +145,17 @@
                 border-radius: 5px;
                 opacity: 0.2;
             }
+
             .scrollToTop:hover {
                 background-color: #165598;
                 opacity: 1;
             }
         </style>
-
-        {% block cssHeader %}
-        {% endblock %}
+        <link rel="stylesheet" href="{% static 'assets/css/page-content-always.css' %}">
+        {% if enable_page_content_css %}
+            <link rel="stylesheet" href="{% static 'assets/css/page-content-advance.css' %}">
+        {% endif %}
+        {% block cssHeader %}{% endblock %}
     {% endcompress %}
 
     {% if is_ga_enabled %}
@@ -189,8 +196,14 @@
     <span class="icon">
         <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g>
-                <path d="M4 2C3.44772 2 3 2.44772 3 3C3 3.55228 3.44772 4 4 4H20C20.5523 4 21 3.55228 21 3C21 2.44772 20.5523 2 20 2H4Z" fill="#ffffff"/>
-                <path d="M6.29289 13.7071C6.68342 14.0976 7.31658 14.0976 7.70711 13.7071L11 10.4142L11 21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21L13 10.4142L16.2929 13.7071C16.6834 14.0976 17.3166 14.0976 17.7071 13.7071C18.0976 13.3166 18.0976 12.6834 17.7071 12.2929L12.7071 7.29289C12.3166 6.90237 11.6834 6.90237 11.2929 7.29289L6.29289 12.2929C5.90237 12.6834 5.90237 13.3166 6.29289 13.7071Z" fill="#ffffff"/>
+                <path
+                        d="M4 2C3.44772 2 3 2.44772 3 3C3 3.55228 3.44772 4 4 4H20C20.5523 4 21 3.55228 21 3C21 2.44772 20.5523 2 20 2H4Z"
+                        fill="#ffffff"
+                />
+                <path
+                        d="M6.29289 13.7071C6.68342 14.0976 7.31658 14.0976 7.70711 13.7071L11 10.4142L11 21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21L13 10.4142L16.2929 13.7071C16.6834 14.0976 17.3166 14.0976 17.7071 13.7071C18.0976 13.3166 18.0976 12.6834 17.7071 12.2929L12.7071 7.29289C12.3166 6.90237 11.6834 6.90237 11.2929 7.29289L6.29289 12.2929C5.90237 12.6834 5.90237 13.3166 6.29289 13.7071Z"
+                        fill="#ffffff"
+                />
             </g>
         </svg>
     </span>
@@ -223,7 +236,7 @@
             <div class="hk-pg-body py-0">
                 <div class="blogapp-wrap blogapp-sidebar-toggle">
                     <div class="blogapp-content">
-                        <div class="blogapp-detail-wrap">
+                        <div class="blogapp-detail-wrap w-100">
                             <header class="blog-header">
                                 <div class="d-flex align-items-center">
                                     <button class="btn mr-1 hidden" id="btn-show-breadcrumb"><i
@@ -360,7 +373,7 @@
                                 <div class="hk-sidebar-togglable active"></div>
                             </header>
                             <div class="blog-body">
-                                <div data-simplebar class="nicescroll-bar" id="idxPageContent">
+                                <div id="idxPageContent">
                                     {% block pageContent %}
                                     {% endblock %}
                                 </div>
@@ -626,39 +639,39 @@
             });
 
             // set css of Modal fit screen display
-            $('.modal').on('show.bs.modal', function (){
+            $('.modal').on('show.bs.modal', function () {
                 const outsideFrame = $('.hk-pg-wrapper').css('padding-top');
                 $(this).css('margin-top', outsideFrame).css('height', `calc(100vh - ${outsideFrame})`);
             })
 
             //
-            $('button[type=submit]').on('click', function (){
+            $('button[type=submit]').on('click', function () {
                 let frmID = $(this).attr('form');
                 if (frmID) {
                     $(this).prop('disabled', true);
-                    setTimeout( () => $(this).prop('disabled', false), 1000);
+                    setTimeout(() => $(this).prop('disabled', false), 1000);
                     $('#' + frmID).trigger('submit');
                 } else {
                     let formOutSide = $(this).closest('form');
-                    if (formOutSide.length > 0){
+                    if (formOutSide.length > 0) {
                         $(this).prop('disabled', true);
-                        setTimeout( () => $(this).prop('disabled', false), 1000);
+                        setTimeout(() => $(this).prop('disabled', false), 1000);
                         formOutSide.trigger('submit');
                     }
                 }
             })
-            $('button:not([type])').on('click', function (){
+            $('button:not([type])').on('click', function () {
                 let formOutSide = $(this).closest('form');
-                if (formOutSide.length > 0){
+                if (formOutSide.length > 0) {
                     $(this).prop('disabled', true);
-                    setTimeout( () => $(this).prop('disabled', false), 1000);
+                    setTimeout(() => $(this).prop('disabled', false), 1000);
                     formOutSide.trigger('submit');
                 }
             })
 
             // warning not link employee | not company
             let eleDataBase = $('#data-current-base');
-            if (eleDataBase.length > 0){
+            if (eleDataBase.length > 0) {
                 let hasCompanyList = eleDataBase.attr('data-has-company-list') === 'true';
                 let hasCurrentCompany = eleDataBase.attr('data-has-current-company') === 'true';
                 let hasCurrentEmployee = eleDataBase.attr('data-has-current-employee') === 'true';
@@ -673,9 +686,9 @@
                     }).then(
                         resp => {
                             let data = $.fn.switcherResp(resp);
-                            if (typeof data == 'object' && data.hasOwnProperty('user_admin_tenant')){
+                            if (typeof data == 'object' && data.hasOwnProperty('user_admin_tenant')) {
                                 let userData = data['user_admin_tenant'];
-                                if (Array.isArray(userData)){
+                                if (Array.isArray(userData)) {
                                     let htmlTmp = `<p class="mb-1 mr-1">${$.fn.gettext('Admin')}:</p>`;
                                     userData.map(
                                         (item) => {
@@ -699,8 +712,7 @@
                             denyButtonText: $.fn.transEle.attr('data-cancel'),
                         })
                     )
-                }
-                else if (!hasCurrentCompany) {
+                } else if (!hasCurrentCompany) {
                     let msgTmp = $.fn.gettext("Please update the company information in the Current Company Switch section for your account.");
                     Swal.fire({
                         title: $.fn.gettext("Some apps will be working wrong"),
@@ -710,13 +722,12 @@
                         confirmButtonText: $.fn.gettext("Goto switch current company"),
                         showDenyButton: false,
                         denyButtonText: $.fn.transEle.attr('data-cancel'),
-                    }).then((result)=>{
+                    }).then((result) => {
                         if (result.isConfirmed) {
                             $('#btnChangeCurrentCompany').trigger('click');
                         }
                     })
-                }
-                else if(!hasCurrentEmployee) {
+                } else if (!hasCurrentEmployee) {
                     let msgTmp = $.fn.gettext("The account is not linked to an employee. Please contact the company administrator to update the employee information for the account.");
                     $.fn.callAjax2({
                         url: urlAdminCompany,
@@ -726,7 +737,7 @@
                             let data = $.fn.switcherResp(resp);
                             if (typeof data === 'object' && data.hasOwnProperty('employee_admin_company')) {
                                 let empData = data['employee_admin_company'];
-                                if (Array.isArray(empData)){
+                                if (Array.isArray(empData)) {
                                     let htmlTmp = `<p class="mb-1 mr-1">${$.fn.gettext('Admin')}:</p>`;
                                     empData.map(
                                         item => {
@@ -750,8 +761,8 @@
                     )
 
 
+                } else {
                 }
-                else {}
             }
         })
 
@@ -776,8 +787,8 @@
             let html = `
                 <div class="d-flex justify-content-center">
                     <select class="form-select w-250p" id="sel-change-language-to">
-                        <option value="vi" ${ currentLanguage === 'vi' ? 'selected': ''}>Tiếng Việt</option>
-                        <option value="en" ${ currentLanguage === 'en' ? 'selected': ''}>English</option>
+                        <option value="vi" ${currentLanguage === 'vi' ? 'selected' : ''}>Tiếng Việt</option>
+                        <option value="en" ${currentLanguage === 'en' ? 'selected' : ''}>English</option>
                     </select>
                 </div>
             `;
@@ -791,21 +802,21 @@
                 allowOutsideClick: () => !Swal.isLoading()
             }).then(
                 (result) => {
-                     if (result.isConfirmed) {
-                         $.fn.callAjax2({
-                             url: urlUpdateLanguage,
-                             method: 'PUT',
-                             data: {
-                                 'language': $('#sel-change-language-to').val(),
-                             },
-                             isLoading: true,
-                         }).then(
-                             (resp) => {
-                                 let data = $.fn.switcherResp(resp);
-                                 window.location.reload();
-                             }
-                         )
-                     }
+                    if (result.isConfirmed) {
+                        $.fn.callAjax2({
+                            url: urlUpdateLanguage,
+                            method: 'PUT',
+                            data: {
+                                'language': $('#sel-change-language-to').val(),
+                            },
+                            isLoading: true,
+                        }).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                window.location.reload();
+                            }
+                        )
+                    }
                 }
             )
         })
@@ -830,11 +841,11 @@
     {% block jsFooter %}{% endblock %}
     <!-- // Customize JS -->
 {% endcompress %}
-    <!-- TinyMCE | Not compress because it depends on load another file -->
-    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
-    <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
-    <!-- // TinyMCE -->
+<!-- TinyMCE | Not compress because it depends on load another file -->
+<script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
+<script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
+<!-- // TinyMCE -->
 
-    {% block jsFooterUnCompress %}{% endblock %}
+{% block jsFooterUnCompress %}{% endblock %}
 </body>
 </html>

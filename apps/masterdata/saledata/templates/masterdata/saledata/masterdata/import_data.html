@@ -165,7 +165,7 @@
                     dtbData.clear().draw();
                     dtbData.rows.add(data).draw();
                 }
-                new $x.cls.excelToJSON().parseFile(event.target.files[0], callback_render);
+                new $x.cls.excel.parseFileToJSON(event.target.files[0], callback_render);
             })
         })
     </script>

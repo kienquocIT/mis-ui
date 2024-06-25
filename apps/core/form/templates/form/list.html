@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block pageAction %}
+    <a href="{% url 'FormCreateView' %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
+            </span>
+        </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <table
+            class="table w-100 no-wrap" id="tbl-form-list"
+            data-url="{% url 'FormListAPI' %}"
+            data-method="GET"
+            data-url-detail="{% url 'FormUpdateView' pk='__pk__' %}"
+            data-url-entries="{% url 'FormEntriesListView' pk='__pk__' %}"
+            data-url-preview="{% url 'FormPublishDetailView' pk='__pk__' %}"
+            data-url-public="{% url 'FormPublishedRuntimeView' form_code='__code__' %}"
+            data-url-iframe="{% url 'FakePreviewIframe' form_code='__code__' %}"
+            data-url-update="{% url 'FormUpdateTurnOnOffAPI' pk='__pk__' %}"
+            data-url-duplicate="{% url 'FormDetailDuplicateAPI' pk='__pk__' %}"
+            data-url-destroy="{% url 'FormDetailAPI' pk='__pk__' %}"
+    >
+        <thead>
+        <tr>
+            <th>#</th>
+            <th class="no-transform">{% trans 'Title' %}</th>
+            <th class="no-transform">{% trans 'Remarks' %}</th>
+            <th class="no-transform">{% trans 'Active' %}</th>
+            <th class="no-transform">{% trans 'Public' %}</th>
+            <th class="no-transform">{% trans 'Embed' %}</th>
+            <th class="no-transform">{% trans 'Actions' %}</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+{% endblock %}
+
+{% block jsFooter %}
+    <script>
+        $(document).ready(function () {
+            let tbl$ = $('#tbl-form-list');
+            tbl$.DataTableDefault({
+                rowIdx: true,
+                useDataServer: true,
+                ajax: {
+                    url: tbl$.attr('data-url'),
+                    type: tbl$.attr('data-method'),
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            return resp.data['form_list'] ? resp.data['form_list'] : [];
+                        }
+                        return [];
+                    },
+                },
+                autoWidth: false,
+                columns: [
+                    {
+                        width: '5%',
+                        render: (data, type, row, meta) => {
+                            return '';
+                        }
+                    },
+                    {
+                        data: 'title',
+                        render: (data) => {
+                            return data;
+                        }
+                    },
+                    {
+                        width: '20%',
+                        data: 'remark',
+                        className: 'wrap-text',
+                        render: (data) => {
+                            return data;
+                        }
+                    },
+                    {
+                        data: 'publish.is_active',
+                        width: '10%',
+                        render: (data, type, row) => {
+                            return `
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="inputTurnOnOff form-check-input " ${data === true ? 'checked': ''} />
+                                </div>
+                            `;
+                        }
+                    },
+                    {
+                        data: 'publish.is_public',
+                        width: '10%',
+                        render: (data, type, row) => {
+                            const isActive = row?.is_active || false;
+                            let group$ = $(`<div class="d-flex"></div>`);
+                            group$.append(`
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="inputPublic form-check-input" ${data === true ? 'checked': ''}>
+                                </div>
+                            `);
+                            let urlPreview = tbl$.attr('data-url-public').replace('__code__', row.publish.code);
+                            group$.append(`
+                                <a
+                                    class="linkPublic"
+                                    style="display: ${data === true && isActive === true ? "block" : "none"};margin-left: 10px;"
+                                    data-bs-toggle="tooltip" title="${$.fn.gettext('Preview')}"
+                                    href="${urlPreview}" target="_blank"
+                                >
+                                    <i class="fa-solid fa-up-right-from-square"></i>
+                                </a>
+                            `)
+                            return group$.prop('outerHTML');
+                        }
+                    },
+                    {
+                        width: '10%',
+                        data: 'publish.is_iframe',
+                        render: (data, type, row) => {
+                            const isActive = row?.is_active || false;
+                            let group$ = $(`<div class="d-flex"></div>`);
+                            group$.append(`
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="inputIframe form-check-input" ${data === true ? 'checked': ''} />
+                                </div>
+                            `);
+                            let urlIframePreview = tbl$.attr('data-url-iframe').replace('__code__', row.publish.code);
+                            group$.append(`
+                                <a
+                                    class="linkIframe"
+                                    style="display: ${data === true && isActive === true ? "block" : "none"};margin-left: 10px;"
+                                    data-bs-toggle="tooltip" title="${$.fn.gettext('Preview')} Iframe"
+                                    href="${urlIframePreview}" target="_blank"
+                                >
+                                    <i class="fa-solid fa-up-right-from-square"></i>
+                                </a>
+                            `);
+                            return group$.prop('outerHTML');
+                        }
+                    },
+                    {
+                        width: '220px',
+                        'className': 'action-center',
+                        render: (data, type, row) => {
+                            let urlUpdate = tbl$.attr('data-url-detail').replace('__pk__', row.id);
+                            let btnUpdate = `
+                                <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" title="${$.fn.gettext('Update')}" href="${urlUpdate}">
+                                    <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span>
+                                </a>
+                            `;
+
+                            let urlEntriesList = tbl$.attr('data-url-entries').replace('__pk__', row.id);
+                            let btnEntries = `
+                                <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" title="${$.fn.gettext('Entries Data')}" href="${urlEntriesList}">
+                                    <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="archive"></i></span></span>
+                                </a>
+                            `;
+
+
+                            let btnPreview = ``;
+                            if (row?.publish?.id){
+                                let urlPreview = tbl$.attr('data-url-preview').replace('__pk__', row.publish.id);
+                                btnPreview = `
+                                    <a
+                                        class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                        data-bs-toggle="tooltip" title="${$.fn.gettext('Preview')}"
+                                        href="${urlPreview}"
+                                    >
+                                        <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="eye"></i></span></span>
+                                    </a>
+                                `;
+                            }
+
+                            const eleSplit = `<span>|</span>`;
+
+                            const btnClone = `
+                                <button
+                                    class="btnClone btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                    data-bs-toggle="tooltip" title="${$.fn.gettext('Clone')}"
+                                >
+                                    <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="copy"></i></span></span>
+                                </button>
+                            `;
+
+                            const btnDestroy = `
+                                <button
+                                    class="btnDestroy btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                    data-bs-toggle="tooltip" title="${$.fn.gettext('Delete')}"
+                                >
+                                    <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash"></i></span></span>
+                                </button>
+                            `;
+
+                            return btnUpdate + btnEntries + btnPreview + eleSplit + btnClone + btnDestroy;
+                        }
+                    }
+                ],
+                rowCallback: function (row, data){
+                    const turnOnOff$ = $(row).find('input[type=checkbox].inputTurnOnOff');
+                    const public$ = $(row).find('input[type=checkbox].inputPublic');
+                    const iframe$ = $(row).find('input[type=checkbox].inputIframe');
+
+                    const publicLink$ = $(row).find('a.linkPublic');
+                    const iframeLink$ = $(row).find('a.linkIframe');
+
+                    function updateState(){
+                        const dataUpdate = {
+                                'is_active': turnOnOff$.prop('checked'),
+                                'is_public': public$.prop('checked'),
+                                'is_iframe': iframe$.prop('checked'),
+                            }
+                        $.fn.callAjax2({
+                            url: tbl$.attr('data-url-update').replaceAll('__pk__', data.id),
+                            method: 'PUT',
+                            data: dataUpdate,
+                            isLoading: true,
+                        }).then(
+                            resp => {
+                                let dataResp = $.fn.switcherResp(resp);
+                                if (dataResp){
+                                    $.fn.notifyB({
+                                        'description': $.fn.gettext('Successful'),
+                                    }, 'success');
+                                    if (publicLink$.length > 0){
+                                        if (dataUpdate['is_public'] && dataUpdate['is_active']) {
+                                            publicLink$.show();
+                                        } else {
+                                            publicLink$.hide();
+                                        }
+                                    }
+                                    if (iframeLink$.length > 0){
+                                        if (dataUpdate['is_iframe'] && dataUpdate['is_active']){
+                                            iframeLink$.show();
+                                        } else {
+                                            iframeLink$.hide();
+                                        }
+                                    }
+                                }
+                            },
+                            errs => $.fn.switcherResp(errs),
+                        )
+                    }
+
+                    turnOnOff$.on('change', updateState);
+                    public$.on('change', updateState);
+                    iframe$.on('change', updateState);
+
+                    $(row).find('button.btnClone').on('click', function (){
+                        Swal.fire({
+                            title: $.fn.gettext('Are you sure you want to duplicate it?'),
+                            icon: "warning",
+                            showCloseButton: true,
+                            showCancelButton: true,
+                            cancelButtonColor: "#d33",
+                            cancelButtonText: $.fn.gettext('Cancel'),
+                            confirmButtonColor: "#3085d6",
+                            confirmButtonText: $.fn.gettext('Duplicate')
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $.fn.callAjax2({
+                                    url: tbl$.attr('data-url-duplicate').replaceAll('__pk__', data.id),
+                                    method: 'POST',
+                                }).then(
+                                    resp => {
+                                        if ($.fn.switcherResp(resp)){
+                                            $.fn.notifyB({
+                                                'description': $.fn.gettext('Successful')
+                                            }, 'success');
+                                            setTimeout(() => window.location.reload(), 1000);
+                                        }
+                                    },
+                                    errs => $.fn.switcherResp(errs),
+                                )
+                            }
+                        });
+                    });
+
+                    $(row).find('button.btnDestroy').on('click', function (){
+                        Swal.fire({
+                            title: $.fn.gettext('Are you sure about deleting?'),
+                            html: `
+                                <p>${$.fn.gettext('You have made changes.')}</p>
+                                <p>${$.fn.gettext('Do you want to discard them?')}</p>
+                            `,
+                            icon: "warning",
+                            showCloseButton: true,
+                            showCancelButton: true,
+                            cancelButtonColor: "#d33",
+                            cancelButtonText: $.fn.gettext('Cancel'),
+                            confirmButtonColor: "#3085d6",
+                            confirmButtonText: $.fn.gettext('Yes, delete it')
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $.fn.callAjax2({
+                                    url: tbl$.attr('data-url-destroy').replaceAll('__pk__', data.id),
+                                    method: 'DELETE',
+                                }).then(
+                                    resp => {
+                                        if ($.fn.switcherResp(resp)){
+                                            $.fn.notifyB({
+                                                'description': $.fn.gettext('Successful')
+                                            }, 'success');
+                                            setTimeout(() => window.location.reload(), 1000);
+                                        }
+                                    },
+                                    errs => $.fn.switcherResp(errs),
+                                )
+                            }
+                        });
+                    })
+                },
+            })
+        })
+    </script>
+{% endblock %}

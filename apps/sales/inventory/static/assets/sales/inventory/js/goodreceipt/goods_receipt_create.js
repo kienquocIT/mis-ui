@@ -13,9 +13,9 @@ $(function () {
 
         // Load init
         if (formSubmit.attr('data-method') === 'POST') {
-            GRLoadDataHandle.loadBoxType();
+            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGr);
             GRLoadDataHandle.loadBoxPO();
-            GRLoadDataHandle.loadBoxSupplier();
+            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.supplierSelectEle);
             GRLoadDataHandle.loadBoxIA();
             GRDataTableHandle.dataTableGoodReceiptPOProduct();
             GRDataTableHandle.dataTableGoodReceiptPR();

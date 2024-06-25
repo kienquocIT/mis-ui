@@ -121,3 +121,14 @@ msgstr "Thuế"
 msgid "Subtotal Price"
 msgstr "Thành tiền"
 
+#
+msgid "Add Expense"
+msgstr "Thêm chi phí"
+
+#
+msgid "Add Labor"
+msgstr "Thêm nhân công"
+
+#
+msgid "New"
+msgstr "Thêm"

@@ -7739,16 +7739,16 @@ msgid "Work title"
 msgstr "Tên công việc"
 
 #
-msgid "Total Unit Price"
+msgid "Total price"
 msgstr "Tổng đơn giá"
 
 #
-msgid "Total Tax"
+msgid "Total tax"
 msgstr "Tổng thuế"
 
 #
-msgid "Total Price"
-msgstr "Tổng thành tiền"
+msgid "Total price after tax"
+msgstr "Tổng tiền sau thuế"
 
 #
 msgid "Goods registration"

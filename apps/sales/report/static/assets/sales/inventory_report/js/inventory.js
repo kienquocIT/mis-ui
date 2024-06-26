@@ -774,7 +774,8 @@ $(document).ready(function () {
                     className: 'w-25',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'lot_row') {
-                            return `<span class="text-blue fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['lot_number']}</span> (${row?.['quantity_import']}) (${row?.['expire_date']})`
+                            let expire_date = row?.['expire_date'] ? `(${row?.['expire_date']})` : ''
+                            return `<span class="text-blue fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['lot_number']}</span> (${row?.['quantity_import']}) ${expire_date}`
                         }
                         return `<span hidden>${JSON.stringify(row?.['lot_data'])}</span>`
                     }
@@ -1409,7 +1410,7 @@ $(document).ready(function () {
                 let data_view_list = []
                 for (const data of results[0]) {
                     for (const lot of data?.['detail']?.['lot_data']) {
-                        lot.expire_date = moment(lot?.['expire_date'].split('T')[0]).format('DD/MM/YYYY')
+                        lot.expire_date = lot?.['expire_date'] ? moment(lot?.['expire_date'].split('T')[0]).format('DD/MM/YYYY') : ''
                     }
 
                     data_view_list.push({

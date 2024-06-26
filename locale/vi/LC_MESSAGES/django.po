@@ -7837,5 +7837,13 @@ msgid "Trans information"
 msgstr "Thông tin giao dịch"
 
 #
+msgid "Mfg date"
+msgstr "Ngày sản xuất"
+
+#
+msgid "Exp date"
+msgstr "Hạn sử dụng"
+
+#
 msgid "Hover to product code to see more information."
 msgstr "Rê chuột đến Mã Sản Phẩm để xem thêm thông tin."

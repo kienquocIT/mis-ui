@@ -197,7 +197,7 @@ $(function () {
                 ],
                 rowCallback(row, data, index) {
                     if (data?.['type_group_by'] === 1) {
-                        row.classList.add('bg-light');
+                        row.classList.add('bg-gold-light-5');
                     }
                 },
                 drawCallback: function () {

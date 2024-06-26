@@ -61,7 +61,7 @@
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
                     {% trans 'Select Sale Person' as inherit_title %}
-                    {% include 'extends/the-documents/bastion.html' with show_warning=True opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                    {% include 'extends/the-documents/bastion.html' with opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
                     <div class="card">
                         <div class="card-header card-header-action bg-teal-light-5 h-40p">
                             <h6 class="text-primary">{% trans 'Information' %}</h6>

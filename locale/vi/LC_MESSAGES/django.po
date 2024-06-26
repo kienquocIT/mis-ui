@@ -7835,3 +7835,11 @@ msgstr "ĐV lưu kho"
 #
 msgid "Trans information"
 msgstr "Thông tin giao dịch"
+
+#
+msgid "Mfg date"
+msgstr "Ngày sản xuất"
+
+#
+msgid "Exp date"
+msgstr "Hạn sử dụng"

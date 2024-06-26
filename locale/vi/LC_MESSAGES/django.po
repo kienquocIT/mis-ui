@@ -7174,11 +7174,11 @@ msgstr "Nhập liệu sau"
 
 #
 msgid "Vendor serial no."
-msgstr "Số seri của NCC"
+msgstr "Serial của NCC"
 
 #
 msgid "Serial no."
-msgstr "Số seri"
+msgstr "Serial"
 
 #
 msgid "Mfr date"
@@ -7438,7 +7438,7 @@ msgstr "Tổng giá trị"
 
 #
 msgid "Lot quantity"
-msgstr "Số lượng của lô"
+msgstr "SL của lô"
 
 #
 msgid "Manufacture date"

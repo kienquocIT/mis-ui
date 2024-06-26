@@ -25,6 +25,11 @@
         .detail-row {
             background-color: #f6f6f6 !important;
         }
+        .sticky {
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+        }
     </style>
 {% endblock %}
 {% block pageAction %}{% endblock %}
@@ -159,9 +164,9 @@
         </div>
     </div>
     <div class="row mt-3 mb-3">
-        <div class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 70vh">
-            <table hidden class="resize table table-hover nowrap w-100" id="table-inventory-report">
-                <thead>
+        <div hidden class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 70vh">
+            <table class="resize table table-hover nowrap w-100" id="table-inventory-report">
+                <thead class="sticky">
                     <tr>
                         <th class="border-1" rowspan="3"><span class="badge badge-primary badge-outline badge-pill">{% trans 'PRODUCT' %}</span></th>
                         <th class="border-1" rowspan="3"><span class="badge badge-primary badge-outline badge-pill">{% trans 'INVENTORY UOM' %}</span></th>
@@ -193,8 +198,10 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <table hidden class="resize table table-hover nowrap w-100" id="table-inventory-report-detail">
-                <thead>
+        </div>
+        <div hidden class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 70vh">
+            <table class="resize table table-hover nowrap w-100" id="table-inventory-report-detail">
+                <thead class="sticky">
                     <tr>
                         <th class="border-1" rowspan="3"><span class="badge badge-primary badge-outline badge-pill">{% trans 'PRODUCT' %}</span></th>
                         <th class="border-1" rowspan="3"><span class="badge badge-primary badge-outline badge-pill">{% trans 'INVENTORY UOM' %}</span></th>
@@ -233,7 +240,7 @@
     </div>
 
     <div class="modal fade" id="view-prd-wh" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg min-w-1500p" role="document">
+        <div class="modal-dialog modal-lg min-w-1280p" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="view-prd-wh-title"></h5>
@@ -243,16 +250,14 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-12" style="position: relative; overflow: auto; max-height: 70vh;">
+                        <div class="col-12">
                             <table class="table w-100 nowrap" id="view-prd-wh-table">
                                 <thead>
                                 <tr>
                                     <th>{% trans 'Product' %}</th>
-                                    <th>{% trans 'UoM' %}</th>
                                     <th>{% trans 'Stock quantity' %}</th>
-                                    <th>{% trans 'Lot number' %} ({% trans 'Lot quantity' %})</th>
-                                    <th>{% trans 'Expired date' %}
-                                    <th>({% trans 'Vendor serial no.' %}) {% trans 'Serial no.' %}</th>
+                                    <th>{% trans 'Lot number' %} ({% trans 'Lot quantity' %}) ({% trans 'Expired date' %})
+                                    <th>{% trans 'Serial no.' %} ({% trans 'Vendor serial no.' %})</th>
                                 </tr>
                                 </thead>
                                 <tbody></tbody>

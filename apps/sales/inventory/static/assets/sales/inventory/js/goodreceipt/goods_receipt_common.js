@@ -1759,7 +1759,7 @@ class GRDataTableHandle {
             columns: [  // 25,325,325,150,175,325,150,270,25 (1920p)
                 {
                     targets: 0,
-                    width: '1.30208333333%',
+                    width: '1%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" id="${row?.['id']}" data-row="${dataRow}">${row?.['order']}</span>`
@@ -1767,7 +1767,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '16.9270833333%',
+                    width: '17%',
                     render: (data, type, row) => {
                         if (!GRLoadDataHandle.POSelectEle.val()) {
                             return `<div class="row table-row-item-area">
@@ -1805,7 +1805,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '15%',
+                    width: '13%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>

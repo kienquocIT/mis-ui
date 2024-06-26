@@ -7835,3 +7835,7 @@ msgstr "ĐV lưu kho"
 #
 msgid "Trans information"
 msgstr "Thông tin giao dịch"
+
+#
+msgid "Hover to product code to see more information."
+msgstr "Rê chuột đến Mã Sản Phẩm để xem thêm thông tin."

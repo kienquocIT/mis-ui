@@ -3,7 +3,7 @@ from django.urls import path
 from apps.core.workflow.views.config import (
     WorkflowList, WorkflowListAPI, WorkflowCreate, WorkflowCreateAPI,
     WorkflowDetail, NodeSystemListAPI, WorkflowDetailAPI,
-    WorkflowOfAppListAPI, WorkflowOfAppDetailAPI, WorkflowUpdate, WorkflowCurrentOfAppListAPI,
+    WorkflowOfAppListAPI, WorkflowOfAppDetailAPI, WorkflowUpdate, WorkflowCurrentOfAppListAPI, ZoneCreate,
 )
 
 from apps.core.workflow.views.runtime import (
@@ -29,6 +29,9 @@ urlpatterns = [
 
     # current
     path('currents/api', WorkflowCurrentOfAppListAPI.as_view(), name='WorkflowCurrentOfAppListAPI'),
+
+    # zone
+    path('zone/create', ZoneCreate.as_view(), name='ZoneCreate'),
 
     # runtime
     path('runtime/diagram/<str:pk>', FlowRuntimeDiagramDetailAPI.as_view(), name='FlowRuntimeDiagramDetailAPI'),

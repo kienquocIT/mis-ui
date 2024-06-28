@@ -4,7 +4,7 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_zone_create">
+    <button class="btn btn-outline-primary" type="submit" form="frm_app_zones">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -16,10 +16,10 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'QuotationListAPI' %}"
+            data-url="{% url 'ApplicationZonesDetailAPI' pk=1 %}"
             data-url-redirect="{% url 'QuotationList' %}"
-            data-method="POST"
-            id="frm_zone_create"
+            data-method="PUT"
+            id="frm_app_zones"
             method="post"
     >
         {% csrf_token %}
@@ -171,5 +171,5 @@
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
-    <script src="{% static 'assets/core/workflow/js/zone.js' %}"></script>
+    <script src="{% static 'assets/core/base/js/zone.js' %}"></script>
 {% endblock %}

@@ -1,4 +1,4 @@
-import json
+from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 from django.utils.translation import gettext_lazy as _
@@ -182,3 +182,39 @@ class ApplicationForOpportunityPermitListAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.APPLICATION_OPPORTUNITY_PERMISSION).get()
         return resp.auto_return(key_success='applications')
+
+
+# ZONE
+def update_application_zones(request, url, pk, msg):
+    resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
+    if resp.state:
+        resp.result['message'] = msg
+        return resp.result, status.HTTP_201_CREATED
+    return resp.auto_return()
+
+
+class ApplicationZonesUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='core/base/zone_create.html',
+        menu_active='',
+        breadcrumb='',
+    )
+    def get(self, request, *args, **kwargs):
+        ctx = {}
+        return ctx, status.HTTP_200_OK
+
+
+class ApplicationZonesDetailAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        return update_application_zones(
+            request=request,
+            url=ApiURL.APPLICATION_ZONES_DETAIL,
+            pk=pk,
+            msg='SaleMsg.GOODS_RECEIPT_UPDATE'
+        )

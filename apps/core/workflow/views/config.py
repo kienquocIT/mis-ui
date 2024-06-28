@@ -233,16 +233,3 @@ class WorkflowCurrentOfAppListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_CURRENT_OF_APPS).get(data)
         return resp.auto_return(key_success='app_list')
-
-
-# ZONE
-class ZoneCreate(View):
-    @mask_view(
-        auth_require=True,
-        template='core/workflow/extends/zone_create.html',
-        menu_active='',
-        breadcrumb='',
-    )
-    def get(self, request, *args, **kwargs):
-        ctx = {}
-        return ctx, status.HTTP_200_OK

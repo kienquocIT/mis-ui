@@ -1,5 +1,7 @@
 $(function () {
     $(document).ready(function () {
+        let $form = $('#frm_app_zones');
+
         let $boxApp = $('#box-application');
         let $btnAdd = $('#btn-add-zone');
         let $btnEdit = $('#btn-edit-zone');
@@ -136,6 +138,67 @@ $(function () {
                     $.fn.notifyB({description: $transFact.attr('data-zone-required')}, 'failure');
                     return false;
                 }
+            }
+        });
+
+        $form.submit(function (e) {
+            e.preventDefault();
+            if ($boxApp.val()) {
+                let dataSubmit = {};
+                let zones_data = [];
+                $table.DataTable().rows().every(function () {
+                    let row = this.node();
+                    let zone_data = {};
+                    let rowOrder = row.querySelector('.table-row-order');
+                    let rowTitle = row.querySelector('.table-row-title');
+                    let rowRemark = row.querySelector('.table-row-remark');
+                    let rowPropList = row.querySelector('.table-row-property-list');
+                    if (rowOrder) {
+                        zone_data['order'] = parseInt(rowOrder.innerHTML);
+                    }
+                    if (rowTitle) {
+                        zone_data['title'] = rowTitle.innerHTML;
+                    }
+                    if (rowRemark) {
+                        zone_data['remark'] = rowRemark.innerHTML;
+                    }
+                    if (rowPropList) {
+                        if ($(rowPropList).attr('data-property-list')) {
+                            let propIDList = [];
+                            let propListData = JSON.parse($(rowPropList).attr('data-property-list'));
+                            for (let propData of propListData) {
+                                propIDList.push(propData?.['id']);
+                            }
+                            zone_data['properties_data'] = propIDList;
+                        }
+                    }
+                    zones_data.push(zone_data);
+                });
+                dataSubmit['zones'] = zones_data;
+                let url = $form.attr('data-url').format_url_with_uuid($boxApp.val());
+                WindowControl.showLoading();
+                $.fn.callAjax2(
+                    {
+                        'url': url,
+                        'method': $form.attr('data-method'),
+                        'data': dataSubmit,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && (data['status'] === 201 || data['status'] === 200)) {
+                            $.fn.notifyB({description: data.message}, 'success');
+                            setTimeout(() => {
+                                window.location.replace($urlFact.attr('data-url-redirect'));
+                            }, 1000);
+                        }
+                    }, (err) => {
+                        setTimeout(() => {
+                            WindowControl.hideLoading();
+                        }, 1000)
+                        $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                    }
+                )
             }
         });
 

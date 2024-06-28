@@ -207,8 +207,7 @@
                     <th>{% trans 'Total price after tax' %}</th>
                 </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
     </div>
@@ -223,6 +222,8 @@
     {% include 'sales/project/extends/assign-task.html' with prj_id=data.pk %}
     <!-- modal create task -->
     {% include 'sales/task/extend/task-form.html' with is_project_page=True new_list_from_app='task.opportunitytask.create'%}
+    <!-- modal check employee in expense role -->
+    {% include 'sales/project/extends/check-expense-modal.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
     <div class="table_btn">
@@ -243,6 +244,7 @@
            data-member-delete="{% url 'ProjectMemberDeleteAPI' data.pk 1 %}"
            data-update-order="{% url 'ProjectUpdateOrderAPI' data.pk %}"
            data-task="{% url 'ProjectTaskListAPI' %}"
+           data-task-logtime="{% url 'OpportunityTaskLogTimeAPI' %}"
            data-expense="{% url 'ExpenseListAPI' %}"
            data-expense-detail="{% url "ExpenseDetail" 1 %}"
            data-expense_item="{% url "ExpenseItemListAPI" %}"
@@ -288,5 +290,6 @@
     <script src="{% static 'assets/project/js/frappe-gantt-custom.js' %}"></script>
     <script src="{% static 'assets/project/js/edit.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
+    <script src="{% static 'assets/project/js/extend/component-modal-drag.js' %}"></script>
     <script src="{% static 'assets/project/js/extend/project-task.js' %}"></script>
 {% endblock %}

@@ -416,3 +416,47 @@
 .bt-0{
     border-top: 0!important;
 }
+#check_expense_modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    --webkit--transform: translate(-50%, -50%);
+    width: 500px;
+    z-index: 11;
+}
+#select_expense_role:not(.select2-hidden-accessible){
+    height:36px;
+}
+#check_expense_modalheader{
+    cursor: move;
+    position: relative;
+}
+#check_expense_modalheader:before{
+    content: '\F12F';
+    font-family: bootstrap-icons;
+    position: absolute;
+    right:-40px;
+    top:25%;
+    color:rgb(255 0 0);
+    font-size:1.5rem;
+    display: block;
+    animation-name: arrow_effect;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+@keyframes arrow_effect {
+  0% {right:-40px;opacity: 0;visibility: hidden;}
+  50% {right: -24px;opacity: 1;visibility: visible;}
+  100% {right: -24px;opacity: 1;visibility: visible;}
+}
+
+.info-txt{
+    display: block;
+    position: absolute;
+    right: 60px;
+    top:25%;
+    color:rgb(255 0 0);
+}
+.off_effect#check_expense_modalheader:before,
+.off_effect .info-txt{display: none;}

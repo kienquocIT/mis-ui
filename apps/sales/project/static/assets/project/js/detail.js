@@ -52,6 +52,7 @@ $(document).ready(function () {
                 ProjectTeamsHandle.render(data.members, true)
                 $('.gaw-btn').addClass('hidden')
                 Task_in_project.init(data)
+                ProjectWorkExpenseHandle.init(data?.['works'])
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )

@@ -7835,3 +7835,23 @@ msgstr "ĐV lưu kho"
 #
 msgid "Trans information"
 msgstr "Thông tin giao dịch"
+
+#
+msgid "Hold to drag"
+msgstr "Nắm giữ để di chuyển"
+
+#
+msgid "Check employee in expense labor"
+msgstr "Kiểm tra nhân viên trong chi phí"
+
+#
+msgid "Select expense to check employee labor"
+msgstr "Chọn chi phí để kiểm tra nhân viên"
+
+#
+msgid "Expense role"
+msgstr "Vai trò thuộc Chi phí"
+
+#
+msgid "Employee by role"
+msgstr "Nhân viên thuộc Vai trò"

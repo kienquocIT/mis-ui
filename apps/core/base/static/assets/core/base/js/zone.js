@@ -144,7 +144,7 @@ $(function () {
         $form.submit(function (e) {
             e.preventDefault();
             if ($boxApp.val()) {
-                let dataSubmit = {};
+                let dataSubmit = {'application': $boxApp.val()};
                 let zones_data = [];
                 $table.DataTable().rows().every(function () {
                     let row = this.node();
@@ -174,12 +174,11 @@ $(function () {
                     }
                     zones_data.push(zone_data);
                 });
-                dataSubmit['zones'] = zones_data;
-                let url = $form.attr('data-url').format_url_with_uuid($boxApp.val());
+                dataSubmit['zones_data'] = zones_data;
                 WindowControl.showLoading();
                 $.fn.callAjax2(
                     {
-                        'url': url,
+                        'url': $form.attr('data-url'),
                         'method': $form.attr('data-method'),
                         'data': dataSubmit,
                     }

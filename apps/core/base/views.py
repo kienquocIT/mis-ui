@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from django.utils.translation import gettext_lazy as _
 
 from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared.msg import AppMsg
 
 
 # Subscription Plan
@@ -184,16 +185,16 @@ class ApplicationForOpportunityPermitListAPI(APIView):
         return resp.auto_return(key_success='applications')
 
 
-# ZONE
-def update_application_zones(request, url, pk, msg):
-    resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
+# ZONES
+def create_zones(request, url, msg):
+    resp = ServerAPI(user=request.user, url=url).post(request.data)
     if resp.state:
         resp.result['message'] = msg
         return resp.result, status.HTTP_201_CREATED
     return resp.auto_return()
 
 
-class ApplicationZonesUpdate(View):
+class ZonesCreate(View):
     @mask_view(
         auth_require=True,
         template='core/base/zone_create.html',
@@ -205,16 +206,23 @@ class ApplicationZonesUpdate(View):
         return ctx, status.HTTP_200_OK
 
 
-class ApplicationZonesDetailAPI(APIView):
+class ZonesListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ZONES_LIST).get(data)
+        return resp.auto_return(key_success='zones_list')
 
     @mask_view(
         auth_require=True,
         is_api=True
     )
-    def put(self, request, *args, pk, **kwargs):
-        return update_application_zones(
+    def post(self, request, *args, **kwargs):
+        return create_zones(
             request=request,
-            url=ApiURL.APPLICATION_ZONES_DETAIL,
-            pk=pk,
-            msg='SaleMsg.GOODS_RECEIPT_UPDATE'
+            url=ApiURL.ZONES_LIST,
+            msg=AppMsg.ZONES_CREATE
         )

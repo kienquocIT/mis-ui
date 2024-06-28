@@ -16,9 +16,9 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'ApplicationZonesDetailAPI' pk=1 %}"
+            data-url="{% url 'ZonesListAPI' %}"
             data-url-redirect="{% url 'QuotationList' %}"
-            data-method="PUT"
+            data-method="POST"
             id="frm_app_zones"
             method="post"
     >

@@ -621,5 +621,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FOLDER_DETAIL = StringUrl('attachment/folder')
     FOLDER_UPLOAD_FILE_LIST = StringUrl('attachment/folder-upload-file/list')
 
-    # Application zones
-    APPLICATION_ZONES_DETAIL = StringUrl('base/application-zone')
+    # Zones
+    ZONES_LIST = StringUrl('base/zones/list')

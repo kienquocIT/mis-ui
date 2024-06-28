@@ -1759,7 +1759,7 @@ class GRDataTableHandle {
             columns: [  // 25,325,325,150,175,325,150,270,25 (1920p)
                 {
                     targets: 0,
-                    width: '1.30208333333%',
+                    width: '1%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" id="${row?.['id']}" data-row="${dataRow}">${row?.['order']}</span>`
@@ -1767,7 +1767,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '16.9270833333%',
+                    width: '17%',
                     render: (data, type, row) => {
                         if (!GRLoadDataHandle.POSelectEle.val()) {
                             return `<div class="row table-row-item-area">
@@ -1805,7 +1805,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '15%',
+                    width: '13%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
@@ -3192,14 +3192,20 @@ class GRSubmitHandle {
                 ]
                 filterFieldList(field_list, lot);
                 if (lot?.['expire_date']) {
-                  lot['expire_date'] = moment(lot?.['expire_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    let date = moment(lot?.['expire_date'],
+                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    if (date !== "Invalid date") {
+                        lot['expire_date'] = date;
+                    }
                 } else {
                     lot['expire_date'] = null;
                 }
                 if (lot?.['manufacture_date']) {
-                    lot['manufacture_date'] = moment(lot?.['manufacture_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    let date = moment(lot?.['manufacture_date'],
+                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    if (date !== "Invalid date") {
+                        lot['manufacture_date'] = date;
+                    }
                 } else {
                     lot['manufacture_date'] = null;
                 }
@@ -3215,26 +3221,38 @@ class GRSubmitHandle {
                 ]
                 filterFieldList(field_list, serial);
                 if (serial?.['expire_date']) {
-                    serial['expire_date'] = moment(serial?.['expire_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    let date = moment(serial?.['expire_date'],
+                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    if (date !== "Invalid date") {
+                        serial['expire_date'] = date;
+                    }
                 } else {
                     serial['expire_date'] = null;
                 }
                 if (serial?.['manufacture_date']) {
-                    serial['manufacture_date'] = moment(serial?.['manufacture_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    let date = moment(serial?.['manufacture_date'],
+                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    if (date !== "Invalid date") {
+                        serial['manufacture_date'] = date;
+                    }
                 } else {
                     serial['manufacture_date'] = null;
                 }
                 if (serial?.['warranty_start']) {
-                    serial['warranty_start'] = moment(serial?.['warranty_start'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    let date = moment(serial?.['warranty_start'],
+                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    if (date !== "Invalid date") {
+                        serial['warranty_start'] = date;
+                    }
                 } else {
                     serial['warranty_start'] = null;
                 }
                 if (serial?.['warranty_end']) {
-                    serial['warranty_end'] = moment(serial?.['warranty_end'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    let date = moment(serial?.['warranty_end'],
+                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    if (date !== "Invalid date") {
+                        serial['warranty_end'] = date;
+                    }
                 } else {
                     serial['warranty_end'] = null;
                 }
@@ -3266,9 +3284,9 @@ class GRSubmitHandle {
                             dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                         }
                         if (dataInfo) {
-                            rowData['product'] = dataInfo.id;
-                            rowData['product_title'] = dataInfo.title;
-                            rowData['product_code'] = dataInfo.code;
+                            rowData['product'] = dataInfo?.['id'];
+                            rowData['product_title'] = dataInfo?.['title'];
+                            rowData['product_code'] = dataInfo?.['code'];
                         }
                         let eleDescription = row.querySelector('.table-row-description');
                         if (eleDescription) {
@@ -3278,7 +3296,7 @@ class GRSubmitHandle {
                         if ($(eleUOM).val()) {
                             let dataInfo = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
                             if (dataInfo) {
-                                rowData['uom'] = dataInfo.id;
+                                rowData['uom'] = dataInfo?.['id'];
                             }
                         }
                         let eleQuantityImport = row.querySelector('.table-row-import');
@@ -3293,9 +3311,9 @@ class GRSubmitHandle {
                         if ($(eleTax).val()) {
                             let dataInfo = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
                             if (dataInfo) {
-                                rowData['tax'] = dataInfo.id;
-                                rowData['product_tax_title'] = dataInfo.title;
-                                rowData['product_tax_value'] = dataInfo.rate;
+                                rowData['tax'] = dataInfo?.['id'];
+                                rowData['product_tax_title'] = dataInfo?.['title'];
+                                rowData['product_tax_value'] = dataInfo?.['rate'];
                             } else {
                                 rowData['product_tax_value'] = 0;
                             }

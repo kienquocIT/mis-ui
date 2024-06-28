@@ -238,11 +238,21 @@ class QuotationLoadDataHandle {
                 QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
                     'dataParams': {'employee_inherit': QuotationLoadDataHandle.salePersonSelectEle.val()},
                     'allowClear': true,
+                    templateResult: function (state) {
+                        let titleHTML = `<span>${state.data?.title ? state.data.title : "_"}</span>`
+                        let codeHTML = `<span class="badge badge-soft-primary mr-2">${state.text ? state.text : "_"}</span>`
+                        return $(`<span>${codeHTML} ${titleHTML}</span>`);
+                    },
                 });
             } else {
                 QuotationLoadDataHandle.opportunitySelectEle.empty();
                 QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
                     'allowClear': true,
+                    templateResult: function (state) {
+                        let titleHTML = `<span>${state.data?.title ? state.data.title : "_"}</span>`
+                        let codeHTML = `<span class="badge badge-soft-primary mr-2">${state.text ? state.text : "_"}</span>`
+                        return $(`<span>${codeHTML} ${titleHTML}</span>`);
+                    },
                 });
             }
             // load customer, contact, payment
@@ -2190,10 +2200,10 @@ class QuotationDataTableHandle {
             searching: false,
             autoWidth: true,
             scrollX: true,
-            columns: [  // 25,325,325,150,175,325,150,150,270,25 (1920p)
+            columns: [
                 {
                     targets: 0,
-                    width: '1.30208333333%',
+                    width: '1%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_group'] === true) {
@@ -2734,7 +2744,7 @@ class QuotationDataTableHandle {
             columns: [  // 50,300,300,100,150,250,100,200,50 (1500p)
                 {
                     targets: 0,
-                    width: '3.33%',
+                    width: '1%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" data-row="${dataRow}">${row?.['order']}</span>`

@@ -166,6 +166,7 @@ $(document).ready(function () {
         table.DataTable().clear().destroy()
         table.DataTableDefault({
             dom: '',
+            ordering: false,
             paging: false,
             reloadCurrency: true,
             data: data_list,
@@ -434,6 +435,7 @@ $(document).ready(function () {
         table.DataTable().clear().destroy()
         table.DataTableDefault({
             dom: '',
+            ordering: false,
             paging: false,
             reloadCurrency: true,
             data: data_list,
@@ -751,7 +753,7 @@ $(document).ready(function () {
             ordering: false,
             columns: [
                 {
-                    className: 'w-30',
+                    className: 'w-40',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'main_row') {
                             return `<span class="${row?.['row_type']} badge badge-primary w-25">${row?.['product']?.['code']}</span>&nbsp;<span class="text-primary">${row?.['product']?.['title']}</span>`
@@ -760,51 +762,36 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        if (row?.['row_type'] === 'main_row') {
-                            return `<span class="text-primary">${row?.['product']?.['uom']?.['title']}</span>`
-                        }
-                        return ``
-                    }
-                },
-                {
                     className: 'w-10',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'main_row') {
-                            return `<span class="text-primary">${row?.['stock_amount']}</span>`
+                            return `<span class="text-primary">${row?.['stock_amount']}</span> <span class="text-primary">${row?.['product']?.['uom']?.['title']}</span>`
                         }
                         return ``
                     }
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-25',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'lot_row') {
-                            return `<span class="text-blue fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['lot_number']}</span> (${row?.['quantity_import']})`
+                            let expire_date = row?.['expire_date'] ? `(${row?.['expire_date']})` : ''
+                            return `<span class="text-blue fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['lot_number']}</span> (${row?.['quantity_import']}) ${expire_date}`
                         }
                         return `<span hidden>${JSON.stringify(row?.['lot_data'])}</span>`
                     }
                 },
                 {
-                    className: 'w-10',
-                    render: (data, type, row) => {
-                        if (row?.['row_type'] === 'lot_row') {
-                            return `${row?.['expire_date']}`
-                        }
-                        return ``
-                    }
-                },
-                {
-                    className: 'w-20 text-center',
+                    className: 'w-25',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'sn_row') {
-                            return `(${row?.['vendor_serial_number']})<br><span class="text-dark fw-bold"><i class="bi bi-upc"></i>&nbsp;${row?.['serial_number']}</span>`
+                            return `<span class="text-dark fw-bold"><i class="bi bi-upc"></i>&nbsp;${row?.['serial_number']}</span> (${row?.['vendor_serial_number']})`
                         }
                         return `<span hidden>${JSON.stringify(row?.['sn_data'])}</spanhidden>`
                     }
                 },
             ],
+            scrollCollapse: true,
+            scrollY: '40vh',
             initComplete: function () {
                 table.find('.main_row').each(function () {
                     $(this).closest('tr').css({
@@ -819,8 +806,9 @@ $(document).ready(function () {
         $('table thead #thead-value').find('span').text('0')
         $('table thead #thead-value').find('span').attr('data-init-money', 0)
         $('table tbody').html('')
-        table_inventory_report.prop('hidden', false)
-        table_inventory_report_detail.prop('hidden', true)
+        table_inventory_report.closest('div').prop('hidden', false)
+        table_inventory_report_detail.DataTable().clear().destroy()
+        table_inventory_report_detail.closest('div').prop('hidden', true)
         if (periodMonthEle.val()) {
             WindowControl.showLoading();
             let dataParam = {}
@@ -996,8 +984,9 @@ $(document).ready(function () {
         $('table thead #thead-value').find('span').text('0')
         $('table thead #thead-value').find('span').attr('data-init-money', 0)
         $('table tbody').html('')
-        table_inventory_report_detail.prop('hidden', false)
-        table_inventory_report.prop('hidden', true)
+        table_inventory_report_detail.closest('div').prop('hidden', false)
+        table_inventory_report.DataTable().clear().destroy()
+        table_inventory_report.closest('div').prop('hidden', true)
         if (periodMonthEle.val()) {
             WindowControl.showLoading();
             let dataParam = {}
@@ -1421,7 +1410,7 @@ $(document).ready(function () {
                 let data_view_list = []
                 for (const data of results[0]) {
                     for (const lot of data?.['detail']?.['lot_data']) {
-                        lot.expire_date = moment(lot?.['expire_date'].split('T')[0]).format('DD/MM/YYYY')
+                        lot.expire_date = lot?.['expire_date'] ? moment(lot?.['expire_date'].split('T')[0]).format('DD/MM/YYYY') : ''
                     }
 
                     data_view_list.push({

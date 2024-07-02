@@ -5,7 +5,7 @@ from apps.core.base.views import (
     ApplicationPropertyEmployeeListAPI, ApplicationPermissionAPI,
     CountryListAPI, CityListAPI, DistrictListAPI, DistrictAllListAPI, WardListAPI, WardAllListAPI,
     BaseCurrencyListAPI, BaseItemUnitListAPI, IndicatorParamListAPI, ApplicationForOpportunityPermitListAPI,
-    ApplicationDetailAPI, ZonesCreate, ZonesListAPI,
+    ApplicationDetailAPI, ZonesCreate, ZonesListAPI, ApplicationZonesList,
 )
 
 urlpatterns = [
@@ -36,6 +36,7 @@ urlpatterns = [
     ),
 
     # zones
+    path('zones/list', ApplicationZonesList.as_view(), name='ApplicationZonesList'),
     path('zones/api/list', ZonesListAPI.as_view(), name='ZonesListAPI'),
     path('zones/create', ZonesCreate.as_view(), name='ZonesCreate'),
 

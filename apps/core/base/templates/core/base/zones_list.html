@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Zones list' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <a href="{% url 'ZonesCreate' %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create zones' %}"
+       id="create_zones_button"
+       data-bs-original-title="Add zone">
+            <button type="button" class="btn btn-outline-primary">
+                <span>
+                    <span>{% trans 'Add' %}</span>
+                    <span class="icon">
+                        <i class="fa-solid fa-plus"></i>
+                    </span>
+                </span>
+            </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <table
+            id="table_zones_list"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url 'TenantApplicationListAPI' %}"
+            data-method="get"
+    >
+        <thead>
+        <tr class="bg-light">
+            <th class="w-10"></th>
+            <th class="w-60">{% trans 'Application' %}</th>
+            <th class="w-20">{% trans 'Zones' %}</th>
+            <th class="w-10"></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div>
+        <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="offcanvasZones" aria-labelledby="offcanvasTopLabel">
+            <div class="offcanvas-body" style="margin-top: 80px">
+                <h5 id="offcanvasRightLabel">{% trans 'Zones detail' %}</h5>
+                <table
+                        id="datable-zones"
+                        class="table nowrap w-100 mb-5"
+                >
+                    <thead>
+                    <tr class="bg-light">
+                        <th class="w-5"></th>
+                        <th class="w-20">{% trans 'Name' %}</th>
+                        <th class="w-30">{% trans 'Description' %}</th>
+                        <th class="w-40">{% trans 'Properties' %}</th>
+                        <th class="w-5"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-area">
+        <div class="modal fade" id="addZoneMdl" tabindex="-1" role="dialog" aria-labelledby="addZoneMdl" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'New zone' %}</h5>
+                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label required" for="add-zone-title">{% trans 'Name' %}</label>
+                            <input
+                                    type="text" class="form-control"
+                                    name="title"
+                                    id="add-zone-title"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required" for="add-zone-box-prop">{% trans 'Properties' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="add-zone-box-prop"
+                                    data-url="{% url "ApplicationPropertyListAPI" %}"
+                                    data-method="GET"
+                                    name="property_list"
+                                    data-keyResp="application_property_list"
+                                    multiple
+                            ></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="add-zone-remark">{% trans 'Description' %}</label>
+                            <textarea class="form-control" rows="5" id="add-zone-remark" name="remark"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btn-confirm-add">{% trans 'Save' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editZoneMdl" tabindex="-1" role="dialog" aria-labelledby="editZoneMdl" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Edit zone' %}</h5>
+                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label required" for="edit-zone-title">{% trans 'Title' %}</label>
+                            <input
+                                    type="text" class="form-control"
+                                    name="title"
+                                    id="edit-zone-title"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required" for="edit-zone-box-prop">{% trans 'Properties' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="edit-zone-box-prop"
+                                    data-url="{% url "ApplicationPropertyListAPI" %}"
+                                    data-method="GET"
+                                    name="property_list"
+                                    data-keyResp="application_property_list"
+                                    multiple
+                            ></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-zone-remark">{% trans 'Description' %}</label>
+                            <textarea class="form-control" rows="5" id="edit-zone-remark" name="remark"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btn-confirm-edit">{% trans 'Save' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+            type="text"
+            id="app-trans-factory"
+            data-edit="{% trans 'Edit' %}"
+            data-cancel="{% trans 'Cancel' %}"
+    >
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'assets/core/base/js/zones_list.js' %}"></script>
+    <script src="{% static 'assets/core/base/js/zones.js' %}"></script>
+{% endblock %}

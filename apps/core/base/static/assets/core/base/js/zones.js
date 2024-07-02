@@ -7,7 +7,7 @@ $(function () {
         let $btnEdit = $('#btn-edit-zone');
         let $btnCAdd = $('#btn-confirm-add');
         let $btnCEdit = $('#btn-confirm-edit');
-        let $table = $('#datable-zone');
+        let $table = $('#datable-zones');
 
         let $eleTitle = $('#add-zone-title');
         let $eleRemark = $('#add-zone-remark');
@@ -268,7 +268,7 @@ $(function () {
                 ],
                 drawCallback: function () {
                     // add css to Dtb
-                    loadCssToDtb('datable-zone');
+                    loadCssToDtb('datable-zones');
                 },
             });
         }
@@ -308,6 +308,9 @@ $(function () {
             }
         }
 
+        function loadDetailData() {
+
+        }
 
 
 

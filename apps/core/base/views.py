@@ -197,7 +197,7 @@ def create_zones(request, url, msg):
 class ZonesCreate(View):
     @mask_view(
         auth_require=True,
-        template='core/base/zone_create.html',
+        template='core/base/zones_create.html',
         menu_active='',
         breadcrumb='',
     )
@@ -226,3 +226,14 @@ class ZonesListAPI(APIView):
             url=ApiURL.ZONES_LIST,
             msg=AppMsg.ZONES_CREATE
         )
+
+
+class ApplicationZonesList(View):
+    @mask_view(
+        auth_require=True,
+        template='core/base/zones_list.html',
+        menu_active='',
+        breadcrumb='',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

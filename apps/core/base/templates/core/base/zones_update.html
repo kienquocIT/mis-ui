@@ -34,7 +34,7 @@
                             data-method="GET"
                             name="application"
                             data-keyResp="tenant_application_list"
-                            required
+                            readonly
                     ></select>
                 </div>
                 <div class="d-flex justify-content-end">
@@ -48,7 +48,7 @@
             </div>
             <div class="col-12 col-md-9 col-lg-9">
                 <table
-                        id="datable-zone"
+                        id="datable-zones"
                         class="table nowrap w-100 mb-5"
                 >
                     <thead>
@@ -171,5 +171,5 @@
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
-    <script src="{% static 'assets/core/base/js/zone.js' %}"></script>
+    <script src="{% static 'assets/core/base/js/zones.js' %}"></script>
 {% endblock %}

@@ -41,7 +41,7 @@ $(function () {
                         url: $boxProp.attr('data-url'),
                         method: 'GET',
                         'data': {'id__in': $boxProp.val().join(',')},
-                        isLoading: true,
+                        isLoading: false,
                     }).then(
                         (resp) => {
                             let data = $.fn.switcherResp(resp);
@@ -52,11 +52,7 @@ $(function () {
                                 dataAdd['remark'] = $eleRemark.val();
                                 dataAdd['properties_data'] = data?.['application_property_list'];
                                 $tableZone.DataTable().row.add(dataAdd).draw().node();
-                                $eleTitle.val('');
-                                $eleRemark.val('');
-                                $boxProp.empty();
-                                $btnCAdd.attr('data-table-id', '');
-                                $btnCAdd.attr('data-row', '');
+                                submitZone($btnCAdd);
                             }
                         }
                     )
@@ -68,8 +64,17 @@ $(function () {
         });
 
         $table.on('click', '.del-row', function () {
-            deleteRowZone(this.closest('tr'), $table);
-            reOrderSTTRow($table);
+            let zonesArea = this.closest('.zones-area');
+            if (zonesArea) {
+                let tableZone = zonesArea.querySelector('.table-zones');
+                if (tableZone) {
+                    $(this).attr('data-table-id', tableZone.id);
+                    $(this).attr('data-row', $(zonesArea).attr('data-row'));
+                    deleteRowZone(this.closest('tr'), $(tableZone));
+                    reOrderSTTRow($(tableZone));
+                    submitZone($(this));
+                }
+            }
         });
 
         $table.on('click', '.edit-row', function () {
@@ -79,6 +84,19 @@ $(function () {
             let rowTitle = row.querySelector('.table-row-title');
             let rowRemark = row.querySelector('.table-row-remark');
             let rowPropList = row.querySelector('.table-row-property-list');
+            let zonesArea = this.closest('.zones-area');
+            if (zonesArea) {
+                let tableZone = zonesArea.querySelector('.table-zones');
+                if (tableZone) {
+                    $btnCEdit.attr('data-table-id', tableZone.id);
+                    $btnCEdit.attr('data-row', $(zonesArea).attr('data-row'));
+                }
+                let btnEdit = zonesArea.querySelector('.btn-edit-zone');
+                if (btnEdit) {
+                    $(btnEdit).click();
+                }
+            }
+
             if (rowOrder) {
                 $btnCEdit.attr('data-order', rowOrder.innerHTML);
             }
@@ -89,10 +107,11 @@ $(function () {
                 $eleRemarkEdit.val(rowRemark.innerHTML);
             }
             if (rowPropList) {
-                if (rowPropList.getAttribute('data-properties')) {
+                if (rowPropList.getAttribute('data-properties') && $btnCEdit.attr('data-row')) {
                     let dataProp = JSON.parse(rowPropList.getAttribute('data-properties'));
+                    let dataRow = JSON.parse($btnCEdit.attr('data-row'));
                     loadInitS2($boxPropEdit, dataProp, {
-                        'application': $boxApp.val(),
+                        'application': dataRow?.['id'],
                         'is_print': false,
                         'is_mail': false,
                         'is_sale_indicator': false
@@ -104,28 +123,22 @@ $(function () {
                     $boxPropEdit.val(dataPropID);
                 }
             }
-            let zonesArea = this.closest('.zones-area');
-            if (zonesArea) {
-                let btnEdit = zonesArea.querySelector('.btn-edit-zone');
-                if (btnEdit) {
-                    $(btnEdit).click();
-                }
-            }
         });
 
         $btnCEdit.on('click', function () {
-            if ($btnCEdit.attr('data-order')) {
+            if ($btnCEdit.attr('data-order') && $btnCEdit.attr('data-table-id')) {
+                let $tableZone = $(`#${$btnCEdit.attr('data-table-id')}`);
                 if ($boxPropEdit.val() && $boxPropEdit.val().length > 0 && $eleTitleEdit.val()) {
                     $.fn.callAjax2({
                         url: $boxPropEdit.attr('data-url'),
                         method: 'GET',
                         'data': {'id__in': $boxPropEdit.val().join(',')},
-                        isLoading: true,
+                        isLoading: false,
                     }).then(
                         (resp) => {
                             let data = $.fn.switcherResp(resp);
                             if (data && resp.data.hasOwnProperty('application_property_list')) {
-                                for (let eleOrder of $table[0].querySelectorAll('.table-row-order')) {
+                                for (let eleOrder of $tableZone[0].querySelectorAll('.table-row-order')) {
                                     if (eleOrder.innerHTML === $btnCEdit.attr('data-order')) {
                                         let row = eleOrder.closest('tr');
                                         let rowTitle = row.querySelector('.table-row-title');
@@ -144,6 +157,7 @@ $(function () {
                                                 $(rowPropList).append(`<span class="badge badge-soft-green mr-1 mb-1">${prop?.['title']}</span>`);
                                             }
                                         }
+                                        submitZone($btnCEdit);
                                         break;
                                     }
                                 }
@@ -168,8 +182,7 @@ $(function () {
             }
         });
 
-        $table.on('click', '.btn-save-zone', function (e) {
-            e.preventDefault();
+        $table.on('click', '.btn-save-zone', function () {
             let zonesArea = this.closest('.zones-area');
             if (zonesArea) {
                 if ($(zonesArea).attr('data-row')) {
@@ -299,6 +312,7 @@ $(function () {
                     if ($(this).attr('data-row')) {
                         let dataRow = JSON.parse(($(this).attr('data-row')));
                         let dtlSub = `<div class="zones-area" data-row="${JSON.stringify(dataRow).replace(/"/g, "&quot;")}">
+                                    <h5>Zones detail</h5>
                                     <table
                                             id="${idTbl}"
                                             class="table nowrap w-100 mb-5 table-zones"
@@ -316,10 +330,10 @@ $(function () {
                                         </tbody>
                                     </table>
                                     <div class="d-flex justify-content-between">
-                                        <button type="button" class="btn btn-outline-primary btn-add-zone" data-bs-toggle="modal" data-bs-target="#addZoneMdl">
+                                        <button type="button" class="btn btn-outline-primary btn-sm btn-add-zone" data-bs-toggle="modal" data-bs-target="#addZoneMdl">
                                             <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>New</span></span>
                                         </button>
-                                        <button type="button" class="btn btn-outline-primary btn-save-zone">
+                                        <button type="button" class="btn btn-outline-primary btn-save-zone" hidden>
                                             <span><span class="icon"><i class="fa-regular fa-floppy-disk"></i></span><span>Save</span></span>
                                         </button>
                                         <button type="button" class="btn btn-outline-primary btn-edit-zone" data-bs-toggle="modal" data-bs-target="#editZoneMdl" hidden>
@@ -328,7 +342,7 @@ $(function () {
                                     </div>
                                 </div>`;
                         $(this).closest('tr').after(
-                            `<tr class="child-workflow-list"><td colspan="2"><div class="child-workflow-group pt-3 pb-3 ml-3 pl-5 pr-5 hidden-simple">${dtlSub}</div></td></tr>`
+                            `<tr class="child-workflow-list"><td colspan="2"><div class="child-workflow-group pt-3 pb-3 ml-3 pl-5 pr-5 border-left hidden-simple">${dtlSub}</div></td></tr>`
                         );
                         let $table = $(`#${idTbl}`);
                         loadZones($table, dataRow);
@@ -548,7 +562,7 @@ $(function () {
                         targets: 4,
                         render: () => {
                             return `<div class="d-flex">
-                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover edit-row mr-1"><span class="icon"><i class="far fa-edit"></i></span></button>
+                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover edit-row mr-1" data-bs-toggle="modal" data-bs-target="#editZoneMdl"><span class="icon"><i class="far fa-edit"></i></span></button>
                                         <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                                     </div>`;
 
@@ -594,6 +608,73 @@ $(function () {
                         break;
                     }
                 }
+            }
+        }
+
+        function submitZone($btnConfirm) {
+            if ($btnConfirm.attr('data-table-id') && $btnConfirm.attr('data-row')) {
+                let $tableZone = $(`#${$btnConfirm.attr('data-table-id')}`);
+                let dataRow = JSON.parse(($btnConfirm.attr('data-row')));
+                let dataSubmit = {'application': dataRow?.['id']};
+                let zones_data = [];
+                $tableZone.DataTable().rows().every(function () {
+                    let row = this.node();
+                    let zone_data = {};
+                    let rowOrder = row.querySelector('.table-row-order');
+                    let rowTitle = row.querySelector('.table-row-title');
+                    let rowRemark = row.querySelector('.table-row-remark');
+                    let rowPropList = row.querySelector('.table-row-property-list');
+                    if (rowOrder) {
+                        zone_data['order'] = parseInt(rowOrder.innerHTML);
+                    }
+                    if (rowTitle) {
+                        zone_data['title'] = rowTitle.innerHTML;
+                    }
+                    if (rowRemark) {
+                        zone_data['remark'] = rowRemark.innerHTML;
+                    }
+                    if (rowPropList) {
+                        if ($(rowPropList).attr('data-properties')) {
+                            let propIDList = [];
+                            let propListData = JSON.parse($(rowPropList).attr('data-properties'));
+                            for (let propData of propListData) {
+                                propIDList.push(propData?.['id']);
+                            }
+                            zone_data['properties_data'] = propIDList;
+                        }
+                    }
+                    zones_data.push(zone_data);
+                });
+                dataSubmit['zones_data'] = zones_data;
+                WindowControl.showLoading();
+                $.fn.callAjax2(
+                    {
+                        'url': $urlFact.attr('data-url-zones'),
+                        'method': "POST",
+                        'data': dataSubmit,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && (data['status'] === 201 || data['status'] === 200)) {
+                            $.fn.notifyB({description: data.message}, 'success');
+                            loadZones($tableZone, dataRow);
+                            $eleTitle.val('');
+                            $eleRemark.val('');
+                            $boxProp.empty();
+                            $btnConfirm.attr('data-table-id', '');
+                            $btnConfirm.attr('data-row', '');
+                            setTimeout(() => {
+                                WindowControl.hideLoading();
+                            }, 1000)
+                        }
+                    }, (err) => {
+                        setTimeout(() => {
+                            WindowControl.hideLoading();
+                        }, 1000)
+                        $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                    }
+                )
             }
         }
 

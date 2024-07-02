@@ -1693,6 +1693,7 @@ class QuotationLoadDataHandle {
         QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
         QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
         QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
+        QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
         // Check promotion -> re calculate
         QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
         // Set form novalidate

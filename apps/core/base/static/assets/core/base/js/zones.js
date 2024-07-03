@@ -269,8 +269,8 @@ $(function () {
                                         <tr class="bg-light">
                                             <th class="w-5"></th>
                                             <th class="w-20">${$transFact.attr('data-name')}</th>
-                                            <th class="w-30">${$transFact.attr('data-description')}</th>
-                                            <th class="w-40">${$transFact.attr('data-properties')}</th>
+                                            <th class="w-30">${$transFact.attr('data-properties')}</th>
+                                            <th class="w-40">${$transFact.attr('data-description')}</th>
                                             <th class="w-5"></th>
                                         </tr>
                                         </thead>
@@ -358,17 +358,17 @@ $(function () {
                     {
                         targets: 2,
                         render: (data, type, row) => {
-                            return `<p class="table-row-remark">${row?.['remark']}</p>`;
-                        }
-                    },
-                    {
-                        targets: 3,
-                        render: (data, type, row) => {
                             let listShow = ``;
                             for (let prop of row?.['properties_data']) {
                                 listShow += `<span class="badge badge-soft-green mr-1 mb-1">${prop?.['title']}</span>`;
                             }
                             return `<div class="table-row-property-list" data-properties="${JSON.stringify(row?.['properties_data']).replace(/"/g, "&quot;")}">${listShow}</div>`;
+                        }
+                    },
+                    {
+                        targets: 3,
+                        render: (data, type, row) => {
+                            return `<p class="table-row-remark">${row?.['remark']}</p>`;
                         }
                     },
                     {

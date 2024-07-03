@@ -24,6 +24,20 @@ $(function () {
         let boxSRole = $('#box-ss-role');
         let boxLRole = $('#box-ls-role');
 
+        let $tableZones = $('#table_zones');
+        let $btnCAdd = $('#btn-confirm-add');
+        let $btnCEdit = $('#btn-confirm-edit');
+
+        let boxEmployeeAdd = $('#add-zone-box-employee');
+        let boxZonesEditingAdd = $('#add-zone-box-zones-editing');
+        let boxZonesHiddenAdd = $('#add-zone-box-zones-hidden');
+        let $eleRemarkAdd = $('#add-zone-remark');
+
+        let boxEmployeeEdit = $('#edit-zone-box-employee');
+        let boxZonesEditingEdit = $('#edit-zone-box-zones-editing');
+        let boxZonesHiddenEdit = $('#edit-zone-box-zones-hidden');
+        let $eleRemarkEdit = $('#edit-zone-remark');
+
 
         // call ajax get info quotation config detail
         $.fn.callAjax($form.data('url'), 'GET').then(
@@ -38,6 +52,7 @@ $(function () {
         loadIndicatorDbl();
         loadInitS2(boxSRole);
         loadInitS2(boxLRole);
+        dataTableZone();
 
         // enable edit
         $('#btn-edit_quotation_config').on('click', function () {
@@ -818,6 +833,101 @@ $(function () {
             }
         });
 
+        // ZONES
+        $('#addZoneMdl').on('shown.bs.modal', function () {
+            let $modal = $(this);
+            loadInitS2(boxEmployeeAdd, [], {}, $modal);
+            loadInitS2(boxZonesEditingAdd, [], {'application_id': "b9650500-aba7-44e3-b6e0-2542622702a3"}, $modal);
+            loadInitS2(boxZonesHiddenAdd, [], {'application_id': "b9650500-aba7-44e3-b6e0-2542622702a3"}, $modal);
+        });
+
+        $btnCAdd.on('click', function () {
+            if (boxEmployeeAdd.val() && (boxZonesEditingAdd.val() && boxZonesEditingAdd.val().length > 0) || (boxZonesHiddenAdd.val() && boxZonesHiddenAdd.val().length > 0)) {
+                $.fn.callAjax2({
+                    url: boxZonesEditingAdd.attr('data-url'),
+                    method: 'GET',
+                    'data': {'id__in': boxZonesEditingAdd.val().join(',')},
+                    isLoading: false,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('zones_list')) {
+                            let dataAdd = {};
+                            dataAdd['order'] = $tableZones[0].querySelectorAll('.table-row-order').length + 1;
+                            dataAdd['remark'] = $eleRemarkAdd.val();
+                            dataAdd['employee_data'] = SelectDDControl.get_data_from_idx(boxEmployeeAdd, boxEmployeeAdd.val());
+                            dataAdd['zones_editing_data'] = data?.['zones_list'];
+                            $.fn.callAjax2({
+                                url: boxZonesHiddenAdd.attr('data-url'),
+                                method: 'GET',
+                                'data': {'id__in': boxZonesHiddenAdd.val().join(',')},
+                                isLoading: false,
+                            }).then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    if (data && resp.data.hasOwnProperty('zones_list')) {
+                                        dataAdd['zones_hidden_data'] = data?.['zones_list'];
+                                        $tableZones.DataTable().row.add(dataAdd).draw().node();
+                                    }
+                                }
+                            )
+                        }
+                    }
+                )
+            } else {
+                $.fn.notifyB({description: eleTrans.attr('data-zone-required')}, 'failure');
+                return false;
+            }
+        });
+
+        $tableZones.on('click', '.edit-row', function () {
+            let $modal = $('#editZoneMdl');
+            let row = this.closest('tr');
+            let rowOrder = row.querySelector('.table-row-order');
+            let rowEmployee = row.querySelector('.table-row-employee');
+            let rowZonesEditing = row.querySelector('.table-row-zones-editing');
+            let rowZonesHidden = row.querySelector('.table-row-zones-hidden');
+            let rowRemark = row.querySelector('.table-row-remark');
+            if (rowOrder) {
+                $btnCEdit.attr('data-order', rowOrder.innerHTML);
+            }
+            if (rowEmployee) {
+                if (rowEmployee.getAttribute('data-employee')) {
+                    let dataEmployee = JSON.parse(rowEmployee.getAttribute('data-employee'));
+                    loadInitS2(boxEmployeeEdit, [dataEmployee], {}, $modal);
+                }
+            }
+            if (rowRemark) {
+                $eleRemarkEdit.val(rowRemark.innerHTML);
+            }
+            if (rowZonesEditing) {
+                if (rowZonesEditing.getAttribute('data-zones')) {
+                    let dataZonesEditing = JSON.parse(rowZonesEditing.getAttribute('data-zones'));
+                    loadInitS2(boxZonesEditingEdit, dataZonesEditing, {
+                        'application_id': "b9650500-aba7-44e3-b6e0-2542622702a3",
+                    }, $modal);
+                    let dataZonesID = [];
+                    for (let zone of dataZonesEditing) {
+                        dataZonesID.push(zone?.['id']);
+                    }
+                    boxZonesEditingEdit.val(dataZonesID);
+                }
+            }
+            if (rowZonesHidden) {
+                if (rowZonesHidden.getAttribute('data-zones')) {
+                    let dataZonesHidden = JSON.parse(rowZonesHidden.getAttribute('data-zones'));
+                    loadInitS2(boxZonesHiddenEdit, dataZonesHidden, {
+                        'application_id': "b9650500-aba7-44e3-b6e0-2542622702a3",
+                    }, $modal);
+                    let dataZonesID = [];
+                    for (let zone of dataZonesHidden) {
+                        dataZonesID.push(zone?.['id']);
+                    }
+                    boxZonesHiddenEdit.val(dataZonesID);
+                }
+            }
+        });
+
 
         // functions
         function loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false) {
@@ -834,20 +944,6 @@ $(function () {
             }
             $ele.initSelect2(opts);
             return true;
-        }
-
-        function loadSRole(roleData) {
-            boxSRole.initSelect2({
-                data: roleData,
-                'allowClear': true,
-            });
-        }
-
-        function loadLRole(roleData) {
-            boxLRole.initSelect2({
-                data: roleData,
-                'allowClear': true,
-            });
         }
 
         function validateRole($ele) {
@@ -879,10 +975,10 @@ $(function () {
                 $('#is-require-payment')[0].checked = data?.['is_require_payment'];
             }
             if (data?.['ss_role']) {
-                loadSRole(data?.['ss_role']);
+                loadInitS2(boxSRole, data?.['ss_role']);
             }
             if (data?.['ls_role']) {
-                loadLRole(data?.['ls_role']);
+                loadInitS2(boxLRole, data?.['ls_role']);
             }
         }
 
@@ -1030,6 +1126,83 @@ $(function () {
                 data: data,
             });
             return true;
+        }
+
+        function dataTableZone(data) {
+            // init dataTable
+            $tableZones.DataTableDefault({
+                data: data ? data : [],
+                paging: false,
+                info: false,
+                columns: [
+                    {
+                        targets: 0,
+                        render: (data, type, row) => {
+                            let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                            return `<span class="table-row-order ml-2" data-row="${dataRow}">${row?.['order']}</span>`;
+                        }
+                    },
+                    {
+                        targets: 1,
+                        render: (data, type, row) => {
+                            return `<div class="d-flex table-row-employee" data-employee="${JSON.stringify(row?.['employee_data']).replace(/"/g, "&quot;")}">
+                                        <span class="badge badge-primary mr-2">${row?.['employee_data']?.['code'] ? row?.['employee_data']?.['code'] : ''}</span>
+                                        <span class="badge badge-primary badge-outline">${row?.['employee_data']?.['full_name'] ? row?.['employee_data']?.['full_name'] : ''}</span>
+                                    </div>`;
+                        },
+                    },
+                    {
+                        targets: 2,
+                        render: (data, type, row) => {
+                            let listShow = ``;
+                            for (let zone of row?.['zones_editing_data']) {
+                                listShow += `<span class="badge badge-soft-green mr-1 mb-1">${zone?.['title']}</span>`;
+                            }
+                            return `<div class="table-row-zones-editing" data-zones="${JSON.stringify(row?.['zones_editing_data']).replace(/"/g, "&quot;")}">${listShow}</div>`;
+                        }
+                    },
+                    {
+                        targets: 3,
+                        render: (data, type, row) => {
+                            let listShow = ``;
+                            for (let zone of row?.['zones_hidden_data']) {
+                                listShow += `<span class="badge badge-soft-warning mr-1 mb-1">${zone?.['title']}</span>`;
+                            }
+                            return `<div class="table-row-zones-hidden" data-zones="${JSON.stringify(row?.['zones_hidden_data']).replace(/"/g, "&quot;")}">${listShow}</div>`;
+                        }
+                    },
+                    {
+                        targets: 4,
+                        render: (data, type, row) => {
+                            return `<p class="table-row-remark">${row?.['remark']}</p>`;
+                        }
+                    },
+                    {
+                        targets: 4,
+                        render: () => {
+                            return `<div class="d-flex">
+                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover edit-row mr-1" data-bs-toggle="modal" data-bs-target="#editZoneMdl"><span class="icon"><i class="far fa-edit"></i></span></button>
+                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
+                                    </div>`;
+
+                        }
+                    },
+                ],
+                drawCallback: function () {
+                    loadCssToDtb('table_zones')
+                },
+            });
+        }
+
+        function loadCssToDtb(tableID) {
+            let tableIDWrapper = tableID + '_wrapper';
+            let tableWrapper = document.getElementById(tableIDWrapper);
+            if (tableWrapper) {
+                let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+                if (headerToolbar) {
+                    headerToolbar.classList.add('hidden');
+                }
+            }
         }
 
 

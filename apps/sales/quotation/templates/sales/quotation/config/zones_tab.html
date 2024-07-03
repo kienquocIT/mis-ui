@@ -18,10 +18,12 @@
         >
             <thead>
             <tr class="bg-light">
-                <th></th>
-                <th>{% trans 'Employee' %}</th>
-                <th>{% trans 'Zones' %}</th>
-                <th></th>
+                <th class="w-5"></th>
+                <th class="w-20">{% trans 'Employee' %}</th>
+                <th class="w-25">{% trans 'Editing zone' %}</th>
+                <th class="w-25">{% trans 'Hidden zone' %}</th>
+                <th class="w-20">{% trans 'Description' %}</th>
+                <th class="w-5"></th>
             </tr>
             </thead>
             <tbody>
@@ -52,16 +54,32 @@
                             ></select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label required" for="add-zone-box-zones">{% trans 'Zones' %}</label>
+                            <label class="form-label required" for="add-zone-box-zones-editing">{% trans 'Editing zone' %}</label>
                             <select
                                     class="form-select"
-                                    id="add-zone-box-prop"
-                                    data-url="{% url "ApplicationPropertyListAPI" %}"
+                                    id="add-zone-box-zones-editing"
+                                    data-url="{% url "ZonesListAPI" %}"
                                     data-method="GET"
                                     name="zones"
-                                    data-keyResp="application_property_list"
+                                    data-keyResp="zones_list"
                                     multiple
                             ></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required" for="add-zone-box-zones-hidden">{% trans 'Hidden zone' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="add-zone-box-zones-hidden"
+                                    data-url="{% url "ZonesListAPI" %}"
+                                    data-method="GET"
+                                    name="zones"
+                                    data-keyResp="zones_list"
+                                    multiple
+                            ></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="add-zone-remark">{% trans 'Description' %}</label>
+                            <textarea class="form-control" rows="5" id="add-zone-remark" name="remark"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -81,22 +99,38 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="form-label required" for="edit-zone-title">{% trans 'Title' %}</label>
-                            <input
-                                    type="text" class="form-control"
-                                    name="title"
-                                    id="edit-zone-title"
-                            >
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label required" for="edit-zone-box-prop">{% trans 'Properties' %}</label>
+                            <label class="form-label required" for="edit-zone-box-employee">{% trans 'Employee' %}</label>
                             <select
                                     class="form-select"
-                                    id="edit-zone-box-prop"
-                                    data-url="{% url "ApplicationPropertyListAPI" %}"
+                                    id="edit-zone-box-employee"
+                                    data-url="{% url "EmployeeListAPI" %}"
                                     data-method="GET"
-                                    name="property_list"
-                                    data-keyResp="application_property_list"
+                                    name="employee"
+                                    data-keyResp="employee_list"
+                                    data-keyText="full_name"
+                            ></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required" for="edit-zone-box-zones-editing">{% trans 'Editing zone' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="edit-zone-box-zones-editing"
+                                    data-url="{% url "ZonesListAPI" %}"
+                                    data-method="GET"
+                                    name="zones"
+                                    data-keyResp="zones_list"
+                                    multiple
+                            ></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required" for="edit-zone-box-zones-hidden">{% trans 'Hidden zone' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="edit-zone-box-zones-hidden"
+                                    data-url="{% url "ZonesListAPI" %}"
+                                    data-method="GET"
+                                    name="zones"
+                                    data-keyResp="zones_list"
                                     multiple
                             ></select>
                         </div>

@@ -235,7 +235,7 @@ class ZonesListAPI(APIView):
         return create_zones(
             request=request,
             url=ApiURL.ZONES_LIST,
-            msg=AppMsg.ZONES_CREATE
+            msg=AppMsg.ZONES_UPDATE
         )
 
 

@@ -216,7 +216,7 @@ $(function () {
                     targets: 1,
                     render: (data, type, row) => {
                         return `<div class="d-flex justify-content-start">
-                                    <div class="badge-icon badge-circle badge-icon-xs text-blue mr-2">
+                                    <div class="badge-icon badge-circle badge-icon-xs text-pink mr-2">
                                         <div class="badge-icon-wrap">
                                             <p class="fs-8">${row?.['zones'].length}</p>
                                         </div>
@@ -228,7 +228,7 @@ $(function () {
                                         </svg>
                                     </div>
                                     <p class="mt-1">zones</p>
-                                </div>`
+                                </div>`;
                     }
                 },
             ]

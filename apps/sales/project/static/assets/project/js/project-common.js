@@ -641,8 +641,8 @@ class ProjectWorkExpenseHandle{
     static saveExpenseData(){
         let dataList = {}, $tblExpense = $('#work_expense_tbl tr.work-expense-wrap');
         let allList = []
-        $tblExpense.each(function(){
-            $.extend(allList, $(this).find('table').DataTable().data().toArray())
+        Array.from($tblExpense).forEach(function(e){
+            allList = allList.concat($(e).find('table[id*="expense_child_"]').DataTable().data().toArray())
         })
         for (let idx in allList){
             let item = allList[idx]
@@ -670,6 +670,7 @@ class ProjectWorkExpenseHandle{
         tblParent.DataTable().cell(parentIdx, 1).data(total_unit)
         tblParent.DataTable().cell(parentIdx, 2).data(total_tax)
         tblParent.DataTable().cell(parentIdx, 3).data(total_price)
+        ProjectWorkExpenseHandle.calcAllTotal()
         $.fn.initMaskMoney2()
     }
 
@@ -832,6 +833,7 @@ class ProjectWorkExpenseHandle{
 
                 // on change field QUANTITY and UNIT PRICE
                 $('.valid-number, .expense_price, .expense_name', row).on('blur', function(){
+                    let idx = $(row).index()
                     if ($(this).hasClass('valid-number'))
                         data.quantity = this.value = validateNumber(this.value)
                     else if ($(this).hasClass('expense_price')) data.expense_price = validateNumber(this.value)
@@ -839,12 +841,12 @@ class ProjectWorkExpenseHandle{
                     if (data.expense_price && data.quantity){
                         // render subtotal
                         data.sub_total = data.expense_price * data.quantity
-                        crtTable.cell(index, 5).data(data.sub_total).draw(false)
+                        crtTable.cell({row: idx, column: 5}).data(data.sub_total).draw(false)
                         // render parent data when child data is complete row
                         if (data?.tax && Object.keys(data.tax).length > 0){
                             let total_after = data.sub_total
                             if (data.tax.rate !== 0) total_after += data.tax.rate/100 * total_after
-                            crtTable.cell(index, 7).data(total_after).draw(false)
+                            crtTable.cell(idx, 7).data(total_after).draw(false)
                             ProjectWorkExpenseHandle.calcSubTotal(crtTable.data().toArray(), trElm)
                         }
                     }
@@ -852,13 +854,14 @@ class ProjectWorkExpenseHandle{
 
                 // trigger on change TAX
                 $('.tax_item', row).on('select2:select', function (e) {
+                    let idx = $(row).index()
                     const selected = e.params.data
                     data.tax = selected.data
                     // render parent data when child data is complete row
                     if (data.expense_price && data.quantity && data?.tax && Object.keys(data.tax).length > 0){
                         let total_after = data.expense_price * data.quantity
                         if (data.tax.rate !== 0) total_after += data.tax.rate/100 * total_after
-                        crtTable.cell(index, 7).data(total_after).draw(false)
+                        crtTable.cell(idx, 7).data(total_after).draw(false)
                         ProjectWorkExpenseHandle.calcSubTotal(crtTable.data().toArray(), trElm)
                     }
                 })
@@ -871,6 +874,7 @@ class ProjectWorkExpenseHandle{
                     let deleteList = $elmExData.data('delete_lst') || []
                     if (data.id.length > 16) deleteList.push(data.id)
                     $elmExData.data('delete_lst', deleteList)
+                    ProjectWorkExpenseHandle.calcSubTotal(crtTable.data().toArray(), trElm)
                 })
             },
             drawCallback: function () {
@@ -878,8 +882,7 @@ class ProjectWorkExpenseHandle{
                 $('.tax_item, .select_uom, .expense_item, .expense_labor_name', $('#expense_child_' + workID)).each(function(){
                    $(this).initSelect2()
                 });
-
-                ProjectWorkExpenseHandle.calcAllTotal(this.data())
+                ProjectWorkExpenseHandle.calcAllTotal()
                 // run label money
                 $.fn.initMaskMoney2()
             },
@@ -1008,7 +1011,6 @@ class ProjectWorkExpenseHandle{
                 $('tr:nth-child(1) th:nth-child(3)', api.table().header()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${totalPrice}"></span></p>`);
                 $('tr:nth-child(2) th:nth-child(3)', api.table().header()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${totalTax}"></span></p>`);
                 $('tr:nth-child(3) th:nth-child(3)', api.table().header()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${totalAfterTax}"></span></p>`);
-
             },
         });
 

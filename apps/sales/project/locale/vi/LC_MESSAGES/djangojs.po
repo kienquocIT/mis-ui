@@ -132,3 +132,11 @@ msgstr "Thêm nhân công"
 #
 msgid "New"
 msgstr "Thêm"
+
+#
+msgid "Subtotal after tax"
+msgstr "Thành tiền sau thuế"
+
+#
+msgid "Check employee availability are filter by the role in expense"
+msgstr "Kiểm tra Nhân viên lọc bởi Vai trò trong Chi phí"

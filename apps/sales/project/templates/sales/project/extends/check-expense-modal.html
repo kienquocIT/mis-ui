@@ -1,0 +1,43 @@
+{% load static i18n %}
+<div class="hidden" id="check_expense_modal">
+    <div class="card card-refresh border-primary">
+        <div class="refresh-container"><div class="loader-pendulums"></div></div>
+        <div class="card-header card-header-action" id="check_expense_modalheader">
+            <h6>{% trans 'Check employee in expense labor' %}</h6>
+            <div class="card-action-wrap">
+                <a class="btn btn-xs btn-icon btn-rounded btn-flush-dark flush-soft-hover refresh hidden" href="#"><span
+                        class="icon"><span class="feather-icon"><i data-feather="disc"></i></span></span></a>
+                <a class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover btn-click-hide"><span
+                        class="icon"><i class="bi bi-x"></i></span></a>
+            </div>
+            <span class="info-txt">{% trans 'Hold to drag' %}</span>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <div class="form-group">
+                        <label for="select_expense"
+                               class="form-label">{% trans 'Select expense to check employee labor' %}</label>
+                        <select class="form-select" id="select_expense"
+                                data-url="{% url 'ExpenseListAPI' %}" data-method="GET"
+                                data-keyResp="expense_list">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="select_expense" class="form-label">{% trans 'Expense role' %}</label>
+                        <select class="form-select" id="select_expense_role" multiple></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="selectEmployeeInherit" class="form-label">{% trans 'Employee by role' %}</label>
+                        <select class="form-select" id="select_expense_role_employee"
+                                data-url="{% url "EmployeeListAPI" %}"
+                                data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
+                                data-params="{'list_from_app':'{{ data.list_from_app|escape }}'}"
+                        >
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

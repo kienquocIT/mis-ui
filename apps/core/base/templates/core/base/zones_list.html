@@ -26,7 +26,7 @@
     <table
             id="table_zones_list"
             class="table nowrap w-100 mb-5"
-            data-url="{% url 'TenantApplicationListAPI' %}"
+            data-url="{% url 'ZonesApplicationListAPI' %}"
             data-method="get"
     >
         <thead>
@@ -130,6 +130,10 @@
             id="app-trans-factory"
             data-edit="{% trans 'Edit' %}"
             data-cancel="{% trans 'Cancel' %}"
+            data-new="{% trans 'New' %}"
+            data-name="{% trans 'Name' %}"
+            data-description="{% trans 'Description' %}"
+            data-properties="{% trans 'Properties' %}"
     >
     <input
             type="text"

@@ -194,6 +194,17 @@ def create_zones(request, url, msg):
     return resp.auto_return()
 
 
+class ZonesApplicationListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ZONES_APPLICATION_LIST).get(data)
+        return resp.auto_return(key_success='zones_application_list')
+
+
 class ZonesCreate(View):
     @mask_view(
         auth_require=True,
@@ -228,12 +239,12 @@ class ZonesListAPI(APIView):
         )
 
 
-class ApplicationZonesList(View):
+class ZonesList(View):
     @mask_view(
         auth_require=True,
         template='core/base/zones_list.html',
         menu_active='',
-        breadcrumb='',
+        breadcrumb='ZONES_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

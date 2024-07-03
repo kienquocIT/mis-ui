@@ -146,7 +146,7 @@ $(document).ready(function () {
                                 html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
                             }
                             if (row?.['sale_order_code']) {
-                                html += `<span class="text-pink small fw-bold"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order_code']}</span>`
+                                html += `<span class="badge badge-pill badge-soft-red"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order_code']}</span>`
                             }
                             return html
                         }

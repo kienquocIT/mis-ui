@@ -164,6 +164,7 @@ $(document).ready(function () {
 
     function RenderTableWithParameter(table, data_list=[], data_wh=[]) {
         table.DataTable().clear().destroy()
+        let sale_order_code_list = []
         table.DataTableDefault({
             dom: '',
             ordering: false,
@@ -171,6 +172,12 @@ $(document).ready(function () {
             reloadCurrency: true,
             data: data_list,
             columns: [
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        return ``
+                    }
+                },
                 {
                     className: '',
                     render: (data, type, row) => {
@@ -186,17 +193,18 @@ $(document).ready(function () {
                             }
                         }
                         else {
+                            let sale_order_code = row?.['sale_order_code'] ? row?.['sale_order_code'] : ''
+                            if (sale_order_code && !sale_order_code_list.includes(sale_order_code)) {
+                                sale_order_code_list.push(sale_order_code)
+                            }
                             let html = `
-                                    <span class="badge badge-light badge-pill w-25">
+                                    <span class="badge badge-light badge-pill w-25 so-code-${row?.['sale_order_code'] ? row?.['sale_order_code'] : ''}">
                                         ${row?.['product_code']}
                                     </span>&nbsp;
                                     <span class="${row?.['type']}">${row?.['product_title']}</span>&nbsp;
                                     `
                             if (row?.['product_lot_number']) {
                                 html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
-                            }
-                            if (row?.['sale_order_code']) {
-                                html += `<span class="text-pink small fw-bold"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order_code']}</span>`
                             }
                             return html
                         }
@@ -305,33 +313,36 @@ $(document).ready(function () {
             initComplete: function(settings, json) {
                 table.find('tbody tr').each(function () {
                     $(this).find('td:eq(0)').css({
-                        'min-width': '400px'
+                        'min-width': 'fit-content'
                     })
                     $(this).find('td:eq(1)').css({
-                        'min-width': '80px'
+                        'min-width': '400px'
                     })
                     $(this).find('td:eq(2)').css({
-                        'min-width': '50px'
+                        'min-width': '80px'
                     })
                     $(this).find('td:eq(3)').css({
-                        'min-width': '200px'
+                        'min-width': '50px'
                     })
                     $(this).find('td:eq(4)').css({
-                        'min-width': '50px'
+                        'min-width': '200px'
                     })
                     $(this).find('td:eq(5)').css({
-                        'min-width': '200px'
+                        'min-width': '50px'
                     })
                     $(this).find('td:eq(6)').css({
-                        'min-width': '50px'
-                    })
-                    $(this).find('td:eq(7)').css({
                         'min-width': '200px'
                     })
-                    $(this).find('td:eq(8)').css({
+                    $(this).find('td:eq(7)').css({
                         'min-width': '50px'
                     })
+                    $(this).find('td:eq(8)').css({
+                        'min-width': '200px'
+                    })
                     $(this).find('td:eq(9)').css({
+                        'min-width': '50px'
+                    })
+                    $(this).find('td:eq(10)').css({
                         'min-width': '200px'
                     })
                 })
@@ -406,14 +417,14 @@ $(document).ready(function () {
 
                 if (data_wh.length === 0) {
                     table.find('tbody tr').each(function () {
-                        sum_wh_open_quantity += parseFloat($(this).find('td:eq(2) span').text())
-                        sum_wh_open_value += parseFloat($(this).find('td:eq(3) span').attr('data-init-money'))
-                        sum_wh_in_quantity += parseFloat($(this).find('td:eq(4) span').text())
-                        sum_wh_in_value += parseFloat($(this).find('td:eq(5) span').attr('data-init-money'))
-                        sum_wh_out_quantity += parseFloat($(this).find('td:eq(6) span').text())
-                        sum_wh_out_value += parseFloat($(this).find('td:eq(7) span').attr('data-init-money'))
-                        sum_wh_end_quantity += parseFloat($(this).find('td:eq(8) span').text())
-                        sum_wh_end_value += parseFloat($(this).find('td:eq(9) span').attr('data-init-money'))
+                        sum_wh_open_quantity += parseFloat($(this).find('td:eq(3) span').text())
+                        sum_wh_open_value += parseFloat($(this).find('td:eq(4) span').attr('data-init-money'))
+                        sum_wh_in_quantity += parseFloat($(this).find('td:eq(5) span').text())
+                        sum_wh_in_value += parseFloat($(this).find('td:eq(6) span').attr('data-init-money'))
+                        sum_wh_out_quantity += parseFloat($(this).find('td:eq(7) span').text())
+                        sum_wh_out_value += parseFloat($(this).find('td:eq(8) span').attr('data-init-money'))
+                        sum_wh_end_quantity += parseFloat($(this).find('td:eq(9) span').text())
+                        sum_wh_end_value += parseFloat($(this).find('td:eq(10) span').attr('data-init-money'))
                     })
                 }
 
@@ -427,6 +438,21 @@ $(document).ready(function () {
                 $('#table-inventory-report #ending-total-value').attr('data-init-money', sum_wh_end_value)
 
                 MatchTooltip()
+
+                // group project
+                for (const so_code of sale_order_code_list) {
+                    let number_row = table.find(`tbody .so-code-${so_code}`).length + 1
+                    table.find(`tbody .so-code-${so_code}:eq(0)`).closest('tr').before(`
+                        <tr>
+                            <td rowspan="${number_row}" class="text-center">
+                                <span class="badge badge-pill badge-soft-red"><i class="bi bi-clipboard-check"></i>&nbsp;${so_code}</span>
+                            </td>
+                        </tr>
+                    `)
+                    table.find(`tbody .so-code-${so_code}`).each(function () {
+                        $(this).closest('tr').find('td:eq(0)').remove()
+                    })
+                }
             },
         });
     }
@@ -834,28 +860,28 @@ $(document).ready(function () {
 
             Promise.all([inventory_detail_list_ajax]).then(
                 (results) => {
-                    // console.log(results[0])
+                    console.log(results[0])
                     $('#btn-collapse').trigger('click')
                     table_inventory_report.find('tbody').html('')
                     let table_inventory_report_wh_row = []
                     let table_inventory_report_data = []
                     for (const warehouse_activities of results[0]) {
                         if (warehouses_select_Ele.val().length === 0) {
-                            if (!table_inventory_report_wh_row.includes(warehouse_activities?.['warehouse']?.['id']) && Object.keys(warehouse_activities?.['warehouse']).length !== 0) {
-                                if (Object.keys(warehouse_activities?.['warehouse']).length !== 0) {
-                                    table_inventory_report_wh_row.push(warehouse_activities?.['warehouse']?.['id'])
+                            if (!table_inventory_report_wh_row.includes(warehouse_activities?.['warehouse_for_filter']?.['id']) && Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0) {
+                                if (Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0) {
+                                    table_inventory_report_wh_row.push(warehouse_activities?.['warehouse_for_filter']?.['id'])
                                 }
                                 table_inventory_report_data.push({
                                     'type': 'warehouse_row',
-                                    'warehouse_id': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['id'] : ''}`,
-                                    'warehouse_code': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['code'] : ''}`,
-                                    'warehouse_title': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['title'] : ''}`,
+                                    'warehouse_id': `${Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0 ? warehouse_activities?.['warehouse_for_filter']?.['id'] : ''}`,
+                                    'warehouse_code': `${Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0 ? warehouse_activities?.['warehouse_for_filter']?.['code'] : ''}`,
+                                    'warehouse_title': `${Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0 ? warehouse_activities?.['warehouse_for_filter']?.['title'] : ''}`,
                                 })
                                 table_inventory_report_data.push({
                                     'type': 'product_row',
-                                    'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                    'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                    'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                    'warehouse_id': `${warehouse_activities?.['warehouse_for_filter']?.['id']}`,
+                                    'warehouse_code': `${warehouse_activities?.['warehouse_for_filter']?.['code']}`,
+                                    'warehouse_title': `${warehouse_activities?.['warehouse_for_filter']?.['title']}`,
                                     'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                     'product_title': `${warehouse_activities?.['product']?.['title']}`,
                                     'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
@@ -874,9 +900,9 @@ $(document).ready(function () {
                             else {
                                 table_inventory_report_data.push({
                                     'type': 'product_row',
-                                    'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                    'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                    'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                    'warehouse_id': `${warehouse_activities?.['warehouse_for_filter']?.['id']}`,
+                                    'warehouse_code': `${warehouse_activities?.['warehouse_for_filter']?.['code']}`,
+                                    'warehouse_title': `${warehouse_activities?.['warehouse_for_filter']?.['title']}`,
                                     'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                     'product_title': `${warehouse_activities?.['product']?.['title']}`,
                                     'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
@@ -894,22 +920,22 @@ $(document).ready(function () {
                             }
                         }
                         else {
-                            if (warehouses_select_Ele.val().includes(warehouse_activities?.['warehouse']?.['id'])) {
-                                if (!table_inventory_report_wh_row.includes(warehouse_activities?.['warehouse']?.['id']) && Object.keys(warehouse_activities?.['warehouse']).length !== 0) {
-                                    if (Object.keys(warehouse_activities?.['warehouse']).length !== 0) {
-                                        table_inventory_report_wh_row.push(warehouse_activities?.['warehouse']?.['id'])
+                            if (warehouses_select_Ele.val().includes(warehouse_activities?.['warehouse_for_filter']?.['id'])) {
+                                if (!table_inventory_report_wh_row.includes(warehouse_activities?.['warehouse_for_filter']?.['id']) && Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0) {
+                                    if (Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0) {
+                                        table_inventory_report_wh_row.push(warehouse_activities?.['warehouse_for_filter']?.['id'])
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'warehouse_row',
-                                        'warehouse_id': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['id'] : ''}`,
-                                        'warehouse_code': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['code'] : ''}`,
-                                        'warehouse_title': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['title'] : ''}`,
+                                        'warehouse_id': `${Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0 ? warehouse_activities?.['warehouse_for_filter']?.['id'] : ''}`,
+                                        'warehouse_code': `${Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0 ? warehouse_activities?.['warehouse_for_filter']?.['code'] : ''}`,
+                                        'warehouse_title': `${Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0 ? warehouse_activities?.['warehouse_for_filter']?.['title'] : ''}`,
                                     })
                                     table_inventory_report_data.push({
                                         'type': 'product_row',
-                                        'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                        'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                        'warehouse_id': `${warehouse_activities?.['warehouse_for_filter']?.['id']}`,
+                                        'warehouse_code': `${warehouse_activities?.['warehouse_for_filter']?.['code']}`,
+                                        'warehouse_title': `${warehouse_activities?.['warehouse_for_filter']?.['title']}`,
                                         'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                         'product_title': `${warehouse_activities?.['product']?.['title']}`,
                                         'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
@@ -927,9 +953,9 @@ $(document).ready(function () {
                                 } else {
                                     table_inventory_report_data.push({
                                         'type': 'product_row',
-                                        'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                        'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                        'warehouse_id': `${warehouse_activities?.['warehouse_for_filter']?.['id']}`,
+                                        'warehouse_code': `${warehouse_activities?.['warehouse_for_filter']?.['code']}`,
+                                        'warehouse_title': `${warehouse_activities?.['warehouse_for_filter']?.['title']}`,
                                         'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                         'product_title': `${warehouse_activities?.['product']?.['title']}`,
                                         'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
@@ -1019,15 +1045,15 @@ $(document).ready(function () {
                     let table_inventory_report_data = []
                     for (const warehouse_activities of results[0]) {
                         if (warehouses_select_Ele.val().length === 0) {
-                            if (!table_inventory_report_wh_row.includes(warehouse_activities?.['warehouse']?.['id']) && Object.keys(warehouse_activities?.['warehouse']).length !== 0) {
-                                if (Object.keys(warehouse_activities?.['warehouse']).length !== 0) {
-                                    table_inventory_report_wh_row.push(warehouse_activities?.['warehouse']?.['id'])
+                            if (!table_inventory_report_wh_row.includes(warehouse_activities?.['warehouse_for_filter']?.['id']) && Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0) {
+                                if (Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0) {
+                                    table_inventory_report_wh_row.push(warehouse_activities?.['warehouse_for_filter']?.['id'])
                                 }
                                 table_inventory_report_data.push({
                                     'type': 'warehouse_row',
-                                    'warehouse_id': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['id'] : ''}`,
-                                    'warehouse_code': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['code'] : ''}`,
-                                    'warehouse_title': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['title'] : ''}`,
+                                    'warehouse_id': `${Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0 ? warehouse_activities?.['warehouse_for_filter']?.['id'] : ''}`,
+                                    'warehouse_code': `${Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0 ? warehouse_activities?.['warehouse_for_filter']?.['code'] : ''}`,
+                                    'warehouse_title': `${Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0 ? warehouse_activities?.['warehouse_for_filter']?.['title'] : ''}`,
                                 })
                                 
                                 let in_quantity_enough = 0
@@ -1076,9 +1102,9 @@ $(document).ready(function () {
                                 table_inventory_report_data.push({
                                     'is_no_info': no_info,
                                     'type': 'product_row',
-                                    'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                    'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                    'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                    'warehouse_id': `${warehouse_activities?.['warehouse_for_filter']?.['id']}`,
+                                    'warehouse_code': `${warehouse_activities?.['warehouse_for_filter']?.['code']}`,
+                                    'warehouse_title': `${warehouse_activities?.['warehouse_for_filter']?.['title']}`,
                                     'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                     'product_title': `${warehouse_activities?.['product']?.['title']}`,
                                     'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
@@ -1142,9 +1168,9 @@ $(document).ready(function () {
                                 table_inventory_report_data.push({
                                     'is_no_info': no_info,
                                     'type': 'product_row',
-                                    'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                    'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                    'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                    'warehouse_id': `${warehouse_activities?.['warehouse_for_filter']?.['id']}`,
+                                    'warehouse_code': `${warehouse_activities?.['warehouse_for_filter']?.['code']}`,
+                                    'warehouse_title': `${warehouse_activities?.['warehouse_for_filter']?.['title']}`,
                                     'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                     'product_title': `${warehouse_activities?.['product']?.['title']}`,
                                     'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
@@ -1163,16 +1189,16 @@ $(document).ready(function () {
                             }
                         }
                         else {
-                            if (warehouses_select_Ele.val().includes(warehouse_activities?.['warehouse']?.['id'])) {
-                                if (!table_inventory_report_wh_row.includes(warehouse_activities?.['warehouse']?.['id']) && Object.keys(warehouse_activities?.['warehouse']).length !== 0) {
-                                    if (Object.keys(warehouse_activities?.['warehouse']).length !== 0) {
-                                        table_inventory_report_wh_row.push(warehouse_activities?.['warehouse']?.['id'])
+                            if (warehouses_select_Ele.val().includes(warehouse_activities?.['warehouse_for_filter']?.['id'])) {
+                                if (!table_inventory_report_wh_row.includes(warehouse_activities?.['warehouse_for_filter']?.['id']) && Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0) {
+                                    if (Object.keys(warehouse_activities?.['warehouse_for_filter']).length !== 0) {
+                                        table_inventory_report_wh_row.push(warehouse_activities?.['warehouse_for_filter']?.['id'])
                                     }
                                     table_inventory_report_data.push({
                                             'type': 'warehouse_row',
-                                            'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                            'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                            'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                            'warehouse_id': `${warehouse_activities?.['warehouse_for_filter']?.['id']}`,
+                                            'warehouse_code': `${warehouse_activities?.['warehouse_for_filter']?.['code']}`,
+                                            'warehouse_title': `${warehouse_activities?.['warehouse_for_filter']?.['title']}`,
                                         })
 
                                     let in_quantity_enough = 0
@@ -1221,9 +1247,9 @@ $(document).ready(function () {
                                     table_inventory_report_data.push({
                                         'is_no_info': no_info,
                                         'type': 'product_row',
-                                        'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                        'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                        'warehouse_id': `${warehouse_activities?.['warehouse_for_filter']?.['id']}`,
+                                        'warehouse_code': `${warehouse_activities?.['warehouse_for_filter']?.['code']}`,
+                                        'warehouse_title': `${warehouse_activities?.['warehouse_for_filter']?.['title']}`,
                                         'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                         'product_title': `${warehouse_activities?.['product']?.['title']}`,
                                         'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
@@ -1287,9 +1313,9 @@ $(document).ready(function () {
                                     table_inventory_report_data.push({
                                         'is_no_info': no_info,
                                         'type': 'product_row',
-                                        'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                        'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
+                                        'warehouse_id': `${warehouse_activities?.['warehouse_for_filter']?.['id']}`,
+                                        'warehouse_code': `${warehouse_activities?.['warehouse_for_filter']?.['code']}`,
+                                        'warehouse_title': `${warehouse_activities?.['warehouse_for_filter']?.['title']}`,
                                         'product_code': `${warehouse_activities?.['product']?.['code']}`,
                                         'product_title': `${warehouse_activities?.['product']?.['title']}`,
                                         'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,

@@ -7847,3 +7847,7 @@ msgstr "Hạn sử dụng"
 #
 msgid "Hover to product code to see more information."
 msgstr "Rê chuột đến Mã Sản Phẩm để xem thêm thông tin."
+
+#
+msgid "not PR"
+msgstr "không theo PR"

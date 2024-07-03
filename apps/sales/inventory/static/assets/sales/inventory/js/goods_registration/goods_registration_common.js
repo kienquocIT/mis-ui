@@ -46,15 +46,15 @@ function LoadLineDetailTable(data) {
                     </button>
                 </td>
                 <td class="border-1 text-primary">
-                    ${this_others}
+                    0
                     <button type="button" class="this_others_detail btn btn-icon btn-flush-primary flush-soft-hover btn-sm">
                         <span class="icon"><i class="bi bi-three-dots"></i></span>
                     </button>
                 </td>
                 <td class="border-1 text-primary">${this_available}</td>
-                <td class="border-1 text-primary">${out_registered}</td>
-                <td class="border-1 text-primary">${out_delivered}</td>
-                <td class="border-1 text-primary">${out_remain}</td>
+                <td class="border-1 text-primary">0</td>
+                <td class="border-1 text-primary">0</td>
+                <td class="border-1 text-primary">0</td>
             </tr>
         `)
     }

@@ -65,8 +65,8 @@ $(document).ready(function () {
 
     function CallProductWarehouse(sale_order_id, product_id, warehouse_id) {
         let dataParam = {}
-        dataParam['so_item__product_id'] = product_id
-        dataParam['so_item__sale_order_id'] = sale_order_id
+        dataParam['gre_item__so_item__product_id'] = product_id
+        dataParam['gre_item__sale_order_id'] = sale_order_id
         dataParam['warehouse_id'] = warehouse_id
         let ajax = $.fn.callAjax2({
             url: $('#prd-wh-call-btn').attr('data-url-prd-wh'),
@@ -87,15 +87,15 @@ $(document).ready(function () {
 
         Promise.all([ajax]).then(
             (results) => {
-                console.log(results[0].length > 0 ? results[0][0] : null)
+                console.log(results[0])
             })
     }
 
     function CallProductWarehouseLot(sale_order_id, product_id, warehouse_id) {
         let dataParam = {}
-        dataParam['so_item__product_id'] = product_id
-        dataParam['so_item__sale_order_id'] = sale_order_id
-        dataParam['warehouse_id'] = warehouse_id
+        dataParam['gre_general__gre_item__product_id'] = product_id
+        dataParam['gre_general__gre_item__so_item__sale_order_id'] = sale_order_id
+        dataParam['gre_general__warehouse_id'] = warehouse_id
         let ajax = $.fn.callAjax2({
             url: $('#prd-wh-call-btn').attr('data-url-prd-wh-lot'),
             data: dataParam,
@@ -115,15 +115,15 @@ $(document).ready(function () {
 
         Promise.all([ajax]).then(
             (results) => {
-                console.log(results[0].length > 0 ? results[0][0] : null)
+                console.log(results[0])
             })
     }
 
     function CallProductWarehouseSerial(sale_order_id, product_id, warehouse_id) {
         let dataParam = {}
-        dataParam['so_item__product_id'] = product_id
-        dataParam['so_item__sale_order_id'] = sale_order_id
-        dataParam['warehouse_id'] = warehouse_id
+        dataParam['gre_general__gre_item__product_id'] = product_id
+        dataParam['gre_general__gre_item__so_item__sale_order_id'] = sale_order_id
+        dataParam['gre_general__warehouse_id'] = warehouse_id
         let ajax = $.fn.callAjax2({
             url: $('#prd-wh-call-btn').attr('data-url-prd-wh-sn'),
             data: dataParam,
@@ -143,7 +143,7 @@ $(document).ready(function () {
 
         Promise.all([ajax]).then(
             (results) => {
-                console.log(results[0].length > 0 ? results[0][0] : null)
+                console.log(results[0])
             })
     }
 

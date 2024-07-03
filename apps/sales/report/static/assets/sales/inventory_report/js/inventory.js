@@ -175,6 +175,12 @@ $(document).ready(function () {
                 {
                     className: '',
                     render: (data, type, row) => {
+                        if (row?.['sale_order_code']) {
+                            if (!sale_order_code_list.includes(`${row?.['warehouse_code']}-so-code-${row?.['sale_order_code']}`)) {
+                                sale_order_code_list.push(`${row?.['warehouse_code']}-so-code-${row?.['sale_order_code']}`)
+                            }
+                            return `<span class="${row?.['warehouse_code']}-so-code-${row?.['sale_order_code']} badge badge-pill badge-soft-red"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order_code']}</span>`
+                        }
                         return ``
                     }
                 },
@@ -193,12 +199,8 @@ $(document).ready(function () {
                             }
                         }
                         else {
-                            let sale_order_code = row?.['sale_order_code'] ? row?.['sale_order_code'] : ''
-                            if (sale_order_code && !sale_order_code_list.includes(sale_order_code)) {
-                                sale_order_code_list.push(sale_order_code)
-                            }
                             let html = `
-                                    <span class="badge badge-light badge-pill w-25 so-code-${row?.['sale_order_code'] ? row?.['sale_order_code'] : ''}">
+                                    <span class="badge badge-light badge-pill w-25}">
                                         ${row?.['product_code']}
                                     </span>&nbsp;
                                     <span class="${row?.['type']}">${row?.['product_title']}</span>&nbsp;
@@ -444,16 +446,16 @@ $(document).ready(function () {
                     table.find("tr th:eq(0)").prop('hidden', true)
                     table.find("tr td:eq(0)").prop('hidden', true)
                 }
-                for (const so_code of sale_order_code_list) {
-                    let number_row = table.find(`tbody .so-code-${so_code}`).length + 1
-                    table.find(`tbody .so-code-${so_code}:eq(0)`).closest('tr').before(`
+                for (const so_code_class of sale_order_code_list) {
+                    let number_row = table.find(`.${so_code_class}`).length + 1
+                    table.find(`.${so_code_class}:eq(0)`).closest('tr').before(`
                         <tr>
                             <td rowspan="${number_row}" class="text-center">
-                                <span class="badge badge-pill badge-soft-red"><i class="bi bi-clipboard-check"></i>&nbsp;${so_code}</span>
+                                <span class="badge badge-pill badge-soft-red"><i class="bi bi-clipboard-check"></i>&nbsp;${so_code_class.split('-')[3]}</span>
                             </td>
                         </tr>
                     `)
-                    table.find(`tbody .so-code-${so_code}`).each(function () {
+                    table.find(`.${so_code_class}`).each(function () {
                         $(this).closest('tr').find('td:eq(0)').remove()
                     })
                 }

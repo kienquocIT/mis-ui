@@ -205,18 +205,6 @@ class ZonesApplicationListAPI(APIView):
         return resp.auto_return(key_success='zones_application_list')
 
 
-class ZonesCreate(View):
-    @mask_view(
-        auth_require=True,
-        template='core/base/zones_create.html',
-        menu_active='',
-        breadcrumb='',
-    )
-    def get(self, request, *args, **kwargs):
-        ctx = {}
-        return ctx, status.HTTP_200_OK
-
-
 class ZonesListAPI(APIView):
     @mask_view(
         auth_require=True,

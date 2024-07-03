@@ -440,6 +440,10 @@ $(document).ready(function () {
                 MatchTooltip()
 
                 // group project
+                if (sale_order_code_list.length === 0) {
+                    table.find("tr th:eq(0)").prop('hidden', true)
+                    table.find("tr td:eq(0)").prop('hidden', true)
+                }
                 for (const so_code of sale_order_code_list) {
                     let number_row = table.find(`tbody .so-code-${so_code}`).length + 1
                     table.find(`tbody .so-code-${so_code}:eq(0)`).closest('tr').before(`

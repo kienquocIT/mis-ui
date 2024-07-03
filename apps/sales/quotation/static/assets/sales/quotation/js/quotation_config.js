@@ -36,8 +36,8 @@ $(function () {
         )
         // load indicators
         loadIndicatorDbl();
-        loadSRole();
-        loadLRole();
+        loadInitS2(boxSRole);
+        loadInitS2(boxLRole);
 
         // enable edit
         $('#btn-edit_quotation_config').on('click', function () {
@@ -94,7 +94,6 @@ $(function () {
                     }
                 )
         });
-
 
         // TAB INDICATOR
         function loadIndicatorDbl() {
@@ -821,6 +820,22 @@ $(function () {
 
 
         // functions
+        function loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false) {
+            let opts = {'allowClear': isClear};
+            $ele.empty();
+            if (data.length > 0) {
+                opts['data'] = data;
+            }
+            if (Object.keys(dataParams).length !== 0) {
+                opts['dataParams'] = dataParams;
+            }
+            if ($modal) {
+                opts['dropdownParent'] = $modal;
+            }
+            $ele.initSelect2(opts);
+            return true;
+        }
+
         function loadSRole(roleData) {
             boxSRole.initSelect2({
                 data: roleData,

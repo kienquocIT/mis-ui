@@ -35,6 +35,11 @@
                     <span class="nav-link-text">{% trans 'Indicator' %}</span>
                 </a>
             </li>
+            <li class="nav-item" id="tab-zones">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_zones">
+                    <span class="nav-link-text">{% trans 'Zones' %}</span>
+                </a>
+            </li>
         </ul>
     </div>
 
@@ -52,6 +57,9 @@
             </div>
             <div class="tab-pane fade" id="tab_indicator">
                 {% include 'sales/quotation/config/indicator_tab.html' %}
+            </div>
+            <div class="tab-pane fade" id="tab_zones">
+                {% include 'sales/quotation/config/zones_tab.html' %}
             </div>
         </div>
     </form>

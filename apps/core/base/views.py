@@ -236,3 +236,26 @@ class ZonesList(View):
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+# EMPLOYEE CONFIG ON APP
+class AppEmpConfigListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.APP_EMP_CONFIG_LIST).get(data)
+        return resp.auto_return(key_success='app_emp_config_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_zones(
+            request=request,
+            url=ApiURL.APP_EMP_CONFIG_LIST,
+            msg=AppMsg.EMPLOYEE_ZONES_CONFIG_UPDATE
+        )

@@ -5,6 +5,7 @@ $(function () {
         let tableIndicator = $('#table_indicator_list');
         let btnCreateIndicator = $('#btn-create-indicator');
         let eleTrans = $('#app-trans-factory');
+        let $eleUrlFact = $('#app-url-factory');
         let dataAcceptanceAffect = [
             {'id': 6, 'title': eleTrans.attr('data-project')},
             {'id': 5, 'title': eleTrans.attr('data-invoice')},
@@ -52,7 +53,7 @@ $(function () {
         loadIndicatorDbl();
         loadInitS2(boxSRole);
         loadInitS2(boxLRole);
-        dataTableZone();
+        loadAppEmpConfig();
 
         // enable edit
         $('#btn-edit_quotation_config').on('click', function () {
@@ -404,7 +405,6 @@ $(function () {
                     eleDescription = $(this)[0].closest('.tab-pane').querySelector('.function-description');
                 }
                 if (eleDescription) {
-                    let $eleUrlFact = $('#app-url-factory');
                     let htmlBoxMD = ``;
                     if (dataShow?.['type'] === 5) {
                         let url = "";
@@ -868,6 +868,7 @@ $(function () {
                                     if (data && resp.data.hasOwnProperty('zones_list')) {
                                         dataAdd['zones_hidden_data'] = data?.['zones_list'];
                                         $tableZones.DataTable().row.add(dataAdd).draw().node();
+                                        submitAppEmpConfig();
                                     }
                                 }
                             )
@@ -1203,6 +1204,103 @@ $(function () {
                     headerToolbar.classList.add('hidden');
                 }
             }
+        }
+
+        function loadAppEmpConfig() {
+            $.fn.callAjax2({
+                    'url': $eleUrlFact.attr('data-url-app-emp-config'),
+                    'method': 'GET',
+                    'data': {'application_id': "b9650500-aba7-44e3-b6e0-2542622702a3"},
+                    isLoading: false,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('app_emp_config_list') && Array.isArray(data.app_emp_config_list)) {
+                            $tableZones.DataTable().clear().destroy();
+                            dataTableZone();
+                            $tableZones.DataTable().rows.add(data?.['app_emp_config_list']).draw();
+                        }
+                    }
+                }
+            )
+        }
+
+        function submitAppEmpConfig() {
+            let dataSubmit = {'application': "b9650500-aba7-44e3-b6e0-2542622702a3"};
+            let configs_data = [];
+            $tableZones.DataTable().rows().every(function () {
+                let row = this.node();
+                let config_data = {};
+                let rowOrder = row.querySelector('.table-row-order');
+                let rowEmployee = row.querySelector('.table-row-employee');
+                let rowZonesEditing = row.querySelector('.table-row-zones-editing');
+                let rowZonesHidden = row.querySelector('.table-row-zones-hidden');
+                let rowRemark = row.querySelector('.table-row-remark');
+                if (rowOrder) {
+                    config_data['order'] = parseInt(rowOrder.innerHTML);
+                }
+                if (rowRemark) {
+                    config_data['remark'] = rowRemark.innerHTML;
+                }
+                if (rowEmployee) {
+                    if (rowEmployee.getAttribute('data-employee')) {
+                        let dataEmployee = JSON.parse(rowEmployee.getAttribute('data-employee'));
+                        config_data['employee_data'] = dataEmployee?.['id'];
+                    }
+                }
+                if (rowZonesEditing) {
+                    if (rowZonesEditing.getAttribute('data-zones')) {
+                        let dataZonesEditing = JSON.parse(rowZonesEditing.getAttribute('data-zones'));
+                        let zones_editing_data = [];
+                        for (let dataZone of dataZonesEditing) {
+                            zones_editing_data.push(dataZone?.['id']);
+                        }
+                        config_data['zones_editing_data'] = zones_editing_data;
+                    }
+                }
+                if (rowZonesHidden) {
+                    if (rowZonesHidden.getAttribute('data-zones')) {
+                        let dataZonesHidden = JSON.parse(rowZonesHidden.getAttribute('data-zones'));
+                        let zones_hidden_data = [];
+                        for (let dataZone of dataZonesHidden) {
+                            zones_hidden_data.push(dataZone?.['id']);
+                        }
+                        config_data['zones_hidden_data'] = zones_hidden_data;
+                    }
+                }
+                configs_data.push(config_data);
+            });
+            dataSubmit['configs_data'] = configs_data;
+            WindowControl.showLoading();
+            $.fn.callAjax2(
+                {
+                    'url': $eleUrlFact.attr('data-url-app-emp-config'),
+                    'method': "POST",
+                    'data': dataSubmit,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        loadAppEmpConfig();
+                        boxEmployeeAdd.empty();
+                        boxZonesEditingAdd.empty();
+                        boxZonesHiddenAdd.empty();
+                        $eleRemarkAdd.val('');
+                        setTimeout(() => {
+                            WindowControl.hideLoading();
+                        }, 1000)
+                    }
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                }
+            )
         }
 
 

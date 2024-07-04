@@ -1,6 +1,7 @@
 $(async function () {
     const $trans = $('#trans-factory');
     const $url = $('#url-factory');
+    let dataCompanyConfig = await DocumentControl.getCompanyConfig();
     // prod tab handle
     class prodDetailUtil {
         prodList = {}
@@ -249,49 +250,7 @@ $(async function () {
                                         )
                                     }
                                     if (data?.['product']?.['general_traceability_method'] === 2) {
-                                        let tableSerial = $('#datable-delivery-wh-serial');
-                                        let dataParam = {'product_warehouse_id': productWHID, 'is_delete': false};
-                                        if ($form.attr('data-method').toLowerCase() === 'get') {
-                                            dataParam = {'product_warehouse_id': productWHID};
-                                        }
-                                        let detailData = [];
-                                        $.fn.callAjax2({
-                                                'url': tableSerial.attr('data-url'),
-                                                'method': tableSerial.attr('data-method'),
-                                                'data': dataParam,
-                                                'isDropdown': true,
-                                            }
-                                        ).then(
-                                            (resp) => {
-                                                let dataSerial = $.fn.switcherResp(resp);
-                                                if (dataSerial) {
-                                                    if (dataSerial.hasOwnProperty('warehouse_serial_list') && Array.isArray(dataSerial.warehouse_serial_list)) {
-                                                        for (let serial of dataSerial.warehouse_serial_list) {
-                                                            if (data?.['serial_data']) {
-                                                                for (let delivery_serial of data?.['serial_data']) {
-                                                                    if (delivery_serial?.['product_warehouse_serial_id'] === serial?.['id']) {
-                                                                        serial['is_checked'] = true;
-                                                                        if ($form.attr('data-method').toLowerCase() === 'get') {
-                                                                            serial['uom_so'] = data?.['uom_so'];
-                                                                            detailData.push(serial);
-                                                                        }
-                                                                        break;
-                                                                    }
-                                                                }
-                                                            }
-                                                            serial['uom_so'] = data?.['uom_so'];
-                                                        }
-                                                        if ($form.attr('data-method').toLowerCase() === 'get') {
-                                                            prodTable.dataTableTableSerial(detailData);
-                                                        } else {
-                                                            prodTable.dataTableTableSerial(dataSerial.warehouse_serial_list);
-                                                        }
-                                                        this.checked = true;
-                                                        $(row).css('background-color', '#ebfcf5');
-                                                    }
-                                                }
-                                            }
-                                        )
+                                        prodTable.loadSerial(this, row, data, productWHID);
                                     }
                                 }
                             } else {
@@ -636,6 +595,86 @@ $(async function () {
             }
         };
 
+        getRegisConfig() {
+            let $eleSO = $('#inputSaleOrder');
+            let isRegis = false;
+            if (dataCompanyConfig?.['config']?.['cost_per_project'] === true && $eleSO.attr('data-so')) {
+                isRegis = true;
+                let dataSO = JSON.parse($eleSO.attr('data-so'));
+                return {'isRegis': isRegis, 'dataSO': dataSO}
+            }
+            return {'isRegis': isRegis, 'dataSO': {}}
+        }
+
+        loadSerial(eleChecked, row, data, productWHID) {
+            let $form = $('#delivery_form');
+            let dataRegisConfig = prodTable.getRegisConfig();
+            let isRegis = dataRegisConfig?.['isRegis'];
+            let dataSO = dataRegisConfig?.['dataSO'];
+            let tableSerial = $('#datable-delivery-wh-serial');
+            let url = tableSerial.attr('data-url');
+            let dataParam = {'product_warehouse_id': productWHID, 'is_delete': false};
+            let keyResp = 'warehouse_serial_list';
+            if ($form.attr('data-method').toLowerCase() === 'get') {
+                dataParam = {'product_warehouse_id': productWHID};
+            }
+            if (isRegis === true && dataSO) {
+                url = tableSerial.attr('data-url-regis');
+                dataParam = {
+                    'gre_general__gre_item__so_item__sale_order_id': dataSO?.['id'],
+                    'gre_general__gre_item__product_id': data?.['product']?.['id'],
+                    'gre_general__warehouse_id': data?.['warehouse']?.['id'],
+                };
+                keyResp = 'good_registration_product_warehouse_sn';
+            }
+            let detailData = [];
+            $.fn.callAjax2({
+                    'url': url,
+                    'method': 'GET',
+                    'data': dataParam,
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let dataSerial = $.fn.switcherResp(resp);
+                    if (dataSerial) {
+                        if (dataSerial.hasOwnProperty(keyResp) && Array.isArray(dataSerial?.[keyResp])) {
+                            let dataSerialFn = dataSerial?.[keyResp];
+                            if (isRegis === true) {
+                                dataSerialFn = [];
+                                for (let serial of dataSerial?.[keyResp]) {
+                                    dataSerialFn.push(serial?.['sn_registered']);
+                                }
+                            }
+                            for (let serial of dataSerialFn) {
+                                if (data?.['serial_data']) {
+                                    for (let delivery_serial of data?.['serial_data']) {
+                                        if (delivery_serial?.['product_warehouse_serial_id'] === serial?.['id']) {
+                                            serial['is_checked'] = true;
+                                            if ($form.attr('data-method').toLowerCase() === 'get') {
+                                                serial['uom_so'] = data?.['uom_so'];
+                                                detailData.push(serial);
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                                serial['uom_so'] = data?.['uom_so'];
+                            }
+                            if ($form.attr('data-method').toLowerCase() === 'get') {
+                                prodTable.dataTableTableSerial(detailData);
+                            } else {
+                                prodTable.dataTableTableSerial(dataSerialFn);
+                            }
+                            eleChecked.checked = true;
+                            $(row).css('background-color', '#ebfcf5');
+                        }
+                    }
+                }
+            )
+            return true;
+        };
+
         dataTableTableSerial(data) {
             let $form = $('#delivery_form');
             let tableLot = $('#datable-delivery-wh-serial');
@@ -927,6 +966,7 @@ $(async function () {
                 $x.fn.renderCodeBreadcrumb(res);
                 const $saleOrder = $('#inputSaleOrder');
                 $saleOrder.val(res.sale_order_data.code)
+                $saleOrder.attr('data-so', JSON.stringify(res.sale_order_data));
                 $('.title-code').text(res.code)
 
                 if (res.estimated_delivery_date) {

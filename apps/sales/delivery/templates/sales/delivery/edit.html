@@ -249,14 +249,14 @@
         <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <div class="row ml-2"><h5>{% trans 'Get Product' %}</h5></div>
+                <div class="row ml-2"><h5 class="text-primary">{% trans 'Get Product' %}</h5></div>
                 <p><a class="text-primary text-decoration-underline title_prod" href="#"></a></p>
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
                         <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-wh">
                             <table id="productStockDetail" class="table w-100">
                                 <thead>
-                                <tr>
+                                <tr class="bg-light">
                                     <th></th>
                                     <th>{% trans 'Warehouse Code' %}</th>
                                     <th>{% trans 'Warehouse Name' %}</th>
@@ -304,10 +304,11 @@
                                 id="datable-delivery-wh-serial"
                                 class="table nowrap w-100"
                                 data-url="{% url "WarehouseSerialListAPI" %}"
+                                data-url-regis="{% url "GoodsRegistrationProductWarehouseSerialAPI" %}"
                                 data-method="GET"
                             >
                                 <thead>
-                                <tr>
+                                <tr class="bg-light">
                                     <th class="w-5"></th>
                                     <th class="w-20">{% trans 'Vendor serial no.' %}</th>
                                     <th class="w-20">{% trans 'Serial no.' %}</th>

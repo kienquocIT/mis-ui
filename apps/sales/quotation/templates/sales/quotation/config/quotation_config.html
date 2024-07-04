@@ -12,7 +12,7 @@
             </span>
         </span>
     </button>
-    <button class="btn btn-outline-primary" type="submit" form="frm_quotation_config_create" id="btn-create_quotation_config" hidden>
+    <button class="btn btn-outline-primary" type="submit" form="frm_quotation_config_create" id="btn-save_quotation_config" hidden>
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -24,7 +24,7 @@
 
 {% block pageContent %}
     <div class="row">
-        <ul class="nav nav-light nav-tabs">
+        <ul class="nav nav-light nav-tabs" id="config-tabs">
             <li class="nav-item" id="tab-config">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_config">
                     <span class="nav-link-text">{% trans 'General' %}</span>

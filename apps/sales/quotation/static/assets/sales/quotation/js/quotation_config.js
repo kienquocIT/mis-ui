@@ -2,6 +2,10 @@ $(function () {
 
     $(document).ready(function () {
         let $form = $('#frm_quotation_config_create');
+        let btnEdit = $('#btn-edit_quotation_config');
+        let btnSave = $('#btn-save_quotation_config');
+        let tabs = $('#config-tabs');
+
         let tableIndicator = $('#table_indicator_list');
         let btnCreateIndicator = $('#btn-create-indicator');
         let eleTrans = $('#app-trans-factory');
@@ -54,11 +58,12 @@ $(function () {
         loadInitS2(boxSRole);
         loadInitS2(boxLRole);
         loadAppEmpConfig();
+        checkOpenBtnEditSave();
 
         // enable edit
-        $('#btn-edit_quotation_config').on('click', function () {
+        btnEdit.on('click', function () {
             $(this)[0].setAttribute('hidden', true)
-            $('#btn-create_quotation_config')[0].removeAttribute('hidden');
+            $('#btn-save_quotation_config')[0].removeAttribute('hidden');
             $form.find('.disabled-but-edit').removeAttr('disabled');
         });
 
@@ -326,15 +331,8 @@ $(function () {
             });
         }
 
-        $('#tab-indicator').on('click', function () {
-            // disable main edit & save btn
-            document.getElementById('btn-edit_quotation_config').setAttribute('hidden', 'true');
-            document.getElementById('btn-create_quotation_config').setAttribute('hidden', 'true');
-        });
-
-        $('#tab-config').on('click', function () {
-            // enable main edit & save btn
-            document.getElementById('btn-edit_quotation_config').removeAttribute('hidden');
+        tabs.on('click', '.nav-item', function () {
+            checkOpenBtnEditSave();
         });
 
         tableIndicator.on('change', '.table-row-title, .table-row-description, .table-row-order', function() {
@@ -1032,6 +1030,20 @@ $(function () {
             }
             $ele.initSelect2(opts);
             return true;
+        }
+
+        function checkOpenBtnEditSave() {
+            btnEdit[0].removeAttribute('hidden');
+            let navLink = tabs[0].querySelector('.nav-link.active');
+            if (navLink) {
+                let navItem = navLink.closest('.nav-item');
+                if (navItem) {
+                    if (['tab-indicator', 'tab-zones'].includes(navItem.id)) {
+                        btnEdit[0].setAttribute('hidden', 'true');
+                        btnSave[0].setAttribute('hidden', 'true');
+                    }
+                }
+            }
         }
 
         function validateRole($ele) {

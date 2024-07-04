@@ -935,6 +935,12 @@ $(function () {
             }
         });
 
+        $tableZones.on('click', '.del-row', function () {
+            deleteRowAEC(this.closest('tr'), $tableZones);
+            reOrderSTTRowAEC($tableZones);
+            submitAppEmpConfig();
+        });
+
         $btnCEdit.on('click', function () {
             if (boxEmployeeEdit.val() && (boxZonesEditingEdit.val() && boxZonesEditingEdit.val().length > 0) || (boxZonesHiddenEdit.val() && boxZonesHiddenEdit.val().length > 0)) {
                 $.fn.callAjax2({
@@ -1306,6 +1312,30 @@ $(function () {
                     }
                 }
             )
+        }
+
+        function deleteRowAEC(currentRow, table) {
+            // Get the index of the current row within the DataTable
+            let rowIndex = table.DataTable().row(currentRow).index();
+            let row = table.DataTable().row(rowIndex);
+            // Delete current row
+            row.remove().draw();
+        }
+
+        function reOrderSTTRowAEC(table) {
+            let order = 1;
+            let itemCount = table[0].querySelectorAll('.table-row-order').length;
+            if (itemCount === 0) {
+                table.DataTable().clear().draw();
+            } else {
+                for (let eleOrder of table[0].querySelectorAll('.table-row-order')) {
+                    eleOrder.innerHTML = order;
+                    order++
+                    if (order > itemCount) {
+                        break;
+                    }
+                }
+            }
         }
 
         function submitAppEmpConfig() {

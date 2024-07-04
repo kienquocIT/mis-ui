@@ -66,20 +66,6 @@ $(function () {
             }
         });
 
-        $table.on('click', '.del-row', function () {
-            let zonesArea = this.closest('.zones-area');
-            if (zonesArea) {
-                let tableZone = zonesArea.querySelector('.table-zones');
-                if (tableZone) {
-                    $(this).attr('data-table-id', tableZone.id);
-                    $(this).attr('data-row', $(zonesArea).attr('data-row'));
-                    deleteRowZone(this.closest('tr'), $(tableZone));
-                    reOrderSTTRow($(tableZone));
-                    submitZone($(this));
-                }
-            }
-        });
-
         $table.on('click', '.edit-row', function () {
             let $modal = $('#editZoneMdl');
             let row = this.closest('tr');
@@ -124,6 +110,20 @@ $(function () {
                         dataPropID.push(prop?.['id']);
                     }
                     $boxPropEdit.val(dataPropID);
+                }
+            }
+        });
+
+        $table.on('click', '.del-row', function () {
+            let zonesArea = this.closest('.zones-area');
+            if (zonesArea) {
+                let tableZone = zonesArea.querySelector('.table-zones');
+                if (tableZone) {
+                    $(this).attr('data-table-id', tableZone.id);
+                    $(this).attr('data-row', $(zonesArea).attr('data-row'));
+                    deleteRowZone(this.closest('tr'), $(tableZone));
+                    reOrderSTTRow($(tableZone));
+                    submitZone($(this));
                 }
             }
         });

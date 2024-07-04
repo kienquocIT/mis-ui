@@ -833,7 +833,7 @@ $(function () {
             }
         });
 
-        // ZONES
+        // EMPLOYEE CONFIG ON APP
         $('#addZoneMdl').on('shown.bs.modal', function () {
             let $modal = $(this);
             loadInitS2(boxEmployeeAdd, [], {}, $modal);
@@ -856,7 +856,10 @@ $(function () {
                             dataAdd['order'] = $tableZones[0].querySelectorAll('.table-row-order').length + 1;
                             dataAdd['remark'] = $eleRemarkAdd.val();
                             dataAdd['employee_data'] = SelectDDControl.get_data_from_idx(boxEmployeeAdd, boxEmployeeAdd.val());
-                            dataAdd['zones_editing_data'] = data?.['zones_list'];
+                            dataAdd['zones_editing_data'] = [];
+                            if (boxZonesEditingAdd.val().length > 0) {
+                                dataAdd['zones_editing_data'] = data?.['zones_list'];
+                            }
                             $.fn.callAjax2({
                                 url: boxZonesHiddenAdd.attr('data-url'),
                                 method: 'GET',
@@ -866,7 +869,10 @@ $(function () {
                                 (resp) => {
                                     let data = $.fn.switcherResp(resp);
                                     if (data && resp.data.hasOwnProperty('zones_list')) {
-                                        dataAdd['zones_hidden_data'] = data?.['zones_list'];
+                                        dataAdd['zones_hidden_data'] = [];
+                                        if (boxZonesHiddenAdd.val().length > 0) {
+                                            dataAdd['zones_hidden_data'] = data?.['zones_list'];
+                                        }
                                         $tableZones.DataTable().row.add(dataAdd).draw().node();
                                         submitAppEmpConfig();
                                     }
@@ -926,6 +932,81 @@ $(function () {
                     }
                     boxZonesHiddenEdit.val(dataZonesID);
                 }
+            }
+        });
+
+        $btnCEdit.on('click', function () {
+            if (boxEmployeeEdit.val() && (boxZonesEditingEdit.val() && boxZonesEditingEdit.val().length > 0) || (boxZonesHiddenEdit.val() && boxZonesHiddenEdit.val().length > 0)) {
+                $.fn.callAjax2({
+                    url: boxZonesEditingEdit.attr('data-url'),
+                    method: 'GET',
+                    'data': {'id__in': boxZonesEditingEdit.val().join(',')},
+                    isLoading: false,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('zones_list')) {
+                            let dataZonesEditing = [];
+                            if (boxZonesEditingEdit.val().length > 0) {
+                                dataZonesEditing = data?.['zones_list'];
+                            }
+                            $.fn.callAjax2({
+                                url: boxZonesHiddenEdit.attr('data-url'),
+                                method: 'GET',
+                                'data': {'id__in': boxZonesHiddenEdit.val().join(',')},
+                                isLoading: false,
+                            }).then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    if (data && resp.data.hasOwnProperty('zones_list')) {
+                                        let dataZonesHidden = [];
+                                        if (boxZonesHiddenEdit.val().length > 0) {
+                                            dataZonesHidden = data?.['zones_list'];
+                                        }
+                                        for (let eleOrder of $tableZones[0].querySelectorAll('.table-row-order')) {
+                                            if (eleOrder.innerHTML === $btnCEdit.attr('data-order')) {
+                                                let row = eleOrder.closest('tr');
+                                                let rowEmployee = row.querySelector('.table-row-employee');
+                                                let rowZonesEditing = row.querySelector('.table-row-zones-editing');
+                                                let rowZonesHidden = row.querySelector('.table-row-zones-hidden');
+                                                let rowRemark = row.querySelector('.table-row-remark');
+                                                if (rowEmployee) {
+                                                    let dataEmployee = SelectDDControl.get_data_from_idx(boxEmployeeEdit, boxEmployeeEdit.val());
+                                                    $(rowEmployee).empty();
+                                                    $(rowEmployee).attr('data-employee', JSON.stringify(dataEmployee));
+                                                    $(rowEmployee).append(`<span class="badge badge-primary mr-2">${dataEmployee?.['code'] ? dataEmployee?.['code'] : ''}</span>
+                                                                    <span class="badge badge-primary badge-outline">${dataEmployee?.['full_name'] ? dataEmployee?.['full_name'] : ''}</span>`);
+                                                }
+                                                if (rowRemark) {
+                                                    rowRemark.innerHTML = $eleRemarkEdit.val();
+                                                }
+                                                if (rowZonesEditing) {
+                                                    $(rowZonesEditing).empty();
+                                                    $(rowZonesEditing).attr('data-zones', JSON.stringify(dataZonesEditing));
+                                                    for (let zone of dataZonesEditing) {
+                                                        $(rowZonesEditing).append(`<span class="badge badge-soft-green mr-1 mb-1">${zone?.['title']}</span>`);
+                                                    }
+                                                }
+                                                if (rowZonesHidden) {
+                                                    $(rowZonesHidden).empty();
+                                                    $(rowZonesHidden).attr('data-zones', JSON.stringify(dataZonesHidden));
+                                                    for (let zone of dataZonesHidden) {
+                                                        $(rowZonesHidden).append(`<span class="badge badge-soft-warning mr-1 mb-1">${zone?.['title']}</span>`);
+                                                    }
+                                                }
+                                                submitAppEmpConfig();
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                    }
+                )
+            } else {
+                $.fn.notifyB({description: eleTrans.attr('data-zone-required')}, 'failure');
+                return false;
             }
         });
 

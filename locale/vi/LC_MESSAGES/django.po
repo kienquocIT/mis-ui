@@ -7174,11 +7174,11 @@ msgstr "Nhập liệu sau"
 
 #
 msgid "Vendor serial no."
-msgstr "Số seri của NCC"
+msgstr "Serial của NCC"
 
 #
 msgid "Serial no."
-msgstr "Số seri"
+msgstr "Serial"
 
 #
 msgid "Mfr date"
@@ -7438,7 +7438,7 @@ msgstr "Tổng giá trị"
 
 #
 msgid "Lot quantity"
-msgstr "Số lượng của lô"
+msgstr "SL của lô"
 
 #
 msgid "Manufacture date"
@@ -7843,3 +7843,31 @@ msgstr "Ngày sản xuất"
 #
 msgid "Exp date"
 msgstr "Hạn sử dụng"
+
+#
+msgid "Hover to product code to see more information."
+msgstr "Rê chuột đến Mã Sản Phẩm để xem thêm thông tin."
+
+#
+msgid "Hold to drag"
+msgstr "Nắm giữ để di chuyển"
+
+#
+msgid "Check employee in expense labor"
+msgstr "Kiểm tra nhân viên trong chi phí"
+
+#
+msgid "Select expense to check employee labor"
+msgstr "Chọn chi phí để kiểm tra nhân viên"
+
+#
+msgid "Expense role"
+msgstr "Vai trò thuộc Chi phí"
+
+#
+msgid "Employee by role"
+msgstr "Nhân viên thuộc Vai trò"
+
+#
+msgid "not PR"
+msgstr "không theo PR"

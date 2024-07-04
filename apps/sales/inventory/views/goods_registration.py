@@ -94,3 +94,36 @@ class GoodsRegistrationDetailAPI(APIView):
             resp.result['message'] = SaleMsg.GOODS_REGISTRATION_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+class GoodsRegistrationProductWarehouseAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_PRD_WH).get(params)
+        return resp.auto_return(key_success='good_registration_product_warehouse')
+
+
+class GoodsRegistrationProductWarehouseLotAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_PRD_WH_LOT).get(params)
+        return resp.auto_return(key_success='good_registration_product_warehouse_lot')
+
+
+class GoodsRegistrationProductWarehouseSerialAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_PRD_WH_SN).get(params)
+        return resp.auto_return(key_success='good_registration_product_warehouse_sn')

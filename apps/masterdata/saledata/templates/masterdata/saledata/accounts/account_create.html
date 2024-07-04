@@ -69,10 +69,11 @@
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label class="form-label required">{% trans "Industry" %}</label>
-                            <select id="select-box-industry"
-                                    class="form-control select2"
-                                    data-method="GET" required
-                                    data-url="{% url "IndustryListAPI" %}">
+                            <select id="select-box-industry" class="form-select select2"
+                                    data-method="GET"
+                                    data-url="{% url "IndustryListAPI" %}"
+                                    data-keyResp="industry_list"
+                            >
                             </select>
                         </div>
                     </div>
@@ -112,7 +113,7 @@
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans "Account Group" %}</label>
-                    <select id="select-box-account-group" class="form-control select2"
+                    <select id="select-box-account-group" class="form-select select2"
                             data-method="GET" required
                             data-url="{% url "AccountGroupListAPI" %}">
                     </select>
@@ -120,7 +121,7 @@
                 <div class="form-group">
                     <label class="form-label required">{% trans "Account Manager" %}</label>
                     <select id="select-box-acc-manager"
-                            class="form-control select2 select2-multiple select2-required"
+                            class="form-select select2 select2-multiple select2-required"
                             multiple required
                             data-method="GET"
                             data-url="{% url "EmployeeListAPI" %}">
@@ -159,7 +160,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">{% trans "Parent Account" %}</label>
-                    <select id="select-box-parent-account" class="form-control select2"
+                    <select id="select-box-parent-account" class="form-select select2"
                             data-method="GET"
                             data-url="{% url "AccountListAPI" %}" disabled>
                     </select>
@@ -489,7 +490,7 @@
                                 <label class="form-label">{% trans "Contact Owner" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <select class="form-control select2" id="select-box-contact-owner"
+                                <select class="form-select select2" id="select-box-contact-owner"
                                         data-method="GET"
                                         data-url="{% url 'EmployeeListAPI' %}">
                                 </select>

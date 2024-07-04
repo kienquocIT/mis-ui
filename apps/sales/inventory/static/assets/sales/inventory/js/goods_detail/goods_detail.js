@@ -62,7 +62,7 @@ $(document).ready(function () {
     function loadMainTable(category_list=[], product_list=[], warehouse_list=[], status_list=[]) {
         $main_table.DataTable().clear().destroy()
         $main_table.DataTableDefault({
-            dom: '',
+            // dom: '',
             rowIdx: true,
             paging: false,
             useDataServer: true,
@@ -112,19 +112,19 @@ $(document).ready(function () {
                     data: 'product',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-primary w-25">${data?.['code']}</span>&nbsp;<span class="fw-bold">${data?.['title']}</span>`;
+                        return `<span class="badge badge-soft-primary w-25">${data?.['code']}</span>&nbsp;<span>${data?.['title']}</span>`;
                     }
                 },
                 {
                     data: 'goods_receipt',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-secondary gr-code">${data?.['code']}</span>`;
+                        return `<span class="badge badge-soft-secondary gr-code w-100">${data?.['code']}</span>`;
                     }
                 },
                 {
                     data: 'goods_receipt',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (data?.['date_approved']) {
                             return `<span>${moment(data?.['date_approved'].split(' ')[0]).format('DD/MM/YYYY')}</span>`;
@@ -134,44 +134,46 @@ $(document).ready(function () {
                 },
                 {
                     data: 'person_in_charge',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `<span>${data?.['full_name']}</span>`;
+                        return `<span class="badge badge-soft-secondary w-100">${data?.['full_name']}</span>`;
                     }
                 },
                 {
                     data: 'warehouse',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-blue badge-sm w-20">${data?.['code']}</span>&nbsp;<span>${data?.['title']}</span>`;
+                        return `<span class="badge badge-soft-blue w-100">${data?.['code']}</span>`;
                     }
                 },
                 {
                     data: 'quantity_import',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         return `${data}`;
                     }
                 },
                 {
                     data: 'serial_list',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['product']?.['type'] === 2) {
                             let status = row?.['status'] ? $trans_script.attr('data-trans-done') : $trans_script.attr('data-trans-not-yet')
-                            let color = row?.['status'] ? 'badge badge-soft-success w-70' : 'badge badge-soft-warning w-70'
+                            let color = row?.['status'] ? 'success' : 'warning'
                             return `
-                                <span class="${color} row-status">${status}</span>
                                 <button type="button"
                                         data-bs-toggle="modal"
                                         data-bs-target="#modal-serial"
-                                        class="btn-open-modal-serial btn btn-icon btn-rounded btn-flush-secondary flush-hover btn-xs"
+                                        class="btn btn-custom btn-soft-${color} btn-rounded btn-sm btn-open-modal-serial w-100"
                                         data-quantity-import="${row?.['quantity_import']}"
                                         data-product-id="${row?.['product']?.['id']}"
                                         data-warehouse-id="${row?.['warehouse']?.['id']}"
                                         data-goods-receipt-id="${row?.['goods_receipt']?.['id']}"
-                                        >
-                                    <span class="icon"><i class="bi bi-box-arrow-up-right"></i></span>
+                                >
+                                    <span>
+                                        <span class="row-status">${status}</span>
+                                        <span class="icon"><i class="bi bi-box-arrow-up-right"></i></span>
+                                    </span>
                                 </button>
                                 <script class="serial_list_data">${JSON.stringify(data)}</script>
                             `;

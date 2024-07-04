@@ -14,7 +14,10 @@ from apps.sales.inventory.views import (
     GoodsTransferList, GoodsTransferDetail, GoodsTransferCreate,
     GoodsTransferListAPI, GoodsTransferDetailAPI, GoodsTransferUpdate,
     GoodsRegistrationList, GoodsRegistrationCreate, GoodsRegistrationUpdate,
-    GoodsRegistrationDetail, GoodsRegistrationDetailAPI, GoodsRegistrationListAPI
+    GoodsRegistrationDetail, GoodsRegistrationDetailAPI, GoodsRegistrationListAPI,
+    GoodsRegistrationProductWarehouseAPI,
+    GoodsRegistrationProductWarehouseLotAPI,
+    GoodsRegistrationProductWarehouseSerialAPI
 )
 
 urlpatterns = [
@@ -83,4 +86,8 @@ urlpatterns += [
     path('goods-registration/update/<str:pk>', GoodsRegistrationUpdate.as_view(), name='GoodsRegistrationUpdate'),
     path('goods-registration/list/api', GoodsRegistrationListAPI.as_view(), name='GoodsRegistrationListAPI'),
     path('goods-registration/detail/api/<str:pk>', GoodsRegistrationDetailAPI.as_view(), name='GoodsRegistrationDetailAPI'),
+
+    path('goods-registration-prd-wh/list/api', GoodsRegistrationProductWarehouseAPI.as_view(), name='GoodsRegistrationProductWarehouseAPI'),
+    path('goods-registration-prd-wh-lot/list/api', GoodsRegistrationProductWarehouseLotAPI.as_view(), name='GoodsRegistrationProductWarehouseLotAPI'),
+    path('goods-registration-prd-wh-sn/list/api', GoodsRegistrationProductWarehouseSerialAPI.as_view(), name='GoodsRegistrationProductWarehouseSerialAPI'),
 ]

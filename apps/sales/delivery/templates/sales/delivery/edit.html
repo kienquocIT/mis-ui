@@ -246,11 +246,13 @@
         </div>
     </div>
     <div class="modal fade" id="warehouseStockModal" tabindex="-1" role="dialog" aria-labelledby="warehouseStockModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <div class="row ml-2"><h5 class="text-primary">{% trans 'Get Product' %}</h5></div>
-                <p><a class="text-primary text-decoration-underline title_prod" href="#"></a></p>
+                <div class="d-flex justify-content-between">
+                    <h5 class="text-primary ml-3 mt-2"><b>{% trans 'Get Product' %}</b></h5>
+                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                </div>
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
                         <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-wh">
@@ -261,6 +263,7 @@
                                     <th>{% trans 'Warehouse Code' %}</th>
                                     <th>{% trans 'Warehouse Name' %}</th>
                                     <th><p class="stock-picked-exchange">{% trans 'Stock' %}</p></th>
+                                    <th>{% trans 'Available' %}<i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Not included registered products' %}"></i></th>
                                     <th>{% trans 'Get' %}</th>
                                     <th>{% trans 'UOM' %}</th>
                                 </tr>
@@ -270,6 +273,7 @@
                                     <tr>
                                         <th colspan="3"><p style="text-align:right">{% trans 'Total' %}:</p></th>
                                         <th><b><i>0</i></b></th>
+                                        <th><b><i class="text-success">0</i></b></th>
                                         <th><b><i>0</i></b></th>
                                         <th></th>
                                     </tr>

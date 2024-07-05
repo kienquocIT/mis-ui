@@ -377,10 +377,13 @@
 
 
         <div class="modal fade" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="row ml-2"><h6 class="text-primary"><b>{% trans 'Select items from purchase request' %}</b></h6></div>
+                        <div class="d-flex justify-content-between">
+                            <h5 class="text-primary ml-3 mt-2"><b>{% trans 'Select items from purchase request' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
                         <div class="row mb-1">
                             <div class="col-4"></div>
                             <div class="col-8">
@@ -403,7 +406,7 @@
                                         data-method="GET"
                                     >
                                         <thead>
-                                        <tr>
+                                        <tr class="bg-light">
                                             <th class="w-5"></th>
                                             <th class="w-5"><div class="form-check"><input type="checkbox" class="form-check-input table-checkbox-all"></div></th>
                                             <th class="w-45">{% trans 'Title' %}</th>
@@ -425,7 +428,7 @@
                                             data-method="GET"
                                         >
                                             <thead>
-                                            <tr>
+                                            <tr class="bg-light">
                                                 <th class="w-5"></th>
                                                 <th class="w-5"></th>
                                                 <th class="w-40">{% trans 'Product' %}</th>
@@ -449,7 +452,7 @@
                                             data-method="get"
                                         >
                                             <thead>
-                                            <tr>
+                                            <tr class="bg-light">
                                                 <th class="w-5"></th>
                                                 <th class="w-5"></th>
                                                 <th class="w-40">{% trans 'Product' %}</th>

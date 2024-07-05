@@ -146,7 +146,7 @@ $(async function () {
                         },
                         {
                             targets: 2,
-                            class: 'w-40 text-center',
+                            class: 'w-25 text-center',
                             data: 'warehouse',
                             render: (row, type, data) => {
                                 return `<p>${row?.['title']}</p>`;
@@ -154,7 +154,7 @@ $(async function () {
                         },
                         {
                             targets: 3,
-                            class: 'w-5 text-center',
+                            class: 'w-10 text-center',
                             data: 'stock_amount',
                             render: (row, type, data) => {
                                 return `<p class="table-row-stock">${row}</p>`;
@@ -162,7 +162,15 @@ $(async function () {
                         },
                         {
                             targets: 4,
-                            class: 'w-30 text-center',
+                            class: 'w-15 text-center',
+                            data: 'available_amount',
+                            render: (row, type, data) => {
+                                return `<p class="table-row-available text-success">${row}</p>`;
+                            }
+                        },
+                        {
+                            targets: 5,
+                            class: 'w-25 text-center',
                             data: 'picked',
                             render: (row, type, data, meta) => {
                                 if ($form.attr('data-method').toLowerCase() === 'put') {
@@ -181,8 +189,8 @@ $(async function () {
                             }
                         },
                         {
-                            targets: 5,
-                            class: 'w-5 text-center',
+                            targets: 6,
+                            class: 'w-10 text-center',
                             data: 'uom_delivery',
                             render: (row, type, data) => {
                                 return `<span class="table-row-uom-delivery">${row?.['title'] ? row?.['title'] : ''}</span>`;
@@ -246,15 +254,22 @@ $(async function () {
                             }, 0);
 
 
-                        const GetStock = api
+                        const available = api
                             .column(4, {page: 'current'})
+                            .data()
+                            .reduce(function (a, b) {
+                                return intVal(a) + intVal(b);
+                            }, 0);
+                        const GetStock = api
+                            .column(5, {page: 'current'})
                             .data()
                             .reduce(function (a, b) {
                                 return intVal(a) + intVal(b);
                             }, 0);
                         // Update footer
                         $(api.column(3).footer()).html(`<b><i>${allStock}</i></b>`);
-                        $(api.column(4).footer()).html(`<b><i>${GetStock}</i></b>`);
+                        $(api.column(4).footer()).html(`<b><i class="text-success">${available}</i></b>`);
+                        $(api.column(5).footer()).html(`<b><i>${GetStock}</i></b>`);
                     },
                 })
                 if (table.hasClass('dataTable')) {
@@ -477,6 +492,22 @@ $(async function () {
                     })
                 }
             });
+        }
+
+        loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false) {
+            let opts = {'allowClear': isClear};
+            $ele.empty();
+            if (data.length > 0) {
+                opts['data'] = data;
+            }
+            if (Object.keys(dataParams).length !== 0) {
+                opts['dataParams'] = dataParams;
+            }
+            if ($modal) {
+                opts['dropdownParent'] = $modal;
+            }
+            $ele.initSelect2(opts);
+            return true;
         }
 
         getRegisConfig() {

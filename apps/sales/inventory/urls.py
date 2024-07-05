@@ -15,9 +15,9 @@ from apps.sales.inventory.views import (
     GoodsTransferListAPI, GoodsTransferDetailAPI, GoodsTransferUpdate,
     GoodsRegistrationList, GoodsRegistrationCreate, GoodsRegistrationUpdate,
     GoodsRegistrationDetail, GoodsRegistrationDetailAPI, GoodsRegistrationListAPI,
-    GoodsRegistrationProductWarehouseAPI,
-    GoodsRegistrationProductWarehouseLotAPI,
-    GoodsRegistrationProductWarehouseSerialAPI
+    GoodsRegistrationGeneralListAPI,
+    GoodsRegistrationLotListAPI,
+    GoodsRegistrationSerialListAPI
 )
 
 urlpatterns = [
@@ -87,7 +87,7 @@ urlpatterns += [
     path('goods-registration/list/api', GoodsRegistrationListAPI.as_view(), name='GoodsRegistrationListAPI'),
     path('goods-registration/detail/api/<str:pk>', GoodsRegistrationDetailAPI.as_view(), name='GoodsRegistrationDetailAPI'),
 
-    path('goods-registration-prd-wh/list/api', GoodsRegistrationProductWarehouseAPI.as_view(), name='GoodsRegistrationProductWarehouseAPI'),
-    path('goods-registration-prd-wh-lot/list/api', GoodsRegistrationProductWarehouseLotAPI.as_view(), name='GoodsRegistrationProductWarehouseLotAPI'),
-    path('goods-registration-prd-wh-sn/list/api', GoodsRegistrationProductWarehouseSerialAPI.as_view(), name='GoodsRegistrationProductWarehouseSerialAPI'),
+    path('goods-registration-general/list/api', GoodsRegistrationGeneralListAPI.as_view(), name='GoodsRegistrationGeneralListAPI'),
+    path('goods-registration-lot/list/api', GoodsRegistrationLotListAPI.as_view(), name='GoodsRegistrationLotListAPI'),
+    path('goods-registration-sn/list/api', GoodsRegistrationSerialListAPI.as_view(), name='GoodsRegistrationSerialListAPI'),
 ]

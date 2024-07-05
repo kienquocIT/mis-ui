@@ -96,7 +96,7 @@ class GoodsRegistrationDetailAPI(APIView):
         return resp.auto_return()
 
 
-class GoodsRegistrationProductWarehouseAPI(APIView):
+class GoodsRegistrationGeneralListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
@@ -104,10 +104,10 @@ class GoodsRegistrationProductWarehouseAPI(APIView):
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_PRD_WH).get(params)
-        return resp.auto_return(key_success='good_registration_product_warehouse')
+        return resp.auto_return(key_success='good_registration_general')
 
 
-class GoodsRegistrationProductWarehouseLotAPI(APIView):
+class GoodsRegistrationLotListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
@@ -115,10 +115,10 @@ class GoodsRegistrationProductWarehouseLotAPI(APIView):
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_PRD_WH_LOT).get(params)
-        return resp.auto_return(key_success='good_registration_product_warehouse_lot')
+        return resp.auto_return(key_success='good_registration_lot')
 
 
-class GoodsRegistrationProductWarehouseSerialAPI(APIView):
+class GoodsRegistrationSerialListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
@@ -126,4 +126,4 @@ class GoodsRegistrationProductWarehouseSerialAPI(APIView):
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_PRD_WH_SN).get(params)
-        return resp.auto_return(key_success='good_registration_product_warehouse_sn')
+        return resp.auto_return(key_success='good_registration_serial')

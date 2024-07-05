@@ -49,7 +49,7 @@ $(document).ready(function () {
                         {
                             className: 'wrap-text',
                             render: (data, type, row) => {
-                                return `<span data-wh-id="${row?.['warehouse_for_filter']?.['id']}" class="badge badge-soft-primary balance-wh">${row?.['warehouse_for_filter']?.['code']}</span>&nbsp;<span>${row?.['warehouse_for_filter']?.['title']}</span>`;
+                                return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-soft-primary balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
                             }
                         },
                         {

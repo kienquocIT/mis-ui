@@ -65,8 +65,8 @@ $(document).ready(function () {
 
     function CallProductWarehouse(sale_order_id, product_id, warehouse_id) {
         let dataParam = {}
-        dataParam['gre_item__so_item__product_id'] = product_id
-        dataParam['gre_item__sale_order_id'] = sale_order_id
+        dataParam['gre_item__product_id'] = product_id
+        dataParam['gre_item__so_item__sale_order_id'] = sale_order_id
         dataParam['warehouse_id'] = warehouse_id
         let ajax = $.fn.callAjax2({
             url: $('#prd-wh-call-btn').attr('data-url-prd-wh'),

@@ -50,11 +50,6 @@ $(async function () {
                     'gre_item__product_id': prod_data?.['product_data']?.['id'],
                 };
                 keyResp = 'good_registration_product_warehouse';
-                let thAvailable = table[0].querySelector('.th-available');
-                if (thAvailable) {
-                    $(thAvailable).empty();
-                    $(thAvailable).append(`${$trans.attr('data-available')}<i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Not included lend products"></i>`)
-                }
             }
 
             $.fn.callAjax2({

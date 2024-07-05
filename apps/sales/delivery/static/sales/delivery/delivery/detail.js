@@ -36,26 +36,38 @@ $(async function () {
             const _this = this
             let url = $url.attr('data-product-warehouse')
             let $form = $('#delivery_form');
+            let dataParam = {'product_id': prod_data?.['product_data']?.['id']};
+            let keyResp = 'warehouse_products_list';
+
+            let dataRegisConfig = prodTable.getRegisConfig();
+            let isRegis = dataRegisConfig?.['isRegis'];
+            let dataSO = dataRegisConfig?.['dataSO'];
+            if (isRegis === true && dataSO) {
+                url = $url.attr('data-product-regis');
+                dataParam = {
+                    'gre_item__so_item__sale_order_id': dataSO?.['id'],
+                    'gre_item__product_id': prod_data?.['product_data']?.['id'],
+                };
+                keyResp = 'good_registration_product_warehouse';
+            }
 
             $.fn.callAjax2({
                 'url': url,
                 'method': 'get',
-                'data': {
-                    'product_id': prod_data?.['product_data']?.['id'],
-                }
+                'data': dataParam,
             }).then((req) => {
                 const isKey = `${prod_data?.['product_data']?.['id']}.${prod_data?.['uom_data']?.['id']}`
                 let temp = _this.getWarehouseList
                 const res = $.fn.switcherResp(req);
                 const table = $('#productStockDetail')
-                let isData = res?.['warehouse_products_list'];
+                let isData = res?.[keyResp];
                 temp[isKey] = isData
                 _this.setWarehouseList = temp
                 // nếu có hoạt động picking kiểm tra có thông tin delivery_data ko.
                 // nếu có tạo thêm key là picked. mục đích show lên popup mục get cho user thấy.
                 let newData = []
                 for (let [idx, pwh] of isData.entries()) {
-                    pwh.picked = 0
+                    pwh['picked'] = 0
                     let finalRate = 1;
                     if (pwh?.['uom'] && prod_data?.['uom_data']) {
                         pwh['uom_stock'] = pwh?.['uom'];
@@ -109,23 +121,17 @@ $(async function () {
                                     return ``;
                                 }
                                 let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                                let checked = '';
                                 if (row?.['is_checked'] === true) {
-                                   return `<div class="form-check">
-                                            <input
-                                                type="checkbox"
-                                                class="form-check-input table-row-checkbox"
-                                                data-id="${row?.['id']}"
-                                                data-row="${dataRow}"
-                                                checked
-                                            >
-                                        </div>`;
+                                    checked = 'checked';
                                 }
                                 return `<div class="form-check">
                                             <input
-                                                type="checkbox"
+                                                type="radio"
                                                 class="form-check-input table-row-checkbox"
                                                 data-id="${row?.['id']}"
                                                 data-row="${dataRow}"
+                                                ${checked}
                                             >
                                         </div>`;
                             }
@@ -208,46 +214,7 @@ $(async function () {
                                 if ([1, 2].includes(data?.['product']?.['general_traceability_method'])) {
                                     let productWHID = this.getAttribute('data-id');
                                     if (data?.['product']?.['general_traceability_method'] === 1) {
-                                        let tableLot = $('#datable-delivery-wh-lot');
-                                        $.fn.callAjax2({
-                                                'url': tableLot.attr('data-url'),
-                                                'method': tableLot.attr('data-method'),
-                                                'data': {'product_warehouse_id': productWHID},
-                                                'isDropdown': true,
-                                            }
-                                        ).then(
-                                            (resp) => {
-                                                let dataLot = $.fn.switcherResp(resp);
-                                                if (dataLot) {
-                                                    if (dataLot.hasOwnProperty('warehouse_lot_list') && Array.isArray(dataLot.warehouse_lot_list)) {
-                                                        for (let lot of dataLot.warehouse_lot_list) {
-                                                            // exchange uom ratio
-                                                            let finalUOMRate = 1;
-                                                            let uomDeliveryRatio = data?.['uom_so']?.['ratio'];
-                                                            let uomWHRatio = lot?.['product_warehouse']?.['uom']?.['ratio'];
-                                                            if (uomDeliveryRatio && uomWHRatio) {
-                                                                finalUOMRate = uomWHRatio / uomDeliveryRatio
-                                                            }
-                                                            if (lot?.['quantity_import']) {
-                                                                lot['quantity_import'] = lot?.['quantity_import'] * finalUOMRate;
-                                                            }
-                                                            if (data?.['lot_data']) {
-                                                                for (let delivery_lot of data?.['lot_data']) {
-                                                                    if (delivery_lot?.['product_warehouse_lot_id'] === lot?.['id']) {
-                                                                        lot['quantity_delivery'] = delivery_lot?.['quantity_delivery'];
-                                                                        break;
-                                                                    }
-                                                                }
-                                                            }
-                                                            lot['uom_so'] = data?.['uom_so'];
-                                                        }
-                                                        prodTable.dataTableTableLot(dataLot.warehouse_lot_list);
-                                                        this.checked = true;
-                                                        $(row).css('background-color', '#ebfcf5');
-                                                    }
-                                                }
-                                            }
-                                        )
+                                        prodTable.loadLot(this, row, data, productWHID);
                                     }
                                     if (data?.['product']?.['general_traceability_method'] === 2) {
                                         prodTable.loadSerial(this, row, data, productWHID);
@@ -512,6 +479,83 @@ $(async function () {
             });
         }
 
+        getRegisConfig() {
+            let $eleSO = $('#inputSaleOrder');
+            let isRegis = false;
+            if (dataCompanyConfig?.['config']?.['cost_per_project'] === true && $eleSO.attr('data-so')) {
+                isRegis = true;
+                let dataSO = JSON.parse($eleSO.attr('data-so'));
+                return {'isRegis': isRegis, 'dataSO': dataSO}
+            }
+            return {'isRegis': isRegis, 'dataSO': {}}
+        }
+
+        loadLot(eleChecked, row, data, productWHID) {
+            let dataRegisConfig = prodTable.getRegisConfig();
+            let isRegis = dataRegisConfig?.['isRegis'];
+            let dataSO = dataRegisConfig?.['dataSO'];
+            let tableLot = $('#datable-delivery-wh-lot');
+            let url = tableLot.attr('data-url');
+            let dataParam = {'product_warehouse_id': productWHID};
+            let keyResp = 'warehouse_lot_list';
+            if (isRegis === true && dataSO) {
+                url = tableLot.attr('data-url-regis');
+                dataParam = {
+                    'gre_general__gre_item__so_item__sale_order_id': dataSO?.['id'],
+                    'gre_general__gre_item__product_id': data?.['product']?.['id'],
+                    'gre_general__warehouse_id': data?.['warehouse']?.['id'],
+                };
+                keyResp = 'good_registration_product_warehouse_lot';
+            }
+            $.fn.callAjax2({
+                    'url': url,
+                    'method': 'GET',
+                    'data': dataParam,
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let dataLot = $.fn.switcherResp(resp);
+                    if (dataLot) {
+                        if (dataLot.hasOwnProperty(keyResp) && Array.isArray(dataLot?.[keyResp])) {
+                            let dataLotFn = dataLot?.[keyResp];
+                            if (isRegis === true) {
+                                dataLotFn = [];
+                                for (let lot of dataLot?.[keyResp]) {
+                                    dataLotFn.push(lot?.['lot_registered']);
+                                }
+                            }
+                            for (let lot of dataLotFn) {
+                                // exchange uom ratio
+                                let finalRate = 1;
+                                if (data?.['uom_stock']?.['ratio'] && data?.['uom_delivery']?.['ratio']) {
+                                    if (data?.['uom_delivery']?.['ratio'] > 0) {
+                                        finalRate = data?.['uom_stock']?.['ratio'] / data?.['uom_delivery']?.['ratio'];
+                                    }
+                                }
+                                if (lot?.['quantity_import']) {
+                                    lot['quantity_import'] = lot?.['quantity_import'] * finalRate;
+                                }
+                                if (data?.['lot_data']) {
+                                    for (let delivery_lot of data?.['lot_data']) {
+                                        if (delivery_lot?.['product_warehouse_lot_id'] === lot?.['id']) {
+                                            lot['quantity_delivery'] = delivery_lot?.['quantity_delivery'];
+                                            break;
+                                        }
+                                    }
+                                }
+                                lot['uom_delivery'] = data?.['uom_delivery'];
+                            }
+                            prodTable.dataTableTableLot(dataLotFn);
+                            eleChecked.checked = true;
+                            $(row).css('background-color', '#ebfcf5');
+                        }
+                    }
+                }
+            )
+            return true;
+        };
+
         dataTableTableLot(data) {
             let $form = $('#delivery_form');
             let tableLot = $('#datable-delivery-wh-lot');
@@ -540,7 +584,7 @@ $(async function () {
                     {
                         targets: 2,
                         class: 'text-center',
-                        data: 'uom_so',
+                        data: 'uom_delivery',
                         render: (row, type, data) => {
                             return `<span class="table-row-uom">${row?.['title'] ? row?.['title'] : ''}</span>`;
                         }
@@ -595,17 +639,6 @@ $(async function () {
             }
         };
 
-        getRegisConfig() {
-            let $eleSO = $('#inputSaleOrder');
-            let isRegis = false;
-            if (dataCompanyConfig?.['config']?.['cost_per_project'] === true && $eleSO.attr('data-so')) {
-                isRegis = true;
-                let dataSO = JSON.parse($eleSO.attr('data-so'));
-                return {'isRegis': isRegis, 'dataSO': dataSO}
-            }
-            return {'isRegis': isRegis, 'dataSO': {}}
-        }
-
         loadSerial(eleChecked, row, data, productWHID) {
             let $form = $('#delivery_form');
             let dataRegisConfig = prodTable.getRegisConfig();
@@ -652,14 +685,12 @@ $(async function () {
                                         if (delivery_serial?.['product_warehouse_serial_id'] === serial?.['id']) {
                                             serial['is_checked'] = true;
                                             if ($form.attr('data-method').toLowerCase() === 'get') {
-                                                serial['uom_so'] = data?.['uom_so'];
                                                 detailData.push(serial);
                                             }
                                             break;
                                         }
                                     }
                                 }
-                                serial['uom_so'] = data?.['uom_so'];
                             }
                             if ($form.attr('data-method').toLowerCase() === 'get') {
                                 prodTable.dataTableTableSerial(detailData);
@@ -749,14 +780,6 @@ $(async function () {
                     {
                         targets: 3,
                         class: 'text-center',
-                        data: 'uom_so',
-                        render: (row, type, data) => {
-                            return `<span class="table-row-uom">${row?.['title'] ? row?.['title'] : ''}</span>`;
-                        }
-                    },
-                    {
-                        targets: 4,
-                        class: 'text-center',
                         data: 'warranty_start',
                         render: (row, type, data) => {
                             if (row) {
@@ -767,7 +790,7 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 5,
+                        targets: 4,
                         class: 'text-center',
                         data: 'warranty_end',
                         render: (row, type, data) => {
@@ -966,7 +989,7 @@ $(async function () {
                 $x.fn.renderCodeBreadcrumb(res);
                 const $saleOrder = $('#inputSaleOrder');
                 $saleOrder.val(res.sale_order_data.code)
-                $saleOrder.attr('data-so', JSON.stringify(res.sale_order_data));
+                $saleOrder.attr('data-so', JSON.stringify(res?.['sale_order_data']));
                 $('.title-code').text(res.code)
 
                 if (res.estimated_delivery_date) {

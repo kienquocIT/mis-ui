@@ -283,6 +283,7 @@
                                 id="datable-delivery-wh-lot"
                                 class="table nowrap w-100"
                                 data-url="{% url "WarehouseLotListAPI" %}"
+                                data-url-regis="{% url "GoodsRegistrationProductWarehouseLotAPI" %}"
                                 data-method="GET"
                             >
                                 <thead>
@@ -312,7 +313,6 @@
                                     <th class="w-5"></th>
                                     <th class="w-20">{% trans 'Vendor serial no.' %}</th>
                                     <th class="w-20">{% trans 'Serial no.' %}</th>
-                                    <th class="w-15">{% trans 'UOM' %}</th>
                                     <th class="w-20">{% trans 'Warranty start' %}</th>
                                     <th class="w-20">{% trans 'Warranty end' %}</th>
                                 </tr>
@@ -374,6 +374,7 @@
            data-contact="{% url 'ContactDetail' 1 %}"
            data-warehouse-prod="{% url 'WarehouseProductAPI' %}"
            data-product-warehouse="{% url 'WarehouseGetProductsListAPI' %}?interact=1"
+           data-product-regis="{% url 'GoodsRegistrationProductWarehouseAPI' %}"
     >
     <script id="request-data" type="application/json"></script>
     <div class="html-table-title">

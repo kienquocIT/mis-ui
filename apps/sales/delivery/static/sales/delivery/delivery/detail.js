@@ -611,21 +611,13 @@ $(async function () {
                     {
                         targets: 1,
                         class: 'text-center',
-                        data: 'quantity_import',
+                        data: 'quantity_available',
                         render: (row, type, data) => {
-                            return `<p class="table-row-quantity-initial">${row}</p>`;
+                            return `<p class="table-row-quantity-init">${row}</p>`;
                         }
                     },
                     {
                         targets: 2,
-                        class: 'text-center',
-                        data: 'quantity_available',
-                        render: (row, type, data) => {
-                            return `<p class="table-row-quantity-available">${row}</p>`;
-                        }
-                    },
-                    {
-                        targets: 3,
                         class: 'text-center',
                         data: 'uom_delivery',
                         render: (row, type, data) => {
@@ -633,7 +625,7 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 4,
+                        targets: 3,
                         class: 'text-center',
                         data: 'expire_date',
                         render: (row, type, data) => {
@@ -645,7 +637,7 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 5,
+                        targets: 4,
                         class: 'text-center',
                         data: 'manufacture_date',
                         render: (row, type, data) => {
@@ -657,7 +649,7 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 6,
+                        targets: 5,
                         class: 'text-center',
                         data: 'quantity_delivery',
                         render: (row, type, data, meta) => {
@@ -672,7 +664,13 @@ $(async function () {
                 rowCallback(row, data, index) {
                     $(`input.form-control`, row).on('change', function (e) {
                         prodTable.validateQuantity(this);
-                        prodTable.loadQuantityDeliveryByLot(this);
+                        let valueLotInit = row?.querySelector('.table-row-quantity-init')?.innerHTML;
+                        if (parseFloat(this.value) <= parseFloat(valueLotInit)) {
+                            prodTable.loadQuantityDeliveryByLot(this);
+                        } else {
+                            $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
+                            this.value = '0';
+                        }
                     });
                 },
             });
@@ -876,13 +874,13 @@ $(async function () {
                     $('#datable-delivery-wh-lot').DataTable().rows().every(function () {
                         let row = this.node();
                         let rowLotData = this.data();
-                        let valueLotInitial= row?.querySelector('.table-row-quantity-initial')?.innerHTML;
+                        let valueLotInit= row?.querySelector('.table-row-quantity-init')?.innerHTML;
                         let valueLotInput = row?.querySelector('.table-row-quantity-delivery')?.value;
                         newQuantity += parseFloat(valueLotInput);
-                        if (parseFloat(valueLotInput) > 0) {
+                        if (parseFloat(valueLotInput) > 0 && parseFloat(valueLotInput) <= parseFloat(valueLotInit)) {
                             lotData.push({
                                 'product_warehouse_lot_id': rowLotData?.['id'],
-                                'quantity_initial': parseFloat(valueLotInitial),
+                                'quantity_initial': parseFloat(valueLotInit),
                                 'quantity_delivery': parseFloat(valueLotInput),
                             })
                         }
@@ -898,10 +896,10 @@ $(async function () {
                         rowData['is_checked'] = true;
                         tableWH.DataTable().row(rowIndex).data(rowData).draw();
                     } else {
-                        $.fn.notifyB({description: $trans.attr('data-valid-delivery-picked')}, 'failure');
+                        $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
                         ele.value = '0';
                         prodTable.loadQuantityDeliveryByLot(ele);
-                        return false
+                        return false;
                     }
                 }
             }
@@ -941,7 +939,7 @@ $(async function () {
                         rowData['is_checked'] = true;
                         tableWH.DataTable().row(rowIndex).data(rowData).draw();
                     } else {
-                        $.fn.notifyB({description: $trans.attr('data-valid-delivery-picked')}, 'failure');
+                        $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
                         ele.checked = false;
                         prodTable.loadQuantityDeliveryBySerial(ele);
                         return false

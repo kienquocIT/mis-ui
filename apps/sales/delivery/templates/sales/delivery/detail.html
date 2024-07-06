@@ -257,12 +257,12 @@
                         <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-wh">
                             <table id="productStockDetail" class="table w-100">
                                 <thead>
-                                <tr>
+                                <tr class="bg-light">
                                     <th></th>
                                     <th>{% trans 'Warehouse Code' %}</th>
                                     <th>{% trans 'Warehouse Name' %}</th>
                                     <th><p class="stock-picked-exchange">{% trans 'Stock' %}</p></th>
-                                    <th>{% trans 'Available' %}<i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Not included registered products' %}"></i></th>
+                                    <th>{% trans 'Available' %}<i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Not included products of other projects' %}"></i></th>
                                     <th>{% trans 'Get' %}</th>
                                     <th>{% trans 'UOM' %}</th>
                                 </tr>
@@ -289,7 +289,7 @@
                                 data-method="GET"
                             >
                                 <thead>
-                                <tr>
+                                <tr class="bg-light">
                                     <th class="w-20">{% trans 'Lot number' %}</th>
                                     <th class="w-10">{% trans 'Quantity' %}</th>
                                     <th>{% trans 'Available' %}<i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Not included other registered products' %}"></i></th>
@@ -312,7 +312,7 @@
                                 data-method="GET"
                             >
                                 <thead>
-                                <tr>
+                                <tr class="bg-light">
                                     <th class="w-5"></th>
                                     <th class="w-20">{% trans 'Vendor serial no.' %}</th>
                                     <th class="w-20">{% trans 'Serial no.' %}</th>
@@ -367,7 +367,7 @@
            data-outstock="{% trans 'Out of stock' %}"
            data-select_address="{% trans 'Select this address' %}"
            data-valid-delivery-amount="{% trans 'Exceed stock quantity' %}"
-           data-valid-delivery-picked="{% trans 'Quantity delivery must less than equal quantity picked' %}"
+           data-exceed-quantity="{% trans 'Exceed available quantity' %}"
            data-picked-ready="{% trans 'Picked' %}"
     >
     <input type="hidden" id="url-factory"

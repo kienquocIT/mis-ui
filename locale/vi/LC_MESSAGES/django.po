@@ -7871,3 +7871,19 @@ msgstr "Nhân viên thuộc Vai trò"
 #
 msgid "not PR"
 msgstr "không theo PR"
+
+#
+msgid "Exceed available quantity"
+msgstr "Vượt quá số lượng khả dụng"
+
+#
+msgid "Not included products of other projects"
+msgstr "Không bao gồm sản phẩm của dự án khác"
+
+#
+msgid "Zones"
+msgstr "Vùng dữ liệu"
+
+#
+msgid "Zones detail"
+msgstr "Chi tiết vùng dữ liệu"

@@ -65,8 +65,8 @@ $(document).ready(function () {
 
     function CallProductWarehouse(sale_order_id, product_id, warehouse_id) {
         let dataParam = {}
-        dataParam['gre_item__so_item__product_id'] = product_id
-        dataParam['gre_item__sale_order_id'] = sale_order_id
+        dataParam['gre_item__product_id'] = product_id
+        dataParam['gre_item__so_item__sale_order_id'] = sale_order_id
         dataParam['warehouse_id'] = warehouse_id
         let ajax = $.fn.callAjax2({
             url: $('#prd-wh-call-btn').attr('data-url-prd-wh'),
@@ -75,8 +75,8 @@ $(document).ready(function () {
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('good_registration_product_warehouse')) {
-                    return data?.['good_registration_product_warehouse'];
+                if (data && typeof data === 'object' && data.hasOwnProperty('good_registration_general')) {
+                    return data?.['good_registration_general'];
                 }
                 return {};
             },
@@ -103,8 +103,8 @@ $(document).ready(function () {
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('good_registration_product_warehouse_lot')) {
-                    return data?.['good_registration_product_warehouse_lot'];
+                if (data && typeof data === 'object' && data.hasOwnProperty('good_registration_lot')) {
+                    return data?.['good_registration_lot'];
                 }
                 return {};
             },
@@ -131,8 +131,8 @@ $(document).ready(function () {
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('good_registration_product_warehouse_sn')) {
-                    return data?.['good_registration_product_warehouse_sn'];
+                if (data && typeof data === 'object' && data.hasOwnProperty('good_registration_serial')) {
+                    return data?.['good_registration_serial'];
                 }
                 return {};
             },

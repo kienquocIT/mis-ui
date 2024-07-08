@@ -379,15 +379,25 @@ $(document).ready(function () {
         frm.dataForm['is_serial_update'] = true
         frm.dataForm['serial_data'] = []
         $table_serial.find('tbody tr').each(function () {
-            frm.dataForm['serial_data'].push({
-                "serial_id": $(this).find('.vendor_serial_number').attr('data-serial-id') !== "null" ? $(this).find('.vendor_serial_number').attr('data-serial-id') : null,
-                "vendor_serial_number": $(this).find('.vendor_serial_number').val(),
-                "serial_number": $(this).find('.serial_number').val(),
-                "expire_date": $(this).find('.expire_date').val() ? moment($(this).find('.expire_date').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null,
-                "manufacture_date": $(this).find('.manufacture_date').val() ? moment($(this).find('.manufacture_date').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null,
-                "warranty_start": $(this).find('.warranty_start').val() ? moment($(this).find('.warranty_start').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null,
-                "warranty_end": $(this).find('.warranty_end').val() ? moment($(this).find('.warranty_end').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null,
-            })
+            let serial_id = $(this).find('.vendor_serial_number').attr('data-serial-id') !== "null" ? $(this).find('.vendor_serial_number').attr('data-serial-id') : null
+            let vendor_serial_number = $(this).find('.vendor_serial_number').val()
+            let serial_number = $(this).find('.serial_number').val()
+            let expire_date = $(this).find('.expire_date').val() ? moment($(this).find('.expire_date').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
+            let manufacture_date = $(this).find('.manufacture_date').val() ? moment($(this).find('.manufacture_date').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
+            let warranty_start = $(this).find('.warranty_start').val() ? moment($(this).find('.warranty_start').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
+            let warranty_end = $(this).find('.warranty_end').val() ? moment($(this).find('.warranty_end').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
+
+            if (vendor_serial_number && serial_number) {
+                frm.dataForm['serial_data'].push({
+                    "serial_id": serial_id,
+                    "vendor_serial_number": vendor_serial_number,
+                    "serial_number": serial_number,
+                    "expire_date": expire_date,
+                    "manufacture_date": manufacture_date,
+                    "warranty_start": warranty_start,
+                    "warranty_end": warranty_end,
+                })
+            }
         })
         return {
             url: frm.dataUrl,

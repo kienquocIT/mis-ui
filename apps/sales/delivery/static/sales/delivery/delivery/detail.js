@@ -37,6 +37,12 @@ $(async function () {
             let table = $('#productStockDetail');
             let url = $url.attr('data-product-warehouse')
             let $form = $('#delivery_form');
+            let titleMdl = $('#warehouseStockModal')[0].querySelector('.title-mdl');
+            if (titleMdl) {
+                $(titleMdl).empty();
+                $(titleMdl).append(`${$trans.attr('data-title-mdl')} (${prod_data?.['product_data']?.['title']})`);
+            }
+
             let dataParam = {'product_id': prod_data?.['product_data']?.['id']};
             let keyResp = 'warehouse_products_list';
 

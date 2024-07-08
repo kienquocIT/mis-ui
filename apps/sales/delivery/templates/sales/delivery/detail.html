@@ -249,7 +249,7 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="d-flex justify-content-between">
-                    <h5 class="text-primary ml-3 mt-2"><b>{% trans 'Get Product' %}</b></h5>
+                    <h5 class="text-primary ml-3 mt-2"><b class="title-mdl"></b></h5>
                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                 </div>
                 <div class="row">
@@ -370,6 +370,8 @@
            data-valid-delivery-amount="{% trans 'Exceed stock quantity' %}"
            data-exceed-quantity="{% trans 'Exceed available quantity' %}"
            data-picked-ready="{% trans 'Picked' %}"
+           data-available="{% trans 'Available' %}"
+           data-title-mdl="{% trans 'Get Product' %}"
     >
     <input type="hidden" id="url-factory"
            data-prod-detail="{% url 'ProductDetail' 1 %}"

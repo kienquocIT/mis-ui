@@ -7877,8 +7877,8 @@ msgid "Exceed available quantity"
 msgstr "Vượt quá số lượng khả dụng"
 
 #
-msgid "Not included products of other projects"
-msgstr "Không bao gồm sản phẩm của dự án khác"
+msgid "Not included products for other projects"
+msgstr "Không bao gồm sản phẩm dành cho dự án khác"
 
 #
 msgid "Zones"

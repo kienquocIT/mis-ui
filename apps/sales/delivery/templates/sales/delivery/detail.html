@@ -253,8 +253,8 @@
                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                 </div>
                 <div class="row">
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-wh">
+                    <div class="col-12 col-md-6 col-lg-6 border-right">
+                        <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-wh">
                             <table id="productStockDetail" class="table w-100">
                                 <thead>
                                 <tr class="bg-light">
@@ -262,7 +262,7 @@
                                     <th>{% trans 'Warehouse Code' %}</th>
                                     <th>{% trans 'Warehouse Name' %}</th>
                                     <th><p class="stock-picked-exchange">{% trans 'Stock' %}</p></th>
-                                    <th>{% trans 'Available' %}<i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Not included products of other projects' %}"></i></th>
+                                    <th>{% trans 'Available' %}<i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Not included products for other projects' %}"></i></th>
                                     <th>{% trans 'Get' %}</th>
                                     <th>{% trans 'UOM' %}</th>
                                 </tr>
@@ -281,7 +281,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
-                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-lot" hidden>
+                        <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-lot" hidden>
                             <table
                                 id="datable-delivery-wh-lot"
                                 class="table nowrap w-100"
@@ -304,7 +304,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-serial" hidden>
+                        <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-serial" hidden>
                             <table
                                 id="datable-delivery-wh-serial"
                                 class="table nowrap w-100"

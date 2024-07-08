@@ -372,9 +372,9 @@
                             <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                         </div>
                         <div class="row">
-                            <div class="col-6">
-                                <div class="row mb-2 border-bottom border-light">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
+                            <div class="col-6 border-right">
+                                <div class="row mb-2">
+                                    <div data-simplebar class="h-350p nicescroll-bar">
                                         <table
                                             id="datable-good-receipt-po-product"
                                             class="table nowrap w-100"
@@ -398,7 +398,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll" id="scroll-table-pr" hidden>
+                                    <div data-simplebar class="h-350p nicescroll-bar" id="scroll-table-pr" hidden>
                                         <table
                                             id="datable-good-receipt-purchase-request"
                                             class="table nowrap w-100"
@@ -423,8 +423,8 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="row mb-2 border-bottom border-light">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
+                                <div class="row mb-2">
+                                    <div data-simplebar class="h-350p nicescroll-bar">
                                         <table
                                             id="datable-good-receipt-warehouse"
                                             class="table nowrap w-100"
@@ -447,7 +447,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll" id="scroll-table-lot-serial" hidden>
+                                    <div data-simplebar class="h-350p nicescroll-bar" id="scroll-table-lot-serial" hidden>
                                         <div id="table-good-receipt-manage-lot-area" hidden>
                                             <table
                                                 id="datable-good-receipt-manage-lot"
@@ -515,11 +515,14 @@
             <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="row ml-2"><h6 class="text-primary"><b>{% trans 'Product list' %}</b></h6></div>
+                        <div class="d-flex justify-content-between">
+                            <h5 class="text-primary ml-3 mt-2"><b>{% trans 'Product list' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
                         <div class="row">
-                            <div class="col-6">
-                                <div class="row border-bottom border-light">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll">
+                            <div class="col-6 border-right">
+                                <div class="row">
+                                    <div data-simplebar class="h-750p nicescroll-bar">
                                         <table
                                             id="datable-good-receipt-ia-product"
                                             class="table nowrap w-100"
@@ -544,8 +547,8 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="row border-bottom border-light">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-ia-lot-serial" hidden>
+                                <div class="row">
+                                    <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-ia-lot-serial" hidden>
                                         <div id="table-good-receipt-ia-lot-area" hidden>
                                             <table
                                                 id="datable-good-receipt-ia-lot"

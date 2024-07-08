@@ -1669,6 +1669,12 @@ class GRDataTableHandle {
                                 </div>`;
                     }
                 },
+                {
+                    targets: 5,
+                    render: () => {
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                    }
+                },
             ],
             drawCallback: function () {
                 // add css to Dtb
@@ -1737,6 +1743,12 @@ class GRDataTableHandle {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-warranty-end" value="${row?.['warranty_end']}">
                                 </div>`;
+                    }
+                },
+                {
+                    targets: 7,
+                    render: () => {
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
                 },
             ],
@@ -1908,7 +1920,7 @@ class GRDataTableHandle {
                     targets: 8,
                     width: '1.30208333333%',
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
                 },
             ],
@@ -3430,18 +3442,6 @@ function filterFieldList(field_list, data_json) {
     return data_json;
 }
 
-function deleteRowTable(currentRow, $table) {
-    // Get the index of the current row within the DataTable
-    let rowIndex = $table.DataTable().row(currentRow).index();
-    let row = $table.DataTable().row(rowIndex);
-    // Delete current row
-    row.remove().draw();
-    // Re order
-    reOrderRowTable($table);
-    // Re calculate
-    GRCalculateHandle.calculateTable($table);
-}
-
 function reOrderRowTable($table) {
     for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
         let row = $table[0].tBodies[0].rows[i];
@@ -3452,4 +3452,10 @@ function reOrderRowTable($table) {
             row?.querySelector('.table-row-order').setAttribute('data-row', JSON.stringify(dataRow));
         }
     }
+}
+
+function deleteRowGR(currentRow, $table) {
+    let rowIndex = $table.DataTable().row(currentRow).index();
+    let row = $table.DataTable().row(rowIndex);
+    row.remove().draw();
 }

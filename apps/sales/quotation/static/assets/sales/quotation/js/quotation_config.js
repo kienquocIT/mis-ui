@@ -308,8 +308,8 @@ $(function () {
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            let btn_edit = `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover table-row-save" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-floppy-disk"></i></span></button>`;
-                            let btn_delete = `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                            let btn_edit = `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover table-row-save" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-floppy-disk"></i></span></button>`;
+                            let btn_delete = `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
                             if (is_sale_order === false) {
                                 return btn_edit + btn_delete;
                             } else {

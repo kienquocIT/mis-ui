@@ -49,7 +49,7 @@ $(async function () {
                     'gre_item__so_item__sale_order_id': dataSO?.['id'],
                     'gre_item__product_id': prod_data?.['product_data']?.['id'],
                 };
-                keyResp = 'good_registration_product_warehouse';
+                keyResp = 'good_registration_general';
             }
 
             $.fn.callAjax2({
@@ -537,7 +537,7 @@ $(async function () {
                     'gre_general__gre_item__product_id': data?.['product']?.['id'],
                     'gre_general__warehouse_id': data?.['warehouse']?.['id'],
                 };
-                keyResp = 'good_registration_product_warehouse_lot';
+                keyResp = 'good_registration_lot';
             }
             $.fn.callAjax2({
                     'url': url,
@@ -698,8 +698,9 @@ $(async function () {
                     'gre_general__gre_item__so_item__sale_order_id': dataSO?.['id'],
                     'gre_general__gre_item__product_id': data?.['product']?.['id'],
                     'gre_general__warehouse_id': data?.['warehouse']?.['id'],
+                    'sn_registered__is_delete': false,
                 };
-                keyResp = 'good_registration_product_warehouse_sn';
+                keyResp = 'good_registration_serial';
             }
             let detailData = [];
             $.fn.callAjax2({

@@ -189,8 +189,18 @@ $(function () {
             GRCalculateHandle.calculateMain(GRDataTableHandle.tableLineDetailPO, row);
         });
 
-        GRDataTableHandle.tableLineDetailPO.on('click', '.del-row', function() {
-            deleteRowTable(this.closest('tr'), GRDataTableHandle.tableLineDetailPO);
+        GRDataTableHandle.tableLineDetailPO.on('click', '.del-row', function () {
+            deleteRowGR(this.closest('tr'), GRDataTableHandle.tableLineDetailPO);
+            reOrderRowTable(GRDataTableHandle.tableLineDetailPO);
+            GRCalculateHandle.calculateTable(GRDataTableHandle.tableLineDetailPO);
+        });
+
+        GRDataTableHandle.tableLot.on('click', '.del-row', function () {
+            deleteRowGR(this.closest('tr'), GRDataTableHandle.tableLot);
+        });
+
+        GRDataTableHandle.tableSerial.on('click', '.del-row', function () {
+            deleteRowGR(this.closest('tr'), GRDataTableHandle.tableSerial);
         });
 
         // Action on click button collapse

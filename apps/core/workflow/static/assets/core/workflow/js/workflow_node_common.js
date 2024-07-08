@@ -1506,7 +1506,7 @@ class NodeDataTableHandle {
                         if (row?.['is_system'] === true) {
                             return ``;
                         } else {
-                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                            return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
                         }
                     }
                 },

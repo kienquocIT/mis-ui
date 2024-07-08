@@ -521,8 +521,12 @@ $(async function () {
             let $eleSO = $('#inputSaleOrder');
             let isRegis = false;
             if (dataCompanyConfig?.['config']?.['cost_per_project'] === true && $eleSO.attr('data-so')) {
-                isRegis = true;
                 let dataSO = JSON.parse($eleSO.attr('data-so'));
+                if (dataSO?.['opportunity']) {
+                    if (Object.keys(dataSO?.['opportunity']).length !== 0) {
+                        isRegis = true;
+                    }
+                }
                 return {'isRegis': isRegis, 'dataSO': dataSO}
             }
             return {'isRegis': isRegis, 'dataSO': {}}

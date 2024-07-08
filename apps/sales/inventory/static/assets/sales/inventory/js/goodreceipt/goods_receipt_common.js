@@ -537,6 +537,7 @@ class GRLoadDataHandle {
     };
 
     static loadAreaLotSerial(is_lot = false, is_serial = false) {
+        let $form = $('#frm_good_receipt_create');
         for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
             eleImport.setAttribute('disabled', 'true');
         }
@@ -545,11 +546,15 @@ class GRLoadDataHandle {
         GRDataTableHandle.tableSerial.DataTable().clear().draw();
         if (is_lot === true) {  // lot
             $('#table-good-receipt-manage-lot-area')[0].removeAttribute('hidden');
-            $('#btn-add-manage-lot')[0].removeAttribute('disabled');
+            if ($form.attr('data-method').toLowerCase() !== 'get') {
+                $('#btn-add-manage-lot')[0].removeAttribute('disabled');
+            }
             $('#table-good-receipt-manage-serial-area')[0].setAttribute('hidden', 'true');
         } else if (is_serial === true) {  // serial
             $('#table-good-receipt-manage-serial-area')[0].removeAttribute('hidden');
-            $('#btn-add-manage-serial')[0].removeAttribute('disabled');
+            if ($form.attr('data-method').toLowerCase() !== 'get') {
+                $('#btn-add-manage-serial')[0].removeAttribute('disabled');
+            }
             $('#table-good-receipt-manage-lot-area')[0].setAttribute('hidden', 'true');
         }
     };

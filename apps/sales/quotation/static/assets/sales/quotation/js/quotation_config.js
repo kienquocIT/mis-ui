@@ -1446,10 +1446,10 @@ $(function () {
             let modal = $ele[0].closest('.modal');
             if (modal) {
                 let zoneEditVal = boxZonesEditingAdd.val();
-                let zoneHiddenVal = boxZonesEditingAdd.val();
+                let zoneHiddenVal = boxZonesHiddenAdd.val();
                 if (modal.id === 'editZoneMdl') {
                     zoneEditVal = boxZonesEditingEdit.val();
-                    zoneHiddenVal = boxZonesEditingEdit.val();
+                    zoneHiddenVal = boxZonesHiddenEdit.val();
                 }
                 let isDuplicate = zoneEditVal.some(value => zoneHiddenVal.includes(value));
                 if (isDuplicate) {

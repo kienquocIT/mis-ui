@@ -24,7 +24,14 @@ class GoodsTransferCreate(View):
         breadcrumb='GOODS_TRANSFER_CREATE_PAGE'
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp = ServerAPI(
+            request=request,
+            user=request.user,
+            url=ApiURL.COMPANY_DETAIL + '/' + request.user.company_current_data.get('id', None)
+        ).get()
+        return {
+            'is_project': resp.result['config_inventory_management'].get('cost_per_project')
+        }, status.HTTP_200_OK
 
 
 class GoodsTransferDetail(View):

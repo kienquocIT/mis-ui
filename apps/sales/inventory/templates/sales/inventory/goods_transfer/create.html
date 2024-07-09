@@ -38,6 +38,7 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    {{ data.is_project | json_script:"is_project" }}
     <script id="trans-script"
             data-trans-product-list="{% trans 'Select product' %}"
             data-trans-out-warehouse-list="{% trans 'Select out warehouse' %}"
@@ -46,6 +47,9 @@
     <script id="url-script"
             data-url-product-list="{% url 'WarehouseGetProductsListAPIForGoodsTransfer' %}"
             data-url-warehouse-list="{% url 'WareHouseListAPI' %}"
+            data-url-project-product-list="{% url 'ProjectProductListAPI' %}"
+            data-url-none-project-product-list="{% url 'NoneProjectProductListAPI' %}"
+            data-url-so-list="{% url 'SaleOrderListAPI' %}"
     ></script>
 
     <form id="frm_goods_transfer_create"
@@ -108,17 +112,24 @@
                                     <thead>
                                     <tr>
                                         <th style="min-width: 50px"></th>
-                                        <th style="min-width: 230px">{% trans 'From warehouse' %}</th>
-                                        <th style="min-width: 300px">{% trans 'Product' %}</th>
-                                        <th style="min-width: 200px">{% trans 'UOM' %}</th>
-                                        <th style="min-width: 200px">
+                                        <th class="required" style="min-width: 230px">{% trans 'From warehouse' %}</th>
+                                        <th class="required" style="min-width: 300px">{% trans 'Product' %}</th>
+                                        <th style="min-width: 100px">{% trans 'UOM' %}</th>
+                                        <th style="min-width: 300px" id="tr_so" hidden>
+                                            {% trans 'Project sale order' %}
+                                            <i class="fas fa-info-circle icon-info"
+                                               data-bs-toggle="tooltip"
+                                               data-bs-placement="right"
+                                               data-bs-original-title="{% trans 'None-project products if sale order is null' %}"></i>
+                                        </th>
+                                        <th class="required" style="min-width: 200px">
                                             {% trans 'Quantity' %}
                                             <i class="fas fa-info-circle icon-info"
                                                data-bs-toggle="tooltip"
                                                data-bs-placement="right"
                                                data-bs-original-title="{% trans 'Click the button besides input element to select (for serial/lot product) of enter number for default product.' %}"></i>
                                         </th>
-                                        <th style="min-width: 230px">{% trans 'To warehouse' %}</th>
+                                        <th class="required" style="min-width: 230px">{% trans 'To warehouse' %}</th>
                                         <th style="min-width: 300px">{% trans 'Cost' %}</th>
                                         <th style="min-width: 300px">{% trans 'Subtotal price' %}</th>
                                         <th class="text-center" style="min-width: 100px">{% trans 'Action' %}</th>

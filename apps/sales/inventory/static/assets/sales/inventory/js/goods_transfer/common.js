@@ -11,6 +11,8 @@ let NOW_ROW = null
 let IS_DETAIL_PAGE = false
 let IS_UPDATE_PAGE = false
 let DOC_DONE = false
+const is_project = $('#is_project').text() === 'true';
+$('#tr_so').prop('hidden', !is_project)
 
 function LoadDate() {
     $date.daterangepicker({
@@ -93,7 +95,7 @@ function loadDefaultTableLineDetail() {
     }
 }
 
-function loadProduct(ele, data) {
+function loadProductWarehouse(ele, data) {
     ele.initSelect2({
         placeholder: $trans_script.attr('data-trans-product-list'),
         allowClear: true,
@@ -109,7 +111,11 @@ function loadProduct(ele, data) {
         keyId: 'id',
         keyText: 'product.title',
     }).on('change', function () {
+        NOW_ROW = $(this).closest('tr')
         if ($(this).val()) {
+            if (is_project) {
+                callProjectProductList(NOW_ROW.find('.row_sale_order').val())
+            }
             let selected = SelectDDControl.get_data_from_idx(ele, ele.val())
             ele.closest('tr').find('.uom').text(selected?.['uom']?.['title'])
             ele.closest('tr').find('.quantity').attr('data-quantity-limit', selected?.['stock_amount'])
@@ -147,6 +153,7 @@ function loadProduct(ele, data) {
             ele.closest('tr').find('.btn-select-detail').attr('data-bs-toggle', '')
             ele.closest('tr').find('.btn-select-detail').attr('data-bs-target', '')
             ele.closest('tr').find('.unit-price').attr('value', 0)
+            ele.closest('tr').find('.subtotal-price').attr('value', 0)
         }
         $.fn.initMaskMoney2()
     })
@@ -165,7 +172,7 @@ function loadFromWH(ele, data) {
         keyId: 'id',
         keyText: 'title',
     }).on('change', function () {
-        loadProduct(ele.closest('tr').find('.prd'))
+        loadProductWarehouse(ele.closest('tr').find('.prd'))
         loadTargetWH(ele.closest('tr').find('.to-wh'), null, $(this))
         ele.closest('tr').find('.prd').empty()
         ele.closest('tr').find('.to-wh').empty()
@@ -211,6 +218,12 @@ $btn_add_row_line_detail.on('click', function () {
         <td><select class="from-wh form-select select2"></select></td>
         <td><select class="prd form-select select2"></select></td>
         <td><span class="uom"></span></td>
+        <td ${is_project ? '' : 'hidden'}>
+            <select class="form-select select2 row_sale_order"
+                    data-method="GET"
+                    data-url="${$url_script.attr('data-url-so-list')}">
+            </select>
+        </td>
         <td>
             <div class="input-group">
                 <span class="input-group-text btn-select-detail">
@@ -232,8 +245,10 @@ $btn_add_row_line_detail.on('click', function () {
             </button>
         </td>
     </tr>`)
+    NOW_ROW = row_html
     $tab_line_detail_datatable.find('tbody').append(row_html)
     loadFromWH(row_html.find('.from-wh'))
+    loadSaleOrder(row_html.find('.row_sale_order'))
 })
 
 $(document).on("click", '.btn-delete', function () {
@@ -253,6 +268,11 @@ $(document).on("change", '.quantity', function () {
         let new_subtotal_price = parseFloat($(this).val()) * unit_price
         $(this).closest('tr').find('.subtotal-price').attr('value', new_subtotal_price)
         $.fn.initMaskMoney2()
+    }
+
+    if (parseFloat($(this).val()) > parseFloat($(this).attr('max'))) {
+        $(this).val(0)
+        $.fn.notifyB({description: `Max quantity can be transferred is ${$(this).attr('max')}`}, 'failure')
     }
 });
 
@@ -603,21 +623,123 @@ function loadLotTable(data, lot_selected=[]) {
     });
 }
 
+function loadSaleOrder(ele, data) {
+    ele.initSelect2({
+        allowClear: true,
+        ajax: {
+            url: ele.attr('data-url') + `?has_regis=1}`,
+            method: 'GET',
+        },
+        templateResult: function(data) {
+            let ele = $('<div class="row"></div>');
+            ele.append(`<div class="col-6"><span class="badge badge-soft-primary">${data.data?.['code']}</span>&nbsp;&nbsp;&nbsp;${data.data?.['title']}</div>
+                        <div class="col-6 fst-italic"><span class="badge badge-soft-blue badge-sm">${data.data?.['opportunity']?.['code']}</span>&nbsp;&nbsp;&nbsp;${data.data?.['opportunity']?.['title']}</div>`);
+            return ele;
+        },
+        data: (data ? data : null),
+        keyResp: 'sale_order_list',
+        keyId: 'id',
+        keyText: 'title',
+    }).on('change', function () {
+        NOW_ROW = $(this).closest('tr')
+        if ($(this).val()) {
+            callProjectProductList($(this).val())
+        }
+        else {
+            alert(1)
+        }
+    })
+}
+
+function callProjectProductList(sale_order_id) {
+    if (sale_order_id) {
+        let gre_item__product_id = SelectDDControl.get_data_from_idx(
+            NOW_ROW.find('.prd'),
+            NOW_ROW.find('.prd').val()
+        )?.['product']?.['id']
+        let project_product_list_ajax = $.fn.callAjax2({
+            url: $url_script.attr('data-url-project-product-list'),
+            data: {
+                'goods_registration__sale_order_id': sale_order_id,
+                'warehouse_id': NOW_ROW.find('.from-wh').val(),
+                'gre_item__product_id': gre_item__product_id
+            },
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    return data?.['project_product_list'] ? data?.['project_product_list'] : [];
+                }
+                return [];
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([project_product_list_ajax]).then(
+            (results) => {
+                if (results[0].length > 0) {
+                    console.log(results[0][0])
+                    let general_traceability_method = results[0][0]?.['product']?.['general_traceability_method']
+                    if (general_traceability_method === 0) {
+                        let max_transfer_quantity = results[0][0]?.['quantity']
+                        NOW_ROW.find('.quantity').attr(
+                            'max', max_transfer_quantity
+                        ).attr(
+                            'placeholder', `max = ${max_transfer_quantity}`
+                        )
+                    }
+                    if (general_traceability_method === 1) {
+                        let max_transfer_quantity = results[0][0]?.['quantity']
+                        NOW_ROW.find('.quantity').attr(
+                            'max', max_transfer_quantity
+                        ).attr(
+                            'placeholder', `max = ${max_transfer_quantity}`
+                        )
+                        loadLotTable(
+                            results[0][0]?.['lot_detail'],
+                            JSON.parse(NOW_ROW.find('.selected-lot').text())
+                        )
+                    }
+                    if (general_traceability_method === 2) {
+                        let max_transfer_quantity = results[0][0]?.['quantity']
+                        NOW_ROW.find('.quantity').attr(
+                            'max', max_transfer_quantity
+                        ).attr(
+                            'placeholder', `max = ${max_transfer_quantity}`
+                        )
+                        loadSerialTable(
+                            results[0][0]?.['serial_detail'],
+                            JSON.parse(NOW_ROW.find('.selected-serial').text())
+                        )
+                    }
+                } else {
+                    $.fn.notifyB({description: `This product in this warehouse is empty for this Sale order`}, 'warning')
+                }
+            })
+    }
+    else {
+        console.log('none-project')
+    }
+}
+
 $(document).on("click", '.btn-select-detail', function () {
     NOW_ROW = $(this).closest('tr')
-    if ($(this).attr('data-product-type') === '0') {
-
-    }
-    else if ($(this).attr('data-product-type') === '1') {
-        loadLotTable(
-            JSON.parse($(this).find('.detail-lot').text()),
-            JSON.parse(NOW_ROW.find('.selected-lot').text())
-        )
-    }
-    else if ($(this).attr('data-product-type') === '2') {
-        let data = JSON.parse($(this).find('.detail-serial').text())
-        let data_selected = JSON.parse(NOW_ROW.find('.selected-serial').text())
-        loadSerialTable(data, data_selected)
+    if (!is_project) {
+        if ($(this).attr('data-product-type') === '0') {}
+        else if ($(this).attr('data-product-type') === '1') {
+            loadLotTable(
+                JSON.parse($(this).find('.detail-lot').text()),
+                JSON.parse(NOW_ROW.find('.selected-lot').text())
+            )
+        }
+        else if ($(this).attr('data-product-type') === '2') {
+            let data = JSON.parse($(this).find('.detail-serial').text())
+            let data_selected = JSON.parse(NOW_ROW.find('.selected-serial').text())
+            loadSerialTable(data, data_selected)
+        }
     }
 });
 
@@ -697,7 +819,7 @@ function LoadDetailGoodsTransfer(option='detail') {
                 $date.val(moment(data?.['date_transfer'].split(' ')[0]).format('DD/MM/YYYY'))
                 $('#note').val(data?.['note'])
 
-                for (const row_data of data?.['goods_transfer_datas']) {
+                for (const row_data of data?.['goods_transfer_data']) {
                     $tab_line_detail_datatable.find('tbody .dataTables_empty').closest('tr').remove()
                     let index = $tab_line_detail_datatable.find('tbody tr').length + 1
                     let row_html = $(`<tr>
@@ -728,7 +850,7 @@ function LoadDetailGoodsTransfer(option='detail') {
                     </tr>`)
                     $tab_line_detail_datatable.find('tbody').append(row_html)
                     loadFromWH(row_html.find('.from-wh'), row_data?.['product_warehouse']?.['from_warehouse_mapped'])
-                    loadProduct(row_html.find('.prd'), row_data?.['product_warehouse'])
+                    loadProductWarehouse(row_html.find('.prd'), row_data?.['product_warehouse'])
                     row_html.find('.uom').text(row_data?.['product_warehouse']?.['uom']?.['title'])
                     row_html.find('.quantity').val(row_data?.['quantity'])
                     row_html.find('.selected-lot').text(JSON.stringify(row_data?.['lot_data']))
@@ -830,6 +952,7 @@ class GoodsTransferHandle {
                         flag = 2
                     }
                 }
+
                 if (
                     prd_wh?.['id'] && wh?.['id'] && target_wh?.['id']
                     && prd_wh?.['uom']?.['id'] && parseFloat(quantity)
@@ -837,15 +960,17 @@ class GoodsTransferHandle {
                     && parseFloat(row.find('.subtotal-price').attr('value'))
                 ) {
                     data_line_detail.push({
-                        'warehouse_product': prd_wh?.['id'],
+                        'product_warehouse': prd_wh?.['id'],
                         'warehouse': wh?.['id'],
+                        'product': prd_wh?.['product']?.['id'],
+                        'sale_order': row.find('.row_sale_order').val(),
                         'end_warehouse': target_wh?.['id'],
                         'uom': prd_wh?.['uom']?.['id'],
+                        'lot_data': lot_changes,
+                        'sn_data': sn_changes,
                         'quantity': parseFloat(quantity),
                         'unit_cost': parseFloat(row.find('.unit-price').attr('value')),
                         'subtotal': parseFloat(row.find('.subtotal-price').attr('value')),
-                        'sn_changes': sn_changes,
-                        'lot_changes': lot_changes,
                     })
                 }
                 else {
@@ -853,7 +978,7 @@ class GoodsTransferHandle {
                 }
             }
         })
-        frm.dataForm['goods_transfer_datas'] = data_line_detail
+        frm.dataForm['goods_transfer_data'] = data_line_detail
         if (flag === null) {
             return frm;
         }

@@ -7871,3 +7871,11 @@ msgstr "Nhân viên thuộc Vai trò"
 #
 msgid "not PR"
 msgstr "không theo PR"
+
+#
+msgid "None-project products if sale order is null"
+msgstr "Lấy sản phẩm không thuộc về dự án nào nếu không chọn Đơn hàng"
+
+#
+msgid "Project sale order"
+msgstr "Đơn hàng dự án"

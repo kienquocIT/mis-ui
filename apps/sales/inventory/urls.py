@@ -17,7 +17,7 @@ from apps.sales.inventory.views import (
     GoodsRegistrationDetail, GoodsRegistrationDetailAPI, GoodsRegistrationListAPI,
     GoodsRegistrationGeneralListAPI,
     GoodsRegistrationLotListAPI,
-    GoodsRegistrationSerialListAPI
+    GoodsRegistrationSerialListAPI, ProjectProductListAPI, NoneProjectProductListAPI
 )
 
 urlpatterns = [
@@ -90,4 +90,6 @@ urlpatterns += [
     path('goods-registration-general/list/api', GoodsRegistrationGeneralListAPI.as_view(), name='GoodsRegistrationGeneralListAPI'),
     path('goods-registration-lot/list/api', GoodsRegistrationLotListAPI.as_view(), name='GoodsRegistrationLotListAPI'),
     path('goods-registration-sn/list/api', GoodsRegistrationSerialListAPI.as_view(), name='GoodsRegistrationSerialListAPI'),
+    path('product-list-for-project/list/api', ProjectProductListAPI.as_view(), name='ProjectProductListAPI'),
+    path('product-list-for-none-project/list/api', NoneProjectProductListAPI.as_view(), name='NoneProjectProductListAPI'),
 ]

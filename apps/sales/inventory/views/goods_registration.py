@@ -96,6 +96,7 @@ class GoodsRegistrationDetailAPI(APIView):
         return resp.auto_return()
 
 
+# for get Project products by SO-WH-PRD
 class GoodsRegistrationGeneralListAPI(APIView):
     @mask_view(
         auth_require=True,
@@ -127,3 +128,26 @@ class GoodsRegistrationSerialListAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_PRD_WH_SN).get(params)
         return resp.auto_return(key_success='good_registration_serial')
+
+
+# for get Project products for Transfer
+class ProjectProductListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST_FOR_PROJECT).get(params)
+        return resp.auto_return(key_success='project_product_list')
+
+
+class NoneProjectProductListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST_FOR_NONE_PROJECT).get(params)
+        return resp.auto_return(key_success='none_project_product_list')

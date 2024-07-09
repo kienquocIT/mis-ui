@@ -2549,9 +2549,6 @@ class WFRTControl {
                                         dmUploaderAttr = 'disable';
                                     }
                                     $(this).changePropertiesElementIsZone(optsSetZone);
-                                    $(this).find('input, select, textarea, button, span, p').each(function (event) {
-                                        $(this).changePropertiesElementIsZone(optsSetZone);
-                                    })
                                     // case: input is Files
                                     if ($(this).hasClass('dm-uploader-ids')) {
                                         let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
@@ -2600,7 +2597,7 @@ class WFRTControl {
                                     $(this).changePropertiesElementIsZone(optsSetZone);
                                     $(this).find('input, select, textarea, button, span, p').each(function (event) {
                                         $(this).changePropertiesElementIsZone(optsSetZone);
-                                    })
+                                    });
                                 })
                             });
                         }
@@ -2869,10 +2866,10 @@ class WFRTControl {
             'add_class_active': false,  // flag to know element is active zone
             'add_empty_value': false, ...opts
         }
-        if (config.add_require_label === true) {
+        if (config?.['add_require_label'] === true) {
             $(ele$).closest('.form-group').find('.form-label').addClass('required');
         }
-        if (config.add_disable === true) {
+        if (config?.['add_disable'] === true) {
             if (!$(ele$).hasClass('zone-active')) {
                 $(ele$).attr('disabled', 'disabled');
                 if ($(ele$).is('div')) {
@@ -2881,13 +2878,14 @@ class WFRTControl {
                 }
             }
         }
-        if (config.remove_required === true) {
+        if (config?.['remove_required'] === true) {
             $(ele$).removeAttr('required');
         }
-        if (config.remove_disable === true) {
+        if (config?.['remove_disable'] === true) {
             $(ele$).removeAttr('disabled');
+            $(ele$).removeClass('bg-light');
         }
-        if (config.add_readonly === true) {
+        if (config?.['add_readonly'] === true) {
             if (!$(ele$).hasClass('zone-active')) {
                 if ($(ele$).is('div')) {
                     $(ele$).addClass('bg-light');
@@ -2896,24 +2894,25 @@ class WFRTControl {
                 }
             }
         }
-        if (config.remove_readonly === true) {
+        if (config?.['remove_readonly'] === true) {
             $(ele$).removeAttr('readonly');
+            $(ele$).removeClass('bg-light');
         }
-        if (config.add_require === true) {
+        if (config?.['add_require'] === true) {
             $(ele$).prop('required', true);
         }
-        if (config.add_border === true) {
+        if (config?.['add_border'] === true) {
             $(ele$).addClass('border-warning');
         }
 
-        if (config.add_class_active === true) {  // flag to know which fields are active by WF zones
+        if (config?.['add_class_active'] === true) {  // flag to know which fields are active by WF zones
             $(ele$).addClass('zone-active');
         }
-        if (config.add_empty_value === true) {  // set value to empty
+        if (config?.['add_empty_value'] === true) {  // set value to empty
             if (!$(ele$).hasClass('zone-active')) {
-                if ($(ele$).is('input')) {  // if input
+                if ($(ele$).is('input')) {  // if <input>
                     $(ele$).val('');
-                    if ($(ele$).hasClass('mask-money')) {  // if input mask-money
+                    if ($(ele$).hasClass('mask-money')) {  // if <input class="mask-money">
                         $(ele$).attr('value', '');
                     }
                     // add class hidden-zone (for use css in my-style.css)
@@ -2926,13 +2925,13 @@ class WFRTControl {
                     $(ele$).initSelect2({placeholder: $.fn.transEle.attr('data-hidden-by-workflow-config'),});
                     $(ele$).next('.select2-container').addClass('hidden-zone');
                 }
-                if ($(ele$).is('textarea')) {  // if textarea
+                if ($(ele$).is('textarea')) {  // if <textarea>
                     $(ele$).val('');
                     // add class hidden-zone (for use css in my-style.css)
                     $(ele$).attr('placeholder', $.fn.transEle.attr('data-hidden-by-workflow-config'));
                     $(ele$).addClass('hidden-zone');
                 }
-                if ($(ele$).is('span')) {  // if span (only span that have attr data-zone)
+                if ($(ele$).is('span')) {  // if <span> (only span that have attr data-zone)
                     if ($(ele$).attr('data-zone')) {
                         if ($(ele$).hasClass('mask-money')) {
                             $(ele$).attr('data-init-money', '').html(``);
@@ -2941,15 +2940,17 @@ class WFRTControl {
                         }
                     }
                 }
-                if ($(ele$).is('button')) {  // if button (only button that have attr data-zone)
+                if ($(ele$).is('p')) {  // if <p>
+                    $(ele$).html(`${$.fn.transEle.attr('data-hidden-by-workflow-config')}`);
+                }
+                if ($(ele$).is('button')) {  // if <button> (only button that have attr data-zone)
                     if ($(ele$).attr('data-zone')) {
                         $(ele$).attr('hidden', 'true');
                     }
                 }
             }
         }
-
-        // active border for select2
+        // active border for <select2>
         if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible"))
             WFRTControl.changePropertiesElementIsZone($(ele$).next('.select2-container').find('.select2-selection'), config)
     }

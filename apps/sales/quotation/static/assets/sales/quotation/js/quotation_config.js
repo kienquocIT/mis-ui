@@ -839,6 +839,22 @@ $(function () {
             loadInitS2(boxZonesHiddenAdd, [], {'application_id': "b9650500-aba7-44e3-b6e0-2542622702a3"}, $modal);
         });
 
+        boxZonesEditingAdd.on('change', function () {
+            validateZoneDuplicated(boxZonesEditingAdd);
+        });
+
+        boxZonesHiddenAdd.on('change', function () {
+            validateZoneDuplicated(boxZonesHiddenAdd);
+        });
+
+        boxZonesEditingEdit.on('change', function () {
+            validateZoneDuplicated(boxZonesEditingEdit);
+        });
+
+        boxZonesHiddenEdit.on('change', function () {
+            validateZoneDuplicated(boxZonesHiddenEdit);
+        });
+
         $btnCAdd.on('click', function () {
             if (boxEmployeeAdd.val() && (boxZonesEditingAdd.val() && boxZonesEditingAdd.val().length > 0) || (boxZonesHiddenAdd.val() && boxZonesHiddenAdd.val().length > 0)) {
                 $.fn.callAjax2({
@@ -1424,6 +1440,25 @@ $(function () {
                     $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
                 }
             )
+        }
+
+        function validateZoneDuplicated($ele) {
+            let modal = $ele[0].closest('.modal');
+            if (modal) {
+                let zoneEditVal = boxZonesEditingAdd.val();
+                let zoneHiddenVal = boxZonesEditingAdd.val();
+                if (modal.id === 'editZoneMdl') {
+                    zoneEditVal = boxZonesEditingEdit.val();
+                    zoneHiddenVal = boxZonesEditingEdit.val();
+                }
+                let isDuplicate = zoneEditVal.some(value => zoneHiddenVal.includes(value));
+                if (isDuplicate) {
+                    $.fn.notifyB({description: 'Editing zone and hidden zone must be different'}, 'failure');
+                    $ele.empty();
+                    return false;
+                }
+            }
+            return true;
         }
 
 

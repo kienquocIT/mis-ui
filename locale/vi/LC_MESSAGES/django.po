@@ -7887,3 +7887,7 @@ msgstr "Vùng dữ liệu"
 #
 msgid "Zones detail"
 msgstr "Chi tiết vùng dữ liệu"
+
+#
+msgid "Editing zone and hidden zone must be different"
+msgstr "Vùng chỉnh sửa và vùng bị ẩn phải khác nhau"

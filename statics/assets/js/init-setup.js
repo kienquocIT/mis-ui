@@ -2524,20 +2524,19 @@ class WFRTControl {
                     arrTmpFind.map((item) => {
                         pageEle.find(item).each(function (event) {
                             $(this).changePropertiesElementIsZone({
-                                add_disable: true,
-                                add_readonly: true,
-                                remove_required: true,
+                                'add_disable': true,
+                                'add_readonly': true,
+                                'remove_required': true,
                             });
                         });
                     })
                 } else {
                     $(this).changePropertiesElementIsZone({
-                        add_disable: true,
-                        add_readonly: true,
-                        remove_required: true,
+                        'add_disable': true,
+                        'add_readonly': true,
+                        'remove_required': true,
                     });
                 }
-
                 // case: input is Files
                 if ($(this).hasClass('dm-uploader-ids')) {
                     let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');

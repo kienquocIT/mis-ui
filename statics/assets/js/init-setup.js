@@ -2326,9 +2326,9 @@ class WFRTControl {
                         // zones handler
                         if (window.location.href.includes('/update/')) {
                             if (actionMySelf.hasOwnProperty('zones') && actionMySelf.hasOwnProperty('zones_hidden') && actionMySelf.hasOwnProperty('is_edit_all_zone')) {
-                                WFRTControl.activeButtonOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden'], actionMySelf['is_edit_all_zone']);
+                                WFRTControl.activeBtnOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden'], actionMySelf['is_edit_all_zone']);
                             } else {
-                                WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
+                                WFRTControl.activeSetZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
                             }
                             // active btn save change and back if current employee is owner, status is finished
                             let eleDocCR = $('#documentCR');
@@ -2338,7 +2338,7 @@ class WFRTControl {
                             }
                         }
                         if (window.location.href.includes('/detail/')) {
-                            WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
+                            WFRTControl.activeSetZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
                             // active btn change and cancel if current employee is owner, status is finished
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
                             if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
@@ -2385,7 +2385,7 @@ class WFRTControl {
                             if (workflow_current) {
                                 // zones handler
                                 if (window.location.href.includes('/create/')) {
-                                    WFRTControl.activeButtonOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
+                                    WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
                                 }
                                 // collab out form handler
                                 WFRTControl.setCollabOutFormData(workflow_current['collab_out_form']);
@@ -2680,7 +2680,7 @@ class WFRTControl {
         }
     }
 
-    static activeButtonOpenZone(zonesData, zonesHiddenData, isEditAllZone) {
+    static activeBtnOpenZone(zonesData, zonesHiddenData, isEditAllZone) {
         if (window.location.href.includes('/update/') || window.location.href.includes('/create')) {
             WFRTControl.setZoneData(zonesData);
             WFRTControl.setZoneHiddenData(zonesHiddenData);
@@ -2691,7 +2691,7 @@ class WFRTControl {
         }
     }
 
-    static activeDataZoneHiddenMySelf(zonesHiddenData) {
+    static activeSetZoneHiddenMySelf(zonesHiddenData) {
         if (window.location.href.includes('/detail/') || window.location.href.includes('/update/')) {
             WFRTControl.setZoneHiddenData(zonesHiddenData);
             WFRTControl.activeZoneHiddenMySelf();

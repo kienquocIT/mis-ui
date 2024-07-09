@@ -2378,17 +2378,54 @@ class WFRTControl {
                     'data': {'code': app_code},
                 }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
-                    if (data?.['app_list'].length === 1) {  // check only 1 wf config for application
-                        let WFconfig = data?.['app_list'][0];
-                        if (WFconfig?.['mode'] !== 0) {  // check if wf mode is not unapply (0)
-                            let workflow_current = WFconfig?.['workflow_currently'];
-                            if (workflow_current) {
-                                // zones handler
-                                if (window.location.href.includes('/create/')) {
-                                    WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
+                    if (data) {
+                        if (data.hasOwnProperty('app_list') && Array.isArray(data.app_list)) {
+                            if (data?.['app_list'].length === 1) {  // check only 1 wf config for application
+                                let WFconfig = data?.['app_list'][0];
+                                if (WFconfig?.['mode'] !== 0) {  // check if wf mode is not unapply (!== 0)
+                                    let workflow_current = WFconfig?.['workflow_currently'];
+                                    if (workflow_current) {
+                                        // zones handler
+                                        if (window.location.href.includes('/create')) {
+                                            WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
+                                        }
+                                        // collab out form handler
+                                        WFRTControl.setCollabOutFormData(workflow_current['collab_out_form']);
+                                    }
                                 }
-                                // collab out form handler
-                                WFRTControl.setCollabOutFormData(workflow_current['collab_out_form']);
+                                if (WFconfig?.['mode'] === 0) {
+                                    let url = btn.attr('data-url-app-emp-config');
+                                    let currentEmployee = $x.fn.getEmployeeCurrentID();
+                                    $.fn.callAjax2({
+                                        'url': url,
+                                        'method': 'GET',
+                                        'data': {
+                                            'application__model_code': app_code,
+                                            'employee_created_id': currentEmployee
+                                        },
+                                    }).then((resp) => {
+                                        let data = $.fn.switcherResp(resp);
+                                        if (data) {
+                                            if (data.hasOwnProperty('app_emp_config_list') && Array.isArray(data.app_emp_config_list)) {
+                                                let zonesData = [];
+                                                let zonesHiddenData = [];
+                                                for (let appEmpConfig of data?.['app_emp_config_list']) {
+                                                    for (let zone of appEmpConfig?.['zones_editing_data']) {
+                                                        for (let property of zone?.['properties_data']) {
+                                                            zonesData.push(property);
+                                                        }
+                                                    }
+                                                    for (let zone of appEmpConfig?.['zones_hidden_data']) {
+                                                        for (let property of zone?.['properties_data']) {
+                                                            zonesHiddenData.push(property);
+                                                        }
+                                                    }
+                                                }
+                                                WFRTControl.activeBtnOpenZone(zonesData, zonesHiddenData, false);
+                                            }
+                                        }
+                                    })
+                                }
                             }
                         }
                     }

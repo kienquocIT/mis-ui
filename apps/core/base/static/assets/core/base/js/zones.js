@@ -29,9 +29,8 @@ $(function () {
                 let dataRow = JSON.parse($btnCAdd.attr('data-row'));
                 loadInitS2($boxProp, [], {
                     'application': dataRow?.['id'],
-                    'is_print': false,
-                    'is_mail': false,
-                    'is_sale_indicator': false
+                    'is_sale_indicator': false,
+                    'parent_n__isnull': true,
                 }, $modal);
             }
         });
@@ -101,9 +100,8 @@ $(function () {
                     let dataRow = JSON.parse($btnCEdit.attr('data-row'));
                     loadInitS2($boxPropEdit, dataProp, {
                         'application': dataRow?.['id'],
-                        'is_print': false,
-                        'is_mail': false,
-                        'is_sale_indicator': false
+                        'is_sale_indicator': false,
+                        'parent_n__isnull': true,
                     }, $modal);
                     let dataPropID = [];
                     for (let prop of dataProp) {

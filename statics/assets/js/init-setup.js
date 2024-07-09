@@ -2431,9 +2431,8 @@ class WFRTControl {
         let zonesData = WFRTControl.getZoneData();
         let zonesHiddenData = WFRTControl.getZoneHiddenData();
         let isEditAllZone = WFRTControl.getIsEditAllZone();
+        // Case user is allowed to edit all page
         if (isEditAllZone === 'true') {
-            // add button save at zones
-            // idFormID
             if (window.location.href.includes('/update/')) {
                 let idFormID = globeFormMappedZone;
                 if (idFormID) {
@@ -2441,7 +2440,6 @@ class WFRTControl {
                     $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
                         DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
                     });
-
                     let actionList = WFRTControl.getActionsList();
                     let actionBubble = null;
                     if (actionList.includes(1)) {
@@ -2458,24 +2456,25 @@ class WFRTControl {
             }
             return true;
         }
+        // Case user can only edit page by zones
         if (Array.isArray(zonesData) && Array.isArray(zonesHiddenData)) {
             let pageEle = DocumentControl.getElePageContent();
             let input_mapping_properties = WFRTControl.getInputMappingProperties();
 
-            // disable + readonly field (chỉ disabled các field trong form)
+            // Step1: remove required & set disable, readonly field (chỉ disabled các field trong form)
             pageEle.find('.required').removeClass('required');
             pageEle.find('input, select, textarea, button, span[data-zone]').each(function (event) {
-
                 let inputMapProperties = input_mapping_properties[$(this).attr('name')];
                 if (!inputMapProperties)
                     inputMapProperties = input_mapping_properties[$(this).attr('data-zone')];
                 if (inputMapProperties && typeof inputMapProperties === 'object') {
                     let arrTmpFind = [];
+                    // main: name + data-zone
                     inputMapProperties['name'].map((nameFind) => {
                         arrTmpFind.push("[name=" + nameFind + "]");
-                        // cho các field trong table or list
                         if ($(this).attr('data-zone')) arrTmpFind.push("[data-zone=" + nameFind + "]");
                     })
+                    // optional: id, class
                     inputMapProperties['id'].map((idFind) => {
                         arrTmpFind.push("[id=" + idFind + "]");
                     })
@@ -2508,20 +2507,17 @@ class WFRTControl {
                     uploaderEle.dmUploader('disable');
                 }
             });
-
-            // apply zones editable config
+            // Step2: apply zones editable config
             if (zonesData.length > 0) {
-                // $('#select-box-emp').prop('readonly', true);
                 zonesData.map((item) => {
-                    if (item.code) {
-                        let inputMapProperties = input_mapping_properties[item.code];
+                    if (item?.['code']) {
+                        let inputMapProperties = input_mapping_properties[item?.['code']];
                         if (inputMapProperties && typeof inputMapProperties === 'object') {
                             let arrTmpFind = {};
                             let arrTmpOfDataListFind = {}
                             let readonly_not_disable = inputMapProperties['readonly_not_disable'];
                             inputMapProperties['name'].map((nameFind) => {
                                 arrTmpFind[nameFind] = "[name=" + nameFind + "]";
-                                // cho trường hợp field là table or list
                                 arrTmpOfDataListFind[nameFind] = "[data-zone=" + nameFind + "]"
                             })
                             inputMapProperties['id'].map((idFind) => {
@@ -2532,37 +2528,36 @@ class WFRTControl {
                                 if (pageEle.find(findText).length <= 0 && arrTmpOfDataListFind.hasOwnProperty(key))
                                     findText = arrTmpOfDataListFind[key]
                                 pageEle.find(findText).each(function () {
+                                    let optsSetZone = {
+                                        'add_require_label': true,
+                                        'add_require': false,
+                                        'remove_disable': true,
+                                        'remove_readonly': true,
+                                        'add_border': true,
+                                        'add_class_active': true,
+                                    };
+                                    let dmUploaderAttr = 'enable';
                                     if (readonly_not_disable.includes(key)) {
-                                        $(this).changePropertiesElementIsZone({
+                                        optsSetZone = {
                                             'add_require_label': true,
                                             'add_require': false,
                                             'remove_disable': true,
                                             'add_readonly': true,
                                             'add_border': true,
                                             'add_class_active': true,
-                                        });
-
-                                        // case: input is Files
-                                        if ($(this).hasClass('dm-uploader-ids')) {
-                                            let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
-                                            uploaderEle.dmUploader('disable');
-                                        }
-                                    } else {
-                                        $(this).changePropertiesElementIsZone({
-                                            'add_require_label': true,
-                                            'add_require': false,
-                                            'remove_disable': true,
-                                            'remove_readonly': true,
-                                            'add_border': true,
-                                            'add_class_active': true,
-                                        });
-
-                                        // case: input is Files
-                                        if ($(this).hasClass('dm-uploader-ids')) {
-                                            let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
-                                            uploaderEle.dmUploader('enable');
-                                        }
+                                        };
+                                        dmUploaderAttr = 'disable';
                                     }
+                                    $(this).changePropertiesElementIsZone(optsSetZone);
+                                    $(this).find('input, select, textarea, button, span, p').each(function (event) {
+                                        $(this).changePropertiesElementIsZone(optsSetZone);
+                                    })
+                                    // case: input is Files
+                                    if ($(this).hasClass('dm-uploader-ids')) {
+                                        let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
+                                        uploaderEle.dmUploader(dmUploaderAttr);
+                                    }
+
                                 })
                             });
                             inputMapProperties['id_border_zones'].map((item) => {
@@ -2581,20 +2576,16 @@ class WFRTControl {
                     }
                 })
             }
-
-            // apply zones hidden config
+            // Step3: apply zones hidden config
             if (zonesHiddenData.length > 0) {
-                // $('#select-box-emp').prop('readonly', true);
                 zonesHiddenData.map((item) => {
-                    if (item.code) {
-                        let inputMapProperties = input_mapping_properties[item.code];
+                    if (item?.['code']) {
+                        let inputMapProperties = input_mapping_properties[item?.['code']];
                         if (inputMapProperties && typeof inputMapProperties === 'object') {
                             let arrTmpFind = {};
                             let arrTmpOfDataListFind = {}
-                            let readonly_not_disable = inputMapProperties['readonly_not_disable'];
                             inputMapProperties['name'].map((nameFind) => {
                                 arrTmpFind[nameFind] = "[name=" + nameFind + "]";
-                                // cho trường hợp field là table or list
                                 arrTmpOfDataListFind[nameFind] = "[data-zone=" + nameFind + "]"
                             })
                             inputMapProperties['id'].map((idFind) => {
@@ -2605,22 +2596,17 @@ class WFRTControl {
                                 if (pageEle.find(findText).length <= 0 && arrTmpOfDataListFind.hasOwnProperty(key))
                                     findText = arrTmpOfDataListFind[key]
                                 pageEle.find(findText).each(function () {
-                                    if (readonly_not_disable.includes(key)) {
-                                        $(this).changePropertiesElementIsZone({
-                                            'add_empty_value': true,
-                                        });
-                                    } else {
-                                        $(this).changePropertiesElementIsZone({
-                                            'add_empty_value': true,
-                                        });
-                                    }
+                                    let optsSetZone = {'add_empty_value': true};
+                                    $(this).changePropertiesElementIsZone(optsSetZone);
+                                    $(this).find('input, select, textarea, button, span, p').each(function (event) {
+                                        $(this).changePropertiesElementIsZone(optsSetZone);
+                                    })
                                 })
                             });
                         }
                     }
                 })
             }
-
             // add button save at zones
             // idFormID
             if (zonesData.length > 0) {  // check if user has zone edit then show button save at zones

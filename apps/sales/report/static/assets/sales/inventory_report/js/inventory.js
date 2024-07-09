@@ -1187,12 +1187,12 @@ $(document).ready(function () {
             if ($(this).attr('class').includes('badge-soft-purple small gtf-in')) {
                 $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
                 $(this).closest('tr').attr('data-bs-placement', 'top')
-                $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-gtf')} (IN)`)
+                $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-gtf')} (${trans_script.attr('data-trans-gtf-in')})`)
             }
             if ($(this).attr('class').includes('badge-soft-purple small gtf-out')) {
                 $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
                 $(this).closest('tr').attr('data-bs-placement', 'top')
-                $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-gtf')} (OUT)`)
+                $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-gtf')} (${trans_script.attr('data-trans-gtf-out')})`)
             }
         })
         table_inventory_report.find('.no-info').each(function () {

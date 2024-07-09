@@ -7879,3 +7879,11 @@ msgstr "Lấy sản phẩm không thuộc về dự án nào nếu khôn
 #
 msgid "Project sale order"
 msgstr "Đơn hàng dự án"
+
+#
+msgid "IN"
+msgstr "Nhập"
+
+#
+msgid "OUT"
+msgstr "Xuất"

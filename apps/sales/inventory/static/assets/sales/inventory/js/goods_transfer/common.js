@@ -237,7 +237,7 @@ $btn_add_row_line_detail.on('click', function () {
             </div>
         </td>
         <td><select class="to-wh form-select select2"></select></td>
-        <td><input disabled readonly class="unit-price form-control mask-money"></td>
+        <td><input class="unit-price form-control mask-money"></td>
         <td><input disabled readonly class="subtotal-price form-control mask-money"></td>
         <td class="text-center">
             <button type="button" class="btn-delete btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs">

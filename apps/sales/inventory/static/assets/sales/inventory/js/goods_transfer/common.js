@@ -627,7 +627,7 @@ function loadSaleOrder(ele, data) {
     ele.initSelect2({
         allowClear: true,
         ajax: {
-            url: ele.attr('data-url') + `?has_regis=1}`,
+            url: ele.attr('data-url') + `?has_regis=1`,
             method: 'GET',
         },
         templateResult: function(data) {

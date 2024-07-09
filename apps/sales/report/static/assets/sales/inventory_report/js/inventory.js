@@ -4,6 +4,7 @@ $(document).ready(function () {
     const current_period_Ele = $('#current_period')
     const items_select_Ele = $('#items_select')
     const warehouses_select_Ele = $('#warehouses_select')
+    const project_select_Ele = $('#project-select')
     const periodEle = $('#period-select')
     const periodMonthEle = $('#period-month')
     const trans_script = $('#trans-script')
@@ -161,6 +162,27 @@ $(document).ready(function () {
     }
     LoadWarehouseSelectBox(warehouses_select_Ele)
 
+    function LoadProjectSelectBox(ele, data) {
+        ele.initSelect2({
+            allowClear: true,
+            ajax: {
+                url: ele.attr('data-url') + `?has_regis=1`,
+                method: 'GET',
+            },
+            templateResult: function(data) {
+                let ele = $('<div class="row"></div>');
+                ele.append(`<div class="col-6"><span class="badge badge-soft-primary">${data.data?.['code']}</span>&nbsp;&nbsp;&nbsp;${data.data?.['title']}</div>
+                            <div class="col-6 fst-italic"><span class="badge badge-soft-blue badge-sm">${data.data?.['opportunity']?.['code']}</span>&nbsp;&nbsp;&nbsp;${data.data?.['opportunity']?.['title']}</div>`);
+                return ele;
+            },
+            data: (data ? data : null),
+            keyResp: 'sale_order_list',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {})
+    }
+    LoadProjectSelectBox(project_select_Ele)
+
     function RenderTableWithParameter(table, data_list=[], data_wh=[], table_detail=false) {
         console.log(data_list)
         table.DataTable().clear().destroy()
@@ -179,7 +201,7 @@ $(document).ready(function () {
                             if (!sale_order_code_list.includes(`${row?.['warehouse_code']}-so-code-${row?.['sale_order_code']}`)) {
                                 sale_order_code_list.push(`${row?.['warehouse_code']}-so-code-${row?.['sale_order_code']}`)
                             }
-                            return `<span class="${row?.['warehouse_code']}-so-code-${row?.['sale_order_code']} badge badge-pill badge-soft-red"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order_code']}</span>`
+                            return `<span class="${row?.['warehouse_code']}-so-code-${row?.['sale_order_code']}">${row?.['sale_order_code']}</span>`
                         }
                         return ``
                     }
@@ -197,7 +219,7 @@ $(document).ready(function () {
                         }
                         if (row?.['type'] === 'product_row') {
                             let html = `
-                                    <span class="badge badge-light badge-pill w-25}">
+                                    <span class="badge badge-light badge-pill w-25">
                                         ${row?.['product_code']}
                                     </span>&nbsp;
                                     <span class="${row?.['type']}">${row?.['product_title']}</span>&nbsp;
@@ -217,7 +239,7 @@ $(document).ready(function () {
                     className: 'text-center',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'product_row') {
-                            return `<span class="badge badge-soft-blue badge-pill">${row?.['uom_title']}</span>`
+                            return `<span class="text-secondary">${row?.['uom_title']}</span>`
                         }
                         return ``
                     }
@@ -247,7 +269,7 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
                             if (row?.['expired_date']) {
-                                return `<span class="text-primary"><i class="bi bi-calendar2-x"></i>&nbsp;${row?.['expired_date']}</span>`
+                                return `<span class="text-orange"><i class="bi bi-calendar2-x"></i>&nbsp;${row?.['expired_date']}</span>`
                             }
                         }
                         return ``
@@ -513,7 +535,7 @@ $(document).ready(function () {
                     table.find(`.${so_code_class}:eq(0)`).closest('tr').before(`
                         <tr>
                             <td rowspan="${number_row}" class="text-center">
-                                <span class="text-red"><i class="bi bi-clipboard-check"></i>&nbsp;${so_code_class.split('-')[3]}</span>
+                                <span class="text-danger fw-bold"><i class="bi bi-clipboard-check"></i>&nbsp;${so_code_class.split('-')[3]}</span>
                             </td>
                         </tr>
                     `)
@@ -592,8 +614,11 @@ $(document).ready(function () {
         if (periodMonthEle.val()) {
             WindowControl.showLoading();
             let dataParam = {}
-            dataParam['sub_period_order'] = periodMonthEle.val() ? parseInt(periodMonthEle.val()) : null
-            dataParam['period_mapped'] = periodEle.val() ? periodEle.val() : null
+            dataParam['sub_period_order'] = parseInt(periodMonthEle.val())
+            dataParam['period_mapped'] = periodEle.val()
+            if (project_select_Ele.val()) {
+                dataParam['sale_order'] = project_select_Ele.val()
+            }
             dataParam['product_id_list'] = items_select_Ele.val().join(',')
             let inventory_detail_list_ajax = $.fn.callAjax2({
                 url: url_script.attr('data-url-inventory-list') + `?date_range=${$('#period-day-from').val()}-${$('#period-day-to').val()}`,
@@ -787,8 +812,11 @@ $(document).ready(function () {
         if (periodMonthEle.val()) {
             WindowControl.showLoading();
             let dataParam = {}
-            dataParam['sub_period_order'] = periodMonthEle.val() ? parseInt(periodMonthEle.val()) : null
-            dataParam['period_mapped'] = periodEle.val() ? periodEle.val() : null
+            dataParam['sub_period_order'] = parseInt(periodMonthEle.val())
+            dataParam['period_mapped'] = periodEle.val()
+            if (project_select_Ele.val()) {
+                dataParam['sale_order'] = project_select_Ele.val()
+            }
             dataParam['product_id_list'] = items_select_Ele.val().join(',')
             let inventory_detail_list_ajax = $.fn.callAjax2({
                 url: url_script.attr('data-url-inventory-list') + `?date_range=${$('#period-day-from').val()}-${$('#period-day-to').val()}`,

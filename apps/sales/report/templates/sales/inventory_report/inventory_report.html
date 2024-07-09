@@ -110,18 +110,27 @@
                 <div id="filter_area" class="collapse show">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-12 col-lg-3 col-md-6">
+                            <div class="col-12 col-lg-2 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
                                     <select class="form-select select2 select-multiple" id="warehouses_select" multiple
                                             data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-3 col-md-6">
+                            <div class="col-12 col-lg-2 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label" for="items_select">{% trans 'Product' %}</label>
                                     <select class="form-select select2 select-multiple" id="items_select" multiple
                                             data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-2 col-md-6">
+                                <div class="form-group">
+                                    <label for="project-select" class="form-label required">{% trans 'Project' %}</label>
+                                    <select class="form-select select2" id="project-select"
+                                            data-url="{% url 'SaleOrderListAPI' %}"
+                                            data-method="GET"
+                                    ></select>
                                 </div>
                             </div>
                             <div class="col-12 col-lg-2 col-md-6">

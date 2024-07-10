@@ -1774,31 +1774,23 @@ class QuotationLoadDataHandle {
         if (is_copy === false) {
             // check if not finish or reject then remove hidden btn edit page
             if (![2, 3, 4].includes(data?.['system_status'])) {
-                let $btn = $('#btn-enable-edit');
-                if ($btn.length) {
-                    $btn[0].removeAttribute('hidden');
+                let btnEdit = $('#btn-enable-edit');
+                if (btnEdit && btnEdit.length > 0) {
+                    btnEdit[0].removeAttribute('hidden');
                 }
             }
-            // check if is not finish then hidden btn delivery (Sale Order)
-            if (![2, 3].includes(data?.['system_status'])) {
-                if (form.classList.contains('sale-order')) {
-                    let btnDelivery = $('#btnDeliverySaleOrder');
-                    if (btnDelivery.length > 0){
-                        btnDelivery[0].setAttribute('hidden', 'true');
-                    }
+            // check if finish then remove hidden btnDelivery (SO)
+            if (data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get' && form.classList.contains('sale-order')) {
+                let btnDelivery = $('#btnDeliverySaleOrder');
+                if (btnDelivery && btnDelivery.length > 0) {
+                    btnDelivery[0].removeAttribute('hidden');
                 }
             }
-            // check if is not finish then disable btn copy
-            if (![2, 3].includes(data?.['system_status'])) {
-                let btnCopy = document.getElementById('btn-copy-quotation');
-                let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
-                if (btnCopy) {
-                    btnCopy.setAttribute('disabled', 'true');
-                }
-                if (eleTooltipBtnCopy) {
-                    eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
-                    eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
-                    eleTooltipBtnCopy.setAttribute('title', QuotationLoadDataHandle.transEle.attr('data-not-allow-use'));
+            // check if finish then remove hidden btnCopy
+            if (data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get') {
+                let btnCopy = $('#btn-copy-quotation');
+                if (btnCopy && btnCopy.length > 0) {
+                    btnCopy[0].removeAttribute('hidden');
                 }
             }
         }

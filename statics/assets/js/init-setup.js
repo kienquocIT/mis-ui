@@ -2218,6 +2218,10 @@ class WFRTControl {
     static setupHTMLDraftOrSave() {
         let htmlCustom = ``;
         let statusList = [0, 1];
+        let statusMapIcon = {
+            0: "fas fa-file mr-2 fs-6",
+            1: "fas fa-project-diagram mr-1 fs-6",
+        };
         let statusMapText = {
             0: $.fn.transEle.attr('data-save-draft'),
             1: $.fn.transEle.attr('data-save-run-wf'),
@@ -2227,12 +2231,15 @@ class WFRTControl {
             1: "text-primary",
         };
         for (let status of statusList) {
-            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
-                                <span class="${statusMapColor[status]}">${statusMapText[status]}</span>
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
+                                <div class="d-flex">
+                                    <i class="${statusMapIcon[status]} ${statusMapColor[status]}"></i>
+                                    <span class="${statusMapColor[status]}">${statusMapText[status]}</span>
+                                </div>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="radio" class="form-check-input checkbox-save-status" data-status="${status}">
                                 </div>
-                            </div><hr class="bg-teal">`;
+                            </div>`;
         }
         return htmlCustom;
     }
@@ -2407,21 +2414,23 @@ class WFRTControl {
                                         let data = $.fn.switcherResp(resp);
                                         if (data) {
                                             if (data.hasOwnProperty('app_emp_config_list') && Array.isArray(data.app_emp_config_list)) {
-                                                let zonesData = [];
-                                                let zonesHiddenData = [];
-                                                for (let appEmpConfig of data?.['app_emp_config_list']) {
-                                                    for (let zone of appEmpConfig?.['zones_editing_data']) {
-                                                        for (let property of zone?.['properties_data']) {
-                                                            zonesData.push(property);
+                                                if (data?.['app_emp_config_list'].length > 0) {
+                                                    let zonesData = [];
+                                                    let zonesHiddenData = [];
+                                                    for (let appEmpConfig of data?.['app_emp_config_list']) {
+                                                        for (let zone of appEmpConfig?.['zones_editing_data']) {
+                                                            for (let property of zone?.['properties_data']) {
+                                                                zonesData.push(property);
+                                                            }
+                                                        }
+                                                        for (let zone of appEmpConfig?.['zones_hidden_data']) {
+                                                            for (let property of zone?.['properties_data']) {
+                                                                zonesHiddenData.push(property);
+                                                            }
                                                         }
                                                     }
-                                                    for (let zone of appEmpConfig?.['zones_hidden_data']) {
-                                                        for (let property of zone?.['properties_data']) {
-                                                            zonesHiddenData.push(property);
-                                                        }
-                                                    }
+                                                    WFRTControl.activeBtnOpenZone(zonesData, zonesHiddenData, false);
                                                 }
-                                                WFRTControl.activeBtnOpenZone(zonesData, zonesHiddenData, false);
                                             }
                                         }
                                     })

@@ -7101,14 +7101,19 @@ class DiagramControl {
             let urlDiagram = globeDiagramList;
             if ($btnLog && $btnLog.length > 0) {
                 let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
-                                <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
-                                    <div class="offcanvas-header"></div>
+                                <div class="offcanvas offcanvas-end w-95 mt-5" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
                                     <div class="offcanvas-body">
-                                        <div class="d-flex justify-content-start">
-                                            <button type="button" class="btn btn-icon mt-3 bm-sm btn-sm" data-bs-dismiss="offcanvas" aria-label="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
-                                            <button type="button" class="btn btn-icon mt-3 bm-sm btn-sm" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-redo-alt"></i></span></button>
+                                        <div class="d-flex justify-content-start mt-4 mb-2">
+                                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                                <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Close">
+                                                    <button type="button" class="btn btn-outline-secondary btn-square btn-sm" data-bs-dismiss="offcanvas" aria-label="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
+                                                </span>
+                                                <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reload">
+                                                    <button type="button" class="btn btn-outline-secondary btn-square btn-sm" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-redo-alt"></i></span></button>
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="min-w-1600p position-relative overflow-y-scroll">
+                                        <div data-simplebar class="min-w-1600p nicescroll-bar">
                                             <div class="card-group h-800p" id="flowchart_diagram"></div>
                                         </div>
                                     </div>

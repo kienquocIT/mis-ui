@@ -2558,20 +2558,16 @@ class WFRTControl {
                     if (item?.['code']) {
                         let inputMapProperties = input_mapping_properties[item?.['code']];
                         if (inputMapProperties && typeof inputMapProperties === 'object') {
-                            let arrTmpFind = {};
-                            let arrTmpOfDataListFind = {}
+                            let arrTmpFind = [];
                             let readonly_not_disable = inputMapProperties['readonly_not_disable'];
                             inputMapProperties['name'].map((nameFind) => {
-                                arrTmpFind[nameFind] = "[name=" + nameFind + "]";
-                                arrTmpOfDataListFind[nameFind] = "[data-zone=" + nameFind + "]"
+                                arrTmpFind.push("[name=" + nameFind + "]");
+                                arrTmpFind.push("[data-zone=" + nameFind + "]");
                             })
                             inputMapProperties['id'].map((idFind) => {
-                                arrTmpFind[idFind] = "[id=" + idFind + "]";
+                                arrTmpFind.push("[id=" + idFind + "]");
                             })
-                            Object.keys(arrTmpFind).map((key) => {
-                                let findText = arrTmpFind[key];
-                                if (pageEle.find(findText).length <= 0 && arrTmpOfDataListFind.hasOwnProperty(key))
-                                    findText = arrTmpOfDataListFind[key]
+                            arrTmpFind.map((findText) => {
                                 pageEle.find(findText).each(function () {
                                     let optsSetZone = {
                                         'add_require_label': true,
@@ -2582,6 +2578,8 @@ class WFRTControl {
                                         'add_class_active': true,
                                     };
                                     let dmUploaderAttr = 'enable';
+                                    let str = findText.replace(/[\[\]]/g, '');
+                                    let key = str.split('=')[1];
                                     if (readonly_not_disable.includes(key)) {
                                         optsSetZone = {
                                             'add_require_label': true,
@@ -2624,19 +2622,15 @@ class WFRTControl {
                     if (item?.['code']) {
                         let inputMapProperties = input_mapping_properties[item?.['code']];
                         if (inputMapProperties && typeof inputMapProperties === 'object') {
-                            let arrTmpFind = {};
-                            let arrTmpOfDataListFind = {}
+                            let arrTmpFind = [];
                             inputMapProperties['name'].map((nameFind) => {
-                                arrTmpFind[nameFind] = "[name=" + nameFind + "]";
-                                arrTmpOfDataListFind[nameFind] = "[data-zone=" + nameFind + "]"
+                                arrTmpFind.push("[name=" + nameFind + "]");
+                                arrTmpFind.push("[data-zone=" + nameFind + "]");
                             })
                             inputMapProperties['id'].map((idFind) => {
-                                arrTmpFind[idFind] = "[id=" + idFind + "]";
+                                arrTmpFind.push("[id=" + idFind + "]");
                             })
-                            Object.keys(arrTmpFind).map((key) => {
-                                let findText = arrTmpFind[key];
-                                if (pageEle.find(findText).length <= 0 && arrTmpOfDataListFind.hasOwnProperty(key))
-                                    findText = arrTmpOfDataListFind[key]
+                            arrTmpFind.map((findText) => {
                                 pageEle.find(findText).each(function () {
                                     let optsSetZone = {'add_empty_value': true};
                                     $(this).changePropertiesElementIsZone(optsSetZone);

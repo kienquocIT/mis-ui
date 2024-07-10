@@ -2680,36 +2680,25 @@ class WFRTControl {
 
             // apply zones hidden config
             if (zonesHiddenData.length > 0) {
-                // $('#select-box-emp').prop('readonly', true);
                 zonesHiddenData.map((item) => {
                     if (item.code) {
                         let inputMapProperties = input_mapping_properties[item.code];
                         if (inputMapProperties && typeof inputMapProperties === 'object') {
-                            let arrTmpFind = {};
-                            let arrTmpOfDataListFind = {}
-                            let readonly_not_disable = inputMapProperties['readonly_not_disable'];
+                            let arrTmpFind = [];
                             inputMapProperties['name'].map((nameFind) => {
-                                arrTmpFind[nameFind] = "[name=" + nameFind + "]";
-                                // cho trường hợp field là table or list
-                                arrTmpOfDataListFind[nameFind] = "[data-zone=" + nameFind + "]"
+                                arrTmpFind.push("[name=" + nameFind + "]");
+                                arrTmpFind.push("[data-zone=" + nameFind + "]");
                             })
                             inputMapProperties['id'].map((idFind) => {
-                                arrTmpFind[idFind] = "[id=" + idFind + "]";
+                                arrTmpFind.push("[id=" + idFind + "]");
                             })
-                            Object.keys(arrTmpFind).map((key) => {
-                                let findText = arrTmpFind[key];
-                                if (pageEle.find(findText).length <= 0 && arrTmpOfDataListFind.hasOwnProperty(key))
-                                    findText = arrTmpOfDataListFind[key]
+                            arrTmpFind.map((findText) => {
                                 pageEle.find(findText).each(function () {
-                                    if (readonly_not_disable.includes(key)) {
-                                        $(this).changePropertiesElementIsZone({
-                                            'add_empty_value': true,
-                                        });
-                                    } else {
-                                        $(this).changePropertiesElementIsZone({
-                                            'add_empty_value': true,
-                                        });
-                                    }
+                                    let optsSetZone = {'add_empty_value': true};
+                                    $(this).changePropertiesElementIsZone(optsSetZone);
+                                    $(this).find('input, select, textarea, button, span, p').each(function (event) {
+                                        $(this).changePropertiesElementIsZone(optsSetZone);
+                                    });
                                 })
                             });
                         }

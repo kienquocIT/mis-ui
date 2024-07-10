@@ -88,3 +88,7 @@ msgstr "Bạn có muốn nhân bản chúng?"
 #
 msgid "Duplicate"
 msgstr "Nhân bản"
+
+#
+msgid "Successfully"
+msgstr "Thành công"

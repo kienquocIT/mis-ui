@@ -12,6 +12,13 @@
                         <input type="text" name="title" id="groupTitle" class="form-control" required>
                     </div>
                     <div class="col-xs-12 col-md-6 form-group">
+                        <label for="groupWeight" class="form-label">{% trans 'Group weight' %}</label>
+                        <span class="input-affix-wrapper">
+                            <input type="text" id="groupWeight" name="gr_weight" class="form-control" autocomplete="off">
+                            <span class="input-suffix"><i class="fa-solid fa-percent"></i></span>
+                        </span>
+                    </div>
+                    <div class="col-xs-12 col-md-6 form-group">
                         <label for="groupStartDate" class="form-label">{% trans 'Start date' %}</label>
                         <div class="input-affix-wrapper">
                             <input type="text" id="groupStartDate" name="gr_start_date" class="form-control date-picker"
@@ -27,18 +34,11 @@
                             <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-md-6 form-group">
-                        <label for="groupWeight" class="form-label">{% trans 'Group weight' %}</label>
-                        <span class="input-affix-wrapper">
-                            <input type="text" id="groupWeight" name="gr_weight" class="form-control" autocomplete="off">
-                            <span class="input-suffix"><i class="fa-solid fa-percent"></i></span>
-                        </span>
-                    </div>
                 </div>
                 <input type="hidden" id="groupRate" name="gr_weight" class="form-control" autocomplete="off">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary float-left" id="btn-group-add">
+                <button type="button" class="btn btn-primary float-left" id="btn-group-add" {% if baseline %}disabled{% endif %}>
                     {% trans 'Add' %}
                 </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

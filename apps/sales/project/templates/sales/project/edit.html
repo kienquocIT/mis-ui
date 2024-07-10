@@ -32,6 +32,19 @@
                     <label for="titleInput" class="form-label required">{% trans 'Title' %}</label>
                     <input type="text" name="title" id="titleInput" class="form-control" required>
                 </div>
+                <div class="col-xs-12 col-md-6">
+                    {{ data.employee_info|json_script:'current_info' }}
+                    <input type="hidden" id="data_form">
+                    <a href="#" class="btn btn-primary mt-5" id="create_baseline" disabled>
+                        <span>
+                            <span class="icon">
+                                <i class="bi bi-graph-up"></i>
+                            </span>
+                            <span>{% trans 'Create Baseline' %}</span>
+                        </span>
+                    </a>
+                </div>
+                <div class="clearfix"></div>
                 <div class="col-xs-12 col-md-6 form-group">
                     <label for="select_project_owner" class="form-label required">{% trans 'Project owner' %}</label>
                     <select class="form-select" name="project_owner" id="select_project_owner"
@@ -252,6 +265,7 @@
            data-uom="{% url "UnitOfMeasureListAPI" %}"
            data-tax="{% url "TaxListAPI" %}"
            data-work-expense="{% url "ProjectWorkExpenseAPI" %}"
+           data-baseline="{% url "ProjectCreateBaselineAPI" %}"
     >
 
 {% endblock %}

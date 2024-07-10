@@ -108,6 +108,7 @@ function loadStockQuantityDataTable(data_src=[]) {
             })
         }
     }
+    console.log(data_src_processed)
     let dtb = $('#tab_stock_quantity_datatable');
     dtb.DataTable().clear().destroy()
     let current_stock = 0
@@ -116,6 +117,7 @@ function loadStockQuantityDataTable(data_src=[]) {
         dom: '',
         reloadCurrency: true,
         data: data_src_processed,
+        paging: false,
         columns: [
             {
                 className: 'wrap-text w-15',

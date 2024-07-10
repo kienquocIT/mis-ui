@@ -8,6 +8,11 @@
         td {
             min-width: max-content !important;
         }
+        .sticky {
+            position: sticky;
+            top: 0;
+            z-index: 1111;
+        }
     </style>
 {% endblock %}
 {% block pageAction %}
@@ -123,9 +128,9 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
+                        <div class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 60vh">
                             <table id="tab_stock_quantity_datatable" class="table nowrap w-100">
-                                <thead class="bg-primary">
+                                <thead class="bg-primary sticky">
                                 <tr>
                                     <th class="border-1 text-white" rowspan="2">{% trans 'Transaction' %}</th>
                                     <th class="border-1 text-white" rowspan="2">{% trans 'Warehouse' %}</th>

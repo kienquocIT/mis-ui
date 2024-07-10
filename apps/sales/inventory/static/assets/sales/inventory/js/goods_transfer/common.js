@@ -659,7 +659,6 @@ function callProjectProductList(sale_order_id) {
         url: $url_script.attr('data-url-project-product-list'),
         data: {
             'goods_registration__sale_order_id': sale_order_id,
-            'warehouse_id': NOW_ROW.find('.from-wh').val(),
             'gre_item__product_id': gre_item__product_id
         },
         method: 'GET'
@@ -679,7 +678,7 @@ function callProjectProductList(sale_order_id) {
     Promise.all([project_product_list_ajax]).then(
         (results) => {
             if (results[0].length > 0) {
-                console.log(results[0][0])
+                console.log(results[0])
                 let general_traceability_method = results[0][0]?.['product']?.['general_traceability_method']
                 if (general_traceability_method === 0) {
                     let max_transfer_quantity = results[0][0]?.['quantity']
@@ -690,10 +689,18 @@ function callProjectProductList(sale_order_id) {
                     )
                 }
                 if (general_traceability_method === 1) {
-                    loadLotTable(
-                        results[0][0]?.['lot_detail'],
-                        JSON.parse(NOW_ROW.find('.selected-lot').text())
-                    )
+                    let lot_detail = []
+                    for (const item of results[0]) {
+                        if (item?.['lot_detail'].length > 0) {
+                            for (const lot_data of item?.['lot_detail']) {
+                                if (lot_data?.['warehouse_id'] === NOW_ROW.find('.from-wh').val()) {
+                                    lot_detail.push(lot_data)
+                                }
+                            }
+                        }
+                    }
+                    NOW_ROW.find('.quantity').attr('placeholder', '')
+                    loadLotTable(lot_detail, JSON.parse(NOW_ROW.find('.selected-lot').text()))
                 }
                 if (general_traceability_method === 2) {
                     let max_transfer_quantity = results[0][0]?.['quantity']

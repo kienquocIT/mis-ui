@@ -259,20 +259,23 @@ $(document).on("click", '.btn-delete', function () {
 });
 
 $(document).on("change", '.quantity', function () {
-    if (parseFloat($(this).val()) > parseFloat($(this).attr('data-quantity-limit'))) {
-        $(this).val(0)
-        $.fn.notifyB({description: `Input quantity > stock quantity (${$(this).attr('data-quantity-limit')})`}, 'warning')
-    }
-    else {
-        let unit_price = parseFloat($(this).closest('tr').find('.unit-price').attr('value'))
-        let new_subtotal_price = parseFloat($(this).val()) * unit_price
-        $(this).closest('tr').find('.subtotal-price').attr('value', new_subtotal_price)
-        $.fn.initMaskMoney2()
+    if ($(this).val() && $(this).attr('data-quantity-limit')) {
+        if (parseFloat($(this).val()) > parseFloat($(this).attr('data-quantity-limit'))) {
+            $(this).val(0)
+            $.fn.notifyB({description: `Input quantity > stock quantity (${$(this).attr('data-quantity-limit')})`}, 'warning')
+        } else {
+            let unit_price = parseFloat($(this).closest('tr').find('.unit-price').attr('value'))
+            let new_subtotal_price = parseFloat($(this).val()) * unit_price
+            $(this).closest('tr').find('.subtotal-price').attr('value', new_subtotal_price)
+            $.fn.initMaskMoney2()
+        }
     }
 
-    if (parseFloat($(this).val()) > parseFloat($(this).attr('max'))) {
-        $(this).val(0)
-        $.fn.notifyB({description: `Max quantity can be transferred is ${$(this).attr('max')}`}, 'failure')
+    if ($(this).val() && $(this).attr('max')) {
+        if (parseFloat($(this).val()) > parseFloat($(this).attr('max'))) {
+            $(this).val(0)
+            $.fn.notifyB({description: `Max quantity can be transferred is ${$(this).attr('max')}`}, 'failure')
+        }
     }
 });
 
@@ -625,7 +628,6 @@ function loadLotTable(data, lot_selected=[]) {
 
 function loadSaleOrder(ele, data) {
     ele.initSelect2({
-        allowClear: true,
         ajax: {
             url: ele.attr('data-url') + `?has_regis=1`,
             method: 'GET',
@@ -645,84 +647,70 @@ function loadSaleOrder(ele, data) {
         if ($(this).val()) {
             callProjectProductList($(this).val())
         }
-        else {
-            alert(1)
-        }
     })
 }
 
 function callProjectProductList(sale_order_id) {
-    if (sale_order_id) {
-        let gre_item__product_id = SelectDDControl.get_data_from_idx(
-            NOW_ROW.find('.prd'),
-            NOW_ROW.find('.prd').val()
-        )?.['product']?.['id']
-        let project_product_list_ajax = $.fn.callAjax2({
-            url: $url_script.attr('data-url-project-product-list'),
-            data: {
-                'goods_registration__sale_order_id': sale_order_id,
-                'warehouse_id': NOW_ROW.find('.from-wh').val(),
-                'gre_item__product_id': gre_item__product_id
-            },
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    return data?.['project_product_list'] ? data?.['project_product_list'] : [];
-                }
-                return [];
-            },
-            (errs) => {
-                console.log(errs);
+    let gre_item__product_id = SelectDDControl.get_data_from_idx(
+        NOW_ROW.find('.prd'),
+        NOW_ROW.find('.prd').val()
+    )?.['product']?.['id']
+    let project_product_list_ajax = $.fn.callAjax2({
+        url: $url_script.attr('data-url-project-product-list'),
+        data: {
+            'goods_registration__sale_order_id': sale_order_id,
+            'warehouse_id': NOW_ROW.find('.from-wh').val(),
+            'gre_item__product_id': gre_item__product_id
+        },
+        method: 'GET'
+    }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                return data?.['project_product_list'] ? data?.['project_product_list'] : [];
             }
-        )
+            return [];
+        },
+        (errs) => {
+            console.log(errs);
+        }
+    )
 
-        Promise.all([project_product_list_ajax]).then(
-            (results) => {
-                if (results[0].length > 0) {
-                    console.log(results[0][0])
-                    let general_traceability_method = results[0][0]?.['product']?.['general_traceability_method']
-                    if (general_traceability_method === 0) {
-                        let max_transfer_quantity = results[0][0]?.['quantity']
-                        NOW_ROW.find('.quantity').attr(
-                            'max', max_transfer_quantity
-                        ).attr(
-                            'placeholder', `max = ${max_transfer_quantity}`
-                        )
-                    }
-                    if (general_traceability_method === 1) {
-                        let max_transfer_quantity = results[0][0]?.['quantity']
-                        NOW_ROW.find('.quantity').attr(
-                            'max', max_transfer_quantity
-                        ).attr(
-                            'placeholder', `max = ${max_transfer_quantity}`
-                        )
-                        loadLotTable(
-                            results[0][0]?.['lot_detail'],
-                            JSON.parse(NOW_ROW.find('.selected-lot').text())
-                        )
-                    }
-                    if (general_traceability_method === 2) {
-                        let max_transfer_quantity = results[0][0]?.['quantity']
-                        NOW_ROW.find('.quantity').attr(
-                            'max', max_transfer_quantity
-                        ).attr(
-                            'placeholder', `max = ${max_transfer_quantity}`
-                        )
-                        loadSerialTable(
-                            results[0][0]?.['serial_detail'],
-                            JSON.parse(NOW_ROW.find('.selected-serial').text())
-                        )
-                    }
-                } else {
-                    $.fn.notifyB({description: `This product in this warehouse is empty for this Sale order`}, 'warning')
+    Promise.all([project_product_list_ajax]).then(
+        (results) => {
+            if (results[0].length > 0) {
+                console.log(results[0][0])
+                let general_traceability_method = results[0][0]?.['product']?.['general_traceability_method']
+                if (general_traceability_method === 0) {
+                    let max_transfer_quantity = results[0][0]?.['quantity']
+                    NOW_ROW.find('.quantity').attr(
+                        'max', max_transfer_quantity
+                    ).attr(
+                        'placeholder', `max = ${max_transfer_quantity}`
+                    )
                 }
-            })
-    }
-    else {
-        console.log('none-project')
-    }
+                if (general_traceability_method === 1) {
+                    loadLotTable(
+                        results[0][0]?.['lot_detail'],
+                        JSON.parse(NOW_ROW.find('.selected-lot').text())
+                    )
+                }
+                if (general_traceability_method === 2) {
+                    let max_transfer_quantity = results[0][0]?.['quantity']
+                    NOW_ROW.find('.quantity').attr(
+                        'max', max_transfer_quantity
+                    ).attr(
+                        'placeholder', `max = ${max_transfer_quantity}`
+                    )
+                    loadSerialTable(
+                        results[0][0]?.['serial_detail'],
+                        JSON.parse(NOW_ROW.find('.selected-serial').text())
+                    )
+                }
+            } else {
+                $.fn.notifyB({description: `This product in this warehouse is empty for this Sale order`}, 'warning')
+            }
+        })
 }
 
 $(document).on("click", '.btn-select-detail', function () {
@@ -827,6 +815,12 @@ function LoadDetailGoodsTransfer(option='detail') {
                         <td><select class="from-wh form-select select2"></select></td>
                         <td><select class="prd form-select select2"></select></td>
                         <td><span class="uom"></span></td>
+                        <td ${is_project ? '' : 'hidden'}>
+                            <select class="form-select select2 row_sale_order"
+                                    data-method="GET"
+                                    data-url="${$url_script.attr('data-url-so-list')}">
+                            </select>
+                        </td>
                         <td>
                             <div class="input-group">
                                 <span class="input-group-text btn-select-detail">
@@ -849,6 +843,7 @@ function LoadDetailGoodsTransfer(option='detail') {
                         </td>
                     </tr>`)
                     $tab_line_detail_datatable.find('tbody').append(row_html)
+                    loadSaleOrder(row_html.find('.row_sale_order'), row_data?.['sale_order'])
                     loadFromWH(row_html.find('.from-wh'), row_data?.['product_warehouse']?.['from_warehouse_mapped'])
                     loadProductWarehouse(row_html.find('.prd'), row_data?.['product_warehouse'])
                     row_html.find('.uom').text(row_data?.['product_warehouse']?.['uom']?.['title'])

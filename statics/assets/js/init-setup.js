@@ -2578,9 +2578,7 @@ class WFRTControl {
                                         'add_class_active': true,
                                     };
                                     let dmUploaderAttr = 'enable';
-                                    let str = findText.replace(/[\[\]]/g, '');
-                                    let key = str.split('=')[1];
-                                    if (readonly_not_disable.includes(key)) {
+                                    if (this.classList.contains('zone-readonly')) {
                                         optsSetZone = {
                                             'add_require_label': true,
                                             'add_require': false,

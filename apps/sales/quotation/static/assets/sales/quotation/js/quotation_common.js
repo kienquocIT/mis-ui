@@ -2503,9 +2503,9 @@ class QuotationDataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data_readonly";
+                        let dataZone = "quotation_costs_data";
                         if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data_readonly";
+                            dataZone = "sale_order_costs_data";
                         }
                         let itemType = 0  // product
                         if (row.hasOwnProperty('product') && row.hasOwnProperty('shipping')) {
@@ -2517,7 +2517,7 @@ class QuotationDataTableHandle {
                             return `<div class="row table-row-item-area">
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <select
-                                                class="form-select table-row-item disabled-custom-show"
+                                                class="form-select table-row-item disabled-custom-show zone-readonly"
                                                 data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
                                                 data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
                                                 data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
@@ -2542,7 +2542,7 @@ class QuotationDataTableHandle {
                                                 <i class="fas fa-shipping-fast text-teal"></i>
                                             </a>
                                         </span>
-                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row?.['product_title']}" data-id="${row?.['shipping']?.['id']}" data-bs-toggle="tooltip" title="${row.product_title}" data-zone="${dataZone}" disabled>
+                                        <input type="text" class="form-control table-row-shipping disabled-custom-show zone-readonly" value="${row?.['product_title']}" data-id="${row?.['shipping']?.['id']}" data-bs-toggle="tooltip" title="${row?.['product_title']}" data-zone="${dataZone}" disabled>
                                     </span>
                                 </div>
                                 </div>`;
@@ -2553,12 +2553,12 @@ class QuotationDataTableHandle {
                     targets: 2,
                     render: () => {
                         let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data_readonly";
+                        let dataZone = "quotation_costs_data";
                         if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data_readonly";
+                            dataZone = "sale_order_costs_data";
                         }
                         return `<select 
-                                    class="form-select table-row-uom disabled-custom-show"
+                                    class="form-select table-row-uom disabled-custom-show zone-readonly"
                                     data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
                                     data-keyResp="unit_of_measure"
@@ -2572,11 +2572,11 @@ class QuotationDataTableHandle {
                     targets: 3,
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data_readonly";
+                        let dataZone = "quotation_costs_data";
                         if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data_readonly";
+                            dataZone = "sale_order_costs_data";
                         }
-                        return `<input type="text" class="form-control table-row-quantity disabled-custom-show" value="${row?.['product_quantity']}" data-zone="${dataZone}" disabled>`;
+                        return `<input type="text" class="form-control table-row-quantity disabled-custom-show zone-readonly" value="${row?.['product_quantity']}" data-zone="${dataZone}" disabled>`;
                     }
                 },
                 {

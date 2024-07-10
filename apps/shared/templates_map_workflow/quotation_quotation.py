@@ -27,8 +27,7 @@ QUOTATION_DATA_MAP = {
         readonly_not_disable=['quotation_logistic_data_readonly'],
     ).data,
     'quotation_costs_data': FieldMapCommon(
-        name_mapping=['quotation_costs_data', 'quotation_costs_data_readonly'],
-        readonly_not_disable=['quotation_costs_data_readonly'],
+        name_mapping=['quotation_costs_data'],
     ).data,
     'quotation_expenses_data': FieldMapCommon(
         name_mapping=['quotation_expenses_data'],

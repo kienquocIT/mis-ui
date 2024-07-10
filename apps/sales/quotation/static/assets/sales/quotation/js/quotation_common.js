@@ -1699,6 +1699,8 @@ class QuotationLoadDataHandle {
         // Set form novalidate
         $form[0].setAttribute('novalidate', 'novalidate');
         $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');
+        // set again WF runtime
+        QuotationLoadDataHandle.loadSetWFRuntimeZone();
         return true;
     };
 

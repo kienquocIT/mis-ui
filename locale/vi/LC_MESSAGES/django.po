@@ -6201,8 +6201,8 @@ msgid "Shipping fee"
 msgstr "Phí vận chuyển"
 
 #
-msgid "Data is hidden by workflow config"
-msgstr "Dữ liệu bị ẩn theo quy trình"
+msgid "Data in the hidden zone"
+msgstr "Dữ liệu thuộc vùng bị ẩn"
 
 #
 msgid "Add node"

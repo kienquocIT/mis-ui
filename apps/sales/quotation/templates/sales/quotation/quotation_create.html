@@ -36,7 +36,7 @@
             <div class="d-flex justify-content-end">
                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                     <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Copy Quotation' %}">
-                        <button type="button" class="btn btn-outline-secondary btn-square" id="btn-copy-quotation" data-bs-toggle="modal" data-bs-target="#quotationModalCenter" data-copy-type="copy-from"><i class="far fa-copy"></i></button>
+                        <button type="button" class="btn btn-outline-secondary btn-square" id="btn-copy-quotation" data-bs-toggle="modal" data-bs-target="#quotationModalCenter" data-copy-type="copy-from" data-zone="title"><i class="far fa-copy"></i></button>
                     </span>
                 </div>
             </div>
@@ -155,7 +155,7 @@
                                         <div
                                                 class="modal fade" id="quotationModalCenter" tabindex="-1"
                                                 role="dialog" aria-labelledby="quotationModalCenter"
-                                                aria-hidden="true"
+                                                aria-hidden="true" data-zone="title"
                                         >
                                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                                 <div class="modal-content">
@@ -421,7 +421,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="tab_cost">
+                            <div class="tab-pane fade" id="tab_cost" data-zone="quotation_costs_data">
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-cost"
@@ -482,7 +482,7 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="tab_expense">
+                            <div class="tab-pane fade" id="tab_expense" data-zone="quotation_expenses_data">
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-expense"
@@ -686,7 +686,7 @@
         </div>
 
         <div class="modal-area">
-            <div class="modal fade" id="addQuickProduct" tabindex="-1" role="dialog" aria-labelledby="addQuickProduct" aria-hidden="true">
+            <div class="modal fade" id="addQuickProduct" tabindex="-1" role="dialog" aria-labelledby="addQuickProduct" aria-hidden="true" data-zone="quotation_products_data">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">

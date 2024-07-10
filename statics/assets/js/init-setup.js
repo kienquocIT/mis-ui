@@ -2219,8 +2219,8 @@ class WFRTControl {
         let htmlCustom = ``;
         let statusList = [0, 1];
         let statusMapIcon = {
-            0: "fas fa-file mr-2 fs-6",
-            1: "fas fa-project-diagram mr-1 fs-6",
+            0: "fas fa-file mr-2 fs-7",
+            1: "fas fa-sitemap mr-1 fs-7",
         };
         let statusMapText = {
             0: $.fn.transEle.attr('data-save-draft'),
@@ -2232,7 +2232,7 @@ class WFRTControl {
         };
         for (let status of statusList) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
-                                <div class="d-flex">
+                                <div class="d-flex align-items-center">
                                     <i class="${statusMapIcon[status]} ${statusMapColor[status]}"></i>
                                     <span class="${statusMapColor[status]}">${statusMapText[status]}</span>
                                 </div>
@@ -2559,7 +2559,6 @@ class WFRTControl {
                         let inputMapProperties = input_mapping_properties[item?.['code']];
                         if (inputMapProperties && typeof inputMapProperties === 'object') {
                             let arrTmpFind = [];
-                            let readonly_not_disable = inputMapProperties['readonly_not_disable'];
                             inputMapProperties['name'].map((nameFind) => {
                                 arrTmpFind.push("[name=" + nameFind + "]");
                                 arrTmpFind.push("[data-zone=" + nameFind + "]");
@@ -2590,6 +2589,9 @@ class WFRTControl {
                                         dmUploaderAttr = 'disable';
                                     }
                                     $(this).changePropertiesElementIsZone(optsSetZone);
+                                    $(this).find('input, select, textarea, button').each(function (event) {
+                                        $(this).changePropertiesElementIsZone(optsSetZone);
+                                    });
                                     // case: input is Files
                                     if ($(this).hasClass('dm-uploader-ids')) {
                                         let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
@@ -2600,14 +2602,14 @@ class WFRTControl {
                             });
                             inputMapProperties['id_border_zones'].map((item) => {
                                 pageEle.find('#' + item).changePropertiesElementIsZone({
-                                    add_border: true,
-                                    add_readonly: true,
+                                    'add_border': true,
+                                    'add_readonly': true,
                                 });
                             })
                             inputMapProperties['cls_border_zones'].map((item) => {
                                 pageEle.find('.' + item).changePropertiesElementIsZone({
-                                    add_border: true,
-                                    add_readonly: true,
+                                    'add_border': true,
+                                    'add_readonly': true,
                                 });
                             })
                         }
@@ -2955,17 +2957,20 @@ class WFRTControl {
                     // add class hidden-zone (for use css in my-style.css)
                     $(ele$).attr('placeholder', '');
                     $(ele$).addClass('hidden-zone');
+                    $(ele$).addClass('border');
+                    $(ele$).addClass('border-dashed');
+                    $(ele$).addClass('border-red');
                 }
                 if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible")) {  // if select2
                     $(ele$).html(`<option value="" selected></option>`);
                     // add class hidden-zone (for use css in my-style.css)
-                    $(ele$).initSelect2({placeholder: $.fn.transEle.attr('data-hidden-by-workflow-config'),});
+                    $(ele$).initSelect2({placeholder: $.fn.transEle.attr('data-in-hidden-zone'),});
                     $(ele$).next('.select2-container').addClass('hidden-zone');
                 }
                 if ($(ele$).is('textarea')) {  // if <textarea>
                     $(ele$).val('');
                     // add class hidden-zone (for use css in my-style.css)
-                    $(ele$).attr('placeholder', $.fn.transEle.attr('data-hidden-by-workflow-config'));
+                    $(ele$).attr('placeholder', $.fn.transEle.attr('data-in-hidden-zone'));
                     $(ele$).addClass('hidden-zone');
                 }
                 if ($(ele$).is('span')) {  // if <span> (only span that have attr data-zone)
@@ -2978,7 +2983,7 @@ class WFRTControl {
                     }
                 }
                 if ($(ele$).is('p')) {  // if <p>
-                    $(ele$).html(`${$.fn.transEle.attr('data-hidden-by-workflow-config')}`);
+                    $(ele$).html(`${$.fn.transEle.attr('data-in-hidden-zone')}`);
                 }
                 if ($(ele$).is('button')) {  // if <button> (only button that have attr data-zone)
                     if ($(ele$).attr('data-zone')) {

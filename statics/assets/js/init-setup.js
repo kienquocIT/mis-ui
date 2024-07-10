@@ -2332,16 +2332,20 @@ class WFRTControl {
                         }
                         // zones handler
                         if (window.location.href.includes('/update/')) {
-                            if (actionMySelf.hasOwnProperty('zones') && actionMySelf.hasOwnProperty('zones_hidden') && actionMySelf.hasOwnProperty('is_edit_all_zone')) {
-                                WFRTControl.activeBtnOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden'], actionMySelf['is_edit_all_zone']);
-                            } else {
-                                WFRTControl.activeSetZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
-                            }
+                            let isCR = false;
                             // active btn save change and back if current employee is owner, status is finished
                             let eleDocCR = $('#documentCR');
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
                             if (eleDocCR.attr('data-status') === '5' && eleDocCR.attr('data-inherit') === currentEmployee) {
                                 WFRTControl.setBtnWFAfterFinishUpdate();
+                                isCR = true;
+                            }
+                            if (isCR === false) {
+                                if (actionMySelf.hasOwnProperty('zones') && actionMySelf.hasOwnProperty('zones_hidden') && actionMySelf.hasOwnProperty('is_edit_all_zone')) {
+                                    WFRTControl.activeBtnOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden'], actionMySelf['is_edit_all_zone']);
+                                } else {
+                                    WFRTControl.activeSetZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
+                                }
                             }
                         }
                         if (window.location.href.includes('/detail/')) {
@@ -2393,7 +2397,7 @@ class WFRTControl {
                                     let workflow_current = WFconfig?.['workflow_currently'];
                                     if (workflow_current) {
                                         // zones handler
-                                        if (window.location.href.includes('/create')) {
+                                        if (window.location.href.includes('/create/')) {
                                             WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
                                         }
                                         // collab out form handler

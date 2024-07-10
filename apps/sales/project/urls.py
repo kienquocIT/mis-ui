@@ -3,7 +3,8 @@ from django.urls import path
 from apps.sales.project.views import ProjectList, ProjectCreate, ProjectCreateAPI, ProjectListAPI, ProjectDetail, \
     ProjectDetailAPI, ProjectEdit, ProjectEditAPI, ProjectCreateGroupAPI, ProjectWorkCreateAPI, ProjectGroupListAPI, \
     ProjectWorkListAPI, ProjectGroupDetailAPI, ProjectWorkDetailAPI, ProjectMemberAddAPI, ProjectMemberDetailAPI, \
-    ProjectUpdateOrderAPI, ProjectTaskListAPI, ProjectGroupDDListAPI, ProjectTaskDetailAPI, ProjectWorkExpenseAPI
+    ProjectUpdateOrderAPI, ProjectTaskListAPI, ProjectGroupDDListAPI, ProjectTaskDetailAPI, ProjectWorkExpenseAPI, \
+    ProjectCreateBaselineAPI, ProjectBaselineDetail, ProjectBaselineDetailAPI
 
 urlpatterns = [
     # project
@@ -42,4 +43,11 @@ urlpatterns = [
 
     # project work expense list
     path('work-expense-list', ProjectWorkExpenseAPI.as_view(), name='ProjectWorkExpenseAPI'),
+    # project baseline
+    path('baseline-create-api', ProjectCreateBaselineAPI.as_view(), name='ProjectCreateBaselineAPI'),
+    path('detail/baseline-version/<str:pk>', ProjectBaselineDetail.as_view(), name='ProjectBaselineDetail'),
+    path(
+        'detail/baseline-version/detail-api/<str:pk>', ProjectBaselineDetailAPI.as_view(),
+        name='ProjectBaselineDetailAPI'
+    ),
 ]

@@ -454,9 +454,16 @@
 .info-txt{
     display: block;
     position: absolute;
-    right: 60px;
-    top:25%;
+    left: 102%;
+    top: 40px;
     color:rgb(255 0 0);
+    width: 100%;
 }
 .off_effect#check_expense_modalheader:before,
 .off_effect .info-txt{display: none;}
+
+.list-group-numbered{
+    max-height: 250px;
+    overflow: hidden;
+    overflow-y: auto;
+}

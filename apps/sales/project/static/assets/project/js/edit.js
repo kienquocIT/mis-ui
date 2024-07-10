@@ -13,7 +13,7 @@ $(document).ready(function(){
         maxYear: parseInt(moment().format('YYYY'), 10),
     });
 
-    // run select employee choise
+    // run select employee choice
     $('#selectEmployeeInherit, #select_project_owner').each(function(){
         $(this).initSelect2({
             templateResult: function (state) {
@@ -115,6 +115,7 @@ $(document).ready(function(){
         .then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
+                WFRTControl.setWFRuntimeID(data['workflow_runtime_id']);
                 $x.fn.renderCodeBreadcrumb(data);
                 $('#titleInput').val(data.title)
                 $('#id').val(data.id)
@@ -129,6 +130,11 @@ $(document).ready(function(){
                 ProjectTeamsHandle.render(data.members)
                 Task_in_project.init(data)
                 ProjectWorkExpenseHandle.init(data?.['works'])
+
+                if (data['employee_inherit']['id'] === JSON.parse($('#current_info').text()).id){
+                    $('#create_baseline').prop('disabled', false)
+                    $('#data_form').data('form_data', data)
+                }
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )
@@ -202,7 +208,49 @@ $(document).ready(function(){
         validWeight(this)
     }, 500));
 
-    $('.toggle-notes').on('click', function(e){
-        $('.content-notes').slideToggle()
-    })
+    class createBaseline{
+        static baselineSubmit(){
+            $('#create_baseline').on('click', function(){
+                Swal.fire({
+                    title: $.fn.gettext("Are you sure?"),
+                    text: $.fn.gettext("Create baseline at this moment?"),
+                    icon: "question",
+                    showCancelButton: true,
+                    // buttonsStyling: false,
+                    confirmButtonText: $.fn.gettext('Yes, I am'),
+                    cancelButtonText: $.fn.gettext("No, I'm not"),
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value && result.isConfirmed) {
+                        let frm = $('#project_form'), form_data = $('#data_form').data('form_data'),
+                        allList = [];
+                        const $tblExpense = $('#work_expense_tbl tr.work-expense-wrap');
+                        Array.from($tblExpense).forEach(function(e){
+                            allList = allList.concat($(e).find('table[id*="expense_child_"]').DataTable().data().toArray())
+                        })
+                        let baseline_data = {
+                            project: form_data.id,
+                            project_data: form_data
+                        }
+                        $.fn.callAjax2({
+                            url: $('#url-factory').attr("data-baseline"),
+                            method: 'post',
+                            data: baseline_data,
+                        }).then((resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) $.fn.notifyB({description: data.message}, 'success')
+                        }, (errs) => {
+                            $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        })
+                    }
+                })
+            })
+        }
+        static init(){
+            createBaseline.baselineSubmit()
+        }
+    }
+    // run create btn
+    createBaseline.init()
+
 });

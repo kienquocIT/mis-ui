@@ -594,30 +594,63 @@ class Task_in_project {
         const $taskID = $('#formOpportunityTask');
         const $parent = $('#select_expense'), $child = $('#select_expense_role'),
             $grandChild = $('#select_expense_role_employee');
-        $parent.initSelect2({width: 'resolve'}).on('select2:select', function(e){
-            const _value = e.params.data.data, _role_lst = _value.role
-            if ($child.hasClass("select2-hidden-accessible")) $child.select2('destroy').html('')
-            for (let item of _role_lst){
-                $child.append(new Option(item.title, item.id, false, false))
-            }
-            $child.initSelect2({allowClear: true}).on('select2:select', function(){
-                let params = $grandChild.attr('data-params').replaceAll("'", '"')
-                params = JSON.parse(params)
-                params.role = $child.val().join(',')
-                if ($grandChild.hasClass("select2-hidden-accessible")) $grandChild.select2('destroy').html('')
-                $grandChild.attr('data-params', JSON.stringify(params)).initSelect2({width: 'resolve'})
+
+        function callAndLoadData(params){
+            // run status select default
+            $.fn.callAjax2({
+                'url': $grandChild.attr('data-url'),
+                'method': 'get',
+                'data': params
             })
-        });
+                .then((resp) => {
+                    const data = $.fn.switcherResp(resp);
+                    let dataLst = data['employee_list'],
+                        strLst = ''
+                    for (let item of dataLst){
+                        let name = PersonControl.shortNameGlobe(item), avatar = '';
+                        if (!item?.['avatar_img'])
+                            avatar = `<div class="avatar avatar-rounded avatar-xs avatar-primary"><span class="initial-wrap" style="min-width:23px">${name}</span></div>`
+                        else
+                            avatar = `<span class="avatar"><img src="${item?.['avatar_img']}" alt="${name}" class="avatar-img"></span>`
+                        strLst += `<div class="chip chip-outline-primary user-chip" data-id="${item.id}">` +
+                                  `   <span>${avatar}` +
+                                  `      <span class="chip-text">${item.full_name}</span>` +
+                                  `   </span>` +
+                                  `</div>`
+                    }
+                    $grandChild.append(strLst)
+                    if (data.page_next > 0){
+                        params.page = data.page_next
+                        callAndLoadData(params)
+                    }
+                })
+        }
+        if ($parent.length)
+            $parent.initSelect2({width: 'resolve'}).on('select2:select', function(e){
+                const _value = e.params.data.data, _role_lst = _value.role
+                if ($child.hasClass("select2-hidden-accessible")) $child.select2('destroy').html('')
+                for (let item of _role_lst){
+                    $child.append(new Option(item.title, item.id, false, false))
+                }
+                $child.initSelect2({allowClear: true}).on('select2:select', function(){
+                    let params = $grandChild.attr('data-params').replaceAll("'", '"')
+                    params = JSON.parse(params)
+                    params.role = $child.val().join(',')
+                    $grandChild.html('')
+                    callAndLoadData(params)
+                })
+            });
 
         // append button toggle check employee in expense role
-        $taskID.find('.custom-layout').prev().after(`<div class="col-md-12 col-xs-12">`
-            + `<a href="#" class="text-bold d-block btn-check_emp text-decoration-underline mb-3">${
-            $.fn.gettext('Check employee availability are filter by the role in expense')}</a></div>`)
+        $taskID.find('.custom-layout').prev().after(`<div class="col-md-6 col-xs-12">`
+            + `<a href="#" class="text-bold d-block btn-check_emp text-decoration-underline mt-4" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="${$.fn.gettext('Search employee by costs incurred')}">`
+            + `<img src="/static/assets/project/images/find-user-2.svg" alt="${$.fn.gettext('Search employee by costs incurred')}" style="width:50px;height:50px;">`
+            + `</a></div>`)
 
         $('.btn-check_emp').on('click', function(){
             $('#check_expense_modal').toggleClass('hidden')
-        })
-        dragElement($('#check_expense_modal')[0])
+        }).tooltip()
+        if (typeof dragElement === "function") dragElement($('#check_expense_modal')[0])
     }
 }
 

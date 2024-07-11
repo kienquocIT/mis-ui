@@ -292,13 +292,6 @@ $(async function () {
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$('#base-trans-factory').attr('data-more-info')}</h6>`;
         let $eleWH = $('#inputWareHouse');
         let warehouseID = $eleWH.val();
-        let warehouseTitle = '';
-        if (warehouseID) {
-            let dataWHSelected = SelectDDControl.get_data_from_idx($eleWH, warehouseID);
-            if (dataWHSelected) {
-                warehouseTitle = dataWHSelected?.['title'];
-            }
-        }
 
         let url = $urlFact.attr('data-product-warehouse');
         let dataParam = {
@@ -329,9 +322,19 @@ $(async function () {
         ).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data.hasOwnProperty(keyResp) && Array.isArray(data?.[keyResp])) {
-                let available = 0;
+                let stock = 0;
                 let picked = 0;
+                let available = 0;
                 let link = '';
+                let warehouseTitle = '';
+                let $eleWH = $('#inputWareHouse');
+                if ($eleWH && $eleWH.length > 0) {
+                    let dataWHSelected = SelectDDControl.get_data_from_idx($eleWH, $eleWH.val());
+                    if (dataWHSelected) {
+                        warehouseTitle = dataWHSelected?.['title'];
+                    }
+                }
+
                 if (data?.[keyResp].length > 0) {
                     let dataPW = data?.[keyResp][0];
                     let finalRate = 1;
@@ -342,15 +345,17 @@ $(async function () {
                             }
                         }
                     }
-                    available = (dataPW?.['available_stock'] - dataPW?.['available_picked']) * finalRate;
+                    stock = dataPW?.['available_stock'] * finalRate;
                     picked = dataPW?.['available_picked'] * finalRate;
+                    available = (dataPW?.['available_stock'] - dataPW?.['available_picked']) * finalRate;
                     link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(dataPW?.['product']?.['id']);
                 }
                 let areaTitle = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-warehouse')}:</b><p>${warehouseTitle}</p></div>`;
                 let areaUOM = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-uom')}:</b><p>${prod?.['uom_data']?.['title']}</p></div>`;
                 let areaStock = `<div class="d-flex mb-3">
-                                    <div class="mr-2"><h6>${$elmTrans.attr('data-available')}</h6><p class="pw-available">${available}</p></div>
-                                    <div><h6>${$elmTrans.attr('data-picking-area')}</h6>${picked}</div>
+                                    <div class="mr-3"><p>${$elmTrans.attr('data-stock')}</p><p>${stock}</p></div>
+                                    <div class="mr-3"><p>${$elmTrans.attr('data-picked')}</p><p>${picked}</p></div>
+                                    <div class="mr-3"><p>${$elmTrans.attr('data-available')}</p><p class="pw-available text-success">${available}</p></div>
                                 </div>`;
                 let areaView = `<div class="dropdown-divider"></div><div class="text-right">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover">

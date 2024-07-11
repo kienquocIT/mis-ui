@@ -1,8 +1,3 @@
-function loadDatePicker() {
-    $('input[type=text].date-picker').dateRangePickerDefault();
-    $('input[type=text].date-picker').val(null);
-}
-
 class pickupUtil {
     prodList = [];
     pickingData = {};
@@ -38,26 +33,39 @@ class pickupUtil {
     }
 
     // Picked quantity on change
-    pickedQuantityUtil(val, idx) {
-        let value = parseInt(val);
+    pickedQuantityUtil(ele, idx) {
+        $(ele).removeClass('is-invalid cl-red');
         let currentList = this.getProdList
-        // Cập nhật giá trị của input
-        if (0 <= value <= currentList[idx]['remaining_quantity']) {
-            currentList[idx]['picked_quantity'] = value
-            this.setProdList = currentList
+        let row = ele.closest('tr');
+        if (row) {
+            let eleAvailable = row.querySelector('.pw-available');
+            if (eleAvailable) {
+                let value = parseInt(ele.value);
+                let available = parseInt(eleAvailable.innerHTML);
+                let remain = parseInt(currentList[idx]['remaining_quantity']);
+                currentList[idx]['picked_quantity'] = value;
+                if (value > available) {
+                    $(ele).addClass('is-invalid cl-red');
+                    $.fn.notifyB({description: $('#trans-factory').attr('data-exceed-available')}, 'failure');
+                    ele.value = 0;
+                    currentList[idx]['picked_quantity'] = 0;
+                }
+                if (value > remain) {
+                    $(ele).addClass('is-invalid cl-red');
+                    $.fn.notifyB({description: $('#trans-factory').attr('data-exceed-remain')}, 'failure');
+                    ele.value = 0;
+                    currentList[idx]['picked_quantity'] = 0;
+                }
+                this.setProdList = currentList
+            }
         }
-        else if (value > currentList[idx]['remaining_quantity'])// giá trị nhập vào lớn hơn số tồn kho
-            $.fn.notifyB({
-                description: $('#trans-factory').attr('data-error-picked-quantity')
-            }, 'failure')
-
         // nhập đủ tự check all
         let countTemp = 0
         let sub = this.getPicking
         for (let item of currentList) {
-            countTemp += item.picked_quantity
+            countTemp += item?.['picked_quantity']
         }
-        if (countTemp === sub.remaining_quantity)
+        if (countTemp === sub?.['remaining_quantity'])
             $('#idxDoneAll').prop('checked', true)
         else
             $('#idxDoneAll').prop('checked', false)
@@ -87,11 +95,8 @@ class pickupUtil {
                             if (parseFloat(elePWStock.innerHTML) < currentList[idx]['picked_quantity']) {
                                 elePick.value = 0;
                                 currentList[idx]['picked_quantity'] = 0;
-                                $.fn.notifyB(
-                                    {description: $('#trans-factory').attr('data-outstock')},
-                                    'failure'
-                                );
-                                $(elePick).addClass('is-invalid cl-red')
+                                $.fn.notifyB({description: $('#trans-factory').attr('data-outstock')}, 'failure');
+                                $(elePick).addClass('is-invalid cl-red');
                             }
                         }
                     }
@@ -172,8 +177,24 @@ $(async function () {
     // declare variable
     const pickupInit = new pickupUtil();
 
-    // init datetime picker
-    loadDatePicker()
+    // init date picker
+    $('.date-picker').each(function () {
+        $(this).daterangepicker({
+            singleDatePicker: true,
+            timepicker: false,
+            showDropdowns: false,
+            minYear: 2023,
+            locale: {
+                format: 'DD/MM/YYYY',
+            },
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            autoApply: true,
+            autoUpdateInput: false,
+        }).on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY'));
+        });
+        $(this).val('').trigger('change');
+    })
 
     // call data when page loaded
     $.fn.callAjax(
@@ -187,8 +208,9 @@ $(async function () {
             pickupInit.setPicking = data?.['picking_detail']
             data = data?.['picking_detail']
             $x.fn.renderCodeBreadcrumb(data);
-            $('#inputSaleOrder').val(data?.['sale_order_data']?.['code']);
-            $('.title-code').text(data?.['code'])
+            let $saleOrder = $('#inputSaleOrder');
+            $saleOrder.val(data?.['sale_order_data']?.['code']);
+            $saleOrder.attr('data-so', JSON.stringify(data?.['sale_order_data']));
             // state
             let state = data?.state;
             if (state !== undefined && Number.isInteger(state)) {
@@ -207,9 +229,11 @@ $(async function () {
             }
 
             // picking delivery date
-            let estimate_delivery_date = data?.['estimated_delivery_date'];
-            if (estimate_delivery_date)
-                $('#inputEstimateDeliveryDate').val(estimate_delivery_date).dateRangePickerDefault()
+            let estimate_delivery_date = '';
+            if (data?.['estimated_delivery_date']) {
+                estimate_delivery_date = moment(data?.['estimated_delivery_date'], 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY');
+            }
+            $('#inputEstimateDeliveryDate').val(estimate_delivery_date);
 
             // warehouse
             let warehouse_data = data?.['ware_house_data'];
@@ -244,23 +268,16 @@ $(async function () {
         }
     )
 
-    function getStockByProdID(prod, dropdownElm) {
-        const $elmTrans = $('#trans-factory')
+    function getStockByProdID(prod, $menuDD) {
+        let $elmTrans = $('#trans-factory')
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$('#base-trans-factory').attr('data-more-info')}</h6>`;
-        const warehouseID = $('#inputWareHouse').val();
-        if(!warehouseID.valid_uuid4()){
-            $.fn.notifyB({description: $elmTrans.attr('data-error-warehouse')}, 'failure')
-            return false
-        }
+        let $eleWH = $('#inputWareHouse');
+        let warehouseID = $eleWH.val();
         let warehouseTitle = '';
         if (warehouseID) {
-            let dataWHSelected = SelectDDControl.get_data_from_idx($('#inputWareHouse'), warehouseID);
+            let dataWHSelected = SelectDDControl.get_data_from_idx($eleWH, warehouseID);
             if (dataWHSelected) {
-                if (dataWHSelected?.['title']) {
-                    warehouseTitle = dataWHSelected?.['title'];
-                } else {
-                    warehouseTitle = dataWHSelected?.['text'];
-                }
+                warehouseTitle = dataWHSelected?.['title'];
             }
         }
         $.fn.callAjax2(
@@ -276,45 +293,42 @@ $(async function () {
         ).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data.hasOwnProperty('warehouse_products_list') && Array.isArray(data.warehouse_products_list)) {
+                let available = 0;
+                let picked = 0;
+                let link = '';
                 if (data?.['warehouse_products_list'].length > 0) {
-                    for (let productWH of data?.['warehouse_products_list']) {
-                        htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${productWH?.['warehouse']?.['title']}</p></div>`;
-                        htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
-                            `<div><h6>${$elmTrans.attr('data-stock')}</h6><p class="product-warehouse-stock">${productWH?.['stock_amount']}</p></div>` +
-                            `<div><h6>${$elmTrans.attr('data-store')}</h6>${productWH?.['stock_amount'] - productWH?.['picked_ready']}</div>` +
-                            `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${productWH?.['picked_ready']}</div>` +
-                            `</div>`;
-                        htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${productWH?.['uom']?.['title'] || '--'}</p></div>`;
-                        let link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(productWH?.['product']?.['id']);
-                        htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
-                            <a href="${link}" target="_blank" class="link-primary underline_hover">
-                                <span>${$elmTrans.attr('data-view-detail')}</span>
-                                <span class="icon ml-1">
-                                    <i class="bi bi-arrow-right-circle-fill"></i>
-                                </span>
-                            </a></div>`;
-                        $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent);
+                    let dataPW = data?.['warehouse_products_list'][0];
+                    let finalRate = 1;
+                    if (dataPW?.['uom'] && prod?.['uom_data']) {
+                        if (dataPW?.['uom']?.['ratio'] && prod?.['uom_data']?.['ratio']) {
+                            if (prod?.['uom_data']?.['ratio'] > 0) {
+                                finalRate = dataPW?.['uom']?.['ratio'] / prod?.['uom_data']?.['ratio'];
+                            }
+                        }
                     }
-                } else {
-                    htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${warehouseTitle}</p></div>`;
-                        htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
-                            `<div><h6>${$elmTrans.attr('data-stock')}</h6><p class="product-warehouse-stock">${0}</p></div>` +
-                            `<div><h6>${$elmTrans.attr('data-store')}</h6>${0}</div>` +
-                            `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${0}</div>` +
-                            `</div>`;
-                        htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${prod?.['product_data']?.['uom_inventory']?.['title'] || '--'}</p></div>`;
-                        let link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(prod?.['product_data']?.['id']);
-                        htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
-                            <a href="${link}" target="_blank" class="link-primary underline_hover">
-                                <span>${$elmTrans.attr('data-view-detail')}</span>
-                                <span class="icon ml-1">
-                                    <i class="bi bi-arrow-right-circle-fill"></i>
-                                </span>
-                            </a></div>`;
-                    $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent);
-                    // $.fn.notifyB({description: 'Warehouse does not contain this product'}, 'failure')
-                    // return false
+                    available = (dataPW?.['available_amount'] - dataPW?.['picked_ready']) * finalRate;
+                    picked = dataPW?.['picked_ready'] * finalRate;
+                    link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(dataPW?.['product']?.['id']);
                 }
+                let areaTitle = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-warehouse')}:</b><p>${warehouseTitle}</p></div>`;
+                let areaUOM = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-uom')}:</b><p>${prod?.['uom_data']?.['title']}</p></div>`;
+                let areaStock = `<div class="d-flex mb-3">
+                                    <div class="mr-2"><h6>${$elmTrans.attr('data-available')}</h6><p class="pw-available">${available}</p></div>
+                                    <div><h6>${$elmTrans.attr('data-picking-area')}</h6>${picked}</div>
+                                </div>`;
+                let areaView = `<div class="dropdown-divider"></div><div class="text-right">
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover">
+                                        <span>${$elmTrans.attr('data-view-detail')}</span>
+                                        <span class="icon ml-1">
+                                            <i class="bi bi-arrow-right-circle-fill"></i>
+                                        </span>
+                                    </a>
+                                </div>`;
+                htmlContent += areaTitle;
+                htmlContent += areaUOM;
+                htmlContent += areaStock;
+                htmlContent += areaView;
+                $menuDD.empty().append(htmlContent);
             }
         });
     }
@@ -336,15 +350,21 @@ $(async function () {
                 },
                 {
                     render: (data, type, row) => {
-                        return `<div class="dropdown d-inline-block mr-2 text-cursor">
-                                <i class="fas fa-info-circle text-blue"
-                                   data-bs-toggle="dropdown"
-                                   data-dropdown-animation
-                                   aria-haspopup="true"
-                                   aria-expanded="false" data-product-id="${row?.['product_data']?.['id']}"
-                                   ></i>
-                                <div class="dropdown-menu w-280p mt-2"></div>
-                            </div> ${row?.['product_data']?.['title']}`
+                        return `<div class="d-flex justify-content-start">
+                                    <div class="dropdown">
+                                        <button 
+                                            type="button" 
+                                            class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover"
+                                            data-bs-toggle="dropdown"
+                                            aria-haspopup="true"
+                                            aria-expanded="false" data-product-id="${row?.['product_data']?.['id']}"
+                                        >
+                                            <span class="icon"><i class="fas fa-info-circle text-blue"></i></span>
+                                         </button>
+                                        <div role="menu" class="dropdown-menu w-300p mt-2 dropdown-menu-stock"></div>
+                                    </div>
+                                    <p class="mt-2">${row?.['product_data']?.['title']}</p>
+                                </div>`;
                     }
                 },
                 {
@@ -381,9 +401,10 @@ $(async function () {
                 },
             ],
             rowCallback(row, data, index) {
-                $(`.dropdown > i`, row).off().on('show.bs.dropdown', function () {
-                    getStockByProdID(data, $(this))
-                })
+                let menuDD = row.querySelector('.dropdown-menu-stock');
+                if (menuDD) {
+                    getStockByProdID(data, $(menuDD));
+                }
 
                 $(`#prod_row-${index}`, row).off().on('change', async function (e) {
                     if (this.value) {
@@ -392,19 +413,7 @@ $(async function () {
                         this.value = value
                         $('body').append('<div class="cus-loading"><div class="spinner-border" role="status">' +
                             '<span class="sr-only"></span></div></div>')
-                        const listCompare = await pickupInit.getWarehouseStock(data)
-                        if (listCompare > 0 && listCompare >= parseFloat(value)) {
-                            pickupInit.pickedQuantityUtil(value, index);
-                            $(this).removeClass('is-invalid cl-red')
-                        } else {
-                            this.value = 0;
-                            $.fn.notifyB(
-                                {description: $('#trans-factory').attr('data-outstock')},
-                                'failure'
-                            );
-                            $(this).addClass('is-invalid cl-red')
-                            $('.cus-loading').remove()
-                        }
+                        pickupInit.pickedQuantityUtil(this, index);
                     }
                 })
             },
@@ -436,13 +445,11 @@ $(async function () {
             return false
         }
         const pickingData = pickupInit.getPicking
-        // if (_form.dataForm?.estimated_delivery_date)
-        //     pickingData['estimated_delivery_date'] = moment(_form.dataForm['estimated_delivery_date'],
-        //         'MM/DD/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-        // else delete pickingData['estimated_delivery_date']
-
         if (_form.dataForm?.estimated_delivery_date) {
-            pickingData['estimated_delivery_date'] = _form.dataForm?.estimated_delivery_date;
+            pickingData['estimated_delivery_date'] = moment(
+                _form.dataForm?.['estimated_delivery_date'],
+                'DD/MM/YYYY hh:mm A'
+            ).format('YYYY-MM-DD hh:mm:ss');
         } else {
             delete pickingData['estimated_delivery_date']
         }
@@ -459,17 +466,17 @@ $(async function () {
         }
 
         let prodSub = []
-        for (prod of pickupInit.getProdList) {
-            if (prod.picked_quantity > 0)
+        for (let prod of pickupInit.getProdList) {
+            if (prod?.['picked_quantity'] > 0)
                 prodSub.push({
                     'product_id': prod?.['product_data']?.['id'],
-                    'done': prod.picked_quantity,
+                    'done': prod?.['picked_quantity'],
                     'delivery_data': [{
                         'warehouse': _form.dataForm['warehouse_id'],
                         'uom': prod?.['uom_data']?.['id'],
-                        'stock': prod.picked_quantity,
+                        'stock': prod?.['picked_quantity'],
                     }],
-                    'order': prod.order,
+                    'order': prod?.['order'],
                 })
         }
         pickingData.products = prodSub

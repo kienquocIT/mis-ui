@@ -4636,7 +4636,7 @@ msgid "Must select one warehouse"
 msgstr "Phải chọn một kho"
 
 #
-msgid "Exceeded remaining quantity"
+msgid "Exceed remain quantity"
 msgstr "Vượt quá số lượng còn lại"
 
 #

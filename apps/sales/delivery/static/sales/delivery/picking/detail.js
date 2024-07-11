@@ -177,6 +177,10 @@ $(async function () {
     // declare variable
     const pickupInit = new pickupUtil();
 
+    let $form = $('#picking_form');
+    let dataCompanyConfig = await DocumentControl.getCompanyConfig();
+    let $urlFact = $('#url-factory');
+
     // init date picker
     $('.date-picker').each(function () {
         $(this).daterangepicker({
@@ -268,6 +272,21 @@ $(async function () {
         }
     )
 
+    function getRegisConfig() {
+        let $eleSO = $('#inputSaleOrder');
+        let isRegis = false;
+        if (dataCompanyConfig?.['config']?.['cost_per_project'] === true && $eleSO.attr('data-so')) {
+            let dataSO = JSON.parse($eleSO.attr('data-so'));
+            if (dataSO?.['opportunity']) {
+                if (Object.keys(dataSO?.['opportunity']).length !== 0) {
+                    isRegis = true;
+                }
+            }
+            return {'isRegis': isRegis, 'dataSO': dataSO}
+        }
+        return {'isRegis': isRegis, 'dataSO': {}}
+    }
+
     function getStockByProdID(prod, $menuDD) {
         let $elmTrans = $('#trans-factory')
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$('#base-trans-factory').attr('data-more-info')}</h6>`;
@@ -280,24 +299,41 @@ $(async function () {
                 warehouseTitle = dataWHSelected?.['title'];
             }
         }
+
+        let url = $urlFact.attr('data-product-warehouse');
+        let dataParam = {
+            'product_id': prod?.['product_data']?.['id'],
+            'warehouse_id': warehouseID,
+        };
+        let keyResp = 'warehouse_products_list';
+        let dataRegisConfig = getRegisConfig();
+        let isRegis = dataRegisConfig?.['isRegis'];
+            let dataSO = dataRegisConfig?.['dataSO'];
+            if (isRegis === true && dataSO) {
+                url = $urlFact.attr('data-product-regis');
+                dataParam = {
+                    'gre_item__so_item__sale_order_id': dataSO?.['id'],
+                    'gre_item__product_id': prod?.['product_data']?.['id'],
+                    'warehouse_id': warehouseID,
+                };
+                keyResp = 'good_registration_general';
+            }
+
         $.fn.callAjax2(
             {
-                'url': $('#url-factory').attr('data-product-warehouse'),
+                'url': url,
                 'method': 'GET',
-                'data': {
-                    'product_id': prod?.['product_data']?.['id'],
-                    'warehouse_id': warehouseID,
-                },
+                'data': dataParam,
                 'isDropdown': true,
             }
         ).then((resp) => {
             let data = $.fn.switcherResp(resp);
-            if (data.hasOwnProperty('warehouse_products_list') && Array.isArray(data.warehouse_products_list)) {
+            if (data.hasOwnProperty(keyResp) && Array.isArray(data?.[keyResp])) {
                 let available = 0;
                 let picked = 0;
                 let link = '';
-                if (data?.['warehouse_products_list'].length > 0) {
-                    let dataPW = data?.['warehouse_products_list'][0];
+                if (data?.[keyResp].length > 0) {
+                    let dataPW = data?.[keyResp][0];
                     let finalRate = 1;
                     if (dataPW?.['uom'] && prod?.['uom_data']) {
                         if (dataPW?.['uom']?.['ratio'] && prod?.['uom_data']?.['ratio']) {
@@ -306,8 +342,8 @@ $(async function () {
                             }
                         }
                     }
-                    available = (dataPW?.['available_amount'] - dataPW?.['picked_ready']) * finalRate;
-                    picked = dataPW?.['picked_ready'] * finalRate;
+                    available = (dataPW?.['available_stock'] - dataPW?.['available_picked']) * finalRate;
+                    picked = dataPW?.['available_picked'] * finalRate;
                     link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(dataPW?.['product']?.['id']);
                 }
                 let areaTitle = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-warehouse')}:</b><p>${warehouseTitle}</p></div>`;
@@ -391,6 +427,9 @@ $(async function () {
                     render: (row, type, data, meta) => {
                         let isDisabled = ''
                         if (data.picked_quantity === data.remaining_quantity) isDisabled = 'disabled'
+                        if ($form.attr('data-method').toLowerCase() === 'get') {
+                            isDisabled = 'disabled';
+                        }
                         return `<div class="row">
                                     <div class="col-xs-12 col-sm-6">
                                         <input class="form-control table-row-quantity-pick" type="number" id="prod_row-${meta.row}" 
@@ -425,7 +464,6 @@ $(async function () {
     }
 
     // form submit
-    const $form = $('#picking_form');
     jQuery.validator.setDefaults({
         debug: false,
         success: "valid"

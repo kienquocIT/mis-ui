@@ -86,7 +86,7 @@ $(async function () {
                     }
                     if (!config?.['is_picking'] && config?.['is_partial_ship']) { // TH config 2: none_picking_many_delivery
                         pwh['stock_amount'] = pwh?.['stock_amount'] * finalRate;
-                        pwh['available_amount'] = pwh?.['available_amount'] * finalRate;
+                        pwh['available_stock'] = pwh?.['available_stock'] * finalRate;
                         if (prod_data?.['delivery_data']) {
                             prodTable.loadProductWHModal(pwh, prod_data);
                         }
@@ -170,7 +170,7 @@ $(async function () {
                         {
                             targets: 4,
                             class: 'w-15 text-center',
-                            data: 'available_amount',
+                            data: 'available_stock',
                             render: (row, type, data) => {
                                 return `<p class="table-row-available text-success">${row}</p>`;
                             }

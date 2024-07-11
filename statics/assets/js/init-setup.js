@@ -2219,8 +2219,8 @@ class WFRTControl {
         let htmlCustom = ``;
         let statusList = [0, 1];
         let statusMapIcon = {
-            0: "fas fa-file mr-2 fs-7",
-            1: "fas fa-sitemap mr-1 fs-7",
+            0: "far fa-list-alt mr-2 fs-7",
+            1: "fas fa-sitemap mr-2 fs-7",
         };
         let statusMapText = {
             0: $.fn.transEle.attr('data-save-draft'),

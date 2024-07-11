@@ -28,7 +28,7 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="picking_form" data-url="{% url 'OrderPickingDetailAPI' data.pk %}" data-method="PUT" method="post"
+    <form id="picking_form" data-url="{% url 'OrderPickingDetailAPI' data.pk %}" data-method="GET" method="post"
           novalidate data-url-redirect="{% url 'OrderPickingList' %}">
         {% csrf_token %}
         <div class="row mb-3">
@@ -189,6 +189,7 @@
             data-warehouse-stock="{% url 'WarehouseProductAPI' %}"
             data-product-detail="{% url 'ProductDetail' 1 %}"
             data-product-warehouse="{% url 'WarehouseGetProductsListAPI' %}?interact=1"
+            data-product-regis="{% url 'GoodsRegistrationGeneralListAPI' %}"
     >
 {% endblock %}
 

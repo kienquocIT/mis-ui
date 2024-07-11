@@ -95,6 +95,7 @@ $(async function () {
                         // nếu ready quantity > 0 => có hàng để giao
                         // lấy delivery
                         pwh['stock_amount'] = pwh?.['picked_ready'] * finalRate;
+                        pwh['available_stock'] = pwh?.['available_picked'] * finalRate;
                         if (prod_data?.['ready_quantity'] > 0) {
                             prodTable.loadProductWHModal(pwh, prod_data);
                         }

@@ -330,8 +330,11 @@ $(async function () {
                 let $eleWH = $('#inputWareHouse');
                 if ($eleWH && $eleWH.length > 0) {
                     let dataWHSelected = SelectDDControl.get_data_from_idx($eleWH, $eleWH.val());
-                    if (dataWHSelected) {
+                    if (dataWHSelected?.['title']) {
                         warehouseTitle = dataWHSelected?.['title'];
+                    }
+                    if (dataWHSelected?.['text']) {
+                        warehouseTitle = dataWHSelected?.['text'];
                     }
                 }
 

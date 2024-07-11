@@ -245,7 +245,7 @@ $(async function () {
                 $('#inputWareHouse').append(
                     `<option value="{0}" selected>{1}</option>`.format_by_idx(
                         warehouse_data['id'],
-                        warehouse_data['code'] + " - " + warehouse_data['title'],
+                        warehouse_data['title'],
                     )
                 ).initSelect2()
             } else {

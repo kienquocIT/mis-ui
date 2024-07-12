@@ -7853,21 +7853,16 @@ msgid "Hold to drag"
 msgstr "Nắm giữ để di chuyển"
 
 #
-msgid "Check employee in expense labor"
-msgstr "Kiểm tra nhân viên trong chi phí"
+msgid "Search employee by incurred expenses"
+msgstr "Tìm nhân viên theo chi phí phát sinh"
 
 #
-msgid "Select expense to check employee labor"
-msgstr "Chọn chi phí để kiểm tra nhân viên"
+msgid "Roles incurred expenses"
+msgstr "Vai trò phát sinh chi phí"
 
 #
-msgid "Expense role"
-msgstr "Vai trò thuộc Chi phí"
-
-#
-msgid "Employee by role"
-msgstr "Nhân viên thuộc Vai trò"
-
+msgid "Create Baseline"
+msgstr "Tạo Đường cơ sở"
 #
 msgid "not PR"
 msgstr "không theo PR"

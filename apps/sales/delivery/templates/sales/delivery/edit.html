@@ -56,11 +56,6 @@
     <form id="delivery_form" data-url="{% url 'OrderDeliveryDetailAPI' data.pk %}" data-method="PUT" method="post"
           novalidate data-url-redirect="{% url 'OrderDeliveryList' %}">
         <div class="row mb-3">
-            <div class="col-xs-12 col-sm-3 offset-sm-6 offset-xs-0">
-                <span class="title-code text-primary font-4">--</span>
-            </div>
-        </div>
-        <div class="row mb-3">
             {% csrf_token %}
             <div class="col-xs-12 col-sm-6">
                 <div class="form-group">

@@ -3081,7 +3081,7 @@ class QuotationDataTableHandle {
     static dataTableShipping(data) {
         // init dataTable
         let $tables = $('#datable-quotation-create-shipping');
-        $tables.DataTableDefault({
+        $tables.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             // searching: false,
             paging: false,
@@ -3118,51 +3118,52 @@ class QuotationDataTableHandle {
                 }
             ],
         });
+        if ($tables.hasClass('dataTable')) {
+            $tables.DataTable().clear().draw();
+            $tables.DataTable().rows.add(data ? data : []).draw();
+        }
     };
 
-    static loadTableQuotationShipping(shipping_id) {
-        let self = this;
-        let jqueryId = '#' + shipping_id;
-        let ele = $(jqueryId);
+    static loadTableQuotationShipping() {
+        let ele = $('#data-init-quotation-create-shipping');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         let passList = [];
         let failList = [];
         let checkList = [];
+        QuotationDataTableHandle.dataTableShipping();
         $.fn.callAjax2({
                 'url': url,
                 'method': method,
                 'isDropdown': true,
             }
-            // url, method
         ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('shipping_check_list') && Array.isArray(data.shipping_check_list)) {
-                        $('#datable-quotation-create-shipping').DataTable().destroy();
                         let shippingAddress = $('#quotation-create-shipping-address').val();
                         if (shippingAddress) {
                             data.shipping_check_list.map(function (item) {
-                                if (!checkList.includes(item.id)) {
-                                    let check = shippingHandle.checkShippingValid(item, shippingAddress)
+                                if (!checkList.includes(item?.['id'])) {
+                                    let check = shippingHandle.checkShippingValid(item, shippingAddress);
                                     if (check.is_pass === true) {
                                         item['is_pass'] = true;
                                         item['final_shipping_price'] = check.final_shipping_price;
                                         item['margin_shipping_price'] = check.margin_shipping_price;
-                                        item['data_shipping'] = check.data_shipping;
-                                        passList.push(item)
+                                        item['data_shipping'] = check?.['data_shipping'];
+                                        passList.push(item);
                                     } else {
                                         item['is_pass'] = false;
-                                        failList.push(item)
+                                        failList.push(item);
                                     }
-                                    checkList.push(item.id)
+                                    checkList.push(item?.['id']);
                                 }
                             })
                             passList = passList.concat(failList);
-                            self.dataTableShipping(passList);
+                            QuotationDataTableHandle.dataTableShipping(passList);
                         } else {
-                            self.dataTableShipping(passList);
+                            QuotationDataTableHandle.dataTableShipping(passList);
                             $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-check-if-shipping-address')}, 'info');
                         }
                     }

@@ -7073,8 +7073,8 @@ msgid "Require input data in payment tab (same to purchase order)"
 msgstr "Yêu cầu nhập dữ liệu vào tab thanh toán (tương tự với đơn đặt hàng)"
 
 #
-msgid "Show data have win rate is 100%"
-msgstr "Hiển thị dữ liệu có tỷ lệ thắng là 100%"
+msgid "Show data have win rate 100%"
+msgstr "Hiển thị dữ liệu có tỷ lệ thắng 100%"
 
 #
 msgid "Select document save status"
@@ -7945,3 +7945,7 @@ msgstr "Vùng chỉnh sửa và vùng bị ẩn phải khác nhau"
 #
 msgid "Picked"
 msgstr "Hàng đã lấy"
+
+#
+msgid "UOM group"
+msgstr "Nhóm đơn vị"

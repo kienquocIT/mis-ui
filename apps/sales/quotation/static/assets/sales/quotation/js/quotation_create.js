@@ -718,7 +718,7 @@ $(function () {
 // SHIPPING
 // Action on click button Add Shipping Fee (show list shipping)
         $('#btn-add-shipping').on('click', function() {
-            QuotationDataTableHandle.loadTableQuotationShipping('data-init-quotation-create-shipping')
+            QuotationDataTableHandle.loadTableQuotationShipping();
         });
 
 // Action click Apply Shipping

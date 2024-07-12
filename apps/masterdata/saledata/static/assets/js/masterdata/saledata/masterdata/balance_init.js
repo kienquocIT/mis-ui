@@ -409,10 +409,10 @@ $(document).ready(function () {
                 <td class="w-25">
                     <div class="row">
                         <div class="col-6">
-                            <input type="text" class="form-control date-time-${trans_script.attr('data-trans-input-lot')}-expire-date-input">
+                            <input type="text" class="form-control date-time-input lot-expire-date-input">
                         </div>
                         <div class="col-6">
-                            <input type="text" class="form-control date-time-${trans_script.attr('data-trans-input-lot')}-manufacture-date-input">
+                            <input type="text" class="form-control date-time-input lot-manufacture-date-input">
                         </div>
                     </div>
                 </td>

@@ -2,14 +2,15 @@ __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI',
            'ProjectEdit', 'ProjectEditAPI', 'ProjectCreateGroupAPI', 'ProjectGroupListAPI', 'ProjectWorkCreateAPI',
            'ProjectWorkListAPI', 'ProjectGroupDetailAPI', 'ProjectWorkDetailAPI', 'ProjectMemberAddAPI',
            'ProjectMemberDetailAPI', 'ProjectUpdateOrderAPI', 'ProjectTaskListAPI', 'ProjectGroupDDListAPI',
-           'ProjectTaskDetailAPI', 'ProjectWorkExpenseAPI'
+           'ProjectTaskDetailAPI', 'ProjectWorkExpenseAPI', 'ProjectCreateBaselineAPI', 'ProjectBaselineDetail',
+           'ProjectBaselineDetailAPI',
            ]
 
 from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, SYSTEM_STATUS
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, SYSTEM_STATUS, InputMappingProperties
 from apps.shared.constant import DEPENDENCIES_TYPE
 from apps.shared.msg import BaseMsg
 
@@ -334,7 +335,7 @@ class ProjectTaskListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        url = ApiURL.PROJECT_TASK_LIST.fill_key(pk_pj=params.pop('project_id'))
+        url = ApiURL.PROJECT_TASK_LIST
         resp = ServerAPI(user=request.user, url=url).get(params)
         return resp.auto_return(key_success='prj_task_list')
 
@@ -376,3 +377,43 @@ class ProjectWorkExpenseAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_WORK_EXPENSE_LIST).get(params)
         return resp.auto_return(key_success='work_expense_list')
+
+
+class ProjectCreateBaselineAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_BASELINE).post(request.data)
+        if resp.state:
+            resp.result['message'] = f'{SaleMsg.BASELINE} {BaseMsg.CREATE} {BaseMsg.SUCCESS}'
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class ProjectBaselineDetail(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/project/extends/detail-baseline.html',
+        breadcrumb='PROJECT_DETAIL_PAGE',
+        menu_active='menu_project',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {
+                   'dependencies_list': DEPENDENCIES_TYPE,
+                   'system_status': SYSTEM_STATUS,
+                   'pk': pk,
+               }, status.HTTP_200_OK
+
+
+class ProjectBaselineDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_BASELINE_DETAIL.push_id(pk)).get()
+        return resp.auto_return()

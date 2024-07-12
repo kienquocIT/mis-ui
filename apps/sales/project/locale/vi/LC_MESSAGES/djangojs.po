@@ -140,3 +140,23 @@ msgstr "Thành tiền sau thuế"
 #
 msgid "Check employee availability are filter by the role in expense"
 msgstr "Kiểm tra Nhân viên lọc bởi Vai trò trong Chi phí"
+
+#
+msgid "Are you sure?"
+msgstr "Bạn có chắc?"
+
+#
+msgid "Create baseline at this moment?"
+msgstr "Tạo Đường Cơ Sở vào thời điểm này?"
+
+#
+msgid "Yes, I am"
+msgstr "Có, tôi chắc chắn"
+
+#
+msgid "No, I'm not"
+msgstr "Không, tôi không chắc"
+
+#
+msgid "Search employee by costs incurred"
+msgstr "Tìm nhân viên theo chi phí phát sinh"

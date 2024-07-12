@@ -127,72 +127,100 @@ class fGanttCustom {
     }
 
     static load_detail_group(group_ID){
-        const $pjElm = $('#id');
-        if (!$pjElm.val())
-            return false
-        $.fn.callAjax2({
-            'url': $('#url-factory').attr('data-group-detail').format_url_with_uuid(group_ID),
-            'method': 'get',
-            'data': {"project": $pjElm.val()},
-            'sweetAlertOpts': {'allowOutsideClick': true},
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && (data['status'] === 201 || data['status'] === 200)) {
-                    $('#groupTitle').val(data.title)
-                    $('#groupStartDate').val(moment(data.gr_start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
-                    $('#groupEndDate').val(moment(data.gr_end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
-                    let $gID = $('<input id="group_id" type="hidden"/>')
-                    $gID.val(data.id)
-                    $('#groupWeight').val(data.gr_weight)
-                    $('#groupRate').val(data.gr_rate)
-                    $('#group_modal').modal('show')
-                    $('#group_modal .modal-body').append($gID)
-                    $('#group_modal #btn-group-add').text($.fn.gettext('Save'))
-                }
-            },
-            (err) => {
-                $.fn.notifyB({description: err.data.errors}, 'failure')
+        const $pjElm = $('#id'), check_page_version = $('#project_form').hasClass('baseline_version');
+        if (!$pjElm.val() && !check_page_version) return false
+
+        function loadGroupDetail(data){
+            let date_from = data?.gr_start_date, date_end = data?.gr_end_date;
+            if (date_from === undefined) date_from = data.date_from
+            if (date_end === undefined) date_end = data.date_end
+            $('#groupTitle').val(data.title)
+            $('#groupStartDate').val(moment(date_from, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+            $('#groupEndDate').val(moment(date_end, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+            let $gID = $('<input id="group_id" type="hidden"/>')
+            $gID.val(data.id)
+            $('#groupWeight').val(data?.gr_weight | data.weight)
+            $('#groupRate').val(data?.gr_rate | data.progress)
+            $('#group_modal').modal('show')
+            $('#group_modal .modal-body').append($gID)
+            $('#group_modal #btn-group-add').text($.fn.gettext('Save'))
+        }
+        if (!check_page_version){
+            $.fn.callAjax2({
+                'url': $('#url-factory').attr('data-group-detail').format_url_with_uuid(group_ID),
+                'method': 'get',
+                'data': {"project": $pjElm.val()},
+                'sweetAlertOpts': {'allowOutsideClick': true},
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200))
+                        loadGroupDetail(data)
+                },
+                (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+            )
+        }
+        else {
+            let data = $('#project_form').data('baseline_data').project_data
+            for (let item of data.group){
+                if (item.id === group_ID) loadGroupDetail(item)
             }
-        )
+        }
     }
 
     static load_detail_work(work_ID){
-        $.fn.callAjax2({
-            'url': $('#url-factory').attr('data-work-detail').format_url_with_uuid(work_ID),
-            'method': 'get',
-            'sweetAlertOpts': {'allowOutsideClick': true},
-        }).then(
-            (resp) => {
-                let res = $.fn.switcherResp(resp);
-                if (res && (res['status'] === 201 || res['status'] === 200)) {
-                    $('#workTitle').val(res.title)
-                    $('#workStartDate').val(moment(res.w_start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
-                    $('#workEndDate').val(moment(res.w_end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
-                    let $wID = $('<input id="work_id" type="hidden"/>'), $wSTT = $('<input id="work_status" type="hidden"/>')
-                    $wID.val(res.id)
-                    $wSTT.val(res.work_status)
-                    $('#workWeight').val(res.w_weight)
-                    $('#workRate').val(res.w_rate)
-                    $('#work_modal .modal-body').append($wID).append($wSTT)
-                    $('#work_modal #btn-work-add').text($.fn.gettext('Save'))
-                    if (res.group.hasOwnProperty('id'))
-                        $('#select_project_group').attr('data-onload', JSON.stringify(res.group))
-                            .append(`<option value="${res.group.id}">${res.group.title}</option>`)
-                            .val(res.group.id).trigger('change')
-                    if (res.work_dependencies_type !== null)
-                        $('#select_relationships_type').val(res.work_dependencies_type).trigger('change')
-                    if (res.work_dependencies_parent.hasOwnProperty('id'))
-                        $('#select_project_work').attr('data-onload', JSON.stringify(res.work_dependencies_parent))
-                            .append(`<option value="${res.work_dependencies_parent.id}">${res.work_dependencies_parent.title}</option>`)
-                            .val(res.work_dependencies_parent.id).trigger('change')
-                    $('#work_modal').modal('show')
-                }
-            },
-            (err) => {
-                $.fn.notifyB({description: err.data.errors}, 'failure')
+        const check_page_version = $('#project_form').hasClass('baseline_version');
+
+        function loadWorkDetail(res){
+            let date_from = res?.w_start_date, date_end = res?.w_end_date, depen_type = res?.work_dependencies_type;
+            if (date_from === undefined) date_from = res.date_from
+            if (date_end === undefined) date_end = res.date_end
+            if (depen_type === undefined) depen_type = res.relationships_type
+            $('#workTitle').val(res.title)
+            $('#workStartDate').val(moment(date_from, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+            $('#workEndDate').val(moment(date_end, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+            let $wID = $('<input id="work_id" type="hidden"/>'), $wSTT = $('<input id="work_status" type="hidden"/>')
+            $wID.val(res.id)
+            $wSTT.val(res.work_status)
+            $('#workWeight').val(res?.w_weight | res.weight)
+            $('#workRate').val(res?.w_rate | res.progress)
+            $('#work_modal .modal-body').append($wID).append($wSTT)
+            $('#work_modal #btn-work-add').text($.fn.gettext('Save'))
+            if (res.group.hasOwnProperty('id'))
+                $('#select_project_group').attr('data-onload', JSON.stringify(res.group))
+                    .append(`<option value="${res.group.id}">${res.group.title}</option>`)
+                    .val(res.group.id).trigger('change')
+            if (depen_type !== null)
+                $('#select_relationships_type').val(depen_type).trigger('change')
+            let dependencies = res?.work_dependencies_parent
+            if (!dependencies) dependencies = res?.dependencies_parent
+            if (dependencies.hasOwnProperty('id'))
+                $('#select_project_work').attr('data-onload', JSON.stringify(dependencies))
+                    .append(`<option value="${dependencies.id}">${dependencies.title}</option>`)
+                    .val(dependencies.id | dependencies.id).trigger('change')
+            $('#work_modal').modal('show')
+        }
+
+        if (!check_page_version){
+            $.fn.callAjax2({
+                'url': $('#url-factory').attr('data-work-detail').format_url_with_uuid(work_ID),
+                'method': 'get',
+                'sweetAlertOpts': {'allowOutsideClick': true},
+            }).then(
+                (resp) => {
+                    let res = $.fn.switcherResp(resp);
+                    if (res && (res['status'] === 201 || res['status'] === 200)) loadWorkDetail(res)
+                },
+                (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+            )
+        }
+        else{
+            let data = $('#project_form').data('baseline_data').project_data
+            for (let item of data.work){
+                if (item.id === work_ID) loadWorkDetail(item)
             }
-        )
+        }
+
     }
 
     static delete_row(row){

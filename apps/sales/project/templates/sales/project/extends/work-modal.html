@@ -12,6 +12,17 @@
                         <input type="text" name="title" id="workTitle" class="form-control" required>
                     </div>
                     <div class="col-xs-12 col-md-6 form-group">
+                        <label for="select_project_group"
+                               class="form-label">{% trans 'Project group' %}</label>
+                        <select class="form-select" name="project_group" id="select_project_group"
+                                data-url="{% url 'ProjectGroupDDListAPI' %}"
+                                data-keyResp="pj_group_list" data-keyText="group.title" data-keyId="group.id"
+                                data-params="{'project': '{{ data.pk }}'}" data-allowClear="true"
+                        >
+                        </select>
+                    </div>
+
+                    <div class="col-xs-12 col-md-6 form-group">
                         <label for="workStartDate" class="form-label">{% trans 'Start date' %}</label>
                         <div class="input-affix-wrapper">
                             <input type="text" id="workStartDate" name="w_start_date" class="form-control date-picker"
@@ -28,12 +39,13 @@
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6 form-group">
-                        <label for="select_project_group"
-                               class="form-label">{% trans 'Project group' %}</label>
-                        <select class="form-select" name="project_group" id="select_project_group"
-                                data-url="{% url 'ProjectGroupDDListAPI' %}"
-                                data-keyResp="pj_group_list" data-keyText="group.title" data-keyId="group.id"
-                                data-params="{'project': '{{ data.pk }}'}" data-allowClear="true"
+                        <label for="select_project_work"
+                               class="form-label">{% trans "Parents Work" %}</label>
+                        <select class="form-select" name="project_work" id="select_project_work"
+                                data-url="{% url 'ProjectWorkListAPI' %}"
+                                data-keyResp="pj_work_list" data-keyText="title" data-keyId="id"
+                                data-params="{'list_from_app': '{{ data.list_from_app|escape }}', 'project': '{{ data.pk }}'}"
+                                data-allowClear="true"
                         >
                         </select>
                     </div>
@@ -47,18 +59,15 @@
                             {% endfor %}
                         </select>
                     </div>
+
                     <div class="col-xs-12 col-md-6 form-group">
-                        <label for="select_project_work"
-                               class="form-label">{% trans "Parents Work" %}</label>
-                        <select class="form-select" name="project_work" id="select_project_work"
-                                data-url="{% url 'ProjectWorkListAPI' %}"
-                                data-keyResp="pj_work_list" data-keyText="title" data-keyId="id"
-                                data-params="{'list_from_app': '{{ data.list_from_app|escape }}', 'project': '{{ data.pk }}'}"
-                                data-allowClear="true"
-                        >
-                        </select>
+                        <label for="workWeight" class="form-label">{% trans 'Work weight' %}</label>
+                        <span class="input-affix-wrapper">
+                            <input type="text" id="workWeight" name="w_weight" class="form-control" autocomplete="off">
+                            <span class="input-suffix"><i class="fa-solid fa-percent"></i></span>
+                        </span>
                     </div>
-                    <div class="col-xs-12 col-md-12">
+                    <div class="col-xs-12 col-md-6">
                         <p class="mt-2 toggle-notes">
                             <i class="fa-solid fa-info font-3"></i>
                             <span>
@@ -73,18 +82,11 @@
                             </blockquote>
                         </figure>
                     </div>
-                    <div class="col-xs-12 col-md-6 form-group mt-3">
-                        <label for="workWeight" class="form-label">{% trans 'Work weight' %}</label>
-                        <span class="input-affix-wrapper">
-                            <input type="text" id="workWeight" name="w_weight" class="form-control" autocomplete="off">
-                            <span class="input-suffix"><i class="fa-solid fa-percent"></i></span>
-                        </span>
-                    </div>
                 </div>
                 <input type="hidden" id="workRate" name="w_rate" class="form-control" autocomplete="off">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary float-left" id="btn-work-add">
+                <button type="button" class="btn btn-primary float-left" id="btn-work-add" {% if baseline %}disabled{% endif %}>
                     {% trans 'Add' %}
                 </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

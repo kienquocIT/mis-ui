@@ -3,31 +3,26 @@
 {% block title %}{% trans 'Goods registration detail' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
-        <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">``
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">``
     <style>
         td {
             min-width: max-content !important;
         }
+        .sticky {
+            position: sticky;
+            top: 0;
+            z-index: 1111;
+        }
     </style>
 {% endblock %}
-{% block pageAction %}
-    <a href="{% url 'GoodsRegistrationUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary" id="btn-enable-edit">
-            <span>
-                <span>{% trans 'Edit' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                </span>
-            </span>
-        </button>
-    </a>
-{% endblock %}
+{% block pageAction %}{% endblock %}
 {% block pageContent %}
     <script id="script-url"
-    >
-    </script>
-    <script id="script-trans">
-    </script>
+            data-url-project-product-available-quantity="{% url 'GoodsRegistrationItemAvailableQuantityAPI' %}"
+            data-url-gre-item-sub-list="{% url 'GoodsRegistrationItemSubListAPI' %}"
+            data-url-gre-item-borrow-list="{% url 'GoodsRegistrationItemBorrowListAPI' %}"
+    ></script>
+    <script id="script-trans"></script>
     <form id="frm_goods_registration_detail" data-url="{% url 'GoodsRegistrationDetailAPI' pk=pk %}">
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
@@ -78,9 +73,9 @@
                         <div class="row">
                             <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
                                 <table id="tab_line_detail_datatable" class="table nowrap w-100">
-                                    <thead class="bg-primary">
+                                    <thead>
                                     <tr>
-                                        <th class="w-20 border-1 text-white" rowspan="2">
+                                        <th class="w-20 border-1" rowspan="2">
                                             {% trans 'Product' %}
                                             <i class="fas fa-info-circle icon-info tit_visible_tb-head"
                                                data-bs-toggle="tooltip"
@@ -88,18 +83,18 @@
                                                title="{% trans 'Hover to see product description' %}">
                                             </i>
                                         </th>
-                                        <th class="w-10 border-1 text-white" rowspan="2">{% trans 'UoM' %}</th>
-                                        <th class="w-10 border-1 text-white" rowspan="2">{% trans 'Total order' %}</th>
-                                        <th class="w-30 border-1 text-white" colspan="3">{% trans 'Register for this order' %}</th>
-                                        <th class="w-30 border-1 text-white" colspan="3">{% trans 'Register from other orders' %}</th>
+                                        <th class="w-10 border-1" rowspan="2">{% trans 'UoM' %}</th>
+                                        <th class="w-10 border-1" rowspan="2">{% trans 'Total order' %}</th>
+                                        <th class="w-30 border-1" colspan="3">{% trans 'Register for this order' %}</th>
+                                        <th class="w-30 border-1" colspan="3">{% trans 'Register from other orders' %}</th>
                                     </tr>
                                     <tr>
-                                        <th class="w-10 border-1 text-white">{% trans 'Stock quantity' %}</th>
-                                        <th class="w-10 border-1 text-white">{% trans 'Keep for other orders' %}</th>
-                                        <th class="w-10 border-1 text-white">{% trans 'Available' %}</th>
-                                        <th class="w-10 border-1 text-white">{% trans 'Registered' %}</th>
-                                        <th class="w-10 border-1 text-white">{% trans 'Delivered' %}</th>
-                                        <th class="w-10 border-1 text-white">{% trans 'Remaining' %}</th>
+                                        <th class="w-10 border-1">{% trans 'Stock quantity' %}</th>
+                                        <th class="w-10 border-1">{% trans 'Keep for other orders' %}</th>
+                                        <th class="w-10 border-1">{% trans 'Available' %}</th>
+                                        <th class="w-10 border-1">{% trans 'Reserved' %}</th>
+                                        <th class="w-10 border-1">{% trans 'Delivered' %}</th>
+                                        <th class="w-10 border-1">{% trans 'Remaining' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -123,9 +118,9 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
+                        <div class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 60vh">
                             <table id="tab_stock_quantity_datatable" class="table nowrap w-100">
-                                <thead class="bg-primary">
+                                <thead class="bg-primary sticky">
                                 <tr>
                                     <th class="border-1 text-white" rowspan="2">{% trans 'Transaction' %}</th>
                                     <th class="border-1 text-white" rowspan="2">{% trans 'Warehouse' %}</th>
@@ -148,6 +143,126 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="out_registered_detail_modal" tabindex="-1" role="dialog" aria-labelledby="out_registered_detail_modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" style="min-width: 30%" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Stock quantity other detail' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 60vh">
+                            <table id="tab_stock_quantity_other_datatable" class="table nowrap w-100">
+                                <thead class="bg-primary sticky">
+                                <tr>
+                                    <th class="border-1 text-white">{% trans 'Sale order' %}</th>
+                                    <th class="border-1 text-white">{% trans 'Reserve quantity' %}</th>
+                                    <th class="border-1 text-white">{% trans 'UOM' %}</th>
+                                    <th class="border-1 text-white">{% trans 'Action' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <button type="button"
+                                    id="new-borrow-request-btn"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#new-borrow-request"
+                                    aria-expanded="false"
+                                    aria-controls="collapseExample"
+                                    class="btn btn-outline-primary btn-xs"
+                            >
+                                <i class="bi bi-plus-circle-fill"></i>&nbsp;
+                                {% trans 'Add new reservation' %}
+                            </button>
+                        </div>
+                    </div>
+                    <div class="collapse mt-2" id="new-borrow-request">
+                        <div class="card card-body">
+                            <div class="row">
+                                <div class="col-6 col-lg-2"></div>
+                                <div class="col-6 col-lg-5">
+                                    <div class="form-check">
+                                        <input type="radio" id="general_stock" name="regis_from" class="form-check-input" checked>
+                                        <label class="form-check-label text-primary" for="general_stock">{% trans 'General stock' %}</label>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-lg-5">
+                                    <div class="form-check">
+                                        <input type="radio" id="other_sale_order" name="regis_from" class="form-check-input">
+                                        <label class="form-check-label text-primary" for="other_sale_order">{% trans 'Other sale order' %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="for-general-stock" class="row mt-3">
+                                <div class="row mb-2">
+                                    <label for="available-amount" class="col-6 col-lg-2 col-form-label">{% trans 'Available' %}</label>
+                                    <div class="col-3 col-lg-5">
+                                        <input readonly class="form-control" id="available-amount">
+                                    </div>
+                                    <div class="col-3 col-lg-5">
+                                        <select class="form-select select2" id="uom-stock"></select>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <label for="reserve-amount" class="col-6 col-lg-2 col-form-label">{% trans 'Reserve' %}</label>
+                                    <div class="col-3 col-lg-5">
+                                        <input type="number" min="0" class="form-control" id="reserve-amount">
+                                    </div>
+                                    <div class="col-3 col-lg-5">
+                                        <button type="button" id="reserve-stock" class="btn btn-gradient-primary">{% trans 'Reserve' %}</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div hidden id="for-other-sale-order" class="row mt-3">
+                                <form id="frm_borrow_from_other"
+                                      data-method="POST"
+                                      data-url-redirect="{% url 'GoodsRegistrationDetail' pk=pk %}"
+                                      data-url="{% url 'GoodsRegistrationItemBorrowListAPI' %}"
+                                >
+                                {% csrf_token %}
+                                    <div class="row mb-2">
+                                        <label for="other-so" class="required col-6 col-lg-2 col-form-label">{% trans 'Project' %}</label>
+                                        <div class="col-6 col-lg-10">
+                                            <select class="form-select" id="other-so" data-url="{% url 'SaleOrderListAPI' %}" data-method="GET"></select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <label for="so-available-amount" class="col-6 col-lg-2 col-form-label">{% trans 'Available' %}</label>
+                                        <div class="col-6 col-lg-5">
+                                            <input readonly class="form-control" id="so-available-amount">
+                                        </div>
+                                        <div class="col-6 col-lg-5">
+                                            <select class="form-select" id="uom-so"></select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <label for="so-reserve-amount" class="col-6 col-lg-2 col-form-label">{% trans 'Reserve' %}</label>
+                                        <div class="col-6 col-lg-5">
+                                            <input type="number" min="0" class="form-control" id="so-reserve-amount">
+                                        </div>
+                                        <div class="col-6 col-lg-5">
+                                            <button form="frm_borrow_from_other" type="submit" id="reserve-so" class="btn btn-gradient-primary">{% trans 'Reserve' %}</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -13,25 +13,27 @@ $(document).ready(function () {
         for (let item of $('#work_expense_tbl').DataTable().data().toArray()){
             if (item?.expense_data) formData.work_expense_data[item.id] = item.expense_data
         }
-        $.fn.callAjax2({
-            'url': frm.dataUrl,
-            'method': frm.dataMethod,
-            'data': formData,
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && (data['status'] === 201 || data['status'] === 200)) {
-                    $.fn.notifyB({description: data.message}, 'success');
-                    if (frm.dataMethod === 'post') $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+        frm.dataForm = formData
+        if (frm.dataMethod === 'POST') WFRTControl.callWFSubmitForm(frm);
+        else
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': formData,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                    }
+                },
+                (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
                 }
-            },
-            (err) => {
-                setTimeout(() => {
-                    WindowControl.hideLoading();
-                }, 1000)
-                $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
-            }
-        )
+            )
     }
 
     // form submit
@@ -43,6 +45,10 @@ $(document).ready(function () {
     })
 
     $('.toggle-ud .btn').on('click', ()=> $('.toggle-ud').toggleClass('is_show'))
+
+    $('.toggle-notes').on('click', function(e){
+        $('.content-notes').slideToggle()
+    })
 });
 
 function saveGroup(gantt_obj) {
@@ -204,202 +210,232 @@ function saveWork(gantt_obj) {
 function show_task_list(){
     const $taskTbl = $('#task_list'), $asModal = $('#assign_modal'),
     $abdTable = $('#task_abandoned_list');
+
     // flag trigger when user click action link task abandoned to current work
     window.task_done = false
 
+    function runTaskList(data_list, data_n_lst) {
+        const $urlPool = $('#assign_task-url'),
+            check_page_version = $('#project_form').hasClass('baseline_version');
+        const isDisabled = check_page_version ? 'disabled' : '';
+        let workID = $asModal.find('#modal_work_id').val();
+
+        // render task work list
+        let table_work = $taskTbl.DataTableDefault({
+            data: data_list,
+            info: false,
+            searching: false,
+            ordering: false,
+            paginate: false,
+            columns: [
+                {
+                    data: 'task',
+                    width: '10%',
+                    class: 'text-center',
+                    render: (row) => {
+                        const url = $urlPool.attr('data-task_detail').format_url_with_uuid(row.id)
+                        return row ? `<a href="${url}" class="task_detail_view">${row.code}</a>` : '--'
+                    }
+                },
+                {
+                    data: 'task',
+                    width: '25%',
+                    class: 'text-center',
+                    render: (row) => {
+                        return `${row ? row.title : '--'}`
+                    }
+                },
+                {
+                    data: 'percent',
+                    width: '15%',
+                    class: 'text-center',
+                    render: (row) => {
+                        let txt = `${row}%`
+                        if (row)
+                            txt = `<div class="progress-wrap progress-lb-wrap progress"><div class="progress-bar progress-bar-striped bg-primary progress-bar-animated w-${row}" role="progressbar" aria-valuenow="${row}" aria-valuemin="0" aria-valuemax="100">${row}%</div></div>`
+                        return txt
+                    }
+                },
+                {
+                    data: 'assignee',
+                    width: '15%',
+                    class: 'text-center',
+                    render: (row) => {
+                        let txt = '--'
+                        if (row?.full_name) txt = row.full_name
+                        return txt
+                    }
+                },
+                {
+                    data: 'id',
+                    width: '10%',
+                    class: 'text-center',
+                    render: () => {
+                        let html = $($('.btn-task-assign').html())
+                        if (check_page_version) html.find('button').attr('disabled', isDisabled)
+                        return html.prop('outerHTML')
+                    }
+                },
+            ],
+            rowCallback: function (row, data) {
+                $('.task_detail_view', row).on('click', function (e) {
+                    e.preventDefault();
+                    $('#assign_modal').modal('hide')
+                    $('.task_detail_view').trigger('Task.click.view', [{
+                        'id': data.id, 'task': data.task.id, 'work_id': workID
+                    }])
+                })
+                $('.unlink-row', row).on('click', function () {
+                    $('.task_detail_view').trigger('Task.link.work', [{
+                        'id': data.id, 'unlink': true
+                    }])
+                    table_work.row(row).remove().draw(false)
+                })
+            },
+        });
+
+        // render task without work
+        let table_n_work = $abdTable.DataTableDefault({
+            data: data_n_lst,
+            info: false,
+            searching: false,
+            ordering: false,
+            paginate: false,
+            autoWidth: true,
+            scrollX: true,
+            columns: [
+                {
+                    data: 'task',
+                    width: '10%',
+                    class: 'text-center',
+                    render: (row) => {
+                        const url = $urlPool.attr('data-task_detail').format_url_with_uuid(row.id)
+                            return row ? `<a href="${url}" class="task_detail_view">${row.code}</a>` : '--'
+                    }
+                },
+                {
+                    data: 'task',
+                    width: '25%',
+                    class: 'text-center',
+                    render: (row) => {
+                        return `${row ? row.title : '--'}`
+                    }
+                },
+                {
+                    data: 'percent',
+                    width: '15%',
+                    class: 'text-center',
+                    render: (row) => {
+                        let txt = `${row}%`;
+                        if (row)
+                            txt = `<div class="progress-wrap progress-lb-wrap progress"> <div class="progress-bar progress-bar-striped bg-primary progress-bar-animated w-${row}" role="progressbar" aria-valuenow="${row}" aria-valuemin="0" aria-valuemax="100">${row}%</div></div>`
+                        return txt
+                    }
+                },
+                {
+                    data: 'assignee',
+                    width: '15%',
+                    class: 'text-center',
+                    render: (row) => {
+                        let txt = '--'
+                            if (row?.full_name) txt = row.full_name
+                            return txt
+                    }
+                },
+                {
+                    data: 'work_before',
+                    width: '25%',
+                    class: 'text-center',
+                    render: (row) => {
+                        let txt = '--'
+                        if (row.hasOwnProperty('title')) txt = row?.['title']
+                        return txt
+                    }
+                },
+                {
+                    data: 'id',
+                    width: '10%',
+                    render: () => {
+                        let html = $($('.abd-btn-group').html())
+                        if (check_page_version) html.find('button').attr('disabled', isDisabled)
+                        return html.prop('outerHTML')
+                    }
+                },
+            ],
+            rowCallback: function (row, data) {
+                // handle onclick btn link to work
+                $('.btn-link-to-work', row).on('click', function (e) {
+                    e.preventDefault();
+                    $('.task_detail_view').trigger('Task.link.work', [{
+                        'id': data.id, 'work_id': workID
+                    }])
+                    table_n_work.row(row).remove().draw(false)
+                })
+                // open task detail
+                $('.task_detail_view', row).on('click', function (e) {
+                    e.preventDefault();
+                    $('#assign_modal').modal('hide')
+                    $('.task_detail_view').trigger('Task.click.view', [{
+                        'id': data.id, 'task': data.task.id
+                    }])
+                })
+                // del task
+                $('.btn-delete-task', row).on('click', function (e) {
+                    e.preventDefault();
+                    Task_in_project.deleteTask(data.task.id)
+                    table_n_work.row(row).remove().draw(false)
+                })
+            },
+        });
+
+        // init tab when click
+        $('a[data-bs-toggle="tab"][href="#tab_task_list"]').on('shown.bs.tab', () => table_work.columns.adjust())
+        $('a[data-bs-toggle="tab"][href="#tab_abandoned_task"]').on('shown.bs.tab', () => table_n_work.columns.adjust())
+
+    }
+
     $asModal.on('shown.bs.modal', function(){
-        const $pjElm = $('#id'), workID = $asModal.find('#modal_work_id').val();
-        const $urlPool = $('#assign_task-url');
+        const $pjElm = $('#id'), check_page_version = $('#project_form').hasClass('baseline_version');
+        let baseline_data = $('#project_form').data('baseline_data');
         if ($taskTbl.hasClass('dataTable')) $taskTbl.DataTable().destroy();
         if ($abdTable.hasClass('dataTable')) $abdTable.DataTable().destroy();
-        if (!$pjElm.val() || !workID) return false
+        let workID = $asModal.find('#modal_work_id').val();
 
-        // get current task assign for current work
-        $.fn.callAjax2({
-            'url': $taskTbl.attr('data-url'),
-            'method': 'get',
-            'data': {"project_id": $pjElm.val()},
-            'sweetAlertOpts': {'allowOutsideClick': true},
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && (data['status'] === 201 || data['status'] === 200)){
-                    let task_w_list = [], task_ab_list = [];
-                    for (let item of data['prj_task_list']){
-                        if (item.work) task_w_list.push(item)
-                        else task_ab_list.push(item)
+        // check if project id or work not id
+        if ((!$pjElm.val() || !workID) && !check_page_version) return false
+
+        // check if detail page not baseline page
+        if (!check_page_version){
+            // get current task assign for current work
+            $.fn.callAjax2({
+                'url': $taskTbl.attr('data-url'),
+                'method': 'get',
+                'data': {"project_id": $pjElm.val(), "work_id": workID},
+                'sweetAlertOpts': {'allowOutsideClick': true},
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        let task_w_list = [], task_ab_list = [];
+                        for (let item of data['prj_task_list']) {
+                            if (item.work) task_w_list.push(item)
+                            else task_ab_list.push(item)
+                        }
+                        runTaskList(task_w_list, task_ab_list)
                     }
-                    // render task work list
-                    let table_work = $taskTbl.DataTableDefault({
-                            data: task_w_list,
-                            info: false,
-                            searching: false,
-                            ordering: false,
-                            paginate: false,
-                            columns: [
-                                {
-                                    data: 'task',
-                                    width: '10%',
-                                    class: 'text-center',
-                                    render: (row) => {
-                                        const url = $urlPool.attr('data-task_detail').format_url_with_uuid(row.id)
-                                        return row ? `<a href="${url}" class="task_detail_view">${row.code}</a>` : '--'
-                                    }
-                                },
-                                {
-                                    data: 'task',
-                                    width: '25%',
-                                    class: 'text-center',
-                                    render: (row) => {
-                                        return `${row ? row.title : '--'}`
-                                    }
-                                },
-                                {
-                                    data: 'percent',
-                                    width: '15%',
-                                    class: 'text-center',
-                                    render: (row) => {
-                                        let txt = `${row}%`
-                                        if (row)
-                                            txt = `<div class="progress-wrap progress-lb-wrap progress"> <div class="progress-bar progress-bar-striped bg-primary progress-bar-animated w-${row}" role="progressbar" aria-valuenow="${row}" aria-valuemin="0" aria-valuemax="100">${row}%</div></div>`
-                                        return txt
-                                    }
-                                },
-                                {
-                                    data: 'assignee',
-                                    width: '15%',
-                                    class: 'text-center',
-                                    render: (row) => {
-                                        let txt = '--'
-                                        if (row) txt = row.full_name
-                                        return txt
-                                    }
-                                },
-                                {
-                                    data: 'id',
-                                    width: '10%',
-                                    class: 'text-center',
-                                    render: () => {
-                                        return $('.btn-task-assign').html()
-                                    }
-                                },
-                            ],
-                            rowCallback: function(row, data){
-                                $('.task_detail_view', row).on('click', function(e){
-                                    e.preventDefault();
-                                    $('#assign_modal').modal('hide')
-                                    $('.task_detail_view').trigger('Task.click.view', [{
-                                        'id': data.id, 'task': data.task.id, 'work_id': workID
-                                    }])
-                                })
-                                $('.unlink-row', row).on('click', function () {
-                                    $('.task_detail_view').trigger('Task.link.work', [{
-                                        'id': data.id, 'unlink': true
-                                    }])
-                                    table_work.row(row).remove().draw(false)
-                                })
-                            },
-                        });
+                },
+                (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+            )
+        }
+        else{
+            let task_w_list = [], task_ab_list = [];
+            for (let item of baseline_data['work_task_data']) {
+                if (item.work && item.work === workID) task_w_list.push(item)
+                else if (!item.work) task_ab_list.push(item)
+            }
+            runTaskList(task_w_list, task_ab_list)
+        }
 
-                    // render task without work
-                    let table_n_work = $abdTable.DataTableDefault({
-                        data: task_ab_list,
-                        info: false,
-                        searching: false,
-                        ordering: false,
-                        paginate: false,
-                        autoWidth: true,
-                        scrollX: true,
-                        columns: [
-                            {
-                                data: 'task',
-                                width: '10%',
-                                class: 'text-center',
-                                render: (row) => {
-                                    const url = $urlPool.attr('data-task_detail').format_url_with_uuid(row.id)
-                                        return row ? `<a href="${url}" class="task_detail_view">${row.code}</a>` : '--'
-                                }
-                            },
-                            {
-                                data: 'task',
-                                width: '25%',
-                                class: 'text-center',
-                                render: (row) => {
-                                    return `${row ? row.title : '--'}`
-                                }
-                            },
-                            {
-                                data: 'percent',
-                                width: '15%',
-                                class: 'text-center',
-                                render: (row) => {
-                                    let txt = `${row}%`;
-                                    if (row)
-                                        txt = `<div class="progress-wrap progress-lb-wrap progress"> <div class="progress-bar progress-bar-striped bg-primary progress-bar-animated w-${row}" role="progressbar" aria-valuenow="${row}" aria-valuemin="0" aria-valuemax="100">${row}%</div></div>`
-                                    return txt
-                                }
-                            },
-                            {
-                                data: 'assignee',
-                                width: '15%',
-                                class: 'text-center',
-                                render: (row) => {
-                                    let txt = '--'
-                                        if (row) txt = row.full_name
-                                        return txt
-                                }
-                            },
-                            {
-                                data: 'work_before',
-                                width: '25%',
-                                class: 'text-center',
-                                render: (row) => {
-                                    let txt = '--'
-                                    if (row.hasOwnProperty('title')) txt = row?.['title']
-                                    return txt
-                                }
-                            },
-                            {
-                                data: 'id',
-                                width: '10%',
-                                render: () => {
-                                    return $('.abd-btn-group').html()
-                                }
-                            },
-                        ],
-                        rowCallback: function (row, data) {
-                            // handle onclick btn link to work
-                            $('.btn-link-to-work', row).on('click', function (e) {
-                                e.preventDefault();
-                                $('.task_detail_view').trigger('Task.link.work', [{
-                                    'id': data.id, 'work_id': workID
-                                }])
-                                table_n_work.row(row).remove().draw(false)
-                            })
-                            // open task detail
-                            $('.task_detail_view', row).on('click', function (e) {
-                                e.preventDefault();
-                                $('#assign_modal').modal('hide')
-                                $('.task_detail_view').trigger('Task.click.view', [{
-                                    'id': data.id, 'task': data.task.id
-                                }])
-                            })
-                            // del task
-                            $('.btn-delete-task', row).on('click', function (e) {
-                                e.preventDefault();
-                                Task_in_project.deleteTask(data.task.id)
-                                table_n_work.row(row).remove().draw(false)
-                            })
-                        },
-                    });
-
-                    // init tab when click
-                    $('a[data-bs-toggle="tab"][href="#tab_task_list"]').on('shown.bs.tab', () => table_work.columns.adjust())
-                    $('a[data-bs-toggle="tab"][href="#tab_abandoned_task"]').on('shown.bs.tab', () => table_n_work.columns.adjust())
-                }
-            },
-            (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
-        )
     })
 
 }
@@ -415,7 +451,6 @@ function validateNumber(value) {
     if (!reg.test(temp)) temp = 0
     return temp;
 }
-
 
 class ProjectTeamsHandle {
     static crt_user = []
@@ -448,38 +483,56 @@ class ProjectTeamsHandle {
     }
 
     static clickEditMember(memberIdx) {
-        const wrapPermEle = $('#box-edit-permit');
+        const wrapPermEle = $('#box-edit-permit'), $formElm = $('#project_form');
+        const check_page_version = $formElm.hasClass('baseline_version');
         wrapPermEle.attr('data-id', memberIdx);
-
         let urlTmp = wrapPermEle.attr('data-url').format_url_with_uuid(memberIdx);
-        $.fn.callAjax2({
-            url: urlTmp,
-            type: 'GET',
-            'sweetAlertOpts': {'allowOutsideClick': true},
-        }).then(
-            (resp) => {
-                let res = $.fn.switcherResp(resp);
-                if (res.status === 200) {
-                    $('#view_this_project').prop('checked', res['permit_view_this_project']);
-                    $('#can_add_member').prop('checked', res.permit_add_member);
-                    $('#can_add_gaw').prop('checked', res['permit_add_gaw']);
 
-                    HandlePlanAppNew.rangeAllowOfApp = ["1", "4"];
-                    HandlePlanAppNew.hasSpaceChoice = true;
-                    HandlePlanAppNew.manual_app_list_and_not_plan_app = true;
-                    HandlePlanAppNew.setPermissionByConfigured(res.permission_by_configured || [])
+        function loadPermissionDetail(res){
+            $('#view_this_project').prop('checked', res['permit_view_this_project']);
+            $('#can_add_member').prop('checked', res.permit_add_member);
+            $('#can_add_gaw').prop('checked', res['permit_add_gaw']);
 
-                    let clsNew = new HandlePlanAppNew();
-                    clsNew.renderPermissionSelected(
-                        memberIdx, {
-                            'get_from': 'project',
-                            'project': $('#id').val(),
-                    })
+            HandlePlanAppNew.rangeAllowOfApp = ["1", "4"];
+            HandlePlanAppNew.hasSpaceChoice = true;
+            HandlePlanAppNew.manual_app_list_and_not_plan_app = true;
+            HandlePlanAppNew.setPermissionByConfigured(res.permission_by_configured || [])
+
+            let clsNew = new HandlePlanAppNew();
+            clsNew.renderPermissionSelected(
+                memberIdx, {
+                    'get_from': 'project',
+                    'project': $('#id').val(),
+                })
+        }
+
+        if (!check_page_version){
+            $.fn.callAjax2({
+                url: urlTmp,
+                type: 'GET',
+                'sweetAlertOpts': {'allowOutsideClick': true},
+            }).then(
+                (resp) => {
+                    let res = $.fn.switcherResp(resp);
+                    if (res.status === 200) {
+                        loadPermissionDetail(res)
+                    }
+                    return {};
+                },
+                (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+            )
+        }
+        else{
+            let baseline_data = $formElm.data('baseline_data');
+            for (let idx in baseline_data['member_perm_data']){
+                let item = baseline_data['member_perm_data'][idx]
+                if (idx === memberIdx){
+                    loadPermissionDetail(item)
+                    break;
                 }
-                return {};
-            },
-            (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
-        )
+            }
+        }
+
     }
 
     static render(datas=[], is_detail = false){
@@ -692,12 +745,15 @@ class ProjectWorkExpenseHandle{
     }
 
     static appendChildTable(trElm, workID){
-        let dtlSub = `<table id="expense_child_${workID}" class="table nowrap w-100 min-w-1768p mb-5"><thead></thead><tbody></tbody></table>`
-        const $addBtn = `<button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="dropdown"><span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${$.fn.gettext("New")}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span></button>`
+        const $formElm = $('#project_form'), check_page_version = $formElm.hasClass('baseline_version');
+        let baseline_data = $formElm.data('baseline_data');
+        let dtlSub = `<table id="expense_child_${workID}" class="table nowrap w-100 min-w-1768p mb-5"><thead></thead><tbody></tbody></table>`,
+            $addBtn = `<button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="dropdown"><span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${$.fn.gettext("New")}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span></button>`
             + `<div role="menu" class="dropdown-menu">`
             + `<a class="dropdown-item add-expense" href="#"><i class="dropdown-icon fas fa-hand-holding-usd text-primary"></i> ${$.fn.gettext("Add Expense")}</a>`
             + `<a class="dropdown-item add-labor" href="#"><i class="dropdown-icon fas fa-people-carry text-primary"></i> ${$.fn.gettext("Add Labor")}</a>`
             + `</div>`;
+        if (check_page_version) $addBtn = ''
         trElm.after(
             `<tr class="work-expense-wrap"><td colspan="4"><div class="WE-content hidden-simple">${$addBtn + dtlSub}</div></td></tr>`
         );
@@ -810,7 +866,7 @@ class ProjectWorkExpenseHandle{
                     data: 'id',
                     width: '5%',
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover del-row" ${check_page_version ? 'disabled' : ''}><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
                     }
                 },
             ],
@@ -906,24 +962,31 @@ class ProjectWorkExpenseHandle{
             crtTable.rows.add(temp).draw()
         })
 
-        $.fn.callAjax2({
-            'url': $URLFactory.attr('data-work-expense'),
-            'method': 'get',
-            'data': {'work_id': workID},
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && data.hasOwnProperty('work_expense_list'))
-                    crtTable.rows.add(data.work_expense_list).draw()
-            },
-            (err) => {
-                $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
-            }
-        )
+        if (!check_page_version){
+            $.fn.callAjax2({
+                'url': $URLFactory.attr('data-work-expense'),
+                'method': 'get',
+                'data': {'work_id': workID},
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && data.hasOwnProperty('work_expense_list'))
+                        crtTable.rows.add(data.work_expense_list).draw()
+                },
+                (err) => {
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                }
+            )
+        }
+        else{
+            let data_lst = baseline_data.work_expense_data?.[workID]
+            if (data_lst) crtTable.rows.add(data_lst).draw()
+        }
+
     }
 
     static init(data=[]){
-        const $workExpenseTbl = $('#work_expense_tbl')
+        const $workExpenseTbl = $('#work_expense_tbl');
         let WExTbl = $workExpenseTbl.DataTableDefault({
             data: data,
             info: false,
@@ -993,7 +1056,6 @@ class ProjectWorkExpenseHandle{
             },
             footerCallback: function () {
                 let api = this.api();
-
                 // Total footer row
                 let totalPrice = 0
                 let totalTax = 0

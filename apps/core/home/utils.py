@@ -147,6 +147,9 @@ PLAN_APP_OF_SALE = {
             list_view_name='PurchaseRequestList', detail_view_name='PurchaseRequestDetail',
         ).data,
     },
+    'project': {
+        'project': ReverseUrlCommon(list_view_name='ProjectList', detail_view_name='ProjectDetail').data,
+    },
 }
 
 PLAN_APP_OF_E_OFFICE = {

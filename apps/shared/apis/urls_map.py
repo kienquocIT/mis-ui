@@ -592,11 +592,15 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Goods Registration
     GOODS_REGISTRATION_LIST = StringUrl('inventory/goods-registration/list')
     GOODS_REGISTRATION_DETAIL = StringUrl('inventory/goods-registration/{pk}')
+    GOODS_REGISTRATION_ITEM_SUB_LIST = StringUrl('inventory/goods-registration-item-sub/list')
     GOODS_REGISTRATION_PRD_WH = StringUrl('inventory/goods-registration-prd-wh-general')
     GOODS_REGISTRATION_PRD_WH_LOT = StringUrl('inventory/goods-registration-prd-wh-lot')
     GOODS_REGISTRATION_PRD_WH_SN = StringUrl('inventory/goods-registration-prd-wh-serial')
     PRODUCT_LIST_FOR_PROJECT = StringUrl('inventory/product-list-for-project')
     PRODUCT_LIST_FOR_NONE_PROJECT = StringUrl('inventory/product-list-for-none-project')
+    GOODS_REGISTRATION_ITEM_BORROW_LIST = StringUrl('inventory/goods-registration-item-borrow/list')
+    GOODS_REGISTRATION_ITEM_BORROW_DETAIL = StringUrl('inventory/goods-registration-item-borrow/{pk}')
+    GOODS_REGISTRATION_ITEM_AVAILABLE_QUANTITY = StringUrl('inventory/goods-registration-item-available-quantity')
 
     INVOICE_SIGN_LIST = StringUrl('ar-invoice/sign/list')
     INVENTORY_INTERACT_LIST = StringUrl('saledata/warehouses/config-interact')

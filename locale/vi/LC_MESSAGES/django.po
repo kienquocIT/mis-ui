@@ -7790,7 +7790,7 @@ msgstr "Hàng từ DA khác"
 
 #
 msgid "Stock quantity this order detail"
-msgstr "Chi tiết tồn kho cho DA này"
+msgstr "Chi tiết tồn kho hàng của DA này"
 
 #
 msgid "Transaction"
@@ -7887,3 +7887,39 @@ msgstr "Nhập"
 #
 msgid "OUT"
 msgstr "Xuất"
+
+#
+msgid "Stock quantity other detail"
+msgstr "Chi tiết tồn kho hàng mượn"
+
+#
+msgid "Hover to see product description"
+msgstr "Di chuyển qua để xem Mô tả sản phẩm"
+
+#
+msgid "Add new reservation"
+msgstr "Thêm yêu cầu mượn hàng"
+
+#
+msgid "New reservation"
+msgstr "Yêu cầu mượn hàng mới"
+
+#
+msgid "General stock"
+msgstr "Từ kho chung"
+
+#
+msgid "Other sale order"
+msgstr "Từ dự án khác"
+
+#
+msgid "Reserve"
+msgstr "Đăng ký"
+
+#
+msgid "Reserved"
+msgstr "Đã mượn"
+
+#
+msgid "Reserve quantity"
+msgstr "SL mượn"

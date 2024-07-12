@@ -7919,8 +7919,6 @@ msgstr "Đã mượn"
 #
 msgid "Reserve quantity"
 msgstr "SL mượn"
-msgid "not PR"
-msgstr "không theo PR"
 
 #
 msgid "Exceed available quantity"
@@ -7949,3 +7947,7 @@ msgstr "Hàng đã lấy"
 #
 msgid "UOM group"
 msgstr "Nhóm đơn vị"
+
+#
+msgid "Edit zone"
+msgstr "Chỉnh sửa vùng dữ liệu"

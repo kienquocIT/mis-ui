@@ -3,7 +3,7 @@ $(document).ready(function () {
     let pk = $.fn.getPkDetail();
     WarehouseLoadPage.loadAgency();
 
-    WarehouseLoadPage.loadDetail(frm, pk);
+    WarehouseLoadPage.loadDetail(frm, pk, 'update');
 
     eventPage();
 
@@ -40,6 +40,5 @@ $(document).ready(function () {
                     $.fn.switcherResp(errs);
                 })
             }
-        }
-    );
+        });
 })

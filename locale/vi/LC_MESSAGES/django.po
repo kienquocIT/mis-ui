@@ -7914,7 +7914,3 @@ msgstr "Đăng ký"
 #
 msgid "Reserved"
 msgstr "Đã mượn"
-
-#
-msgid "Reserve quantity"
-msgstr "SL mượn"

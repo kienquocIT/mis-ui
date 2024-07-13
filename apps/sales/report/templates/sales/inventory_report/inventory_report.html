@@ -14,7 +14,6 @@
             overflow: auto;
         }
         .resize thead th {
-            background: #007D88 !important;
             color: white !important;
         }
         .resize thead th span {
@@ -178,7 +177,7 @@
         <div hidden class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 70vh">
             <table class="resize table table-hover nowrap w-100" id="table-inventory-report">
                 <thead class="sticky">
-                    <tr>
+                    <tr class="bg-gradient-primary">
                         <th class="border-1" rowspan="3"><span class="badge badge-primary badge-outline badge-pill">{% trans 'SALE ORDER' %}</span></th>
                         <th class="border-1" rowspan="3"><span class="badge badge-primary badge-outline badge-pill">{% trans 'PRODUCT' %}</span></th>
                         <th class="border-1" rowspan="3"><span class="badge badge-primary badge-outline badge-pill">{% trans 'INVENTORY UOM' %}</span></th>
@@ -190,7 +189,7 @@
                         <th class="border-1 text-right" colspan="2"><span class="badge badge-primary badge-outline badge-pill">{% trans 'OUTPUT' %}</span></th>
                         <th class="border-1 text-right" colspan="2"><span class="badge badge-primary badge-outline badge-pill">{% trans 'ENDING' %}</span></th>
                     </tr>
-                    <tr>
+                    <tr class="bg-gradient-primary">
                         <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill">{% trans 'Quantity' %}</span></th>
                         <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill">{% trans 'Value' %}</span></th>
                         <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill">{% trans 'Quantity' %}</span></th>
@@ -200,7 +199,7 @@
                         <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill">{% trans 'Quantity' %}</span></th>
                         <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill">{% trans 'Value' %}</span></th>
                     </tr>
-                    <tr id="thead-value">
+                    <tr class="bg-gradient-primary" id="thead-value">
                         <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill" id="opening-total-quantity">0</span></th>
                         <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill mask-money" id="opening-total-value" data-init-money="0"></span></th>
                         <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill" id="in-total-quantity">0</span></th>

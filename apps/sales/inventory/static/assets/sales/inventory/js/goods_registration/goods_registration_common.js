@@ -414,12 +414,14 @@ function CallProjectProductGeneralBorrow(sale_order_id, product_id, so_uom, base
 
     Promise.all([ajax]).then(
         (results) => {
-            let quantity_can_be_reserve = 0;
+            let quantity_can_be_reserve = 0 // so_uom
+            let quantity_can_be_reserve_base = 0 // base_uom
             for (const item of results[0]) {
                 quantity_can_be_reserve += item?.['this_available']
+                quantity_can_be_reserve_base += item?.['this_available_base']
             }
-            so_available_amount.val(quantity_can_be_reserve / so_uom[0]?.['ratio'])
-            so_available_amount.attr('data-base-quantity', quantity_can_be_reserve)
+            so_available_amount.val(quantity_can_be_reserve)
+            so_available_amount.attr('data-base-quantity', quantity_can_be_reserve_base)
             LoadUOMStockBorrow(so_uom[0], base_uom[0])
         })
 }

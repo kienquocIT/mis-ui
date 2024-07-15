@@ -7914,3 +7914,7 @@ msgstr "Đăng ký"
 #
 msgid "Reserved"
 msgstr "Đã mượn"
+
+#
+msgid "Expand / Collapse"
+msgstr "Thu gọn / Mở rộng"

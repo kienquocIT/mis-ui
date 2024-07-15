@@ -147,6 +147,7 @@ function loadEmployeeAttended(data) {
 }
 
 function loadMeetingAddress(shipping_address_list) {
+    console.log(shipping_address_list)
     meeting_address_slb.attr('disabled', false);
     $('#meeting-address-select-box option').remove();
     meeting_address_slb.initSelect2();

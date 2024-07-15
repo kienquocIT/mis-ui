@@ -100,6 +100,7 @@ $(function () {
         // Action on click btn ADD PURCHASE REQUEST
         $('#btn-confirm-add-purchase-request').on('click', function () {
             POLoadDataHandle.loadDataShowPurchaseRequest();
+            POLoadDataHandle.loadReDataTbl();
             POLoadDataHandle.loadTableProductByPurchaseRequest();
             if (elePurchaseRequest[0].innerHTML) {
                 POLoadDataHandle.loadModalPurchaseQuotation();

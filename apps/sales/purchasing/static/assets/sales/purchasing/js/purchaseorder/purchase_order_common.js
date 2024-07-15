@@ -411,14 +411,21 @@ class POLoadDataHandle {
         }
     };
 
-    static loadTableProductByPurchaseRequest() {
+    static loadReDataTbl() {
         let $tableProductPR = $('#datable-purchase-order-product-request');
         let $tableProductAdd = $('#datable-purchase-order-product-add');
-        // clear dataTable
-        $tableProductPR.DataTable().clear().draw();
         $tableProductPR.DataTable().destroy();
         PODataTableHandle.dataTablePurchaseOrderProductRequest();
+        // clear dataTable
+        $tableProductPR.DataTable().clear().draw();
         $tableProductAdd.DataTable().clear().draw();
+        return true;
+    };
+
+    static loadTableProductByPurchaseRequest() {
+        let $tableProductPR = $('#datable-purchase-order-product-request');
+        // clear dataTable
+        $tableProductPR.DataTable().clear().draw();
         let data = POSubmitHandle.setupMergeProduct();
         POLoadDataHandle.eleDivTablePOProductAdd[0].setAttribute('hidden', 'true');
         POLoadDataHandle.eleDivTablePOProductRequest[0].removeAttribute('hidden');

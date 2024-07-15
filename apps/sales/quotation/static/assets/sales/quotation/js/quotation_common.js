@@ -1774,7 +1774,8 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term_data'])
         }
         if (data?.['quotation'] && data?.['sale_person']) {
-            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.quotationSelectEle, [data?.['quotation']]);
+            QuotationLoadDataHandle.quotationSelectEle.empty().html(data?.['quotation']?.['title']);
+            QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(data?.['quotation']));
         }
         if (data?.['date_created']) {
             $('#quotation-create-date-created').html(moment(data?.['date_created']).format('DD/MM/YYYY'));
@@ -1811,7 +1812,9 @@ class QuotationLoadDataHandle {
                 'title': data?.['title'],
                 'code': data?.['code'],
             }
-            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.quotationSelectEle, [dataQuotationCopy]);
+            QuotationLoadDataHandle.quotationSelectEle.empty().html(data?.['title']);
+            QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(dataQuotationCopy));
+
         }
         if (data?.['quotation_logistic_data']) {
             document.getElementById('quotation-create-shipping-address').value = data?.['quotation_logistic_data']?.['shipping_address'];
@@ -5942,6 +5945,14 @@ class QuotationSubmitHandle {
             quotation_expenses_data = 'sale_order_expenses_data';
             quotation_logistic_data = 'sale_order_logistic_data';
             quotation_indicators_data = 'sale_order_indicators_data';
+
+            if (QuotationLoadDataHandle.quotationSelectEle && QuotationLoadDataHandle.quotationSelectEle.length >0) {
+                if (QuotationLoadDataHandle.quotationSelectEle.attr('data-detail')) {
+                    let dataQuotation = JSON.parse(QuotationLoadDataHandle.quotationSelectEle.attr('data-detail'));
+                    _form.dataForm['quotation'] = dataQuotation?.['id'];
+                }
+
+            }
         }
         if (is_sale_order === false) {
             _form.dataForm['is_customer_confirm'] = $('#quotation-customer-confirm')[0].checked;

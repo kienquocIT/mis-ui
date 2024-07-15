@@ -85,6 +85,22 @@
                                                     disabled
                                             >
                                         </div>
+                                    </div>
+                                    <div class="col-12 col-md-3 col-lg-3">
+                                        <div class="form-group">
+                                            <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
+                                            <p class="mt-2 border-bottom" id="quotation-create-date-created"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-3 col-lg-3">
+                                        <div class="form-group">
+                                            <label class="form-label" for="select-box-quotation">{% trans 'Quotation' %}</label>
+                                            <p class="mt-2 border-bottom" id="select-box-quotation" data-detail="">{% trans 'None' %}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-md-6 col-lg-6">
                                         <div class="form-group">
                                             <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Customer' %}</label>
                                             <select
@@ -100,61 +116,34 @@
                                             ></select>
                                         </div>
                                     </div>
-                                    <div class="col-12 col-md-6 col-lg-6">
-                                        <div class="row">
-                                            <div class="col-12 col-md-6 col-lg-6">
-                                                <div class="form-group">
-                                                    <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Contact' %}</label>
-                                                    <select
-                                                        class="form-select"
-                                                        id="select-box-quotation-create-contact"
-                                                        data-url="{% url "ContactListAPI" %}"
-                                                        data-method="GET"
-                                                        data-link-detail="{% url 'ContactDetail' 1 %}"
-                                                        name="contact"
-                                                        data-keyResp="contact_list"
-                                                        disabled
-                                                    ></select>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-md-6 col-lg-6">
-                                                <div class="form-group">
-                                                    <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
-                                                    <select
-                                                            class="form-select"
-                                                            id="select-box-quotation-create-payment-term"
-                                                            data-url="{% url "PaymentsTermsListAPI" %}"
-                                                            data-link-detail=""
-                                                            data-method="GET"
-                                                            name="payment_term"
-                                                            data-keyResp="payment_terms_list"
-                                                            disabled
-                                                    ></select>
-                                                </div>
-                                            </div>
+                                    <div class="col-12 col-md-3 col-lg-3">
+                                        <div class="form-group">
+                                            <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Contact' %}</label>
+                                            <select
+                                                class="form-select"
+                                                id="select-box-quotation-create-contact"
+                                                data-url="{% url "ContactListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url 'ContactDetail' 1 %}"
+                                                name="contact"
+                                                data-keyResp="contact_list"
+                                                disabled
+                                            ></select>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-12 col-md-6 col-lg-6">
-                                                <div class="form-group">
-                                                    <label class="form-label" for="select-box-quotation">{% trans 'Quotation' %}</label>
-                                                    <select
-                                                            class="form-select"
-                                                            id="select-box-quotation"
-                                                            data-url="{% url "QuotationListAPI" %}"
-                                                            data-method="GET"
-                                                            data-link-detail="{% url "QuotationDetail" 1 %}"
-                                                            name="quotation"
-                                                            data-keyResp="quotation_list"
-                                                            disabled
-                                                    ></select>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-md-4 col-lg-4">
-                                                <div class="form-group">
-                                                    <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
-                                                    <p class="mt-2 border-bottom" id="quotation-create-date-created"></p>
-                                                </div>
-                                            </div>
+                                    </div>
+                                    <div class="col-12 col-md-3 col-lg-3">
+                                        <div class="form-group">
+                                            <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
+                                            <select
+                                                    class="form-select"
+                                                    id="select-box-quotation-create-payment-term"
+                                                    data-url="{% url "PaymentsTermsListAPI" %}"
+                                                    data-link-detail=""
+                                                    data-method="GET"
+                                                    name="payment_term"
+                                                    data-keyResp="payment_terms_list"
+                                                    disabled
+                                            ></select>
                                         </div>
                                     </div>
                                 </div>

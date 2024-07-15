@@ -18,9 +18,6 @@ $(function () {
         QuotationLoadDataHandle.loadInitDate();
 
         QuotationLoadDataHandle.loadInitQuotationProduct();
-        if (formSubmit[0].classList.contains('sale-order')) {
-            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.quotationSelectEle);
-        }
         // init first time indicator
         indicatorHandle.loadQuotationIndicator(true);
         // init dataTable

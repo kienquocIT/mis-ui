@@ -281,9 +281,9 @@ function dataTableEmployeeShow(data) {
                 render: (data, type, row) => {
                     let form = $('#frm_group_create');
                     if (form.attr('data-method') !== "GET") {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" id="${row.id}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" id="${row.id}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
                     } else {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
                 }
             },

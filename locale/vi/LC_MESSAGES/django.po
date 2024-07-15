@@ -4636,7 +4636,7 @@ msgid "Must select one warehouse"
 msgstr "Phải chọn một kho"
 
 #
-msgid "Exceeded remaining quantity"
+msgid "Exceed remain quantity"
 msgstr "Vượt quá số lượng còn lại"
 
 #
@@ -6201,8 +6201,8 @@ msgid "Shipping fee"
 msgstr "Phí vận chuyển"
 
 #
-msgid "Data is hidden by workflow config"
-msgstr "Dữ liệu bị ẩn theo quy trình"
+msgid "Data in the hidden zone"
+msgstr "Dữ liệu thuộc vùng bị ẩn"
 
 #
 msgid "Add node"
@@ -7073,8 +7073,8 @@ msgid "Require input data in payment tab (same to purchase order)"
 msgstr "Yêu cầu nhập dữ liệu vào tab thanh toán (tương tự với đơn đặt hàng)"
 
 #
-msgid "Show data have win rate is 100%"
-msgstr "Hiển thị dữ liệu có tỷ lệ thắng là 100%"
+msgid "Show data have win rate 100%"
+msgstr "Hiển thị dữ liệu có tỷ lệ thắng 100%"
 
 #
 msgid "Select document save status"
@@ -7863,6 +7863,7 @@ msgstr "Vai trò phát sinh chi phí"
 #
 msgid "Create Baseline"
 msgstr "Tạo Đường cơ sở"
+
 #
 msgid "not PR"
 msgstr "không theo PR"
@@ -7916,5 +7917,38 @@ msgid "Reserved"
 msgstr "Đã mượn"
 
 #
-msgid "Expand / Collapse"
+msgid "Reserve quantity"
+msgstr "SL mượn"
+
+#
+msgid "Exceed available quantity"
+msgstr "Vượt quá số lượng khả dụng"
+
+#
+msgid "Not included products for other projects"
+msgstr "Không bao gồm sản phẩm dành cho dự án khác"
+
+#
+msgid "Zones"
+msgstr "Vùng dữ liệu"
+
+#
+msgid "Zones detail"
+msgstr "Chi tiết vùng dữ liệu"
+
+#
+msgid "Editing zone and hidden zone must be different"
+msgstr "Vùng chỉnh sửa và vùng bị ẩn phải khác nhau"
+
+#
+msgid "Picked"
+msgstr "Hàng đã lấy"
+
+#
+msgid "UOM group"
+msgstr "Nhóm đơn vị"
+
+#
+msgid "Edit zone"
+msgstr "Chỉnh sửa vùng dữ liệu"msgid "Expand / Collapse"
 msgstr "Thu gọn / Mở rộng"

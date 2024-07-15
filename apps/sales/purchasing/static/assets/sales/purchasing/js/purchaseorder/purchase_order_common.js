@@ -1518,24 +1518,26 @@ class PODataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<div class="row"><span class="badge badge-primary table-row-code">${row?.['code']}</span></div>`
+                        if (row?.['title'] && row?.['code']) {
+                            return `<span class="badge badge-primary badge-sm table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>
+                                    <p class="table-row-title">${row?.['title']}</p>`;
+                        }
+                        return `<p>--</p>`;
                     },
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row?.['title']}</span>`
+                        let dataSupplier = JSON.stringify(row?.['supplier_mapped']).replace(/"/g, "&quot;");
+                        if (row?.['supplier_mapped']?.['name'] && row?.['supplier_mapped']?.['code']) {
+                            return `<span class="badge badge-warning badge-sm">${row?.['supplier_mapped']?.['code'] ? row?.['supplier_mapped']?.['code'] : ''}</span>
+                                    <p class="table-row-supplier" data-supplier="${dataSupplier}" id="${row?.['supplier_mapped']?.['id']}">${row?.['supplier_mapped']?.['name']}</p>`;
+                        }
+                        return `<p>--</p>`;
                     }
                 },
                 {
                     targets: 4,
-                    render: (data, type, row) => {
-                        let dataSupplier = JSON.stringify(row?.['supplier_mapped']).replace(/"/g, "&quot;");
-                        return `<div class="row"><span class="badge badge-soft-warning table-row-supplier" data-supplier="${dataSupplier}" id="${row?.['supplier_mapped']?.['id']}">${row?.['supplier_mapped']?.['name']}</span></div>`
-                    }
-                },
-                {
-                    targets: 5,
                     render: (data, type, row) => {
                         return `<span class="table-row-purchase-quotation-request">${row?.['purchase_quotation_request_mapped']?.['code'] ? row?.['purchase_quotation_request_mapped']?.['code'] : ''}</span>`
                     }
@@ -1851,7 +1853,7 @@ class PODataTableHandle {
                     targets: 8,
                     width: '1.30208333333%',
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
                 },
             ],
@@ -1924,12 +1926,12 @@ class PODataTableHandle {
                         if (row?.['due_date'] !== '') {
                             return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-due-date" value="${moment(row?.['due_date']).format('DD/MM/YYYY')}">
-                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
+                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
                                     </div>`;
                         } else {
                             return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-due-date" value="">
-                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
+                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
                                     </div>`;
                         }
                     }
@@ -1937,7 +1939,7 @@ class PODataTableHandle {
                 {
                     targets: 6,
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
                 },
             ],

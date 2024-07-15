@@ -1693,11 +1693,14 @@ class QuotationLoadDataHandle {
         QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
         QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
         QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
+        QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
         // Check promotion -> re calculate
         QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
         // Set form novalidate
         $form[0].setAttribute('novalidate', 'novalidate');
         $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');
+        // set again WF runtime
+        QuotationLoadDataHandle.loadSetWFRuntimeZone();
         return true;
     };
 
@@ -1773,31 +1776,23 @@ class QuotationLoadDataHandle {
         if (is_copy === false) {
             // check if not finish or reject then remove hidden btn edit page
             if (![2, 3, 4].includes(data?.['system_status'])) {
-                let $btn = $('#btn-enable-edit');
-                if ($btn.length) {
-                    $btn[0].removeAttribute('hidden');
+                let btnEdit = $('#btn-enable-edit');
+                if (btnEdit && btnEdit.length > 0) {
+                    btnEdit[0].removeAttribute('hidden');
                 }
             }
-            // check if is not finish then hidden btn delivery (Sale Order)
-            if (![2, 3].includes(data?.['system_status'])) {
-                if (form.classList.contains('sale-order')) {
-                    let btnDelivery = $('#btnDeliverySaleOrder');
-                    if (btnDelivery.length > 0){
-                        btnDelivery[0].setAttribute('hidden', 'true');
-                    }
+            // check if finish then remove hidden btnDelivery (SO)
+            if (data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get' && form.classList.contains('sale-order')) {
+                let btnDelivery = $('#btnDeliverySaleOrder');
+                if (btnDelivery && btnDelivery.length > 0) {
+                    btnDelivery[0].removeAttribute('hidden');
                 }
             }
-            // check if is not finish then disable btn copy
-            if (![2, 3].includes(data?.['system_status'])) {
-                let btnCopy = document.getElementById('btn-copy-quotation');
-                let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
-                if (btnCopy) {
-                    btnCopy.setAttribute('disabled', 'true');
-                }
-                if (eleTooltipBtnCopy) {
-                    eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
-                    eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
-                    eleTooltipBtnCopy.setAttribute('title', QuotationLoadDataHandle.transEle.attr('data-not-allow-use'));
+            // check if finish then remove hidden btnCopy
+            if (data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get') {
+                let btnCopy = $('#btn-copy-quotation');
+                if (btnCopy && btnCopy.length > 0) {
+                    btnCopy[0].removeAttribute('hidden');
                 }
             }
         }
@@ -2479,7 +2474,7 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
                 },
             ],
@@ -2510,9 +2505,9 @@ class QuotationDataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data_readonly";
+                        let dataZone = "quotation_costs_data";
                         if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data_readonly";
+                            dataZone = "sale_order_costs_data";
                         }
                         let itemType = 0  // product
                         if (row.hasOwnProperty('product') && row.hasOwnProperty('shipping')) {
@@ -2524,7 +2519,7 @@ class QuotationDataTableHandle {
                             return `<div class="row table-row-item-area">
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <select
-                                                class="form-select table-row-item disabled-custom-show"
+                                                class="form-select table-row-item disabled-custom-show zone-readonly"
                                                 data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
                                                 data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
                                                 data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
@@ -2549,7 +2544,7 @@ class QuotationDataTableHandle {
                                                 <i class="fas fa-shipping-fast text-teal"></i>
                                             </a>
                                         </span>
-                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row?.['product_title']}" data-id="${row?.['shipping']?.['id']}" data-bs-toggle="tooltip" title="${row.product_title}" data-zone="${dataZone}" disabled>
+                                        <input type="text" class="form-control table-row-shipping disabled-custom-show zone-readonly" value="${row?.['product_title']}" data-id="${row?.['shipping']?.['id']}" data-bs-toggle="tooltip" title="${row?.['product_title']}" data-zone="${dataZone}" disabled>
                                     </span>
                                 </div>
                                 </div>`;
@@ -2560,12 +2555,12 @@ class QuotationDataTableHandle {
                     targets: 2,
                     render: () => {
                         let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data_readonly";
+                        let dataZone = "quotation_costs_data";
                         if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data_readonly";
+                            dataZone = "sale_order_costs_data";
                         }
                         return `<select 
-                                    class="form-select table-row-uom disabled-custom-show"
+                                    class="form-select table-row-uom disabled-custom-show zone-readonly"
                                     data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
                                     data-keyResp="unit_of_measure"
@@ -2579,11 +2574,11 @@ class QuotationDataTableHandle {
                     targets: 3,
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data_readonly";
+                        let dataZone = "quotation_costs_data";
                         if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data_readonly";
+                            dataZone = "sale_order_costs_data";
                         }
-                        return `<input type="text" class="form-control table-row-quantity disabled-custom-show" value="${row?.['product_quantity']}" data-zone="${dataZone}" disabled>`;
+                        return `<input type="text" class="form-control table-row-quantity disabled-custom-show zone-readonly" value="${row?.['product_quantity']}" data-zone="${dataZone}" disabled>`;
                     }
                 },
                 {
@@ -2722,7 +2717,7 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
                     }
                 },
             ],
@@ -2931,7 +2926,7 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
                     }
                 },
             ],
@@ -3086,7 +3081,7 @@ class QuotationDataTableHandle {
     static dataTableShipping(data) {
         // init dataTable
         let $tables = $('#datable-quotation-create-shipping');
-        $tables.DataTableDefault({
+        $tables.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             // searching: false,
             paging: false,
@@ -3123,51 +3118,52 @@ class QuotationDataTableHandle {
                 }
             ],
         });
+        if ($tables.hasClass('dataTable')) {
+            $tables.DataTable().clear().draw();
+            $tables.DataTable().rows.add(data ? data : []).draw();
+        }
     };
 
-    static loadTableQuotationShipping(shipping_id) {
-        let self = this;
-        let jqueryId = '#' + shipping_id;
-        let ele = $(jqueryId);
+    static loadTableQuotationShipping() {
+        let ele = $('#data-init-quotation-create-shipping');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         let passList = [];
         let failList = [];
         let checkList = [];
+        QuotationDataTableHandle.dataTableShipping();
         $.fn.callAjax2({
                 'url': url,
                 'method': method,
                 'isDropdown': true,
             }
-            // url, method
         ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('shipping_check_list') && Array.isArray(data.shipping_check_list)) {
-                        $('#datable-quotation-create-shipping').DataTable().destroy();
                         let shippingAddress = $('#quotation-create-shipping-address').val();
                         if (shippingAddress) {
                             data.shipping_check_list.map(function (item) {
-                                if (!checkList.includes(item.id)) {
-                                    let check = shippingHandle.checkShippingValid(item, shippingAddress)
+                                if (!checkList.includes(item?.['id'])) {
+                                    let check = shippingHandle.checkShippingValid(item, shippingAddress);
                                     if (check.is_pass === true) {
                                         item['is_pass'] = true;
                                         item['final_shipping_price'] = check.final_shipping_price;
                                         item['margin_shipping_price'] = check.margin_shipping_price;
-                                        item['data_shipping'] = check.data_shipping;
-                                        passList.push(item)
+                                        item['data_shipping'] = check?.['data_shipping'];
+                                        passList.push(item);
                                     } else {
                                         item['is_pass'] = false;
-                                        failList.push(item)
+                                        failList.push(item);
                                     }
-                                    checkList.push(item.id)
+                                    checkList.push(item?.['id']);
                                 }
                             })
                             passList = passList.concat(failList);
-                            self.dataTableShipping(passList);
+                            QuotationDataTableHandle.dataTableShipping(passList);
                         } else {
-                            self.dataTableShipping(passList);
+                            QuotationDataTableHandle.dataTableShipping(passList);
                             $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-check-if-shipping-address')}, 'info');
                         }
                     }
@@ -3288,12 +3284,12 @@ class QuotationDataTableHandle {
                         if (row?.['date'] !== '') {
                             return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${moment(row?.['date']).format('DD/MM/YYYY')}">
-                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
+                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
                                     </div>`;
                         } else {
                             return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="">
-                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
+                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
                                     </div>`;
                         }
                     },
@@ -3333,12 +3329,12 @@ class QuotationDataTableHandle {
                         if (row?.['due_date'] !== '') {
                             return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-due-date" value="${moment(row?.['due_date']).format('DD/MM/YYYY')}">
-                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
+                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
                                     </div>`;
                         } else {
                             return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-due-date" value="">
-                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
+                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
                                     </div>`;
                         }
                     }
@@ -3356,7 +3352,7 @@ class QuotationDataTableHandle {
                 {
                     targets: 7,
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
                 },
             ],
@@ -6084,10 +6080,8 @@ class QuotationSubmitHandle {
 
 // *** COMMON FUNCTIONS ***
 function deleteRow(currentRow, table) {
-    // Get the index of the current row within the DataTable
     let rowIndex = table.DataTable().row(currentRow).index();
     let row = table.DataTable().row(rowIndex);
-    // Delete current row
     row.remove().draw();
 }
 

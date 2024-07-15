@@ -5,7 +5,7 @@ from apps.core.base.views import (
     ApplicationPropertyEmployeeListAPI, ApplicationPermissionAPI,
     CountryListAPI, CityListAPI, DistrictListAPI, DistrictAllListAPI, WardListAPI, WardAllListAPI,
     BaseCurrencyListAPI, BaseItemUnitListAPI, IndicatorParamListAPI, ApplicationForOpportunityPermitListAPI,
-    ApplicationDetailAPI,
+    ApplicationDetailAPI, ZonesListAPI, ZonesList, ZonesApplicationListAPI, AppEmpConfigListAPI,
 )
 
 urlpatterns = [
@@ -33,5 +33,13 @@ urlpatterns = [
         'opportunity-permit-applications/api',
         ApplicationForOpportunityPermitListAPI.as_view(),
         name='ApplicationForOpportunityPermitListAPI'
-    )
+    ),
+
+    # zones
+    path('zones-application/api/list', ZonesApplicationListAPI.as_view(), name='ZonesApplicationListAPI'),
+    path('zones/list', ZonesList.as_view(), name='ZonesList'),
+    path('zones/api/list', ZonesListAPI.as_view(), name='ZonesListAPI'),
+    # employee config on app
+    path('app-emp-config/api/list', AppEmpConfigListAPI.as_view(), name='AppEmpConfigListAPI'),
+
 ]

@@ -94,7 +94,6 @@ $(document).ready(function () {
                 }
             }
         ],
-        visibleSearchField: false,
         rowIdx: false,
     })
 

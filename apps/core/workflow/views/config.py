@@ -222,7 +222,7 @@ class NodeSystemListAPI(APIView):
         return {'node_system': Node_data}, status.HTTP_200_OK
 
 
-# workflow current of app
+# WF CURRENT OF APP
 class WorkflowCurrentOfAppListAPI(APIView):
     @mask_view(
         login_require=True,

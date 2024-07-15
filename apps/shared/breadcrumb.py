@@ -357,6 +357,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # PROJECT
     PROJECT_LIST = BreadcrumbChildren(_('Project list'), 'ProjectList')
 
+    # Zones
+    ZONES_LIST_PAGE = BreadcrumbChildren(_('Zones'), 'ZonesList')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -920,3 +923,8 @@ class BreadcrumbView:
     FORM_CREATE = FORM_LIST + [BreadcrumbItem.BASTION_CREATE]
     FORM_UPDATE = FORM_LIST + [BreadcrumbItem.BASTION_UPDATE]
     FORM_ENTRIES_LIST = FORM_LIST + [BreadcrumbItem.FORM_ENTRIES_LIST_PAGE]
+
+    # Zones
+    ZONES_LIST_PAGE = [
+        BreadcrumbItem.ZONES_LIST_PAGE
+    ]

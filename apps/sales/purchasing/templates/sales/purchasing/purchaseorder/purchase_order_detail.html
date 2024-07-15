@@ -40,7 +40,7 @@
                     <div class="card-body">
                         <div class="row" id="common-information-area">
                             <div class="row">
-                                <div class="col-12 col-md-5 col-lg-5">
+                                <div class="col-12 col-md-6 col-lg-6">
                                     <div class="form-group">
                                         <label class="form-label required" for="purchase-order-title">{% trans 'Title' %}</label>
                                         <div class="input-group">
@@ -54,6 +54,39 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" name="delivered-date" id="purchase-order-date-delivered"
+                                                   class="form-control date-picker" autocomplete="off" disabled>
+                                            <div class="input-suffix">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label" for="purchase-order-status-delivered">{% trans 'Delivered status' %}</label>
+                                        <div class="input-group">
+                                            <div class="input-affix-wrapper">
+                                                <input
+                                                    type="text" class="form-control"
+                                                    name="status-delivered"
+                                                    id="purchase-order-status-delivered"
+                                                    value="None"
+                                                    data-value="0"
+                                                    disabled
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-3 col-lg-3">
                                     <div class="form-group">
                                         <label class="form-label" for="box-purchase-order-supplier">{% trans 'Supplier' %}</label>
                                         <select
@@ -68,6 +101,8 @@
                                                 disabled
                                         ></select>
                                     </div>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-3">
                                     <div class="form-group">
                                         <label class="form-label" for="box-purchase-order-contact">{% trans 'Contact' %}</label>
                                         <select
@@ -83,38 +118,7 @@
                                         ></select>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-5 col-lg-5">
-                                    <div class="row">
-                                        <div class="col-12 col-md-5 col-lg-5">
-                                            <div class="form-group">
-                                                <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
-                                                <div class="input-affix-wrapper">
-                                                    <input type="text" name="delivered-date" id="purchase-order-date-delivered"
-                                                           class="form-control date-picker" autocomplete="off" disabled>
-                                                    <div class="input-suffix">
-                                                        <i class="fas fa-calendar-alt"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-6 col-lg-6">
-                                            <div class="form-group">
-                                                <label class="form-label" for="purchase-order-status-delivered">{% trans 'Delivered status' %}</label>
-                                                <div class="input-group">
-                                                    <div class="input-affix-wrapper">
-                                                        <input
-                                                            type="text" class="form-control"
-                                                            name="status-delivered"
-                                                            id="purchase-order-status-delivered"
-                                                            value="None"
-                                                            data-value="0"
-                                                            disabled
-                                                        >
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="col-12 col-md-3 col-lg-3">
                                     <div class="form-group">
                                         <label class="form-label">{% trans 'Purchase Request' %}</label>
                                         <div class="input-group input-group-wth-btn">
@@ -124,7 +128,7 @@
                                                 <div class="input-suffix">
                                                     <button
                                                         type="button"
-                                                        class="btn btn-icon btn-primary btn-sm"
+                                                        class="btn btn-icon btn-outline-primary btn-sm"
                                                         id="btn-purchase-request-modal"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#purchaseRequestModalCenter"
@@ -134,6 +138,8 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-3">
                                     <div class="form-group">
                                         <label class="form-label">{% trans 'Purchase quotation' %}</label>
                                         <div class="input-group input-group-wth-btn">
@@ -143,7 +149,7 @@
                                                 <div class="input-suffix">
                                                     <button
                                                         type="button"
-                                                        class="btn btn-icon btn-primary btn-sm"
+                                                        class="btn btn-icon btn-outline-primary btn-sm"
                                                         id="btn-purchase-quotation-modal"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#purchaseQuotationModalCenter"

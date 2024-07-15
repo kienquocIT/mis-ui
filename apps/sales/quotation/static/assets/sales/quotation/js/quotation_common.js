@@ -262,6 +262,15 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadInitDate() {
+        let currentDate = new Date();
+        let day = String(currentDate.getDate()).padStart(2, '0');
+        let month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        let year = currentDate.getFullYear();
+        let formattedDate = `${day}/${month}/${year}`;
+        $('#quotation-create-date-created').html(formattedDate)
+    }
+
     static loadBoxQuotationPrice() {
         let ele = $('#select-box-quotation-create-price-list');
         let url = ele.attr('data-url');
@@ -1768,7 +1777,7 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.quotationSelectEle, [data?.['quotation']]);
         }
         if (data?.['date_created']) {
-            $('#quotation-create-date-created').val(moment(data?.['date_created']).format('DD/MM/YYYY'));
+            $('#quotation-create-date-created').html(moment(data?.['date_created']).format('DD/MM/YYYY'));
         }
         if (data?.['is_customer_confirm'] && is_copy === false) {
             $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
@@ -4619,7 +4628,7 @@ class promotionHandle {
                         }
                     } else if (times_condition === 2) { // IN CURRENT WEEK
                         let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM'));
-                        let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM'));
+                        let dateCurrent = new Date(moment($('#quotation-create-date-created')[0].innerHTML).format('YYYY-MM'));
                         const weekNumber1 = self.getWeekNumber(dateToCheck);
                         const weekNumber2 = self.getWeekNumber(dateCurrent);
                         if (weekNumber1 === weekNumber2) {
@@ -4627,7 +4636,7 @@ class promotionHandle {
                         }
                     } else if (times_condition === 3) { // IN CURRENT MONTH
                         let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM')).getTime();
-                        let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM')).getTime();
+                        let dateCurrent = new Date(moment($('#quotation-create-date-created')[0].innerHTML).format('YYYY-MM')).getTime();
                         if (dateToCheck === dateCurrent) {
                             check_use_count++
                         }
@@ -5933,10 +5942,6 @@ class QuotationSubmitHandle {
             quotation_expenses_data = 'sale_order_expenses_data';
             quotation_logistic_data = 'sale_order_logistic_data';
             quotation_indicators_data = 'sale_order_indicators_data';
-        }
-        let dateCreatedVal = $('#quotation-create-date-created').val();
-        if (dateCreatedVal) {
-            _form.dataForm['date_created'] = moment(dateCreatedVal).format('YYYY-MM-DD HH:mm:ss');
         }
         if (is_sale_order === false) {
             _form.dataForm['is_customer_confirm'] = $('#quotation-customer-confirm')[0].checked;

@@ -7950,4 +7950,5 @@ msgstr "Nhóm đơn vị"
 
 #
 msgid "Edit zone"
-msgstr "Chỉnh sửa vùng dữ liệu"
+msgstr "Chỉnh sửa vùng dữ liệu"msgid "Expand / Collapse"
+msgstr "Thu gọn / Mở rộng"

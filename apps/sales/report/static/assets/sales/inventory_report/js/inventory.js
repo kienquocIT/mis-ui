@@ -509,12 +509,10 @@ $(document).ready(function () {
                 $('#table-inventory-report #ending-total-value').attr('data-init-money', sum_wh_end_value)
 
                 // group project
-                if (sale_order_code_list.length === 0) {
-                    table.find("tr th:eq(0)").prop('hidden', true)
-                    table.find("tr").each(function () {
-                        $(this).find('td:eq(0)').prop('hidden', true)
-                    })
-                }
+                table.find("tr th:eq(0)").prop('hidden', sale_order_code_list.length === 0)
+                table.find("tr").each(function () {
+                    $(this).find('td:eq(0)').prop('hidden', sale_order_code_list.length === 0)
+                })
 
                 table.find("tr th:eq(3)").prop('hidden', !table_detail)
                 table.find("tr th:eq(4)").prop('hidden', !table_detail)

@@ -24,7 +24,7 @@ $(document).ready(function () {
                     {
                         data: 'code',
                         targets: 0,
-                        width: "10%",
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             let urlDetail = url_detail.format_url_with_uuid(row.id);
                             return `<a href="${urlDetail}"><span class="badge badge-primary">${data}</span></a>` + $x.fn.buttonLinkBlank(urlDetail);
@@ -33,43 +33,40 @@ $(document).ready(function () {
                     {
                         data: 'title',
                         targets: 1,
-                        width: "15%",
-                        render: (data) => {
-                            return `<p>${data}</p>`
+                        className: 'wrap-text w-15',
+                        render: (data, type, row) => {
+                            let urlDetail = url_detail.format_url_with_uuid(row.id);
+                            return `<a href="${urlDetail}"><span class="text-primary fw-bold">${data}</span></a>`
                         }
                     },
                     {
                         data: 'request_for',
                         targets: 2,
-                        width: "15%",
-                        className: 'wrap-text',
+                        className: 'wrap-text w-15',
                         render: (data) => {
-                            return `<p>${data}</p>`
+                            return `<span class="fst-italic">${data}</span>`
                         }
                     },
                     {
                         data: 'sale_order',
                         targets: 3,
-                        width: "15%",
-                        className: 'wrap-text',
+                        className: 'wrap-text w-15',
                         render: (data) => {
-                            return `<p>${data?.['title'] ? data?.['title'] : ''}</p>`;
+                            return `<p class="fw-bold text-blue">${data?.['title'] ? data?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         data: 'supplier',
                         targets: 4,
-                        width: "20%",
-                        className: 'wrap-text',
+                        className: 'wrap-text w-15',
                         render: (data) => {
-                            return `<p>${data.title}</p>`
+                            return `<p class="text-muted fw-bold">${data.title}</p>`
                         }
                     },
                     {
                         data: 'delivered_date',
                         targets: 5,
-                        width: "10%",
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         orderable: true,
                         render: (data) => {
                             return `<p>${data.split(' ')[0]}</p>`
@@ -78,8 +75,7 @@ $(document).ready(function () {
                     {
                         data: 'system_status',
                         targets: 6,
-                        width: "5%",
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         render: (data) => {
                             let status_data = {
                                 "Draft": "badge badge-soft-light",
@@ -94,8 +90,7 @@ $(document).ready(function () {
                     {
                         data: 'purchase_status',
                         targets: 7,
-                        width: "5%",
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         render: (data) => {
                             let status_data = {
                                 "Wait": "badge badge-soft-light",
@@ -107,7 +102,6 @@ $(document).ready(function () {
                     },
                     {
                         targets: 8,
-                        width: "5%",
                         className: 'wrap-text',
                         render: () => {
                             return ``

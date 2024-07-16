@@ -1,4 +1,6 @@
 const script_url = $('#script-url')
+const script_trans = $('#script-trans')
+
 const dateEle = $('#date')
 const saleOrderEle = $('#sale-order')
 const salePersonEle = $('#sale-person')
@@ -35,11 +37,11 @@ function LoadLineDetailTable(data) {
         let out_available = row?.['out_available']
         let row_html = $(`
             <tr>
-                <td class="border-1 text-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="${product?.['description']}">
+                <td class="border-1 text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="${product?.['description']}">
                     <span class="badge badge-pill badge-light w-20">${product?.['code']}</span> ${product?.['title']}
                 </td>
-                <td class="border-1 text-secondary"><span>${uom?.['title']}</span></td>
-                <td class="border-1 text-secondary">${total_order}</td>
+                <td class="border-1 text-primary"><span>${uom?.['title']}</span></td>
+                <td class="border-1 text-primary">${total_order}</td>
                 <td class="border-1 text-primary fw-bold">
                     ${this_registered}
                     <button data-gre-item-id="${row?.['id']}" data-bs-toggle="modal" data-bs-target="#this_registered_detail_modal" type="button" class="this_registered_detail btn btn-icon btn-flush-secondary flush-soft-hover btn-sm">
@@ -50,7 +52,7 @@ function LoadLineDetailTable(data) {
                    ${this_registered_borrowed}
                 </td>
                 <td class="border-1 text-primary fw-bold">${this_available}</td>
-                <td class="border-1 text-blue fw-bold">
+                <td class="border-1 text-primary fw-bold">
                     ${out_registered}
                     <button data-product-id="${product?.['id']}"
                             data-gre-item-id="${row?.['id']}"
@@ -64,8 +66,8 @@ function LoadLineDetailTable(data) {
                         <span class="icon"><i class="bi bi-three-dots"></i></span>
                     </button>
                 </td>
-                <td class="border-1 text-blue fw-bold">0</td>
-                <td class="border-1 text-blue fw-bold">${out_available}</td>
+                <td class="border-1 text-primary fw-bold">0</td>
+                <td class="border-1 text-primary fw-bold">${out_available}</td>
             </tr>
         `)
         tab_line_detail_datatable.find('tbody').append(row_html)
@@ -242,17 +244,31 @@ const other_so = $('#other-so')
 const so_available_amount = $('#so-available-amount')
 const uom_so = $('#uom-so')
 const so_reserve_amount = $('#so-reserve-amount')
+const frm_borrow_from_other = $('#frm_borrow_from_other')
+const frm_borrow_from_other_row = $('#frm_borrow_from_other_row')
+
 let current_gre_item_id = null
+let borrow_row = null
 
 class GoodsRegistrationBorrowHandle {
-    combinesData(frmEle, for_update=false) {
+    combinesData(frmEle, row=null, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle))
 
-        frm.dataForm['sale_order_destination_id'] = other_so.val()
-        frm.dataForm['goods_registration_source'] = $.fn.getPkDetail();
-        frm.dataForm['gre_item_source'] = current_gre_item_id
-        frm.dataForm['quantity'] = so_reserve_amount.val()
-        frm.dataForm['uom'] = uom_so.val()
+        if (row) {
+            let row_save_btn = row.find('.so-available-save')
+            frm.dataForm['sale_order_destination_id'] = row_save_btn.attr('data-sale-order-destination-id')
+            frm.dataForm['goods_registration_source'] = $.fn.getPkDetail();
+            frm.dataForm['gre_item_source'] = current_gre_item_id
+            frm.dataForm['quantity'] = parseFloat(row.find('.so-available-input').val()) - parseFloat(row.find('.so-available-input').attr('data-raw-value'))
+            frm.dataForm['uom'] = row_save_btn.attr('data-uom')
+        }
+        else {
+            frm.dataForm['sale_order_destination_id'] = other_so.val()
+            frm.dataForm['goods_registration_source'] = $.fn.getPkDetail();
+            frm.dataForm['gre_item_source'] = current_gre_item_id
+            frm.dataForm['quantity'] = so_reserve_amount.val()
+            frm.dataForm['uom'] = uom_so.val()
+        }
 
         return {
             url: frmEle.attr('data-url'),
@@ -279,13 +295,6 @@ function loadStockQuantityOtherDataTableBorrow() {
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    if (resp.data['goods_registration_borrow_list'].length > 0) {
-                        $('#new-borrow-request-btn').prop('hidden', true)
-                        $('#new-borrow-request').removeClass('show')
-                    }
-                    else {
-                        $('#new-borrow-request-btn').prop('hidden', false)
-                    }
                     return resp.data['goods_registration_borrow_list'] ? resp.data['goods_registration_borrow_list'] : [];
                 }
                 return [];
@@ -293,29 +302,55 @@ function loadStockQuantityOtherDataTableBorrow() {
         },
         columns: [
             {
-                className: 'wrap-text w-30',
+                className: 'wrap-text w-20 text-center',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-blue">${row?.['sale_order']?.['code']}</span>`;
+                    return `<span class="text-primary fw-bold"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order']?.['code']}</span>`
                 }
             },
             {
-                className: 'wrap-text w-25',
-                render: (data, type, row) => {
-                    return `<span>${row?.['quantity']}</span>`;
-                }
-            },
-            {
-                className: 'wrap-text w-25',
+                className: 'wrap-text w-10 text-center',
                 render: (data, type, row) => {
                     return `<span>${row?.['uom']?.['title']}</span>`;
                 }
             },
             {
-                className: 'wrap-text w-20',
+                className: 'wrap-text w-20 text-center',
                 render: (data, type, row) => {
-                    return `<button type="button" class="btn btn-icon btn-rounded btn-flush-danger btn-animated btn-xs"><span class="icon"><i class="bi bi-pencil-square"></i></span></button>`;
+                    return `<span>${row?.['quantity']}</span>`;
                 }
             },
+            {
+                className: 'wrap-text w-20 text-center',
+                render: (data, type, row) => {
+                    return `<span>${row?.['quantity'] - row?.['available']}</span>`;
+                }
+            },
+            {
+                className: 'wrap-text w-20 text-center',
+                render: (data, type, row) => {
+                    return `<input type="number" min="0" readonly
+                                   class="form-control text-center so-available-input"
+                                   data-raw-value="${row?.['available']}"
+                                   value="${row?.['available']}">`;
+                }
+            },
+            {
+                className: 'wrap-text w-10 text-center',
+                render: (data, type, row) => {
+                    return `
+                        <button type="button" class="btn btn-soft-danger btn-xs so-available-change">${script_trans.attr('data-trans-change')}</button>
+                        <button hidden
+                                type="submit"
+                                form="frm_borrow_from_other_row"
+                                class="btn btn-soft-primary btn-xs so-available-save"
+                                data-sale-order-destination-id="${row?.['sale_order']?.['id']}"
+                                data-uom="${row?.['uom']?.['id']}"
+                        >
+                            ${script_trans.attr('data-trans-save')}
+                        </button>
+                    `;
+                }
+            }
         ]
     });
 }
@@ -336,6 +371,18 @@ $(document).on("click", '.out_registered_detail', function () {
         JSON.parse($(this).find('.string_uom').text()),
         JSON.parse($(this).find('.string_base_uom').text())
     )
+})
+
+$(document).on("click", '.so-available-change', function () {
+    $(this).closest('tr').find('.so-available-input').prop('readonly', false)
+    $(this).closest('tr').find('.so-available-save').prop('hidden', false)
+    $(this).prop('hidden', true)
+})
+
+$(document).on("click", '.so-available-save', function () {
+    $(this).closest('tr').find('.so-available-input').prop('readonly', true)
+    $(this).closest('tr').find('.so-available-change').prop('hidden', false)
+    $(this).prop('hidden', true)
 })
 
 $('input[name="regis_from"]').on('change', function () {
@@ -367,12 +414,14 @@ function CallProjectProductGeneralBorrow(sale_order_id, product_id, so_uom, base
 
     Promise.all([ajax]).then(
         (results) => {
-            let quantity_can_be_reserve = 0;
+            let quantity_can_be_reserve = 0 // so_uom
+            let quantity_can_be_reserve_base = 0 // base_uom
             for (const item of results[0]) {
                 quantity_can_be_reserve += item?.['this_available']
+                quantity_can_be_reserve_base += item?.['this_available_base']
             }
-            so_available_amount.val(quantity_can_be_reserve / so_uom[0]?.['ratio'])
-            so_available_amount.attr('data-base-quantity', quantity_can_be_reserve)
+            so_available_amount.val(quantity_can_be_reserve)
+            so_available_amount.attr('data-base-quantity', quantity_can_be_reserve_base)
             LoadUOMStockBorrow(so_uom[0], base_uom[0])
         })
 }
@@ -424,9 +473,43 @@ function LoadProjectBorrow(data, product_id, so_uom, base_uom) {
     })
 }
 
-$('#frm_borrow_from_other').submit(function (event) {
+$(document).on("click", '.so-available-change', function () {
+    borrow_row = $(this).closest('tr')
+})
+
+frm_borrow_from_other.submit(function (event) {
     event.preventDefault();
     let combinesData = new GoodsRegistrationBorrowHandle().combinesData($(this));
+    if (combinesData) {
+        WindowControl.showLoading();
+        $.fn.callAjax2(combinesData)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        setTimeout(() => {
+                            window.location.replace($(this).attr('data-url-redirect'));
+                            location.reload.bind(location);
+                        }, 1000);
+                    }
+                },
+                (errs) => {
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+    }
+})
+
+frm_borrow_from_other_row.submit(function (event) {
+    event.preventDefault();
+    let combinesData = new GoodsRegistrationBorrowHandle().combinesData($(this), borrow_row);
     if (combinesData) {
         WindowControl.showLoading();
         $.fn.callAjax2(combinesData)

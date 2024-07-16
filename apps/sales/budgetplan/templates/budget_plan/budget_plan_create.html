@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Budget Plan Create' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button id="btn-save-budget-plan" class="btn btn-outline-primary" type="submit" form="form-create-budget-plan">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <script id="trans-url"></script>
+    <form id="form-create-budget-plan"
+          data-method="POST"
+          data-url-redirect="{% url "BudgetPlanList" %}"
+          data-url-list="{% url 'BudgetPlanList' %}"
+          data-url-detail="{% url 'BudgetPlanDetail' '0' %}"
+          data-url="{% url "BudgetPlanListAPI" %}">
+        {% csrf_token %}
+    </form>
+{% endblock %}
+{% block jsFooterUnCompress %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/budget_plan/budget_plan_common.js' %}"></script>
+    <script src="{% static 'assets/js/budget_plan/budget_plan_create.js' %}"></script>
+{% endblock %}

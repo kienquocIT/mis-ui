@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Budget Plan Detail' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'BudgetPlanUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-update-budget-plan">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <script id="trans-url"></script>
+    <form id="form-detail-budget-plan"
+          data-method="GET"
+          data-url-redirect="{% url "BudgetPlanList" %}"
+          data-url-list="{% url 'BudgetPlanList' %}"
+          data-url-detail="{% url 'BudgetPlanDetail' '0' %}"
+          data-url-detail-api="{% url 'BudgetPlanDetailAPI' '0' %}"
+          data-url="{% url "BudgetPlanListAPI" %}">
+        {% csrf_token %}
+    </form>
+{% endblock %}
+{% block jsFooterUnCompress %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/budget_plan/budget_plan_common.js' %}"></script>
+    <script src="{% static 'assets/js/budget_plan/budget_plan_detail.js' %}"></script>
+{% endblock %}

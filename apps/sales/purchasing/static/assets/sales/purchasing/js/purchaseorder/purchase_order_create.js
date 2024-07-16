@@ -100,6 +100,7 @@ $(function () {
         // Action on click btn ADD PURCHASE REQUEST
         $('#btn-confirm-add-purchase-request').on('click', function () {
             POLoadDataHandle.loadDataShowPurchaseRequest();
+            POLoadDataHandle.loadReDataTbl();
             POLoadDataHandle.loadTableProductByPurchaseRequest();
             if (elePurchaseRequest[0].innerHTML) {
                 POLoadDataHandle.loadModalPurchaseQuotation();
@@ -313,9 +314,14 @@ $(function () {
                 'total_product_revenue_before_tax',
                 // payment stage tab
                 'purchase_order_payment_stage',
-                // system
-                'system_status',
+                // attachment
                 'attachment',
+                // abstract
+                'system_status',
+                'next_node_collab_id',
+                'is_change',
+                'document_root_id',
+                'document_change_order',
             ]
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {

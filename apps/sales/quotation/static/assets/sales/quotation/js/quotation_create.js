@@ -15,12 +15,9 @@ $(function () {
         QuotationLoadDataHandle.loadBoxQuotationCustomer();
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+        QuotationLoadDataHandle.loadInitDate();
+
         QuotationLoadDataHandle.loadInitQuotationProduct();
-        if (formSubmit[0].classList.contains('sale-order')) {
-            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.quotationSelectEle);
-        }
-        // init first time indicator
-        indicatorHandle.loadQuotationIndicator(true);
         // init dataTable
         QuotationDataTableHandle.dataTableProduct();
         QuotationDataTableHandle.dataTableCost();
@@ -955,8 +952,12 @@ $(function () {
                 'is_customer_confirm',
                 // indicator tab
                 'quotation_indicators_data',
-                // system
+                // abstract
                 'system_status',
+                'next_node_collab_id',
+                'is_change',
+                'document_root_id',
+                'document_change_order',
             ]
             if (is_sale_order === true) {
                 submitFields = [
@@ -994,8 +995,12 @@ $(function () {
                     'sale_order_indicators_data',
                     // payment stage tab
                     'sale_order_payment_stage',
-                    // system
+                    // abstract
                     'system_status',
+                    'next_node_collab_id',
+                    'is_change',
+                    'document_root_id',
+                    'document_change_order',
                 ]
             }
             if (_form.dataForm) {

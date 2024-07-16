@@ -316,10 +316,14 @@ $(function () {
                 'purchase_requests',
                 'remarks',
                 'date_received',
-                // line detail
+                // tab product
                 'goods_receipt_product',
-                // system
+                // abstract
                 'system_status',
+                'next_node_collab_id',
+                'is_change',
+                'document_root_id',
+                'document_change_order',
             ]
             if (_form.dataForm) {
                 filterFieldList(submitFields, _form.dataForm);

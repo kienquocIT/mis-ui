@@ -2202,15 +2202,16 @@ class WFRTControl {
     static setupHTMLSelectCollab(collabOutForm) {
         let htmlCustom = ``;
         for (let collab of collabOutForm) {
-            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
                                 <div class="d-flex align-items-center">
+                                    <i class="fas fa-user mr-2 fs-7"></i>
                                     <span class="mr-2">${collab?.['full_name']}</span>
                                     <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="radio" class="form-check-input checkbox-next-node-collab" data-id="${collab?.['id']}">
                                 </div>
-                            </div><hr class="bg-teal">`;
+                            </div>`;
         }
         return htmlCustom;
     }
@@ -2918,7 +2919,7 @@ class WFRTControl {
             $(ele$).removeClass('bg-light');
         }
         if (config?.['add_readonly'] === true) {
-            if (!$(ele$).hasClass('zone-active')) {
+            if (!$(ele$).hasClass('zone-active') || $(ele$).hasClass('zone-readonly')) {
                 if ($(ele$).is('div')) {
                     $(ele$).addClass('bg-light');
                 } else {

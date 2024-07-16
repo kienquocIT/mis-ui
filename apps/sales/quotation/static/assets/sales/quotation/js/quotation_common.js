@@ -262,6 +262,15 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadInitDate() {
+        let currentDate = new Date();
+        let day = String(currentDate.getDate()).padStart(2, '0');
+        let month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        let year = currentDate.getFullYear();
+        let formattedDate = `${day}/${month}/${year}`;
+        $('#quotation-create-date-created').html(formattedDate)
+    }
+
     static loadBoxQuotationPrice() {
         let ele = $('#select-box-quotation-create-price-list');
         let url = ele.attr('data-url');
@@ -1491,7 +1500,6 @@ class QuotationLoadDataHandle {
             $tableProduct.DataTable().rows().every(function () {
                 let row = this.node();
                 let valueQuantity = 0;
-                let valuePrice = 0;
                 let valueTaxAmount = 0;
                 let valueSubtotal = 0;
                 let dataProduct = {};
@@ -1765,10 +1773,11 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term_data'])
         }
         if (data?.['quotation'] && data?.['sale_person']) {
-            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.quotationSelectEle, [data?.['quotation']]);
+            QuotationLoadDataHandle.quotationSelectEle.empty().html(data?.['quotation']?.['title']);
+            QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(data?.['quotation']));
         }
         if (data?.['date_created']) {
-            $('#quotation-create-date-created').val(moment(data?.['date_created']).format('DD/MM/YYYY'));
+            $('#quotation-create-date-created').html(moment(data?.['date_created']).format('DD/MM/YYYY'));
         }
         if (data?.['is_customer_confirm'] && is_copy === false) {
             $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
@@ -1802,7 +1811,9 @@ class QuotationLoadDataHandle {
                 'title': data?.['title'],
                 'code': data?.['code'],
             }
-            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.quotationSelectEle, [dataQuotationCopy]);
+            QuotationLoadDataHandle.quotationSelectEle.empty().html(data?.['title']);
+            QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(dataQuotationCopy));
+
         }
         if (data?.['quotation_logistic_data']) {
             document.getElementById('quotation-create-shipping-address').value = data?.['quotation_logistic_data']?.['shipping_address'];
@@ -3173,7 +3184,8 @@ class QuotationDataTableHandle {
     };
 
     static dataTableQuotationIndicator(data) {
-        $('#datable-quotation-create-indicator').DataTableDefault({
+        let $tables = $('#datable-quotation-create-indicator');
+        $tables.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -3208,10 +3220,15 @@ class QuotationDataTableHandle {
                 }
             ],
         });
+        if ($tables.hasClass('dataTable')) {
+            $tables.DataTable().clear().draw();
+            $tables.DataTable().rows.add(data ? data : []).draw();
+        }
     };
 
     static dataTableSaleOrderIndicator(data) {
-        $('#datable-quotation-create-indicator').DataTableDefault({
+        let $tables = $('#datable-quotation-create-indicator');
+        $tables.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -3260,6 +3277,10 @@ class QuotationDataTableHandle {
                 }
             ],
         });
+        if ($tables.hasClass('dataTable')) {
+            $tables.DataTable().clear().draw();
+            $tables.DataTable().rows.add(data ? data : []).draw();
+        }
     };
 
     static dataTablePaymentStage(data) {
@@ -3859,11 +3880,11 @@ class QuotationCheckConfigHandle {
 
 // Indicator
 class indicatorHandle {
-    static loadQuotationIndicator(is_load_init = false) {
-        let ele = $('#quotation-indicator-data');
-        if (!ele.val()) {
-            let url = ele.attr('data-url');
-            let method = ele.attr('data-method');
+    static loadQuotationIndicator() {
+        let $ele = $('#quotation-indicator-data');
+        if (!$ele.val()) {
+            let url = $ele.attr('data-url');
+            let method = $ele.attr('data-method');
             $.fn.callAjax2({
                     'url': url,
                     'method': method,
@@ -3874,19 +3895,15 @@ class indicatorHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
-                            ele.val(JSON.stringify(data.quotation_indicator_list));
-                            if (is_load_init === false) {
-                                indicatorHandle.calculateIndicator(data.quotation_indicator_list);
-                            }
+                            $ele.val(JSON.stringify(data.quotation_indicator_list));
+                            indicatorHandle.calculateIndicator(data.quotation_indicator_list);
                         }
                     }
                 }
             )
         } else {
-            if (is_load_init === false) {
-                let data_list = JSON.parse(ele.val());
-                indicatorHandle.calculateIndicator(data_list);
-            }
+            let data_list = JSON.parse($ele.val());
+            indicatorHandle.calculateIndicator(data_list);
         }
     };
 
@@ -3930,7 +3947,7 @@ class indicatorHandle {
                 // set data detail to zones hidden
                 if (data_form && dataDetail) {
                     for (let key of keyHidden) {
-                        if (!data_form.hasOwnProperty(key) && dataDetail.hasOwnProperty(key)) {
+                        if (dataDetail.hasOwnProperty(key)) {
                             data_form[key] = dataDetail[key];
                         }
                     }
@@ -3941,7 +3958,6 @@ class indicatorHandle {
         indicatorHandle.checkSpecialCaseIndicator(data_form);
         for (let indicator of indicator_list) {
             let rateValue = 0;
-
             let parse_formula = "";
             let formula_data = indicator.formula_data;
             for (let item of formula_data) {
@@ -4033,10 +4049,15 @@ class indicatorHandle {
                 'indicator_rate': rateValue
             }
         }
-        //
-        let $table = $('#datable-quotation-create-indicator');
-        $table.DataTable().clear().draw();
-        $table.DataTable().rows.add(result_list).draw();
+        // let $table = $('#datable-quotation-create-indicator');
+        // $table.DataTable().clear().draw();
+        // $table.DataTable().rows.add(result_list).draw();
+
+        if (!formSubmit.hasClass('sale-order')) {
+            QuotationDataTableHandle.dataTableQuotationIndicator(result_list);
+        } else {
+            QuotationDataTableHandle.dataTableSaleOrderIndicator(result_list);
+        }
     };
 
     static evaluateFormula(formulaText) {
@@ -4619,7 +4640,7 @@ class promotionHandle {
                         }
                     } else if (times_condition === 2) { // IN CURRENT WEEK
                         let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM'));
-                        let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM'));
+                        let dateCurrent = new Date(moment($('#quotation-create-date-created')[0].innerHTML).format('YYYY-MM'));
                         const weekNumber1 = self.getWeekNumber(dateToCheck);
                         const weekNumber2 = self.getWeekNumber(dateCurrent);
                         if (weekNumber1 === weekNumber2) {
@@ -4627,7 +4648,7 @@ class promotionHandle {
                         }
                     } else if (times_condition === 3) { // IN CURRENT MONTH
                         let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM')).getTime();
-                        let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM')).getTime();
+                        let dateCurrent = new Date(moment($('#quotation-create-date-created')[0].innerHTML).format('YYYY-MM')).getTime();
                         if (dateToCheck === dateCurrent) {
                             check_use_count++
                         }
@@ -5933,10 +5954,14 @@ class QuotationSubmitHandle {
             quotation_expenses_data = 'sale_order_expenses_data';
             quotation_logistic_data = 'sale_order_logistic_data';
             quotation_indicators_data = 'sale_order_indicators_data';
-        }
-        let dateCreatedVal = $('#quotation-create-date-created').val();
-        if (dateCreatedVal) {
-            _form.dataForm['date_created'] = moment(dateCreatedVal).format('YYYY-MM-DD HH:mm:ss');
+
+            if (QuotationLoadDataHandle.quotationSelectEle && QuotationLoadDataHandle.quotationSelectEle.length >0) {
+                if (QuotationLoadDataHandle.quotationSelectEle.attr('data-detail')) {
+                    let dataQuotation = JSON.parse(QuotationLoadDataHandle.quotationSelectEle.attr('data-detail'));
+                    _form.dataForm['quotation'] = dataQuotation?.['id'];
+                }
+
+            }
         }
         if (is_sale_order === false) {
             _form.dataForm['is_customer_confirm'] = $('#quotation-customer-confirm')[0].checked;

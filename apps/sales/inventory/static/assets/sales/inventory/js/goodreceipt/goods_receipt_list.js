@@ -38,7 +38,6 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        className: 'text-center',
                         render: (data, type, row) => {
                             let type_data = [
                                 "success",
@@ -51,7 +50,6 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        className: 'text-center',
                         render: (data, type, row) => {
                             let type_data = [
                                 "success",
@@ -67,7 +65,6 @@ $(function () {
                     },
                     {
                         targets: 4,
-                        className: 'text-center',
                         render: (data, type, row) => {
                             if (row?.['date_received']) {
                                 return `<p>${moment(row?.['date_received']).format('DD/MM/YYYY')}</p>`;
@@ -77,7 +74,6 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        className: 'text-center',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
                             let sttData = [

@@ -37,6 +37,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     BASTION_CREATE = BreadcrumbChildren(_('Create'))
     BASTION_DETAIL = BreadcrumbChildren(_('Detail'), is_append_code=True)
     BASTION_UPDATE = BreadcrumbChildren(_('Update'), is_append_code=True)
+    BASTION_KNOWLEDGE = BreadcrumbChildren(_('Knowledge'))
 
     # hr
     EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('Employee'), 'EmployeeList')
@@ -924,3 +925,4 @@ class BreadcrumbView:
     FORM_CREATE = FORM_LIST + [BreadcrumbItem.BASTION_CREATE]
     FORM_UPDATE = FORM_LIST + [BreadcrumbItem.BASTION_UPDATE]
     FORM_ENTRIES_LIST = FORM_LIST + [BreadcrumbItem.FORM_ENTRIES_LIST_PAGE]
+    FORM_KNOWLEDGE = FORM_LIST + [BreadcrumbItem.BASTION_KNOWLEDGE]

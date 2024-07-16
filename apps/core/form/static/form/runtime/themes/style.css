@@ -106,6 +106,10 @@
     padding: var(--head-padding);
 }
 
+.form-full .form-head-sub .form-item-group {
+    max-height: 200px;
+    overflow-y: auto;
+}
 .form-head .form-head-sub,
 .form-full .form-head-sub {
     border-style: var(--head-sub-border-style);

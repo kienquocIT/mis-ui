@@ -1,6 +1,17 @@
 $(document).ready(function () {
     let frm$ = $('form[data-url]');
     if (frm$.length > 0) {
+        frm$.find('button:not([type]), button[type=submit]').on('click', function (event){
+            event.preventDefault();
+            $(this).prop('disabled', true);
+            frm$.trigger('submit');
+            setTimeout(
+                () => {
+                    $(this).prop('disabled', false);
+                }
+            )
+        })
+
         const dataUrl = frm$.data('url');
         frm$.removeAttr('data-url');
 
@@ -9,7 +20,7 @@ $(document).ready(function () {
             submitHandler: function (form, event) {
                 event.preventDefault();
                 const bodyData = $.fn.formSerializerObject($(form));
-                if (Object.keys(bodyData).length > 0){
+                if (Object.keys(bodyData).length > 0) {
                     $.fn.formCallAjax({
                         url: dataUrl,
                         method: 'POST',
@@ -39,7 +50,11 @@ $(document).ready(function () {
                                 $(`<div class="form-item" style="width: 100%;padding-top: 0;padding-bottom: 0;min-height: unset;height: auto;" id="groupShowErrorsDetail"><input name="detail" type="hidden" disabled readonly/></div>`).insertBefore($('.form-action'))
                             }
                             if (errors) {
-                                validator.showErrors(errors);
+                                $.fn.formNotify(
+                                    $.fn.formGettext("Some data are incomplete. Please complete them before submitting data."),
+                                    'failure'
+                                )
+                                validator.showErrors($.fn.formConvertErrorsBeforeRaise(errors));
                             }
                         }
                     },)
@@ -71,40 +86,10 @@ $(document).ready(function () {
                             if (submitOnlyOne === true && obj_ids.length > 0) {
                                 onlyView();
                                 $('.form-content').remove();
+                                $('.form-page').remove();
                             }
-                            if (obj_ids.length > 0){
-
-                                let eleGroup$ = $('<div class="form-item-group form-item-group-top"></div>');
-                                eleGroup$.append(
-                                    `
-                                        <style>
-                                            .btn-more-submitted {
-                                                border: 1px solid #6bb4ba;
-                                                color: #004b52;
-                                                background-color: #fff;
-                                                cursor: pointer;
-                                                padding: 5px 3px;
-                                                border-radius: 5px;
-                                            }
-                                        </style>
-                                        <p style="font-size: large;color: #00646d;">
-                                            ${$.fn.formGettext('You has submitted data.')}
-                                            <button type="button" class="btn-more-submitted">Xem danh sách</button>
-                                        </p>
-                                        <script>
-                                            $(document).ready(function (){
-                                                $('button.btn-more-submitted').on('click', function (){
-                                                    $(this).closest('p').hide(100, function (){
-                                                        const tmpGroup$ = $(this).closest('.form-item-group'); 
-                                                        $(this).remove();
-                                                        tmpGroup$.find('p').slideDown();
-                                                    });
-                                                })
-                                            })
-                                        </script>
-                                    `
-                                );
-
+                            if (obj_ids.length > 0) {
+                                let eleGroup$ = $('#data-submitted');
                                 obj_ids.map(
                                     obj => {
                                         const urlEdit = urlSubmittedEdit.replaceAll('__pk__', obj.id);
@@ -119,7 +104,7 @@ $(document).ready(function () {
                                             </p>`
                                         );
 
-                                        if (submitAllowEdit === true){
+                                        if (submitAllowEdit === true) {
                                             eleViewDetail$.append(`
                                                 <a style="margin-left: 15px;" href="${urlEdit}">${$.fn.formGettext('Edit')}</a>
                                             `)
@@ -131,16 +116,19 @@ $(document).ready(function () {
                                         eleGroup$.append(ele$);
                                     }
                                 )
-
-                                let sub$ = $(`<div class="form-head-sub"></div>`).append(eleGroup$);
-                                $('<div class="form-item"></div>').append(sub$).insertAfter($('.form-head'));
                             }
                         }
                     }
-                    $('#contents').css('opacity', '100');
+                    $.fn.formShowContentAndHideLoader();
                 },
-                errs => $('#contents').css('opacity', '100'),
+                errs => $.fn.formShowContentAndHideLoader(),
             )
-        }
+        } else $.fn.formShowContentAndHideLoader();
+
+        $.fn.formInitSelect2All();
+        $.fn.formInitDatePickerAll();
+        $.fn.formInitDatetimePickerAll();
+        $.fn.formInitTimePickerAll();
+        $.fn.formRangeSlider();
     }
 })

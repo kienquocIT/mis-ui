@@ -16,14 +16,19 @@
             let name = $(this).attr('name');
             Object.keys(attributes).map(key => {
                 let data = attributes[key];
-                if (data.name.startsWith('data-valid-')) {
-                    let ruleKey = data.name.replace('data-valid-', '');
+                let ruleKey = null;
+                if (data.name === 'data-datepicker'){
+                    ruleKey = 'datepicker';
+                } else if (data.name === 'data-datetimepicker'){
+                    ruleKey = 'datetimepicker';
+                } else if (data.name.startsWith('data-valid-')) {
+                    ruleKey = data.name.replace('data-valid-', '');
                     ruleKey = ruleKey.toLowerCase().replaceAll('-', '_').trim();
-                    if ($.validator.methods.hasOwnProperty(ruleKey)) {
-                        if (!validator.settings.rules.hasOwnProperty(name)) validator.settings.rules[name] = {};
-                        if (!validator.settings.rules[name].hasOwnProperty(ruleKey)) {
-                            validator.settings.rules[name][ruleKey] = data.value;
-                        }
+                }
+                if (ruleKey && $.validator.methods.hasOwnProperty(ruleKey)) {
+                    if (!validator.settings.rules.hasOwnProperty(name)) validator.settings.rules[name] = {};
+                    if (!validator.settings.rules[name].hasOwnProperty(ruleKey)) {
+                        validator.settings.rules[name][ruleKey] = data.value;
                     }
                 }
             })
@@ -239,6 +244,39 @@
                     break
             }
             return $.validator.format(msg, params);
+        }
+    )
+
+    $.validator.addMethod(
+        'datepicker'.toLowerCase(),
+        function (value, element) {
+            return checkBase.bind(this)(value, element, function (rules){
+                if (value){
+                    try {
+                        const clsPicker = element._flatpickr;
+                        clsPicker.selectedDates.map(
+                            dateObj => {
+                                if (!(dateObj instanceof Date)){
+                                    return false;
+                                }
+                                if (!(flatpickr.parseDate(dateObj))){
+                                    return false;
+                                }
+                            }
+                        )
+                        return true;
+                    } catch (e) {}
+                    return false;
+                }
+                return true;
+            })
+        },
+        (params, element) => {
+            let msg = $.validator.messages?.["datePicker"] || "Please enter a valid date.";
+            return $.validator.format(
+                msg,
+                params
+            );
         }
     )
 }));

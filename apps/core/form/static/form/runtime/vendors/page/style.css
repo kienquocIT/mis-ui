@@ -1,0 +1,153 @@
+.progress-steps {
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-steps.steps-bar-has-title {
+    height: 72px;
+}
+
+.steps-bar {
+    height: 10px;
+    position: absolute;
+    top: 16px;
+    transform: translateY(-50%);
+    width: calc(100% - 10px);
+    left: 0;
+    margin-left: 5px;
+    margin-right: 5px;
+    overflow: hidden;
+}
+
+.steps-bar-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0;
+    background-color: #007d88;
+    transition: width 1s;
+}
+
+.steps-bar-init {
+    height: 100%;
+    width: 100%;
+    background-color: #ebf5f5;
+}
+
+.steps-group {
+    position: relative;
+    display: flex;
+    width: 100%;
+}
+
+.steps-group.steps-space-between {
+    justify-content: space-between;
+}
+.steps-group.steps-space-around {
+    justify-content: space-around;
+}
+.steps-group.steps-space-evenly {
+    justify-content: space-evenly;
+}
+
+.steps-group .step-item {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.step-item .step-mask {
+    color: #5e7d8a;
+}
+.step-item .icon-group {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 100%;
+    background-color: transparent;
+    color: #5e7d8a;
+}
+
+.icon-group .icon {
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+.icon-group .icon.icon-deactivate {
+    display: block;
+}
+
+.steps-group .step-item.active .icon-group,
+.steps-group .step-item:has(~ .step-item.active) .icon-group {
+    color: #007d88;
+}
+
+
+.steps-group .step-item:has(~ .step-item.active) .icon-group .icon-deactivate,
+.steps-group .step-item:has(~ .step-item.active) .icon-group .icon-current {
+    display: none;
+}
+
+.steps-group .step-item:has(~ .step-item.active) .icon-group .icon-active {
+    display: block;
+}
+.steps-group .step-item:has(~ .step-item.active) .step-mask {
+    color: #007d88;
+}
+
+.steps-group .step-item.active .icon-group .icon-deactivate,
+.steps-group .step-item.active .icon-group .icon-active {
+    display: none;
+}
+
+.steps-group .step-item.active .icon-group .icon-current {
+    display: block;
+}
+.steps-group .step-item.active .step-mask {
+    color: #3d9ca5;
+}
+
+
+/* Mask */
+.step-item .step-mask {
+    width: max-content;
+    position: absolute;
+    top: calc(32px + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.steps-group.steps-space-between .step-item:first-child .step-mask {
+    left: 0;
+    right: unset;
+    text-align: left;
+    transform: translateX(0);
+}
+
+.steps-group.steps-space-between .step-item:last-child .step-mask {
+    left: unset;
+    right: 0;
+    text-align: right;
+    transform: translateX(0);
+}
+
+.sortable-page-controller {
+    display: flex;
+}
+.sortable-page-controller button {
+    padding: 5px 10px;
+    border: 0;
+    border-radius: 5px;
+}
+
+.sortable-page-controller .btn-previous {
+
+}
+.sortable-page-controller .btn-next {
+    margin-left: auto;
+}

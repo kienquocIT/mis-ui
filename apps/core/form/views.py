@@ -13,6 +13,18 @@ from apps.shared.exceptions import handle_exception_all_view
 from apps.shared.http import HttpRequestControl
 
 
+class FormKnowledgeView(View):
+    @mask_view(
+        login_require=True,
+        template='form/extends/base/knowledge/index.html',
+        jsi18n='form',
+        breadcrumb='FORM_KNOWLEDGE',
+        menu_active='menu_form_data',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class FormListView(View):
     @mask_view(
         login_require=True,
@@ -108,7 +120,9 @@ class FormUpdateAPI(APIView):
     def put(self, request, *args, pk, **kwargs):
         if pk and TypeCheck.check_uuid(pk):
             url = ApiURL.FORM_DETAIL.fill_key(pk=pk)
+            print('calling:', url)
             resp = ServerAPI(request=request, user=request.user, url=url).put(request.data)
+            print('call return:', url)
             return resp.auto_return(key_success='form_update')
         return RespData.resp_404()
 

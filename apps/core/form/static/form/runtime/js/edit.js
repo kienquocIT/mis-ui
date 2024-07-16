@@ -55,6 +55,7 @@ $(document).ready(function () {
             },
         });
 
+        resetInputValue();
         let data$ = frm$.find('script#submitted_data_idx');
         if (data$.length === 1) {
             let data = JSON.parse(data$.text());
@@ -63,9 +64,17 @@ $(document).ready(function () {
                     $(`[name=${key}]`).val(data[key]).trigger('change');
                 }
             )
-            frm$.valid();
             data$.remove();
-            $('#contents').css('opacity', '100');
         }
+        $.fn.formInitSelect2All();
+
+        const timerCtx = {loadDefault: false, allowInvalidPreload: true};
+        $.fn.formInitDatePickerAll(timerCtx);
+        $.fn.formInitDatetimePickerAll(timerCtx);
+        $.fn.formInitTimePickerAll(timerCtx);
+        $.fn.formRangeSlider();
+
+        $.fn.formShowContentAndHideLoader()
+        frm$.valid();
     }
 })

@@ -128,14 +128,14 @@ $(document).ready(function () {
         // -- component
 
 
-        // save
-        btn$.on('click', function () {
+        function saving(){
             let data = formTitleCls.return_config_all();
             if (formTitleCls.check_rules_form_global(data)) {
                 $.fn.callAjax2({
                     url: $(btn$).attr('data-url'),
                     method: $(btn$).attr('data-method') || 'PUT',
                     data: data,
+                    isLoading: true,
                 }).then(
                     resp => {
                         let data = $.fn.switcherResp(resp);
@@ -163,6 +163,11 @@ $(document).ready(function () {
                     }),
                 )
             }
+        }
+
+        // save
+        btn$.on('click', function () {
+            saving();
         })
 
         // -- save
@@ -171,6 +176,7 @@ $(document).ready(function () {
     $.fn.callAjax2({
         url: btn$.attr('data-url-detail'),
         method: 'GET',
+        isLoading: true,
     }).then(
         resp => {
             let data = $.fn.switcherResp(resp);

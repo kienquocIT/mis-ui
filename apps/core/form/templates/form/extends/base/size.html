@@ -1,6 +1,11 @@
 {% load i18n define_action %}
 
 {% assign_out_random fieldSizeIdx as rFieldSizeIdx %}
+{% assign_out_bool_str hasXM False as rHasXM %}
+{% assign_out_bool_str hasSM True as rHasSM %}
+{% assign_out_bool_str hasMD True as rHasMD %}
+{% assign_out_bool_str hasLG True as rHasLG %}
+{% assign_out_bool_str hasXL False as rHasXL %}
 
 <div class="form-group mb-3">
     <label for="{{ rFieldSizeIdx }}" class="form-label">{% trans 'Field size' %}</label>
@@ -9,10 +14,20 @@
             class="input-radio-select"
             name="size"
     >
-        <option value="extra-small">{% trans 'Extra small' %}</option>
-        <option value="small">{% trans 'Small' %}</option>
-        <option value="medium">{% trans 'Medium' %}</option>
-        <option value="large">{% trans 'Large' %}</option>
-        <option value="extra-large">{% trans 'Extra large' %}</option>
+        {% if rHasXM == '1' %}
+            <option value="extra-small" data-set="xm">{% trans 'Extra small' %}</option>
+        {% endif %}
+        {% if rHasMD == '1' %}
+            <option value="small" data-set="sm">{% trans 'Small' %}</option>
+        {% endif %}
+        {% if rHasMD == '1' %}
+            <option value="medium" data-set="md">{% trans 'Medium' %}</option>
+        {% endif %}
+        {% if rHasLG == '1' %}
+            <option value="large" data-set="lg">{% trans 'Large' %}</option>
+        {% endif %}
+        {% if rHasXL == '1' %}
+            <option value="extra-large" data-set="xl">{% trans 'Extra large' %}</option>
+        {% endif %}
     </select>
 </div>

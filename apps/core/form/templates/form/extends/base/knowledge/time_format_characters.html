@@ -1,0 +1,46 @@
+{# Library: https://flatpickr.js.org/formatting/ #}
+
+{% load i18n %}
+
+<table class="table table-bordered">
+    <tr>
+        <th>{% trans 'Character' %}</th>
+        <th>{% trans 'Description' %}</th>
+        <th>{% trans 'Example' %}</th>
+    </tr>
+    <tr>
+        <td>H</td>
+        <td>{% trans "Hours (24 hours)" %}</td>
+        <td>{% trans "00 to 23" %}</td>
+    </tr>
+    <tr>
+        <td>h</td>
+        <td>{% trans "Hours" %}</td>
+        <td>{% trans "1 to 12" %}</td>
+    </tr>
+    <tr>
+        <td>G</td>
+        <td>{% trans "Hours, 2 digits with leading zeros" %}</td>
+        <td>{% trans "01 to 12" %}</td>
+    </tr>
+    <tr>
+        <td>i</td>
+        <td>{% trans "Minutes" %}</td>
+        <td>{% trans "00 to 59" %}</td>
+    </tr>
+    <tr>
+        <td>S</td>
+        <td>{% trans "Seconds, 2 digits" %}</td>
+        <td>{% trans "00 to 59" %}</td>
+    </tr>
+    <tr>
+        <td>s</td>
+        <td>{% trans "Seconds" %}</td>
+        <td>{% trans "0, 1 to 59" %}</td>
+    </tr>
+    <tr>
+        <td>K</td>
+        <td>{% trans "AM/PM" %}</td>
+        <td>{% trans "AM or PM" %}</td>
+    </tr>
+</table>

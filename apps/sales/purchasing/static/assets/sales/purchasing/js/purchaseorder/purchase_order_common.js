@@ -1367,21 +1367,18 @@ class PODataTableHandle {
                 },
                 {
                     targets: 4,
-                    className: 'text-center',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-blue table-row-uom-request" id="${row.uom.id}">${row.uom.title}</span>`
+                        return `<span class="table-row-uom-request" id="${row.uom.id}">${row.uom.title}</span>`
                     }
                 },
                 {
                     targets: 5,
-                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-request">${row.quantity}</span>`
                     }
                 },
                 {
                     targets: 6,
-                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span class="table-row-remain">${row?.['remain_for_purchase_order']}</span>`
                     }
@@ -1391,15 +1388,15 @@ class PODataTableHandle {
                     render: (data, type, row) => {
                         if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
                             if (row.hasOwnProperty('quantity_order')) {
-                                return `<input type="text" class="text-center form-control table-row-quantity-order" value="${row.quantity_order}">`;
+                                return `<input type="text" class="form-control table-row-quantity-order" value="${row.quantity_order}">`;
                             } else {
-                                return `<input type="text" class="text-center form-control table-row-quantity-order" value="0">`;
+                                return `<input type="text" class="form-control table-row-quantity-order" value="0">`;
                             }
                         } else {
                             if (row.hasOwnProperty('quantity_order')) {
-                                return `<input type="text" class="text-center form-control table-row-quantity-order" value="${row.quantity_order}" disabled>`;
+                                return `<input type="text" class="form-control table-row-quantity-order" value="${row.quantity_order}" disabled>`;
                             } else {
-                                return `<input type="text" class="text-center form-control table-row-quantity-order" value="0" disabled>`;
+                                return `<input type="text" class="form-control table-row-quantity-order" value="0" disabled>`;
                             }
                         }
                     }
@@ -1458,28 +1455,24 @@ class PODataTableHandle {
                 },
                 {
                     targets: 4,
-                    className: 'text-center',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-blue table-row-uom-request">${row.uom_order_request.title}</span>`
+                        return `<span class="table-row-uom-request">${row.uom_order_request.title}</span>`
                     }
                 },
                 {
                     targets: 5,
-                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-request">${row.product_quantity_request}</span>`
                     }
                 },
                 {
                     targets: 6,
-                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span class="table-row-remain">${row.remain}</span>`
                     }
                 },
                 {
                     targets: 7,
-                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-order">${row.product_quantity_order_actual}</span>`
                     }

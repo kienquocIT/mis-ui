@@ -7863,6 +7863,11 @@ msgstr "Vai trò phát sinh chi phí"
 #
 msgid "Create Baseline"
 msgstr "Tạo Đường cơ sở"
+
 #
 msgid "not PR"
 msgstr "không theo PR"
+
+#
+msgid "Project Baseline"
+msgstr "Đường cơ sở của Dự án"

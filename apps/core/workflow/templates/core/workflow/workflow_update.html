@@ -109,7 +109,7 @@
                     <div class="col-12">
                         <table id="table_workflow_zone" class="table nowrap w-100 mb-5">
                             <thead>
-                            <tr>
+                            <tr class="bg-light">
                                 <th>
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input">
@@ -162,22 +162,17 @@
                                 data-bs-toggle="modal"
                                 data-bs-target="#nodeModalCreate"
                         >
-                            <span><span>{% trans 'Add new node' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                            <span><span>{% trans 'New' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                         </button>
                         <div
                                 class="modal fade" id="nodeModalCreate" tabindex="-1" role="dialog"
                                 aria-labelledby="exampleModalCenter" aria-hidden="true"
                         >
-                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title">{% trans 'Add node' %}</h5>
-                                        <button
-                                                type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"
-                                        >
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
+                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="form-group">
@@ -186,7 +181,7 @@
                                             </label>
                                             <input
                                                     type="text" class="form-control"
-                                                    placeholder="Node A"
+                                                    placeholder="{% trans 'Node' %} A"
                                                     id="modal-node-name-create"
                                             >
                                             <span class="form-text text-muted">{% trans 'Name of Node' %}</span>
@@ -228,7 +223,7 @@
                                 data-method="get"
                         >
                             <thead>
-                            <tr>
+                            <tr class="bg-light">
                                 <th class="w-20 required">{% trans 'Node name' %}</th>
                                 <th class="w-30">{% trans 'Description' %}</th>
                                 <th class="w-15 required">{% trans 'Node Actions' %}</th>
@@ -340,7 +335,7 @@
         data-node-approved="{% trans 'Approved node' %}"
         data-node-completed="{% trans 'Completed node' %}"
         data-employee-list="{% trans 'Employee list' %}"
-        data-add-new="{% trans 'Add new' %}"
+        data-add-new="{% trans 'New' %}"
     >
 
 
@@ -451,7 +446,7 @@
                         <div class="col">
                             <table id="table_workflow_rename" class="table">
                                 <thead>
-                                <tr>
+                                <tr class="bg-light">
                                     <th>{% trans 'Action' %}</th>
                                     <th>{% trans 'Default name' %}</th>
                                     <th>{% trans 'Rename' %}</th>

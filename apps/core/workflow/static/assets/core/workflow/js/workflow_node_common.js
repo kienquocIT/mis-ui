@@ -1102,9 +1102,7 @@ class NodeDataTableHandle {
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
+                                                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                                                         </div>
                                                         <div class="modal-body modal-body-collab">
                                                             <div class="row collab-common-area">
@@ -1188,7 +1186,7 @@ class NodeDataTableHandle {
                                                                                     data-method="${NodeDataTableHandle.employeeInitEle.attr('data-method')}"
                                                                             >
                                                                                 <thead>
-                                                                                <tr>
+                                                                                <tr class="bg-light">
                                                                                     <th>${NodeLoadDataHandle.transEle.attr('data-code')}</th>
                                                                                     <th>${NodeLoadDataHandle.transEle.attr('data-full-name')}</th>
                                                                                     <th>${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
@@ -1362,7 +1360,7 @@ class NodeDataTableHandle {
                                                                     class="table nowrap w-100 mb-5 table-in-workflow-employee"
                                                                 >
                                                                     <thead>
-                                                                    <tr>
+                                                                    <tr class="bg-light">
                                                                         <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
                                                                         <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-select-position')}</th>
                                                                         <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
@@ -1409,9 +1407,7 @@ class NodeDataTableHandle {
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
+                                                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                                                         </div>
                                                         <div class="modal-body modal-body-collab">
                                                             <div class="row collab-area collab-initial-area">
@@ -1419,7 +1415,7 @@ class NodeDataTableHandle {
                                                                     class="table nowrap w-100 mb-5 table-initial-node-collaborator"
                                                                 >
                                                                     <thead>
-                                                                    <tr>
+                                                                    <tr class="bg-light">
                                                                         <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
                                                                         <th class="w-40">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
                                                                         <th class="w-40">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
@@ -1462,9 +1458,7 @@ class NodeDataTableHandle {
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
+                                                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                                                         </div>
                                                         <div class="modal-body modal-body-collab">
                                                             <div class="row collab-area collab-initial-area">
@@ -1472,7 +1466,7 @@ class NodeDataTableHandle {
                                                                     class="table nowrap w-100 mb-5 table-initial-node-collaborator"
                                                                 >
                                                                     <thead>
-                                                                    <tr>
+                                                                    <tr class="bg-light">
                                                                         <th>${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
                                                                         <th>${NodeLoadDataHandle.transEle.attr('data-select-group')}</th>
                                                                         <th>${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>

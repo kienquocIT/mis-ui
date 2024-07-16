@@ -1243,12 +1243,12 @@ class NodeDataTableHandle {
                                                                     <div class="col-2">
                                                                         <button
                                                                                 type="button"
-                                                                                class="btn btn-outline-primary"
+                                                                                class="btn btn-outline-primary btn-sm"
                                                                                 data-bs-toggle="offcanvas"
                                                                                 data-bs-target="#${idInWFCanvas}"
                                                                                 aria-controls="${idInWFCanvas}"
                                                                         >
-                                                                            <span><span>${NodeLoadDataHandle.transEle.attr('data-add-employee')}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                                                            <span><span>${NodeLoadDataHandle.transEle.attr('data-add-new')}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                                                         </button>
                                                                     </div>
                                                                     <div class="col-10"></div>

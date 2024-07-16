@@ -2919,7 +2919,7 @@ class WFRTControl {
             $(ele$).removeClass('bg-light');
         }
         if (config?.['add_readonly'] === true) {
-            if (!$(ele$).hasClass('zone-active')) {
+            if (!$(ele$).hasClass('zone-active') || $(ele$).hasClass('zone-readonly')) {
                 if ($(ele$).is('div')) {
                     $(ele$).addClass('bg-light');
                 } else {

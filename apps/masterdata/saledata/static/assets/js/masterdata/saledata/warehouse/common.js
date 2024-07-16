@@ -112,8 +112,8 @@ class WarehouseLoadPage {
                              data-shelf-col="${shelf?.['shelf_column']}"
                              style="${shelf?.['shelf_position']}"
                         >
-<!--                            <span hidden class="delete-shelf text-danger"><i class="bi bi-x-circle"></i></span>-->
-                            <span hidden class="detail-shelf text-primary" 
+                            <span hidden class="delete-shelf text-danger"><i class="bi bi-x-circle"></i></span>
+                            <span hidden class="detail-shelf text-primary"
                                   data-shelf-row="${shelf?.['shelf_row']}"
                                   data-shelf-col="${shelf?.['shelf_column']}"
                                   data-bs-toggle="modal"
@@ -140,8 +140,15 @@ class WarehouseLoadPage {
         let shelf_data_update = []
         $('.shelf').each(function () {
             if ($(this).attr('data-shelf-id')) {
-                shelf_data_update.push({
-                    'shelf_id': $(this).attr('data-shelf-id'),
+                // shelf_data_update.push({
+                //     'shelf_id': $(this).attr('data-shelf-id'),
+                //     'shelf_title': $(this).find('.shelf-title').text(),
+                //     'shelf_position': $(this).attr('style'),
+                //     'shelf_order': $(this).attr('data-shelf-order'),
+                //     'shelf_row': $(this).attr('data-shelf-row'),
+                //     'shelf_column': $(this).attr('data-shelf-col')
+                // })
+                shelf_data_new.push({
                     'shelf_title': $(this).find('.shelf-title').text(),
                     'shelf_position': $(this).attr('style'),
                     'shelf_order': $(this).attr('data-shelf-order'),

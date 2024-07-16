@@ -31,12 +31,10 @@
                         <label for="selectEmployeeInherit" class="form-label">{% trans 'Employee list' %}</label>
                         <div class="hstack flex-wrap align-items-center gap-3" id="select_expense_role_employee"
                             data-url="{% url "EmployeeListAPI" %}" data-params="{'list_from_app':'{{ data.list_from_app|escape }}'}">
-                            <div class="chip chip-outline-primary user-chip opacity-10">
-                                <span>
-                                    <span class="avatar">
-                                        <img src="{% static 'assets/images/systems/person-avt.png' %}" alt="user" class="avatar-img">
-                                    </span>
-                                    <span class="chip-text">Nguyen Van A</span>
+                            <div class="chip chip-outline-primary user-chip opacity-50">
+                                <span><span class="avatar">
+                                    <img src="{% static 'assets/images/systems/person-avt.png' %}" alt="user" class="avatar-img">
+                                    </span><span class="chip-text">Nguyen Van A</span>
                                 </span>
                             </div>
                         </div>

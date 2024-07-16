@@ -7952,3 +7952,7 @@ msgstr "Nhóm đơn vị"
 msgid "Edit zone"
 msgstr "Chỉnh sửa vùng dữ liệu"msgid "Expand / Collapse"
 msgstr "Thu gọn / Mở rộng"
+
+#
+msgid "Project Baseline"
+msgstr "Đường cơ sở của Dự án"

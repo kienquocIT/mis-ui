@@ -39,10 +39,11 @@
             </div>
             <button type="button"
                     class="btn btn-light w-30"
-                    id="prd-wh-call-btn"
-                    data-url-prd-wh="{% url 'GoodsRegistrationGeneralListAPI' %}"
-                    data-url-prd-wh-lot="{% url 'GoodsRegistrationLotListAPI' %}"
-                    data-url-prd-wh-sn="{% url 'GoodsRegistrationSerialListAPI' %}"
+                    id="call-btn"
+                    data-url-gre-general="{% url 'GoodsRegistrationGeneralListAPI' %}"
+                    data-url-gre-general-lot="{% url 'GoodsRegistrationLotListAPI' %}"
+                    data-url-gre-general-sn="{% url 'GoodsRegistrationSerialListAPI' %}"
+                    data-url-gre-borrow="{% url 'GoodsRegistrationItemBorrowListAPI' %}"
             >Call
             </button>
         </div>

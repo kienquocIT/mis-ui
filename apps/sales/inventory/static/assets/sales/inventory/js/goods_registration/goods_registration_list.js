@@ -64,13 +64,13 @@ $(document).ready(function () {
     loadGoodsRegistrationList();
 
     function CallProductWarehouse(sale_order_id, product_id, warehouse_id) {
-        let dataParam = {}
-        dataParam['gre_item__product_id'] = product_id
-        dataParam['gre_item__so_item__sale_order_id'] = sale_order_id
-        dataParam['warehouse_id'] = warehouse_id
-        let ajax = $.fn.callAjax2({
-            url: $('#prd-wh-call-btn').attr('data-url-prd-wh'),
-            data: dataParam,
+        let dataParam11 = {}
+        dataParam11['gre_item__product_id'] = product_id
+        dataParam11['gre_item__so_item__sale_order_id'] = sale_order_id
+        dataParam11['warehouse_id'] = warehouse_id
+        let ajax1 = $.fn.callAjax2({
+            url: $('#call-btn').attr('data-url-gre-general'),
+            data: dataParam11,
             method: 'GET'
         }).then(
             (resp) => {
@@ -85,20 +85,40 @@ $(document).ready(function () {
             }
         )
 
-        Promise.all([ajax]).then(
+        let dataParam2 = {}
+        dataParam2['gre_item_source__product_id'] = product_id
+        dataParam2['goods_registration_source__sale_order_id'] = sale_order_id
+        let ajax2 = $.fn.callAjax2({
+            url: $('#call-btn').attr('data-url-gre-borrow'),
+            data: dataParam2,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('goods_registration_borrow_list')) {
+                    return data?.['goods_registration_borrow_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([ajax1, ajax2]).then(
             (results) => {
-                console.log(results[0])
+                console.log(results[0], results[1])
             })
     }
 
     function CallProductWarehouseLot(sale_order_id, product_id, warehouse_id) {
-        let dataParam = {}
-        dataParam['gre_general__gre_item__product_id'] = product_id
-        dataParam['gre_general__gre_item__so_item__sale_order_id'] = sale_order_id
-        dataParam['gre_general__warehouse_id'] = warehouse_id
-        let ajax = $.fn.callAjax2({
-            url: $('#prd-wh-call-btn').attr('data-url-prd-wh-lot'),
-            data: dataParam,
+        let dataParam1 = {}
+        dataParam1['gre_general__gre_item__product_id'] = product_id
+        dataParam1['gre_general__gre_item__so_item__sale_order_id'] = sale_order_id
+        dataParam1['gre_general__warehouse_id'] = warehouse_id
+        let ajax1 = $.fn.callAjax2({
+            url: $('#call-btn').attr('data-url-gre-general-lot'),
+            data: dataParam1,
             method: 'GET'
         }).then(
             (resp) => {
@@ -113,20 +133,40 @@ $(document).ready(function () {
             }
         )
 
-        Promise.all([ajax]).then(
+        let dataParam2 = {}
+        dataParam2['gre_item_source__product_id'] = product_id
+        dataParam2['goods_registration_source__sale_order_id'] = sale_order_id
+        let ajax2 = $.fn.callAjax2({
+            url: $('#call-btn').attr('data-url-gre-borrow'),
+            data: dataParam2,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('goods_registration_borrow_list')) {
+                    return data?.['goods_registration_borrow_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([ajax1, ajax2]).then(
             (results) => {
-                console.log(results[0])
+                console.log(results[0], results[1])
             })
     }
 
     function CallProductWarehouseSerial(sale_order_id, product_id, warehouse_id) {
-        let dataParam = {}
-        dataParam['gre_general__gre_item__product_id'] = product_id
-        dataParam['gre_general__gre_item__so_item__sale_order_id'] = sale_order_id
-        dataParam['gre_general__warehouse_id'] = warehouse_id
-        let ajax = $.fn.callAjax2({
-            url: $('#prd-wh-call-btn').attr('data-url-prd-wh-sn'),
-            data: dataParam,
+        let dataParam1 = {}
+        dataParam1['gre_general__gre_item__product_id'] = product_id
+        dataParam1['gre_general__gre_item__so_item__sale_order_id'] = sale_order_id
+        dataParam1['gre_general__warehouse_id'] = warehouse_id
+        let ajax1 = $.fn.callAjax2({
+            url: $('#call-btn').attr('data-url-gre-general-sn'),
+            data: dataParam1,
             method: 'GET'
         }).then(
             (resp) => {
@@ -141,9 +181,29 @@ $(document).ready(function () {
             }
         )
 
-        Promise.all([ajax]).then(
+        let dataParam2 = {}
+        dataParam2['gre_item_source__product_id'] = product_id
+        dataParam2['goods_registration_source__sale_order_id'] = sale_order_id
+        let ajax2 = $.fn.callAjax2({
+            url: $('#call-btn').attr('data-url-gre-borrow'),
+            data: dataParam2,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('goods_registration_borrow_list')) {
+                    return data?.['goods_registration_borrow_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([ajax1, ajax2]).then(
             (results) => {
-                console.log(results[0])
+                console.log(results[0], results[1])
             })
     }
 
@@ -192,7 +252,7 @@ $(document).ready(function () {
     }
     loadBoxWarehouse()
 
-    $(document).on("click", '#prd-wh-call-btn', function () {
+    $(document).on("click", '#call-btn', function () {
         let sale_order_obj = SelectDDControl.get_data_from_idx($('#sale_order_id_box'), $('#sale_order_id_box').val())
         let product_obj = SelectDDControl.get_data_from_idx($('#product_id_box'), $('#product_id_box').val())
         let warehouse_obj = SelectDDControl.get_data_from_idx($('#warehouse_id_box'), $('#warehouse_id_box').val())

@@ -80,7 +80,7 @@ class NodeLoadDataHandle {
                     } else {
                         inputEle = `<input type="checkbox" class="form-check-input check-action-node" data-id="${String(key)}" disabled>`;
                     }
-                    actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
+                    actionEle += `<li class="d-flex align-items-center justify-content-between mb-3 border-bottom">
                             <div class="media d-flex align-items-center">
                                 <div class="media-body">
                                     <div>
@@ -100,7 +100,7 @@ class NodeLoadDataHandle {
                     } else {
                         inputEle = `<input type="checkbox" class="form-check-input check-action-node" data-id="${String(key)}">`;
                     }
-                    actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
+                    actionEle += `<li class="d-flex align-items-center justify-content-between mb-3 border-bottom">
                             <div class="media d-flex align-items-center">
                                 <div class="media-body">
                                     <div>
@@ -346,7 +346,9 @@ class NodeLoadDataHandle {
                     });
                     for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
                         if ($(eleZoneList).empty()) {
-                            $(eleZoneList).append(result);
+                            $(eleZoneList).append(`<div data-simplebar class="h-150p nicescroll-bar">
+                                                        <ul class="p-0">${result}</ul>
+                                                    </div>`);
                         }
                     }
                     return true;
@@ -378,7 +380,9 @@ class NodeLoadDataHandle {
             });
             for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
                 if ($(eleZoneList).empty()) {
-                    $(eleZoneList).append(result);
+                    $(eleZoneList).append(`<div data-simplebar class="h-150p nicescroll-bar">
+                                                <ul class="p-0">${result}</ul>
+                                            </div>`);
                 }
             }
             return true;
@@ -424,7 +428,9 @@ class NodeLoadDataHandle {
                     });
                     for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
                         if ($(eleZoneList).empty()) {
-                            $(eleZoneList).append(result);
+                            $(eleZoneList).append(`<div data-simplebar class="h-100p nicescroll-bar">
+                                                        <ul class="p-0">${result}</ul>
+                                                    </div>`);
                         }
                     }
                     return true;
@@ -448,7 +454,9 @@ class NodeLoadDataHandle {
             });
             for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
                 if ($(eleZoneList).empty()) {
-                    $(eleZoneList).append(result);
+                    $(eleZoneList).append(`<div data-simplebar class="h-100p nicescroll-bar">
+                                                <ul class="p-0">${result}</ul>
+                                            </div>`);
                 }
             }
             return true;
@@ -538,7 +546,7 @@ class NodeLoadDataHandle {
             let row = this.node();
             let eleCheck = row.querySelector('.table-row-checkbox-out-form');
             if (eleCheck.checked === true) {
-                $(eleEmpShow).append(`<span class="badge badge-soft-primary mr-1">${$(eleCheck).attr('data-title')}</span>`);
+                $(eleEmpShow).append(`<span class="badge badge-primary badge-outline mr-1 mb-1">${$(eleCheck).attr('data-title')}</span>`);
                 emp_list.push($(eleCheck).attr('data-id'));
             }
         });
@@ -1039,12 +1047,8 @@ class NodeDataTableHandle {
                                                 <i class="fas fa-align-justify" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add action"></i>
                                                 </button>
                                                 <div class="dropdown-menu w-250p">
-                                                    <div class="h-250p">
-                                                        <div data-simplebar class="nicescroll-bar">
-                                                            <ul class="node-action-list p-0">
-                                                                ${actionEle}
-                                                            </ul>
-                                                        </div>
+                                                    <div data-simplebar class="h-260p nicescroll-bar">
+                                                        <ul class="node-action-list p-0">${actionEle}</ul>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1098,7 +1102,7 @@ class NodeDataTableHandle {
                                                 class="modal fade" id="${idModal}" tabindex="-1" role="dialog"
                                                 aria-labelledby="${idModal}" aria-hidden="true"
                                             >
-                                                <div class="modal-dialog modal-dialog-centered modal-xl modal-collab" role="document">
+                                                <div class="modal-dialog modal-dialog-centered modal-lg modal-collab" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
@@ -1132,16 +1136,12 @@ class NodeDataTableHandle {
                                                                     </select>
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div class="col-12 col-md-6 col-lg-6">
+                                                                    <div class="col-12 col-md-6 col-lg-6 border-right">
                                                                         <div class="form-group">
                                                                             <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
                                                                             <input type="hidden" class="node-zone-submit">
                                                                             <input type="hidden" class="node-zone-json-submit">
-                                                                            <div class="dropdown-zone">
-                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                                    <ul class="node-zone-list p-0"></ul>
-                                                                                </div>
-                                                                            </div>
+                                                                            <div class="dropdown-zone node-zone-list"></div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-12 col-md-6 col-lg-6">
@@ -1149,18 +1149,14 @@ class NodeDataTableHandle {
                                                                             <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</label>
                                                                             <input type="hidden" class="node-zone-hidden-submit">
                                                                             <input type="hidden" class="node-zone-hidden-json-submit">
-                                                                            <div class="dropdown-zone">
-                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                                    <ul class="node-zone-hidden-list p-0"></ul>
-                                                                                </div>
-                                                                            </div>
+                                                                            <div class="dropdown-zone node-zone-hidden-list"></div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div class="row collab-area collab-out-form-area mb-5">
                                                                 <div class="form-group">
-                                                                    <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-employee-list')}</label>
+                                                                    <label class="form-label required">${NodeLoadDataHandle.transEle.attr('data-employee-list')}</label>
                                                                     <div 
                                                                         class="input-group input-group-out-form-employee mb-3" 
                                                                         data-bs-toggle="offcanvas" 
@@ -1171,7 +1167,7 @@ class NodeDataTableHandle {
                                                                             <div class="form-control div-input node-out-form-employee-show"></div>
                                                                             <input type="hidden" class="node-out-form-employee-submit">
                                                                             <span class="input-suffix">
-                                                                                <div class="btn-group btn-link"><i class="fa fa-user"></i></div>
+                                                                                <div class="btn-group btn-link btn-sm"><i class="fa fa-user"></i></div>
                                                                             </span>
                                                                         </span>
                                                                     </div>
@@ -1210,16 +1206,12 @@ class NodeDataTableHandle {
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div class="col-12 col-md-6 col-lg-6">
+                                                                    <div class="col-12 col-md-6 col-lg-6 border-right">
                                                                         <div class="form-group">
                                                                             <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
                                                                             <input type="hidden" class="node-zone-submit">
                                                                             <input type="hidden" class="node-zone-json-submit">
-                                                                            <div class="dropdown-zone">
-                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                                    <ul class="node-zone-list p-0"></ul>
-                                                                                </div>
-                                                                            </div>
+                                                                            <div class="dropdown-zone node-zone-list"></div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-12 col-md-6 col-lg-6">
@@ -1227,11 +1219,7 @@ class NodeDataTableHandle {
                                                                             <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</label>
                                                                             <input type="hidden" class="node-zone-hidden-submit">
                                                                             <input type="hidden" class="node-zone-hidden-json-submit">
-                                                                            <div class="dropdown-zone">
-                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                                    <ul class="node-zone-hidden-list p-0"></ul>
-                                                                                </div>
-                                                                            </div>
+                                                                            <div class="dropdown-zone node-zone-hidden-list"></div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -1297,7 +1285,7 @@ class NodeDataTableHandle {
                                                                             </select>
                                                                         </div>
                                                                         <div class="form-group employee-area" hidden>
-                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-select-employee')}</label>
+                                                                            <label class="form-label required">${NodeLoadDataHandle.transEle.attr('data-select-employee')}</label>
                                                                             <select 
                                                                                 class="form-control box-in-workflow-employee"
                                                                                 data-url="${NodeDataTableHandle.employeeCompanyInitEle.attr('data-url')}"
@@ -1308,16 +1296,12 @@ class NodeDataTableHandle {
                                                                             </select>
                                                                         </div>
                                                                         <div class="row">
-                                                                            <div class="col-12 col-md-6 col-lg-6">
+                                                                            <div class="col-12 col-md-6 col-lg-6 border-right">
                                                                                 <div class="form-group">
                                                                                     <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
                                                                                     <input type="hidden" class="node-zone-submit">
                                                                                     <input type="hidden" class="node-zone-json-submit">
-                                                                                    <div class="dropdown-zone">
-                                                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                                            <ul class="node-zone-list p-0"></ul>
-                                                                                        </div>
-                                                                                    </div>
+                                                                                    <div class="dropdown-zone node-zone-list"></div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-12 col-md-6 col-lg-6">
@@ -1325,11 +1309,7 @@ class NodeDataTableHandle {
                                                                                     <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</label>
                                                                                     <input type="hidden" class="node-zone-hidden-submit">
                                                                                     <input type="hidden" class="node-zone-hidden-json-submit">
-                                                                                    <div class="dropdown-zone">
-                                                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                                            <ul class="node-zone-hidden-list p-0"></ul>
-                                                                                        </div>
-                                                                                    </div>
+                                                                                    <div class="dropdown-zone node-zone-hidden-list"></div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -1362,11 +1342,11 @@ class NodeDataTableHandle {
                                                                     <thead>
                                                                     <tr class="bg-light">
                                                                         <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
-                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-select-position')}</th>
+                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-select-position')}</th>
                                                                         <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
-                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
-                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
-                                                                        <th class="w-10"></th>
+                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
+                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
+                                                                        <th class="w-5"></th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -1527,21 +1507,13 @@ class NodeDataTableHandle {
                 {
                     targets: 1,
                     render: () => {
-                        return `<div class="dropdown-zone">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                        <ul class="node-zone-list p-0"></ul>
-                                    </div>
-                                </div>`;
+                        return `<div class="dropdown-zone node-zone-list"></div>`;
                     }
                 },
                 {
                     targets: 2,
                     render: () => {
-                        return `<div class="dropdown-zone">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                        <ul class="node-zone-hidden-list p-0"></ul>
-                                    </div>
-                                </div>`;
+                        return `<div class="dropdown-zone node-zone-hidden-list"></div>`;
                     }
                 },
             ],
@@ -1618,7 +1590,7 @@ class NodeDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-title" data-row="${dataRow}">${row?.['employee']?.['full_name'] ? row?.['employee']?.['full_name'] : ''}</span>`;
+                        return `<span class="table-row-title badge badge-primary badge-outline" data-row="${dataRow}">${row?.['employee']?.['full_name'] ? row?.['employee']?.['full_name'] : ''}</span>`;
                     }
                 },
                 {

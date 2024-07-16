@@ -1500,7 +1500,6 @@ class QuotationLoadDataHandle {
             $tableProduct.DataTable().rows().every(function () {
                 let row = this.node();
                 let valueQuantity = 0;
-                let valuePrice = 0;
                 let valueTaxAmount = 0;
                 let valueSubtotal = 0;
                 let dataProduct = {};
@@ -3185,7 +3184,8 @@ class QuotationDataTableHandle {
     };
 
     static dataTableQuotationIndicator(data) {
-        $('#datable-quotation-create-indicator').DataTableDefault({
+        let $tables = $('#datable-quotation-create-indicator');
+        $tables.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -3220,10 +3220,15 @@ class QuotationDataTableHandle {
                 }
             ],
         });
+        if ($tables.hasClass('dataTable')) {
+            $tables.DataTable().clear().draw();
+            $tables.DataTable().rows.add(data ? data : []).draw();
+        }
     };
 
     static dataTableSaleOrderIndicator(data) {
-        $('#datable-quotation-create-indicator').DataTableDefault({
+        let $tables = $('#datable-quotation-create-indicator');
+        $tables.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -3272,6 +3277,10 @@ class QuotationDataTableHandle {
                 }
             ],
         });
+        if ($tables.hasClass('dataTable')) {
+            $tables.DataTable().clear().draw();
+            $tables.DataTable().rows.add(data ? data : []).draw();
+        }
     };
 
     static dataTablePaymentStage(data) {
@@ -3871,11 +3880,11 @@ class QuotationCheckConfigHandle {
 
 // Indicator
 class indicatorHandle {
-    static loadQuotationIndicator(is_load_init = false) {
-        let ele = $('#quotation-indicator-data');
-        if (!ele.val()) {
-            let url = ele.attr('data-url');
-            let method = ele.attr('data-method');
+    static loadQuotationIndicator() {
+        let $ele = $('#quotation-indicator-data');
+        if (!$ele.val()) {
+            let url = $ele.attr('data-url');
+            let method = $ele.attr('data-method');
             $.fn.callAjax2({
                     'url': url,
                     'method': method,
@@ -3886,19 +3895,15 @@ class indicatorHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
-                            ele.val(JSON.stringify(data.quotation_indicator_list));
-                            if (is_load_init === false) {
-                                indicatorHandle.calculateIndicator(data.quotation_indicator_list);
-                            }
+                            $ele.val(JSON.stringify(data.quotation_indicator_list));
+                            indicatorHandle.calculateIndicator(data.quotation_indicator_list);
                         }
                     }
                 }
             )
         } else {
-            if (is_load_init === false) {
-                let data_list = JSON.parse(ele.val());
-                indicatorHandle.calculateIndicator(data_list);
-            }
+            let data_list = JSON.parse($ele.val());
+            indicatorHandle.calculateIndicator(data_list);
         }
     };
 
@@ -3942,7 +3947,7 @@ class indicatorHandle {
                 // set data detail to zones hidden
                 if (data_form && dataDetail) {
                     for (let key of keyHidden) {
-                        if (!data_form.hasOwnProperty(key) && dataDetail.hasOwnProperty(key)) {
+                        if (dataDetail.hasOwnProperty(key)) {
                             data_form[key] = dataDetail[key];
                         }
                     }
@@ -3953,7 +3958,6 @@ class indicatorHandle {
         indicatorHandle.checkSpecialCaseIndicator(data_form);
         for (let indicator of indicator_list) {
             let rateValue = 0;
-
             let parse_formula = "";
             let formula_data = indicator.formula_data;
             for (let item of formula_data) {
@@ -4045,10 +4049,15 @@ class indicatorHandle {
                 'indicator_rate': rateValue
             }
         }
-        //
-        let $table = $('#datable-quotation-create-indicator');
-        $table.DataTable().clear().draw();
-        $table.DataTable().rows.add(result_list).draw();
+        // let $table = $('#datable-quotation-create-indicator');
+        // $table.DataTable().clear().draw();
+        // $table.DataTable().rows.add(result_list).draw();
+
+        if (!formSubmit.hasClass('sale-order')) {
+            QuotationDataTableHandle.dataTableQuotationIndicator(result_list);
+        } else {
+            QuotationDataTableHandle.dataTableSaleOrderIndicator(result_list);
+        }
     };
 
     static evaluateFormula(formulaText) {

@@ -18,8 +18,6 @@ $(function () {
         QuotationLoadDataHandle.loadInitDate();
 
         QuotationLoadDataHandle.loadInitQuotationProduct();
-        // init first time indicator
-        indicatorHandle.loadQuotationIndicator(true);
         // init dataTable
         QuotationDataTableHandle.dataTableProduct();
         QuotationDataTableHandle.dataTableCost();

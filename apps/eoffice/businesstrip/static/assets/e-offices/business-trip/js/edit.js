@@ -14,7 +14,7 @@ $(document).ready(function(){
             $('#dateCreatedInput').val($x.fn.reformatData(data.date_created, 'YYYY-MM-DD', 'DD/MM/YYYY'))
             $('#remarkInput').val(data.remark)
             $('#SystemStatusInput').val(JSON.parse($('#sys_stt').text())[data.system_status][1])
-            $('#selectDeparture').attr('data-onload', JSON.stringify({...data.departure, 'selected': true})).initSelect2()
+            $('#selectDeparture').attr('data-onload', JSON.stringify({...data['departure'], 'selected': true})).initSelect2()
             $('#selectDestination').append(
                 `<option value="${data.destination.id}" selected>${data.destination.title}</option>`
             ).trigger('change')

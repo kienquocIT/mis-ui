@@ -38,12 +38,12 @@ $(function () {
                             if (row?.['code']) {
                                 const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);
                                 if (row?.['is_change'] === true && row?.['document_root_id'] && row?.['system_status'] === 3) {
-                                    let target = `.change-${row?.['document_root_id'].replace(/-/g, "")}`;
+                                    let target = `.cl-${row?.['document_root_id'].replace(/-/g, "")}`;
                                     return `<div class="d-flex">
                                             <div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']} <span class="badge-child badge-child-blue">CR</span></span></a></div>
                                             <small><button 
                                                 type="button" 
-                                                class="btn btn-icon btn-xs group-change" 
+                                                class="btn btn-icon btn-xs cl-parent" 
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="${target}"
                                                 data-bs-placement="top"
@@ -196,21 +196,21 @@ $(function () {
                     // mask money
                     $.fn.initMaskMoney2();
                     // setup groupChild to groupParent
-                    for (let eleGroup of $table[0].querySelectorAll('.group-change')) {
-                        if ($(eleGroup).is('button') && $(eleGroup).attr('data-bs-toggle') === 'collapse') {
+                    for (let parent of $table[0].querySelectorAll('.cl-parent')) {
+                        if ($(parent).is('button') && $(parent).attr('data-bs-toggle') === 'collapse') {
                             let tableDtb = $table.DataTable();
-                            let rowChange = $(eleGroup)[0].closest('tr');
-                            let targetCls = $(eleGroup).attr('data-bs-target');
+                            let rowParent = $(parent)[0].closest('tr');
+                            let targetCls = $(parent).attr('data-bs-target');
                             if (targetCls) {
                                 if ($table[0].querySelectorAll(`${targetCls}`).length <= 0) {
                                     for (let data of changeList) {
-                                        let classCl = '.change-' + data?.['document_root_id'].replace(/-/g, "");
+                                        let classCl = '.cl-' + data?.['document_root_id'].replace(/-/g, "");
                                         if (classCl === targetCls) {
                                             let newRow = tableDtb.row.add(data).node();
                                             $(newRow).addClass(classCl.slice(1));
                                             $(newRow).addClass('collapse');
                                             $(newRow).css('background-color', '#eaeaea');
-                                            $(newRow).detach().insertAfter(rowChange);
+                                            $(newRow).detach().insertAfter(rowParent);
                                         }
                                     }
                                 }
@@ -219,7 +219,7 @@ $(function () {
                             $.fn.initMaskMoney2();
                         }
                     }
-                    $table.on('click', '.group-change', function () {
+                    $table.on('click', '.cl-parent', function () {
                         $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
                     });
                 },

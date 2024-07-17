@@ -20,7 +20,7 @@ from apps.sales.inventory.views import (
     GoodsRegistrationSerialListAPI, ProjectProductListAPI, NoneProjectProductListAPI,
     GoodsRegistrationItemBorrowListAPI,
     GoodsRegistrationItemBorrowDetailAPI,
-    GoodsRegistrationItemSubListAPI, GoodsRegistrationItemAvailableQuantityAPI
+    GoodsRegistrationItemSubListAPI, GoodsRegistrationItemAvailableQuantityAPI, GoodsRegisBorrowListAPI
 )
 
 urlpatterns = [
@@ -110,4 +110,5 @@ urlpatterns += [
          name='GoodsRegistrationItemBorrowDetailAPI'),
     path('goods-registration-item-available-quantity/list/api', GoodsRegistrationItemAvailableQuantityAPI.as_view(),
          name='GoodsRegistrationItemAvailableQuantityAPI'),
+    path('goods-regis-borrow/api/list', GoodsRegisBorrowListAPI.as_view(), name='GoodsRegisBorrowListAPI'),
 ]

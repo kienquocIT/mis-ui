@@ -193,3 +193,14 @@ class GoodsRegistrationItemAvailableQuantityAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_ITEM_AVAILABLE_QUANTITY).get(params)
         return resp.auto_return(key_success='goods_registration_item_available_quantity')
+
+
+class GoodsRegisBorrowListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_BORROW_LIST).get(data)
+        return resp.auto_return(key_success='regis_borrow_list')

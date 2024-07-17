@@ -59,26 +59,21 @@
           novalidate data-url-redirect="{% url 'OrderDeliveryList' %}">
         <div class="row mb-3">
             {% csrf_token %}
-            <div class="col-xs-12 col-sm-6">
-                <div class="form-group">
-                    <label for="inputSaleOrder" class="form-label">{% trans 'Sale Order' %}</label>
-                    <input type="text" name="sale_order" id="inputSaleOrder" class="form-control" readonly/>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <div class="form-group">
-                    <label for="inputDeliveryDate"
-                           class="form-label">{% trans 'Estimated Delivery Date' %}</label>
-                    <div class="input-affix-wrapper">
-                        <input type="text" name="estimated_delivery_date" id="inputDeliveryDate"
-                               class="form-control date-picker" autocomplete="off" disabled>
-                        <span class="input-suffix">
-                            <i class="fas fa-calendar-alt"></i>
-                        </span>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="inputSaleOrder" class="form-label">{% trans 'Sale Order' %}</label>
+                            <p class="mt-2 border-bottom" id="inputSaleOrder">{% trans 'None' %}</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label">{% trans 'Status' %}</label>
+                            <p id="state"></p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 mb-3">
                 <div class="form-group">
                     <label for="customer_id" class="form-label">{% trans 'to Customer' %}</label>
                     <div class="input-group">
@@ -93,56 +88,66 @@
                         <input type="text" name="customer_id" id="customer_id" class="form-control" readonly/>
                     </div>
                 </div>
-            </div>
-
-            <div class="col-xs-12 col-sm-6">
-                <div class="form-group">
-                    <label for="inputActualDate" class="form-label">{% trans 'Actual Date' %}</label>
-                    <div class="input-affix-wrapper">
-                        <input type="text" name="actual_delivery_date" id="inputActualDate"
-                               class="form-control date-picker" autocomplete="off" disabled>
-                        <span class="input-suffix">
-                            <i class="fas fa-calendar-alt"></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 mb-3">
-                <div class="form-group">
-                    <label for="contact_id" class="form-label">{% trans 'Contact name' %}</label>
-                    <div class="input-group">
-                        <div class="dropdown input-group-text pointer">
-                            <i class="fas fa-info-circle text-blue"
-                               data-bs-toggle="dropdown"
-                               data-dropdown-animation
-                               aria-haspopup="true"
-                               aria-expanded="false"></i>
-                            <div class="dropdown-menu w-210p mt-2"></div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="contact_id" class="form-label">{% trans 'Contact name' %}</label>
+                            <div class="input-group">
+                                <div class="dropdown input-group-text pointer">
+                                    <i class="fas fa-info-circle text-blue"
+                                       data-bs-toggle="dropdown"
+                                       data-dropdown-animation
+                                       aria-haspopup="true"
+                                       aria-expanded="false"></i>
+                                    <div class="dropdown-menu w-210p mt-2"></div>
+                                </div>
+                                <input type="text" name="contact_id" id="contact_id" class="form-control" readonly/>
+                            </div>
                         </div>
-                        <input type="text" name="contact_id" id="contact_id" class="form-control" readonly/>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="selectEmployeeInherit" class="form-label">{% trans 'Employee inherit' %}</label>
+                            <select class="form-control" name="employee_inherit" id="selectEmployeeInherit" disabled>
+                                {% if data.lead %}
+                                    <option value="{{ data.lead.id }}">{{ data.lead.full_name }}</option>
+                                {% endif %}
+                                {% for item in data.person_list %}
+                                    <option value="{{ item.id }}">{{ item.full_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-6 mb-3">
-                <div class="form-group">
-                    <label class="form-label">{% trans 'Status' %}</label>
-                    <p id="state"></p>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="inputDeliveryDate"
+                                   class="form-label">{% trans 'Estimated Delivery Date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="estimated_delivery_date" id="inputDeliveryDate"
+                                       class="form-control date-picker" autocomplete="off" disabled>
+                                <span class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="inputActualDate" class="form-label">{% trans 'Actual Date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="actual_delivery_date" id="inputActualDate"
+                                       class="form-control date-picker" autocomplete="off" disabled>
+                                <span class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <div class="form-group">
-                    <label for="selectEmployeeInherit" class="form-label">{% trans 'Employee inherit' %}</label>
-                    <select class="form-control" name="employee_inherit" id="selectEmployeeInherit" disabled>
-                        {% if data.lead %}
-                            <option value="{{ data.lead.id }}">{{ data.lead.full_name }}</option>
-                        {% endif %}
-                        {% for item in data.person_list %}
-                            <option value="{{ item.id }}">{{ item.full_name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
                     <label for="textareaRemarks" class="form-label">{% trans 'Notes' %}</label>
                     <textarea class="form-control" name="remarks" id="textareaRemarks" readonly></textarea>

@@ -26,14 +26,14 @@ $(function () {
                         targets: 0,
                         render: (data, type, row) => {
                             let link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a> ${$x.fn.buttonLinkBlank(link)}`
+                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`;
                         }
                     },
                     {
                         targets: 1,
                         render: (data, type, row) => {
                             const link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row?.['id'])
-                            return `<a href="${link}" class="fw-bold link-primary underline_hover">${row?.['title']}</a>`
+                            return `<a href="${link}" class="underline_hover">${row?.['title']}</a>`
                         }
                     },
                     {
@@ -45,7 +45,7 @@ $(function () {
                                 "warning",
                             ]
                             let typeTxt = JSON.parse($('#gr_type').text())
-                            return `<span class="fst-italic text-${type_data[row?.['goods_receipt_type']]}">${typeTxt[row?.['goods_receipt_type']][1]}</span>`;
+                            return `<span class="badge badge-soft-${type_data[row?.['goods_receipt_type']]}">${typeTxt[row?.['goods_receipt_type']][1]}</span>`;
                         }
                     },
                     {
@@ -60,7 +60,7 @@ $(function () {
                                 0: 'purchase_order',
                                 1: 'inventory_adjustment',
                             }
-                            return `<span class="badge badge-outline badge-${type_data[row?.['goods_receipt_type']]}">${row?.[type_code[row?.['goods_receipt_type']]]?.['code']}</span>`;
+                            return `<span class="badge badge-soft-${type_data[row?.['goods_receipt_type']]}">${row?.[type_code[row?.['goods_receipt_type']]]?.['code']}</span>`;
                         }
                     },
                     {

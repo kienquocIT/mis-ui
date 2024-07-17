@@ -52,10 +52,10 @@ $(async function () {
             if (isRegis === true && dataSO) {
                 url = $url.attr('data-product-regis');
                 dataParam = {
-                    'gre_item__so_item__sale_order_id': dataSO?.['id'],
-                    'gre_item__product_id': prod_data?.['product_data']?.['id'],
+                    'so_item__sale_order_id': dataSO?.['id'],
+                    'product_id': prod_data?.['product_data']?.['id'],
                 };
-                keyResp = 'good_registration_general';
+                keyResp = 'regis_borrow_list';
             }
 
             $.fn.callAjax2({
@@ -66,224 +66,31 @@ $(async function () {
                 const isKey = `${prod_data?.['product_data']?.['id']}.${prod_data?.['uom_data']?.['id']}`
                 let temp = _this.getWarehouseList
                 const res = $.fn.switcherResp(req);
-                let isData = res?.[keyResp];
-                temp[isKey] = isData
-                _this.setWarehouseList = temp
+                let ResData = res?.[keyResp];
+                let isData = ResData;
+                temp[isKey] = isData;
+                _this.setWarehouseList = temp;
+                if (keyResp === 'regis_borrow_list') {
+                    if (ResData.length > 0) {
+                        isData = ResData[0];
+                        temp[isKey] = isData?.['regis_data']
+                        _this.setWarehouseList = temp
+                    }
+                }
                 // nếu có hoạt động picking kiểm tra có thông tin delivery_data ko.
                 // nếu có tạo thêm key là picked. mục đích show lên popup mục get cho user thấy.
-                let newData = []
-                for (let [idx, pwh] of isData.entries()) {
-                    pwh['picked'] = 0
-                    let finalRate = 1;
-                    if (pwh?.['uom'] && prod_data?.['uom_data']) {
-                        pwh['uom_stock'] = pwh?.['uom'];
-                        pwh['uom_delivery'] = prod_data?.['uom_data'];
-                        if (pwh?.['uom_stock']?.['ratio'] && pwh?.['uom_delivery']?.['ratio']) {
-                            if (pwh?.['uom_delivery']?.['ratio'] > 0) {
-                                finalRate = pwh?.['uom_stock']?.['ratio'] / pwh?.['uom_delivery']?.['ratio'];
-                            }
-                        }
-                    }
-                    if (!config?.['is_picking'] && config?.['is_partial_ship']) { // TH config 2: none_picking_many_delivery
-                        pwh['stock_amount'] = pwh?.['stock_amount'] * finalRate;
-                        pwh['available_stock'] = pwh?.['available_stock'] * finalRate;
-                        if (prod_data?.['delivery_data']) {
-                            prodTable.loadProductWHModal(pwh, prod_data);
-                        }
-                    }
-                    if ((config?.['is_picking'] && config?.['is_partial_ship']) && prod_data?.['delivery_data']) { // TH config 4: has_picking_many_delivery
-                        // nếu ready quantity > 0 => có hàng để giao
-                        // lấy delivery
-                        pwh['stock_amount'] = pwh?.['picked_ready'] * finalRate;
-                        pwh['available_stock'] = pwh?.['available_picked'] * finalRate;
-                        if (prod_data?.['ready_quantity'] > 0) {
-                            prodTable.loadProductWHModal(pwh, prod_data);
-                        }
-                        // change column name stock -> picked
-                        if (!table.hasClass('dataTable')) {
-                            let columnStock = table[0]?.querySelector('.stock-picked-exchange');
-                            if (columnStock) {
-                                columnStock.innerHTML = $trans.attr('data-picked-ready');
-                            }
-                        }
-                    }
-                    // Check if table $('#productStockDetail') is not DataTable & page is update page => set lot_data, serial_data = []
-                    if (!table.hasClass('dataTable') && $form.attr('data-method').toLowerCase() === 'put') {
-                        pwh['lot_data'] = [];
-                        pwh['serial_data'] = [];
-                    }
-                    newData.push(pwh);
+                let dataRegis = prodTable.setupDataPW(isData?.['regis_data'], prod_data, config);
+                prodTable.dataTablePW(dataRegis, config);
+
+
+                let dataBorrow = prodTable.setupDataPW(isData?.['borrow_data'], prod_data, config);
+                for (let dataB of dataBorrow) {
+                    let newRow = table.DataTable().row.add(dataB).draw().node();
+                    $(newRow).find('td:eq(1)').attr('colspan', 2);
+                    $(newRow).find('td:eq(2)').remove();
                 }
-                table.not('.dataTable').DataTableDefault({
-                    data: newData,
-                    ordering: false,
-                    paginate: false,
-                    info: false,
-                    columns: [
-                        {
-                            targets: 0,
-                            class: 'w-5',
-                            render: (data, type, row) => {
-                                let productGRType = row?.['product']?.['general_traceability_method'];
-                                if (productGRType === 0) {  // if not Lot or Serial
-                                    return ``;
-                                }
-                                let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                                let checked = '';
-                                if (row?.['is_checked'] === true) {
-                                    checked = 'checked';
-                                }
-                                return `<div class="form-check">
-                                            <input
-                                                type="radio"
-                                                class="form-check-input table-row-checkbox"
-                                                data-id="${row?.['id']}"
-                                                data-row="${dataRow}"
-                                                ${checked}
-                                            >
-                                        </div>`;
-                            }
-                        },
-                        {
-                            targets: 1,
-                            class: 'w-10 text-center',
-                            data: 'warehouse',
-                            render: (row, type, data) => {
-                                return `<p>${row?.['code']}</p>`;
-                            }
-                        },
-                        {
-                            targets: 2,
-                            class: 'w-25 text-center',
-                            data: 'warehouse',
-                            render: (row, type, data) => {
-                                return `<p>${row?.['title']}</p>`;
-                            }
-                        },
-                        {
-                            targets: 3,
-                            class: 'w-10 text-center',
-                            data: 'stock_amount',
-                            render: (row, type, data) => {
-                                return `<p class="table-row-stock">${row}</p>`;
-                            }
-                        },
-                        {
-                            targets: 4,
-                            class: 'w-15 text-center',
-                            data: 'available_stock',
-                            render: (row, type, data) => {
-                                return `<p class="table-row-available text-success">${row}</p>`;
-                            }
-                        },
-                        {
-                            targets: 5,
-                            class: 'w-25 text-center',
-                            data: 'picked',
-                            render: (row, type, data, meta) => {
-                                if ($form.attr('data-method').toLowerCase() === 'put') {
-                                    let disabled = data?.['product_amount'] <= 0 ? 'disabled' : '';
-                                    // condition 1 for config 3, condition 2 for config 4
-                                    if (config?.['is_picking'] && !config?.['is_partial_ship'] ||
-                                        (config?.['is_picking'] && config?.['is_partial_ship'] && data?.['picked_ready'] === 0)
-                                    ) disabled = 'disabled';
-                                    if ([1, 2].includes(data?.['product']?.['general_traceability_method'])) {
-                                        disabled = 'disabled';
-                                    }
-                                    return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
-                                } else {
-                                    return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row}" disabled>`;
-                                }
-                            }
-                        },
-                        {
-                            targets: 6,
-                            class: 'w-10 text-center',
-                            data: 'uom_delivery',
-                            render: (row, type, data) => {
-                                return `<span class="table-row-uom-delivery">${row?.['title'] ? row?.['title'] : ''}</span>`;
-                            }
-                        },
-                    ],
-                    rowCallback(row, data, index) {
-                        $(`input.form-control`, row).on('blur', function (e) {
-                            e.preventDefault();
-                            let eleStock = row.querySelector('.table-row-stock');
-                            if (parseFloat(this.value) > 0 && eleStock) {
-                                if (parseFloat(this.value) > parseFloat(eleStock.innerHTML)) {
-                                    $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
-                                    this.value = 0;
-                                    data.picked = this.value;
-                                    table.DataTable().row(index).data(data).draw();
-                                    return false
-                                }
-                                data.picked = this.value
-                                table.DataTable().row(index).data(data).draw();
-                            }
-                        })
-                        // Check if Product has Lot or Serial then load table
-                        $(`input.form-check-input`, row).on('click', function (e) {
-                            e.preventDefault();
-                            if (this.checked === true) {
-                                prodTable.loadUnCheckWH();
-                                this.checked = true;
-                                if ([1, 2].includes(data?.['product']?.['general_traceability_method'])) {
-                                    let productWHID = this.getAttribute('data-id');
-                                    if (data?.['product']?.['general_traceability_method'] === 1) {
-                                        prodTable.loadLot(this, row, data, productWHID);
-                                    }
-                                    if (data?.['product']?.['general_traceability_method'] === 2) {
-                                        prodTable.loadSerial(this, row, data, productWHID);
-                                    }
-                                }
-                            } else {
-                                prodTable.loadUnCheckWH();
-                                prodTable.dataTableTableLot();
-                                prodTable.dataTableTableSerial();
-                                data['is_checked'] = false;
-                                table.DataTable().row(index).data(data).draw();
-                            }
-                        })
-                    },
-                    footerCallback: function (row, data, start, end, display) {
-                        var api = this.api();
-
-                        // Remove the formatting to get integer data for summation
-                        var intVal = function (i) {
-                            return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
-                        };
-
-                        // Total over this page
-                        const allStock = api
-                            .column(3, {page: 'current'})
-                            .data()
-                            .reduce(function (a, b) {
-                                return intVal(a) + intVal(b);
-                            }, 0);
 
 
-                        const available = api
-                            .column(4, {page: 'current'})
-                            .data()
-                            .reduce(function (a, b) {
-                                return intVal(a) + intVal(b);
-                            }, 0);
-                        const GetStock = api
-                            .column(5, {page: 'current'})
-                            .data()
-                            .reduce(function (a, b) {
-                                return intVal(a) + intVal(b);
-                            }, 0);
-                        // Update footer
-                        $(api.column(3).footer()).html(`<b><i>${allStock}</i></b>`);
-                        $(api.column(4).footer()).html(`<b><i class="text-success">${available}</i></b>`);
-                        $(api.column(5).footer()).html(`<b><i>${GetStock}</i></b>`);
-                    },
-                })
-                if (table.hasClass('dataTable')) {
-                    table.DataTable().clear().draw();
-                    table.DataTable().rows.add(newData).draw();
-                }
                 let scrollLot = $('#scroll-table-lot');
                 let scrollSerial = $('#scroll-table-serial');
                 scrollLot[0].setAttribute('hidden', 'true');
@@ -516,6 +323,247 @@ $(async function () {
             }
             $ele.initSelect2(opts);
             return true;
+        }
+
+        setupDataPW(dataSrc, prod_data, config) {
+            let $form = $('#delivery_form');
+            let $table = $('#productStockDetail');
+            let newData = []
+            for (let pwh of dataSrc) {
+                pwh['picked'] = 0
+                let finalRate = 1;
+                if (pwh?.['uom'] && prod_data?.['uom_data']) {
+                    pwh['uom_stock'] = pwh?.['uom'];
+                    pwh['uom_delivery'] = prod_data?.['uom_data'];
+                    if (pwh?.['uom_stock']?.['ratio'] && pwh?.['uom_delivery']?.['ratio']) {
+                        if (pwh?.['uom_delivery']?.['ratio'] > 0) {
+                            finalRate = pwh?.['uom_stock']?.['ratio'] / pwh?.['uom_delivery']?.['ratio'];
+                        }
+                    }
+                }
+                if (!config?.['is_picking'] && config?.['is_partial_ship']) { // TH config 2: none_picking_many_delivery
+                    pwh['stock_amount'] = pwh?.['stock_amount'] * finalRate;
+                    pwh['available_stock'] = pwh?.['available_stock'] * finalRate;
+                    if (prod_data?.['delivery_data']) {
+                        prodTable.loadProductWHModal(pwh, prod_data);
+                    }
+                }
+                if ((config?.['is_picking'] && config?.['is_partial_ship']) && prod_data?.['delivery_data']) { // TH config 4: has_picking_many_delivery
+                    // nếu ready quantity > 0 => có hàng để giao
+                    // lấy delivery
+                    pwh['stock_amount'] = pwh?.['picked_ready'] * finalRate;
+                    pwh['available_stock'] = pwh?.['available_picked'] * finalRate;
+                    if (prod_data?.['ready_quantity'] > 0) {
+                        prodTable.loadProductWHModal(pwh, prod_data);
+                    }
+                    // change column name stock -> picked
+                    if (!$table.hasClass('dataTable')) {
+                        let columnStock = $table[0]?.querySelector('.stock-picked-exchange');
+                        if (columnStock) {
+                            columnStock.innerHTML = $trans.attr('data-picked-ready');
+                        }
+                    }
+                }
+                // Check if table $('#productStockDetail') is not DataTable & page is update page => set lot_data, serial_data = []
+                if (!$table.hasClass('dataTable') && $form.attr('data-method').toLowerCase() === 'put') {
+                    pwh['lot_data'] = [];
+                    pwh['serial_data'] = [];
+                }
+                newData.push(pwh);
+            }
+            return newData
+        }
+
+        dataTablePW(data, config) {
+            // Filter the array and store excluded items
+            //                 data = data.filter(item => {
+            //                     let condition = item?.['is_change'] === true && item?.['document_root_id'] && item?.['system_status'] !== 3;
+            //                     if (condition) {
+            //                         changeList.push(item);
+            //                     }
+            //                     return !condition; // Return true if condition is false (keep the item), false if condition is true (remove the item)
+            //                 });
+            //                 return resp.data['sale_order_list'] ? resp.data['sale_order_list'] : []
+
+
+            let $form = $('#delivery_form');
+            let $table = $('#productStockDetail');
+            $table.not('.dataTable').DataTableDefault({
+                data: data ? data : [],
+                ordering: false,
+                paginate: false,
+                info: false,
+                columns: [
+                    {
+                        targets: 0,
+                        class: 'w-5',
+                        render: (data, type, row, meta) => {
+                            let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                            if (row?.['sale_order']) {
+                                let target = ".cl-" + String(meta.row);
+                                return `<button 
+                                        type="button" 
+                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-xs table-row-group" 
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="${target}"
+                                        data-bs-placement="top"
+                                        aria-expanded="true"
+                                        aria-controls="newGroup"
+                                        data-group-order="${row?.['group_order']}"
+                                        data-row="${dataRow}"
+                                    >
+                                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                                    </button>
+                                    <span class="table-row-order ml-2" data-row="${dataRow}" hidden>${row?.['order']}</span>`;
+                            }
+                            let productGRType = row?.['product']?.['general_traceability_method'];
+                            if (productGRType === 0) {  // if not Lot or Serial
+                                return ``;
+                            }
+                            let checked = '';
+                            if (row?.['is_checked'] === true) {
+                                checked = 'checked';
+                            }
+                            return `<div class="form-check">
+                                            <input
+                                                type="radio"
+                                                class="form-check-input table-row-checkbox"
+                                                data-id="${row?.['id']}"
+                                                data-row="${dataRow}"
+                                                ${checked}
+                                            >
+                                        </div>`;
+                        }
+                    },
+                    {
+                        targets: 1,
+                        class: 'w-15',
+                        render: (data, type, row) => {
+                            if (row?.['warehouse']) {
+                                return `<p>${row?.['warehouse']?.['code']}</p>`;
+                            }
+                            if (row?.['sale_order']) {
+                                return `<div class="d-flex justify-content-start"><p class="mr-2">Dự án:</p><span class="badge badge-primary">${row?.['sale_order']?.['code']}</span></div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 2,
+                        class: 'w-25',
+                        render: (data, type, row) => {
+                            if (row?.['warehouse']) {
+                                return `<p>${row?.['warehouse']?.['title']}</p>`;
+                            }
+                            return ``;
+                        }
+                    },
+                    {
+                        targets: 3,
+                        class: 'w-15',
+                        data: 'uom_delivery',
+                        render: (row, type, data) => {
+                            return `<span class="table-row-uom-delivery">${row?.['title'] ? row?.['title'] : ''}</span>`;
+                        }
+                    },
+                    {
+                        targets: 4,
+                        class: 'w-15',
+                        data: 'available_stock',
+                        render: (row, type, data) => {
+                            return `<p class="table-row-available text-success">${row}</p>`;
+                        }
+                    },
+                    {
+                        targets: 5,
+                        class: 'w-25',
+                        data: 'picked',
+                        render: (row, type, data, meta) => {
+                            if ($form.attr('data-method').toLowerCase() === 'put') {
+                                let disabled = data?.['product_amount'] <= 0 ? 'disabled' : '';
+                                // condition 1 for config 3, condition 2 for config 4
+                                if (config?.['is_picking'] && !config?.['is_partial_ship'] ||
+                                    (config?.['is_picking'] && config?.['is_partial_ship'] && data?.['picked_ready'] === 0)
+                                ) disabled = 'disabled';
+                                if ([1, 2].includes(data?.['product']?.['general_traceability_method'])) {
+                                    disabled = 'disabled';
+                                }
+                                return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
+                            } else {
+                                return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row}" disabled>`;
+                            }
+                        }
+                    },
+                ],
+                rowCallback(row, data, index) {
+                    $(`input.form-control`, row).on('blur', function (e) {
+                        e.preventDefault();
+                        let eleStock = row.querySelector('.table-row-stock');
+                        if (parseFloat(this.value) > 0 && eleStock) {
+                            if (parseFloat(this.value) > parseFloat(eleStock.innerHTML)) {
+                                $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
+                                this.value = 0;
+                                data.picked = this.value;
+                                $table.DataTable().row(index).data(data).draw();
+                                return false
+                            }
+                            data.picked = this.value
+                            $table.DataTable().row(index).data(data).draw();
+                        }
+                    })
+                    // Check if Product has Lot or Serial then load table
+                    $(`input.form-check-input`, row).on('click', function (e) {
+                        e.preventDefault();
+                        if (this.checked === true) {
+                            prodTable.loadUnCheckWH();
+                            this.checked = true;
+                            if ([1, 2].includes(data?.['product']?.['general_traceability_method'])) {
+                                let productWHID = this.getAttribute('data-id');
+                                if (data?.['product']?.['general_traceability_method'] === 1) {
+                                    prodTable.loadLot(this, row, data, productWHID);
+                                }
+                                if (data?.['product']?.['general_traceability_method'] === 2) {
+                                    prodTable.loadSerial(this, row, data, productWHID);
+                                }
+                            }
+                        } else {
+                            prodTable.loadUnCheckWH();
+                            prodTable.dataTableTableLot();
+                            prodTable.dataTableTableSerial();
+                            data['is_checked'] = false;
+                            $table.DataTable().row(index).data(data).draw();
+                        }
+                    })
+                },
+                footerCallback: function (row, data, start, end, display) {
+                    var api = this.api();
+
+                    // Remove the formatting to get integer data for summation
+                    var intVal = function (i) {
+                        return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+                    };
+
+                    // Total over this page
+                    const available = api
+                        .column(4, {page: 'current'})
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    const GetStock = api
+                        .column(5, {page: 'current'})
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    // Update footer
+                    $(api.column(4).footer()).html(`<b><i class="text-success">${available}</i></b>`);
+                    $(api.column(5).footer()).html(`<b><i>${GetStock}</i></b>`);
+                },
+            })
+            if ($table.hasClass('dataTable')) {
+                $table.DataTable().clear().draw();
+                $table.DataTable().rows.add(data).draw();
+            }
         }
 
         getRegisConfig() {

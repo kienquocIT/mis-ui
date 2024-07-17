@@ -1041,7 +1041,7 @@ $(async function () {
                 prepareHTMLConfig(res.config_at_that_point)
                 $x.fn.renderCodeBreadcrumb(res);
                 const $saleOrder = $('#inputSaleOrder');
-                $saleOrder.val(res.sale_order_data.code)
+                $saleOrder.html(res.sale_order_data.code)
                 $saleOrder.attr('data-so', JSON.stringify(res?.['sale_order_data']));
 
                 if (res.estimated_delivery_date) {

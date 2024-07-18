@@ -70,25 +70,25 @@ $(async function () {
                 let isData = ResData;
                 temp[isKey] = isData;
                 _this.setWarehouseList = temp;
+
+                table.DataTable().destroy();
                 if (keyResp === 'regis_borrow_list') {
                     if (ResData.length > 0) {
                         isData = ResData[0];
-                        temp[isKey] = isData?.['regis_data']
-                        _this.setWarehouseList = temp
+                        temp[isKey] = isData?.['regis_data'];
+                        _this.setWarehouseList = temp;
+
+                        let dataRegis = prodTable.setupDataPW(isData?.['regis_data'], prod_data, config);
+                        for (let borrow_data of isData?.['borrow_data']) {
+                            let dataBorrow = prodTable.setupDataPW(borrow_data?.['regis_data'], prod_data, config);
+                            dataRegis = dataRegis.concat(dataBorrow);
+                        }
+                        prodTable.dataTablePW(dataRegis, config);
                     }
+                } else {
+                    let dataPW = prodTable.setupDataPW(isData, prod_data, config);
+                    prodTable.dataTablePW(dataPW, config);
                 }
-                table.DataTable().destroy();
-                // nếu có hoạt động picking kiểm tra có thông tin delivery_data ko.
-                // nếu có tạo thêm key là picked. mục đích show lên popup mục get cho user thấy.
-                let dataRegis = prodTable.setupDataPW(isData?.['regis_data'], prod_data, config);
-                // let dataBorrow = prodTable.setupDataPW(isData?.['borrow_data'], prod_data, config);
-
-                for (let borrow_data of isData?.['borrow_data']) {
-                    let dataBorrow = prodTable.setupDataPW(borrow_data?.['regis_data'], prod_data, config);
-                    dataRegis = dataRegis.concat(dataBorrow);
-                }
-                prodTable.dataTablePW(dataRegis, config);
-
 
                 let scrollLot = $('#scroll-table-lot');
                 let scrollSerial = $('#scroll-table-serial');
@@ -420,23 +420,7 @@ $(async function () {
                                             <span class="icon"><i class="fas fa-chevron-down"></i></span>
                                         </button>`;
                             }
-                            let productGRType = row?.['product']?.['general_traceability_method'];
-                            if (productGRType === 0) {  // if not Lot or Serial
-                                return ``;
-                            }
-                            let checked = '';
-                            if (row?.['is_checked'] === true) {
-                                checked = 'checked';
-                            }
-                            return `<div class="form-check">
-                                        <input
-                                            type="radio"
-                                            class="form-check-input table-row-checkbox cl-child"
-                                            data-id="${row?.['id']}"
-                                            data-row="${dataRow}"
-                                            ${checked}
-                                        >
-                                    </div>`;
+                            return ``;
                         }
                     },
                     {
@@ -446,7 +430,28 @@ $(async function () {
                             if (row?.['is_so'] === true) {
                                 return `<span class="badge badge-primary">${$trans.attr('data-project')}: ${row?.['sale_order']?.['code']}</span>`;
                             }
-                            return `<p>${row?.['warehouse']?.['code']}</p>`;
+                            let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                            let checked = '';
+                            let disabled = '';
+                            if (row?.['is_checked'] === true) {
+                                checked = 'checked';
+                            }
+                            if (row?.['product']?.['general_traceability_method'] === 0) {
+                                disabled = 'disabled';
+                            }
+                            return `<div class="d-flex">
+                                        <div class="form-check mr-2">
+                                            <input
+                                                type="radio"
+                                                class="form-check-input table-row-checkbox cl-child"
+                                                data-id="${row?.['id']}"
+                                                data-row="${dataRow}"
+                                                ${checked}
+                                                ${disabled}
+                                            >
+                                        </div>
+                                        <p>${row?.['warehouse']?.['code']}</p>
+                                    </div>`;
                         }
                     },
                     {
@@ -517,6 +522,7 @@ $(async function () {
                             }
                             data.picked = this.value
                             $table.DataTable().row(index).data(data).draw();
+                            prodTable.setupTotal();
                         }
                     })
                     // Check if Product has Lot or Serial then load table
@@ -589,16 +595,23 @@ $(async function () {
 
         setupTotal() {
             let eleTotalAvailable = $table[0].querySelector('.total-available');
-            let total = 0;
-            if (eleTotalAvailable) {
+            let eleTotalPicked = $table[0].querySelector('.total-picked');
+            let totalAvailable = 0;
+            let totalPicked = 0;
+            if (eleTotalAvailable && eleTotalPicked) {
                 $table.DataTable().rows().every(function () {
                     let row = this.node();
                     let eleAvailable = row.querySelector('.table-row-available');
+                    let elePicked = row.querySelector('.table-row-picked');
                     if (eleAvailable) {
-                        total += parseFloat(eleAvailable.innerHTML);
+                        totalAvailable += parseFloat(eleAvailable.innerHTML);
+                    }
+                    if (elePicked) {
+                        totalPicked += parseFloat(elePicked.value);
                     }
                 });
-                eleTotalAvailable.innerHTML = String(total);
+                eleTotalAvailable.innerHTML = String(totalAvailable);
+                eleTotalPicked.innerHTML = String(totalPicked);
             }
             return true;
         }

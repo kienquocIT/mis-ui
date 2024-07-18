@@ -1773,7 +1773,9 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term_data'])
         }
         if (data?.['quotation'] && data?.['sale_person']) {
-            QuotationLoadDataHandle.quotationSelectEle.empty().html(data?.['quotation']?.['title']);
+            if (data?.['quotation']?.['title']) {
+                QuotationLoadDataHandle.quotationSelectEle.empty().html(data?.['quotation']?.['title']);
+            }
             QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(data?.['quotation']));
         }
         if (data?.['date_created']) {

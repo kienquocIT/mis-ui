@@ -1242,33 +1242,26 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
-                            if (POLoadDataHandle.PRDataEle.val()) {
-                                let PRIDList = JSON.parse(POLoadDataHandle.PRDataEle.val());
-                                if (PRIDList.includes(row.id)) {
-                                    return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked></div>`;
-                                }
+                        let checked = '';
+                        let disabled = '';
+                        if (POLoadDataHandle.PRDataEle.val()) {
+                            let PRIDList = JSON.parse(POLoadDataHandle.PRDataEle.val());
+                            if (PRIDList.includes(row?.['id'])) {
+                                checked = 'checked';
                             }
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}"></div>`;
-                        } else {
-                            if (POLoadDataHandle.PRDataEle.val()) {
-                                let PRIDList = JSON.parse(POLoadDataHandle.PRDataEle.val());
-                                if (PRIDList.includes(row.id)) {
-                                    return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>`;
-                                }
-                            }
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
                         }
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.title}</span>`
+                        if ($('#frm_purchase_order_create').attr('data-method').toLowerCase() === 'get') {
+                            disabled = 'disabled';
+                        }
+                        let checkbox = `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row?.['id']}" ${checked} ${disabled}></div>`;
+                        return `<div class="d-flex align-items-center">
+                                    ${checkbox}
+                                    <span class="table-row-title">${row.title}</span>
+                                </div>`;
                     },
                 },
                 {
-                    targets: 3,
+                    targets: 2,
                     render: (data, type, row) => {
                         return `<span class="table-row-code">${row.code}</span>`
                     }
@@ -1298,93 +1291,62 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        let purchase_request_id = "";
+                        let checked = '';
+                        let disabled = '';
+                        let purchase_request_id = '';
                         if (Object.keys(row?.['purchase_request']).length !== 0) {
                             purchase_request_id = row?.['purchase_request']?.['id'];
                         }
-                        if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
-                            if (!row.hasOwnProperty('is_checked')) {
-                                return `<div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input table-row-checkbox" 
-                                            data-id="${row.id}" 
-                                            data-purchase-request-id="${purchase_request_id}"
-                                            data-sale-order-product-id="${row?.['sale_order_product_id']}"
-                                        >
-                                    </div>`
-                            } else {
-                                return `<div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input table-row-checkbox" 
-                                            data-id="${row.id}" 
-                                            data-purchase-request-id="${purchase_request_id}"
-                                            data-sale-order-product-id="${row?.['sale_order_product_id']}"
-                                            checked
-                                        >
-                                    </div>`
-                            }
-                        } else {
-                            if (!row.hasOwnProperty('is_checked')) {
-                                return `<div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input table-row-checkbox" 
-                                            data-id="${row.id}" 
-                                            data-purchase-request-id="${purchase_request_id}"
-                                            data-sale-order-product-id="${row?.['sale_order_product_id']}"
-                                            disabled
-                                        >
-                                    </div>`
-                            } else {
-                                return `<div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input table-row-checkbox" 
-                                            data-id="${row.id}" 
-                                            data-purchase-request-id="${purchase_request_id}"
-                                            data-sale-order-product-id="${row?.['sale_order_product_id']}"
-                                            checked
-                                            disabled
-                                        >
-                                    </div>`
-                            }
+                        if (row?.['is_checked']) {
+                            checked = 'checked';
                         }
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-item" id="${row.product.id}">${row.product.title}</span>`
+                        if ($('#frm_purchase_order_create').attr('data-method').toLowerCase() === 'get') {
+                            disabled = 'disabled';
+                        }
+                        let checkbox = `<div class="form-check">
+                                            <input 
+                                                type="checkbox" 
+                                                class="form-check-input table-row-checkbox" 
+                                                data-id="${row?.['id']}" 
+                                                data-purchase-request-id="${purchase_request_id}"
+                                                data-sale-order-product-id="${row?.['sale_order_product_id']}"
+                                                ${checked}
+                                                ${disabled}
+                                            >
+                                        </div>`;
+
+                        return `<div class="d-flex align-items-center">
+                                    ${checkbox}
+                                    <span class="table-row-item" id="${row?.['product']?.['id']}">${row?.['product']?.['title']}</span>
+                                </div>`;
                     },
                 },
                 {
-                    targets: 3,
+                    targets: 2,
                     render: (data, type, row) => {
                         return `<span class="table-row-code">${row?.['purchase_request']?.['code']}</span>`
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 3,
                     render: (data, type, row) => {
                         return `<span class="table-row-uom-request" id="${row.uom.id}">${row.uom.title}</span>`
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 4,
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-request">${row.quantity}</span>`
                     }
                 },
                 {
-                    targets: 6,
+                    targets: 5,
                     render: (data, type, row) => {
                         return `<span class="table-row-remain">${row?.['remain_for_purchase_order']}</span>`
                     }
                 },
                 {
-                    targets: 7,
+                    targets: 6,
                     render: (data, type, row) => {
                         if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
                             if (row.hasOwnProperty('quantity_order')) {
@@ -1413,7 +1375,6 @@ class PODataTableHandle {
         let $table = $('#datable-purchase-request-product-merge');
         $table.DataTableDefault({
             data: data ? data : [],
-            // searching: false,
             paging: false,
             info: false,
             columns: [
@@ -1426,20 +1387,17 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>`
-                    }
+                        return `<div class="d-flex align-items-center">
+                                    <div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>
+                                    <span class="table-row-title">${row?.['product_title']}</span>
+                                </div>`;
+                    },
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.product_title}</span>`
-                    },
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
                         let codeList = ``;
-                        for (let item of row.code_list) {
+                        for (let item of row?.['code_list']) {
                             codeList += `<span class="dropdown-item">${item}</span>`
                         }
                         return `<button
@@ -1454,27 +1412,27 @@ class PODataTableHandle {
                     }
                 },
                 {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-uom-request">${row?.['uom_order_request']?.['title']}</span>`
+                    }
+                },
+                {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom-request">${row.uom_order_request.title}</span>`
+                        return `<span class="table-row-quantity-request">${row?.['product_quantity_request']}</span>`
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-request">${row.product_quantity_request}</span>`
+                        return `<span class="table-row-remain">${row?.['remain']}</span>`
                     }
                 },
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        return `<span class="table-row-remain">${row.remain}</span>`
-                    }
-                },
-                {
-                    targets: 7,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity-order">${row.product_quantity_order_actual}</span>`
+                        return `<span class="table-row-quantity-order">${row?.['product_quantity_order_actual']}</span>`
                     }
                 },
             ],
@@ -1494,39 +1452,35 @@ class PODataTableHandle {
                     targets: 0,
                     render: (data, type, row, meta) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${(meta.row + 1)}</span>`
+                        return `<span class="table-row-order" id="${row?.['id']}" data-row="${dataRow}">${(meta.row + 1)}</span>`
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
-                            if (!row.hasOwnProperty('is_checked')) {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}"></div>`;
-                            } else {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked></div>`;
-                            }
-                        } else {
-                            if (!row.hasOwnProperty('is_checked')) {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
-                            } else {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>`;
-                            }
-                        }
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
                         if (row?.['title'] && row?.['code']) {
-                            return `<span class="badge badge-primary badge-sm table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>
-                                    <p class="table-row-title">${row?.['title']}</p>`;
+                            let checked = '';
+                            let disabled = '';
+                            if (row?.['is_checked']) {
+                                checked = 'checked';
+                            }
+                            if ($('#frm_purchase_order_create').attr('data-method').toLowerCase() === 'get') {
+                                disabled = 'disabled';
+                            }
+                            let checkbox = `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row?.['id']}" ${checked} ${disabled}></div>`;
+                            return `<div class="d-flex align-items-center">
+                                        ${checkbox}
+                                        <div>
+                                            <span class="badge badge-primary badge-sm table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>
+                                            <p class="table-row-title">${row?.['title']}</p>
+                                        </div>
+                                    </div>`;
                         }
                         return `<p>--</p>`;
                     },
                 },
                 {
-                    targets: 3,
+                    targets: 2,
                     render: (data, type, row) => {
                         let dataSupplier = JSON.stringify(row?.['supplier_mapped']).replace(/"/g, "&quot;");
                         if (row?.['supplier_mapped']?.['name'] && row?.['supplier_mapped']?.['code']) {
@@ -1537,7 +1491,7 @@ class PODataTableHandle {
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 3,
                     render: (data, type, row) => {
                         return `<span class="table-row-purchase-quotation-request">${row?.['purchase_quotation_request_mapped']?.['code'] ? row?.['purchase_quotation_request_mapped']?.['code'] : ''}</span>`
                     }

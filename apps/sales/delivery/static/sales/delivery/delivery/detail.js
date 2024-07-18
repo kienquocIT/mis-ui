@@ -439,8 +439,8 @@ $(async function () {
                             if (row?.['product']?.['general_traceability_method'] === 0) {
                                 disabled = 'disabled';
                             }
-                            return `<div class="d-flex">
-                                        <div class="form-check mr-2">
+                            return `<div class="d-flex align-items-center">
+                                        <div class="form-check">
                                             <input
                                                 type="radio"
                                                 class="form-check-input table-row-checkbox cl-child"

@@ -81,8 +81,13 @@ $(async function () {
                 // nếu có hoạt động picking kiểm tra có thông tin delivery_data ko.
                 // nếu có tạo thêm key là picked. mục đích show lên popup mục get cho user thấy.
                 let dataRegis = prodTable.setupDataPW(isData?.['regis_data'], prod_data, config);
-                let dataBorrow = prodTable.setupDataPW(isData?.['borrow_data'], prod_data, config);
-                prodTable.dataTablePW(dataRegis.concat(dataBorrow), config);
+                // let dataBorrow = prodTable.setupDataPW(isData?.['borrow_data'], prod_data, config);
+
+                for (let borrow_data of isData?.['borrow_data']) {
+                    let dataBorrow = prodTable.setupDataPW(borrow_data?.['regis_data'], prod_data, config);
+                    dataRegis = dataRegis.concat(dataBorrow);
+                }
+                prodTable.dataTablePW(dataRegis, config);
 
 
                 let scrollLot = $('#scroll-table-lot');
@@ -402,18 +407,18 @@ $(async function () {
                             if (row?.['is_so'] === true) {
                                 let target = ".cl-" + row?.['sale_order']?.['id'].replace(/-/g, "");
                                 return `<button 
-                                        type="button" 
-                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-xs cl-parent" 
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="${target}"
-                                        data-bs-placement="top"
-                                        aria-expanded="true"
-                                        aria-controls="newGroup"
-                                        data-group-order="${row?.['group_order']}"
-                                        data-row="${dataRow}"
-                                    >
-                                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
-                                    </button>`;
+                                            type="button" 
+                                            class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-xs cl-parent" 
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="${target}"
+                                            data-bs-placement="top"
+                                            aria-expanded="true"
+                                            aria-controls="newGroup"
+                                            data-group-order="${row?.['group_order']}"
+                                            data-row="${dataRow}"
+                                        >
+                                            <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                                        </button>`;
                             }
                             let productGRType = row?.['product']?.['general_traceability_method'];
                             if (productGRType === 0) {  // if not Lot or Serial
@@ -424,14 +429,14 @@ $(async function () {
                                 checked = 'checked';
                             }
                             return `<div class="form-check">
-                                            <input
-                                                type="radio"
-                                                class="form-check-input table-row-checkbox cl-child"
-                                                data-id="${row?.['id']}"
-                                                data-row="${dataRow}"
-                                                ${checked}
-                                            >
-                                        </div>`;
+                                        <input
+                                            type="radio"
+                                            class="form-check-input table-row-checkbox cl-child"
+                                            data-id="${row?.['id']}"
+                                            data-row="${dataRow}"
+                                            ${checked}
+                                        >
+                                    </div>`;
                         }
                     },
                     {
@@ -439,7 +444,7 @@ $(async function () {
                         class: 'w-15',
                         render: (data, type, row) => {
                             if (row?.['is_so'] === true) {
-                                return `<span class="badge badge-primary">${row?.['sale_order']?.['code']}</span>`;
+                                return `<span class="badge badge-primary">${$trans.attr('data-project')}: ${row?.['sale_order']?.['code']}</span>`;
                             }
                             return `<p>${row?.['warehouse']?.['code']}</p>`;
                         }
@@ -481,19 +486,20 @@ $(async function () {
                             if (row?.['is_so'] === true) {
                                 return ``;
                             }
+                            let disabled = row?.['product_amount'] <= 0 ? 'disabled' : '';
+                            if ($form.attr('data-method').toLowerCase() === 'get') {
+                                disabled = 'disabled';
+                            }
                             if ($form.attr('data-method').toLowerCase() === 'put') {
-                                let disabled = data?.['product_amount'] <= 0 ? 'disabled' : '';
                                 // condition 1 for config 3, condition 2 for config 4
                                 if (config?.['is_picking'] && !config?.['is_partial_ship'] ||
-                                    (config?.['is_picking'] && config?.['is_partial_ship'] && data?.['picked_ready'] === 0)
+                                    (config?.['is_picking'] && config?.['is_partial_ship'] && row?.['picked_ready'] === 0)
                                 ) disabled = 'disabled';
-                                if ([1, 2].includes(data?.['product']?.['general_traceability_method'])) {
+                                if ([1, 2].includes(row?.['product']?.['general_traceability_method'])) {
                                     disabled = 'disabled';
                                 }
-                                return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row?.['picked']}" ${disabled}>`;
-                            } else {
-                                return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row?.['picked']}" disabled>`;
                             }
+                            return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row?.['picked']}" ${disabled}>`;
                         }
                     },
                 ],
@@ -539,33 +545,30 @@ $(async function () {
                 },
                 drawCallback: function () {
                     prodTable.setupCollapse();
+                    prodTable.setupTotal();
                 },
                 footerCallback: function (row, data, start, end, display) {
-                    if (data?.['is_so'] === false) {
-                        var api = this.api();
-
-                    // Remove the formatting to get integer data for summation
-                    var intVal = function (i) {
-                        return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
-                    };
-
-                    // Total over this page
-                    const available = api
-                        .column(4, {page: 'current'})
-                        .data()
-                        .reduce(function (a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0);
-                    const GetStock = api
-                        .column(5, {page: 'current'})
-                        .data()
-                        .reduce(function (a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0);
-                    // Update footer
-                    $(api.column(4).footer()).html(`<b><i class="text-success">${available}</i></b>`);
-                    $(api.column(5).footer()).html(`<b><i>${GetStock}</i></b>`);
-                    }
+                    // let api = this.api();
+                    // // Remove the formatting to get integer data for summation
+                    // let intVal = function (i) {
+                    //     return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+                    // };
+                    // // Total over this page
+                    // const available = api
+                    //     .column(4, {page: 'current'})
+                    //     .data()
+                    //     .reduce(function (a, b) {
+                    //         return intVal(a) + intVal(b);
+                    //     }, 0);
+                    // const GetStock = api
+                    //     .column(5, {page: 'current'})
+                    //     .data()
+                    //     .reduce(function (a, b) {
+                    //         return intVal(a) + intVal(b);
+                    //     }, 0);
+                    // // Update footer
+                    // $(api.column(4).footer()).html(`<b><i class="text-success">${available}</i></b>`);
+                    // $(api.column(5).footer()).html(`<b><i>${GetStock}</i></b>`);
                 },
             })
         }
@@ -580,6 +583,22 @@ $(async function () {
                     row.classList.add('collapse');
                     row.classList.add('show');
                 }
+            }
+            return true;
+        }
+
+        setupTotal() {
+            let eleTotalAvailable = $table[0].querySelector('.total-available');
+            let total = 0;
+            if (eleTotalAvailable) {
+                $table.DataTable().rows().every(function () {
+                    let row = this.node();
+                    let eleAvailable = row.querySelector('.table-row-available');
+                    if (eleAvailable) {
+                        total += parseFloat(eleAvailable.innerHTML);
+                    }
+                });
+                eleTotalAvailable.innerHTML = String(total);
             }
             return true;
         }
@@ -607,10 +626,11 @@ $(async function () {
             let url = tableLot.attr('data-url');
             let dataParam = {'product_warehouse_id': productWHID};
             let keyResp = 'warehouse_lot_list';
-            if (isRegis === true && dataSO) {
+            if (isRegis === true && dataSO && eleChecked.getAttribute('data-row')) {
                 url = tableLot.attr('data-url-regis');
+                let dataRow = JSON.parse(eleChecked.getAttribute('data-row'));
                 dataParam = {
-                    'gre_general__gre_item__so_item__sale_order_id': dataSO?.['id'],
+                    'gre_general__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
                     'gre_general__gre_item__product_id': data?.['product']?.['id'],
                     'gre_general__warehouse_id': data?.['warehouse']?.['id'],
                 };
@@ -769,10 +789,11 @@ $(async function () {
             if ($form.attr('data-method').toLowerCase() === 'get') {
                 dataParam = {'product_warehouse_id': productWHID};
             }
-            if (isRegis === true && dataSO) {
+            if (isRegis === true && dataSO && eleChecked.getAttribute('data-row')) {
+                let dataRow = JSON.parse(eleChecked.getAttribute('data-row'));
                 url = tableSerial.attr('data-url-regis');
                 dataParam = {
-                    'gre_general__gre_item__so_item__sale_order_id': dataSO?.['id'],
+                    'gre_general__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
                     'gre_general__gre_item__product_id': data?.['product']?.['id'],
                     'gre_general__warehouse_id': data?.['warehouse']?.['id'],
                     'sn_registered__is_delete': false,

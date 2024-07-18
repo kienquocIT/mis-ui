@@ -270,8 +270,8 @@
                                 <tfoot>
                                     <tr>
                                         <th colspan="4"><p style="text-align:right">{% trans 'Total' %}:</p></th>
-                                        <th><b><i class="text-success">0</i></b></th>
-                                        <th><b><i>0</i></b></th>
+                                        <th><b><i class="text-success total-available">0</i></b></th>
+                                        <th><b><i class="total-picked">0</i></b></th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -368,6 +368,7 @@
            data-picked-ready="{% trans 'Picked' %}"
            data-available="{% trans 'Available' %}"
            data-title-mdl="{% trans 'Get Product' %}"
+           data-project="{% trans 'Project' %}"
     >
     <input type="hidden" id="url-factory"
            data-prod-detail="{% url 'ProductDetail' 1 %}"

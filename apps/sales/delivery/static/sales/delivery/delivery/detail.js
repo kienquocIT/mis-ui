@@ -2,6 +2,7 @@ $(async function () {
     const $trans = $('#trans-factory');
     const $url = $('#url-factory');
     let $table = $('#productStockDetail');
+    let $eleSO = $('#inputSaleOrder');
     let dataCompanyConfig = await DocumentControl.getCompanyConfig();
     // prod tab handle
     class prodDetailUtil {
@@ -112,11 +113,15 @@ $(async function () {
                     let temp_picked = 0
                     let sub_delivery_data = []
                     for (let item of isSelected) {
-                        const picked = parseFloat(item.picked)
+                        const picked = parseFloat(item?.['picked'])
                         if (picked > 0) {
                             sub_delivery_data.push({
+                                'sale_order': item?.['sale_order']?.['id'],
+                                'sale_order_data': item?.['sale_order'],
                                 'warehouse': item?.['warehouse']?.['id'],
+                                'warehouse_data': item?.['warehouse'],
                                 'uom': prod_data?.['uom_data']?.['id'],
+                                'uom_data': prod_data?.['uom_data'],
                                 'stock': picked,
                                 'lot_data': item?.['lot_data'] ? item?.['lot_data'] : [],
                                 'serial_data': item?.['serial_data'] ? item?.['serial_data'] : [],
@@ -140,7 +145,7 @@ $(async function () {
 
         loadProductWHModal(pwh, prod_data) {
             for (let val of prod_data?.['delivery_data']) {
-                if (val?.['warehouse'] === pwh?.['warehouse']?.['id']) {
+                if (val?.['warehouse'] === pwh?.['warehouse']?.['id'] && val?.['sale_order'] === pwh?.['sale_order']?.['id']) {
                     if (val?.['stock'] && prod_data?.['picked_quantity']) {
                         if (prod_data?.['picked_quantity'] > 0) {
                             pwh['picked'] = val?.['stock'];
@@ -364,12 +369,12 @@ $(async function () {
                         }
                     }
                 }
-                // Check if table $('#productStockDetail') is not DataTable & page is update page => set lot_data, serial_data = []
-                if (!$table.hasClass('dataTable') && $form.attr('data-method').toLowerCase() === 'put') {
-                    pwh['lot_data'] = [];
-                    pwh['serial_data'] = [];
-                }
                 pwh['is_so'] = false;
+                if (!pwh.hasOwnProperty('sale_order')) {
+                    if ($eleSO.attr('data-so')) {
+                        pwh['sale_order'] = JSON.parse($eleSO.attr('data-so'));
+                    }
+                }
                 baseData.push(pwh);
                 if (pwh?.['sale_order']?.['id']) {
                     if (!soDataJson.hasOwnProperty(String(pwh?.['sale_order']?.['id']))) {
@@ -553,29 +558,6 @@ $(async function () {
                     prodTable.setupCollapse();
                     prodTable.setupTotal();
                 },
-                footerCallback: function (row, data, start, end, display) {
-                    // let api = this.api();
-                    // // Remove the formatting to get integer data for summation
-                    // let intVal = function (i) {
-                    //     return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
-                    // };
-                    // // Total over this page
-                    // const available = api
-                    //     .column(4, {page: 'current'})
-                    //     .data()
-                    //     .reduce(function (a, b) {
-                    //         return intVal(a) + intVal(b);
-                    //     }, 0);
-                    // const GetStock = api
-                    //     .column(5, {page: 'current'})
-                    //     .data()
-                    //     .reduce(function (a, b) {
-                    //         return intVal(a) + intVal(b);
-                    //     }, 0);
-                    // // Update footer
-                    // $(api.column(4).footer()).html(`<b><i class="text-success">${available}</i></b>`);
-                    // $(api.column(5).footer()).html(`<b><i>${GetStock}</i></b>`);
-                },
             })
         }
 
@@ -617,7 +599,6 @@ $(async function () {
         }
 
         getRegisConfig() {
-            let $eleSO = $('#inputSaleOrder');
             let isRegis = false;
             if (dataCompanyConfig?.['config']?.['cost_per_project'] === true && $eleSO.attr('data-so')) {
                 let dataSO = JSON.parse($eleSO.attr('data-so'));
@@ -713,34 +694,30 @@ $(async function () {
                     {
                         targets: 0,
                         class: 'text-center',
-                        data: 'lot_number',
-                        render: (row, type, data) => {
-                            return `<p>${row}</p>`;
+                        render: (data, type, row) => {
+                            return `<p>${row?.['lot_number']}</p>`;
                         }
                     },
                     {
                         targets: 1,
                         class: 'text-center',
-                        data: 'quantity_available',
-                        render: (row, type, data) => {
-                            return `<p class="table-row-quantity-init">${row}</p>`;
+                        render: (data, type, row) => {
+                            return `<p class="table-row-quantity-init">${row?.['quantity_available']}</p>`;
                         }
                     },
                     {
                         targets: 2,
                         class: 'text-center',
-                        data: 'uom_delivery',
-                        render: (row, type, data) => {
-                            return `<span class="table-row-uom">${row?.['title'] ? row?.['title'] : ''}</span>`;
+                        render: (data, type, row) => {
+                            return `<span class="table-row-uom">${row?.['uom_delivery']?.['title'] ? row?.['uom_delivery']?.['title'] : ''}</span>`;
                         }
                     },
                     {
                         targets: 3,
                         class: 'text-center',
-                        data: 'expire_date',
-                        render: (row, type, data) => {
-                            if (row) {
-                                return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
+                        render: (data, type, row) => {
+                            if (row?.['expire_date']) {
+                                return `<p>${moment(row?.['expire_date'], 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
                             } else {
                                 return `<p>--</p>`;
                             }
@@ -749,10 +726,9 @@ $(async function () {
                     {
                         targets: 4,
                         class: 'text-center',
-                        data: 'manufacture_date',
-                        render: (row, type, data) => {
-                            if (row) {
-                                return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
+                        render: (data, type, row) => {
+                            if (row?.['manufacture_date']) {
+                                return `<p>${moment(row?.['manufacture_date'], 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
                             } else {
                                 return `<p>--</p>`;
                             }
@@ -761,13 +737,12 @@ $(async function () {
                     {
                         targets: 5,
                         class: 'text-center',
-                        data: 'quantity_delivery',
-                        render: (row, type, data, meta) => {
-                            if ($form.attr('data-method').toLowerCase() === 'put') {
-                                return `<input class="form-control table-row-quantity-delivery" type="number" value="${row ? row : 0}">`;
-                            } else {
-                                return `<input class="form-control table-row-quantity-delivery" type="number" value="${row ? row : 0}" disabled>`;
+                        render: (data, type, row) => {
+                            let disabled = '';
+                            if ($form.attr('data-method').toLowerCase() === 'get') {
+                                disabled = 'disabled';
                             }
+                            return `<input class="form-control table-row-quantity-delivery" type="number" value="${row?.['quantity_delivery'] ? row?.['quantity_delivery'] : 0}" ${disabled}>`;
                         }
                     },
                 ],
@@ -917,26 +892,23 @@ $(async function () {
                     {
                         targets: 1,
                         class: 'text-center',
-                        data: 'vendor_serial_number',
-                        render: (row, type, data) => {
-                            return `<p>${row}</p>`;
+                        render: (data, type, row) => {
+                            return `<p>${row?.['vendor_serial_number']}</p>`;
                         }
                     },
                     {
                         targets: 2,
                         class: 'text-center',
-                        data: 'serial_number',
-                        render: (row, type, data) => {
-                            return `<p>${row}</p>`;
+                        render: (data, type, row) => {
+                            return `<p>${row?.['serial_number']}</p>`;
                         }
                     },
                     {
                         targets: 3,
                         class: 'text-center',
-                        data: 'warranty_start',
-                        render: (row, type, data) => {
-                            if (row) {
-                                return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
+                        render: (data, type, row) => {
+                            if (row?.['warranty_start']) {
+                                return `<p>${moment(row?.['warranty_start'], 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
                             } else {
                                 return `<p>--</p>`;
                             }
@@ -945,10 +917,9 @@ $(async function () {
                     {
                         targets: 4,
                         class: 'text-center',
-                        data: 'warranty_end',
-                        render: (row, type, data) => {
-                            if (row) {
-                                return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
+                        render: (data, type, row) => {
+                            if (row?.['warranty_end']) {
+                                return `<p>${moment(row?.['warranty_end'], 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
                             } else {
                                 return `<p>--</p>`;
                             }

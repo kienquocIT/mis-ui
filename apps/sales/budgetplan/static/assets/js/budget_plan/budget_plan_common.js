@@ -173,7 +173,9 @@ function LoadTabs(group_budget_data, company_budget_data, space_month, option) {
     Promise.all([ajax]).then(
         (results) => {
             console.log(results[0])
+            let group_budget_data_id_list = []
             for (const item of group_budget_data) {
+                group_budget_data_id_list.push(item?.['group']?.['id'])
                 let group = item?.['group']
                 let new_tab = $(`
                     <li class="nav-item">
@@ -247,6 +249,18 @@ function LoadTabs(group_budget_data, company_budget_data, space_month, option) {
             }
             LoadTabCompanyTable(company_budget_data, space_month)
             LoadTabGroupTable(group_budget_data, space_month)
+
+            if (results[0].length > group_budget_data.length) {
+                let all_added_group_title = ''
+                for (const group of results[0]) {
+                    if (!group_budget_data_id_list.includes(group?.['id'])) {
+                        all_added_group_title += group?.['title'] + ' '
+                    }
+                }
+                let raw_text = $('#alert-change').find('.alert-heading').text()
+                $('#alert-change').find('.alert-heading').text(all_added_group_title + raw_text)
+                $('#alert-change').prop('hidden', false)
+            }
         })
 }
 
@@ -453,3 +467,36 @@ function LoadDetailBudgetPlan(option) {
             $.fn.initMaskMoney2();
         })
 }
+
+$('#update-group-btn').on('click', function () {
+    if (confirm("Are you sure?")) {
+        let pk = $.fn.getPkDetail()
+        let dataParam = {'update_group': true}
+        let url_loaded = $.fn.callAjax2({
+            url: url_script.attr('data-url-budget-plan-detail').replace(0, pk),
+            data: dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('budget_plan_detail')) {
+                    return data?.['budget_plan_detail'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+        WindowControl.showLoading();
+        Promise.all([url_loaded]).then(
+            (resp) => {
+                $.fn.notifyB({description: "Successfully"}, 'success')
+                setTimeout(() => {
+                    window.location.replace(url_script.attr('data-url-redirect-tab').format_url_with_uuid(pk));
+                    location.reload.bind(location);
+                }, 1000);
+            }
+        )
+    }
+})

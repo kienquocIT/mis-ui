@@ -103,6 +103,14 @@
     </div>
     <div class="row mt-5">
         <div class="col-12">
+            <div id="alert-change" hidden class="alert alert-warning alert-wth-icon alert-dismissible fade show" role="alert">
+                <span class="alert-icon-wrap"><i class="zmdi zmdi-alert-circle-o"></i></span>
+                <span class="alert-heading fw-bold"></span><span>{% trans 'had been added compared to when creating the Budget plan, update it ?' %}</span>
+                <button id="update-group-btn" class="w-5 btn btn-gradient-primary btn-xs ml-2">{% trans 'Yes' %}</button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+        <div class="col-12">
             <ul class="nav nav-light nav-icon nav-tabs">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="pill" href="#tab_company">

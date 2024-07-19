@@ -85,7 +85,8 @@ class BudgetPlanDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.BUDGET_PLAN_DETAIL.fill_key(pk=pk)).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.BUDGET_PLAN_DETAIL.fill_key(pk=pk)).get(data)
         return resp.auto_return(key_success='budget_plan_detail')
 
     @mask_view(

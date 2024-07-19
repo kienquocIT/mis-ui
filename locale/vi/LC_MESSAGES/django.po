@@ -7976,3 +7976,7 @@ msgstr "Chọn sản phẩm"
 #
 msgid "Employees who create a Purchase Request can reference the entire Sale Order"
 msgstr "Nhân viên tạo Yêu Cầu Mua Hàng có thể tham chiếu toàn bộ Đơn Hàng"
+
+#
+msgid "had been added compared to when creating the Budget plan, update it ?"
+msgstr "đã được thêm vào sau khi tạo Kế hoạch ngân sách, cập nhập?"

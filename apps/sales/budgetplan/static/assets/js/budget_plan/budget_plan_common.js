@@ -94,23 +94,23 @@ function LoadTabGroupTable(group_budget_data, space_month) {
                 <tr>
                     <th></th>
                     <th class="expense-item">${trans_script.attr('data-trans-expense-item')}</th>
-                    <th class="text-center m1th money-input"></th>
-                    <th class="text-center m2th money-input"></th>
-                    <th class="text-center m3th money-input"></th>
-                    <th class="text-center money-input">${trans_script.attr('data-trans-quarter')} 1</th>
-                    <th class="text-center m4th money-input"></th>
-                    <th class="text-center m5th money-input"></th>
-                    <th class="text-center m6th money-input"></th>
-                    <th class="text-center money-input">${trans_script.attr('data-trans-quarter')} 2</th>
-                    <th class="text-center m7th money-input"></th>
-                    <th class="text-center m8th money-input"></th>
-                    <th class="text-center m9th money-input"></th>
-                    <th class="text-center money-input">${trans_script.attr('data-trans-quarter')} 3</th>
-                    <th class="text-center m10th money-input"></th>
-                    <th class="text-center m11th money-input"></th>
-                    <th class="text-center m12th money-input"></th>
-                    <th class="text-center money-input">${trans_script.attr('data-trans-quarter')} 4</th>
-                    <th class="text-center money-input">${trans_script.attr('data-trans-year')}</th>
+                    <th class="text-right m1th money-input"></th>
+                    <th class="text-right m2th money-input"></th>
+                    <th class="text-right m3th money-input"></th>
+                    <th class="text-right money-input">${trans_script.attr('data-trans-quarter')} 1</th>
+                    <th class="text-right m4th money-input"></th>
+                    <th class="text-right m5th money-input"></th>
+                    <th class="text-right m6th money-input"></th>
+                    <th class="text-right money-input">${trans_script.attr('data-trans-quarter')} 2</th>
+                    <th class="text-right m7th money-input"></th>
+                    <th class="text-right m8th money-input"></th>
+                    <th class="text-right m9th money-input"></th>
+                    <th class="text-right money-input">${trans_script.attr('data-trans-quarter')} 3</th>
+                    <th class="text-right m10th money-input"></th>
+                    <th class="text-right m11th money-input"></th>
+                    <th class="text-right m12th money-input"></th>
+                    <th class="text-right money-input">${trans_script.attr('data-trans-quarter')} 4</th>
+                    <th class="text-right money-input">${trans_script.attr('data-trans-year')}</th>
                 </tr>
                 </thead>
                 <tbody></tbody>

@@ -7954,6 +7954,10 @@ msgstr "Chỉnh sửa vùng dữ liệu"msgid "Expand / Collapse"
 msgstr "Thu gọn / Mở rộng"
 
 #
+msgid "Project Baseline"
+msgstr "Đường cơ sở của Dự án"
+
+#
 msgid "Budget plan"
 msgstr "Kế hoạch ngân sách"
 

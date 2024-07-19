@@ -19,31 +19,27 @@
         <div class="row">
             <div class="col-xs-12 col-md-6 form-group">
                 <label for="titleInput" class="form-label required">{% trans 'Title' %}</label>
-                <input type="text" name="title" id="titleInput" class="form-control" required>
+                <input type="text" name="title" id="titleInput" class="form-control" required readonly>
             </div>
+            <div class="clearfix"></div>
             <div class="col-xs-12 col-md-6 form-group">
-                <label for="select_project_owner" class="form-label required">{% trans 'Project owner' %}</label>
-                <select class="form-select" name="project_owner" id="select_project_owner"
-                        data-url="{% url 'EmployeeListAPI' %}"
-                        data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
-                        data-params="{'list_from_app':'{{data.list_from_app|escape}}'}"
-                >
-                </select>
+                <label for="select_project_pm" class="form-label required">{% trans 'Project owner' %}</label>
+                <input type="input" name="employee_inherit" id="employeeInheritInput" class="form-control" readonly>
             </div>
             <div class="col-xs-12 col-md-6 form-group">
                 <label for="selectEmployeeInherit" class="form-label required">{% trans 'Project PM' %}</label>
-                <select class="form-select" name="employee_inherit" id="selectEmployeeInherit"
-                        data-url="{% url 'EmployeeListAPI' %}"
-                        data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
-                        data-params="{'list_from_app':'{{data.list_from_app|escape}}'}"
-                >
-                </select>
+                <select class="form-select" name="project_pm" id="select_project_pm"
+                            data-url="{% url 'EmployeeListAPI' %}"
+                            data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
+                            data-params="{'list_from_app':'{{ data.list_from_app|escape }}'}"
+                disabled>
+                    </select>
             </div>
             <div class="col-xs-12 col-md-6 form-group">
                 <label for="dateStart" class="form-label">{% trans 'Start date' %}</label>
                 <div class="input-affix-wrapper">
                     <input type="text" id="dateStart" name="start_date" class="form-control date-picker"
-                           autocomplete="off">
+                           autocomplete="off" readonly>
                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                 </div>
             </div>
@@ -51,7 +47,7 @@
                 <label for="dateFinish" class="form-label">{% trans 'Finish date' %}</label>
                 <div class="input-affix-wrapper">
                     <input type="text" id="dateFinish" name="finish_date" class="form-control date-picker"
-                           autocomplete="off">
+                           autocomplete="off" readonly>
                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                 </div>
             </div>

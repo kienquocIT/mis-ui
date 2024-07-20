@@ -252,6 +252,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PERIODS_CONFIG_DETAIL = StringUrl('saledata/period/{pk}')
 
     REVENUE_PLAN_CONFIG_LIST = StringUrl('saledata/revenue-plan-config')
+    BUDGET_PLAN_CONFIG_LIST = StringUrl('budget-plans/budget-plan-config')
 
     # masterdata/lookup/account
     INDUSTRY_LIST = StringUrl('saledata/industries')

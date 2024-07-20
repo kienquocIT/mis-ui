@@ -193,6 +193,11 @@ class MenusCoreConfigurations:
                 icon='<i class="fas fa-hand-holding-usd"></i>',
             ),
             MenuCommon(
+                name='Budget plan config', code='id_menu_master_data_budget_plan_config',
+                view_name='BudgetPlanConfigList',
+                icon='<i class="fas fa-wallet"></i>',
+            ),
+            MenuCommon(
                 name='Invoice form config', code='menu_invoice_sign',
                 view_name='InvoiceSignList',
                 icon='<i class="fas fa-signature"></i>',

@@ -7980,3 +7980,43 @@ msgstr "Nhân viên tạo Yêu Cầu Mua Hàng có thể tham chiếu toà
 #
 msgid "had been added compared to when creating the Budget plan, update it ?"
 msgstr "đã được thêm vào sau khi tạo Kế hoạch ngân sách, cập nhập?"
+
+#
+msgid "Budget plan config"
+msgstr "Cấu hình kế hoạch ngân sách"
+
+#
+msgid "QUARTER"
+msgstr "QUÝ"
+
+#
+msgid "YEAR"
+msgstr "NĂM"
+
+#
+msgid "view"
+msgstr "xem"
+
+#
+msgid "edit"
+msgstr "chỉnh sửa"
+
+#
+msgid "Allowed person"
+msgstr "Người được cấp quyền"
+
+#
+msgid "Add allowed person"
+msgstr "Thêm người được cấp quyền"
+
+#
+msgid "Add new Budget plan config"
+msgstr "Thêm cấu hình kế hoạch doanh thu"
+
+#
+msgid "Allowed view"
+msgstr "Được phép xem"
+
+#
+msgid "Allowed edit"
+msgstr "Được phép chỉnh sửa"

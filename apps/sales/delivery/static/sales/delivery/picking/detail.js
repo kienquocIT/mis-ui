@@ -213,7 +213,7 @@ $(async function () {
             data = data?.['picking_detail']
             $x.fn.renderCodeBreadcrumb(data);
             let $saleOrder = $('#inputSaleOrder');
-            $saleOrder.val(data?.['sale_order_data']?.['code']);
+            $saleOrder.html(data?.['sale_order_data']?.['code']);
             $saleOrder.attr('data-so', JSON.stringify(data?.['sale_order_data']));
             // state
             let state = data?.state;
@@ -389,7 +389,7 @@ $(async function () {
                 let areaTitle = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-warehouse')}:</b><p>${warehouseTitle}</p></div>`;
                 let areaUOM = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-uom')}:</b><p>${prod?.['uom_data']?.['title']}</p></div>`;
                 let areaStock = `<div class="d-flex mb-3">
-                                    <div class="mr-3"><p>${$elmTrans.attr('data-stock')}</p><p>${stock}</p></div>
+                                    <div class="mr-3" hidden><p>${$elmTrans.attr('data-stock')}</p><p>${stock}</p></div>
                                     <div class="mr-3"><p>${$elmTrans.attr('data-picked')}</p><p>${picked}</p></div>
                                     <div class="mr-3"><p>${$elmTrans.attr('data-available')}</p><p class="pw-available text-success">${available}</p></div>
                                 </div>`;

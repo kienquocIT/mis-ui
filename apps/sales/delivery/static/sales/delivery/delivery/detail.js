@@ -108,7 +108,7 @@ $(async function () {
                     }
                 }
                 $('#warehouseStockModal').modal('show');
-                $('#save-stock').off().on('click', function (e) {
+                $('#save-stock').off().on('click', function () {
                     let isSelected = table.DataTable().data().toArray()
                     let temp_picked = 0
                     let sub_delivery_data = []
@@ -188,7 +188,7 @@ $(async function () {
                             let is_gift = ''
                             if (data.is_promotion)
                                 is_gift = '<span class="ml-2"><i class="fa-solid fa-gift text-gift"></i></span>'
-                            let html = `<div class="input-group">
+                            return `<div class="input-group">
                                             <div class="dropdown pointer mr-2">
                                                 <i class="fas fa-info-circle text-blue"
                                                    data-bs-toggle="dropdown"
@@ -198,8 +198,7 @@ $(async function () {
                                                 <div class="dropdown-menu w-210p mt-2">${dataCont}</div>
                                             </div>
                                             <p>${row.title}</p>${is_gift}
-                                        </div>`
-                            return html;
+                                        </div>`;
                         }
                     },
                     {
@@ -219,7 +218,7 @@ $(async function () {
                     {
                         targets: 4,
                         class: 'w-10 text-center',
-                        visible: delivery_config.is_partial_ship,
+                        visible: delivery_config?.['is_partial_ship'],
                         render: (row, type, data) => {
                             return `<p>${data.delivered_quantity_before}</p>`;
                         }
@@ -227,7 +226,7 @@ $(async function () {
                     {
                         targets: 5,
                         class: 'w-10 text-center',
-                        visible: delivery_config.is_partial_ship,
+                        visible: delivery_config?.['is_partial_ship'],
                         render: (row, type, data) => {
                             return `<p>${data.remaining_quantity}</p>`;
                         }
@@ -235,18 +234,18 @@ $(async function () {
                     {
                         targets: 6,
                         class: 'w-10 text-center',
-                        visible: delivery_config.is_picking,
+                        visible: delivery_config?.['is_picking'],
                         data: 'ready_quantity',
                         render: (row, type, data, meta) => {
                             let html = `<p>${row}</p>`;
-                            if (delivery_config.is_picking && !delivery_config.is_partial_ship) {
+                            if (delivery_config?.['is_picking'] && !delivery_config?.['is_partial_ship']) {
                                 html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
                                     + `<p id="ready_row-${meta.row}">${row}<p/>`
                                     + `<button type="button" class="btn btn-flush-primary btn-animated select-prod" `
                                     + `data-idx="${meta.row}" data-id="${data.product_data.id}">`
                                     + `<i class="fa-solid fa-ellipsis"></i></button></div>`;
                             }
-                            if (!data?.is_not_inventory){
+                            if (!data?.['is_not_inventory']){
                                 html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
                                     + `<p id="ready_row-${meta.row}">${row}<p/>`
                                     + `<button type="button" class="btn btn-flush-primary btn-icon" disabled>`
@@ -278,9 +277,9 @@ $(async function () {
                             }
 
 
-                            if (delivery_config.is_picking && !delivery_config.is_partial_ship)
+                            if (delivery_config.is_picking && !delivery_config?.['is_partial_ship'])
                                 html = `<p class="text-center">${quantity}<p/>`
-                            if (!data?.is_not_inventory){
+                            if (!data?.['is_not_inventory']){
                                 html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
                                 + `<input type="number" class="form-control w-100p services_input" id="prod_row-${meta.row}" value="${quantity}">`
                                 + `<button type="button" class="btn" disabled>`
@@ -330,7 +329,6 @@ $(async function () {
         }
 
         setupDataPW(dataSrc, prod_data, config) {
-            let $form = $('#delivery_form');
             let finalData = [];
             let baseData = [];
             let soDataJson = {};
@@ -747,7 +745,7 @@ $(async function () {
                     },
                 ],
                 rowCallback(row, data, index) {
-                    $(`input.form-control`, row).on('change', function (e) {
+                    $(`input.form-control`, row).on('change', function () {
                         prodTable.validateQuantity(this);
                         let valueLotInit = row?.querySelector('.table-row-quantity-init')?.innerHTML;
                         if (parseFloat(this.value) <= parseFloat(valueLotInit)) {
@@ -927,7 +925,7 @@ $(async function () {
                     },
                 ],
                 rowCallback(row, data, index) {
-                    $(`input.form-check-input`, row).on('click', function (e) {
+                    $(`input.form-check-input`, row).on('click', function () {
                         prodTable.loadQuantityDeliveryBySerial(this);
                     });
                 },
@@ -1092,11 +1090,11 @@ $(async function () {
         const $htmlElm = $('.html-table-title')
         const $titleTable = $('.table-handle-btn')
         // button html
-        if (config.is_picking) $('button[form="delivery_form"]').attr('disabled', true)
+        if (config?.['is_picking']) $('button[form="delivery_form"]').attr('disabled', true)
 
         // table setup
-        if (!config.is_picking && !config.is_partial_ship) $titleTable.html($('.case-01', $htmlElm).html())
-        else if (config.is_picking && !config.is_partial_ship) $titleTable.html($('.case-02', $htmlElm).html())
+        if (!config?.['is_picking'] && !config?.['is_partial_ship']) $titleTable.html($('.case-01', $htmlElm).html())
+        else if (config?.['is_picking'] && !config?.['is_partial_ship']) $titleTable.html($('.case-02', $htmlElm).html())
         else $titleTable.html($('.case-03', $htmlElm).html())
     }
 
@@ -1109,7 +1107,7 @@ $(async function () {
             .then((req) => {
 
                 const res = $.fn.switcherResp(req);
-                prepareHTMLConfig(res.config_at_that_point)
+                prepareHTMLConfig(res?.['config_at_that_point'])
                 $x.fn.renderCodeBreadcrumb(res);
                 const $saleOrder = $('#inputSaleOrder');
                 $saleOrder.html(res.sale_order_data.code)
@@ -1125,13 +1123,13 @@ $(async function () {
                         'DD/MM/YYYY')
                     $('#inputActualDate').val(actualDate)
                 }
-                if (res.customer_data) {
+                if (res?.['customer_data']) {
                     const $cusID = $('#customer_id')
-                    $cusID.attr(res.customer_data.id)
-                    $cusID.val(res.customer_data.title)
-                    const cusContent = DataTableAction.item_view(res.customer_data, $url.attr('data-customer'))
+                    $cusID.attr(res?.['customer_data']?.['id'])
+                    $cusID.val(res?.['customer_data']?.['title'])
+                    const cusContent = DataTableAction.item_view(res?.['customer_data'], $url.attr('data-customer'))
                     $cusID.prev().find('.dropdown-menu').html(cusContent)
-                    prodDetailUtil.modalLogistics(res.customer_data.id, res.sale_order_data)
+                    prodDetailUtil.modalLogistics(res?.['customer_data']?.['id'], res?.['sale_order_data'])
                     $('#textareaShippingAddress').val(res.delivery_logistic?.shipping_address ||
                         res.sale_order_data?.shipping_address?.address)
                     $('#textareaBilling').val(res.delivery_logistic?.billing_address ||
@@ -1164,7 +1162,7 @@ $(async function () {
                 }
                 $('#textareaRemarks').val(res.remarks)
                 prodTable.setProdList = res.products
-                prodTable.setProdConfig = res.config_at_that_point
+                prodTable.setProdConfig = res?.['config_at_that_point']
 
                 $('#request-data').text(JSON.stringify(res))
                 // run table
@@ -1191,7 +1189,7 @@ $(async function () {
                 // after prepare HTML run event click button done
                 btnDoneClick()
             })
-    };
+    }
 
     function formSubmit() {
         const $form = $('#delivery_form')
@@ -1228,7 +1226,7 @@ $(async function () {
             putData['employee_inherit_id'] = $('#selectEmployeeInherit').val()
 
             let prodSub = []
-            for (prod of prodTable.getProdList) {
+            for (let prod of prodTable.getProdList) {
                 if (prod.picked_quantity > 0)
                     prodSub.push({
                         'product_id': prod.product_data.id,
@@ -1324,7 +1322,7 @@ $(async function () {
             const key = `${item.product_data.id}.${item.uom_data.id}`;
             let prodCheck = []
             if (callableWarehouse.hasOwnProperty(key)) prodCheck = callableWarehouse[key]
-            else if (item.is_not_inventory){
+            else if (item?.['is_not_inventory']){
                 // cho case có prod trong kho
                 const listPromise = await $.fn.callAjax(
                     $url.attr('data-warehouse-prod'),
@@ -1332,7 +1330,7 @@ $(async function () {
                     {'product_id': item.product_data.id, 'uom_id': item.uom_data.id}
                 )
                 if (listPromise.data.status === 200) {
-                    prodCheck = listPromise.data.warehouse_stock
+                    prodCheck = listPromise.data?.['warehouse_stock']
                 }
                 let flag = false
                 item.picked_quantity = 0
@@ -1341,18 +1339,18 @@ $(async function () {
                     if (item.picked_quantity !== item.delivery_quantity) {
                         // kiem tra pick chưa đủ
                         const remain = item.delivery_quantity - item.picked_quantity
-                        if (value.product_amount > 0) {
+                        if (value?.['product_amount'] > 0) {
                             let temp = {
                                 'warehouse': value.id,
                                 'uom': item.uom_data.id,
                                 'stock': 0
                             }
-                            if (value.product_amount >= remain) {
+                            if (value?.['product_amount'] >= remain) {
                                 temp.stock = remain
                                 item.picked_quantity += remain
                             } else {
-                                temp.stock = value.product_amount
-                                item.picked_quantity += value.product_amount
+                                temp.stock = value?.['product_amount']
+                                item.picked_quantity += value?.['product_amount']
                             }
                             item.delivery_data.push(temp)
                             if (item.picked_quantity === item.delivery_quantity) {
@@ -1365,7 +1363,7 @@ $(async function () {
                 if (!flag)
                     $.fn.notifyB({description: $trans.attr('data-outstock')}, 'failure')
             }
-            else if (!item.is_not_inventory)
+            else if (!item?.['is_not_inventory'])
                 // cho case có prod là dịch vụ
                 item.picked_quantity = item.ready_quantity
         }

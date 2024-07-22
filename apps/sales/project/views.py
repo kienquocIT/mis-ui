@@ -219,7 +219,7 @@ class ProjectWorkListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_WORK_LIST).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_WORK_LIST).get(request.query_params.dict())
         return resp.auto_return(key_success='pj_work_list')
 
 

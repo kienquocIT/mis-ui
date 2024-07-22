@@ -7653,8 +7653,8 @@ msgid "Types of Relationships"
 msgstr "Loại quan hệ"
 
 #
-msgid "Parents Work"
-msgstr "Công việc cha"
+msgid "Dependencies work with"
+msgstr "Phụ thuộc với Công việc"
 
 #
 msgid "Work weight"
@@ -8020,3 +8020,7 @@ msgstr "Được phép xem"
 #
 msgid "Allowed edit"
 msgstr "Được phép chỉnh sửa"
+
+#
+msgid "Baseline"
+msgstr "Đường cơ sở"

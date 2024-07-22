@@ -132,6 +132,7 @@ function saveWork(gantt_obj) {
     const $wModal = $('#work_modal'), $urlFact = $('#url-factory'), $ganttElm = $('.gantt-wrap');
     $('#btn-work-add').off().on('click', function () {
         $(this).prop('disabled', true)
+
         const $tit = $('#workTitle'), $startD = $('#workStartDate'), $startE = $('#workEndDate'),
             groupElm = $('#select_project_group'), workParent = $('#select_project_work'), $workID = $('#work_id');
         if (!$tit.val()) {

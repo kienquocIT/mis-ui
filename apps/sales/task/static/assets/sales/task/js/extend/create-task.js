@@ -311,6 +311,7 @@ $(document).ready(function () {
         $form,
         {
             submitHandler: function (form) {
+                form.find('.create-task').attr('disabled', true)
                 let _form = new SetupFormSubmit(form);
                 let formData = _form.dataForm
                 const $assignerElm = $('#inputAssigner')
@@ -422,10 +423,12 @@ $(document).ready(function () {
                             }
                             if ($('.current-create-task').length) $('.cancel-task').trigger('click')
                         }
+                        form.find('.create-task').attr('disabled', false)
                     },
                     (errs) => {
                         if (errs?.data?.errors)
                             $.fn.notifyB({'description': errs?.data?.errors}, 'failure')
+                        form.find('.create-task').attr('disabled', false)
                     }
                 )
             }

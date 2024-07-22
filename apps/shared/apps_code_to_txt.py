@@ -181,6 +181,10 @@ class AppsCodeToList:
             'project': {
                 'title': _('Project'),
                 'is_active': True,
+            },
+            'projectbaseline': {
+                'title': _('Project Baseline'),
+                'is_active': True
             }
         }
     }

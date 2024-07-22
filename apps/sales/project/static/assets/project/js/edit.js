@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function () {
     'use strict';
     // run date-pick
     $('.date-picker').daterangepicker({
@@ -14,7 +14,7 @@ $(document).ready(function(){
     });
 
     // run select employee choice
-    $('#selectEmployeeInherit, #select_project_owner').each(function(){
+    $('#selectEmployeeInherit, #select_project_pm').each(function () {
         $(this).initSelect2({
             templateResult: function (state) {
                 let groupHTML = `<span class="badge badge-soft-primary">${state.data?.group?.title ? state.data.group.title : "_"}</span>`
@@ -23,7 +23,7 @@ $(document).ready(function(){
             },
         })
     });
-    $('#select_project_group, #select_project_work').each(function(){
+    $('#select_project_group, #select_project_work').each(function () {
         $(this).initSelect2()
     });
 
@@ -75,7 +75,7 @@ $(document).ready(function(){
                     $.fn.notifyB({description: err.data.errors}, 'failure')
                 }
             )
-        }else $('.lazy_loading').removeClass('active')
+        } else $('.lazy_loading').removeClass('active')
     }
 
     var new_gantt = new Gantt(
@@ -109,9 +109,9 @@ $(document).ready(function(){
     // get data
     let $form = $('#project_form')
     $.fn.callAjax2({
-            'url': $form.attr('data-url-detail'),
-            'method': 'get',
-        })
+        'url': $form.attr('data-url-detail'),
+        'method': 'get',
+    })
         .then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -119,10 +119,9 @@ $(document).ready(function(){
                 $x.fn.renderCodeBreadcrumb(data);
                 $('#titleInput').val(data.title)
                 $('#id').val(data.id)
-                let opt1 = new Option(data['project_owner']['full_name'], data['project_owner']['id'], true, true);
-                $('#select_project_owner').attr('data-onload', JSON.stringify(data['project_owner'])).append(opt1).trigger('change');
-                let opt2 = new Option(data['employee_inherit']['full_name'], data['employee_inherit']['id'], true, true);
-                $('#selectEmployeeInherit').attr('data-onload', JSON.stringify(data['employee_inherit'])).append(opt2).trigger('change');
+                let opt1 = new Option(data['project_pm']['full_name'], data['project_pm']['id'], true, true);
+                $('#select_project_pm').attr('data-onload', JSON.stringify(data['project_pm'])).append(opt1).trigger('change');
+                $('#employeeInheritInput').attr('data-value', data['employee_inherit'].id).val(data['employee_inherit'].full_name);
                 $('#dateStart').val(moment(data.start_date).format('DD/MM/YYYY'))
                 $('#dateFinish').val(moment(data.finish_date).format('DD/MM/YYYY'))
                 const afterData = fGanttCustom.convert_data(data.groups, data?.['works'])
@@ -130,11 +129,13 @@ $(document).ready(function(){
                 ProjectTeamsHandle.render(data.members)
                 Task_in_project.init(data)
                 ProjectWorkExpenseHandle.init(data?.['works'])
-
-                if (data['employee_inherit']['id'] === JSON.parse($('#current_info').text()).id){
+                const _crtEmpID = JSON.parse($('#current_info').text()).id
+                if (data['employee_inherit']['id'] === _crtEmpID || data['project_pm']['id'] === _crtEmpID) {
                     $('#create_baseline').prop('disabled', false)
                     $('#data_form').data('form_data', data)
                 }
+                else $('#create_baseline').prop('disabled', true)
+                WFRTControl.setWFInitialData('projectbaseline', 'post');
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )
@@ -181,17 +182,18 @@ $(document).ready(function(){
         )
     })
 
-    function validWeight(elmObj){
+    function validWeight(elmObj) {
         let $elm = $(elmObj), value = elmObj.value, regex = /^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/;
-        if (value && regex.test(value)){
+        if (value && regex.test(value)) {
             $elm.removeClass('is-invalid cl-red')
             if (elmObj.value > 100) elmObj.value = 100
         }
-        else{
+        else {
             $elm.addClass('is-invalid cl-red')
             elmObj.value = 0
         }
     }
+
     function delay(fn, ms) {
         let timer = 0
         return function (...args) {
@@ -199,6 +201,7 @@ $(document).ready(function(){
             timer = setTimeout(fn.bind(this, ...args), ms || 0)
         }
     }
+
     // valid group weight
     $('#groupWeight').keyup(delay(function (e) {
         validWeight(this)
@@ -208,9 +211,9 @@ $(document).ready(function(){
         validWeight(this)
     }, 500));
 
-    class createBaseline{
-        static baselineSubmit(){
-            $('#create_baseline').on('click', function(){
+    class createBaseline {
+        static baselineSubmit() {
+            $('#create_baseline').on('click', function () {
                 Swal.fire({
                     title: $.fn.gettext("Are you sure?"),
                     text: $.fn.gettext("Create baseline at this moment?"),
@@ -222,34 +225,30 @@ $(document).ready(function(){
                     reverseButtons: true
                 }).then((result) => {
                     if (result.value && result.isConfirmed) {
-                        let frm = $('#project_form'), form_data = $('#data_form').data('form_data'),
-                        allList = [];
-                        const $tblExpense = $('#work_expense_tbl tr.work-expense-wrap');
-                        Array.from($tblExpense).forEach(function(e){
-                            allList = allList.concat($(e).find('table[id*="expense_child_"]').DataTable().data().toArray())
-                        })
-                        let baseline_data = {
-                            project: form_data.id,
-                            project_data: form_data
-                        }
-                        $.fn.callAjax2({
-                            url: $('#url-factory').attr("data-baseline"),
-                            method: 'post',
-                            data: baseline_data,
-                        }).then((resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) $.fn.notifyB({description: data.message}, 'success')
-                        }, (errs) => {
-                            $.fn.notifyB({description: errs.data.errors}, 'failure');
-                        })
+                        let form_data = $('#data_form').data('form_data'),
+                            frm = {
+                                dataUrl: $('#url-factory').attr('data-baseline'),
+                                dataMethod: 'post',
+                                dataForm: {
+                                    title: form_data.title,
+                                    code: form_data.code,
+                                    project_related: form_data.id,
+                                    project_data: form_data,
+                                    employee_inherit_id: $('#employeeInheritInput').attr('data-value'),
+                                },
+                                dataUrlRedirect: $('#url-factory').attr('data-list')
+                            };
+                        WFRTControl.callWFSubmitForm(frm);
                     }
                 })
             })
         }
-        static init(){
+
+        static init() {
             createBaseline.baselineSubmit()
         }
     }
+
     // run create btn
     createBaseline.init()
 

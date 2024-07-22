@@ -467,3 +467,6 @@
     overflow: hidden;
     overflow-y: auto;
 }
+.wrap-title ~ div{
+    overflow: hidden;
+}

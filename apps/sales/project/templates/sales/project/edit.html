@@ -46,18 +46,20 @@
                 </div>
                 <div class="clearfix"></div>
                 <div class="col-xs-12 col-md-6 form-group">
-                    <label for="select_project_owner" class="form-label required">{% trans 'Project owner' %}</label>
-                    <select class="form-select" name="project_owner" id="select_project_owner"
+                    <label for="select_project_pm" class="form-label required">{% trans 'Project owner' %}</label>
+                    <input type="input" name="employee_inherit" id="employeeInheritInput" class="form-control" readonly>
+                    {% comment %}
+                    <select class="form-select" name="project_pm" id="select_project_pm"
                             data-url="{% url "EmployeeListAPI" %}"
                             data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
                             data-params="{'list_from_app':'{{ data.list_from_app|escape }}'}"
                     >
-                    </select>
+                    </select>{% endcomment %}
                 </div>
                 <div class="col-xs-12 col-md-6 form-group">
                     <label for="selectEmployeeInherit" class="form-label required">{% trans 'Project PM' %}</label>
-                    <select class="form-select" name="employee_inherit" id="selectEmployeeInherit"
-                            data-url="{% url "EmployeeListAPI" %}"
+                    <select class="form-select" name="project_pm" id="select_project_pm"
+                            data-url="{% url 'EmployeeListAPI' %}"
                             data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
                             data-params="{'list_from_app':'{{ data.list_from_app|escape }}'}"
                     >
@@ -249,6 +251,7 @@
     <button class="ntt-drawer-toggle-link hidden btn-show-task_f" type="button" data-drawer-target="#drawer_task_create"
             data-drawer-active="false"></button>
     <input type="text" id="url-factory"
+           data-list="{% url 'ProjectList' %}"
            data-group="{% url 'ProjectCreateGroupAPI' %}"
            data-group-detail="{% url 'ProjectGroupDetailAPI' 1 %}"
            data-work="{% url 'ProjectWorkCreateAPI' %}"

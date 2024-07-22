@@ -55,10 +55,9 @@ $(document).ready(function () {
                 }
                 $('#titleInput').val(project.title)
                 $('#id').val(project.id)
-                let opt1 = new Option(project['project_owner']['full_name'], project['project_owner']['id'], true, true);
-                $('#select_project_owner').attr('data-onload', JSON.stringify(project['project_owner'])).append(opt1).trigger('change');
-                let opt2 = new Option(project['employee_inherit']['full_name'], project['employee_inherit']['id'], true, true);
-                $('#selectEmployeeInherit').attr('data-onload', JSON.stringify(project['employee_inherit'])).append(opt2).trigger('change');
+                let opt1 = new Option(project['project_pm']['full_name'], project['project_pm']['id'], true, true);
+                $('#select_project_pm').attr('data-onload', JSON.stringify(project['project_pm'])).append(opt1).trigger('change');
+                $('#employeeInheritInput').attr('data-value', project['employee_inherit'].id).val(project['employee_inherit'].full_name);
                 $('#dateStart').val(moment(project.start_date).format('DD/MM/YYYY'))
                 $('#dateFinish').val(moment(project.finish_date).format('DD/MM/YYYY'))
                 let group = [], work = [];

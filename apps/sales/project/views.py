@@ -47,7 +47,8 @@ class ProjectCreate(View):
     def get(self, request, *args, **kwargs):
         return {
                    'dependencies_list': DEPENDENCIES_TYPE,
-                   'list_from_app': 'project.project.create'
+                   'list_from_app': 'project.project.create',
+                   'employee_info': request.user.employee_current_data
                }, status.HTTP_200_OK
 
 

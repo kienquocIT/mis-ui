@@ -193,6 +193,11 @@ class MenusCoreConfigurations:
                 icon='<i class="fas fa-hand-holding-usd"></i>',
             ),
             MenuCommon(
+                name='Budget plan config', code='id_menu_master_data_budget_plan_config',
+                view_name='BudgetPlanConfigList',
+                icon='<i class="fas fa-wallet"></i>',
+            ),
+            MenuCommon(
                 name='Invoice form config', code='menu_invoice_sign',
                 view_name='InvoiceSignList',
                 icon='<i class="fas fa-signature"></i>',
@@ -249,6 +254,10 @@ class MenusCRM:
     REVENUE_PLAN = MenuCommon(
         name='Revenue plan', code='menu_revenue_plan_list', view_name='RevenuePlanList',
         icon='<i class="fas fa-hand-holding-usd"></i>',
+    )
+    BUDGET_PLAN = MenuCommon(
+        name='Budget plan', code='menu_budget_plan_list', view_name='BudgetPlanList',
+        icon='<i class="fas fa-wallet"></i>',
     )
     LEAD = MenuCommon(
         name='Lead', code='menu_lead_list', view_name='LeadList',
@@ -662,6 +671,7 @@ class SpaceItem:
                 MenusCRM.HOME,
                 MenusCRM.DASHBOARD,
                 MenusCRM.REVENUE_PLAN,
+                MenusCRM.BUDGET_PLAN,
                 MenusCRM.LEAD,
                 MenusCRM.CALENDAR,
                 MenusCRM.CONTACT,

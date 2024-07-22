@@ -3,30 +3,123 @@
 {% load static %}
 {% block title %}{% trans 'Budget Plan Update' %}{% endblock %}
 {% block cssHeader %}
+    <style>
+        .money-input {
+            min-width: 250px;
+        }
+        .expense-item {
+            min-width: 300px;
+        }
+        .sticky {
+            position: sticky;
+            top: 0;
+            z-index: 1111;
+        }
+        th {
+            color: white !important;
+        }
+        tr input {
+            text-align: right;
+        }
+    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button id="btn-save-budget-plan" class="btn btn-outline-primary" type="submit" form="form-detail-budget-plan">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
-            </span>
-        </span>
-    </button>
+{#    <button id="btn-save-budget-plan" class="btn btn-outline-primary" type="submit" form="form-detail-budget-plan">#}
+{#        <span>#}
+{#            <span>{% trans 'Save' %}</span>#}
+{#            <span class="icon">#}
+{#                <i class="fa-regular fa-floppy-disk"></i>#}
+{#            </span>#}
+{#        </span>#}
+{#    </button>#}
 {% endblock %}
 {% block pageContent %}
-    <script id="trans-url"></script>
-    <form id="form-detail-budget-plan"
-          data-method="PUT"
-          data-url-redirect="{% url 'BudgetPlanDetail' '0' %}"
-          data-url-list="{% url 'BudgetPlanList' %}"
-          data-url-detail="{% url 'BudgetPlanDetail' '0' %}"
-          data-url-detail-api="{% url 'BudgetPlanDetailAPI' '0' %}"
-          data-url="{% url "BudgetPlanListAPI" %}">
-        {% csrf_token %}
-    </form>
+    <script id="trans-script"
+            data-trans-add-new-row="{% trans 'Add new row' %}"
+            data-trans-save-tab="{% trans 'Save' %}"
+            data-trans-m1th="{% trans 'January' %}"
+            data-trans-m2th="{% trans 'February' %}"
+            data-trans-m3th="{% trans 'March' %}"
+            data-trans-m4th="{% trans 'April' %}"
+            data-trans-m5th="{% trans 'May' %}"
+            data-trans-m6th="{% trans 'June' %}"
+            data-trans-m7th="{% trans 'July' %}"
+            data-trans-m8th="{% trans 'August' %}"
+            data-trans-m9th="{% trans 'September' %}"
+            data-trans-m10th="{% trans 'October' %}"
+            data-trans-m11th="{% trans 'November' %}"
+            data-trans-m12th="{% trans 'December' %}"
+            data-trans-quarter="{% trans 'QUARTER' %}"
+            data-trans-year="{% trans 'YEAR' %}"
+            data-trans-expense-item="{% trans 'Expense item' %}"
+            data-trans-action="{% trans 'Action' %}"
+    ></script>
+
+    <script id="url-script"
+            data-url-budget-plan-detail="{% url 'BudgetPlanDetailAPI' '0' %}"
+            data-url-group-list="{% url 'GroupListAPI' %}"
+            data-url-row-expense-item="{% url 'ExpenseItemListAPI' %}"
+            data-url-update-tab="{% url 'BudgetPlanDetailAPI' '0' %}"
+            data-url-redirect-tab="{% url 'BudgetPlanDetail' '0' %}"
+    ></script>
+    <div class="row">
+        <div class="col-12 col-md-8 col-lg-8">
+            <div class="form-group">
+                <label for="budget-plan-title" class="form-label required">{% trans 'Name' %}</label>
+                <input type="text" class="form-control" id="budget-plan-title">
+            </div>
+        </div>
+        <div class="col-12 col-md-4 col-lg-4">
+            <div class="form-group">
+                <label for="budget-plan-period" class="form-label required">{% trans 'Period' %}</label>
+                <select class="form-select select2" id="budget-plan-period"
+                        data-url="{% url 'PeriodsConfigListAPI' %}"
+                        data-method="GET"
+                ></select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-2 col-lg-2">
+            <div class="form-check">
+                <input class="form-check-input" id="monthly" type="checkbox" disabled checked>
+                <label class="form-check-label" for="monthly">{% trans 'Monthly' %}</label>
+            </div>
+        </div>
+        <div class="col-12 col-md-2 col-lg-2">
+            <div class="form-check">
+                <input class="form-check-input" id="quarterly" type="checkbox" disabled>
+                <label class="form-check-label" for="quarterly">{% trans 'Quarterly' %}</label>
+            </div>
+        </div>
+        <div class="col-12 col-md-4 col-lg-4">
+            <div class="form-check">
+                <input class="form-check-input" id="equal" type="checkbox" checked disabled>
+                <label class="form-check-label" for="equal">{% trans 'Period target equals total of sub period targets' %}</label>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-12">
+            <ul class="nav nav-light nav-icon nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="pill" href="#tab_company">
+                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-building"></i></span></span>
+                        <span class="nav-link-text fw-bold">{% trans 'Company' %}</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab_company">
+                    <div class="row">
+                        <div class="col-12" id="table-company" style="position: relative; overflow: auto; width: 100%; max-height: 60vh"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block jsFooterUnCompress %}
 {% endblock %}

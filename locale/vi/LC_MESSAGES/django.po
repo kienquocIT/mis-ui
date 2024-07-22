@@ -3769,7 +3769,7 @@ msgstr "Tên nhà cung cấp"
 
 #
 msgid "Add new row"
-msgstr "Thêm hàng mới"
+msgstr "Thêm dòng mới"
 
 #
 msgid "Payment value"
@@ -7952,3 +7952,71 @@ msgstr "Nhóm đơn vị"
 msgid "Edit zone"
 msgstr "Chỉnh sửa vùng dữ liệu"msgid "Expand / Collapse"
 msgstr "Thu gọn / Mở rộng"
+
+#
+msgid "Project Baseline"
+msgstr "Đường cơ sở của Dự án"
+
+#
+msgid "Budget plan"
+msgstr "Kế hoạch ngân sách"
+
+#
+msgid "Budget plan list"
+msgstr "Danh sách kế hoạch ngân sách"
+
+#
+msgid "Create new Budget plan"
+msgstr "Tạo mới kế hoạch ngân sách"
+
+#
+msgid "Select items"
+msgstr "Chọn sản phẩm"
+
+#
+msgid "Employees who create a Purchase Request can reference the entire Sale Order"
+msgstr "Nhân viên tạo Yêu Cầu Mua Hàng có thể tham chiếu toàn bộ Đơn Hàng"
+
+#
+msgid "had been added compared to when creating the Budget plan, update it ?"
+msgstr "đã được thêm vào sau khi tạo Kế hoạch ngân sách, cập nhập?"
+
+#
+msgid "Budget plan config"
+msgstr "Cấu hình kế hoạch ngân sách"
+
+#
+msgid "QUARTER"
+msgstr "QUÝ"
+
+#
+msgid "YEAR"
+msgstr "NĂM"
+
+#
+msgid "view"
+msgstr "xem"
+
+#
+msgid "edit"
+msgstr "chỉnh sửa"
+
+#
+msgid "Allowed person"
+msgstr "Người được cấp quyền"
+
+#
+msgid "Add allowed person"
+msgstr "Thêm người được cấp quyền"
+
+#
+msgid "Add new Budget plan config"
+msgstr "Thêm cấu hình kế hoạch doanh thu"
+
+#
+msgid "Allowed view"
+msgstr "Được phép xem"
+
+#
+msgid "Allowed edit"
+msgstr "Được phép chỉnh sửa"

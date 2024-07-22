@@ -3,37 +3,48 @@ $(document).ready(function () {
 
     function submitHandleFunc() {
         const frm = new SetupFormSubmit($FormElm);
-        let formData = frm.dataForm;
-        formData.employee_inherit_id = $('#selectEmployeeInherit').val()
+        let formData = frm.dataForm, $elmExpenseLst = $('#work_expense_tbl');
+        formData.employee_inherit = $('#employeeInheritInput').attr('data-value')
         formData.start_date = moment(formData['start_date'], 'DD/MM/YYYY').format('YYYY-MM-DD')
         formData.finish_date = moment(formData['finish_date'], 'DD/MM/YYYY').format('YYYY-MM-DD')
-        formData.delete_expense_lst = [...new Set($('#work_expense_data').data('delete_lst'))]
-        formData.expense_data = ProjectWorkExpenseHandle.saveExpenseData()
-        formData.work_expense_data = {}
-        for (let item of $('#work_expense_tbl').DataTable().data().toArray()){
-            if (item?.expense_data) formData.work_expense_data[item.id] = item.expense_data
+
+        if ($elmExpenseLst.length){ // data edit
+            formData.work_expense_data = {}
+            formData.delete_expense_lst = [...new Set($('#work_expense_data').data('delete_lst'))]
+            formData.expense_data = ProjectWorkExpenseHandle.saveExpenseData()
+            for (let item of $elmExpenseLst.DataTable().data().toArray()){
+                if (item?.expense_data) formData.work_expense_data[item.id] = item.expense_data
+            }
         }
+
         frm.dataForm = formData
-        if (frm.dataMethod === 'POST') WFRTControl.callWFSubmitForm(frm);
-        else
-            $.fn.callAjax2({
-                'url': frm.dataUrl,
-                'method': frm.dataMethod,
-                'data': formData,
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && (data['status'] === 201 || data['status'] === 200)) {
-                        $.fn.notifyB({description: data.message}, 'success');
+
+        $.fn.callAjax2({
+            'url': frm.dataUrl,
+            'method': frm.dataMethod,
+            'data': formData,
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && (data['status'] === 201 || data['status'] === 200)) {
+                    $.fn.notifyB({description: data.message}, 'success');
+                    if (frm.dataMethod === 'post'){
+                        setTimeout(() => {
+                            window.location.href = $FormElm.attr('data-url-redirect');
+                        }, 1000)
                     }
-                },
-                (err) => {
                     setTimeout(() => {
-                        WindowControl.hideLoading();
-                    }, 1000)
-                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                        window.location.reload()
+                    }, 500)
                 }
-            )
+            },
+            (err) => {
+                setTimeout(() => {
+                    WindowControl.hideLoading();
+                }, 1000)
+                $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+            }
+        )
     }
 
     // form submit
@@ -46,7 +57,7 @@ $(document).ready(function () {
 
     $('.toggle-ud .btn').on('click', ()=> $('.toggle-ud').toggleClass('is_show'))
 
-    $('.toggle-notes').on('click', function(e){
+    $('.toggle-notes').on('click', function(){
         $('.content-notes').slideToggle()
     })
 });
@@ -120,6 +131,7 @@ function saveGroup(gantt_obj) {
 function saveWork(gantt_obj) {
     const $wModal = $('#work_modal'), $urlFact = $('#url-factory'), $ganttElm = $('.gantt-wrap');
     $('#btn-work-add').off().on('click', function () {
+        $(this).prop('disabled', true)
         const $tit = $('#workTitle'), $startD = $('#workStartDate'), $startE = $('#workEndDate'),
             groupElm = $('#select_project_group'), workParent = $('#select_project_work'), $workID = $('#work_id');
         if (!$tit.val()) {
@@ -199,9 +211,11 @@ function saveWork(gantt_obj) {
                         }
                     }
                 }
+                $(this).prop('disabled', false)
             },
             (err) => {
                 $.fn.notifyB({description: err.data.errors}, 'failure')
+                $(this).prop('disabled', false)
             }
         )
     });
@@ -682,12 +696,13 @@ class ProjectTeamsHandle {
 
 class ProjectWorkExpenseHandle{
     static ValidDataRow(data){
-        if (data.expense_item.hasOwnProperty('id') && data.uom.hasOwnProperty('id') && data.quantity
-            && data.expense_price && data.tax.hasOwnProperty('id')) {
-            if (data.is_labor) {
-                if (data.expense_name.hasOwnProperty('id')) return true
-            } else if (data.expense_name) return true
-        }
+        if (data.expense_item.hasOwnProperty('id') &&
+            data.uom.hasOwnProperty('id') &&
+            data.quantity &&
+            data.expense_price &&
+            typeof data.is_labor == "boolean" &&
+            ((!data.is_labor && data.title !== "") || (data.is_labor && data.expense_name.hasOwnProperty('id')))
+        ) return true
         return false
     }
 
@@ -732,10 +747,11 @@ class ProjectWorkExpenseHandle{
 
         let total_unit = 0, total_tax = 0, total_price = 0;
         for (let item of tbl.data().toArray()){
-            if (item.expense_data && item.expense_data.price && item.expense_data.tax && item.expense_data['total_after_tax']){
+            if (item.expense_data && item.expense_data.price && item.expense_data['total_after_tax']){
                 total_unit += item.expense_data.price
-                total_tax += item.expense_data.tax
+
                 total_price += item.expense_data['total_after_tax']
+                if (item.expense_data.tax) total_tax += item.expense_data.tax
             }
         }
         // init calc header
@@ -757,7 +773,7 @@ class ProjectWorkExpenseHandle{
         trElm.after(
             `<tr class="work-expense-wrap"><td colspan="4"><div class="WE-content hidden-simple">${$addBtn + dtlSub}</div></td></tr>`
         );
-        const $URLFactory = $('#url-factory')
+        const $URLFactory = $('#url-factory');
         let crtTable = $('#expense_child_' + workID).DataTableDefault({
             info: false,
             searching: false,
@@ -875,7 +891,7 @@ class ProjectWorkExpenseHandle{
                 $('.expense_labor_name', row).on('select2:select', function (e){
                     data.expense_name = e.params.data.data
                     data.expense_item = data.expense_name.expense_item
-                    data.expense_price = data.expense_name.price_list[0]?.price_value || 0
+                    data.expense_price = data.expense_name['price_list'][0]?.price_value || 0
                     data.uom = data.expense_name.uom
                     crtTable.row(index).data(data).draw(false)
                 })
@@ -893,18 +909,17 @@ class ProjectWorkExpenseHandle{
                     if ($(this).hasClass('valid-number'))
                         data.quantity = this.value = validateNumber(this.value)
                     else if ($(this).hasClass('expense_price')) data.expense_price = validateNumber(this.value)
-                    else data.expense_name = this.value
+                    else data.title = this.value
                     if (data.expense_price && data.quantity){
                         // render subtotal
                         data.sub_total = data.expense_price * data.quantity
                         crtTable.cell({row: idx, column: 5}).data(data.sub_total).draw(false)
                         // render parent data when child data is complete row
-                        if (data?.tax && Object.keys(data.tax).length > 0){
-                            let total_after = data.sub_total
-                            if (data.tax.rate !== 0) total_after += data.tax.rate/100 * total_after
-                            crtTable.cell(idx, 7).data(total_after).draw(false)
-                            ProjectWorkExpenseHandle.calcSubTotal(crtTable.data().toArray(), trElm)
-                        }
+                        let total_after = data.sub_total
+                        if ((data?.tax && Object.keys(data.tax).length > 0) && data.tax.rate !== 0)
+                            total_after += data.tax.rate/100 * total_after
+                        crtTable.cell(idx, 7).data(total_after).draw(false)
+                        ProjectWorkExpenseHandle.calcSubTotal(crtTable.data().toArray(), trElm)
                     }
                 });
 
@@ -1062,11 +1077,11 @@ class ProjectWorkExpenseHandle{
                 let totalAfterTax = 0
                 api.rows().every(function () {
                     let data = this.data()
-                    if (data?.['expense_data']?.['price'] && data?.['expense_data']?.['tax']
-                        && data?.['expense_data']?.['total_after_tax']){
+                    if (data?.['expense_data']?.['price'] && data?.['expense_data']?.['total_after_tax']){
                         totalPrice += data.expense_data.price
-                        totalTax += data.expense_data.tax
                         totalAfterTax += data.expense_data['total_after_tax']
+                        if (data?.['expense_data']?.['tax'])
+                            totalTax += data.expense_data.tax
                     }
                 });
                 // Update header

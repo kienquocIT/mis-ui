@@ -649,8 +649,8 @@ $(async function () {
                                 if (lot?.['quantity_import']) {
                                     lot['quantity_import'] = lot?.['quantity_import'] * finalRate;
                                 }
-                                if (lot?.['quantity_available']) {
-                                    lot['quantity_available'] = lot?.['quantity_available'] * finalRate;
+                                if (lot?.['available_stock']) {
+                                    lot['available_stock'] = lot?.['available_stock'] * finalRate;
                                 }
                                 if (data?.['lot_data']) {
                                     for (let delivery_lot of data?.['lot_data']) {
@@ -692,7 +692,7 @@ $(async function () {
                         targets: 1,
                         class: 'text-center',
                         render: (data, type, row) => {
-                            return `<p class="table-row-quantity-init">${row?.['quantity_available']}</p>`;
+                            return `<p class="table-row-quantity-init">${row?.['available_stock']}</p>`;
                         }
                     },
                     {
@@ -964,7 +964,7 @@ $(async function () {
                         let rowIndex = tableWH.DataTable().row(rowChecked).index();
                         let $row = tableWH.DataTable().row(rowIndex);
                         let rowData = $row.data();
-                        rowData.picked = newQuantity;
+                        rowData['picked'] = newQuantity;
                         rowData['lot_data'] = lotData;
                         rowData['is_checked'] = true;
                         tableWH.DataTable().row(rowIndex).data(rowData).draw();

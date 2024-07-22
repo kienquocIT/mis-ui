@@ -381,18 +381,12 @@ $(async function () {
                             }
                         }
                     }
-                    stock = dataPW?.['available_stock'] * finalRate;
-                    picked = dataPW?.['available_picked'] * finalRate;
                     available = (dataPW?.['available_stock'] - dataPW?.['available_picked']) * finalRate;
                     link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(dataPW?.['product']?.['id']);
                 }
                 let areaTitle = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-warehouse')}:</b><p>${warehouseTitle}</p></div>`;
                 let areaUOM = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-uom')}:</b><p>${prod?.['uom_data']?.['title']}</p></div>`;
-                let areaStock = `<div class="d-flex mb-3">
-                                    <div class="mr-3" hidden><p>${$elmTrans.attr('data-stock')}</p><p>${stock}</p></div>
-                                    <div class="mr-3"><p>${$elmTrans.attr('data-picked')}</p><p>${picked}</p></div>
-                                    <div class="mr-3"><p>${$elmTrans.attr('data-available')}</p><p class="pw-available text-success">${available}</p></div>
-                                </div>`;
+                let areaStock = `<div class="d-flex mb-3"><b class="mr-2">${$elmTrans.attr('data-available')}:</b><p class="pw-available text-success">${available}</p></div>`;
                 let areaView = `<div class="dropdown-divider"></div><div class="text-right">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover">
                                         <span>${$elmTrans.attr('data-view-detail')}</span>

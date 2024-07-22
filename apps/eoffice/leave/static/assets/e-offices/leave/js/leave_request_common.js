@@ -479,7 +479,7 @@ $(document).on('Employee.Loaded', function () {
     $AddBtn.off().on('click', () => detailTab.add())
 
     // after load employee inherit load table leave available
-    TabAvailable.load_table()
+    TabAvailable.load_table();
 });
 
 function submitHandleFunc() {
@@ -546,6 +546,7 @@ function submitHandleFunc() {
         $.fn.notifyB({description: $transElm.attr('data-detail-tab')}, 'failure');
         return false
     }
+    frm.dataForm = formData
     WFRTControl.callWFSubmitForm(frm);
 }
 

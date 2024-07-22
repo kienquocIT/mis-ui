@@ -40,11 +40,11 @@
                     </div>
                     <div class="col-xs-12 col-md-6 form-group">
                         <label for="select_project_work"
-                               class="form-label">{% trans "Parents Work" %}</label>
+                               class="form-label">{% trans "Dependencies work with" %}</label>
                         <select class="form-select" name="project_work" id="select_project_work"
                                 data-url="{% url 'ProjectWorkListAPI' %}"
                                 data-keyResp="pj_work_list" data-keyText="title" data-keyId="id"
-                                data-params="{'list_from_app': '{{ data.list_from_app|escape }}', 'project': '{{ data.pk }}'}"
+                                data-params="{'project': '{{ data.pk }}'}"
                                 data-allowClear="true"
                         >
                         </select>

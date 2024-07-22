@@ -3753,7 +3753,7 @@ msgstr "Cho nhân viên"
 
 #
 msgid "To supplier"
-msgstr "Cho nhà cung cấp"
+msgstr "Cho NCC"
 
 #
 msgid "Pretax price"
@@ -8020,3 +8020,7 @@ msgstr "Được phép xem"
 #
 msgid "Allowed edit"
 msgstr "Được phép chỉnh sửa"
+
+#
+msgid "AP status"
+msgstr "Trạng thái tạm ứng"

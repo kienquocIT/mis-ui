@@ -12,6 +12,10 @@
     height: 100%;
 }
 
+.modal-body.modal-body-custom {
+    margin-top: -15px;
+}
+
 .inline-elements {
     display: inline-block;
 }

@@ -55,10 +55,9 @@ $(document).ready(function () {
                     },
                     {
                         className: 'text-center',
-                        render: () => {
+                        render: (data, type, row) => {
                             return `
-                                <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"><span class="icon"><i class="bi bi-pencil-square"></i></span></button>
-                                <button type="button" class="btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-sm"><span class="icon"><i class="bi bi-trash"></i></span></button>
+                                <button type="button" data-id="${row?.['employee_allowed']?.['id']}" class="btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-sm btn-delete-permission"><span class="icon"><i class="bi bi-trash"></i></span></button>
                             `;
                         }
                     },
@@ -217,5 +216,54 @@ $(document).ready(function () {
                     }
                 )
         }
+    })
+
+    $(document).on("click", '.btn-delete-permission', function () {
+        let delete_employee_allowed_id = $(this).attr('data-id')
+        Swal.fire({
+            html:
+                `<p class="text-secondary mt-3">Confirm delete this employee's permission?</p>`,
+            customClass: {
+                confirmButton: 'btn btn-outline-danger text-danger',
+                cancelButton: 'btn btn-outline-secondary text-secondary',
+                container: 'swal2-has-bg',
+                actions: 'w-100'
+            },
+            showCancelButton: true,
+            buttonsStyling: false,
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel',
+            reverseButtons: false
+        }).then((result) => {
+            if (result.value) {
+                WindowControl.showLoading();
+                let ajaxSetup = {
+                    url: url_script.attr('data-url-config-list'),
+                    method: 'GET',
+                    data: {
+                        'delete_employee_allowed_id': delete_employee_allowed_id
+                    },
+                }
+                $.fn.callAjax2(ajaxSetup).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: 'Convert to a new Contact successfully!'}, 'success');
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000)
+                        }
+                    },
+                    (errs) => {
+                        setTimeout(
+                            () => {
+                                WindowControl.hideLoading();
+                            },
+                            1000
+                        )
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    })
+            }
+        })
     })
 });

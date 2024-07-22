@@ -2,6 +2,9 @@
 {% load i18n %}
 {% load static %}
 {% block title %}{% trans 'Warehouse Create' %}{% endblock %}
+{% block jsHeaderUnCompress %}
+    <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
@@ -165,6 +168,7 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/warehouse/shelf_draw.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/warehouse/common.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/warehouse/create.js' %}"></script>
 {% endblock %}

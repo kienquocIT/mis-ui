@@ -121,7 +121,7 @@ class fGanttCustom {
     }
 
     static addWork(){
-        $('#workTitle, #workStartDate, #workEndDate, #workWeight, #workRate, #select_project_group, #select_relationships_type, #select_project_work').val('');
+        $('#workTitle, #workStartDate, #workEndDate, #workWeight, #workRate, #select_project_group, #select_relationships_type, #select_project_work').val('').trigger('change');
         $('#btn-work-add').text($.fn.gettext('Add'))
         $('#work_modal').modal('show');
     }

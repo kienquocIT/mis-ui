@@ -325,6 +325,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     REVENUE_PLAN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     REVENUE_PLAN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    BUDGET_PLAN_LIST_PAGE = BreadcrumbChildren(_('Budget plan list'), 'BudgetPlanList')
+    BUDGET_PLAN_CREATE_PAGE = BreadcrumbChildren(_('Budget plan create'), 'BudgetPlanCreate')
+    BUDGET_PLAN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    BUDGET_PLAN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     # Report
     REPORT_REVENUE_LIST_PAGE = BreadcrumbChildren(_('Revenue report'), 'ReportRevenueList')
     REPORT_PRODUCT_LIST_PAGE = BreadcrumbChildren(_('Product report'), 'ReportProductList')
@@ -860,6 +865,11 @@ class BreadcrumbView:
     REVENUE_PLAN_CREATE_PAGE = REVENUE_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     REVENUE_PLAN_DETAIL_PAGE = REVENUE_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     REVENUE_PLAN_UPDATE_PAGE = REVENUE_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    BUDGET_PLAN_LIST_PAGE = [BreadcrumbItem.BUDGET_PLAN_LIST_PAGE]
+    BUDGET_PLAN_CREATE_PAGE = BUDGET_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    BUDGET_PLAN_DETAIL_PAGE = BUDGET_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    BUDGET_PLAN_UPDATE_PAGE = BUDGET_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     # Report
     REPORT_REVENUE_LIST_PAGE = [

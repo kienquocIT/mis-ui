@@ -7,8 +7,8 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url "BudgetPlanCreate" %}">
-        <button class="btn btn-outline-primary" type="button">
+    <a>
+        <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal-create">
             <span>
                 <span>{% trans 'Add' %}</span>
                 <span class="icon">
@@ -19,6 +19,88 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <div class="row">
+        <div class="col-12">
+            <table class="table nowrap w-100"
+                   id="budget-plan-list-table"
+                   data-method="GET"
+                   data-url="{% url 'BudgetPlanListAPI' %}"
+                   data-url-detail="{% url 'BudgetPlanDetail' '0' %}"
+            >
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{% trans 'Code' %}</th>
+                    <th>{% trans 'Title' %}</th>
+                    <th>{% trans 'Period' %}</th>
+                    <th>{% trans 'Date created' %}</th>
+                    <th>{% trans 'Status' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-create" tabindex="-1" role="dialog" aria-labelledby="modal-create" aria-hidden="true">
+        <div class="modal-dialog modal-lg min-w-610p" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{% trans 'Create new Budget plan' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-create-budget-plan"
+                          data-method="POST"
+                          data-url-redirect="{% url "BudgetPlanList" %}"
+                          data-url="{% url "BudgetPlanListAPI" %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="budget-plan-title" class="form-label required">{% trans 'Name' %}</label>
+                                    <input type="text" class="form-control" id="budget-plan-title">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="budget-plan-period" class="form-label required">{% trans 'Period' %}</label>
+                                    <select class="form-select select2" id="budget-plan-period"
+                                            data-url="{% url 'PeriodsConfigListAPI' %}"
+                                            data-method="GET"
+                                    ></select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" id="monthly" type="checkbox" disabled checked>
+                                    <label class="form-check-label" for="monthly">{% trans 'Monthly' %}</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" id="quarterly" type="checkbox" disabled>
+                                    <label class="form-check-label" for="quarterly">{% trans 'Quarterly' %}</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" id="equal" type="checkbox" checked disabled>
+                                    <label class="form-check-label" for="equal">{% trans 'Period target equals total of sub period targets' %}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" form="form-create-budget-plan" class="btn btn-primary">{% trans 'Create' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>

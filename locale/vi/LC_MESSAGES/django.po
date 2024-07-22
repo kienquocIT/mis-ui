@@ -7653,8 +7653,8 @@ msgid "Types of Relationships"
 msgstr "Loại quan hệ"
 
 #
-msgid "Parents Work"
-msgstr "Công việc cha"
+msgid "Dependencies work with"
+msgstr "Phụ thuộc với Công việc"
 
 #
 msgid "Work weight"
@@ -7956,3 +7956,7 @@ msgstr "Thu gọn / Mở rộng"
 #
 msgid "Project Baseline"
 msgstr "Đường cơ sở của Dự án"
+
+#
+msgid "Baseline"
+msgstr "Đường cơ sở"

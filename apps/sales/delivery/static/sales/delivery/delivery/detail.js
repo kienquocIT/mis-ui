@@ -404,36 +404,28 @@ $(async function () {
                 columns: [
                     {
                         targets: 0,
-                        class: 'w-5',
+                        class: 'w-15',
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['is_so'] === true) {
                                 let target = ".cl-" + row?.['sale_order']?.['id'].replace(/-/g, "");
-                                return `<button 
-                                            type="button" 
-                                            class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-xs cl-parent" 
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="${target}"
-                                            data-bs-placement="top"
-                                            aria-expanded="true"
-                                            aria-controls="newGroup"
-                                            data-group-order="${row?.['group_order']}"
-                                            data-row="${dataRow}"
-                                        >
-                                            <span class="icon"><i class="fas fa-chevron-down"></i></span>
-                                        </button>`;
+                                return `<div class="d-flex align-items-center">
+                                            <button 
+                                                type="button" 
+                                                class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-xs cl-parent mr-1" 
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="${target}"
+                                                data-bs-placement="top"
+                                                aria-expanded="true"
+                                                aria-controls="newGroup"
+                                                data-group-order="${row?.['group_order']}"
+                                                data-row="${dataRow}"
+                                            >
+                                                <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                                            </button>
+                                            <span class="badge badge-primary">${$trans.attr('data-project')}: ${row?.['sale_order']?.['code']}</span>
+                                        </div>`;
                             }
-                            return ``;
-                        }
-                    },
-                    {
-                        targets: 1,
-                        class: 'w-15',
-                        render: (data, type, row) => {
-                            if (row?.['is_so'] === true) {
-                                return `<span class="badge badge-primary">${$trans.attr('data-project')}: ${row?.['sale_order']?.['code']}</span>`;
-                            }
-                            let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             let checked = '';
                             let disabled = '';
                             if (row?.['is_checked'] === true) {
@@ -442,7 +434,7 @@ $(async function () {
                             if (row?.['product']?.['general_traceability_method'] === 0) {
                                 disabled = 'disabled';
                             }
-                            return `<div class="d-flex align-items-center">
+                            return `<div class="d-flex align-items-center ml-5">
                                         <div class="form-check">
                                             <input
                                                 type="radio"
@@ -458,7 +450,7 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 2,
+                        targets: 1,
                         class: 'w-25',
                         render: (data, type, row) => {
                             if (row?.['is_so'] === true) {
@@ -468,7 +460,7 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 3,
+                        targets: 2,
                         class: 'w-15',
                         render: (data, type, row) => {
                             if (row?.['is_so'] === true) {
@@ -478,8 +470,8 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 4,
-                        class: 'w-15',
+                        targets: 3,
+                        class: 'w-20',
                         render: (data, type, row) => {
                             if (row?.['is_so'] === true) {
                                 return ``;
@@ -488,7 +480,7 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 5,
+                        targets: 4,
                         class: 'w-25',
                         render: (data, type, row, meta) => {
                             if (row?.['is_so'] === true) {

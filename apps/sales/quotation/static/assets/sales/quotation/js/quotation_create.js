@@ -22,12 +22,10 @@ $(function () {
         QuotationDataTableHandle.dataTableProduct();
         QuotationDataTableHandle.dataTableCost();
         QuotationDataTableHandle.dataTableExpense();
-        if (!formSubmit[0].classList.contains('sale-order')) {  // quotation indicators
+        if (!formSubmit[0].classList.contains('sale-order')) {  // quotation
             QuotationDataTableHandle.dataTableQuotationIndicator();
-        } else {  // sale order indicators
+        } else {  // sale order
             QuotationDataTableHandle.dataTableSaleOrderIndicator();
-        }
-        if (formSubmit[0].classList.contains('sale-order')) {
             QuotationDataTableHandle.dataTablePaymentStage();
         }
         // init config
@@ -130,6 +128,7 @@ $(function () {
 // Action on click button add product
         btnAddProduct.on('click', function (e) {
             QuotationLoadDataHandle.loadAddRowProduct();
+            indicatorHandle.loadQuotationIndicator();
         });
 
 // Action on click select2 product

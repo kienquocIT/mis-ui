@@ -40,21 +40,19 @@ $(function () {
                         targets: 2,
                         render: (data, type, row) => {
                             let type_data = [
-                                "success",
-                                "blue",
-                                "warning",
+                                "primary badge-outline",
+                                "blue badge-outline",
                             ]
                             let typeTxt = JSON.parse($('#gr_type').text())
-                            return `<span class="badge badge-soft-${type_data[row?.['goods_receipt_type']]}">${typeTxt[row?.['goods_receipt_type']][1]}</span>`;
+                            return `<span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${typeTxt[row?.['goods_receipt_type']][1]}</span>`;
                         }
                     },
                     {
                         targets: 3,
                         render: (data, type, row) => {
                             let type_data = [
-                                "success",
+                                "primary",
                                 "blue",
-                                "warning",
                             ]
                             let type_code = {
                                 0: 'purchase_order',
@@ -77,13 +75,13 @@ $(function () {
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
                             let sttData = [
-                                "soft-light",
-                                "soft-primary",
-                                "soft-info",
-                                "soft-success",
-                                "soft-danger",
+                                "light",
+                                "primary",
+                                "info",
+                                "success",
+                                "danger",
                             ]
-                            return `<div class="row"><span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span></div>`;
+                            return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
                         }
                     },
                     {
@@ -96,7 +94,7 @@ $(function () {
                                 isEdit = `<a class="dropdown-item" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${transEle.attr('data-change')}</span></a>`;
                             }
                             return `<div class="dropdown">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
                                         ${isEdit}
                                     </div>

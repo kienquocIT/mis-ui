@@ -53,13 +53,12 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '10%',
+                        width: '15%',
                         render: (data, type, row) => {
-                            let ele = `<p></p>`;
                             if (Object.keys(row?.['sale_person']).length !== 0) {
-                                ele = `<div class="row"><span class="badge badge-primary badge-outline">${row?.['sale_person']?.['full_name']}</span></div>`;
+                                return `<p>${row?.['sale_person']?.['full_name']}</p>`;
                             }
-                            return ele;
+                            return `<p></p>`;
                         }
                     },
                     {
@@ -81,17 +80,17 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '8%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
                             let sttData = [
-                                "soft-light",
-                                "soft-primary",
-                                "soft-info",
-                                "soft-success",
-                                "soft-danger",
+                                "light",
+                                "primary",
+                                "info",
+                                "success",
+                                "danger",
                             ]
-                            return `<div class="row"><span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span></div>`;
+                            return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
                         }
                     },
                     {
@@ -105,7 +104,7 @@ $(function () {
                                 isEdit = `<a class="dropdown-item" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${transEle.attr('data-change')}</span></a>`;
                             }
                             return `<div class="dropdown">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
                                         ${isEdit}
                                     </div>

@@ -64,7 +64,7 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '20%',
+                        width: '15%',
                         render: (data, type, row) => {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
@@ -72,24 +72,22 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '20%',
+                        width: '15%',
                         render: (data, type, row) => {
-                            let ele = `<p></p>`;
                             if (Object.keys(row?.['customer']).length !== 0) {
-                                ele = `<p>${row?.['customer']?.['title']}</p>`;
+                                return `<p>${row?.['customer']?.['title']}</p>`;
                             }
-                            return ele;
+                            return `<p></p>`;
                         }
                     },
                     {
                         targets: 3,
-                        width: '10%',
+                        width: '15%',
                         render: (data, type, row) => {
-                            let ele = `<p></p>`;
                             if (Object.keys(row?.['sale_person']).length !== 0) {
-                                ele = `<div class="row"><span class="badge badge-primary badge-outline">${row?.['sale_person']?.['full_name']}</span></div>`;
+                                return `<p>${row?.['sale_person']?.['full_name']}</p>`;
                             }
-                            return ele;
+                            return `<p></p>`;
                         }
                     },
                     {
@@ -111,31 +109,31 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '8%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
                             let sttData = [
-                                "soft-light",
-                                "soft-primary",
-                                "soft-info",
-                                "soft-success",
-                                "soft-danger",
+                                "light",
+                                "primary",
+                                "info",
+                                "success",
+                                "danger",
                             ]
-                            return `<div class="row"><span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span></div>`;
+                            return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
                         }
                     },
                     {
                         targets: 7,
-                        width: '8%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#delivery_status').text())
                             let sttData = [
-                                "soft-light",
-                                "soft-warning",
-                                "soft-info text-sky",
-                                "soft-success",
+                                "light badge-outline",
+                                "warning badge-outline",
+                                "blue badge-outline",
+                                "success badge-outline",
                             ]
-                            return `<div class="row"><span class="badge badge-${sttData[row?.['delivery_status']]}">${sttTxt[row?.['delivery_status']][1]}</span></div>`;
+                            return `<span class="badge badge-${sttData[row?.['delivery_status']]}">${sttTxt[row?.['delivery_status']][1]}</span>`;
                         }
                     },
                     {
@@ -154,7 +152,7 @@ $(function () {
                                 isDelivery = `<a class="dropdown-item" href="#" id="create_delivery"><i class="dropdown-icon fas fa-truck text-primary"></i><span>${$elmTrans.attr('data-delivery')}</span></a>`;
                             }
                             return `<div class="dropdown">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
                                         ${isEdit}
                                         ${isDelivery}

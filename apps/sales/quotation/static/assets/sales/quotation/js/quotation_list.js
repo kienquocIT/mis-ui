@@ -7,6 +7,7 @@ $(function () {
         function loadDbl() {
             let $table = $('#table_quotation_list')
             let frm = new SetupFormSubmit($table);
+            let changeList = [];
             $table.DataTableDefault({
                 useDataServer: true,
                 ajax: {
@@ -15,6 +16,14 @@ $(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('quotation_list')) {
+                            // Filter the array and store excluded items
+                            resp.data['quotation_list'] = resp.data['quotation_list'].filter(item => {
+                                let condition = item?.['is_change'] === true && item?.['document_root_id'] && item?.['system_status'] !== 3;
+                                if (condition) {
+                                    changeList.push(item);
+                                }
+                                return !condition; // Return true if condition is false (keep the item), false if condition is true (remove the item)
+                            });
                             return resp.data['quotation_list'] ? resp.data['quotation_list'] : []
                         }
                         throw Error('Call data raise errors.')
@@ -28,8 +37,31 @@ $(function () {
                         targets: 0,
                         width: '5%',
                         render: (data, type, row) => {
-                            const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`
+                            if (row?.['code']) {
+                                const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
+                                if (row?.['is_change'] === true && row?.['document_root_id'] && row?.['system_status'] === 3) {
+                                    let target = `.cl-${row?.['document_root_id'].replace(/-/g, "")}`;
+                                    return `<div class="d-flex">
+                                            <div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']} <span class="badge-child badge-child-blue">CR</span></span></a></div>
+                                            <small><button 
+                                                type="button" 
+                                                class="btn btn-icon btn-xs cl-parent" 
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="${target}"
+                                                data-bs-placement="top"
+                                                aria-expanded="false"
+                                                aria-controls="newGroup"
+                                            >
+                                                <span class="icon"><small><i class="fas fa-chevron-right mt-2"></i></small></span>
+                                            </button></small>
+                                        </div>`;
+                                }
+                                if (row?.['is_change'] === true && row?.['document_root_id'] && row?.['system_status'] !== 3) {
+                                    return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-secondary">${row?.['code']} <span class="badge-child badge-child-blue">${row?.['document_change_order'] ? row?.['document_change_order'] : 0}</span></span></a></div>`;
+                                }
+                                return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']}</span></a></div>`;
+                            }
+                            return `<p></p>`;
                         }
                     },
                     {
@@ -115,6 +147,33 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
+                    // setup groupChild to groupParent
+                    for (let parent of $table[0].querySelectorAll('.cl-parent')) {
+                        if ($(parent).is('button') && $(parent).attr('data-bs-toggle') === 'collapse') {
+                            let tableDtb = $table.DataTable();
+                            let rowParent = $(parent)[0].closest('tr');
+                            let targetCls = $(parent).attr('data-bs-target');
+                            if (targetCls) {
+                                if ($table[0].querySelectorAll(`${targetCls}`).length <= 0) {
+                                    for (let data of changeList) {
+                                        let classCl = '.cl-' + data?.['document_root_id'].replace(/-/g, "");
+                                        if (classCl === targetCls) {
+                                            let newRow = tableDtb.row.add(data).node();
+                                            $(newRow).addClass(classCl.slice(1));
+                                            $(newRow).addClass('collapse');
+                                            $(newRow).css('background-color', '#eaeaea');
+                                            $(newRow).detach().insertAfter(rowParent);
+                                        }
+                                    }
+                                }
+                            }
+                            // mask money
+                            $.fn.initMaskMoney2();
+                        }
+                    }
+                    $table.on('click', '.cl-parent', function () {
+                        $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
+                    });
                 },
             });
         }

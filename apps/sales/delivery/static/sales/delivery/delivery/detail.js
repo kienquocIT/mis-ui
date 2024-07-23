@@ -1251,31 +1251,10 @@ $(async function () {
                 return false
             }
             else putData.products = prodSub
-            WindowControl.showLoading();
-            $.fn.callAjax2({
-                'url': _form.dataUrl,
-                'method': _form.dataMethod,
-                'data': putData
-            })
-                .then(
-                    (resp) => {
-                        const data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
-                        }
-                    },
-                    (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                        setTimeout(
-                            () => {
-                                WindowControl.hideLoading();
-                            },
-                            1000
-                        )
-                    }
-                )
-                .catch((err) => console.log(err))
+            _form.dataForm = putData;
+
+
+            WFRTControl.callWFSubmitForm(_form);
         })
     }
 

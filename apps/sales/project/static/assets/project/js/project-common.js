@@ -28,11 +28,8 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     $.fn.notifyB({description: data.message}, 'success');
-                    if (frm.dataMethod === 'post'){
-                        setTimeout(() => {
-                            window.location.href = $FormElm.attr('data-url-redirect');
-                        }, 1000)
-                    }
+                    if (frm.dataMethod === 'post')
+                        window.location.href = $FormElm.attr('data-url-redirect');
                     setTimeout(() => {
                         window.location.reload()
                     }, 500)

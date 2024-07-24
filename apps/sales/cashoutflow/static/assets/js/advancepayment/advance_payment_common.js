@@ -1101,6 +1101,7 @@ function LoadDetailAP(option) {
             if (data) {
                 WFRTControl.setWFRuntimeID(data['advance_payment_detail']?.['workflow_runtime_id']);
                 data = data['advance_payment_detail'];
+                new PrintTinymceControl().render('57725469-8b04-428a-a4b0-578091d0e4f5', data, false);
                 console.log(data)
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);

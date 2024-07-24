@@ -1205,6 +1205,9 @@ var Gantt = (function () {
                 }
                 temps.push(item)
             }
+            temps.sort(function (a, b) {
+                return a.order - b.order
+            })
             this.setup_tasks(temps)
             this.change_view_mode()
 

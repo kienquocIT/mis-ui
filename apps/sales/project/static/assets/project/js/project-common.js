@@ -136,9 +136,9 @@ function saveWork(gantt_obj) {
             $.fn.notifyB({description: $.fn.gettext('Title is required')}, 'failure');
             return false
         }
-        let workType = $('#select_relationships_type').val()
-        let childIdx = parseInt($('.gantt-wrap').data('detail-index')) + 1
-        const data = {
+        let workType = $('#select_relationships_type').val(),
+        childIdx = parseInt($('.gantt-wrap').data('detail-index')) + 1,
+        data = {
             'project': $('#id').val(),
             'title': $tit.val(),
             'employee_inherit': $('#selectEmployeeInherit').val(),
@@ -146,7 +146,7 @@ function saveWork(gantt_obj) {
             'w_start_date': moment($startD.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
             'w_end_date': moment($startE.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
             'order': childIdx,
-        }
+        };
         if (workParent.val()){
             data.work_dependencies_parent = workParent.val()
             data.order = $(`.gantt-left-container .grid-row[data-id="${workParent.val()}"]`).index() + 1
@@ -154,7 +154,14 @@ function saveWork(gantt_obj) {
 
         if (workType) data.work_dependencies_type = parseInt(workType)
         else data.work_dependencies_type = null
-        if (groupElm.val()) data.group = groupElm.val()
+        let work_order = null, num_order = 0
+        if (groupElm.val()){
+            work_order = $(`.gantt-left-container .grid-row[data-group="${groupElm.val()}"]`);
+            if (!work_order.length)
+                work_order = $(`.gantt-left-container .grid-row[data-id="${groupElm.val()}"]`)
+            num_order = work_order.last().index() + 1
+            data.group = groupElm.val();
+        }
 
         let url = $urlFact.attr('data-work'),
             method = 'post';
@@ -178,13 +185,12 @@ function saveWork(gantt_obj) {
                     }
                     if (gantt_obj){
                         let temps = []
-                        if (method === 'put')
-                            res = data
+                        if (method === 'put') res = data
                         res.weight = res.w_weight
-
                         res.date_from = res.w_start_date
                         res.date_end = res.w_end_date
                         res.relationships_type = res.work_dependencies_type
+                        if (num_order) res.order = num_order
                         if (method === 'post'){
                             if (Object.keys(res.work_dependencies_parent).length)
                                 res.dependencies_parent = res.work_dependencies_parent.id

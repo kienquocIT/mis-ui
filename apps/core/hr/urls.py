@@ -1,18 +1,18 @@
 from django.urls import path
-
 from apps.core.hr.views import (
     EmployeeList, EmployeeCreate, EmployeeListAPI, GroupDetailAPI, GroupLevelList,
     GroupLevelListAPI, GroupList, GroupListAPI, GroupCreate, GroupUpdate, GroupDetail,
     EmployeeDetailAPI, EmployeeDetail, EmployeeUpdate, EmployeeCompanyListAPI, EmployeeUploadAvatarAPI,
     GroupLevelDetailAPI, RoleUpdateView, RoleUpdateAPI,
     PlanAppGetAppListAPI, PlanSummaryListAPI, ApplicationSummaryListAPI, PermissionSummaryListAPI, EmployeeListAllAPI,
-    EmployeeAdminCompanyAPI,
+    EmployeeAdminCompanyAPI, TestEmailConnection,
 )
 from apps.core.hr.views import (
     RoleList, RoleListAPI, RoleCreate, RoleDetail, RoleDetailAPI,
 )
 
 urlpatterns = [
+    path('test-email-connection', TestEmailConnection.as_view(), name='TestEmailConnection'),
     path('employee', EmployeeList.as_view(), name='EmployeeList'),
     path('employee/api', EmployeeListAPI.as_view(), name='EmployeeListAPI'),
     path('employee/all/api', EmployeeListAllAPI.as_view(), name='EmployeeListAllAPI'),

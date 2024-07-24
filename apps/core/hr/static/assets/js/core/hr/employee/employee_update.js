@@ -8,6 +8,8 @@ $(function () {
             EmployeeLoadPage.firstNameEle.val(employeeData.first_name);
             EmployeeLoadPage.lastNameEle.val(employeeData.last_name);
             EmployeeLoadPage.emailEle.val(employeeData.email);
+            $('#span-verified').prop('hidden', !employeeData.email_app_password_status)
+            $('#span-not-verified').prop('hidden', employeeData.email_app_password_status)
             EmployeeLoadPage.phoneEle.val(employeeData.phone);
             EmployeeLoadPage.loadUserList(employeeData?.user);
             EmployeeLoadPage.loadGroupList(employeeData.group);
@@ -142,4 +144,56 @@ $(function () {
             callAPIUpdateEmployee(ajaxConfig);
         }
     });
+
+    // for verify email
+
+    function combinesDataTestEmailConnection() {
+        let data = {}
+        data['email'] = $('#employee-email').val();
+        data['email_app_password'] = $('#email-app-password').attr('data-value');
+        if (data['email'] && data['email_app_password']) {
+            return {
+                url: $("#btn-test-email-connection").attr('data-url'),
+                method: 'GET',
+                data: data,
+            };
+        }
+        else {
+            $.fn.notifyB({description: "Missing email or App Password"}, 'warning')
+        }
+    }
+
+    $('#span-verified').on('click', function () {
+        $('#email-app-password').val('')
+    })
+
+    $('#span-not-verified').on('click', function () {
+        $('#email-app-password').val('')
+    })
+
+    $("#btn-test-email-connection").on('click', function (event) {
+        $('#email-app-password').attr('data-value', $('#email-app-password').val())
+        event.preventDefault();
+        let combinesData = combinesDataTestEmailConnection();
+        if (combinesData) {
+            $.fn.callAjax2(combinesData)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Connect successfully"}, 'success')
+                            $('#span-verified').prop('hidden', false)
+                            $('#span-not-verified').prop('hidden', true)
+                            $('#update-emp').trigger('click')
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: 'Can not verify your Email. Check your App password again.'}, 'failure');
+                        $('#span-verified').prop('hidden', true)
+                        $('#span-not-verified').prop('hidden', false)
+                        $('#update-emp').trigger('click')
+                    }
+                )
+        }
+    })
 })

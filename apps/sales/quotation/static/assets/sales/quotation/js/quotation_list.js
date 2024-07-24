@@ -130,15 +130,15 @@ $(function () {
                         width: '5%',
                         className: 'action-center',
                         render: (data, type, row) => {
-                            const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            let isEdit = ``;
-                            if (![2, 3, 4].includes(row?.['system_status'])) {
-                                isEdit = `<a class="dropdown-item" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${transEle.attr('data-change')}</span></a>`;
+                            let link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
+                            let disabled = '';
+                            if ([2, 3, 4].includes(row?.['system_status'])) {
+                                disabled = 'disabled';
                             }
                             return `<div class="dropdown">
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
-                                        ${isEdit}
+                                        <a class="dropdown-item ${disabled}" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${transEle.attr('data-edit')}</span></a>
                                     </div>
                                 </div>`;
                         },

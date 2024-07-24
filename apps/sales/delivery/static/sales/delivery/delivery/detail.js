@@ -1,6 +1,7 @@
 $(async function () {
     const $trans = $('#trans-factory');
     const $url = $('#url-factory');
+    let $form = $('#delivery_form');
     let $table = $('#productStockDetail');
     let $eleSO = $('#inputSaleOrder');
     let dataCompanyConfig = await DocumentControl.getCompanyConfig();
@@ -401,7 +402,6 @@ $(async function () {
         };
 
         dataTablePW(data, config = {}) {
-            let $form = $('#delivery_form');
             $table.DataTableDefault({
                 data: data ? data : [],
                 ordering: false,
@@ -679,7 +679,6 @@ $(async function () {
         };
 
         dataTableTableLot(data) {
-            let $form = $('#delivery_form');
             let tableLot = $('#datable-delivery-wh-lot');
             tableLot.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
@@ -762,7 +761,6 @@ $(async function () {
         };
 
         loadSerial(eleChecked, row, data, productWHID) {
-            let $form = $('#delivery_form');
             let dataRegisConfig = prodTable.getRegisConfig();
             let isRegis = dataRegisConfig?.['isRegis'];
             let dataSO = dataRegisConfig?.['dataSO'];
@@ -831,7 +829,6 @@ $(async function () {
         };
 
         dataTableTableSerial(data) {
-            let $form = $('#delivery_form');
             let tableLot = $('#datable-delivery-wh-serial');
             tableLot.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
@@ -1098,7 +1095,6 @@ $(async function () {
     }
 
     function getPageDetail() {
-        const $form = $('#delivery_form')
         $.fn.callAjax2({
             'url': $form.attr('data-url'),
             'method': 'GET'
@@ -1182,12 +1178,8 @@ $(async function () {
                         $btn[0].setAttribute('hidden', 'true');
                     }
                 }
-
-                WFRTControl.setWFRuntimeID(res?.['workflow_runtime_id']);
-
                 // after prepare HTML run event click button done
                 btnDoneClick()
-
                 // check if not finish or reject then remove hidden btn edit page
                 if (![2, 3, 4].includes(res?.['system_status'])) {
                     let btnEdit = $('#btn-enable-edit');
@@ -1195,14 +1187,21 @@ $(async function () {
                         btnEdit[0].removeAttribute('hidden');
                     }
                 }
-
-                // init workflow
+                // reset data for edit page
+                if ($form.attr('data-method').toLowerCase() === 'put') {
+                    for (let productData of res?.['products']) {
+                        for (let deliveryData of productData?.['delivery_data']) {
+                            deliveryData['lot_data'] = [];
+                            deliveryData['serial_data'] = [];
+                        }
+                    }
+                }
+                // wf
                 WFRTControl.setWFRuntimeID(res?.['workflow_runtime_id']);
             })
     }
 
     function formSubmit() {
-        const $form = $('#delivery_form')
         $form.on('submit', function (e) {
             e.preventDefault();
             const $storedData = JSON.parse($('#request-data').text())

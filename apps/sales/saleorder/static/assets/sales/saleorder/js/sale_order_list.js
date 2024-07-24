@@ -2,6 +2,8 @@
 $(function () {
     $(document).ready(function () {
 
+        let transEle = $('#trans-factory');
+
         function loadDbl() {
             let $table = $('#table_sale_order_list')
             let frm = new SetupFormSubmit($table);
@@ -141,21 +143,20 @@ $(function () {
                         width: '5%',
                         className: 'action-center',
                         render: (data, type, row) => {
-                            const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            const $elmTrans = $('#trans-factory')
-                            let isEdit = ``;
-                            let isDelivery = ``;
-                            if (![2, 3, 4].includes(row?.['system_status'])) {
-                                isEdit = `<a class="dropdown-item" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${$elmTrans.attr('data-change')}</span></a>`;
+                            let link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);
+                            let disabledEdit = '';
+                            let disabledDeli = '';
+                            if ([2, 3, 4].includes(row?.['system_status'])) {
+                                disabledEdit = 'disabled';
                             }
-                            if (!row.delivery_call && [2, 3].includes(row?.['system_status'])) {
-                                isDelivery = `<a class="dropdown-item" href="#" id="create_delivery"><i class="dropdown-icon fas fa-truck text-primary"></i><span>${$elmTrans.attr('data-delivery')}</span></a>`;
+                            if (row?.['delivery_call'] === true || ![2, 3].includes(row?.['system_status'])) {
+                                disabledDeli = 'disabled';
                             }
                             return `<div class="dropdown">
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
-                                        ${isEdit}
-                                        ${isDelivery}
+                                        <a class="dropdown-item ${disabledEdit} border-bottom mb-2" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${transEle.attr('data-edit')}</span></a>
+                                        <a class="dropdown-item ${disabledDeli}" href="#" id="create_delivery"><i class="dropdown-icon fas fa-truck text-primary"></i><span>${transEle.attr('data-delivery')}</span></a>
                                     </div>
                                 </div>`;
                         },

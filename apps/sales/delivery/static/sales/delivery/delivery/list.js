@@ -2,6 +2,7 @@ $(document).ready(function () {
     let letStateChoices = JSON.parse($('#dataStateChoices').text());
     let tbl = $('#dtbDeliveryList');
     let frm = new SetupFormSubmit(tbl);
+    let transEle = $('#app-trans-factory');
     tbl.DataTableDefault({
         useDataServer: true,
         ajax: {
@@ -81,15 +82,16 @@ $(document).ready(function () {
                 class: 'text-center',
                 orderable: false,
                 render: (data, type, row, meta) => {
-                    const isTxt = $('#trans-factory').attr('data-return')
-                    return `<div class="dropdown pointer mr-2">
-                                <i class="far fa-window-maximize"
-                                   data-bs-toggle="dropdown"
-                                   data-dropdown-animation
-                                   aria-haspopup="true"
-                                   aria-expanded="false"></i>
-                                <div class="dropdown-menu w-210p mt-2">
-                                <a class="dropdown-item" href="#">${isTxt}</a></div>
+                    let link = $('#url-factory').attr('data-page-edit').format_url_with_uuid(row?.['id']);
+                    let disabled = '';
+                    if ([2, 3, 4].includes(row?.['system_status'])) {
+                        disabled = 'disabled';
+                    }
+                    return `<div class="dropdown">
+                                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                                <div role="menu" class="dropdown-menu">
+                                    <a class="dropdown-item ${disabled}" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${transEle.attr('data-edit')}</span></a>
+                                </div>
                             </div>`;
                 }
             }

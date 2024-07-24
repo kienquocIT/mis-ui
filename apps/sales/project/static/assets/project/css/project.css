@@ -470,3 +470,11 @@
 .wrap-title ~ div{
     overflow: hidden;
 }
+
+.ui-state-highlight {
+    display: block;
+    height: 30px;
+    border-radius: 4px;
+    border: dashed 1px #ff0000;
+    background-color: #f8f8f8ff;
+}

@@ -17,7 +17,8 @@ pipeline {
         stage('Pre-Build') {
             steps {
                 script {
-                    echo "${currentBuild.changeSets}"
+                    env.GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
+                    echo "env.GIT_COMMIT_MSG: ${env.GIT_COMMIT_MSG}"
                     if (TELEGRAM_ENABLE == '1') {
                         sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build started... 💛💛💛");
                     }

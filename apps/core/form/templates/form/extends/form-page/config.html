@@ -1,0 +1,60 @@
+{% load i18n define_action %}
+
+<div class="drawer-config d-none" id="form-page-config">
+    <form>
+        {% csrf_token %}
+
+        <div class="form-check mb-3">
+            {% assign_out_random pageDisplayProgressPageIdx as rPageDisplayProgressPageIdx %}
+            <input name="show_progress_page" type="checkbox" class="form-check-input" id="{{ rPageDisplayProgressPageIdx }}" />
+            <label class="form-check-label" for="{{ rPageDisplayProgressPageIdx }}">{% trans 'Show progress page' %}</label>
+        </div>
+
+        <div class="form-check mb-3">
+            {% assign_out_random pageShowPageNumberIdx as rShowPageNumberIdx %}
+            <input name="display_page_number" type="checkbox" class="form-check-input" id="{{ rShowPageNumberIdx }}" />
+            <label class="form-check-label" for="{{ rShowPageNumberIdx }}">{% trans 'Show page number' %}</label>
+        </div>
+
+        <hr/>
+
+        <div class="form-group mb-3">
+            {% assign_out_random pageDisplayTitleIdx as rPageDisplayTitleIdx %}
+            <label for="{{ rPageDisplayTitleIdx }}" class="form-label">{% trans 'Display Title' %}</label>
+            <select name="display_title" id="{{ rPageDisplayTitleIdx }}" class="input-radio-select form-select">
+                <option value="">-</option>
+                <option value="bar">{% trans 'Bar' %}</option>
+                <option value="page">{% trans 'Page' %}</option>
+                <option value="bar-and-page">{% trans 'Bar' %} & {% trans 'Page' %}</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            {% assign_out_random pageProgressStyleIdx rPageProgressStyleIdx %}
+            <label for="{{ rPageProgressStyleIdx }}" class="form-label">{% trans 'Progress style' %}</label>
+            <select name="progress_style" id="{{ rPageProgressStyleIdx }}" class="form-select">
+                <option value="proportion">{% trans 'Proportion' %}</option>
+                <option value="steps">{% trans 'Steps' %}</option>
+                <option value="bar">{% trans 'Bar' %}</option>
+                <option value="piece">{% trans 'Piece' %}</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            {% assign_out_random pageProgressItemAlign as rPageProgressItemAlign %}
+            <label for="{{ rPageProgressItemAlign }}" class="form-label">{% trans 'Justify progress item' %}</label>
+            <select name="justify_progress_item" id="{{ rPageProgressItemAlign }}" class="input-radio-select">
+                <option value="around">{% trans 'Around' %}</option>
+                <option value="between">{% trans 'Between' %}</option>
+                <option value="evenly">{% trans 'Evenly' %}</option>
+            </select>
+            <small class="form-text text-muted">{% trans 'Some style will not have this configuration applied' %}</small>
+        </div>
+
+        <div class="mb-3">
+            <small class="form-text text-muted">
+                {% trans '' %}
+            </small>
+        </div>
+    </form>
+</div>

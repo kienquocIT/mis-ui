@@ -1,0 +1,161 @@
+{% load i18n define_action %}
+
+<div
+        class="drawer-config d-none" id="form-slider"
+        data-url-sanitize-html="{% url 'FormSanitizeHTMLAPI' %}"
+>
+    <form>
+        {% assign_out_random nameIdx as rNameIdx %}
+        <div class="form-group mb-3">
+            <label for="{{ rNameIdx }}" class="form-label">
+                {% trans 'Name of field' %}
+            </label>
+            <input type="text" class="form-control" id="{{ rNameIdx }}" name="name">
+            <small class="form-text text-muted">
+                {% trans 'Corresponds to a stored data field' %}.
+                {% trans 'Employs this name to autofill form fields' %}.
+            </small>
+        </div>
+
+        <hr/>
+
+        {% include 'form/extends/base/title.html' with enableHideTitle=True %}
+        {% include 'form/extends/base/instruction.html' %}
+        {% include 'form/extends/base/size.html' %}
+
+        <hr/>
+
+        <div class="w-100 mb-5">
+            <input type="text" id="slider-preview-skin" value="" hidden />
+        </div>
+
+        <div class="form-group mb-3">
+            {% assign_out_random sliderStyleIdx as rSliderStyleIdx %}
+            <label for="{{ rSliderStyleIdx }}" class="form-label">{% trans 'Skin' %}</label>
+            <select name="skin" id="{{ rSliderStyleIdx }}" class="input-radio-select">
+                <option value="flat">Flat</option>
+                <option value="big">Big</option>
+                <option value="modern">Modern</option>
+                <option value="sharp">Sharp</option>
+                <option value="round">Round</option>
+                <option value="square">Square</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-5">
+            {% assign_out_random initValueIdx as rInitValueIdx %}
+            <label for="{{ rInitValueIdx }}" class="form-label">{% trans 'Initial value' %}</label>
+            <input type="number" class="form-control" id="{{ rInitValueIdx }}" name="init_value"/>
+        </div>
+
+        <label class="form-label">{% trans 'Range' %}</label>
+        <div class="w-100 mb-3 d-flex">
+            <div style="flex-basis: calc(50% - 5px);margin-right: 5px;">
+                {% assign_out_random rangeMinIdx as rRangeMinIdx %}
+                <input type="number" class="form-control" name="min_value" id="{{ rRangeMinIdx }}" />
+                <label for="{{ rRangeMinIdx }}" class="form-label"><small>{% trans 'Min' %}</small></label>
+            </div>
+            <div style="flex-basis: calc(50% - 5px);margin-left: 5px;">
+                {% assign_out_random rangeMaxIdx as rRangeMaxIdx %}
+                <input type="number" class="form-control" name="max_value" id="{{ rRangeMaxIdx }}" />
+                <label for="{{ rRangeMaxIdx }}" class="form-label"><small>{% trans 'Max' %}</small></label>
+            </div>
+        </div>
+
+        <label class="form-label">{% trans 'Unit' %}</label>
+        <div class="w-100 d-flex mb-3">
+            <div style="flex-basis: calc(50% - 5px);margin-right: 5px;">
+                {% assign_out_random sliderUnitPrefixIdx as rSliderUnitPrefixIdx %}
+                <input type="text" class="form-control" name="unit_prefix" id="{{ rSliderUnitPrefixIdx }}" maxlength="25" />
+                <label for="{{ rSliderUnitPrefixIdx }}" class="form-label"><small>{% trans 'Prefix' %}</small></label>
+            </div>
+            <div style="flex-basis: calc(50% - 5px);margin-left: 5px;">
+                {% assign_out_random sliderUnitSuffixIdx as rSliderUnitSuffixIdx %}
+                <input type="text" class="form-control" name="unit_postfix" id="{{ rSliderUnitSuffixIdx }}"  maxlength="25" />
+                <label for="{{ rSliderUnitSuffixIdx }}" class="form-label"><small>{% trans 'Suffix' %}</small></label>
+            </div>
+        </div>
+
+
+        <div class="form-group mb-3">
+            {% assign_out_random sliderStepIdx as rSliderStepIdx %}
+            <label for="{{ rSliderStepIdx }}" class="form-label">{% trans 'Step' %}</label>
+            <input type="number" class="form-control" name="step" id="{{ rSliderStepIdx }}" min="1" />
+        </div>
+    </form>
+</div>
+<script>
+    $(document).ready(function (){
+        let frm$ = $('#form-slider');
+        const initValue$ = frm$.find('[name=init_value]');
+        const min$ = frm$.find('[name=min_value]');
+        const max$ = frm$.find('[name=max_value]');
+        const unitPrefix$ = frm$.find('[name=unit_prefix]');
+        const unitPostfix$ = frm$.find('[name=unit_postfix]');
+        const step$ = frm$.find('[name=step]');
+        const skin$ = frm$.find('[name=skin]');
+        const preview$ = frm$.find('#slider-preview-skin');
+
+        function reDisplayPreview(){
+            if (preview$.data("ionRangeSlider")) {
+                preview$.data("ionRangeSlider").destroy();
+                preview$.data("ionRangeSlider", null);
+            }
+            preview$.val(initValue$.val());
+            preview$.attr('data-from', initValue$.val());
+            preview$.ionRangeSlider({
+                skin: skin$.val(),
+                min: Number.parseInt(min$.val()),
+                max: Number.parseInt(max$.val()),
+                prefix: unitPrefix$.val(),
+                postfix: unitPostfix$.val(),
+                from: Number.parseInt(initValue$.val()),
+                step: step$.val(),
+            })
+        }
+
+        initValue$.on('change', function (){
+            if (Number.parseInt(initValue$.val()) > Number.parseInt(max$.val())){
+                initValue$.val(max$.val());
+            } else if (Number.parseInt(initValue$.val()) < Number.parseInt(min$.val())) {
+                initValue$.val(min$.val());
+            }
+            reDisplayPreview();
+        })
+
+        min$.on('change', function (){
+            if (Number.parseInt(min$.val()) >= Number.parseInt(max$.val())){
+                max$.val(Number.parseInt(min$.val()) + 1);
+            }
+            step$.attr('max', Number.parseInt(max$.val()) - Number.parseInt(min$.val()));
+            reDisplayPreview();
+        })
+
+        max$.on('change', function (){
+            if (Number.parseInt(min$.val()) >= Number.parseInt(max$.val())){
+                min$.val(Number.parseInt(min$.val()) - 1);
+            }
+            step$.attr('max', Number.parseInt(max$.val()) - Number.parseInt(min$.val()));
+            reDisplayPreview();
+        })
+
+        step$.on('change', function (){
+            if (Number.parseInt(step$.val()) > Number.parseInt(max$.val()) - Number.parseInt(min$.val())){
+                step$.val(Number.parseInt(max$.val()) - Number.parseInt(min$.val()));
+            }
+            reDisplayPreview();
+        })
+
+        skin$.on('change', function (){
+            reDisplayPreview();
+        })
+
+        unitPrefix$.on('change', function (){
+            reDisplayPreview();
+        })
+
+        unitPostfix$.on('change', function (){
+            reDisplayPreview();
+        })
+    })
+</script>

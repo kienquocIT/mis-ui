@@ -13,6 +13,10 @@ $(document).ready(function () {
             let currentUserName$ = content$.find('#form-head--current-user-name');
             currentUserName$.text(frm$.data('user-current-name'));
             frm$.removeAttr('data-user-current-name');
+
+            // add type for button send
+            frm$.find('button').attr('type', 'button');
+            frm$.find('.form-action').find('button').attr('type', 'submit');
         }
     }
 })

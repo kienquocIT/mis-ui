@@ -1,0 +1,86 @@
+{# Library: https://flatpickr.js.org/formatting/ #}
+
+{% load i18n %}
+
+<table class="table table-bordered">
+    <tr>
+        <th>{% trans 'Character' %}</th>
+        <th>{% trans 'Description' %}</th>
+        <th>{% trans 'Example' %}</th>
+    </tr>
+    <tr>
+        <td>d</td>
+        <td>{% trans "Day of the month, 2 digits with leading zeros" %}</td>
+        <td>{% trans "01 to 31" %}</td>
+    </tr>
+    <tr>
+        <td>D</td>
+        <td>{% trans "A textual representation of a day" %}</td>
+        <td>{% trans "Mon through Sun" %}</td>
+    </tr>
+    <tr>
+        <td>l (lowercase 'L')</td>
+        <td>{% trans "A full textual representation of the day of the week" %}</td>
+        <td>{% trans "Sunday through Saturday" %}</td>
+    </tr>
+    <tr>
+        <td>j</td>
+        <td>{% trans "Day of the month without leading zeros" %}</td>
+        <td>{% trans "1 to 31" %}</td>
+    </tr>
+    <tr>
+        <td>J</td>
+        <td>{% trans "Day of the month without leading zeros and ordinal suffix" %}</td>
+        <td>{% trans "1st, 2nd, to 31st" %}</td>
+    </tr>
+    <tr>
+        <td>w</td>
+        <td>{% trans "Numeric representation of the day of the week" %}</td>
+        <td>{% trans "0 (for Sunday) through 6 (for Saturday)" %}</td>
+    </tr>
+    <tr>
+        <td>W</td>
+        <td>{% trans "Numeric representation of the week" %}</td>
+        <td>{% trans "0 (first week of the year) through 52 (last week of the year)" %}</td>
+    </tr>
+    <tr>
+        <td>F</td>
+        <td>{% trans "A full textual representation of a month" %}</td>
+        <td>{% trans "January through December" %}</td>
+    </tr>
+    <tr>
+        <td>m</td>
+        <td>{% trans "Numeric representation of a month, with leading zero" %}</td>
+        <td>{% trans "01 through 12" %}</td>
+    </tr>
+    <tr>
+        <td>n</td>
+        <td>{% trans "Numeric representation of a month, without leading zeros" %}</td>
+        <td>{% trans "1 through 12" %}</td>
+    </tr>
+    <tr>
+        <td>M</td>
+        <td>{% trans "A short textual representation of a month" %}</td>
+        <td>{% trans "Jan through Dec" %}</td>
+    </tr>
+    <tr>
+        <td>U</td>
+        <td>{% trans "The number of seconds since the Unix Epoch" %}</td>
+        <td>{% trans "1413704993" %}</td>
+    </tr>
+    <tr>
+        <td>y</td>
+        <td>{% trans "A two digit representation of a year" %}</td>
+        <td>{% trans "99 or 03" %}</td>
+    </tr>
+    <tr>
+        <td>Y</td>
+        <td>{% trans "A full numeric representation of a year, 4 digits" %}</td>
+        <td>{% trans "1999 or 2003" %}</td>
+    </tr>
+    <tr>
+        <td>Z</td>
+        <td>{% trans "ISO Date format" %}</td>
+        <td>{% trans "2017-03-04T01:23:43.000Z" %}</td>
+    </tr>
+</table>

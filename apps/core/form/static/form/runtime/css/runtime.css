@@ -38,8 +38,14 @@
 
 .form-item {
     position: relative;
+}
+
+.form-item-sm {
+    padding: 10px 25px;
+}
+
+.form-item-md {
     padding: 25px 25px;
-    min-height: 100px;
 }
 
 .form-head {
@@ -50,7 +56,7 @@
     padding: 30px 30px;
     text-align: start;
     vertical-align: middle;
-    margin-bottom: 10px;
+    margin-bottom: 1rem;
     min-height: unset;
 }
 
@@ -81,7 +87,7 @@ textarea {
 
 .form-full label[data-required="true"]:after,
 .form-full label[required]:after,
-.form-full label.required:after{
+.form-full label.required:after {
     content: "(*)";
     color: red;
     font-size: 0.8rem;
@@ -100,8 +106,7 @@ textarea {
 
 .form-full input,
 .form-full textarea,
-.form-full select
-{
+.form-full select {
     border: 1px solid #dcdcdc;
     border-radius: 5px;
     width: 100%;
@@ -113,27 +118,30 @@ textarea {
     font-size: 14px;
 }
 
-.form-full input.text-upper,
+.form-full input.form-item-input.text-upper,
 .form-full textarea.text-upper {
     text-transform: uppercase;
 }
 
-.form-full input.text-lower,
+.form-full input.form-item-input.text-lower,
 .form-full textarea.text-lower {
     text-transform: lowercase;
 }
 
-.form-full input.text-capitalize,
+.form-full input.form-item-input.text-capitalize,
 .form-full textarea.text-capitalize {
     text-transform: capitalize;
 }
 
-.form-full input:focus,
-.form-full textarea:focus {
+.form-full input.form-item-input:focus,
+.form-full textarea.form-item-input:focus {
     border: 1px solid #5ca8ff;
     box-shadow: 0 0 0 0.125rem rgba(92, 168, 255, 0.16);
 }
-
+div.is-invalid {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
 .form-full input.is-invalid,
 .form-full textarea.is-invalid {
     border-color: #ff0000;
@@ -166,24 +174,31 @@ textarea {
 }
 
 /* form item group */
-.form-item-group-input {}
+
+.form-item-group-input input + label {
+    margin-top: 0.1rem;
+}
 
 .form-item-group-input .form-input-xs {
     font-size: 0.6rem;
     padding: 4px 8px;
 }
+
 .form-item-group-input .form-input-sm {
     font-size: 0.8rem;
     padding: 6px 10px;
 }
+
 .form-item-group-input .form-input-md {
     font-size: 1.0rem;
     padding: 8px 12px;
 }
+
 .form-item-group-input .form-input-lg {
     font-size: 1.2rem;
     padding: 10px 14px;
 }
+
 .form-item-group-input .form-input-xl {
     font-size: 1.4rem;
     padding: 14px 16px;
@@ -292,7 +307,7 @@ textarea {
 }
 
 /* Only For Number */
-.form-item-input-parent {
+.form-item-input-parent:has(input.form-input-has-unit) {
     display: flex;
 }
 
@@ -305,29 +320,43 @@ textarea {
     margin-left: 5px;
     border: 0 !important;
 }
-.form-input-is-unit.text-align-left { text-align: left;}
-.form-input-is-unit.text-align-center { text-align: center;}
-.form-input-is-unit.text-align-right { text-align: right;}
+
+.form-input-is-unit.text-align-left {
+    text-align: left;
+}
+
+.form-input-is-unit.text-align-center {
+    text-align: center;
+}
+
+.form-input-is-unit.text-align-right {
+    text-align: right;
+}
+
 .form-input-is-unit:disabled {
-    background-color: unset!important;
+    background-color: unset !important;
 }
 
 .form-item-group-input .form-input-unit-xs {
     font-size: 0.6rem;
     padding: 4px 0;
 }
+
 .form-item-group-input .form-input-unit-sm {
     font-size: 0.8rem;
     padding: 6px 0;
 }
+
 .form-item-group-input .form-input-unit-md {
     font-size: 1.0rem;
     padding: 8px 0;
 }
+
 .form-item-group-input .form-input-unit-lg {
     font-size: 1.2rem;
     padding: 10px 0;
 }
+
 .form-item-group-input .form-input-unit-xl {
     font-size: 1.4rem;
     padding: 14px 0;
@@ -339,3 +368,17 @@ textarea {
     display: block;
     font-size: small;
 }
+
+#data-submitted {
+    margin-top: 1rem;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* page */
+.form-item-page-break {
+    /*background-color: #4b646e;*/
+    color: #4b646e;
+}
+/* -- page */

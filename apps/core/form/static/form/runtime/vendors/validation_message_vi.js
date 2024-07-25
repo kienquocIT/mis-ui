@@ -40,5 +40,6 @@ $.extend($.validator.messages, {
     restrict_emailDomainValidation: `Tên miền bị hạn chế.`,
     numberType: `Dữ liệu yêu cầu không hợp lệ.`,
     numberTypeInt: `Dữ liệu yêu cầu kiểu số nguyên.`,
-    numberTypeFloat: `Dữ liệu yêu cầu kiểu số thực.`
+    numberTypeFloat: `Dữ liệu yêu cầu kiểu số thực.`,
+    datePicker: 'Vui lòng nhập ngày hợp lệ.',
 });

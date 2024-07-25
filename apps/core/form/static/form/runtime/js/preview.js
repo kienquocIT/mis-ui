@@ -6,5 +6,11 @@ $(document).ready(function () {
             return false;
         }
     });
-    $('#contents').css('opacity', '100');
+    $.fn.formInitSelect2All();
+    $.fn.formInitDatePickerAll();
+    $.fn.formInitDatetimePickerAll();
+    $.fn.formInitTimePickerAll();
+    $.fn.formRangeSlider();
+
+    $.fn.formShowContentAndHideLoader()
 })

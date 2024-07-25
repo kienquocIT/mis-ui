@@ -4,8 +4,6 @@ from requests_toolbelt import MultipartEncoder
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
-from django.core.mail import get_connection
-
 from apps.core.account.models import Company
 from apps.shared import mask_view, ApiURL, ServerAPI, TypeCheck
 
@@ -103,29 +101,10 @@ class CompanyDetailAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
-        try:
-            connection = get_connection(
-                username=request.data.get('email'),
-                password=request.data.get('email_app_password'),
-                fail_silently=False,
-            )
-            if connection.open():
-                if request.data.get('email_app_password') == '':
-                    request.data['email_app_password_status'] = False
-                else:
-                    request.data['email_app_password_status'] = True
-
-                resp = ServerAPI(
-                    request=request, user=request.user, url=ApiURL.COMPANY_DETAIL.push_id(pk)
-                ).put(request.data)
-                return resp.auto_return()
-        except Exception as e:
-            print(e)
-            request.data['email_app_password_status'] = False
-            resp = ServerAPI(
-                request=request, user=request.user, url=ApiURL.COMPANY_DETAIL.push_id(pk)
-            ).put(request.data)
-            return resp.auto_return()
+        resp = ServerAPI(
+            request=request, user=request.user, url=ApiURL.COMPANY_DETAIL.push_id(pk)
+        ).put(request.data)
+        return resp.auto_return()
 
 
 class CompanyLogoUpload(APIView):
@@ -256,22 +235,3 @@ class CompanyConfigDetailAPI(APIView):
                     except Company.DoesNotExist:
                         pass
         return resp.auto_return()
-
-
-class TestEmailConnection(APIView):
-    @mask_view(login_require=True, is_api=True)
-    def get(self, request, *args, **kwargs):
-        try:
-            connection = get_connection(
-                username=request.GET.get('email'),
-                password=request.GET.get('email_app_password'),
-                fail_silently=False,
-            )
-            if connection.open():
-                if request.data.get('email_app_password') == '':
-                    return {}, status.HTTP_502_BAD_GATEWAY
-                else:
-                    return {}, status.HTTP_200_OK
-        except Exception as e:
-            print(e)
-            return {}, status.HTTP_502_BAD_GATEWAY

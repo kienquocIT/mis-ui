@@ -15,6 +15,7 @@
         .sticky {
             position: sticky;
             top: 0;
+            z-index: 999;
         }
     </style>
 {% endblock %}
@@ -36,6 +37,9 @@
             data-url-group-list="{% url 'GroupListAPI' %}"
             data-url-config-list="{% url 'BudgetPlanConfigListAPI' %}"
             data-url-redirect="{% url 'BudgetPlanConfigList' %}"
+            data-url-emp-list="{% url 'EmployeeListAPI' %}"
+            data-url-emp-list-can-view-company-bp="{% url 'ListCanViewCompanyBudgetPlanAPI' %}"
+            data-url-emp-list-can-lock-bp="{% url 'ListCanLockBudgetPlanAPI' %}"
     ></script>
     <script id="trans-script"
             data-trans-group="{% trans 'Group' %}"
@@ -46,7 +50,7 @@
 
     <div class="row">
         <div class="col-12">
-            <button type="button" id="add-allowed-person-btn" class="btn btn-outline-primary"  data-bs-toggle="modal" data-bs-target="#create-form">
+            <button type="button" id="add-allowed-person-btn" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#create-form">
                 <i class="fas fa-plus-circle"></i>
                 {% trans 'Add allowed person' %}
             </button>
@@ -56,13 +60,41 @@
                 <thead>
                 <tr>
                     <th class="w-5"></th>
-                    <th class="w-30">{% trans 'Allowed person' %}</th>
-                    <th class="w-55">{% trans 'Group' %}</th>
-                    <th class="w-10 text-center">{% trans 'Action' %}</th>
+                    <th class="w-15">{% trans 'Allowed person' %}</th>
+                    <th class="w-75">{% trans 'Group' %}</th>
+                    <th class="w-5 text-center">{% trans 'Action' %}</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
             </table>
+        </div>
+    </div>
+    <div class="row mt-10">
+        <div class="col-6">
+            <button class="btn btn-custom btn-primary" data-bs-toggle="modal" data-bs-target="#can-view-company-modal" type="button" id="can-view-company-btn">
+                <span>
+                    <span>{% trans 'Employee can view Company budget plan' %}</span>
+                    <span class="icon">
+                        <span class="feather-icon">
+                            <i data-feather="arrow-right-circle"></i>
+                        </span>
+                    </span>
+                </span>
+            </button>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-6">
+            <button class="btn btn-custom btn-primary" data-bs-toggle="modal" data-bs-target="#can-lock-bp-modal" type="button" id="can-lock-bp-btn">
+                <span>
+                    <span>{% trans 'Employee can lock Budget plan' %}</span>
+                    <span class="icon">
+                        <span class="feather-icon">
+                            <i data-feather="arrow-right-circle"></i>
+                        </span>
+                    </span>
+                </span>
+            </button>
         </div>
     </div>
 
@@ -106,6 +138,74 @@
                             </div>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="can-view-company-modal" tabindex="-1" role="dialog" aria-labelledby="can-view-company-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg min-w-1000p" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Employee can view Company budget plan' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 40vh">
+                            <table class="table nowrap w-100" id="can-view-company-table">
+                                <thead class="sticky bg-primary">
+                                <tr>
+                                    <th class="text-white"></th>
+                                    <th class="text-white">{% trans 'Employee code' %}</th>
+                                    <th class="text-white">{% trans 'Fullname' %}</th>
+                                    <th class="text-white">{% trans 'Allowed' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 text-right">
+                            <button type="button" id="save-can-view-company" class="btn btn-primary">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="can-lock-bp-modal" tabindex="-1" role="dialog" aria-labelledby="can-lock-bp-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg min-w-1000p" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Employee can lock budget plan' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 40vh">
+                            <table class="table nowrap w-100" id="can-lock-bp-table">
+                                <thead class="sticky bg-primary">
+                                <tr>
+                                    <th class="text-white"></th>
+                                    <th class="text-white">{% trans 'Employee code' %}</th>
+                                    <th class="text-white">{% trans 'Fullname' %}</th>
+                                    <th class="text-white">{% trans 'Allowed' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 text-right">
+                            <button type="button" id="save-can-lock-bp" class="btn btn-primary">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

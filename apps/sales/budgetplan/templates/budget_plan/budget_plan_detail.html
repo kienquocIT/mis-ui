@@ -57,12 +57,12 @@
             data-trans-expense-item="{% trans 'Expense item' %}"
             data-trans-action="{% trans 'Action' %}"
     ></script>
-
     <script id="url-script"
             data-url-budget-plan-detail="{% url 'BudgetPlanDetailAPI' '0' %}"
             data-url-group-list="{% url 'GroupListAPI' %}"
             data-url-row-expense-item="{% url 'ExpenseItemListAPI' %}"
     ></script>
+
     <div class="row">
         <div class="col-12 col-md-8 col-lg-8">
             <div class="form-group">
@@ -99,11 +99,22 @@
                 <label class="form-check-label" for="equal">{% trans 'Period target equals total of sub period targets' %}</label>
             </div>
         </div>
+        <div class="col-12 col-md-3 col-lg-3 text-left">
+            <label id="locked-noti" class="text-danger small">* {% trans 'This budget plan is locked' %}</label>
+        </div>
+        <div class="col-12 col-md-1 col-lg-1 text-right">
+            <button disabled hidden class="btn btn-icon btn-soft-danger btn-xs" id="lock-plan" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Lock this budget plan' %}">
+                <span class="icon"><i class="fas fa-lock"></i></span>
+            </button>
+            <button disabled hidden class="btn btn-icon btn-soft-primary btn-xs" id="unlock-plan" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Unlock this budget plan' %}">
+                <span class="icon"><i class="fas fa-unlock"></i></span>
+            </button>
+        </div>
     </div>
     <div class="row mt-5">
         <div class="col-12">
             <ul class="nav nav-light nav-icon nav-tabs">
-                <li class="nav-item">
+                <li class="nav-item" id="nav-item-company" hidden>
                     <a class="nav-link active" data-bs-toggle="pill" href="#tab_company">
                         <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-building"></i></span></span>
                         <span class="nav-link-text fw-bold">{% trans 'Company' %}</span>
@@ -111,7 +122,7 @@
                 </li>
             </ul>
             <div class="tab-content">
-                <div class="tab-pane fade show active" id="tab_company">
+                <div class="tab-pane fade show active" hidden id="tab_company">
                     <div class="row">
                         <div class="col-12" id="table-company" style="position: relative; overflow: auto; width: 100%; max-height: 60vh"></div>
                     </div>

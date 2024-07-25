@@ -5,7 +5,6 @@ $(document).ready(function () {
     $("#frm-add-company").submit(function (event) {
         event.preventDefault();
         let combinesData = new CompanyHandle().combinesData($(this), false);
-        console.log(combinesData)
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)

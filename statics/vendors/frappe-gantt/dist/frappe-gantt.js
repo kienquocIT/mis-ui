@@ -1205,6 +1205,9 @@ var Gantt = (function () {
                 }
                 temps.push(item)
             }
+            temps.sort(function (a, b) {
+                return a.order - b.order
+            })
             this.setup_tasks(temps)
             this.change_view_mode()
 
@@ -2048,11 +2051,13 @@ var Gantt = (function () {
                         jQuery('.btn-item-row-assign', htmlBtn2).on('click', function(){
                             const $form = jQuery('#formOpportunityTask')
                             jQuery('.btn-show-task_f').trigger('click');
+                            jQuery('#work_id', $form).remove()
                             $form.append(`<input type="hidden" name="work_id" value="${item.id}"/>`);
 
                         })
 
                         jQuery('.btn-row-task_list', htmlBtn2).on('click',() =>{
+                            jQuery('#assign_modal .modal-body #modal_work_id').remove()
                             jQuery('#assign_modal .modal-body').append(`<input type="hidden" id="modal_work_id" value="${item.id}"/>`)
                             jQuery('#assign_modal').modal('show')
                         })

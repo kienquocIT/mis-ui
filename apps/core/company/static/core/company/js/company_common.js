@@ -503,10 +503,10 @@ class CompanyHandle {
 
 function Disable(option) {
     if (option === 'detail') {
-        $('.form-control').prop('disabled', true).css({color: 'black'});
-        $('.form-select').prop('disabled', true).css({color: 'black'});
-        $('.select2').prop('disabled', true);
-        $('input').prop('disabled', true);
+        $('.blog-body .form-control').prop('disabled', true).css({color: 'black'});
+        $('.blog-body .form-select').prop('disabled', true).css({color: 'black'});
+        $('.blog-body .select2').prop('disabled', true);
+        $('.blog-body input').prop('disabled', true);
     }
 }
 
@@ -569,6 +569,7 @@ function LoadDetailCompany(frm, option) {
     Promise.all([
         $.fn.callAjax2({
             'url': company_config.attr('data-url-detail'),
+            'data': {'company_id': pk},
             'method': 'GET',
         }),
         $.fn.callAjax2({

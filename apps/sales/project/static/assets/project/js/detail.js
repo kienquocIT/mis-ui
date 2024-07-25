@@ -7,15 +7,12 @@ $(document).ready(function () {
         {"code": 'start', "name": $.fn.gettext('Date from'), width: 100},
         {"code": 'end', "name": $.fn.gettext('Date to'), width: 100},
         {"code": 'work_status', "name": $.fn.gettext('Work status'), width: 180},
-    ]
+    ], $form = $('#project_form');
     let currentDate = new Date()
     let start_D = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     let end_D = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
-
-    var new_gantt = new Gantt(
-        "#gantt",
-        [],
-        {
+    const check_page_version = $form.hasClass('baseline_version');
+    let opt = {
             view_modes: ["Quarter Day", "Half Day", "Day", "Week", "Month", "Year"],
             bar_height: 20,
             padding: 18,
@@ -25,12 +22,23 @@ $(document).ready(function () {
             disable_on_click: true,
             gantt_start: start_D,
             gantt_end: new Date(end_D.getTime() - 1),
-            is_detail: true
-        }
+            is_detail: false,
+        };
+
+    if (check_page_version){
+        opt.init_edit_btn_w = fGanttCustom.load_detail_work
+        opt.init_edit_btn_g = fGanttCustom.load_detail_group
+        // hidden delete employee member tab
+        $('.wrap_members .member-item .card-action-wrap .card-action-close').addClass('disabled')
+    }
+
+    var new_gantt = new Gantt(
+        "#gantt",
+        [],
+        opt
     );
 
     // get data
-    let $form = $('#project_form')
     $.fn.callAjax2({
             'url': $form.attr('data-url-detail'),
             'method': 'get',
@@ -38,21 +46,40 @@ $(document).ready(function () {
         .then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
+                WFRTControl.setWFRuntimeID(data['workflow_runtime_id']);
                 $x.fn.renderCodeBreadcrumb(data);
-                $('#titleInput').val(data.title)
-                $('#id').val(data.id)
-                let opt1 = new Option(data['project_owner']['full_name'], data['project_owner']['id'], true, true);
-                $('#select_project_owner').attr('data-onload', JSON.stringify(data['project_owner'])).append(opt1).trigger('change');
-                let opt2 = new Option(data['employee_inherit']['full_name'], data['employee_inherit']['id'], true, true);
-                $('#selectEmployeeInherit').attr('data-onload', JSON.stringify(data['employee_inherit'])).append(opt2).trigger('change');
-                $('#dateStart').val(moment(data.start_date).format('DD/MM/YYYY'))
-                $('#dateFinish').val(moment(data.finish_date).format('DD/MM/YYYY'))
-                const afterData = fGanttCustom.convert_data(data['groups'], data['works'])
+                let project = data
+                if ($form.hasClass('baseline_version')){
+                    project = data.project_data
+                    $form.data('baseline_data', data)
+                }
+                $('#titleInput').val(project.title)
+                $('#id').val(project.id)
+                let opt1 = new Option(project['project_pm']['full_name'], project['project_pm']['id'], true, true);
+                $('#select_project_pm').attr('data-onload', JSON.stringify(project['project_pm'])).append(opt1).trigger('change');
+                $('#employeeInheritInput').attr('data-value', project['employee_inherit'].id).val(project['employee_inherit'].full_name);
+                $('#dateStart').val(moment(project.start_date).format('DD/MM/YYYY'))
+                $('#dateFinish').val(moment(project.finish_date).format('DD/MM/YYYY'))
+                let group = [], work = [];
+                if ($form.hasClass('baseline_version')){
+                    group = project['group']
+                    work = project['work']
+                }
+                else{
+                    group = project['groups']
+                    work = project['works']
+                }
+                const afterData = fGanttCustom.convert_data(group, work);
                 new_gantt.load_more(afterData)
-                ProjectTeamsHandle.render(data.members, true)
+                ProjectTeamsHandle.render(project.members, true)
                 $('.gaw-btn').addClass('hidden')
-                Task_in_project.init(data)
+                Task_in_project.init(project)
+                ProjectWorkExpenseHandle.init(work)
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )
+
+    // init open task list in work
+    show_task_list()
+
 });

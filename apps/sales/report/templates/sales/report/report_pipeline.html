@@ -14,8 +14,8 @@
     <div class="row">
         <div class="col-12 col-md-2 col-lg-2">
             <div class="card">
-                <div class="card-header card-header-action h-45p">
-                    <span class="badge badge-light badge-sm">
+                <div class="card-header card-header-action bg-teal-light-5 h-40p">
+                    <span class="badge badge-secondary badge-sm">
                         <span>
                             <span class="icon"><span class="feather-icon"><i class="fas fa-filter"></i></span></span>
                             {% trans 'Filter' %}
@@ -65,7 +65,7 @@
                                         </div>
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" id="checkbox-show-win-100">
-                                            <label class="form-check-label" for="checkbox-show-win-100">{% trans 'Show data have win rate is 100%' %}</label>
+                                            <label class="form-check-label" for="checkbox-show-win-100">{% trans 'Show data have win rate 100%' %}</label>
                                         </div>
                                         <div class="d-flex justify-content-end mt-2">
                                             <button type="button" class="btn btn-secondary btn-sm mr-2" id="btn-cancel-vb">{% trans 'Cancel' %}</button>
@@ -127,7 +127,7 @@
                                                         <input type="text" name="date_from" id="report-pipeline-date-from"
                                                                class="form-control date-picker area-period-element" autocomplete="off" disabled>
                                                         <div class="input-suffix">
-                                                            <i class="far fa-calendar"></i>
+                                                            <i class="fas fa-calendar-alt"></i>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -137,7 +137,7 @@
                                                         <input type="text" name="date_to" id="report-pipeline-date-to"
                                                                class="form-control date-picker area-period-element" autocomplete="off" disabled>
                                                         <div class="input-suffix">
-                                                            <i class="far fa-calendar"></i>
+                                                            <i class="fas fa-calendar-alt"></i>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -163,7 +163,7 @@
                     data-method="get"
             >
                 <thead>
-                <tr>
+                <tr class="bg-light">
                     <th>{% trans 'Group' %}</th>
                     <th>{% trans 'Sale person' %}</th>
                     <th>{% trans 'Opportunity' %}</th>

@@ -86,7 +86,7 @@
                                     <input type="text" name="date_save" id="final-acceptance-date-approved"
                                            class="form-control date-picker" autocomplete="off" disabled>
                                     <div class="input-suffix">
-                                        <i class="far fa-calendar"></i>
+                                        <i class="fas fa-calendar-alt"></i>
                                     </div>
                                 </div>
                             </div>
@@ -109,19 +109,18 @@
         <div class="row">
             <table
                     id="table_final_acceptance_list"
-                    class="table nowrap min-w-1920p w-100 mb-5"
+                    class="table nowrap min-w-1600p w-100 mb-5"
                     data-url="{% url 'FinalAcceptanceListAPI' %}"
                     data-method="get"
             >
                 <thead>
                 <tr>
                     <th>{% trans 'Indicator' %}</th>
-                    <th>{% trans 'Items code' %}</th>
-                    <th>{% trans 'Items name' %}</th>
+                    <th>{% trans 'Document' %}</th>
                     <th>{% trans 'Planed value' %}</th>
                     <th>{% trans 'Actual value' %}</th>
                     <th>{% trans 'Different value' %}</th>
-                    <th>{% trans 'Rate' %} %</th>
+                    <th>{% trans 'Rate' %}</th>
                     <th>{% trans 'Note' %}</th>
                 </tr>
                 </thead>

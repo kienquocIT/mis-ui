@@ -26,46 +26,49 @@
     <form class="container-fluid mt-4" id="project_form" method="post" data-method="put" autocomplete="off"
           data-url-detail="{% url "ProjectDetailAPI" data.pk %}" data-url="{% url "ProjectEditAPI" data.pk %}">
         <input type="hidden" id="id">
-        <div class="row">
-            <div class="col-xs-12 col-md-6 form-group">
-                <label for="titleInput" class="form-label required">{% trans 'Title' %}</label>
-                <input type="text" name="title" id="titleInput" class="form-control" required>
-            </div>
-            <div class="col-xs-12 col-md-6 form-group">
-                <label for="select_project_owner" class="form-label required">{% trans 'Project owner' %}</label>
-                <select class="form-select" name="project_owner" id="select_project_owner"
-                        data-url="{% url 'EmployeeListAPI' %}"
-                        data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
-                        data-params="{'list_from_app':'{{data.list_from_app|escape}}'}"
-                >
-                </select>
-            </div>
-            <div class="col-xs-12 col-md-6 form-group">
-                <label for="selectEmployeeInherit" class="form-label required">{% trans 'Project PM' %}</label>
-                <select class="form-select" name="employee_inherit" id="selectEmployeeInherit"
-                        data-url="{% url 'EmployeeListAPI' %}"
-                        data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
-                        data-params="{'list_from_app':'{{data.list_from_app|escape}}'}"
-                >
-                </select>
-            </div>
-            <div class="col-xs-12 col-md-6 form-group">
-                <label for="dateStart" class="form-label">{% trans 'Start date' %}</label>
-                <div class="input-affix-wrapper">
-                    <input type="text" id="dateStart" name="start_date" class="form-control date-picker"
-                           autocomplete="off">
-                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+        <div class="collapse show" id="toggle-ud">
+            <div class="row">
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="titleInput" class="form-label required">{% trans 'Title' %}</label>
+                    <input type="text" name="title" id="titleInput" class="form-control" required>
                 </div>
-            </div>
-            <div class="col-xs-12 col-md-6 form-group">
-                <label for="dateFinish" class="form-label">{% trans 'Finish date' %}</label>
-                <div class="input-affix-wrapper">
-                    <input type="text" id="dateFinish" name="finish_date" class="form-control date-picker"
-                           autocomplete="off">
-                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                <div class="clearfix"></div>
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="select_project_pm" class="form-label required">{% trans 'Project owner' %}</label>
+                    <input type="input" name="employee_inherit" id="employeeInheritInput" class="form-control" readonly>
                 </div>
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="selectEmployeeInherit" class="form-label required">{% trans 'Project PM' %}</label>
+                    <select class="form-select" name="project_pm" id="select_project_pm"
+                            data-url="{% url 'EmployeeListAPI' %}"
+                            data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
+                            data-params="{'list_from_app':'{{ data.list_from_app|escape }}'}"
+                            disabled>
+                    </select>
+                </div>
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="dateStart" class="form-label">{% trans 'Start date' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input type="text" id="dateStart" name="start_date" class="form-control date-picker"
+                               autocomplete="off" disabled>
+                        <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="dateFinish" class="form-label">{% trans 'Finish date' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input type="text" id="dateFinish" name="finish_date" class="form-control date-picker"
+                               autocomplete="off" disabled>
+                        <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                    </div>
+                </div>
+                <input type="hidden" name="system_status" id="SystemStatusInput" class="form-control" value="1">
             </div>
-            <input type="hidden" name="system_status" id="SystemStatusInput" class="form-control" value="1">
+        </div>
+        <div class="toggle-ud is_show">
+            <a class="btn btn-lg btn-icon btn-rounded btn-flush-primary flush-soft-hover"
+               data-bs-toggle="collapse" href="#toggle-ud" ontoggle=""><span class="icon">
+                    <i class="fa-solid fa-angles-up"></i></span></a>
         </div>
     </form>
     <!-- Tabs -->
@@ -80,6 +83,12 @@
             <a class="nav-link" data-bs-toggle="tab" href="#tab_members">
                 <i class="fa-solid fa-address-card"></i>
                 <span class="nav-link-text">{% trans 'Teams' %}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_work_expense">
+                <i class="fa-solid fa-money-check-dollar"></i>
+                <span class="nav-link-text">{% trans 'Work expense' %}</span>
             </a>
         </li>
     </ul>
@@ -152,6 +161,40 @@
                 </div>
             </div>
         </div>
+        <div class="tab-pane fade" id="tab_work_expense">
+            <input type="hidden" id="work_expense_data">
+            <table class="table nowrap w-100 min-w-1500p" id="work_expense_tbl"
+                   data-method="get"
+                   data-url="{% url 'ProjectListAPI' %}"
+                   data-detail="{% url 'ProjectDetail' 1 %}">
+                <thead>
+                <tr>
+                    <th colspan="2" class="bt-0"></th>
+                    <th class="text-right"><span class="font-weight-bold">{% trans 'Total price' %}:</span></th>
+                    <th class="text-center"></th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="bt-0"></th>
+                    <th class="text-right"><span class="font-weight-bold">{% trans 'Total tax' %}:</span></th>
+                    <th class="text-center"></th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="bt-0"></th>
+                    <th class="text-right"><span class="font-weight-bold">{% trans 'Total price after tax' %}:</span>
+                    </th>
+                    <th class="text-center"></th>
+                </tr>
+                <tr>
+                    <th>{% trans 'Work title' %}</th>
+                    <th>{% trans 'Total price' %}</th>
+                    <th>{% trans 'Total tax' %}</th>
+                    <th>{% trans 'Total price after tax' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
     <!-- End Tabs -->
 
@@ -162,6 +205,7 @@
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"
+           data-work-expense="{% url "ProjectWorkExpenseAPI" %}"
     >
     <input type="text" id="trans-factory"
     >

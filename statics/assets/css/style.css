@@ -75475,9 +75475,9 @@ div.mce-menu .mce-menu-item-sep, .mce-menu-item-sep:hover {
   background: #fff;
 }
 .table table thead th:first-child {
-  position: sticky;
-  left: 0;
-  z-index: 2;
+  /*position: sticky;*/
+  /*left: 0;*/
+  /*z-index: 2;*/
 }
 
 .table-row-gap td {

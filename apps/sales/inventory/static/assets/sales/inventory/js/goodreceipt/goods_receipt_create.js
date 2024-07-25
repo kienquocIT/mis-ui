@@ -13,9 +13,9 @@ $(function () {
 
         // Load init
         if (formSubmit.attr('data-method') === 'POST') {
-            GRLoadDataHandle.loadBoxType();
+            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGr);
             GRLoadDataHandle.loadBoxPO();
-            GRLoadDataHandle.loadBoxSupplier();
+            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.supplierSelectEle);
             GRLoadDataHandle.loadBoxIA();
             GRDataTableHandle.dataTableGoodReceiptPOProduct();
             GRDataTableHandle.dataTableGoodReceiptPR();
@@ -189,8 +189,18 @@ $(function () {
             GRCalculateHandle.calculateMain(GRDataTableHandle.tableLineDetailPO, row);
         });
 
-        GRDataTableHandle.tableLineDetailPO.on('click', '.del-row', function() {
-            deleteRowTable(this.closest('tr'), GRDataTableHandle.tableLineDetailPO);
+        GRDataTableHandle.tableLineDetailPO.on('click', '.del-row', function () {
+            deleteRowGR(this.closest('tr'), GRDataTableHandle.tableLineDetailPO);
+            reOrderRowTable(GRDataTableHandle.tableLineDetailPO);
+            GRCalculateHandle.calculateTable(GRDataTableHandle.tableLineDetailPO);
+        });
+
+        GRDataTableHandle.tableLot.on('click', '.del-row', function () {
+            deleteRowGR(this.closest('tr'), GRDataTableHandle.tableLot);
+        });
+
+        GRDataTableHandle.tableSerial.on('click', '.del-row', function () {
+            deleteRowGR(this.closest('tr'), GRDataTableHandle.tableSerial);
         });
 
         // Action on click button collapse
@@ -306,10 +316,14 @@ $(function () {
                 'purchase_requests',
                 'remarks',
                 'date_received',
-                // line detail
+                // tab product
                 'goods_receipt_product',
-                // system
+                // abstract
                 'system_status',
+                'next_node_collab_id',
+                'is_change',
+                'document_root_id',
+                'document_change_order',
             ]
             if (_form.dataForm) {
                 filterFieldList(submitFields, _form.dataForm);

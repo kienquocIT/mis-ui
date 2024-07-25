@@ -6,19 +6,47 @@
 {% block pageAction %}
 {% endblock %}
 {% block pageContent %}
-    <div>
-        <table id="goods_registration_list" class="table nowrap w-100 mb-5" data-method="GET"
-               data-url="{% url 'GoodsRegistrationListAPI' %}"
-               data-url-detail="{% url 'GoodsRegistrationDetail' '0' %}"
-        >
-            <thead>
-            <th></th>
-            <th>{% trans "Code" %}</th>
-            <th>{% trans "Title" %}</th>
-            <th>{% trans "Sale person" %}</th>
-            <th>{% trans "Date created" %}</th>
-            </thead>
-        </table>
+    <div class="row">
+        <div class="col-12">
+            <table id="goods_registration_list" class="table nowrap w-100 mb-5" data-method="GET"
+                   data-url="{% url 'GoodsRegistrationListAPI' %}"
+                   data-url-detail="{% url 'GoodsRegistrationDetail' '0' %}"
+            >
+                <thead>
+                <th></th>
+                <th>{% trans "Code" %}</th>
+                <th>{% trans "Title" %}</th>
+                <th>{% trans "Sale person" %}</th>
+                <th>{% trans "Date created" %}</th>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mt-60">
+        <div class="col-4">
+            <div class="form-group">
+                <label>{% trans 'Sale order' %}</label>
+                <select class="form-select mb-1" id="sale_order_id_box" data-url="{% url 'SaleOrderListAPI' %}"></select>
+            </div>
+            <div class="form-group">
+                <label>{% trans 'Product' %}</label>
+                <select class="form-select mb-1" id="product_id_box" data-url="{% url 'ProductListAPI' %}"></select>
+            </div>
+            <div class="form-group">
+                <label>{% trans 'Warehouse' %}</label>
+                <select class="form-select mb-1" id="warehouse_id_box" data-url="{% url 'WareHouseListAPI' %}"></select>
+            </div>
+            <button type="button"
+                    class="btn btn-light w-30"
+                    id="call-btn"
+                    data-url-gre-general="{% url 'GoodsRegistrationGeneralListAPI' %}"
+                    data-url-gre-general-lot="{% url 'GoodsRegistrationLotListAPI' %}"
+                    data-url-gre-general-sn="{% url 'GoodsRegistrationSerialListAPI' %}"
+                    data-url-gre-borrow="{% url 'GoodsRegistrationItemBorrowListAPI' %}"
+            >Call
+            </button>
+        </div>
     </div>
 {% endblock %}
 {% block jsFooter %}

@@ -1,9 +1,10 @@
-import json
+from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 from django.utils.translation import gettext_lazy as _
 
 from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared.msg import AppMsg
 
 
 # Subscription Plan
@@ -182,3 +183,79 @@ class ApplicationForOpportunityPermitListAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.APPLICATION_OPPORTUNITY_PERMISSION).get()
         return resp.auto_return(key_success='applications')
+
+
+# ZONES
+def create_zones(request, url, msg):
+    resp = ServerAPI(user=request.user, url=url).post(request.data)
+    if resp.state:
+        resp.result['message'] = msg
+        return resp.result, status.HTTP_201_CREATED
+    return resp.auto_return()
+
+
+class ZonesApplicationListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ZONES_APPLICATION_LIST).get(data)
+        return resp.auto_return(key_success='zones_application_list')
+
+
+class ZonesListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ZONES_LIST).get(data)
+        return resp.auto_return(key_success='zones_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_zones(
+            request=request,
+            url=ApiURL.ZONES_LIST,
+            msg=AppMsg.ZONES_UPDATE
+        )
+
+
+class ZonesList(View):
+    @mask_view(
+        auth_require=True,
+        template='core/base/zones_list.html',
+        menu_active='',
+        breadcrumb='ZONES_LIST_PAGE',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+# EMPLOYEE CONFIG ON APP
+class AppEmpConfigListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.APP_EMP_CONFIG_LIST).get(data)
+        return resp.auto_return(key_success='app_emp_config_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_zones(
+            request=request,
+            url=ApiURL.APP_EMP_CONFIG_LIST,
+            msg=AppMsg.EMPLOYEE_ZONES_CONFIG_UPDATE
+        )

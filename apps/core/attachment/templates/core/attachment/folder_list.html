@@ -15,98 +15,59 @@
             method="post"
     >
         {% csrf_token %}
-        <div id="folder-menu" class="h-100p border-bottom">
-            <div class="row">
-                <div class="col-12 col-md-2 col-lg-2">
-                    <div class="row">
-                        <div class="col-12 col-md-8 col-lg-8">
-                            <div class="row" id="folder-history">
-                                <div class="col-12 col-md-4 col-lg-4">
-                                    <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Click to go back">
-                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm mr-4" id="btn-back" disabled><span class="icon"><i class="fas fa-arrow-left"></i></span></button>
-                                    </span>
-                                </div>
-                                <div class="col-12 col-md-4 col-lg-4">
-                                    <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Click to go forward">
-                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm mr-4" id="btn-next" disabled><span class="icon"><i class="fas fa-arrow-right"></i></span></button>
-                                    </span>
-                                </div>
-                                <div class="col-12 col-md-4 col-lg-4">
-                                    <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reload">
-                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm" id="btn-refresh"><span class="icon"><i class="fas fa-redo-alt"></i></span></button>
-                                    </span>
-                                </div>
-                            </div>
+        <div class="row bg-primary">
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="row p-2">
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <button type="button" class="btn btn btn-white btn-floating btn-lg" aria-expanded="false" data-bs-toggle="dropdown">
+                            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
+                        </button>
+                        <div class="dropdown-menu w-210p">
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFolderMdl"><i class="dropdown-icon fas fa-folder-plus text-primary"></i><span>{% trans 'New folder' %}</span></a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#" id="upload-file" data-bs-toggle="modal" data-bs-target="#uploadFileMdl"><i class="dropdown-icon fas fa-file-upload text-primary"></i><span class="mt-2">{% trans 'Upload file' %}</span></a>
+                            <a class="dropdown-item" href="#" id="upload-folder"><i class="dropdown-icon fas fa-upload text-primary"></i><span>{% trans 'Upload folder' %}</span></a>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-7 col-lg-7">
-                    <div class="row" id="folder-history-path">
-                        <div type="text" class="form-control rounded-input text-black" readonly>
-                            <p id="folder-path"><i class="fas fa-desktop mr-2"></i><span class="mr-2" data-parent-id="null">Home</span></p>
-                        </div>
+                <div class="row">
+                    <div data-simplebar class="nicescroll-bar h-800p">
+                        <div class="row" id="folder-tree"></div>
                     </div>
                 </div>
-                <div class="col-12 col-md-3 col-lg-3">
-                    <div class="input-group mb-3">
+            </div>
+            <div class="col-12 col-md-10 col-lg-10">
+                <div class="row p-2 w-60">
+                    <div class="input-group">
                         <span class="input-affix-wrapper">
                             <input type="text" class="form-control rounded-input" placeholder="Search">
                             <span class="input-suffix"><i class="fas fa-search"></i></span>
                         </span>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="row">
-                        <div class="col-12 col-md-3 col-lg-3 border-right">
-                            <button type="button" class="btn btn-outline-primary" aria-expanded="false" data-bs-toggle="dropdown">
-                                <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
-                            </button>
-                            <div class="dropdown-menu w-210p">
-                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFolderMdl"><i class="dropdown-icon fas fa-folder-plus text-primary"></i><span>{% trans 'New folder' %}</span></a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" id="upload-file" data-bs-toggle="modal" data-bs-target="#uploadFileMdl"><i class="dropdown-icon fas fa-file-upload text-primary"></i><span class="mt-2">{% trans 'Upload file' %}</span></a>
-                                <a class="dropdown-item" href="#" id="upload-folder"><i class="dropdown-icon fas fa-upload text-primary"></i><span>{% trans 'Upload folder' %}</span></a>
+                <div class="row bg-white rounded-8 p-2 h-90" style="margin: 16px 0" id="area-center">
+                    <div>
+                        <div class="d-flex align-items-center mb-3" id="folder-path">
+                            <button type="button" class="btn btn-flush-secondary flush-soft-hover btn-rounded btn-lg text-black">My files</button>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12 col-md-5 col-lg-5">
+                                <h6 class="text-primary ml-3">{% trans 'Name' %}</h6>
+                            </div>
+                            <div class="col-12 col-md-2 col-lg-2">
+                                <h6 class="text-primary">{% trans 'Owner' %}</h6>
+                            </div>
+                            <div class="col-12 col-md-2 col-lg-2">
+                                <h6 class="text-primary">{% trans 'Date modified' %}</h6>
+                            </div>
+                            <div class="col-12 col-md-2 col-lg-2">
+                                <h6 class="text-primary">{% trans 'Size' %}</h6>
                             </div>
                         </div>
-                        <div class="col-12 col-md-5 col-lg-5">
-                            <div class="d-flex justify-content-start">
-                                <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm btn-action mr-4" disabled><span class="icon"><i class="fas fa-cut"></i></span></button>
-                                <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm btn-action mr-4" disabled><span class="icon"><i class="fas fa-copy"></i></span></button>
-                                <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm btn-action mr-4" disabled><span class="icon"><i class="fas fa-paste"></i></span></button>
-                                <button type="button" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm btn-action" disabled><span class="icon"><i class="fas fa-trash-alt"></i></span></button>
-                            </div>
-                        </div>
+                        <div id="folder-content-body"></div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col-12 col-md-3 col-lg-3">
-                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-800p position-relative overflow-y-scroll">
-                    <div class="row" id="folder-tree"></div>
-                </div>
-            </div>
-            <div class="col-12 col-md-9 col-lg-9">
-                <div class="row mb-2">
-                    <div class="col-12 col-md-5 col-lg-5">
-                        <h6 class="text-primary ml-3">{% trans 'Name' %}</h6>
-                    </div>
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <h6 class="text-primary">{% trans 'Date modified' %}</h6>
-                    </div>
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <h6 class="text-primary">{% trans 'Type' %}</h6>
-                    </div>
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <h6 class="text-primary">{% trans 'Size' %}</h6>
-                    </div>
-                </div>
-
-                <div id="folder-content-body"></div>
-
             </div>
         </div>
 
@@ -182,7 +143,7 @@
         data-url-redirect="{% url 'FolderList' %}"
     >
     <input type="file" id="uploadOpen"/>
-
+    {{ data.employee_current|json_script:'employee_current' }}
 {% endblock %}
 
 {% block jsFooter %}

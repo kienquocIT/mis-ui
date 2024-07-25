@@ -25,6 +25,11 @@
             top: 0;
             z-index: 999;
         }
+        .sticky {
+            position: sticky;
+            top: 0;
+            z-index: 1111;
+        }
     </style>
 {% endblock %}
 {% block pageAction %}
@@ -113,7 +118,7 @@
                                data-url="{% url 'GoodsDetailAPI' %}"
                                id="goods-detail-main-table"
                         >
-                            <thead class="row-fixed bg-secondary-light-4">
+                            <thead class="sticky">
                                 <tr>
                                     <th class="w-5"></th>
                                     <th class="w-25">{% trans 'Product' %}</th>
@@ -134,7 +139,7 @@
     </form>
 
     <div class="modal fade" id="modal-serial" tabindex="-1" role="dialog" aria-labelledby="modal-serial" aria-hidden="true">
-        <div class="modal-dialog modal-lg min-w-1920p" role="document">
+        <div class="modal-dialog modal-lg min-w-1280p" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{% trans 'Serial information' %}</h5>
@@ -156,12 +161,12 @@
                                             <thead class="row-fixed bg-secondary-light-4">
                                             <tr>
                                                 <th class="w-5"></th>
-                                                <th class="w-10">{% trans 'Vendor serial No.' %}</th>
-                                                <th class="w-15">{% trans 'Serial No.' %}</th>
-                                                <th class="w-15">{% trans 'Expired date' %}</th>
-                                                <th class="w-15">{% trans 'Mfr date' %}</th>
-                                                <th class="w-15">{% trans 'Warranty start' %}</th>
-                                                <th class="w-15">{% trans 'Warranty end' %}</th>
+                                                <th class="w-10" style="min-width: 200px">{% trans 'Vendor serial No.' %}</th>
+                                                <th class="w-15" style="min-width: 200px">{% trans 'Serial No.' %}</th>
+                                                <th class="w-15" style="min-width: 150px">{% trans 'Expired date' %}</th>
+                                                <th class="w-15" style="min-width: 150px">{% trans 'Mfr date' %}</th>
+                                                <th class="w-15" style="min-width: 150px">{% trans 'Warranty start' %}</th>
+                                                <th class="w-15" style="min-width: 150px">{% trans 'Warranty end' %}</th>
                                                 <th class="w-10"></th>
                                             </tr>
                                             </thead>

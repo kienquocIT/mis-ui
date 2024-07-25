@@ -252,6 +252,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PERIODS_CONFIG_DETAIL = StringUrl('saledata/period/{pk}')
 
     REVENUE_PLAN_CONFIG_LIST = StringUrl('saledata/revenue-plan-config')
+    BUDGET_PLAN_CONFIG_LIST = StringUrl('budget-plans/budget-plan-config')
 
     # masterdata/lookup/account
     INDUSTRY_LIST = StringUrl('saledata/industries')
@@ -540,6 +541,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REPORT_INVENTORY_DETAIL_LIST = StringUrl('report/inventory-detail/list')
     BALANCE_INIT_LIST = StringUrl('report/balance-init/list')
     REPORT_INVENTORY_LIST = StringUrl('report/inventory/list')
+    REPORT_INVENTORY_PRD_WH_VIEW_LIST = StringUrl('report/product-warehouse-view/list')
     REPORT_GENERAL_LIST = StringUrl('report/general/list')
     PO_REPORT_LIST = StringUrl('report/po-report/list')
 
@@ -566,6 +568,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REVENUE_PLAN_LIST = StringUrl('revenue-plans/list')
     REVENUE_PLAN_DETAIL = StringUrl('revenue-plans/detail/{pk}')
 
+    # Budget plan
+    BUDGET_PLAN_LIST = StringUrl('budget-plans/list')
+    BUDGET_PLAN_DETAIL = StringUrl('budget-plans/detail/{pk}')
+
     LEAD_LIST = StringUrl('lead/list')
     LEAD_LIST_FOR_OPP = StringUrl('lead/list-for-opp')
     LEAD_CHART = StringUrl('lead/chart-data')
@@ -591,6 +597,15 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Goods Registration
     GOODS_REGISTRATION_LIST = StringUrl('inventory/goods-registration/list')
     GOODS_REGISTRATION_DETAIL = StringUrl('inventory/goods-registration/{pk}')
+    GOODS_REGISTRATION_ITEM_SUB_LIST = StringUrl('inventory/goods-registration-item-sub/list')
+    GOODS_REGISTRATION_PRD_WH = StringUrl('inventory/goods-registration-prd-wh-general')
+    GOODS_REGISTRATION_PRD_WH_LOT = StringUrl('inventory/goods-registration-prd-wh-lot')
+    GOODS_REGISTRATION_PRD_WH_SN = StringUrl('inventory/goods-registration-prd-wh-serial')
+    PRODUCT_LIST_FOR_PROJECT = StringUrl('inventory/product-list-for-project')
+    PRODUCT_LIST_FOR_NONE_PROJECT = StringUrl('inventory/product-list-for-none-project')
+    GOODS_REGISTRATION_ITEM_BORROW_LIST = StringUrl('inventory/goods-registration-item-borrow/list')
+    GOODS_REGISTRATION_ITEM_BORROW_DETAIL = StringUrl('inventory/goods-registration-item-borrow/{pk}')
+    GOODS_REGISTRATION_ITEM_AVAILABLE_QUANTITY = StringUrl('inventory/goods-registration-item-available-quantity')
 
     INVOICE_SIGN_LIST = StringUrl('ar-invoice/sign/list')
     INVENTORY_INTERACT_LIST = StringUrl('saledata/warehouses/config-interact')
@@ -611,10 +626,19 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROJECT_MEMBER_ADD = StringUrl('project/{pk}/member/add')
     PROJECT_MEMBER_DETAIL = StringUrl('project/{pk}/member/detail/{pk_member}')
     PROJECT_UPDATE_ORDER = StringUrl('project/update-order/{pk}')
-    PROJECT_TASK_LIST = StringUrl('project/assign-task-list/{pk_pj}')
+    PROJECT_TASK_LIST = StringUrl('project/assign-task-list')
     PROJECT_TASK_LINK = StringUrl('project/assign-task-link/{pk}')
+    PROJECT_WORK_EXPENSE_LIST = StringUrl('project/work-expense-list')
+    PROJECT_BASELINE = StringUrl('project/create-baseline/list')
+    PROJECT_BASELINE_DETAIL = StringUrl('project/create-baseline/detail')
 
     # Folder
     FOLDER_LIST = StringUrl('attachment/folder/list')
     FOLDER_DETAIL = StringUrl('attachment/folder')
     FOLDER_UPLOAD_FILE_LIST = StringUrl('attachment/folder-upload-file/list')
+
+    # Zones
+    ZONES_APPLICATION_LIST = StringUrl('base/zones-application/list')
+    ZONES_LIST = StringUrl('base/zones/list')
+    # Employee config on app
+    APP_EMP_CONFIG_LIST = StringUrl('base/app-emp-config/list')

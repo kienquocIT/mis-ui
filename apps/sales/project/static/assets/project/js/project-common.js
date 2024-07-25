@@ -3,10 +3,22 @@ $(document).ready(function () {
 
     function submitHandleFunc() {
         const frm = new SetupFormSubmit($FormElm);
-        let formData = frm.dataForm;
-        formData['employee_inherit_id'] = $('#selectEmployeeInherit').val()
-        formData['start_date'] = moment(formData['start_date'], 'DD/MM/YYYY').format('YYYY-MM-DD')
-        formData['finish_date'] = moment(formData['finish_date'], 'DD/MM/YYYY').format('YYYY-MM-DD')
+        let formData = frm.dataForm, $elmExpenseLst = $('#work_expense_tbl');
+        formData.employee_inherit = $('#employeeInheritInput').attr('data-value')
+        formData.start_date = moment(formData['start_date'], 'DD/MM/YYYY').format('YYYY-MM-DD')
+        formData.finish_date = moment(formData['finish_date'], 'DD/MM/YYYY').format('YYYY-MM-DD')
+
+        if ($elmExpenseLst.length){ // data edit
+            formData.work_expense_data = {}
+            formData.delete_expense_lst = [...new Set($('#work_expense_data').data('delete_lst'))]
+            formData.expense_data = ProjectWorkExpenseHandle.saveExpenseData()
+            for (let item of $elmExpenseLst.DataTable().data().toArray()){
+                if (item?.expense_data) formData.work_expense_data[item.id] = item.expense_data
+            }
+        }
+
+        frm.dataForm = formData
+
         $.fn.callAjax2({
             'url': frm.dataUrl,
             'method': frm.dataMethod,
@@ -16,7 +28,11 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     $.fn.notifyB({description: data.message}, 'success');
-                    if (frm.dataMethod === 'post') $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    if (frm.dataMethod === 'post')
+                        window.location.href = $FormElm.attr('data-url-redirect');
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 500)
                 }
             },
             (err) => {
@@ -35,10 +51,36 @@ $(document).ready(function () {
             submitHandleFunc()
         }
     })
+
+    $('.toggle-ud .btn').on('click', ()=> $('.toggle-ud').toggleClass('is_show'))
+
+    $('.toggle-notes').on('click', function(){
+        $('.content-notes').slideToggle()
+    })
 });
+function reGetDetail(gantt_obj){
+    const $FormElm = $('#project_form');
+    $('.lazy_loading').addClass('active')
+    $.fn.callAjax2({
+        'url': $FormElm.attr('data-url-detail'),
+        'method': 'get'
+    })
+        .then(
+            (resp) => {
+                let res = $.fn.switcherResp(resp);
+                if (res && (res['status'] === 201 || res['status'] === 200)) {
+                    let group = res['groups'];
+                    let work = res['works'];
+                    const afterData = fGanttCustom.convert_data(group, work);
+                    gantt_obj.refresh(afterData);
+                    $('.lazy_loading').delay( 1000 ).removeClass('active');
+                }
+            }
+        )
+}
 
 function saveGroup(gantt_obj) {
-    const $gModal = $('#group_modal');
+    const $gModal = $('#group_modal'), $urlFact = $('#url-factory');
     $('#btn-group-add').off().on('click', function () {
         const $gIDElm = $('#group_id'), $tit = $('#groupTitle'), $startD = $('#groupStartDate'),
             $startE = $('#groupEndDate');
@@ -55,10 +97,10 @@ function saveGroup(gantt_obj) {
             'gr_end_date': moment($startE.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
             'order': parseInt($('.gantt-wrap').data('detail-index')) + 1
         };
-        let url = $('#url-factory').attr('data-group'),
+        let url = $urlFact.attr('data-group'),
             method = 'post';
         if ($gIDElm.val()) {
-            url = $('#url-factory').attr('data-group-detail').format_url_with_uuid($gIDElm.val())
+            url = $urlFact.attr('data-group-detail').format_url_with_uuid($gIDElm.val())
             method = 'put'
             delete data['order']
         }
@@ -71,30 +113,12 @@ function saveGroup(gantt_obj) {
                 let res = $.fn.switcherResp(resp);
                 if (res && (res['status'] === 201 || res['status'] === 200)) {
                     $.fn.notifyB({description: res.message}, 'success');
-
-                    const crtIdx = $('.gantt-wrap').data('detail-index')
-                    if (!$gIDElm.length) $('.gantt-wrap').data('detail-index', crtIdx + 1)
+                    const $ganttElm = $('.gantt-wrap'), crtIdx = $ganttElm.data('detail-index');
+                    if (!$gIDElm.length) $ganttElm.data('detail-index', crtIdx + 1)
                     else $gIDElm.remove();
-                    if (gantt_obj){
-                        let temps = []
-                        if (method === 'put') res = data
-                        res.weight = res.gr_weight
-                        res.progress = $('#groupRate').val()
-                        res.date_from = res.gr_start_date
-                        res.date_end = res.gr_end_date
-                        if (method === 'post'){
-                            temps.push(res)
-                            const afterData = fGanttCustom.convert_data(temps, [])
-                            gantt_obj.load_more(afterData)
-                        }
-                        else{
-                            $gModal.modal('hide')
-                            res.id = $gIDElm.val()
-                            temps.push(res)
-                            const afterData = fGanttCustom.convert_data(temps, [])
-                            gantt_obj.update_data(afterData)
-                        }
-                    }
+                    // get detail and reload group work
+                    $gModal.modal('hide')
+                    reGetDetail(gantt_obj)
                 }
             },
             (err) => {
@@ -105,17 +129,19 @@ function saveGroup(gantt_obj) {
 }
 
 function saveWork(gantt_obj) {
-    const $wModal = $('#work_modal');
+    const $wModal = $('#work_modal'), $urlFact = $('#url-factory'), $ganttElm = $('.gantt-wrap');
     $('#btn-work-add').off().on('click', function () {
+        $(this).prop('disabled', true)
+
         const $tit = $('#workTitle'), $startD = $('#workStartDate'), $startE = $('#workEndDate'),
             groupElm = $('#select_project_group'), workParent = $('#select_project_work'), $workID = $('#work_id');
         if (!$tit.val()) {
             $.fn.notifyB({description: $.fn.gettext('Title is required')}, 'failure');
             return false
         }
-        let workType = $('#select_relationships_type').val()
-        let childIdx = parseInt($('.gantt-wrap').data('detail-index')) + 1
-        const data = {
+        let workType = $('#select_relationships_type').val(),
+        childIdx = parseInt($('.gantt-wrap').data('detail-index')) + 1,
+        data = {
             'project': $('#id').val(),
             'title': $tit.val(),
             'employee_inherit': $('#selectEmployeeInherit').val(),
@@ -123,7 +149,7 @@ function saveWork(gantt_obj) {
             'w_start_date': moment($startD.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
             'w_end_date': moment($startE.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
             'order': childIdx,
-        }
+        };
         if (workParent.val()){
             data.work_dependencies_parent = workParent.val()
             data.order = $(`.gantt-left-container .grid-row[data-id="${workParent.val()}"]`).index() + 1
@@ -131,12 +157,19 @@ function saveWork(gantt_obj) {
 
         if (workType) data.work_dependencies_type = parseInt(workType)
         else data.work_dependencies_type = null
-        if (groupElm.val()) data.group = groupElm.val()
+        let work_order = null, num_order = 0;
+        if (groupElm.val()){
+            work_order = $(`.gantt-left-container .grid-row[data-group="${groupElm.val()}"]`);
+            if (!work_order.length)
+                work_order = $(`.gantt-left-container .grid-row[data-id="${groupElm.val()}"]`)
+            num_order = work_order.last().index() + 1
+            data.group = groupElm.val();
+        }
 
-        let url = $('#url-factory').attr('data-work'),
+        let url = $urlFact.attr('data-work'),
             method = 'post';
         if ($workID.val()) {
-            url = $('#url-factory').attr('data-work-detail').format_url_with_uuid($workID.val())
+            url = $urlFact.attr('data-work-detail').format_url_with_uuid($workID.val())
             method = 'put'
             delete data['order']
         }
@@ -150,45 +183,18 @@ function saveWork(gantt_obj) {
                 if (res && (res['status'] === 201 || res['status'] === 200)) {
                     $.fn.notifyB({description: res.message}, 'success');
                     if (method === 'post'){
-                        let crtIdx = parseInt($('.gantt-wrap').data('detail-index'))
-                        $('.gantt-wrap').data('detail-index', crtIdx + 1)
+                        let crtIdx = parseInt($ganttElm.data('detail-index'))
+                        $ganttElm.data('detail-index', crtIdx + 1)
                     }
-                    if (gantt_obj){
-                        let temps = []
-                        if (method === 'put')
-                            res = data
-                        res.weight = res.w_weight
-
-                        res.date_from = res.w_start_date
-                        res.date_end = res.w_end_date
-                        res.relationships_type = res.work_dependencies_type
-                        if (method === 'post'){
-                            if (Object.keys(res.work_dependencies_parent).length)
-                                res.dependencies_parent = res.work_dependencies_parent.id
-                            else res.dependencies_parent = ""
-                            res.progress = res['w_rate']
-                            if (Object.keys(res.group).length)
-                                res.group = res.group.id
-                            else res.group = ""
-                            temps.push(res)
-                            const afterData = fGanttCustom.convert_data([], temps)
-                            gantt_obj.load_more(afterData)
-                        }
-                        else{
-                            $wModal.modal('hide')
-                            res.id = $workID.val()
-                            res.progress = $('#workRate').val(),
-                            res.work_status = $('#work_status').val()
-                            res.dependencies_parent = res.work_dependencies_parent
-                            temps.push(res)
-                            const afterData = fGanttCustom.convert_data([], temps)
-                            gantt_obj.update_data(afterData)
-                        }
-                    }
+                    // get detail and reload group work
+                    $wModal.modal('hide')
+                    reGetDetail(gantt_obj)
                 }
+                $(this).prop('disabled', false)
             },
             (err) => {
                 $.fn.notifyB({description: err.data.errors}, 'failure')
+                $(this).prop('disabled', false)
             }
         )
     });
@@ -197,206 +203,246 @@ function saveWork(gantt_obj) {
 function show_task_list(){
     const $taskTbl = $('#task_list'), $asModal = $('#assign_modal'),
     $abdTable = $('#task_abandoned_list');
+
     // flag trigger when user click action link task abandoned to current work
     window.task_done = false
 
+    function runTaskList(data_list, data_n_lst) {
+        const $urlPool = $('#assign_task-url'),
+            check_page_version = $('#project_form').hasClass('baseline_version');
+        const isDisabled = check_page_version ? 'disabled' : '';
+        let workID = $asModal.find('#modal_work_id').val();
+
+        // render task work list
+        let table_work = $taskTbl.DataTableDefault({
+            data: data_list,
+            info: false,
+            searching: false,
+            ordering: false,
+            paginate: false,
+            columns: [
+                {
+                    data: 'task',
+                    width: '10%',
+                    class: 'text-center',
+                    render: (row) => {
+                        const url = $urlPool.attr('data-task_detail').format_url_with_uuid(row.id)
+                        return row ? `<a href="${url}" class="task_detail_view">${row.code}</a>` : '--'
+                    }
+                },
+                {
+                    data: 'task',
+                    width: '25%',
+                    class: 'text-center',
+                    render: (row) => {
+                        return `${row ? row.title : '--'}`
+                    }
+                },
+                {
+                    data: 'percent',
+                    width: '15%',
+                    class: 'text-center',
+                    render: (row) => {
+                        let txt = `${row}%`
+                        if (row)
+                            txt = `<div class="progress-wrap progress-lb-wrap progress"><div class="progress-bar progress-bar-striped bg-primary progress-bar-animated w-${row}" role="progressbar" aria-valuenow="${row}" aria-valuemin="0" aria-valuemax="100">${row}%</div></div>`
+                        return txt
+                    }
+                },
+                {
+                    data: 'assignee',
+                    width: '15%',
+                    class: 'text-center',
+                    render: (row) => {
+                        let txt = '--'
+                        if (row?.full_name) txt = row.full_name
+                        return txt
+                    }
+                },
+                {
+                    data: 'id',
+                    width: '10%',
+                    class: 'text-center',
+                    render: () => {
+                        let html = $($('.btn-task-assign').html())
+                        if (check_page_version) html.find('button').attr('disabled', isDisabled)
+                        return html.prop('outerHTML')
+                    }
+                },
+            ],
+            rowCallback: function (row, data) {
+                $('.task_detail_view', row).on('click', function (e) {
+                    e.preventDefault();
+                    $('#assign_modal').modal('hide')
+                    $('.task_detail_view').trigger('Task.click.view', [{
+                        'id': data.id, 'task': data.task.id, 'work_id': workID
+                    }])
+                })
+                $('.unlink-row', row).on('click', function () {
+                    $('.task_detail_view').trigger('Task.link.work', [{
+                        'id': data.id, 'unlink': true
+                    }])
+                    table_work.row(row).remove().draw(false)
+                })
+            },
+        });
+
+        // render task without work
+        let table_n_work = $abdTable.DataTableDefault({
+            data: data_n_lst,
+            info: false,
+            searching: false,
+            ordering: false,
+            paginate: false,
+            autoWidth: true,
+            scrollX: true,
+            columns: [
+                {
+                    data: 'task',
+                    width: '10%',
+                    class: 'text-center',
+                    render: (row) => {
+                        const url = $urlPool.attr('data-task_detail').format_url_with_uuid(row.id)
+                            return row ? `<a href="${url}" class="task_detail_view">${row.code}</a>` : '--'
+                    }
+                },
+                {
+                    data: 'task',
+                    width: '25%',
+                    class: 'text-center',
+                    render: (row) => {
+                        return `${row ? row.title : '--'}`
+                    }
+                },
+                {
+                    data: 'percent',
+                    width: '15%',
+                    class: 'text-center',
+                    render: (row) => {
+                        let txt = `${row}%`;
+                        if (row)
+                            txt = `<div class="progress-wrap progress-lb-wrap progress"> <div class="progress-bar progress-bar-striped bg-primary progress-bar-animated w-${row}" role="progressbar" aria-valuenow="${row}" aria-valuemin="0" aria-valuemax="100">${row}%</div></div>`
+                        return txt
+                    }
+                },
+                {
+                    data: 'assignee',
+                    width: '15%',
+                    class: 'text-center',
+                    render: (row) => {
+                        let txt = '--'
+                            if (row?.full_name) txt = row.full_name
+                            return txt
+                    }
+                },
+                {
+                    data: 'work_before',
+                    width: '25%',
+                    class: 'text-center',
+                    render: (row) => {
+                        let txt = '--'
+                        if (row.hasOwnProperty('title')) txt = row?.['title']
+                        return txt
+                    }
+                },
+                {
+                    data: 'id',
+                    width: '10%',
+                    render: () => {
+                        let html = $($('.abd-btn-group').html())
+                        if (check_page_version) html.find('button').attr('disabled', isDisabled)
+                        return html.prop('outerHTML')
+                    }
+                },
+            ],
+            rowCallback: function (row, data) {
+                // handle onclick btn link to work
+                $('.btn-link-to-work', row).on('click', function (e) {
+                    e.preventDefault();
+                    $('.task_detail_view').trigger('Task.link.work', [{
+                        'id': data.id, 'work_id': workID
+                    }])
+                    table_n_work.row(row).remove().draw(false)
+                })
+                // open task detail
+                $('.task_detail_view', row).on('click', function (e) {
+                    e.preventDefault();
+                    $('#assign_modal').modal('hide')
+                    $('.task_detail_view').trigger('Task.click.view', [{
+                        'id': data.id, 'task': data.task.id
+                    }])
+                })
+                // del task
+                $('.btn-delete-task', row).on('click', function (e) {
+                    e.preventDefault();
+                    Task_in_project.deleteTask(data.task.id)
+                    table_n_work.row(row).remove().draw(false)
+                })
+            },
+        });
+
+        // init tab when click
+        $('a[data-bs-toggle="tab"][href="#tab_task_list"]').on('shown.bs.tab', () => table_work.columns.adjust())
+        $('a[data-bs-toggle="tab"][href="#tab_abandoned_task"]').on('shown.bs.tab', () => table_n_work.columns.adjust())
+
+    }
+
     $asModal.on('shown.bs.modal', function(){
-        const $pjElm = $('#id'), workID = $asModal.find('#modal_work_id').val();
-        const $urlPool = $('#assign_task-url');
+        const $pjElm = $('#id'), check_page_version = $('#project_form').hasClass('baseline_version');
+        let baseline_data = $('#project_form').data('baseline_data');
         if ($taskTbl.hasClass('dataTable')) $taskTbl.DataTable().destroy();
         if ($abdTable.hasClass('dataTable')) $abdTable.DataTable().destroy();
-        if (!$pjElm.val() || !workID) return false
+        let workID = $asModal.find('#modal_work_id').val();
 
-        // get current task assign for current work
-        $.fn.callAjax2({
-            'url': $taskTbl.attr('data-url'),
-            'method': 'get',
-            'data': {"project_id": $pjElm.val()},
-            'sweetAlertOpts': {'allowOutsideClick': true},
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && (data['status'] === 201 || data['status'] === 200)){
-                    let task_w_list = [], task_ab_list = [];
-                    for (let item of data['prj_task_list']){
-                        if (item.work) task_w_list.push(item)
-                        else task_ab_list.push(item)
+        // check if project id or work not id
+        if ((!$pjElm.val() || !workID) && !check_page_version) return false
+
+        // check if detail page not baseline page
+        if (!check_page_version){
+            // get current task assign for current work
+            $.fn.callAjax2({
+                'url': $taskTbl.attr('data-url'),
+                'method': 'get',
+                'data': {"project_id": $pjElm.val(), "work_id": workID},
+                'sweetAlertOpts': {'allowOutsideClick': true},
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        let task_w_list = [], task_ab_list = [];
+                        for (let item of data['prj_task_list']) {
+                            if (item.work) task_w_list.push(item)
+                            else task_ab_list.push(item)
+                        }
+                        runTaskList(task_w_list, task_ab_list)
                     }
-                    // render task work list
-                    let table_work = $taskTbl.DataTableDefault({
-                            data: task_w_list,
-                            info: false,
-                            searching: false,
-                            ordering: false,
-                            paginate: false,
-                            columns: [
-                                {
-                                    data: 'task',
-                                    width: '10%',
-                                    class: 'text-center',
-                                    render: (row, type, data) => {
-                                        const url = $urlPool.attr('data-task_detail').format_url_with_uuid(row.id)
-                                        return row ? `<a href="${url}" class="task_detail_view">${row.code}</a>` : '--'
-                                    }
-                                },
-                                {
-                                    data: 'task',
-                                    width: '25%',
-                                    class: 'text-center',
-                                    render: (row) => {
-                                        return `${row ? row.title : '--'}`
-                                    }
-                                },
-                                {
-                                    data: 'percent',
-                                    width: '15%',
-                                    class: 'text-center',
-                                    render: (row) => {
-                                        let txt = `${row}%`
-                                        if (row)
-                                            txt = `<div class="progress-wrap progress-lb-wrap progress"> <div class="progress-bar progress-bar-striped bg-primary progress-bar-animated w-${row}" role="progressbar" aria-valuenow="${row}" aria-valuemin="0" aria-valuemax="100">${row}%</div></div>`
-                                        return txt
-                                    }
-                                },
-                                {
-                                    data: 'assignee',
-                                    width: '15%',
-                                    class: 'text-center',
-                                    render: (row) => {
-                                        let txt = '--'
-                                        if (row) txt = row.full_name
-                                        return txt
-                                    }
-                                },
-                                {
-                                    data: 'id',
-                                    width: '10%',
-                                    class: 'text-center',
-                                    render: (row, index, data) => {
-                                        let txt = $('.btn-task-assign').html();
-                                        return txt
-                                    }
-                                },
-                            ],
-                            rowCallback: function(row, data){
-                                $('.task_detail_view', row).on('click', function(e){
-                                    e.preventDefault();
-                                    $('#assign_modal').modal('hide')
-                                    $('.task_detail_view').trigger('Task.click.view', [{
-                                        'id': data.id, 'task': data.task.id, 'work_id': workID
-                                    }])
-                                })
-                                $('.unlink-row', row).on('click', function (e) {
-                                    $('.task_detail_view').trigger('Task.link.work', [{
-                                        'id': data.id, 'unlink': true
-                                    }])
-                                    table_work.row(row).remove().draw(false)
-                                })
-                            },
-                        });
+                },
+                (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+            )
+        }
+        else{
+            let task_w_list = [], task_ab_list = [];
+            for (let item of baseline_data['work_task_data']) {
+                if (item.work && item.work === workID) task_w_list.push(item)
+                else if (!item.work) task_ab_list.push(item)
+            }
+            runTaskList(task_w_list, task_ab_list)
+        }
 
-                    // render task without work
-                    let table_n_work = $abdTable.DataTableDefault({
-                        data: task_ab_list,
-                        info: false,
-                        searching: false,
-                        ordering: false,
-                        paginate: false,
-                        autoWidth: true,
-                        scrollX: true,
-                        columns: [
-                            {
-                                data: 'task',
-                                width: '10%',
-                                class: 'text-center',
-                                render: (row, type, data) => {
-                                    const url = $urlPool.attr('data-task_detail').format_url_with_uuid(row.id)
-                                        return row ? `<a href="${url}" class="task_detail_view">${row.code}</a>` : '--'
-                                }
-                            },
-                            {
-                                data: 'task',
-                                width: '25%',
-                                class: 'text-center',
-                                render: (row) => {
-                                    return `${row ? row.title : '--'}`
-                                }
-                            },
-                            {
-                                data: 'percent',
-                                width: '15%',
-                                class: 'text-center',
-                                render: (row) => {
-                                    let txt = `${row}%`;
-                                    if (row)
-                                        txt = `<div class="progress-wrap progress-lb-wrap progress"> <div class="progress-bar progress-bar-striped bg-primary progress-bar-animated w-${row}" role="progressbar" aria-valuenow="${row}" aria-valuemin="0" aria-valuemax="100">${row}%</div></div>`
-                                    return txt
-                                }
-                            },
-                            {
-                                data: 'assignee',
-                                width: '15%',
-                                class: 'text-center',
-                                render: (row, index, data) => {
-                                    let txt = '--'
-                                        if (row) txt = row.full_name
-                                        return txt
-                                }
-                            },
-                            {
-                                data: 'work_before',
-                                width: '25%',
-                                class: 'text-center',
-                                render: (row, index, data) => {
-                                    let txt = '--'
-                                    if (row.hasOwnProperty('title')) txt = row?.['title']
-                                    return txt
-                                }
-                            },
-                            {
-                                data: 'id',
-                                width: '10%',
-                                render: (row, index, data) => {
-                                    let txt = $('.abd-btn-group').html();
-                                    return txt
-                                }
-                            },
-                        ],
-                        rowCallback: function (row, data, index) {
-                            // handle onclick btn link to work
-                            $('.btn-link-to-work', row).on('click', function (e) {
-                                e.preventDefault();
-                                $('.task_detail_view').trigger('Task.link.work', [{
-                                    'id': data.id, 'work_id': workID
-                                }])
-                                table_n_work.row(row).remove().draw(false)
-                            })
-                            // open task detail
-                            $('.task_detail_view', row).on('click', function (e) {
-                                e.preventDefault();
-                                $('#assign_modal').modal('hide')
-                                $('.task_detail_view').trigger('Task.click.view', [{
-                                    'id': data.id, 'task': data.task.id
-                                }])
-                            })
-                            // del task
-                            $('.btn-delete-task', row).on('click', function (e) {
-                                e.preventDefault();
-                                Task_in_project.deleteTask(data.task.id)
-                                table_n_work.row(row).remove().draw(false)
-                            })
-                        },
-                    });
-
-                    // init tab when click
-                    $('a[data-bs-toggle="tab"][href="#tab_task_list"]').on('shown.bs.tab', () => table_work.columns.adjust())
-                    $('a[data-bs-toggle="tab"][href="#tab_abandoned_task"]').on('shown.bs.tab', () => table_n_work.columns.adjust())
-                }
-            },
-            (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
-        )
     })
 
+}
+
+function validateNumber(value) {
+    // Replace non-digit characters with an empty string
+    let temp = value.replace(/[^0-9.]/g, '');
+    // Remove unnecessary zeros from the integer part
+    temp = temp.replace("-", "").replace(/^0+(?=\d)/, '');
+    if (temp.indexOf(".") !== -1) temp = parseFloat(temp)
+    else temp = parseInt(temp)
+    let reg = new RegExp(/^-?\d*\.?\d+(e[+-]?\d+)?$/i);
+    if (!reg.test(temp)) temp = 0
+    return temp;
 }
 
 class ProjectTeamsHandle {
@@ -430,43 +476,61 @@ class ProjectTeamsHandle {
     }
 
     static clickEditMember(memberIdx) {
-        const wrapPermEle = $('#box-edit-permit');
+        const wrapPermEle = $('#box-edit-permit'), $formElm = $('#project_form');
+        const check_page_version = $formElm.hasClass('baseline_version');
         wrapPermEle.attr('data-id', memberIdx);
-
         let urlTmp = wrapPermEle.attr('data-url').format_url_with_uuid(memberIdx);
-        $.fn.callAjax2({
-            url: urlTmp,
-            type: 'GET',
-            'sweetAlertOpts': {'allowOutsideClick': true},
-        }).then(
-            (resp) => {
-                let res = $.fn.switcherResp(resp);
-                if (res.status === 200) {
-                    $('#view_this_project').prop('checked', res['permit_view_this_project']);
-                    $('#can_add_member').prop('checked', res.permit_add_member);
-                    $('#can_add_gaw').prop('checked', res['permit_add_gaw']);
 
-                    HandlePlanAppNew.rangeAllowOfApp = ["1", "4"];
-                    HandlePlanAppNew.hasSpaceChoice = true;
-                    HandlePlanAppNew.manual_app_list_and_not_plan_app = true;
-                    HandlePlanAppNew.setPermissionByConfigured(res.permission_by_configured || [])
+        function loadPermissionDetail(res){
+            $('#view_this_project').prop('checked', res['permit_view_this_project']);
+            $('#can_add_member').prop('checked', res.permit_add_member);
+            $('#can_add_gaw').prop('checked', res['permit_add_gaw']);
 
-                    let clsNew = new HandlePlanAppNew();
-                    clsNew.renderPermissionSelected(
-                        memberIdx, {
-                            'get_from': 'project',
-                            'project': $('#id').val(),
-                    })
+            HandlePlanAppNew.rangeAllowOfApp = ["1", "4"];
+            HandlePlanAppNew.hasSpaceChoice = true;
+            HandlePlanAppNew.manual_app_list_and_not_plan_app = true;
+            HandlePlanAppNew.setPermissionByConfigured(res.permission_by_configured || [])
+
+            let clsNew = new HandlePlanAppNew();
+            clsNew.renderPermissionSelected(
+                memberIdx, {
+                    'get_from': 'project',
+                    'project': $('#id').val(),
+                })
+        }
+
+        if (!check_page_version){
+            $.fn.callAjax2({
+                url: urlTmp,
+                type: 'GET',
+                'sweetAlertOpts': {'allowOutsideClick': true},
+            }).then(
+                (resp) => {
+                    let res = $.fn.switcherResp(resp);
+                    if (res.status === 200) {
+                        loadPermissionDetail(res)
+                    }
+                    return {};
+                },
+                (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+            )
+        }
+        else{
+            let baseline_data = $formElm.data('baseline_data');
+            for (let idx in baseline_data['member_perm_data']){
+                let item = baseline_data['member_perm_data'][idx]
+                if (idx === memberIdx){
+                    loadPermissionDetail(item)
+                    break;
                 }
-                return {};
-            },
-            (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
-        )
+            }
+        }
+
     }
 
     static render(datas=[], is_detail = false){
         if (!datas) return true
-        const project_PM = $('#selectEmployeeInherit').val()
+        const project_PM = $('#selectEmployeeInherit').val(), $ElmCrtEdit = $('#member-current-edit');
 
         // render member
         for (let data of datas){
@@ -487,7 +551,7 @@ class ProjectTeamsHandle {
             if (is_detail === true){
                 temp.find('.card-action-wrap .card-action-edit i').addClass('bi-eye-slash-fill').removeClass('fa-pen')
                 $('#btnSavePermitMember').addClass('disabled')
-                $('#member-current-edit').prop('disabled', true)
+                $ElmCrtEdit.prop('disabled', true)
             }
 
             // event click edit permission of card member
@@ -495,12 +559,12 @@ class ProjectTeamsHandle {
                 $('.card-action-wrap .card-action-edit').find('i').addClass('bi-eye-slash-fill').removeClass('bi-eye-fill')
                 $(this).find('i').addClass('bi-eye-fill').removeClass('bi-eye-slash-fill')
                 $('#box-edit-permit').removeClass('hidden')
-                $('#member-current-edit').val(data.id).trigger('change');
+                $ElmCrtEdit.val(data.id).trigger('change');
             });
         }
 
         // init select member
-        $('#member-current-edit').initSelect2({
+        $ElmCrtEdit.initSelect2({
             data: datas,
             keyText: 'full_name',
         }).on('change', function(){
@@ -526,7 +590,7 @@ class ProjectTeamsHandle {
                 },
                 columns: [
                     {
-                        render: (data, type, row) => {
+                        render: () => {
                             return '';
                         }
                     },
@@ -571,8 +635,7 @@ class ProjectTeamsHandle {
                 ],
                 rowCallback: function (row, data) {
                     $('.input-select-member', row).on('change', function () {
-                        let is_checked = $(this).prop('checked');
-                        data['is_checked_new'] = is_checked;
+                        data['is_checked_new'] = $(this).prop('checked');
                     })
                 },
             });
@@ -611,14 +674,86 @@ class ProjectTeamsHandle {
 }
 
 class ProjectWorkExpenseHandle{
+    static ValidDataRow(data){
+        if (data.expense_item.hasOwnProperty('id') &&
+            data.uom.hasOwnProperty('id') &&
+            data.quantity &&
+            data.expense_price &&
+            typeof data.is_labor == "boolean" &&
+            ((!data.is_labor && data.title !== "") || (data.is_labor && data.expense_name.hasOwnProperty('id')))
+        ) return true
+        return false
+    }
+
+    static saveExpenseData(){
+        let dataList = {}, $tblExpense = $('#work_expense_tbl tr.work-expense-wrap');
+        let allList = []
+        Array.from($tblExpense).forEach(function(e){
+            allList = allList.concat($(e).find('table[id*="expense_child_"]').DataTable().data().toArray())
+        })
+        for (let idx in allList){
+            let item = allList[idx]
+            if (ProjectWorkExpenseHandle.ValidDataRow(item)){
+                const work_id = item.work_id
+                if (!dataList.hasOwnProperty(work_id)) dataList[work_id] = []
+                if (item.id && item.id.length === 16) delete item.id
+                dataList[work_id].push(item)
+            }
+        }
+        return dataList
+    }
+
+    static calcSubTotal(data, parentTr){
+        const tblParent = parentTr.closest('table')
+        let total_unit = 0, total_tax = 0, total_price = 0;
+        for (let item of data){
+            total_unit += item.expense_price * item.quantity
+            total_tax += item.tax.rate > 0 ? item.tax.rate / 100 * (item.expense_price * item.quantity) : 0
+            total_price += item.expense_price * item.quantity
+        }
+        total_price += total_tax
+        // init table row
+        const parentIdx = parentTr.attr('data-idx')
+        tblParent.DataTable().cell(parentIdx, 1).data(total_unit)
+        tblParent.DataTable().cell(parentIdx, 2).data(total_tax)
+        tblParent.DataTable().cell(parentIdx, 3).data(total_price)
+        ProjectWorkExpenseHandle.calcAllTotal()
+        $.fn.initMaskMoney2()
+    }
+
+    static calcAllTotal(){
+        let tbl = $('#work_expense_tbl').DataTable();
+
+        let total_unit = 0, total_tax = 0, total_price = 0;
+        for (let item of tbl.data().toArray()){
+            if (item.expense_data && item.expense_data.price && item.expense_data['total_after_tax']){
+                total_unit += item.expense_data.price
+
+                total_price += item.expense_data['total_after_tax']
+                if (item.expense_data.tax) total_tax += item.expense_data.tax
+            }
+        }
+        // init calc header
+        $('tr:nth-child(1) th:nth-child(3)', tbl.table().header()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${total_unit}"></span></p>`)
+        $('tr:nth-child(2) th:nth-child(3)', tbl.table().header()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${total_tax}"></span></p>`)
+        $('tr:nth-child(3) th:nth-child(3)', tbl.table().header()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${total_price}"></span></p>`)
+    }
 
     static appendChildTable(trElm, workID){
-        let dtlSub = `<table id="expense_child_${workID}" class="table nowrap w-100 mb-5"><thead></thead><tbody></tbody></table>`
+        const $formElm = $('#project_form'), check_page_version = $formElm.hasClass('baseline_version');
+        let baseline_data = $formElm.data('baseline_data');
+        let dtlSub = `<table id="expense_child_${workID}" class="table nowrap w-100 min-w-1768p mb-5"><thead></thead><tbody></tbody></table>`,
+            $addBtn = `<button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="dropdown"><span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${$.fn.gettext("New")}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span></button>`
+            + `<div role="menu" class="dropdown-menu">`
+            + `<a class="dropdown-item add-expense" href="#"><i class="dropdown-icon fas fa-hand-holding-usd text-primary"></i> ${$.fn.gettext("Add Expense")}</a>`
+            + `<a class="dropdown-item add-labor" href="#"><i class="dropdown-icon fas fa-people-carry text-primary"></i> ${$.fn.gettext("Add Labor")}</a>`
+            + `</div>`;
+        if (check_page_version) $addBtn = ''
         trElm.after(
-            `<tr class="work-expense-wrap"><td colspan="4"><div class="WE-content hidden-simple">${dtlSub}</div></td></tr>`
+            `<tr class="work-expense-wrap"><td colspan="4"><div class="WE-content hidden-simple">${$addBtn + dtlSub}</div></td></tr>`
         );
-        const $URLFactory = $('#url-factory')
-        $('#expense_child_' + workID).DataTableDefault({
+        const $URLFactory = $('#url-factory');
+        let crtTable = $('#expense_child_' + workID).DataTableDefault({
             info: false,
             searching: false,
             ordering: false,
@@ -627,138 +762,266 @@ class ProjectWorkExpenseHandle{
                 {
                     data: 'expense_name',
                     title: $.fn.gettext('Expense name'),
-                    width: '20%',
+                    width: '19%',
                     render: (row, index, data) => {
+                        let htmlOpt = ''
+                        if(row && row.hasOwnProperty('id'))
+                            htmlOpt = `<option value="${row?.id}" selected>${row.title}</option>`
                         let HTML = `<select 
-                                    class="form-select" 
+                                    class="form-select expense_labor_name" 
                                     data-url="${$URLFactory.attr('data-expense')}"
                                     data-link-detail="${$URLFactory.attr('data-expense-detail')}"
-                                    data-method="get" data-keyResp="expense_list" required></select>`;
+                                    data-method="get" data-keyResp="expense_list" required>${htmlOpt}</select>`;
                         if (data?.['is_labor'] === false)
-                            HTML = `<input type="text" class="form-control" value="${row}" required>`;
+                            HTML = `<input type="text" class="form-control expense_name" value="${data?.title}" required>`;
                         return HTML
                     }
-                }, {
+                },
+                {
                     data: 'expense_item',
                     title: $.fn.gettext('Expense items'),
-                    width: '20%',
+                    width: '19%',
                     render: (row, index, data) => {
+                        let htmlOpt = ''
+                        if(row.hasOwnProperty('id')) htmlOpt = `<option value="${row?.id}" selected>${row.title}</option>`
                         let HTML = `<select 
-                                    class="form-select" 
+                                    class="form-select expense_item" 
                                     data-url="${$URLFactory.attr('data-expense_item')}"
                                     data-link-detail="${$URLFactory.attr('data-expense_item-detail')}"
                                     data-method="get" data-keyResp="expense_item_list" ${
-                            data?.['is-labor'] === false ? 'disabled' : 'required'}></select>`;
+                            data?.['is_labor'] === false ? 'required' : 'disabled' }>${htmlOpt}</select>`;
+                        if (data?.['is_labor'])
+                            HTML = `<select class="form-select expense_item_labor" disabled>${htmlOpt}</select>`
                         return HTML;
                     }
-                }, {
+                },
+                {
                     data: 'uom',
                     title: $.fn.gettext('UoM'),
-                    width: '10%',
+                    width: '9.4%',
                     render: (row, index, data) => {
-                        let HTML = `<select 
-                                    class="form-select" 
-                                    data-url="${$URLFactory.attr('data-uom')}"
-                                    data-method="get" data-keyResp="unit_of_measure" ${
-                            data?.['is-labor'] === false ? '' : 'disabled'} required></select>`
+                        let htmlOpt = ''
+                        if(row.hasOwnProperty('id')) htmlOpt = `<option value="${row?.id}" selected>${row.title}</option>`
+                        let HTML = `<select class="form-select select_uom" data-url="${$URLFactory.attr('data-uom')}"
+                                    data-method="get" data-keyResp="unit_of_measure" required>${htmlOpt}</select>`
+                        if (data?.['is_labor'])
+                            HTML = `<select class="form-select select_uom_labor" disabled>${htmlOpt}</select>`
                         return HTML
                     }
-                }, {
+                },
+                {
                     data: 'quantity',
-                    width: '5%',
+                    width: '5.2%',
                     title: $.fn.gettext('Quantity'),
+                    class: 'text-center',
                     render: (row) => {
-                        return `<input type="text" class="form-control validated-number" value="${row}" required>`;
+                        return `<input type="text" class="form-control valid-number" value="${row}" required>`;
                     }
-                }, {
+                },
+                {
                     data: 'expense_price',
-                    width: '20%',
+                    width: '11%',
                     title: $.fn.gettext('Expense Price'),
                     render: (row) => {
-                        return `<input type="text" class="form-control mask-money" value="${row}" data-return-type="number">`;
-                    }
-                }, {
-                    data: 'tax',
-                    width: '10%',
-                    title: $.fn.gettext('Tax'),
-                    render: () => {
-                        return `<select
-                                    className="form-select"
-                                    data-url="${$URLFactory.attr('data-tax')}"
-                                    data-method="get"
-                                    data-keyResp="tax_list"
-                                ></select>`
+                        return `<input type="text" class="form-control mask-money expense_price" value="${row}" data-return-type="number">`;
                     }
                 },
                 {
                     data: 'sub_total',
-                    width: '20%',
+                    width: '11%',
                     title: $.fn.gettext('Subtotal Price'),
                     render: (row) => {
-                        return `<div class="row subtotal-area">
-                                <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row ? row : '0')}"></span></p>
-                                <input
-                                    type="text"
-                                    class="form-control table-row-subtotal-raw"
-                                    value="${row}"
-                                    hidden
-                                >
-                            </div>`;
+                        return `<p><span class="mask-money row-sub_total" data-init-money="${parseFloat(row ? row : '0')}">${parseFloat(row ? row : '0')}</span></p>`;
+                    }
+                },
+                {
+                    data: 'tax',
+                    width: '9.4%',
+                    title: $.fn.gettext('Tax'),
+                    render: (row) => {
+                        let htmlOpt = ''
+                        if(row.hasOwnProperty('id')) htmlOpt = `<option value="${row?.id}" selected>${row.title}</option>`
+                        return `<select
+                                    class="form-select tax_item"
+                                    data-url="${$URLFactory.attr('data-tax')}"
+                                    data-method="get"
+                                    data-keyResp="tax_list"
+                                >${htmlOpt}</select>`
+                    }
+                },
+                {
+                    data: 'sub_total_after_tax',
+                    width: '11%',
+                    title: $.fn.gettext('Subtotal after tax'),
+                    render: (row) => {
+                        return `<p><span class="mask-money row-sub_total" data-init-money="${parseFloat(row ? row : '0')}">${parseFloat(row ? row : '0')}</span></p>`;
                     }
                 },
                 {
                     data: 'id',
                     width: '5%',
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover del-row" ${check_page_version ? 'disabled' : ''}><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                // on change EXPENSE LABOR NAME
+                $('.expense_labor_name', row).on('select2:select', function (e){
+                    data.expense_name = e.params.data.data
+                    data.expense_item = data.expense_name.expense_item
+                    data.expense_price = data.expense_name['price_list'][0]?.price_value || 0
+                    data.uom = data.expense_name.uom
+                    crtTable.row(index).data(data).draw(false)
+                })
+
+                // on change EXPENSE ITEM, UoM
+                $('.expense_item, .select_uom', row).on('select2:select', function (e){
+                    let data_item = e.params.data.data
+                    if ($(this).hasClass('expense_item')) data.expense_item = data_item
+                    else data.uom = data_item
+                })
+
+                // on change field QUANTITY and UNIT PRICE
+                $('.valid-number, .expense_price, .expense_name', row).on('blur', function(){
+                    let idx = $(row).index()
+                    if ($(this).hasClass('valid-number'))
+                        data.quantity = this.value = validateNumber(this.value)
+                    else if ($(this).hasClass('expense_price')) data.expense_price = validateNumber(this.value)
+                    else data.title = this.value
+                    if (data.expense_price && data.quantity){
+                        // render subtotal
+                        data.sub_total = data.expense_price * data.quantity
+                        crtTable.cell({row: idx, column: 5}).data(data.sub_total).draw(false)
+                        // render parent data when child data is complete row
+                        let total_after = data.sub_total
+                        if ((data?.tax && Object.keys(data.tax).length > 0) && data.tax.rate !== 0)
+                            total_after += data.tax.rate/100 * total_after
+                        crtTable.cell(idx, 7).data(total_after).draw(false)
+                        ProjectWorkExpenseHandle.calcSubTotal(crtTable.data().toArray(), trElm)
+                    }
+                });
+
+                // trigger on change TAX
+                $('.tax_item', row).on('select2:select', function (e) {
+                    let idx = $(row).index()
+                    const selected = e.params.data
+                    data.tax = selected.data
+                    // render parent data when child data is complete row
+                    if (data.expense_price && data.quantity && data?.tax && Object.keys(data.tax).length > 0){
+                        let total_after = data.expense_price * data.quantity
+                        if (data.tax.rate !== 0) total_after += data.tax.rate/100 * total_after
+                        crtTable.cell(idx, 7).data(total_after).draw(false)
+                        ProjectWorkExpenseHandle.calcSubTotal(crtTable.data().toArray(), trElm)
+                    }
+                })
+
+                // on delete EXPENSE ROW
+                $('.del-row', row).on("click", function (e) {
+                    e.preventDefault()
+                    crtTable.row(row).remove().draw(false)
+                    const $elmExData = $('#work_expense_data')
+                    let deleteList = $elmExData.data('delete_lst') || []
+                    if (data.id.length > 16) deleteList.push(data.id)
+                    $elmExData.data('delete_lst', deleteList)
+                    ProjectWorkExpenseHandle.calcSubTotal(crtTable.data().toArray(), trElm)
+                })
+            },
+            drawCallback: function () {
+                // run select2 row
+                $('.tax_item, .select_uom, .expense_item, .expense_labor_name', $('#expense_child_' + workID)).each(function(){
+                   $(this).initSelect2()
+                });
+                ProjectWorkExpenseHandle.calcAllTotal()
+                // run label money
+                $.fn.initMaskMoney2()
+            },
         });
+        $('.add-expense, .add-labor', trElm.next()).on('click', function(e){
+            e.preventDefault()
+            let temp = [{
+                work_id: workID,
+                id: $x.fn.randomStr(16),
+                is_labor: $(this).hasClass('add-labor'),
+                expense_name: '',
+                title: '',
+                expense_item: '',
+                uom: {},
+                quantity: 0,
+                expense_price: 0,
+                tax: {},
+                sub_total: 0,
+                sub_total_after_tax: 0,
+            }]
+            crtTable.rows.add(temp).draw()
+        })
+
+        if (!check_page_version){
+            $.fn.callAjax2({
+                'url': $URLFactory.attr('data-work-expense'),
+                'method': 'get',
+                'data': {'work_id': workID},
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && data.hasOwnProperty('work_expense_list'))
+                        crtTable.rows.add(data.work_expense_list).draw()
+                },
+                (err) => {
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                }
+            )
+        }
+        else{
+            let data_lst = baseline_data.work_expense_data?.[workID]
+            if (data_lst) crtTable.rows.add(data_lst).draw()
+        }
+
     }
 
     static init(data=[]){
-        const $workExpenseTbl = $('#work_expense_tbl')
+        const $workExpenseTbl = $('#work_expense_tbl');
         let WExTbl = $workExpenseTbl.DataTableDefault({
             data: data,
             info: false,
             searching: false,
             ordering: false,
             paginate: false,
+            autoWidth: true,
+            scrollX: true,
+            stateDefaultPageControl: false,
+            stateFullTableTools: false,
             columns: [
                 {
                     data: 'title',
                     width: '60%',
-                    render: (row, type, data) => {
+                    render: (row) => {
                         return `<button class="btn-sh-ex btn-flush-primary btn btn-icon btn-rounded flush-soft-hover mr-1"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> ${row}`;
                     }
                 },
                 {
-                    data: 'unit_price',
+                    data: 'expense_data.price',
                     width: '15%',
-                    class: 'text-center',
-                    render: (row, type, data) => {
-                        return `${data?.['expense_data']?.unit_price ? data?.['expense_data']?.unit_price : '--'}`
-                    }
-                },
-                {
-                    data: 'tax',
-                    width: '10%',
-                    class: 'text-center',
-                    render: (row, type, data) => {
-                        return `${data?.['expense_data']?.tax ? data?.['expense_data']?.tax : '--'}`
-                    }
-                },
-                {
-                    data: 'total',
-                    width: '15%',
-                    class: 'text-center',
                     render: (row) => {
-                        return `${data?.['expense_data']?.total ? data?.['expense_data']?.total : '--'}`
+                        return `<p><span class="mask-money" data-init-money="${parseFloat(row ? row : '0')}">${parseFloat(row ? row : '0')}</span></p>`
+                    }
+                },
+                {
+                    data: 'expense_data.tax',
+                    width: '10%',
+                    render: (row) => {
+                        return `<p><span class="mask-money" data-init-money="${parseFloat(row ? row : '0')}">${parseFloat(row ? row : '0')}</span></p>`
+                    }
+                },
+                {
+                    data: 'expense_data.total_after_tax',
+                    width: '15%',
+                    render: (row) => {
+                        return `<p><span class="mask-money" data-init-money="${parseFloat(row ? row : '0')}">${parseFloat(row ? row : '0')}</span></p>`
                     }
                 }
             ],
-            rowCallback: function (row, data) {
+            rowCallback: function (row, data, index) {
                 $('.btn-sh-ex', row).on('click', function (e) {
                     e.preventDefault();
                     let tr = $(this).parents('tr');
@@ -778,6 +1041,32 @@ class ProjectWorkExpenseHandle{
                 $('.unlink-row', row).on('click', function (e) {
                     e.preventDefault();
                 })
+
+                // add index for update datatable when child is visible
+                $(row).attr('data-idx', index)
+            },
+            drawCallback: function(){
+                $.fn.initMaskMoney2()
+            },
+            footerCallback: function () {
+                let api = this.api();
+                // Total footer row
+                let totalPrice = 0
+                let totalTax = 0
+                let totalAfterTax = 0
+                api.rows().every(function () {
+                    let data = this.data()
+                    if (data?.['expense_data']?.['price'] && data?.['expense_data']?.['total_after_tax']){
+                        totalPrice += data.expense_data.price
+                        totalAfterTax += data.expense_data['total_after_tax']
+                        if (data?.['expense_data']?.['tax'])
+                            totalTax += data.expense_data.tax
+                    }
+                });
+                // Update header
+                $('tr:nth-child(1) th:nth-child(3)', api.table().header()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${totalPrice}"></span></p>`);
+                $('tr:nth-child(2) th:nth-child(3)', api.table().header()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${totalTax}"></span></p>`);
+                $('tr:nth-child(3) th:nth-child(3)', api.table().header()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${totalAfterTax}"></span></p>`);
             },
         });
 

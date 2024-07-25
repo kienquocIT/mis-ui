@@ -1712,7 +1712,7 @@ msgstr "Số"
 
 #
 msgid "Vendor"
-msgstr "Nhà cùng cấp"
+msgstr "Nhà cung cấp"
 
 #
 msgid "Date"
@@ -2037,7 +2037,7 @@ msgstr "Mức tồn kho tối đa"
 
 #
 msgid "Valuation Method"
-msgstr "Phương thức định giá"
+msgstr "PT định giá"
 
 #
 msgid "Warehouse Code"
@@ -3036,10 +3036,8 @@ msgid "Feature"
 msgstr "Tính năng"
 
 #
-msgid "The document approved because the feature config don't apply workflow"
-msgstr ""
-"Phiếu đã tự động chấp nhận bởi vì chức năng này không áp dụng Quy trình làm "
-"việc"
+msgid "Document is auto finished because the feature doesn't apply workflow"
+msgstr "Phiếu được tự động hoàn thành do chức năng không áp dụng quy trình"
 
 #
 msgid "Connection"
@@ -3771,7 +3769,7 @@ msgstr "Tên nhà cung cấp"
 
 #
 msgid "Add new row"
-msgstr "Thêm hàng mới"
+msgstr "Thêm dòng mới"
 
 #
 msgid "Payment value"
@@ -4638,7 +4636,7 @@ msgid "Must select one warehouse"
 msgstr "Phải chọn một kho"
 
 #
-msgid "Exceeded remaining quantity"
+msgid "Exceed remain quantity"
 msgstr "Vượt quá số lượng còn lại"
 
 #
@@ -6203,8 +6201,8 @@ msgid "Shipping fee"
 msgstr "Phí vận chuyển"
 
 #
-msgid "Data is hidden by workflow config"
-msgstr "Dữ liệu bị ẩn theo quy trình"
+msgid "Data in the hidden zone"
+msgstr "Dữ liệu thuộc vùng bị ẩn"
 
 #
 msgid "Add node"
@@ -6928,11 +6926,11 @@ msgstr "TỒN ĐẦU"
 
 #
 msgid "INPUT"
-msgstr "NHẬP"
+msgstr "NHẬP VÀO"
 
 #
 msgid "OUTPUT"
-msgstr "XUẤT"
+msgstr "XUẤT RA"
 
 #
 msgid "ENDING"
@@ -6944,7 +6942,7 @@ msgstr "Xem chi tiết"
 
 #
 msgid "Valuation method"
-msgstr "Phương pháp tính"
+msgstr "PT định giá"
 
 #
 msgid "System date"
@@ -7036,11 +7034,11 @@ msgstr "Báo cáo tồn kho"
 
 #
 msgid "Cumulative quantity"
-msgstr "Số lượng tích luỹ"
+msgstr "SL tích luỹ"
 
 #
 msgid "Cumulative cost"
-msgstr "Đơn giá tích luỹ"
+msgstr "Giá cost tích luỹ"
 
 #
 msgid "Cumulative value"
@@ -7075,7 +7073,7 @@ msgid "Require input data in payment tab (same to purchase order)"
 msgstr "Yêu cầu nhập dữ liệu vào tab thanh toán (tương tự với đơn đặt hàng)"
 
 #
-msgid "Show data have win rate is 100%"
+msgid "Show data have win rate 100%"
 msgstr "Hiển thị dữ liệu có tỷ lệ thắng 100%"
 
 #
@@ -7176,11 +7174,11 @@ msgstr "Nhập liệu sau"
 
 #
 msgid "Vendor serial no."
-msgstr "Số seri của NCC"
+msgstr "Serial của NCC"
 
 #
 msgid "Serial no."
-msgstr "Số seri"
+msgstr "Serial"
 
 #
 msgid "Mfr date"
@@ -7320,7 +7318,7 @@ msgstr "Đến kho"
 
 #
 msgid "Stock quantity"
-msgstr "Số lượng tồn kho"
+msgstr "SL tồn kho"
 
 #
 msgid "Click the button besides input element to see detail (for serial/lot product)."
@@ -7440,7 +7438,7 @@ msgstr "Tổng giá trị"
 
 #
 msgid "Lot quantity"
-msgstr "Số lượng của lô"
+msgstr "SL của lô"
 
 #
 msgid "Manufacture date"
@@ -7655,8 +7653,8 @@ msgid "Types of Relationships"
 msgstr "Loại quan hệ"
 
 #
-msgid "Parents Work"
-msgstr "Công việc cha"
+msgid "Dependencies work with"
+msgstr "Phụ thuộc với Công việc"
 
 #
 msgid "Work weight"
@@ -7739,16 +7737,16 @@ msgid "Work title"
 msgstr "Tên công việc"
 
 #
-msgid "Total Unit Price"
+msgid "Total price"
 msgstr "Tổng đơn giá"
 
 #
-msgid "Total Tax"
+msgid "Total tax"
 msgstr "Tổng thuế"
 
 #
-msgid "Total Price"
-msgstr "Tổng thành tiền"
+msgid "Total price after tax"
+msgstr "Tổng tiền sau thuế"
 
 #
 msgid "Goods registration"
@@ -7792,7 +7790,7 @@ msgstr "Hàng từ DA khác"
 
 #
 msgid "Stock quantity this order detail"
-msgstr "Chi tiết tồn kho cho DA này"
+msgstr "Chi tiết tồn kho hàng của DA này"
 
 #
 msgid "Transaction"
@@ -7801,3 +7799,228 @@ msgstr "Giao dịch"
 #
 msgid "Estimated gross profit"
 msgstr "Lợi nhuận dự kiến"
+
+#
+msgid "PRODUCT"
+msgstr "SẢN PHẨM"
+
+#
+msgid "INVENTORY UOM"
+msgstr "ĐƠN VỊ KHO"
+
+#
+msgid "SYSTEM DATE"
+msgstr "NGÀY HỆ THỐNG"
+
+#
+msgid "EXP DATE"
+msgstr "NGÀY HẾT HẠN"
+
+#
+msgid "I/O quantity"
+msgstr "SL nhập/xuất"
+
+#
+msgid "I/O cost"
+msgstr "Giá cost nhập/xuất"
+
+#
+msgid "I/O value"
+msgstr "Giá trị nhập/xuất"
+
+#
+msgid "Inventory UoM"
+msgstr "ĐV lưu kho"
+
+#
+msgid "Trans information"
+msgstr "Thông tin giao dịch"
+
+#
+msgid "Mfg date"
+msgstr "Ngày sản xuất"
+
+#
+msgid "Exp date"
+msgstr "Hạn sử dụng"
+
+#
+msgid "Hover to product code to see more information."
+msgstr "Rê chuột đến Mã Sản Phẩm để xem thêm thông tin."
+
+#
+msgid "Hold to drag"
+msgstr "Nắm giữ để di chuyển"
+
+#
+msgid "Search employee by incurred expenses"
+msgstr "Tìm nhân viên theo chi phí phát sinh"
+
+#
+msgid "Roles incurred expenses"
+msgstr "Vai trò phát sinh chi phí"
+
+#
+msgid "Create Baseline"
+msgstr "Tạo Đường cơ sở"
+
+#
+msgid "not PR"
+msgstr "không theo PR"
+
+#
+msgid "None-project products if sale order is null"
+msgstr "Lấy sản phẩm không thuộc về dự án nào nếu không chọn Đơn hàng"
+
+#
+msgid "Project sale order"
+msgstr "Đơn hàng dự án"
+
+#
+msgid "IN"
+msgstr "Nhập"
+
+#
+msgid "OUT"
+msgstr "Xuất"
+
+#
+msgid "Stock quantity other detail"
+msgstr "Chi tiết tồn kho hàng mượn"
+
+#
+msgid "Hover to see product description"
+msgstr "Di chuyển qua để xem Mô tả sản phẩm"
+
+#
+msgid "Add new reservation"
+msgstr "Thêm yêu cầu mượn hàng"
+
+#
+msgid "New reservation"
+msgstr "Yêu cầu mượn hàng mới"
+
+#
+msgid "General stock"
+msgstr "Từ kho chung"
+
+#
+msgid "Other sale order"
+msgstr "Từ dự án khác"
+
+#
+msgid "Reserve"
+msgstr "Đăng ký"
+
+#
+msgid "Reserved"
+msgstr "Đã mượn"
+
+#
+msgid "Reserve quantity"
+msgstr "SL mượn"
+
+#
+msgid "Exceed available quantity"
+msgstr "Vượt quá số lượng khả dụng"
+
+#
+msgid "Not included products for other projects"
+msgstr "Không bao gồm sản phẩm dành cho dự án khác"
+
+#
+msgid "Zones"
+msgstr "Vùng dữ liệu"
+
+#
+msgid "Zones detail"
+msgstr "Chi tiết vùng dữ liệu"
+
+#
+msgid "Editing zone and hidden zone must be different"
+msgstr "Vùng chỉnh sửa và vùng bị ẩn phải khác nhau"
+
+#
+msgid "Picked"
+msgstr "Hàng đã lấy"
+
+#
+msgid "UOM group"
+msgstr "Nhóm đơn vị"
+
+#
+msgid "Edit zone"
+msgstr "Chỉnh sửa vùng dữ liệu"msgid "Expand / Collapse"
+msgstr "Thu gọn / Mở rộng"
+
+#
+msgid "Project Baseline"
+msgstr "Đường cơ sở của Dự án"
+
+#
+msgid "Budget plan"
+msgstr "Kế hoạch ngân sách"
+
+#
+msgid "Budget plan list"
+msgstr "Danh sách kế hoạch ngân sách"
+
+#
+msgid "Create new Budget plan"
+msgstr "Tạo mới kế hoạch ngân sách"
+
+#
+msgid "Select items"
+msgstr "Chọn sản phẩm"
+
+#
+msgid "Employees who create a Purchase Request can reference the entire Sale Order"
+msgstr "Nhân viên tạo Yêu Cầu Mua Hàng có thể tham chiếu toàn bộ Đơn Hàng"
+
+#
+msgid "had been added compared to when creating the Budget plan, update it ?"
+msgstr "đã được thêm vào sau khi tạo Kế hoạch ngân sách, cập nhập?"
+
+#
+msgid "Budget plan config"
+msgstr "Cấu hình kế hoạch ngân sách"
+
+#
+msgid "QUARTER"
+msgstr "QUÝ"
+
+#
+msgid "YEAR"
+msgstr "NĂM"
+
+#
+msgid "view"
+msgstr "xem"
+
+#
+msgid "edit"
+msgstr "chỉnh sửa"
+
+#
+msgid "Allowed person"
+msgstr "Người được cấp quyền"
+
+#
+msgid "Add allowed person"
+msgstr "Thêm người được cấp quyền"
+
+#
+msgid "Add new Budget plan config"
+msgstr "Thêm cấu hình kế hoạch doanh thu"
+
+#
+msgid "Allowed view"
+msgstr "Được phép xem"
+
+#
+msgid "Allowed edit"
+msgstr "Được phép chỉnh sửa"
+
+#
+msgid "Baseline"
+msgstr "Đường cơ sở"

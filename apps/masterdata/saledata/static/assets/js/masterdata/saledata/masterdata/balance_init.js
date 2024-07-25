@@ -47,7 +47,7 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            className: 'wrap-text warehouse',
+                            className: 'wrap-text',
                             render: (data, type, row) => {
                                 return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-soft-primary balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
                             }
@@ -119,8 +119,9 @@ $(document).ready(function () {
                     let selected = SelectDDControl.get_data_from_idx(ele, ele.val())
                     ele.closest('tr').find('.item-uom').text(selected?.['inventory_uom']?.['title'])
                     if (selected?.['general_traceability_method'] === 2) {
+                        console.log(selected)
                         $('.item-quantity').val('').prop('disabled', false)
-                        loadRowSN()
+                        loadRowSN(parseFloat(selected?.['inventory_uom']?.['ratio']))
                     }
                     else if (selected?.['general_traceability_method'] === 1) {
                         $('.item-quantity').val('').prop('disabled', true)
@@ -167,19 +168,20 @@ $(document).ready(function () {
             let item_obj_ele = $(this).closest('tr').find('.item-obj')
             let selected = SelectDDControl.get_data_from_idx(item_obj_ele, item_obj_ele.val())
             if (selected?.['general_traceability_method'] === 2) {
-                loadRowSN($(this))
+                let selected = SelectDDControl.get_data_from_idx($('.item-obj'), $('.item-obj').val())
+                loadRowSN(parseFloat(selected?.['inventory_uom']?.['ratio']))
             }
             else if (selected?.['general_traceability_method'] === 1) {
                 loadRowLOT($(this))
             }
         });
 
-        function loadRowSN() {
+        function loadRowSN(ratio) {
             let prd_ele = $('.item-obj:first-child')
             let prd_quantity = parseFloat($('.item-quantity:first-child').val())
             if (prd_quantity && prd_ele.val()) {
                 let sn_input_html = ``
-                for (let i = 0; i < prd_quantity; i++) {
+                for (let i = 0; i < prd_quantity * ratio; i++) {
                     sn_input_html += `<tr class="row-input-sn">
                     <td class="w-40">
                         <div class="row">
@@ -215,6 +217,9 @@ $(document).ready(function () {
                     </td>
                 </tr>`
                 }
+                dtb_wh_product_Ele.find('tbody .sn-input-label').remove()
+                dtb_wh_product_Ele.find('tbody .row-input-sn').remove()
+
                 dtb_wh_product_Ele.find('tbody').append(`
                     <tr class="sn-input-label">
                         <td class="text-primary" colspan="4"><b>${trans_script.attr('data-trans-input-sn')}</b></td>
@@ -404,10 +409,10 @@ $(document).ready(function () {
                 <td class="w-25">
                     <div class="row">
                         <div class="col-6">
-                            <input type="text" class="form-control date-time-${trans_script.attr('data-trans-input-lot')}-expire-date-input">
+                            <input type="text" class="form-control date-time-input lot-expire-date-input">
                         </div>
                         <div class="col-6">
-                            <input type="text" class="form-control date-time-${trans_script.attr('data-trans-input-lot')}-manufacture-date-input">
+                            <input type="text" class="form-control date-time-input lot-manufacture-date-input">
                         </div>
                     </div>
                 </td>

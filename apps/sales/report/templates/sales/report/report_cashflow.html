@@ -12,15 +12,15 @@
     {% csrf_token %}
 
     <div class="card">
-        <div class="card-header card-header-action h-45p">
-            <span class="badge badge-light badge-sm">
+        <div class="card-header card-header-action bg-teal-light-5 h-40p">
+            <span class="badge badge-secondary badge-sm">
                 <span>
                     <span class="icon"><span class="feather-icon"><i class="fas fa-filter"></i></span></span>
                     {% trans 'Filter' %}
                 </span>
             </span>
             <div class="card-action-wrap">
-                <button type="button" class="btn btn-primary btn-sm" id="btn-view">{% trans 'Apply' %}</button>
+                <button type="button" class="btn btn-primary btn-sm mr-1" id="btn-view">{% trans 'Apply' %}</button>
                 <a class="btn btn-xs btn-icon btn-rounded btn-flush-dark flush-soft-hover"  data-bs-toggle="collapse" href="#collapse_1" aria-expanded="true"><span class="icon"><span class="feather-icon"><i data-feather="chevron-down"></i></span></span></a>
             </div>
         </div>
@@ -126,7 +126,7 @@
                 data-method="get"
         >
             <thead>
-            <tr>
+            <tr class="bg-light">
                 <th style="text-align: center">{% trans 'Type' %}</th>
                 <th style="text-align: center" class="header-custom">{% trans 'January' %}</th>
                 <th style="text-align: center" class="header-custom">{% trans 'February' %}</th>
@@ -155,7 +155,7 @@
                 data-method="get"
         >
             <thead>
-            <tr>
+            <tr class="bg-light">
                 <th style="text-align: center">{% trans 'Type' %}</th>
                 <th class="week-1" style="text-align: center">{% trans 'Week 1' %}</th>
                 <th class="week-2" style="text-align: center">{% trans 'Week 2' %}</th>

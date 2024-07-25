@@ -18,159 +18,159 @@
 {% block pageContent %}
     <form id="form-create-pr" data-url="{% url "PurchaseRequestListAPI" %}" data-method="POST"
           data-url-redirect="{% url "PurchaseRequestList" %}">
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label required">{% trans 'Name' %}</label>
-                    <input class="form-control" placeholder="Input Name" name="title" required/>
+        <div class="collapse multi-collapse show" id="collapse-area">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label required">{% trans 'Name' %}</label>
+                        <input class="form-control" placeholder="Input Name" name="title" required/>
+                    </div>
+                </div>
+                <div class="col-12 col-md-2 col-lg-2">
+                    <div class="form-group">
+                        <label class="form-label required">{% trans 'Delivered Date' %}</label>
+                        <input class="form-control" name="delivered_date" required/>
+                    </div>
+                </div>
+                <div class="col-12 col-md-2 col-lg-2">
+                    <div class="form-group">
+                        <label class="form-label">{% trans 'Status' %}</label>
+                        <input class="form-control" name="system_status" value="{% trans 'Draft' %}" readonly
+                               data-value="0" required/>
+                    </div>
+                </div>
+                <div class="col-12 col-md-2 col-lg-2">
+                    <div class="form-group">
+                        <label class="form-label">{% trans 'Purchase Status' %}</label>
+                        <input class="form-control" name="purchase_status" value="Wait" data-value="0" readonly required/>
+                    </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label required">{% trans 'Delivered Date' %}</label>
-                    <input class="form-control" name="delivered_date" required/>
+            <div class="row">
+                <div class="col-12 col-md-4 col-lg-4">
+                    <div class="form-group">
+                        <label class="form-label required">{% trans 'Supplier' %}</label>
+                        <span class="input-affix-wrapper">
+                        <span class="input-prefix" id="dropdownBeneficiary">
+                            <i class="fas fa-info-circle text-primary" aria-expanded="false"
+                               data-bs-toggle="dropdown"></i>
+                            <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
+                                  style="width: 25rem;">
+                                <div class="row">
+                                    <span class="col-7">{% trans "More information" %}</span>
+                                    <a class="col-5 text-right" target="_blank"
+                                       href="{% url 'AccountDetail' pk=0 %}">
+                                        <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i
+                                                class="bi bi-arrow-right"></i></span>
+                                    </a>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="row">
+                                    <span class="col-5">{% trans "Supplier Name" %}</span>
+                                    <span class="col-7 text-primary span-supplier-name"></span>
+                                </div>
+                                <div class="row">
+                                    <span class="col-5">{% trans "Code" %}</span>
+                                    <span class="col-7 text-primary span-supplier-code"></span>
+                                </div>
+                            </span>
+                        </span>
+                        <select
+                                class="form-control select2"
+                                id="box-select-supplier"
+                                name="supplier"
+                                data-method="GET"
+                                data-url="{% url "AccountForSaleListAPI" %}"
+                                data-keyResp="account_sale_list"
+                                data-keyText="name"
+                                required
+                        >
+                        </select>
+                    </span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-2 col-lg-2">
+                    <div class="form-group">
+                        <label class="form-label required">{% trans 'Contact' %}</label>
+                        <span class="input-affix-wrapper">
+                        <span class="input-prefix" id="dropdownBeneficiary">
+                            <i class="fas fa-info-circle text-primary" aria-expanded="false"
+                               data-bs-toggle="dropdown"></i>
+                            <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
+                                  style="width: 25rem;">
+                                <div class="row">
+                                    <span class="col-7">{% trans "More information" %}</span>
+                                    <a class="col-5 text-right" target="_blank"
+                                       href="{% url 'ContactDetail' pk=0 %}">
+                                        <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i
+                                                class="bi bi-arrow-right"></i></span>
+                                    </a>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="row">
+                                    <span class="col-5">{% trans "Contact Name" %}</span>
+                                    <span class="col-7 text-primary span-contact-name"></span>
+                                </div>
+                                <div class="row">
+                                    <span class="col-5">{% trans "Job Title" %}</span>
+                                    <span class="col-7 text-primary span-contact-job-title"></span>
+                                </div>
+                                <div class="row">
+                                    <span class="col-5">{% trans "Mobile" %}</span>
+                                    <span class="col-7 text-primary span-contact-mobile"></span>
+                                </div>
+                                <div class="row">
+                                    <span class="col-5">{% trans "Email" %}</span>
+                                    <span class="col-7 text-primary span-contact-email"></span>
+                                </div>
+                            </span>
+                        </span>
+                        <select
+                                class="form-select"
+                                id="box-select-contact"
+                                data-method="GET"
+                                name="contact"
+                                data-url="{% url "ContactListAPI" %}"
+                                data-keyResp="contact_list"
+                                data-keyText="fullname"
+                                required
+                        >
+                        </select>
+                    </span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label">{% trans 'Note' %}</label>
+                        <input class="form-control" name="note"/>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label required">{% trans 'Supplier' %}</label>
-                    <span class="input-affix-wrapper">
-                    <span class="input-prefix" id="dropdownBeneficiary">
-                        <i class="fas fa-info-circle text-primary" aria-expanded="false"
-                           data-bs-toggle="dropdown"></i>
-                        <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
-                              style="width: 25rem;">
-                            <div class="row">
-                                <span class="col-7">{% trans "More information" %}</span>
-                                <a class="col-5 text-right" target="_blank"
-                                   href="{% url 'AccountDetail' pk=0 %}">
-                                    <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i
-                                            class="bi bi-arrow-right"></i></span>
+            <div class="row">
+                <div class="col-12 col-md-4 col-lg-4">
+                    <div class="form-group">
+                        <label class="form-label required">{% trans 'Request For' %}</label>
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix" id="dropdownCreator">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#modal-select-request-for">
+                                    <i class="fa-solid fa-ellipsis text-primary"></i>
                                 </a>
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Supplier Name" %}</span>
-                                <span class="col-7 text-primary span-supplier-name"></span>
-                            </div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Code" %}</span>
-                                <span class="col-7 text-primary span-supplier-code"></span>
-                            </div>
+                            </span>
+                            <input type="text" class="form-control" name="request_for" readonly>
                         </span>
-                    </span>
-                    <select
-                            class="form-control select2"
-                            id="box-select-supplier"
-                            name="supplier"
-                            data-method="GET"
-                            data-url="{% url "AccountForSaleListAPI" %}"
-                            data-keyResp="account_sale_list"
-                            data-keyText="name"
-                            required
-                    >
-                    </select>
-                </span>
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label">{% trans 'Status' %}</label>
-                    <input class="form-control" name="system_status" value="{% trans 'Draft' %}" readonly
-                           data-value="0" required/>
+                <div class="col-12 col-md-2 col-lg-2">
+                    <div class="form-group">
+                        <label class="form-label required">{% trans 'Order Code' %}</label>
+                        <input class="form-control" name="sale_order" readonly/>
+                    </div>
                 </div>
             </div>
         </div>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="text-primary btn btn-animated btn-icon btn-xs w-100"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Expand / Collapse' %}"><i class="fas fa-angle-double-up text-primary"></i></span></button>
+
         <div class="row">
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label required">{% trans 'Contact' %}</label>
-                    <span class="input-affix-wrapper">
-                    <span class="input-prefix" id="dropdownBeneficiary">
-                        <i class="fas fa-info-circle text-primary" aria-expanded="false"
-                           data-bs-toggle="dropdown"></i>
-                        <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
-                              style="width: 25rem;">
-                            <div class="row">
-                                <span class="col-7">{% trans "More information" %}</span>
-                                <a class="col-5 text-right" target="_blank"
-                                   href="{% url 'ContactDetail' pk=0 %}">
-                                    <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i
-                                            class="bi bi-arrow-right"></i></span>
-                                </a>
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Contact Name" %}</span>
-                                <span class="col-7 text-primary span-contact-name"></span>
-                            </div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Job Title" %}</span>
-                                <span class="col-7 text-primary span-contact-job-title"></span>
-                            </div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Mobile" %}</span>
-                                <span class="col-7 text-primary span-contact-mobile"></span>
-                            </div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Email" %}</span>
-                                <span class="col-7 text-primary span-contact-email"></span>
-                            </div>
-                        </span>
-                    </span>
-                    <select
-                            class="form-select"
-                            id="box-select-contact"
-                            data-method="GET"
-                            name="contact"
-                            data-url="{% url "ContactListAPI" %}"
-                            data-keyResp="contact_list"
-                            data-keyText="fullname"
-                            required
-                    >
-                    </select>
-                </span>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label">{% trans 'Purchase Status' %}</label>
-                    <input class="form-control" name="purchase_status" value="Wait" data-value="0" readonly required/>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label required">{% trans 'Request For' %}</label>
-                    <span class="input-affix-wrapper">
-                        <span class="input-prefix" id="dropdownCreator">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#modal-select-request-for">
-                                <i class="fa-solid fa-ellipsis text-primary"></i>
-                            </a>
-                        </span>
-                        <input type="text" class="form-control" name="request_for" readonly>
-                    </span>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label">{% trans 'Note' %}</label>
-                    <input class="form-control" name="note"/>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label required">{% trans 'Order Code' %}</label>
-                    <input class="form-control" name="sale_order" readonly/>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-3">
             <ul class="nav nav-light nav-tabs" id="purchase-request-tabs">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
@@ -272,7 +272,7 @@
 
         <div class="modal fade" id="modal-select-sale-order" tabindex="-1" role="dialog"
              aria-labelledby="exampleModalLarge01" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-xl" style="min-width: 80%" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">{% trans 'Select Items' %}</h5>
@@ -295,7 +295,7 @@
                                 </table>
                             </div>
                             <div class="col-7 border">
-                                <table id="datatable-product-of-so" class="table nowrap mb-5 w-lg-630p"
+                                <table id="datatable-product-of-so" class="table nowrap mb-5 w-100"
                                        data-method="GET"
                                        data-url="{% url 'ProductListSaleOrderAPI' pk=0 %}"
                                 >

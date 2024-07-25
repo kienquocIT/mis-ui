@@ -10,43 +10,13 @@
         }
     </style>
     <style>
-        .custom-scroll {
-            position: relative;
-            margin: auto;
-        }
-        .first-col-x {
-            min-width: 200px;
-            position: sticky;
-            left: 0;
-        }
-        thead th, thead .first-col {
-            background: #007D88 !important;
+        thead th {
             color: white !important;
         }
-        tbody .first-col {
-            background: white !important;
-        }
-        tbody .first-col-x {
-            background: #f5f5f5;
-        }
-        .table-wrap {
-            width: 100%;
-            overflow: auto;
-        }
-        .fixed_header {
-            width: 100%;
-            margin: auto;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-        .table-wrap .fixed_header thead {
+        .sticky {
             position: sticky;
             top: 0;
-            z-index: 999;
-        }
-        .table-wrap .fixed_header .first-col {
-            position: sticky;
-            left: 0;
+            z-index: 9999;
         }
     </style>
 {% endblock %}
@@ -82,6 +52,8 @@
             data-trans-sure-confirm="{% trans 'Are you sure to calculate ending cumulative value?' %}"
             data-trans-sure="{% trans 'Sure' %}"
             data-trans-cancel="{% trans 'Cancel' %}"
+            data-trans-vm="{% trans 'Valuation method' %}"
+            data-trans-uom="{% trans 'Inventory UoM' %}"
     ></script>
 
     <script id="url-script"
@@ -164,35 +136,32 @@
         </div>
     </div>
     <div class="row mt-3 mb-3">
-        <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
-            <div class="custom-scroll">
-                <div class="table-wrap" style="max-height: 80vh">
-                    <table hidden class="table nowrap w-100 fixed_header" id="items_detail_report_table">
-                        <thead class="row-fixed">
-                            <tr>
-                                <th class="first-col border-1">{% trans 'Product' %}</th>
-                                <th>{% trans 'Valuation method' %}</th>
-                                <th>{% trans 'Warehouse' %}</th>
-                                <th>{% trans 'System date' %}</th>
-                                <th hidden>{% trans 'Posting date' %}</th>
-                                <th hidden>{% trans 'Document date' %}</th>
-                                <th>{% trans 'Trans description' %}</th>
-                                <th>{% trans 'Trans code' %}</th>
-                                <th>{% trans 'In quantity' %}</th>
-                                <th>{% trans 'In cost' %}</th>
-                                <th>{% trans 'In value' %}</th>
-                                <th>{% trans 'Out quantity' %}</th>
-                                <th>{% trans 'Out cost' %}</th>
-                                <th>{% trans 'Out value' %}</th>
-                                <th>{% trans 'Cumulative quantity' %}</th>
-                                <th>{% trans 'Cumulative cost' %}</th>
-                                <th>{% trans 'Cumulative value' %}</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 70vh">
+            <table hidden class="table nowrap w-100" id="items_detail_report_table">
+                <thead class="sticky">
+                    <tr class="bg-gradient-primary">
+                        <th class="border-1">
+                            {% trans 'Product' %}
+                            <i class="fas fa-info-circle icon-info"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="right"
+                               title=""
+                               data-bs-original-title="{% trans 'Hover to product code to see more information.' %}"
+                               aria-label="{% trans 'Hover to product code to see more information.' %}"
+                            ></i>
+                        </th>
+                        <th class="border-1">{% trans 'System date' %}</th>
+                        <th class="border-1">{% trans 'Trans information' %}</th>
+                        <th class="border-1">{% trans 'I/O quantity' %}</th>
+                        <th class="border-1">{% trans 'I/O cost' %}</th>
+                        <th class="border-1">{% trans 'I/O value' %}</th>
+                        <th class="border-1"><span style="font-size: medium" class="badge badge-pill">{% trans 'Cumulative quantity' %}</span></th>
+                        <th class="border-1"><span style="font-size: medium" class="badge badge-pill">{% trans 'Cumulative cost' %}</span></th>
+                        <th class="border-1"><span style="font-size: medium" class="badge badge-pill">{% trans 'Cumulative value' %}</span></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
     </div>
 {% endblock %}

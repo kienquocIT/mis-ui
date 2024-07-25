@@ -71,18 +71,6 @@ class ImageWebBuilderList(APIView):
         return resp.auto_return(key_success='file_list')
 
 
-class FolderList(View):
-
-    @mask_view(
-        auth_require=True,
-        template='core/attachment/folder_list.html',
-        menu_active='menu_folder_list',
-        breadcrumb='',
-    )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
-
-
 # BEGIN FOLDER
 def create_common(request, url, msg):
     resp = ServerAPI(user=request.user, url=url).post(request.data)
@@ -98,6 +86,18 @@ def update_common(request, url, pk, msg):
         resp.result['message'] = msg
         return resp.result, status.HTTP_201_CREATED
     return resp.auto_return()
+
+
+class FolderList(View):
+
+    @mask_view(
+        auth_require=True,
+        template='core/attachment/folder_list.html',
+        menu_active='menu_folder_list',
+        breadcrumb='',
+    )
+    def get(self, request, *args, **kwargs):
+        return {'employee_current': request.user.employee_current_data,}, status.HTTP_200_OK
 
 
 class FolderListAPI(APIView):

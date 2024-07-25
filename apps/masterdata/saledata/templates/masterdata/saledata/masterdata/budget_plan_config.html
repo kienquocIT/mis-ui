@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Budget plan config' %}{% endblock %}
+{% block cssHeader %}
+    <!-- Select2 -->
+    <link
+            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/masterdata/saledata/config.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        .sticky {
+            position: sticky;
+            top: 0;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{#    <button class="btn btn-outline-primary" type="submit" form="form-config-budget-plan">#}
+{#        <span>#}
+{#            <span>{% trans 'Save' %}</span>#}
+{#            <span class="icon">#}
+{#                <i class="fa-regular fa-floppy-disk"></i>#}
+{#            </span>#}
+{#        </span>#}
+{#    </button>#}
+{% endblock %}
+{% block pageContent %}
+    <script id="url-script"
+            data-url-employee-list="{% url 'EmployeeListAPI' %}"
+            data-url-group-list="{% url 'GroupListAPI' %}"
+            data-url-config-list="{% url 'BudgetPlanConfigListAPI' %}"
+            data-url-redirect="{% url 'BudgetPlanConfigList' %}"
+    ></script>
+    <script id="trans-script"
+            data-trans-group="{% trans 'Group' %}"
+            data-trans-view="{% trans 'view' %}"
+            data-trans-edit="{% trans 'edit' %}"
+    ></script>
+    {{ data.revenue_plan_config | json_script:"budget_plan_config" }}
+
+    <div class="row">
+        <div class="col-12">
+            <button type="button" id="add-allowed-person-btn" class="btn btn-outline-primary"  data-bs-toggle="modal" data-bs-target="#create-form">
+                <i class="fas fa-plus-circle"></i>
+                {% trans 'Add allowed person' %}
+            </button>
+        </div>
+        <div class="col-12">
+            <table class="table w-100 nowrap" id="main-table">
+                <thead>
+                <tr>
+                    <th class="w-5"></th>
+                    <th class="w-30">{% trans 'Allowed person' %}</th>
+                    <th class="w-55">{% trans 'Group' %}</th>
+                    <th class="w-10 text-center">{% trans 'Action' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="create-form" tabindex="-1" role="dialog" aria-labelledby="create-form" aria-hidden="true">
+        <div class="modal-dialog modal-lg min-w-1000p" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Add new Budget plan config' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-config-budget-plan"
+                          data-url="{% url 'BudgetPlanConfigListAPI' %}"
+                          data-url-redirect="{% url 'BudgetPlanConfigList' %}"
+                          data-method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12 form-group">
+                                <label class="form-label required" for="select-allowed-person">{% trans 'Employee' %}</label>
+                                <select class="form-select select2" id="select-allowed-person"></select>
+                            </div>
+                            <div class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 40vh">
+                                <table id="group-allowed-table" class="table nowrap w-100">
+                                    <thead class="sticky bg-primary">
+                                    <tr>
+                                        <th></th>
+                                        <th class="text-white">{% trans 'Group' %}</th>
+                                        <th class="text-white">{% trans 'Allowed view' %}</th>
+                                        <th class="text-white">{% trans 'Allowed edit' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-right">
+                                <button type="submit" form="form-config-budget-plan" class="btn btn-primary">{% trans 'Save' %}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/masterdata/budget_plan_config.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+{% endblock %}
+

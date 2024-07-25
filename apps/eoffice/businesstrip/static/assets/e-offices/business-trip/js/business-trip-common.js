@@ -256,8 +256,9 @@ $(document).ready(function () {
 
     // load dataTable
     expenseItemTable.init()
-
     const $FormElm = $('#business_trip_form')
+    // init func workflow change request
+    WFRTControl.setWFInitialData('businessrequest', 'post');
     function submitHandleFunc() {
         const frm = new SetupFormSubmit($FormElm);
         let formData = frm.dataForm;
@@ -271,6 +272,7 @@ $(document).ready(function () {
             item['price'] = parseInt(item['price'])
             return item
         })
+
         let OriginalList = $.map($empTripElm.select2('data'), (item)=> {return item.data.id});
         let dateF = formData.date_f, $morF = $('[name="morning_f"]:checked'), $morT = $('[name="morning_t"]:checked');
         if (dateF && dateF !== 'Invalid date'){

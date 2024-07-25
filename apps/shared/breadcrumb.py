@@ -326,6 +326,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     REVENUE_PLAN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     REVENUE_PLAN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    BUDGET_PLAN_LIST_PAGE = BreadcrumbChildren(_('Budget plan list'), 'BudgetPlanList')
+    BUDGET_PLAN_CREATE_PAGE = BreadcrumbChildren(_('Budget plan create'), 'BudgetPlanCreate')
+    BUDGET_PLAN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    BUDGET_PLAN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     # Report
     REPORT_REVENUE_LIST_PAGE = BreadcrumbChildren(_('Revenue report'), 'ReportRevenueList')
     REPORT_PRODUCT_LIST_PAGE = BreadcrumbChildren(_('Product report'), 'ReportProductList')
@@ -342,9 +347,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RETURN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     GOODS_REGISTRATION_LIST_PAGE = BreadcrumbChildren(_('Goods registration list'), 'GoodsRegistrationList')
-    GOODS_REGISTRATION_CREATE_PAGE = BreadcrumbChildren(_('Goods registration create'), 'GoodsRegistrationCreate')
     GOODS_REGISTRATION_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
-    GOODS_REGISTRATION_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     LEAD_LIST_PAGE = BreadcrumbChildren(_('Lead list'), 'LeadList')
     LEAD_CREATE_PAGE = BreadcrumbChildren(_('Lead create'), 'LeadCreate')
@@ -359,6 +362,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # PROJECT
     PROJECT_LIST = BreadcrumbChildren(_('Project list'), 'ProjectList')
+
+    # Zones
+    ZONES_LIST_PAGE = BreadcrumbChildren(_('Zones'), 'ZonesList')
 
 
 class BreadcrumbView:
@@ -861,6 +867,11 @@ class BreadcrumbView:
     REVENUE_PLAN_DETAIL_PAGE = REVENUE_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     REVENUE_PLAN_UPDATE_PAGE = REVENUE_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
+    BUDGET_PLAN_LIST_PAGE = [BreadcrumbItem.BUDGET_PLAN_LIST_PAGE]
+    BUDGET_PLAN_CREATE_PAGE = BUDGET_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    BUDGET_PLAN_DETAIL_PAGE = BUDGET_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    BUDGET_PLAN_UPDATE_PAGE = BUDGET_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
     # Report
     REPORT_REVENUE_LIST_PAGE = [
         BreadcrumbItem.REPORT_REVENUE_LIST_PAGE
@@ -893,9 +904,7 @@ class BreadcrumbView:
     GOODS_RETURN_UPDATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     GOODS_REGISTRATION_LIST_PAGE = [BreadcrumbItem.GOODS_REGISTRATION_LIST_PAGE]
-    GOODS_REGISTRATION_CREATE_PAGE = GOODS_REGISTRATION_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     GOODS_REGISTRATION_DETAIL_PAGE = GOODS_REGISTRATION_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
-    GOODS_REGISTRATION_UPDATE_PAGE = GOODS_REGISTRATION_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     LEAD_LIST_PAGE = [BreadcrumbItem.LEAD_LIST_PAGE]
     LEAD_CREATE_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
@@ -926,3 +935,9 @@ class BreadcrumbView:
     FORM_UPDATE = FORM_LIST + [BreadcrumbItem.BASTION_UPDATE]
     FORM_ENTRIES_LIST = FORM_LIST + [BreadcrumbItem.FORM_ENTRIES_LIST_PAGE]
     FORM_KNOWLEDGE = FORM_LIST + [BreadcrumbItem.BASTION_KNOWLEDGE]
+
+    # Zones
+    ZONES_LIST_PAGE = [
+        BreadcrumbItem.ZONES_LIST_PAGE
+    ]
+

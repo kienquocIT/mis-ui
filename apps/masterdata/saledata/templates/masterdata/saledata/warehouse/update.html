@@ -6,6 +6,9 @@
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
+{% block jsHeaderUnCompress %}
+    <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+{% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="frmUpdate">
         <span>
@@ -18,68 +21,72 @@
 {% endblock %}
 {% block pageContent %}
     <form id="frmUpdate" data-method="GET" data-url-detail="{% url 'WareHouseDetailAPI' pk=0 %}" data-url-redirect="{% url 'WareHouseList' %}">
-        <div class="row">
-            <div class="form-group col-6">
-                <label class="form-label required" for="inpTitle">
-                    {% trans 'Name' %}
-                </label>
-                <input type="text" class="form-control" name="title" id="inpTitle">
+        <div class="collapse multi-collapse show" id="collapse-area">
+            <div class="row">
+                <div class="col-7">
+                    <div class="form-group">
+                        <label class="form-label required" for="inpTitle">
+                            {% trans 'Name' %}
+                        </label>
+                        <input type="text" class="form-control" name="title" id="inpTitle">
+                    </div>
+                    <input class="hidden" value="0" id="warehouseType">
+                </div>
+                <div class="col-1 form-switch mt-7">
+                    <input type="checkbox" class="form-check-input" id="inputActive" checked name="is_active">
+                    <label for="inputActive" class="text-primary fw-bold form-label">{% trans 'Active' %}</label>
+                </div>
+                <div class="col-1 form-check mt-7">
+                    <input type="checkbox" id="checkDropShip" class="form-check-input checkType">
+                    <label class="form-label" for="checkDropShip">{% trans 'Drop Ship' %}</label>
+                </div>
+                <div class="col-1 form-check mt-7">
+                    <input type="checkbox" id="checkBinLocation" class="form-check-input checkType">
+                    <label class="form-label" for="checkBinLocation">{% trans 'Bin Location' %}</label>
+                </div>
+                <div class="col-2 form-check mt-7">
+                    <input type="checkbox" id="checkAgencyLocation" class="form-check-input checkType">
+                    <label class="form-label" for="checkAgencyLocation">{% trans 'Agency/Partner Location' %}</label>
+                </div>
             </div>
-
-            <div class="col-2 form-check mt-5">
-                <input type="checkbox" id="checkDropShip" class="form-check-input checkType">
-                <label class="form-label" for="checkDropShip">{% trans 'Drop Ship' %}</label>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-label" for="inpRemarks">{% trans 'Description' %}</label>
+                        <textarea class="form-control" name="remarks" id="inpRemarks"></textarea>
+                    </div>
+                    <div class="form-group hidden">
+                        <label class="form-label" for="boxSelectAgency">{% trans 'Agency/Partner' %}</label>
+                        <select
+                                id="boxSelectAgency"
+                                class="form-select"
+                                name="agency"
+                                data-method="GET"
+                                data-url="{% url 'AccountForSaleListAPI' %}"
+                                data-keyResp="account_sale_list"
+                                data-keyText="name"
+                        ></select>
+                    </div>
+                </div>
             </div>
-
-            <div class="col-2 form-check mt-5">
-                <input type="checkbox" id="checkBinLocation" class="form-check-input checkType">
-                <label class="form-label" for="checkBinLocation">{% trans 'Bin Location' %}</label>
-            </div>
-
-            <div class="col-2 form-check mt-5">
-                <input type="checkbox" id="checkAgencyLocation" class="form-check-input checkType">
-                <label class="form-label" for="checkAgencyLocation">{% trans 'Agency/Partner Location' %}</label>
-            </div>
-            <input class="hidden" value="0" id="warehouseType">
         </div>
-        <div class="row">
-            <div class="col-6 form-group">
-                <label class="form-label" for="inpRemarks">{% trans 'Description' %}</label>
-                <textarea class="form-control" name="remarks" id="inpRemarks"></textarea>
-            </div>
-            <div class="col-6 form-group hidden">
-                <label class="form-label" for="boxSelectAgency">{% trans 'Agency/Partner' %}</label>
-                <select
-                        id="boxSelectAgency"
-                        class="form-select"
-                        name="agency"
-                        data-method="GET"
-                        data-url="{% url 'AccountForSaleListAPI' %}"
-                        data-keyResp="account_sale_list"
-                        data-keyText="name"
-                ></select>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-check form-switch mt-2 mb-2 ml-3">
-                <input type="checkbox" class="form-check-input" id="inputActive" checked name="is_active">
-                <label for="inputActive" class="form-label">{% trans 'Active' %}</label>
-            </div>
-        </div>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="text-primary btn btn-animated btn-icon btn-xs w-100"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Expand / Collapse' %}"><i class="fas fa-angle-double-up text-primary"></i></span></button>
 
         <div class="row">
-            <ul class="nav nav-light nav-tabs" id="tab-select">
+            <div class="col-12">
+                <ul class="nav nav-light nav-tabs" id="tab-select">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab-address">
                         <span class="nav-link-text">{% trans 'Address' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" data-bs-toggle="tab" href="#tab-bin-location" id="link-tab-sale">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab-bin-location" id="link-tab-sale">
                         <span class="nav-link-text">{% trans 'Bin Location' %}</span>
                     </a>
                 </li>
             </ul>
+            </div>
         </div>
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab-address">
@@ -103,13 +110,39 @@
                 <textarea class="form-control" readonly name="full_address" id="warehouseAddress"></textarea>
             </div>
             <div class="tab-pane fade" id="tab-bin-location">
+                <div class="row">
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label class="form-label" for="new-shelf-title">{% trans 'Shelf title' %}</label>
+                            <input type="text" class="form-control" id="new-shelf-title">
+                        </div>
+                    </div>
+                    <div class="col-1">
+                        <div class="form-group">
+                            <label class="form-label required" for="new-shelf-row">{% trans 'Shelf row' %}</label>
+                            <input class="form-control" id="new-shelf-row" type="number" placeholder="shelf row" value="1">
+                        </div>
+                    </div>
+                    <div class="col-1">
+                        <div class="form-group">
+                            <label class="form-label required" for="new-shelf-col">{% trans 'Shelf column' %}</label>
+                            <input class="form-control" id="new-shelf-col" type="number" placeholder="shelf column" value="1">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <button type="button" class="btn btn-primary btn-xs mt-6" id="new-shelf">{% trans 'New shelf' %}</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div id="shelf-map" class="p-2 w-100 border rounded-3 min-h-350p"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div
-                class="modal fade" id="modalWarehouseAddress" tabindex="-1" role="dialog"
-                aria-labelledby="exampleModalCenter" aria-hidden="true"
-        >
+        <div class="modal fade" id="modalWarehouseAddress" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -167,10 +200,35 @@
                 </div>
             </div>
         </div>
-    </form>
 
+        <div class="modal fade" id="shelf-detail-modal" tabindex="-1" role="dialog" aria-labelledby="shelf-detail-modal" aria-hidden="true">
+            <div class="modal-dialog modal-lg min-w-1000p" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Shelf detail' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row" style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
+                                    <div class="col-12" id="shelf-area"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 {% endblock %}
-{% block jsFooter %}
+{% block jsFooterUnCompress %}
+    <script src="{% static 'assets/js/masterdata/saledata/warehouse/shelf_draw.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/warehouse/common.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/warehouse/update.js' %}"></script>
 {% endblock %}

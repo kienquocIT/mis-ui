@@ -26,13 +26,23 @@
 {% endblock %}
 
 {% block cssHeader %}
-    <link rel="stylesheet" href="{% static 'form/runtime/scrollbar.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css' %}">
+    <link rel="stylesheet" href="{% static 'form/runtime/vendors/flatpickr/flatpickr.min.css' %}">
+    <link rel="stylesheet" href="{% static 'form/runtime/vendors/jquery-ui/jquery-ui.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'form/runtime/vendors/font-awesome/6.4.0/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'form/runtime/vendors/rating/rating.css' %}">
+    <link rel="stylesheet" href="{% static 'form/runtime/vendors/rangeSlider/style.css' %}">
+    <link rel="stylesheet" href="{% static 'form/runtime/vendors/page/style.css' %}">
+
+    <link rel="stylesheet" href="{% static 'form/runtime/css/scrollbar.css' %}">
+    <link rel="stylesheet" href="{% static 'form/runtime/css/runtime.css' %}">
+    <link rel="stylesheet" href="{% static 'form/runtime/css/select-box.css' %}">
+    <link rel="stylesheet" href="{% static 'form/config/css/themes.css' %}">
+
+    <link rel="stylesheet" href="{% static 'form/config/css/more-config-toolbox.css' %}">
+    <link rel="stylesheet" href="{% static 'form/config/css/embed_form.css' %}">
     <link rel="stylesheet" href="{% static 'form/config/css/scrollbar-textarea.css' %}">
     <link rel="stylesheet" href="{% static 'form/config/css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'form/runtime/runtime.css' %}">
-    <link rel="stylesheet" href="{% static 'form/config/css/more-config-toolbox.css' %}">
-    <link rel="stylesheet" href="{% static 'form/config/css/themes.css' %}">
-    <link rel="stylesheet" href="{% static 'form/config/css/embed_form.css' %}">
 {% endblock %}
 
 {% block pageContent %}
@@ -40,6 +50,14 @@
 {% endblock %}
 
 {% block jsFooter %}
+    <script src="{% static 'form/runtime/vendors/HtmlSanitizer/HtmlSanitizer.js' %}"></script>
+
+    <script src="{% static 'vendors/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js' %}"></script>
+    <script src="{% static 'form/runtime/vendors/flatpickr/flatpickr.min.js' %}"></script>
+    <script src="{% static 'form/runtime/vendors/flatpickr/i18n/vn.js' %}"></script>
+    <script src="{% static 'form/runtime/vendors/rangeSlider/index.js' %}"></script>
+
+    <script src="{% static 'form/runtime/vendors/jquery-ui/ui/i18n/datepicker-vi.js' %}"></script>
     <script src="{% static 'form/config/form-lib.js' %}"></script>
     <script src="{% static 'form/config/create.js' %}"></script>
 {% endblock %}

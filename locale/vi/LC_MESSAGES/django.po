@@ -8026,6 +8026,18 @@ msgid "Baseline"
 msgstr "Đường cơ sở"
 
 #
+msgid "Quarter Day"
+msgstr "Ngày đầu Quý"
+
+#
+msgid "Half Day"
+msgstr "Nửa ngày"
+
+#
+msgid "Change view mode"
+msgstr "Thay đổi chế độ xem"
+
+#
 msgid "AP status"
 msgstr "Trạng thái tạm ứng"
 

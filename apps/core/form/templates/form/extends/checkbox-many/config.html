@@ -1,0 +1,269 @@
+{% load i18n string_utils define_action %}
+
+<div class="drawer-config d-none" id="form-many-checkbox">
+    <form>
+        {% csrf_token %}
+
+        {% assign_out_random nameIdx as rNameIdx %}
+        <div class="form-group mb-3">
+            <label for="{{ rNameIdx }}" class="form-label">
+                {% trans 'Name of field' %}
+            </label>
+            <input type="text" class="form-control" id="{{ rNameIdx }}" name="name">
+            <small class="form-text text-muted">
+                {% trans 'Corresponds to a stored data field' %}.
+                {% trans 'Employs this name to autofill form fields' %}.
+            </small>
+        </div>
+
+        <hr/>
+
+        {% include 'form/extends/base/title.html' with enableHideTitle=False %}
+        {% include 'form/extends/base/instruction.html' %}
+        {% include 'form/extends/base/size.html' %}
+
+        <hr/>
+
+        <div class="form-group mb-3">
+            {% assign_out_random styleOfCheckbox as rStyleOfCheckbox %}
+            <label for="{{ rStyleOfCheckbox }}" class="form-label">
+                {% trans 'Style of checkbox' %}
+            </label>
+            <select
+                    name="checkbox_style"
+                    id="{{ rStyleOfCheckbox }}"
+                    class="input-radio-select"
+            >
+                <option value="default">{% trans 'Tick' %}</option>
+                <option value="switch">{% trans 'Switch' %}</option>
+            </select>
+        </div>
+
+        <hr/>
+
+        {% include 'form/extends/base/visibility.html' %}
+
+        <hr/>
+
+        <div class="form-group mb-3">
+            <label class="form-label">{% trans 'Choices' %}</label>
+
+            <div id="many-checkbox-group-head" style="display: none;">
+                <div class="w-100 d-flex" >
+                    <div style="width: 30px;"></div>
+                    <div style="flex: auto">
+                        {% trans 'Label' %}
+                    </div>
+                    <div style="width: 130px;">
+                        {% trans 'Default' %}
+                    </div>
+                </div>
+            </div>
+            <div class="w-100" id="many-checkbox-group-dynamic"></div>
+            <div id="many-checkbox-base" style="display: none;">
+                <div class="w-100 d-flex position-relative many-checkbox-group">
+                    <div class="d-none form-group w-100 m-0 p-0">
+                        <input
+                            type="text"
+                            class="name_of_choice"
+                            name="name_of_choice"
+                            maxlength="255" required
+                            readonly
+                            disabled
+                        />
+                    </div>
+                    <div style="width: 30px; color: #7c7c7c;" class="d-flex justify-content-center align-items-center">
+                        <i class="fa-solid fa-grip-vertical"></i>
+                    </div>
+                    <div style="flex: auto" class="d-flex justify-content-center align-items-center">
+                        <div class="form-group w-100 m-0 p-0">
+                            <input
+                                type="text"
+                                class="form-control label_of_choice"
+                                name="label_of_choice"
+                                maxlength="255" required placeholder="{% trans 'Label of choice' %}" disabled
+                            />
+                        </div>
+                    </div>
+                    <div style="width: 60px;" class="d-flex justify-content-center align-items-center">
+                        <div class="form-check d-flex justify-content-center align-items-center">
+                            <input
+                                    type="checkbox"
+                                    class="form-check-input default_of_choice"
+                                    name="default_of_choice" disabled
+                            />
+                        </div>
+                    </div>
+                    <div style="width: 70px;" class="d-flex justify-content-between align-items-center">
+                        <button class="btnClone btn btn-icon btn-rounded btn-xs btn-outline-success m-1" type="button">
+                            <span class="icon">
+                                <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                            </span>
+                        </button>
+                        <button class="btnDestroy btn btn-icon btn-rounded btn-xs btn-outline-danger m-1" type="button">
+                            <span class="icon">
+                                <span class="icon"><i class="fa-solid fa-minus"></i></span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="many-checkbox-button-group">
+                <div>
+                    <button
+                            type="button"
+                            class="btn btn-soft-primary btn-xs" id="many-checkbox-add-new-row"
+                    >
+                        <span>
+                            <span class="icon mr-1"><i class="fa-solid fa-plus"></i></span>
+                            <span>{% trans 'Add new row' %}</span>
+                        </span>
+                    </button>
+                    <button
+                            type="button"
+                            class="btn btn-soft-danger btn-xs" id="many-checkbox-clean-row"
+                    >
+                        <span>
+                            <span class="icon mr-1"><i class="fa-solid fa-xmark"></i></span>
+                            <span>{% trans 'Clean' %}</span>
+                        </span>
+                    </button>
+                </div>
+                <div>
+                    <button
+                            type="button"
+                            class="btn btn-soft-success btn-xs" id="many-checkbox-default-checked-all"
+                    >
+                        <span>
+                            <span class="icon mr-1"><i class="fa-regular fa-square-check"></i></span>
+                            <span>{% trans 'Default check all' %}</span>
+                        </span>
+                    </button>
+                    <button
+                            type="button"
+                            class="btn btn-soft-danger btn-xs" id="many-checkbox-default-unchecked-all"
+                    >
+                        <span>
+                            <span class="icon mr-1`"><i class="fa-regular fa-rectangle-xmark"></i></span>
+                            <span>{% trans 'Default uncheck all' %}</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $(document).ready(function () {
+        let frm$ = $('#form-many-checkbox');
+        const btnAddRow$ = frm$.find('#many-checkbox-add-new-row');
+        const btnClean$ = frm$.find('#many-checkbox-clean-row');
+        const btnCheckAll$ = frm$.find('#many-checkbox-default-checked-all');
+        const btnUncheckAll$ = frm$.find('#many-checkbox-default-unchecked-all');
+        const groupHead$ = frm$.find('#many-checkbox-group-head');
+        const groupDynamic$ = frm$.find('#many-checkbox-group-dynamic');
+        const base$ = frm$.find('#many-checkbox-base');
+
+        groupDynamic$
+            .on('data.has', function (){
+                if (groupDynamic$.find('.many-checkbox-group').length > 0){
+                    groupHead$.fadeIn();
+                } else {
+                    groupHead$.fadeOut();
+                }
+            })
+            .on('data.newRow', function (event, opts={}) {
+                opts = {
+                    'after': null,
+                    'data': {
+                        'name': `many-checkbox_${$x.fn.randomStr(10)}`,
+                        'label': '',
+                        'is_deafult': false,
+                    },
+                    ...opts,
+                }
+
+                const ele$ = $(base$.find('.many-checkbox-group').prop('outerHTML'));
+                ele$.find('[name=name_of_choice]')
+                    .prop('disabled', false)
+                    .attr('name', `name_of_choice_${$x.fn.randomStr(10)}`)
+                    .val(opts.data.name);
+                ele$.find('[name=label_of_choice]')
+                    .prop('disabled', false)
+                    .attr('name', `label_of_choice)_${$x.fn.randomStr(10)}`)
+                    .val(opts.data.label);
+                ele$.find('[name=default_of_choice]')
+                    .prop('disabled', false)
+                    .attr('name', `default_of_choice_${$x.fn.randomStr(10)}`)
+                    .prop('checked', !!opts.data.is_default);
+                if (opts.after$) ele$.insertAfter($(opts.after$));
+                else groupDynamic$.append(ele$);
+                groupDynamic$.trigger('data.has');
+            })
+            .on('data.clean', function (event){
+                groupDynamic$.empty();
+                groupDynamic$.trigger('data.has');
+            })
+            .on('data.load', function (event, data){
+                data['list_checkbox'].map(
+                    item => {
+                        groupDynamic$.trigger('data.newRow', {
+                            'data': {
+                                'name': item['name'],
+                                'label': item['label'],
+                                'is_default': item['is_default'],
+                            }
+                        });
+                    }
+                )
+            })
+            .on('data.checkAll', function (event){
+                groupDynamic$
+                    .find('[name^=default_of_choice]')
+                    .prop('checked', true);
+            })
+            .on('data.uncheckAll', function (event){
+                groupDynamic$
+                    .find('[name^=default_of_choice]')
+                    .prop('checked', false);
+            })
+            .on('click', 'button.btnClone', function (event){
+                groupDynamic$.trigger('data.newRow', {
+                    'after': $(event.target).closest('.many-checkbox-group'),
+                });
+            })
+            .on('click', 'button.btnDestroy', function (event){
+                $(event.target).closest('.many-checkbox-group').remove();
+            });
+
+        btnAddRow$.on('click', function () {
+            groupDynamic$.trigger('data.newRow')
+        });
+
+        btnClean$.on('click', function(){
+            groupDynamic$.trigger('data.clean')
+        })
+
+        btnCheckAll$.on('click', function (){
+            groupDynamic$.trigger('data.checkAll')
+        })
+
+        btnUncheckAll$.on('click', function (){
+            groupDynamic$.trigger('data.uncheckAll')
+        })
+
+        groupDynamic$.sortable({
+            items: '> div.many-checkbox-group',
+            appendTo: groupDynamic$,
+            containment: "parent",
+            cursorAt: { left: 5 },
+            start: function( event, ui ) {
+                $(ui.item).addClass('many-checkbox-dragging');
+            },
+            stop: function( event, ui ) {
+                $(ui.item).removeClass('many-checkbox-dragging');
+            },
+        });
+        groupDynamic$.disableSelection();
+    })
+</script>

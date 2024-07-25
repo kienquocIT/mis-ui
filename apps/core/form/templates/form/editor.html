@@ -1,6 +1,37 @@
 {% load i18n %}
 
 <div id="group-containment" class="position-relative">
+    <div id="sortable-monitor">
+        <button class="btn btn-secondary w-100 btn-xs btn-square no-transform">
+            {% trans 'Statistics' %}
+            <i
+                    class="bi bi-info-circle ml-1"
+                    data-bs-toggle="tooltip"
+                    title="{% trans 'These are only relative parameters. Actual data may differ from the above figures. The server will check when storing and return an error if the allowed limit is exceeded.' %}"
+            ></i>
+        </button>
+        <div class="w-100 px-2 py-1">
+            <small>
+                <i
+                        class="bi bi-info-circle mr-1"
+                        data-bs-toggle="tooltip"
+                        title="{% trans 'Max' %}: 30"
+                ></i>
+                <span>{% trans 'Length' %}:</span>
+                <span id="stats-length"></span>
+            </small>
+            <br>
+            <small>
+                <i
+                        class="bi bi-info-circle mr-1"
+                        data-bs-toggle="tooltip"
+                        title="{% trans 'Max' %}: 300 kB"
+                ></i>
+                <span>{% trans 'Size' %}:</span>
+                <span id="stats-size"></span>
+            </small>
+        </div>
+    </div>
     <div id="draggable-parent">
         <div id="field-tab-group">
             <div id="field-basic" class="field-tab active no-transform">{% trans 'Basic fields' %}</div>
@@ -11,11 +42,48 @@
             <div style="clear:both;"></div>
         </div>
         <div id="draggable">
-            {% include 'form/extends/single-line/drag.html' %}
-            {% include 'form/extends/multiple-line/drag.html' %}
-            {% include 'form/extends/number/drag.html' %}
-            {% include 'form/extends/phone/drag.html' %}
-            {% include 'form/extends/email/drag.html' %}
+            <div class="draggable-heading">
+                <div class="heading-txt">{% trans 'Decorations and Informations' %}</div>
+                <div class="draggable-group">
+                    {% include 'form/extends/card-text/drag.html' %}
+                    {% include 'form/extends/card-heading/drag.html' %}
+                    {% include 'form/extends/page-break-head/drag.html' %}
+                </div>
+            </div>
+
+            <div class="draggable-heading">
+                <div class="heading-txt">{% trans 'Text' %}</div>
+                <div class="draggable-group">
+                    {% include 'form/extends/single-line/drag.html' %}
+                    {% include 'form/extends/multiple-line/drag.html' %}
+                    {% include 'form/extends/email/drag.html' %}
+                </div>
+            </div>
+            <div class="draggable-heading">
+                <div class="heading-txt">{% trans 'Number' %}</div>
+                <div class="draggable-group">
+                    {% include 'form/extends/number/drag.html' %}
+                    {% include 'form/extends/phone/drag.html' %}
+                    {% include 'form/extends/slider/drag.html' %}
+                </div>
+            </div>
+            <div class="draggable-heading">
+                <div class="heading-txt">{% trans 'Date and Time' %}</div>
+                <div class="draggable-group">
+                    {% include 'form/extends/date/drag.html' %}
+                    {% include 'form/extends/time/drag.html' %}
+                    {% include 'form/extends/datetime/drag.html' %}
+                </div>
+            </div>
+            <div class="draggable-heading">
+                <div class="heading-txt">{% trans 'Decisions' %}</div>
+                <div class="draggable-group">
+                    {% include 'form/extends/select/drag.html' %}
+                    {% include 'form/extends/checkbox/drag.html' %}
+                    {% include 'form/extends/checkbox-many/drag.html' %}
+                    {% include 'form/extends/rating/drag.html' %}
+                </div>
+            </div>
         </div>
     </div>
     <div id="sortable-parent">
@@ -31,11 +99,12 @@
             </div>
             <div
                     id="idx-form-head"
-                    class="form-item form-head"
-                    style="display: none;"
+                    class="form-item form-item-md form-head"
+                    style="margin-bottom: 1rem;"
             >
                 <div class="form-head-sub">
-                    <span id="form-head--current-user-name">{{ request.user }}</span>
+                    <div>
+                        <span id="form-head--current-user-name">{{ request.user }}</span>
                         <a
                                 href="{% url 'AuthLogout' %}?next="
                                 id="btnSwitchAccount"
@@ -43,24 +112,35 @@
                         >
                             {% trans 'Switch account' %}
                         </a>
+                    </div>
+                    <div id="data-submitted">
+                        <p style="font-size: large;color: #00646d;">
+                            {% trans 'You has submitted data.' %}
+                            <button type="button" class="btn-more-submitted">Xem danh sách</button>
+                        </p>
+                    </div>
                 </div>
                 <div class="group-masker"></div>
             </div>
             <div
-                    id="sortable"
-                    class="form-content"
+                    id="page-sortable"
+                    class="sortable-item form-item form-item-md form-page sortable-item-fixed"
+                    data-code="form-page"
+                    style="display: none;"
             >
-                <div class="form-item" id="sortable-item-empty">
-                    <div>
-                        <h3>{% trans 'Start building!' %}</h3>
-                        <p>{% trans 'Drag fields from left panel and drop here to add them to your form.' %}</p>
+                <div class="progress-steps">
+                    <div class="steps-bar">
+                        <div class="steps-bar-init"></div>
+                        <div class="steps-bar-progress"></div>
                     </div>
+                    <div class="steps-group"></div>
                 </div>
             </div>
+            <div id="sortable" class="form-content"></div>
             <div class="form-action d-none">
                 <button type="submit">{% trans 'Submit' %}</button>
             </div>
-            <div class="form-item form-foot" style="display: none;">
+            <div class="form-item form-foot" style="display: none;margin-top: 1rem;">
                 <div class="form-foot-sub">
                     <p class="foot-warning-text">
                         {% trans 'Do not submit confidential information such as credit card details, mobile and ATM PINs, OTPs, account passwords, etc.' %}

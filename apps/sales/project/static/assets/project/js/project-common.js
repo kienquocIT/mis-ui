@@ -57,7 +57,28 @@ $(document).ready(function () {
     $('.toggle-notes').on('click', function(){
         $('.content-notes').slideToggle()
     })
+
 });
+function reGetDetail(gantt_obj){
+    const $FormElm = $('#project_form');
+    $('.lazy_loading').addClass('active')
+    $.fn.callAjax2({
+        'url': $FormElm.attr('data-url-detail'),
+        'method': 'get'
+    })
+        .then(
+            (resp) => {
+                let res = $.fn.switcherResp(resp);
+                if (res && (res['status'] === 201 || res['status'] === 200)) {
+                    let group = res['groups'];
+                    let work = res['works'];
+                    const afterData = fGanttCustom.convert_data(group, work);
+                    gantt_obj.refresh(afterData);
+                    $('.lazy_loading').delay( 1000 ).removeClass('active');
+                }
+            }
+        )
+}
 
 function saveGroup(gantt_obj) {
     const $gModal = $('#group_modal'), $urlFact = $('#url-factory');
@@ -96,26 +117,9 @@ function saveGroup(gantt_obj) {
                     const $ganttElm = $('.gantt-wrap'), crtIdx = $ganttElm.data('detail-index');
                     if (!$gIDElm.length) $ganttElm.data('detail-index', crtIdx + 1)
                     else $gIDElm.remove();
-                    if (gantt_obj){
-                        let temps = []
-                        if (method === 'put') res = data
-                        res.weight = res.gr_weight
-                        res.progress = $('#groupRate').val()
-                        res.date_from = res.gr_start_date
-                        res.date_end = res.gr_end_date
-                        if (method === 'post'){
-                            temps.push(res)
-                            const afterData = fGanttCustom.convert_data(temps, [])
-                            gantt_obj.load_more(afterData)
-                        }
-                        else{
-                            $gModal.modal('hide')
-                            res.id = $gIDElm.val()
-                            temps.push(res)
-                            const afterData = fGanttCustom.convert_data(temps, [])
-                            gantt_obj.update_data(afterData)
-                        }
-                    }
+                    // get detail and reload group work
+                    $gModal.modal('hide')
+                    reGetDetail(gantt_obj)
                 }
             },
             (err) => {
@@ -136,9 +140,9 @@ function saveWork(gantt_obj) {
             $.fn.notifyB({description: $.fn.gettext('Title is required')}, 'failure');
             return false
         }
-        let workType = $('#select_relationships_type').val()
-        let childIdx = parseInt($('.gantt-wrap').data('detail-index')) + 1
-        const data = {
+        let workType = $('#select_relationships_type').val(),
+        childIdx = parseInt($('.gantt-wrap').data('detail-index')) + 1,
+        data = {
             'project': $('#id').val(),
             'title': $tit.val(),
             'employee_inherit': $('#selectEmployeeInherit').val(),
@@ -146,7 +150,7 @@ function saveWork(gantt_obj) {
             'w_start_date': moment($startD.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
             'w_end_date': moment($startE.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
             'order': childIdx,
-        }
+        };
         if (workParent.val()){
             data.work_dependencies_parent = workParent.val()
             data.order = $(`.gantt-left-container .grid-row[data-id="${workParent.val()}"]`).index() + 1
@@ -154,7 +158,14 @@ function saveWork(gantt_obj) {
 
         if (workType) data.work_dependencies_type = parseInt(workType)
         else data.work_dependencies_type = null
-        if (groupElm.val()) data.group = groupElm.val()
+        let work_order = null, num_order = 0;
+        if (groupElm.val()){
+            work_order = $(`.gantt-left-container .grid-row[data-group="${groupElm.val()}"]`);
+            if (!work_order.length)
+                work_order = $(`.gantt-left-container .grid-row[data-id="${groupElm.val()}"]`)
+            num_order = work_order.last().index() + 1
+            data.group = groupElm.val();
+        }
 
         let url = $urlFact.attr('data-work'),
             method = 'post';
@@ -176,38 +187,9 @@ function saveWork(gantt_obj) {
                         let crtIdx = parseInt($ganttElm.data('detail-index'))
                         $ganttElm.data('detail-index', crtIdx + 1)
                     }
-                    if (gantt_obj){
-                        let temps = []
-                        if (method === 'put')
-                            res = data
-                        res.weight = res.w_weight
-
-                        res.date_from = res.w_start_date
-                        res.date_end = res.w_end_date
-                        res.relationships_type = res.work_dependencies_type
-                        if (method === 'post'){
-                            if (Object.keys(res.work_dependencies_parent).length)
-                                res.dependencies_parent = res.work_dependencies_parent.id
-                            else res.dependencies_parent = ""
-                            res.progress = res['w_rate']
-                            if (Object.keys(res.group).length)
-                                res.group = res.group.id
-                            else res.group = ""
-                            temps.push(res)
-                            const afterData = fGanttCustom.convert_data([], temps)
-                            gantt_obj.load_more(afterData)
-                        }
-                        else{
-                            $wModal.modal('hide')
-                            res.id = $workID.val()
-                            res.progress = $('#workRate').val()
-                            res.work_status = $('#work_status').val()
-                            res.dependencies_parent = res.work_dependencies_parent
-                            temps.push(res)
-                            const afterData = fGanttCustom.convert_data([], temps)
-                            gantt_obj.update_data(afterData)
-                        }
-                    }
+                    // get detail and reload group work
+                    $wModal.modal('hide')
+                    reGetDetail(gantt_obj)
                 }
                 $(this).prop('disabled', false)
             },

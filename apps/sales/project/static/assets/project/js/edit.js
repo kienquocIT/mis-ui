@@ -223,4 +223,12 @@ $(document).ready(function () {
     // run create btn
     createBaseline.init()
 
+
+    // change gantt view mode
+    $('#change_view_mode button').on('click', function(){
+        $('#change_view_mode button').removeClass('active')
+        $(this).addClass('active')
+        let mode = $(this).attr('data-value')
+        new_gantt.change_view_mode(mode)
+    })
 });

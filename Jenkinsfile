@@ -2,9 +2,23 @@ pipeline {
     agent any
     environment {
         GIT_TAG_COMMIT = sh(script: 'git describe --tags --always', returnStdout: true).trim()
+
+        TELEGRAM_TOKEN = credentials('telegram-token') 
+        TELEGRAM_CHAT_ID = credentials('telegram-chat-id')
     }
 
     stages {
+        stage('Pre-Build') {
+            steps {
+                script {
+                    sh '''
+                        curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage \
+                            -d chat_id=${TELEGRAM_CHAT_ID} \
+                            -d text="[${JOB_NAME}] Jenkins is building (￣_,￣ ) 💛💛💛"
+                    '''
+                }
+            }
+        }
         stage('Setup-ENV') {
             steps {
                 script {
@@ -41,6 +55,26 @@ pipeline {
                     }
                 }
                 echo "DONE SSH SERVER"
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                sh """
+                    curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage \
+                    -d chat_id=${TELEGRAM_CHAT_ID} \
+                    -d text="[${JOB_NAME}] Build finished: SUCCESSFUL (￣▽￣) 💚💚💚"
+                """
+            }
+        }
+        failure {
+            script {
+                sh """
+                    curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage \
+                    -d chat_id=${TELEGRAM_CHAT_ID} \
+                    -d text="[${JOB_NAME}] Build finished: FAILURE ㄟ( ▔, ▔ )ㄏ 💔💔💔"
+                """
             }
         }
     }

@@ -37,8 +37,8 @@ $(function () {
                         targets: 0,
                         width: '5%',
                         render: (data, type, row) => {
+                            let link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
                             if (row?.['code']) {
-                                const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
                                 if (row?.['is_change'] === true && row?.['document_root_id'] && row?.['system_status'] === 3) {
                                     let target = `.cl-${row?.['document_root_id'].replace(/-/g, "")}`;
                                     return `<div class="d-flex">
@@ -61,7 +61,7 @@ $(function () {
                                 }
                                 return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']}</span></a></div>`;
                             }
-                            return `<p></p>`;
+                            return `<a href="${link}" class="link-primary underline_hover">--</a>`;
                         }
                     },
                     {

@@ -1251,7 +1251,7 @@ class GRLoadDataHandle {
         dataWarehouse['code'] = dataWarehouse?.['warehouse']?.['code'];
         dataWarehouse['warehouse'] = dataWarehouse?.['warehouse']?.['id'];
         for (let dataLot of dataWarehouse?.['lot_data']) {  // lot
-            dataLot['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
+            dataLot['warehouse_id'] = dataWarehouse?.['warehouse'];
             dataLot['expire_date'] = '';
             if (dataLot?.['expire_date']) {
                 dataLot['expire_date'] = moment(dataLot?.['expire_date']).format('DD/MM/YYYY');
@@ -1263,7 +1263,7 @@ class GRLoadDataHandle {
             dataLot['lot'] = dataLot?.['lot_id'];
         }
         for (let dataSerial of dataWarehouse?.['serial_data']) {  // serial
-            dataSerial['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
+            dataSerial['warehouse_id'] = dataWarehouse?.['warehouse'];
             dataSerial['expire_date'] = '';
             if (dataSerial?.['expire_date']) {
                 dataSerial['expire_date'] = moment(dataSerial?.['expire_date']).format('DD/MM/YYYY');

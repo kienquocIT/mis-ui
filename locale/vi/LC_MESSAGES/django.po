@@ -8040,3 +8040,7 @@ msgstr "Tạo vùng"
 #
 msgid "System node"
 msgstr "Trạm hệ thống"
+
+#
+msgid "Delivery status"
+msgstr "Trạng thái giao hàng"

@@ -61,6 +61,7 @@
             <th>{% trans 'Expected Date' %}</th>
             <th>{% trans 'Actual Date' %}</th>
             <th>{% trans 'Person delivery' %}</th>
+            <th>{% trans 'Delivery status' %}</th>
             <th>{% trans 'Status' %}</th>
             <th>{% trans 'Action' %}</th>
         </tr>
@@ -110,6 +111,7 @@
     >
     <input type="hidden" id="app-trans-factory"
     data-edit="{% trans 'Edit' %}">
+    {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 
 {% block jsFooter %}

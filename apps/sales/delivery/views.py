@@ -12,7 +12,7 @@ __all__ = [
     'OrderDeliveryDetailAPI', 'OrderDeliveryEdit', 'OrderPickingEdit'
 ]
 
-from apps.shared.constant import DELIVERY_STATE
+from apps.shared.constant import DELIVERY_STATE, SYSTEM_STATUS
 
 
 def update_delivery(request, url, pk, msg):
@@ -160,7 +160,10 @@ class OrderDeliveryList(View):
         menu_active='menu_order_delivery_list',
     )
     def get(self, request, *args, **kwargs):
-        return {'state_choices': {key: value for key, value in DELIVERY_STATE}}, status.HTTP_200_OK
+        return {
+                   'state_choices': {key: value for key, value in DELIVERY_STATE},
+                   'stt_sys': SYSTEM_STATUS,
+               }, status.HTTP_200_OK
 
 
 class OrderDeliveryListAPI(APIView):

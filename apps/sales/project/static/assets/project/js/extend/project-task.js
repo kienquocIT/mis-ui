@@ -625,21 +625,23 @@ class Task_in_project {
                     }
                 })
         }
-        if ($parent.length)
+        if ($parent.length){
             $parent.initSelect2({width: 'resolve'}).on('select2:select', function(e){
                 const _value = e.params.data.data, _role_lst = _value.role
                 if ($child.hasClass("select2-hidden-accessible")) $child.select2('destroy').html('')
                 for (let item of _role_lst){
                     $child.append(new Option(item.title, item.id, false, false))
                 }
-                $child.initSelect2({allowClear: true}).on('select2:select', function(){
-                    let params = $grandChild.attr('data-params').replaceAll("'", '"')
-                    params = JSON.parse(params)
-                    params.role = $child.val().join(',')
-                    $grandChild.html('')
-                    callAndLoadData(params)
-                })
+                $child.initSelect2({allowClear: true})
             });
+            $child.on('select2:select', function () {
+                let params = $grandChild.attr('data-params').replaceAll("'", '"')
+                params = JSON.parse(params)
+                params.role = $child.val().join(',')
+                $grandChild.html('')
+                callAndLoadData(params)
+            })
+        }
 
         // append button toggle check employee in expense role
         $taskID.find('.custom-layout').prev().after(`<div class="col-md-6 col-xs-12">`
@@ -647,6 +649,7 @@ class Task_in_project {
             + `<img src="/static/assets/project/images/find-user-2.svg" alt="${$.fn.gettext('Search employee by costs incurred')}" style="width:50px;height:50px;">`
             + `</a></div>`)
 
+        // click button show modals
         $('.btn-check_emp').on('click', function(){
             $('#check_expense_modal').toggleClass('hidden')
         }).tooltip()

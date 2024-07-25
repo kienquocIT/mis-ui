@@ -2,7 +2,11 @@ pipeline {
     agent any
     environment {
         GIT_TAG_COMMIT = sh(script: 'git describe --tags --always', returnStdout: true).trim()
+        
+        SERVER_IP_DEPLOY_DEFAULT = credentials('server-ip-deploy-default')
+        SERVER_PATH_DELOY_DEFAULT = credentials('server-path-deploy-default')
 
+        TELEGRAM_ENABLE = credentials('telegram-enable')
         TELEGRAM_TOKEN = credentials('telegram-token') 
         TELEGRAM_CHAT_ID = credentials('telegram-chat-id')
     }
@@ -11,11 +15,9 @@ pipeline {
         stage('Pre-Build') {
             steps {
                 script {
-                    sh '''
-                        curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage \
-                            -d chat_id=${TELEGRAM_CHAT_ID} \
-                            -d text="[${JOB_NAME}] Jenkins is building (￣_,￣ ) 💛💛💛"
-                    '''
+                    if (TELEGRAM_ENABLE == '1') {
+                        sendTelegram("[${JOB_NAME}] Jenkins is building (￣_,￣ ) 💛💛💛");
+                    }
                 }
             }
         }
@@ -26,20 +28,20 @@ pipeline {
                     env.GIT_BRANCH_NAME = getGitBranchName();
                     env.PUSHER = sh (script: 'whoami', returnStdout: true).trim();
                     if (GIT_BRANCH_NAME == 'master') {
-                        env.PROJECT_DIR = '/home/jenkins/COMPILE/UI';
-                        env.DEPLOY_SERVER_IP = '192.168.0.111';
+                        env.PROJECT_DIR = '${SERVER_PATH_DELOY_DEFAULT}COMPILE/UI';
+                        env.DEPLOY_SERVER_IP = SERVER_IP_DEPLOY_DEFAULT;
                     }
                     if (GIT_BRANCH_NAME == 'dev') {
-                        env.PROJECT_DIR = '/home/jenkins/dev/ui';
-                        env.DEPLOY_SERVER_IP = '192.168.0.111';
+                        env.PROJECT_DIR = '${SERVER_PATH_DELOY_DEFAULT}dev/ui';
+                        env.DEPLOY_SERVER_IP = SERVER_IP_DEPLOY_DEFAULT;
                     }
                     if (GIT_BRANCH_NAME == 'sit') {
-                        env.PROJECT_DIR = '/home/jenkins/sit/ui';
-                        env.DEPLOY_SERVER_IP = '192.168.0.111';
+                        env.PROJECT_DIR = '${SERVER_PATH_DELOY_DEFAULT}sit/ui';
+                        env.DEPLOY_SERVER_IP = SERVER_IP_DEPLOY_DEFAULT;
                     }
                     if (GIT_BRANCH_NAME == 'uat') {
-                        env.PROJECT_DIR = '/home/jenkins/uat/ui';
-                        env.DEPLOY_SERVER_IP = '192.168.0.111';
+                        env.PROJECT_DIR = '${SERVER_PATH_DELOY_DEFAULT}uat/ui';
+                        env.DEPLOY_SERVER_IP = SERVER_IP_DEPLOY_DEFAULT;
                     }
                 }
             }
@@ -61,20 +63,16 @@ pipeline {
     post {
         success {
             script {
-                sh """
-                    curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage \
-                    -d chat_id=${TELEGRAM_CHAT_ID} \
-                    -d text="[${JOB_NAME}] Build finished: SUCCESSFUL (￣▽￣) 💚💚💚"
-                """
+                if (TELEGRAM_ENABLE == '1') {
+                    sendTelegram("[${JOB_NAME}] Build finished: SUCCESSFUL (￣▽￣) 💚💚💚")
+                }
             }
         }
         failure {
             script {
-                sh """
-                    curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage \
-                    -d chat_id=${TELEGRAM_CHAT_ID} \
-                    -d text="[${JOB_NAME}] Build finished: FAILURE ㄟ( ▔, ▔ )ㄏ 💔💔💔"
-                """
+                if (TELEGRAM_ENABLE == '1') {
+                    sendTelegram("[${JOB_NAME}] Build finished: FAILURE ㄟ( ▔, ▔ )ㄏ 💔💔💔")
+                }
             }
         }
     }
@@ -83,4 +81,12 @@ pipeline {
 @NonCPS
 def getGitBranchName() {
     return scm.branches[0].name.split("/")[1]
+}
+
+def sendTelegram(message) {
+    sh """
+        curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage \
+            -d chat_id=${TELEGRAM_CHAT_ID} \
+            -d text="${message}"
+    """
 }

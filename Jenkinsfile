@@ -3,6 +3,8 @@ pipeline {
     environment {
         GIT_TAG_COMMIT = sh(script: 'git describe --tags --always', returnStdout: true).trim()
         
+        BUILD_TRIGGER_BY_NAME = getBuildUser()
+
         SERVER_IP_DEPLOY_DEFAULT = credentials('server-ip-deploy-default')
         SERVER_PATH_DELOY_DEFAULT = credentials('server-path-deploy-default')
 
@@ -16,7 +18,7 @@ pipeline {
             steps {
                 script {
                     if (TELEGRAM_ENABLE == '1') {
-                        sendTelegram("[${JOB_NAME}] Jenkins is building (￣_,￣ ) 💛💛💛");
+                        sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build started... 💛💛💛");
                     }
                 }
             }
@@ -64,14 +66,14 @@ pipeline {
         success {
             script {
                 if (TELEGRAM_ENABLE == '1') {
-                    sendTelegram("[${JOB_NAME}] Build finished: SUCCESSFUL (￣▽￣) 💚💚💚")
+                    sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME}] Build finished: Successful 💚💚💚")
                 }
             }
         }
         failure {
             script {
                 if (TELEGRAM_ENABLE == '1') {
-                    sendTelegram("[${JOB_NAME}] Build finished: FAILURE ㄟ( ▔, ▔ )ㄏ 💔💔💔")
+                    sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build finished: Failure 💔💔💔")
                 }
             }
         }
@@ -89,4 +91,10 @@ def sendTelegram(message) {
             -d chat_id=${TELEGRAM_CHAT_ID} \
             -d text="${message}"
     """
+}
+
+@NonCPS
+def getBuildUser() {
+    // [_class:hudson.model.Cause$UserIdCause, shortDescription:Started by user ADMIN, userId:admin, userName:ADMIN]
+    return currentBuild.getBuildCauses()[0].userName
 }

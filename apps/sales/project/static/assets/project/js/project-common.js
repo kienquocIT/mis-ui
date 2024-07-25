@@ -57,6 +57,7 @@ $(document).ready(function () {
     $('.toggle-notes').on('click', function(){
         $('.content-notes').slideToggle()
     })
+
 });
 function reGetDetail(gantt_obj){
     const $FormElm = $('#project_form');

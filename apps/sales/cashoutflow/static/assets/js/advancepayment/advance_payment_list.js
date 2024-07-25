@@ -55,6 +55,13 @@ $(document).ready(function () {
                         }
                     },
                     {
+                        data: 'employee_inherit',
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return `<span class="text-blue">${data?.['full_name']}</span>`
+                        }
+                    },
+                    {
                         data: 'sale_code',
                         className: 'wrap-text',
                         render: (data, type, row) => {
@@ -94,28 +101,22 @@ $(document).ready(function () {
                         data: 'advance_value',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="mask-money text-primary" data-init-money="${row?.['advance_value']}"></span>`
-                        }
-                    },
-                    {
-                        data: 'to_payment',
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return `<span class="mask-money text-primary" data-init-money="${row?.['to_payment']}"></span>`
+                            return `
+                                <span class="mask-money text-primary" data-init-money="${row?.['advance_value']}"></span>
+                                <br>
+                                (${dtb.attr('data-type-translate-to-payment')}: <span class="mask-money text-primary" data-init-money="${row?.['to_payment']}"></span>)
+                            `
                         }
                     },
                     {
                         data: 'return_value',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="mask-money text-primary" data-init-money="${row?.['return_value']}"></span>`
-                        }
-                    },
-                    {
-                        data: 'remain_value',
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return `<span class="mask-money text-primary" data-init-money="${row?.['remain_value']}"></span>`
+                            return `
+                                    <span class="mask-money text-primary" data-init-money="${row?.['return_value']}"></span>
+                                    <br>
+                                    <span>(${dtb.attr('data-type-translate-remain-ap')}: <span class="mask-money text-primary" data-init-money="${row?.['remain_value']}"></span>)</span>
+                            `
                         }
                     },
                     {
@@ -126,7 +127,7 @@ $(document).ready(function () {
                                 return `<div>
                                         <span class="badge-status">
                                             <span class="badge badge-primary badge-indicator"></span>
-                                            <span class="badge-label">Money gave/transferred</span>
+                                            <span class="badge-label">${dtb.attr('data-type-translate-gave')}</span>
                                         </span>
                                     </div>`
                             }
@@ -134,7 +135,7 @@ $(document).ready(function () {
                                 return `<div>
                                         <span class="badge-status">
                                             <span class="badge badge-primary badge-indicator"></span>
-                                            <span class="badge-label">Waiting</span>
+                                            <span class="badge-label">${dtb.attr('data-type-translate-waiting')}</span>
                                         </span>
                                     </div>`
                             }
@@ -146,34 +147,29 @@ $(document).ready(function () {
                         render: (data, type, row) => {
                             let approved_trans = ``
                             let text_color = ``
-                            if (row.system_status === 0) {
-                                approved_trans = 'Draft'
+                            if (row?.['system_status_raw'] === 0) {
                                 text_color = 'badge-secondary'
                             }
-                            else if (row.system_status === 1) {
-                                approved_trans = 'Created'
+                            else if (row?.['system_status_raw'] === 1) {
                                 text_color = 'badge-primary'
                             }
-                            else if (row.system_status === 2) {
-                                approved_trans = 'Added'
+                            else if (row?.['system_status_raw'] === 2) {
                                 text_color = 'badge-blue'
                             }
-                            else if (row.system_status === 3) {
-                                approved_trans = 'Finish'
+                            else if (row?.['system_status_raw'] === 3) {
                                 text_color = 'badge-success'
                             }
-                            else if (row.system_status === 4) {
-                                approved_trans = 'Cancel'
+                            else if (row?.['system_status_raw'] === 4) {
                                 text_color = 'badge-danger'
                             }
-                            return `<span class="badge ${text_color}">` + approved_trans + `</span>`
+                            return `<span class="badge ${text_color}">${row?.['system_status']}</span>`
                         }
                     },
                     {
                         data: '',
                         className: 'wrap-text text-center',
                         render: (data, type, row) => {
-                            if (row.system_status !== 3 || !row.money_gave) {
+                            if (row?.['system_status_raw'] !== 3 || !row.money_gave) {
                                 return ``;
                             }
                             else {
@@ -204,8 +200,15 @@ $(document).ready(function () {
                                     flag = 2;
                                 }
 
-                                return `<div data-money-gave="${row.money_gave}" class="dropdown ap-shortcut" data-ap-id="${row.id}" data-sale-code-id="${sale_code_id}" data-sale-code-title="${sale_code_title}" data-sale-code-CODE="${sale_code_CODE}" data-flag="${flag}">
-                                            <a type="button" data-bs-toggle="dropdown"><i class="fas fa-stream text-primary"></i></a>
+                                return `<div data-money-gave="${row.money_gave}"
+                                             class="dropdown ap-shortcut"
+                                             data-ap-id="${row.id}"
+                                             data-sale-code-id="${sale_code_id}"
+                                             data-sale-code-title="${sale_code_title}"
+                                             data-sale-code-CODE="${sale_code_CODE}"
+                                             data-flag="${flag}">
+                                            <a type="button"
+                                               data-bs-toggle="dropdown"><i class="fas fa-stream text-primary"></i></a>
                                             <div class="dropdown-menu"></div>
                                         </div>`;
                             }
@@ -361,6 +364,10 @@ $(document).on("click", '.ap-shortcut', function() {
     let ap_title = $(this).closest('tr').find('.ap_info').attr('data-title');
     let sale_code_code = $(this).closest('tr').find('.ap_info').attr('data-sale-code-code');
     let advance_payment_obj= encodeURIComponent(JSON.stringify({'id': ap_id, 'title': ap_title, 'code': ap_code, 'sale_code_code': sale_code_code}));
-    let html_return = `<a class="dropdown-item" href="${$('#datatable_advance_list').attr('data-return')}?advance_payment=${advance_payment_obj}&opportunity=${opp_obj}">Return</a>`;
+    let html_return = `
+        <a class="dropdown-item" href="${$('#datatable_advance_list').attr('data-return')}?advance_payment=${advance_payment_obj}&opportunity=${opp_obj}">
+            <button type="button" class="btn btn-soft-primary w-100">${$('#datatable_advance_list').attr('data-type-translate-return')}</button>
+        </a>
+    `;
     $(this).find('.dropdown-menu').append(html_return)
 });

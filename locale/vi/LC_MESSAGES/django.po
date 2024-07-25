@@ -3753,7 +3753,7 @@ msgstr "Cho nhân viên"
 
 #
 msgid "To supplier"
-msgstr "Cho nhà cung cấp"
+msgstr "Cho NCC"
 
 #
 msgid "Pretax price"
@@ -8036,3 +8036,67 @@ msgstr "Nửa ngày"
 #
 msgid "Change view mode"
 msgstr "Thay đổi chế độ xem"
+
+#
+msgid "AP status"
+msgstr "Trạng thái tạm ứng"
+
+#
+msgid "Google app password"
+msgstr "Mật khẩu ứng dụng Google"
+
+#
+msgid "include space"
+msgstr "bao gồm khoảng trắng"
+
+#
+msgid "Get here"
+msgstr "Lấy tại đây"
+
+#
+msgid "Your Google account must be TURNED ON 2-Step verification first."
+msgstr "Tài khoản Google của bạn phải BẬT xác minh 2 bước trước."
+
+#
+msgid "Test connection and Save"
+msgstr "Kiểm tra kết nối và Lưu"
+
+#
+msgid "Email verify"
+msgstr "Xác minh Email"
+
+#
+msgid "Verified"
+msgstr "Đã xác minh"
+
+#
+msgid "Need verify"
+msgstr "Cần xác minh"
+
+#
+msgid "19 letters"
+msgstr "19 kí tự"
+
+#
+msgid "Allowed"
+msgstr "Cho phép"
+
+#
+msgid "Employee can view Company budget plan"
+msgstr "Nhân viên được xem KH ngân sách của công ty"
+
+#
+msgid "Employee can lock Budget plan"
+msgstr "Nhân viên được khoá KH ngân sách"
+
+#
+msgid "This budget plan is locked"
+msgstr "Kế hoạch ngân sách bị khoá"
+
+#
+msgid "Lock this budget plan"
+msgstr "Khoá Kế hoạch ngân sách"
+
+#
+msgid "Unlock this budget plan"
+msgstr "Mở khoá Kế hoạch ngân sách"

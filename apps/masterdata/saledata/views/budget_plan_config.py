@@ -42,3 +42,29 @@ class BudgetPlanConfigListAPI(APIView):
     def post(self, request, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.BUDGET_PLAN_CONFIG_LIST).post(request.data)
         return resp.auto_return()
+
+
+class ListCanViewCompanyBudgetPlanAPI(APIView):
+    permission_classes = [IsAuthenticated] # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.LIST_CAN_VIEW_COMPANY_BP).get(params)
+        return resp.auto_return(key_success='list_can_view_company_budget_plan')
+
+
+class ListCanLockBudgetPlanAPI(APIView):
+    permission_classes = [IsAuthenticated] # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.LIST_CAN_LOCK_BP).get(params)
+        return resp.auto_return(key_success='list_can_lock_budget_plan')

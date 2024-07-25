@@ -17,6 +17,7 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    {% include 'printer/print.html' %}
     <script id="url_script"
             data-url-warehouse-product-list="{% url 'WareHouseListForInventoryAdjustmentAPI' %}"
     ></script>
@@ -29,6 +30,15 @@
           id="frm_inventory_adjustment_detail">
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
+            <div class="row mb-3">
+                <div class="col-12">
+                    <button type="button" class="btn btn-sm btn-gradient-primary" id="print-document"
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Print' %}"
+                    >
+                        <i class="bi bi-printer"></i>
+                    </button>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
@@ -169,4 +179,13 @@
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/inventory_adjustment/inventory_adjustment_common.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/inventory_adjustment/inventory_adjustment_update.js' %}"></script>
+
+    <script src="{% static 'printer/print.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#print-document').on('click', function () {
+                PrintTinymceControl.open_modal();
+            });
+        })
+    </script>
 {% endblock %}

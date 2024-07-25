@@ -17,7 +17,7 @@
                 font-src 'self' https://fonts.gstatic.com;
                 img-src 'self' https: data:;
                 frame-src 'self' https:;
-                connect-src 'self';
+                connect-src 'self' https://api.ipify.org;
             "
     >
 
@@ -56,7 +56,9 @@
 
         <link rel="stylesheet" href="{% static 'form/runtime/css/loading.css' %}">
         <link rel="stylesheet" href="{% static 'form/runtime/vendors/page/style.css' %}">
+        <link rel="stylesheet" href="{% static 'form/runtime/css/email-auth.css' %}">
     {% endcompress %}
+    <link rel="stylesheet" href="{% static 'form/runtime/vendors/fonts/Merienda/Merienda-VariableFont_wght.ttf' %}">
 </head>
 <body>
 <div id="bg"></div>
@@ -72,6 +74,48 @@
             <div class="circle"></div>
             <div class="circle"></div>
             <div class="circle"></div>
+        </div>
+    </div>
+</div>
+<div id="email-authenticate" style="display: none;">
+    <div class="email-authenticate-group">
+        <div class="email-login">
+            <div style="display: block;width: 100%;padding-bottom: 30px;padding-top: 10px;">
+                <div style="width: 100%;display: flex;justify-content: center;">
+                    <img src="{{ logo_resolve }}" alt="Original Company" style="max-width: 100px;object-fit: initial;">
+                </div>
+                <p style="width: 100%;text-align: center;font-size: large;margin: 0;">{% trans 'Sender identity verification' %}</p>
+            </div>
+            <input type="text" name="public_ip" placeholder="" required readonly style="margin-bottom: 10px;" />
+            <small style="margin-bottom: 10px;display: block;">{% trans 'This feature requires checking the public IP address to make the request.' %}</small>
+            <form id="form-email-get-otp">
+                <div style="width: 100%; display: flex;">
+                    <div style="flex-basis: auto;margin-right: 5px;">
+                        <div class="form-group">
+                            <label for="email-auth-email" style="display: none;">Email</label>
+                            <input type="email" id="email-auth-email" name="email" placeholder="Email" />
+                        </div>
+                    </div>
+                    <div style="flex-basis: 100px">
+                        <button type="submit">{% trans 'Send OTP' %}</button>
+                    </div>
+                </div>
+            </form>
+            <form id="form-email-verify-otp" style="display: none;">
+                <hr/>
+                <input type="text" name="email" placeholder=" " required readonly style="margin-bottom: 10px;" />
+                <div style="width: 100%; display: flex;">
+                    <div style="flex-basis: auto;margin-right: 5px;">
+                        <div class="form-group">
+                            <label for="email-ath-password" style="display: none;">OTP</label>
+                            <input type="text" id="email-ath-password" name="otp" placeholder="OTP" />
+                        </div>
+                    </div>
+                    <div style="flex-basis: 100px">
+                        <button type="submit">{% trans 'Verify' %}</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>

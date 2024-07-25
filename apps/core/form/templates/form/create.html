@@ -50,6 +50,13 @@
 {% endblock %}
 
 {% block jsFooter %}
+    <script src="{% static 'form/runtime/vendors/HtmlSanitizer/HtmlSanitizer.js' %}"></script>
+
+    <script src="{% static 'vendors/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js' %}"></script>
+    <script src="{% static 'form/runtime/vendors/flatpickr/flatpickr.min.js' %}"></script>
+    <script src="{% static 'form/runtime/vendors/flatpickr/i18n/vn.js' %}"></script>
+    <script src="{% static 'form/runtime/vendors/rangeSlider/index.js' %}"></script>
+
     <script src="{% static 'form/runtime/vendors/jquery-ui/ui/i18n/datepicker-vi.js' %}"></script>
     <script src="{% static 'form/config/form-lib.js' %}"></script>
     <script src="{% static 'form/config/create.js' %}"></script>

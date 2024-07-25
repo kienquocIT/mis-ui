@@ -47,7 +47,7 @@
                 <div class="draggable-group">
                     {% include 'form/extends/card-text/drag.html' %}
                     {% include 'form/extends/card-heading/drag.html' %}
-                    {% include 'form/extends/page-break/drag.html' %}
+                    {% include 'form/extends/page-break-head/drag.html' %}
                 </div>
             </div>
 
@@ -99,8 +99,8 @@
             </div>
             <div
                     id="idx-form-head"
-                    class="form-item form-head"
-                    style="display: none;margin-bottom: 1rem;"
+                    class="form-item form-item-md form-head"
+                    style="margin-bottom: 1rem;"
             >
                 <div class="form-head-sub">
                     <div>
@@ -124,7 +124,7 @@
             </div>
             <div
                     id="page-sortable"
-                    class="sortable-item form-item form-page sortable-item-fixed"
+                    class="sortable-item form-item form-item-md form-page sortable-item-fixed"
                     data-code="form-page"
                     style="display: none;"
             >
@@ -136,17 +136,7 @@
                     <div class="steps-group"></div>
                 </div>
             </div>
-            <div
-                    id="sortable"
-                    class="form-content"
-            >
-                <div class="form-item sortable-drop-here" id="sortable-item-empty">
-                    <div>
-                        <h3>{% trans 'Start building!' %}</h3>
-                        <p>{% trans 'Drag fields from left panel and drop here to add them to your form.' %}</p>
-                    </div>
-                </div>
-            </div>
+            <div id="sortable" class="form-content"></div>
             <div class="form-action d-none">
                 <button type="submit">{% trans 'Submit' %}</button>
             </div>

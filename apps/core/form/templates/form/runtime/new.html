@@ -13,7 +13,9 @@
     >
         {% csrf_token %}
         {{ html_text | safe }}
-        {{ submitted_data|json_script:"submitted_data_idx" }}
+        {% if submitted_data %}
+            {{ submitted_data|json_script:"submitted_data_idx" }}
+        {% endif %}
     </form>
 {% endblock %}
 

@@ -269,7 +269,13 @@ class SortableField {
             'didOpenEnd': function () {
                 if (ele$.prev('.sortable-item').length > 0 || ele$.next('.sortable-item').length > 0 || ele$.parent().is('div#sortable')) {
                     if (form && typeof form === 'function') {
-                        let obj = new form();
+                        const data = ele$.data('forms');
+                        let obj;
+                        if (data){
+                            obj = data;
+                        } else {
+                            obj = new form();
+                        }
                         ele$.replaceWith(obj.sortableItem$);
                         obj.trigger('sortable.new.before');
                         obj.trigger('obj.reinit_ele');
@@ -313,11 +319,12 @@ class SortableField {
         this.ele$.find(".sortable-item").disableSelection();
         this.ele$.on('sortable.check_empty', function () {
             const child$ = clsThis.ele$.find('.sortable-item');
+            const itemEmpty$ = clsThis.ele$.find(clsThis.itemEmptyQuery);
             if (child$.length > 0) {
-                clsThis.itemEmpty$.hide("slide", {direction: "right"}, 200);
+                itemEmpty$.remove();
                 clsThis.itemFoot$.show("slide", {direction: "left"}, 200);
             } else {
-                clsThis.itemEmpty$.show("slide", {direction: "left"}, 200);
+                if (itemEmpty$.length === 0) clsThis.ele$.append(clsThis.itemEmptyHTML);
                 clsThis.itemFoot$.hide("slide", {direction: "right"}, 200);
             }
         });
@@ -361,23 +368,64 @@ class SortableField {
         return HtmlSanitizer.SanitizeHtml(html_txt);
     }
 
+    static cusNext(dataStorage$, matcher, from$, until$=null){
+        let arrResult = [];
+        const resolveFrom$ = dataStorage$.find(from$);
+        if (resolveFrom$.length > 0){
+            const parentFrom$ = resolveFrom$.parent();
+
+            let fromIsMapped = false;
+            let isStopLoop = false;
+            $(parentFrom$).children().each(function (){
+                if (isStopLoop === false){
+                    if ($(this).is($(from$))){
+                        fromIsMapped = true;
+                    } else if($(this).is($(until$))) {
+                        isStopLoop = true;
+                    } else {
+                        if (fromIsMapped === true){
+                            if ($(this).is(matcher)){
+                                arrResult.push($(this));
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        return arrResult;
+    }
+
     html_all() {
+        const sortable$ = $(this.ele$.prop('outerHTML'));
+        const page$ = $('#page-sortable');
+
+        const pageEnable = page$.data('forms').config?.['enabled'] || false;
+        let pageData = [];
+        if (pageEnable === true){
+            const pageHead$ = sortable$.find('div[data-code=page-break-head]');
+            for (let i=0; i < pageHead$.length ; i++){
+                const currentPage$ = $(pageHead$[i]);
+                const page$ = $('<div class="page-group" style="display: none;"></div>');
+                page$.attr('data-page', currentPage$.attr('data-page'));
+                const itemAndFootPage$ = i === pageHead$.length - 1 ? SortableField.cusNext(
+                    sortable$, 'div.sortable-item', currentPage$, null
+                ) : SortableField.cusNext(
+                    sortable$, 'div.sortable-item', currentPage$, pageHead$[i+1]
+                )
+                page$.append(currentPage$);
+                page$.append(itemAndFootPage$);
+                pageData.push(page$);
+            }
+        } else {
+            const page$ = $('<div class="page-group"></div>');
+            page$.append(sortable$.find('div.sortable-item'));
+            pageData.push(page$);
+        }
+
         let html = this.eleParent$.prop('outerHTML');
         let html$ = $(html);
-        // remove instruction when empty
-        html$.find('#sortable-item-empty').remove();
-        // remove group control
-        html$.find('.group-control').remove();
-        // remove id
-        html$.find('#sortable-content').removeAttr('id');
-        html$.find('#head-sortable').removeAttr('id');
-        html$.find('#sortable').removeAttr('id');
-        html$.find('#form-title').removeAttr('id');
-        // remove class
-        html$.find('.ui-sortable').removeClass('ui-sortable');
-        html$.find('.sortable-item').removeClass('sortable-item');
-        // remove attribute data-code
-        html$.find('[data-code]').removeAttr('data-code').removeAttr('id');
+
+        html$.find('#sortable').removeAttr('id').empty().append(pageData);
         // remove masker
         html$.find('.group-masker').remove()
         // remove group--setting-group
@@ -394,6 +442,26 @@ class SortableField {
         html$.find('.form-head').removeAttr('style');
         // remove style of form foot
         html$.find('.form-foot').removeAttr('style');
+        // remove form-item--hide
+        html$.find('.form-item--hide').remove();
+        // remove form-head if not display
+
+        // remove id
+        html$.find('#sortable-content').removeAttr('id');
+        html$.find('#head-sortable').removeAttr('id');
+        html$.find('#form-title').removeAttr('id');
+
+        // remove attribute data-code
+        html$.find('[data-code]').removeAttr('data-code').removeAttr('id');
+        // placeholder drop here
+        html$.find('.sortable-drop-here').remove();
+        // remove instruction when empty
+        html$.find('#sortable-item-empty').remove();
+        // remove group control
+        html$.find('.group-control').remove();
+        // remove class
+        html$.find('.ui-sortable').removeClass('ui-sortable');
+        html$.find('.sortable-item').removeClass('sortable-item').alterClass('sortable-item-*');
 
         return html$.children().prop('outerHTML');
     }
@@ -409,7 +477,15 @@ class SortableField {
         this.ele$ = $('#sortable');
         this.eleContent$ = $('#sortable-content');
         this.eleParent$ = $('#sortable-parent');
-        this.itemEmpty$ = $('#sortable-item-empty');
+        this.itemEmptyQuery = '#sortable-item-empty'
+        this.itemEmptyHTML = `
+            <div id="sortable-item-empty" class="form-item form-item-md sortable-drop-here sortable-item-disabled">
+                <div>
+                    <h3>${$.fn.gettext('Start building!')}</h3>
+                    <p>${$.fn.gettext('Drag fields from left panel and drop here to add them to your form.')}</p>
+                </div>
+            </div>
+        `;
         this.itemFoot$ = this.eleContent$.find('.form-foot');
 
         this.monitor$ = $('#sortable-monitor');
@@ -1015,6 +1091,7 @@ class FormComponentAbstract {
         data['config'] = this._config;
         data['configRealtime'] = this._config;
         this.sortableItem$.data('forms', data);
+        this.trigger_configWasChanged();
     }
 
     get resolveConfig() {
@@ -1113,7 +1190,7 @@ class FormComponentAbstract {
 
         // element pieces
         this.sortableItem$ = $(`<div></div>`)
-            .addClass('sortable-item form-item')
+            .addClass('sortable-item form-item form-item-md')
             .attr('data-code', this.code)
             .attr('id', this.idx);
         this.sortableItemUtil$ = this.sortable_toolbar(['setting', 'clone', 'remove']);
@@ -1270,9 +1347,9 @@ class FormComponentAbstract {
     setStateAndCallRecheck(state){
         const cls = $('#head-sortable').data('forms').cls;
         cls.stateChangeAll = !!state;
-        cls.trigger('page.recheck');
     }
 
+    trigger_configWasChanged(){}
 
     trigger_sortableAdd(previousEle$) {
         let ele_exist$ = this.sortableCls.find('#' + this.idx);
@@ -1518,6 +1595,7 @@ class FormTitleComponentType extends FormComponentAbstract {
 
     set stateChangeAll(value) {
         this._stateChangeAll = value;
+        this.pageCls.trigger('obj.reinit_ele');
     }
 
     constructor(props) {
@@ -1537,11 +1615,18 @@ class FormTitleComponentType extends FormComponentAbstract {
             }
         });
 
+        // page
+        this.pageCls = new FormPageListComponentType({
+            'config': this.config.page,
+        })
+
         // auto hide draggable item is not support
         if (this.sortableCls && this.draggableCls) {
             const arrCode = this.sortableCls.matchForm ? Object.keys(this.sortableCls.matchForm) : [];
             this.draggableCls.hideAllExclude(arrCode);
         } else this.draggableCls.hideAllExclude([]);
+
+        clsThis.sortableCls.trigger('sortable.check_empty');
     }
 
     trigger_sortableAdd() {
@@ -1558,7 +1643,11 @@ class FormTitleComponentType extends FormComponentAbstract {
             this.sortableItem$.attr('data-toolbar-loaded', 'true');
             this.sortableItem$.append(this.sortable_toolbar(['setting']));
         }
-        $("#idx-form-head").css('display', config.authentication_required ? 'block' : 'none');
+        if (config.authentication_required){
+            $("#idx-form-head").alterClass('form-item--*');
+        } else {
+            $("#idx-form-head").addClass('form-item--hide');
+        }
     }
 
     trigger_configRealtime() {
@@ -1603,21 +1692,31 @@ class FormTitleComponentType extends FormComponentAbstract {
                 'display_referrer_name': _mainConfig.display_referrer_name,
                 'display_creator': _mainConfig.display_creator,
             },
+            'page': this.pageCls.resolveConfig.config,
         };
+
         let configsOrder = [];
         let configs = {};
+        let query = '.sortable-item[data-code]';
+        query += ':not([data-code="form-title"])';
+        query += ':not([data-code="form-page"])';
+
         $('#sortable-content')
-            .find('.sortable-item[data-code]:not([data-code="form-title"]):not([data-code="form-page"])')
+            .find(query)
             .each(function () {
                 if ($(this).data('code') !== 'form-title') {
                     let idx = $(this).attr('id');
                     if (idx) {
                         let data = $(this).data('forms');
-                        configsOrder.push($(this).attr('id'));
-                        configs[idx] = data.cls.resolveConfig;
+                        if (data){
+                            configsOrder.push($(this).attr('id'));
+                            configs[idx] = data.cls.resolveConfig;
+                        }
                     }
                 }
             })
+
+        // keep sortable-page at first
         mainConfig['configs_order'] = configsOrder;
         mainConfig['configs'] = configs;
         mainConfig['html_text'] = this.return_html_all();
@@ -1667,9 +1766,778 @@ class FormTitleComponentType extends FormComponentAbstract {
                 }
             }
         });
+        clsThis.pageCls.trigger('obj.reinit_ele');
     }
 
     // -- Export for all
+}
+
+class FormPageListComponentType extends FormComponentAbstract {
+    static pageEle$(){
+        return $('#page-sortable');
+    }
+
+    get configGroupEle$() {
+        return $('#form-page-config');
+    }
+
+    get defaultConfig() {
+        return {
+            'enabled': false,
+            'items': [],
+            'show_progress_page': true,
+            'display_title': 'bar',  // , page, ''
+            'progress_style': 'steps', // bar, proportion, steps, step-piece
+            'justify_progress_item': 'around', // around, between, evenly
+            'display_page_number': true,
+        }
+    }
+
+    get code() {
+        return 'form-page';
+    }
+
+    findPageElement(opts){
+        opts = {
+            from: null,
+            nextOrPrev: 'next',
+            until: null,
+            matcher: 'div.sortable-item',
+            ...opts,
+        }
+        const from$ = opts.from instanceof jQuery ? opts.from : this.sortableCls.eleContent$;
+        const until$ = opts.until instanceof jQuery ? opts.until : null;
+
+        switch (opts.nextOrPrev) {
+            case 'next':
+                if (until$ instanceof jQuery && until$.length > 0){
+                    return from$.nextUntil(until$, opts.matcher);
+                }
+                return from$.nextAll(opts.matcher);
+            case 'prev':
+                if (until$ instanceof jQuery && until$.length > 0){
+                    return from$.prevUntil(until$, opts.matcher);
+                }
+                return from$.prevAll(opts.matcher);
+        }
+        return $(``);
+    }
+
+    get pageLength(){
+        return this.config.items.length;
+    }
+
+    getConfigIndexHeadOfPage(ele$){
+        const allPage$ = this.sortableCls.eleContent$.find(this.queryItemHead);
+        for (let i=0; i < allPage$.length ; i++){
+            if ($(allPage$[i]).is(ele$)) return i;
+        }
+        return null;
+    }
+
+    getConfigIndexOfFootOfPage(ele$){
+        const pageListPrev$ = this.findPageElement({
+            from: ele$,
+            nextOrPrev: 'prev',
+            matcher: this.queryItemHead,
+        });
+        if (pageListPrev$.length > 0){
+            return this.getConfigIndexHeadOfPage(pageListPrev$.eq(0));
+        }
+        return null;
+    }
+
+    getHTMLStepPage(){
+        return `
+            <div class="step-item">
+                <div class="icon-group">
+                    <svg width="64" height="64" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="icon icon-active" viewBox="0 0 16 16">
+                        <circle cx="8" cy="8" r="7.1" fill="#fff"/>
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                        <path d="M12.03 4.97a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                    </svg>
+                    <svg width="64" height="64" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="icon icon-deactivate" viewBox="0 0 16 16">
+                        <circle cx="8" cy="8" r="7.1" fill="#fff"/>
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                    </svg>
+                    <svg width="64" height="64" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="icon icon-current" viewBox="0 0 16 16">
+                        <circle cx="8" cy="8" r="7.1" fill="#fff"/>
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                        <circle cx="8" cy="8" r="4"/>
+                    </svg>
+                </div>
+                <div class="step-mask"></div>
+            </div>
+        `;
+    }
+
+    getHTMLProportionPage(){
+        return `
+            <div class="step-item">
+                <div class="step-mask"></div>
+            </div>
+        `;
+    }
+
+    getHTMLBarPage(){
+        return `
+            <div class="step-item">
+                <div class="step-mask"></div>
+            </div>
+        `;
+    }
+
+    getHTMLPiecePage(){
+        return `
+            <div class="step-item">
+                <div class="step-mask"></div>
+            </div>
+        `;
+    }
+
+    getPlaceHolderEmptyOfPage(){
+        return `
+            <div class="sortable-item form-item form-item-md sortable-drop-here sortable-item-disabled" data-code="page-placeholder">
+                <div><p>${$.fn.gettext('Drag fields from left panel and drop here to add them to your form.')}</p></div>
+            </div>
+        `
+    }
+
+    constructor(props) {
+        if (!props) props = {};
+        super(props);
+
+        this.inputs_data = [];
+        this.sortableItemUtil$ = this.sortable_toolbar(['setting', 'remove']);
+        this.sortableItem$ = FormPageListComponentType.pageEle$();
+        this.sortableItem$.data('forms', this.$dataFormsDefault);
+        this.on_trigger()
+
+        this.queryItemHead = `div.sortable-item[data-code=page-break-head]`;
+        this.queryItemFoot = `div.sortable-item[data-code=page-break-foot]`;
+        this.queryDropHere = 'div.sortable-item[data-code=page-placeholder]';
+    }
+
+    trigger_configWasChanged(){
+        if (this.config.items.length > 0){
+            this.sortableItem$.show();
+        } else {
+            this.sortableItem$.hide();
+        }
+    }
+
+    reloadPageItemConfig(items, temp_config){
+        const config = {...this.config, ...temp_config};
+
+        // show / hide page list
+        if (items.length > 0) this.sortableItem$.show();
+        else this.sortableItem$.hide();
+
+        //
+        let isShowPage = false;
+        switch (config.display_title) {
+            case 'page':
+                isShowPage = true;
+                break
+            case 'bar':
+                isShowPage = false;
+                break
+            case 'bar-and-page':
+                isShowPage = true
+                break
+            case '':
+            default:
+                isShowPage = false
+                break
+        }
+
+        //
+        return items.map(
+            (item, index) => {
+                // head
+                item['head']['show_head'] = isShowPage;
+                // footer
+                item['foot']['page_number'] = index + 1;
+                item['foot']['page_length'] = items.length;
+                item['foot']['is_prev'] = index !== 0;
+                item['foot']['is_next'] = index !== items.length - 1;
+                item['foot']['show_page_number'] = config.display_page_number === true;
+                return item;
+            }
+        )
+    }
+
+    get defaultConfigPageItemHead(){
+        return {
+            'label': `${$.fn.gettext('Page')}`,
+            'show_head': false,
+        }
+    }
+
+    get defaultConfigPageItemFoot(){
+        return {
+                'is_prev': true,
+                'is_next': true,
+                'title_prev': $.fn.gettext('Previous page'),
+                'title_next': $.fn.gettext('Next page'),
+                'page_number': null,
+                'page_length': null,
+            }
+    }
+
+    pageAdd(indexInsert= 0){
+        let items = this.config?.['items'] || [];
+        if (items.length === 0){
+            // add first page element to sortable
+            const firstPageConfig = {
+                'head': {
+                    ...this.defaultConfigPageItemHead,
+                    'label': `${$.fn.gettext('Page')} 1`,
+                },
+                'foot': {
+                    ...this.defaultConfigPageItemFoot,
+                },
+            };
+            const firstPageCls = new FormPageItemHeadComponentType({
+                    'config': firstPageConfig,
+            });
+            firstPageCls.trigger('obj.reinit_ele');
+            this.sortableCls.ele$.prepend(firstPageCls.sortableItem$);
+
+            //
+            items = [
+                firstPageConfig,
+                {
+                    'head': {
+                        ...this.defaultConfigPageItemHead,
+                        'label': `${$.fn.gettext('Page')} 2`,
+                    },
+                    'foot': {
+                        ...this.defaultConfigPageItemFoot,
+                    },
+                },
+            ]
+        } else {
+            const newConfig = {
+                'head': {
+                    ...this.defaultConfigPageItemHead,
+                    'label': `${$.fn.gettext('Page')} ${items.length + 1}`,
+                },
+                'foot': {
+                    ...this.defaultConfigPageItemFoot,
+                },
+            }
+            if (items.length === 0){
+                items = [
+                    newConfig,
+                    ...items
+                ]
+            } else if (items.length === indexInsert) {
+                items = [
+                    ...items,
+                    newConfig,
+                ]
+            } else if (items.length > indexInsert){
+                items = [
+                    ...items.slice(0, indexInsert),
+                    newConfig,
+                    ...items.slice(indexInsert),
+                ]
+            } else return false;
+        }
+        this.config = {
+            'enabled': items.length > 0,
+            'items': this.reloadPageItemConfig(items)
+        }
+        return this.config;
+    }
+
+    pageRemove(indexRemove){
+        let items = this.config.items;
+        if (indexRemove < items.length){
+            items = [
+                ...items.slice(0, indexRemove),
+                ...items.slice(indexRemove + 1),
+            ]
+            this.config = {
+                'enabled': items.length > 0,
+                'items': items
+            };
+        }
+    }
+
+    pageItemConfigUpdate(indexChanges, dataHead, dataFoot){
+        const items = this.config.items;
+        if (Number.isInteger(indexChanges) && indexChanges < items.length){
+            let itemChanges = items[indexChanges];
+            itemChanges['head'] = {
+                ...itemChanges['head'],
+                ...dataHead,
+            }
+            itemChanges['foot'] = {
+                ...itemChanges['foot'],
+                ...dataFoot,
+            }
+            this.config = {
+                'items': [
+                    ...items.slice(0, indexChanges),
+                    itemChanges,
+                    ...items.slice(indexChanges + 1),
+                ]
+            }
+        }
+    }
+
+    trigger_sortableAdd(previousEle$) {
+        this.trigger('obj.reinit_ele');
+        this.trigger_configWasChanged();
+    }
+
+    trigger_sortableAddBefore(nextEle$) {
+        this.trigger('obj.reinit_ele');
+        this.trigger_configWasChanged();
+    }
+
+    trigger_objReinitEle(temp_config, storage){
+        const config = {...this.config, ...temp_config};
+        const items = this.reloadPageItemConfig(config?.['items'] || [], temp_config);
+
+        const progress$ = this.sortableItem$.find('.progress-steps');
+        const group$ = this.sortableItem$.find('.steps-group');
+
+        let addTitle = true;
+        progress$.alterClass('steps-*')
+        switch (config.display_title) {
+            case 'page':
+                addTitle = false;
+                break
+            case 'bar':
+                addTitle = true;
+                progress$.addClass('steps-bar-has-title');
+                break
+            case 'bar-and-page':
+                addTitle = true;
+                progress$.addClass('steps-bar-has-title');
+                break
+            case '':
+            default:
+                addTitle = false;
+                break
+        }
+
+        group$.alterClass('steps-space-*');
+        group$.attr('data-progress-justify', config.justify_progress_item);
+        switch (config.justify_progress_item){
+            case 'around':
+                group$.addClass('steps-space-around');
+                break
+            case 'between':
+                group$.addClass('steps-space-between');
+                break
+            case 'evenly':
+                group$.addClass('steps-space-evenly');
+                break
+        }
+
+        group$.attr('data-progress-style', config.progress_style);
+        group$.empty();
+        switch (config.progress_style){
+            case 'proportion':
+                items.map(
+                    (item, index) => {
+                        const ele$ = $(this.getHTMLProportionPage());
+                        ele$.attr('data-page', item.foot.page_number)
+                        if (addTitle === true) ele$.find('.step-mask').text(item.head.label || '');
+                        if (index === 0) ele$.addClass('active');
+                        group$.append(ele$);
+                    }
+                )
+                break
+            case 'bar':
+                items.map(
+                    (item, index) => {
+                        const ele$ = $(this.getHTMLBarPage());
+                        ele$.attr('data-page', item.foot.page_number)
+                        if (addTitle === true) ele$.find('.step-mask').text(item.head.label || '');
+                        if (index === 0) ele$.addClass('active');
+                        group$.append(ele$);
+                    }
+                )
+                break
+            case 'piece':
+                items.map(
+                    (item, index) => {
+                        const ele$ = $(this.getHTMLPiecePage());
+                        ele$.attr('data-page', item.foot.page_number)
+                        if (addTitle === true) ele$.find('.step-mask').text(item.head.label || '');
+                        if (index === 0) ele$.addClass('active');
+                        group$.append(ele$);
+                    }
+                )
+                break
+            case 'steps':
+            default:
+                items.map(
+                    (item, index) => {
+                        const ele$ = $(this.getHTMLStepPage());
+                        ele$.attr('data-page', item.foot.page_number);
+                        if (addTitle === true) ele$.find('.step-mask').text(item.head.label || '');
+                        if (index === 0) ele$.addClass('active');
+                        group$.append(ele$);
+                    }
+                )
+                break
+        }
+
+        this.sortableItem$.alterClass('form-item--*');
+        let settingSpecial$ = this.sortableItem$.find('.group--setting-group');
+        if (config.show_progress_page === false){
+            if (settingSpecial$.length === 0) {
+                settingSpecial$ = $('<div class="group--setting-group"></div>');
+                this.sortableItem$.append(settingSpecial$);
+            }
+            settingSpecial$.empty().append(`<div class="group--setting-hide"><i class="fa-solid fa-eye-slash"></i></div>`);
+            this.sortableItem$.addClass('form-item--hide');
+        } else {
+            settingSpecial$.remove();
+        }
+
+        this.clean_toolbar();
+        this.sortableItem$.append(this.sortableItemUtil$);
+
+        // step 0: destroy sortable-drop-here
+        this.sortableCls.eleContent$.find(this.queryDropHere).remove();
+        // step 1: destroy footer
+        this.sortableCls.eleContent$.find(this.queryItemFoot).remove();
+        // // step 2: call render of head (foot render depends on)
+        let i = 0;
+        this.sortableCls.eleContent$.find(this.queryItemHead).each(function (){
+            const itemData = items?.[i];
+            if (typeof itemData === 'object'){
+                $(this).trigger('page.head.render', items[i]);
+            } else {
+                $(this).remove();
+            }
+            i += 1;
+        });
+    }
+
+    trigger_objRemove() {
+        this.config = {'items': []};
+        this.trigger_objReinitEle();
+        this.sortableItem$.hide();
+    }
+
+    trigger_objClone() {}
+}
+
+class FormPageItemHeadComponentType extends FormComponentAbstract {
+    get configGroupEle$() {
+        return $('#page-break-head');
+    }
+
+    get defaultConfig() {
+        return {
+            'label': '',
+            'head': {
+                'label': '',
+                'show_head': false,
+            },
+            'foot': {
+                'is_prev': false,
+                'is_next': false,
+                'title_prev': '',
+                'title_next': '',
+                'show_page_number': false,
+                'page_number': null,
+                'page_length': null,
+            },
+        }
+    }
+
+    get code() {
+        return 'page-break-head';
+    }
+
+    get pageCls(){
+        return FormPageListComponentType.pageEle$().data('forms').cls;
+    }
+
+    constructor(props) {
+        if (!props) props = {};
+        super(props);
+
+        this.config = {
+            ...this.config,
+            'head': {
+                ...this.defaultConfig['head'],
+                ...this.config?.['head'],
+            },
+            'foot': {
+                ...this.defaultConfig['foot'],
+                ...this.config?.['foot'],
+            },
+            'label': this.config.head.label || '',
+        }
+
+        this.inputs_data = [];
+
+        this.sortableItem$ = $(`<div></div>`)
+            .addClass('sortable-item form-item form-item-md sortable-item-fixed form-item-page-break')
+            .attr('data-code', this.code)
+            .attr('id', this.idx);
+        this.sortableItemUtil$ = this.sortable_toolbar(['setting', 'remove']);
+        this.sortableItem$.data('forms', this.$dataFormsDefault);
+        this.on_trigger();
+
+        this.register_trigger({
+            'page.head.render': this.trigger_pageHeadRender,
+        });
+    }
+
+    _getNextPage(){
+        const nextPage$ = this.pageCls.findPageElement({
+            from: this.sortableItem$,
+            matcher: this.pageCls.queryItemHead,
+        })
+        if (nextPage$.length > 0){
+            return nextPage$.eq(0);
+        }
+        return null;
+    }
+
+    _getFootOfHead(){
+        const nextPage$ = this._getNextPage();
+        if (nextPage$){
+            const foot$ = this.pageCls.findPageElement({
+                from: this.sortableItem$,
+                until: nextPage$.length > 0 ? nextPage$.eq(0) : null,
+                matcher: this.pageCls.queryItemFoot,
+            })
+
+            return foot$.length > 0 ? foot$.eq(0) : null;
+        }
+        return null;
+    }
+
+    trigger_pageHeadRender(event, config){
+        // head
+        this.config = {
+            ...config,
+            'head': {
+                ...this.defaultConfig['head'],
+                ...config?.['head'],
+            },
+            'foot': {
+                ...this.defaultConfig['foot'],
+                ...config?.['foot'],
+            },
+            'label': this.config.head.label || '',
+        };
+        this.trigger_objReinitEle();
+
+        // footer
+        const nextPage$ = this._getNextPage();
+        const footCls = new FormPageItemFootComponentType({
+            config: this.config?.['foot'] || {},
+        });
+        if (nextPage$){
+            footCls.trigger('sortable.add_before', nextPage$)
+        } else {
+            footCls.trigger('sortable.add');
+        }
+
+        // check between head and foot is empty!
+        const between$ = this.pageCls.findPageElement({
+            from: this.sortableItem$,
+            until: footCls.sortableItem$,
+        });
+        if (between$.length === 0){
+            $(this.pageCls.getPlaceHolderEmptyOfPage()).insertAfter(this.sortableItem$)
+        }
+    }
+
+    trigger_sortableNewAfter() {
+        super.trigger_sortableNewAfter();
+        const indexPage = this.pageCls.getConfigIndexHeadOfPage(this.sortableItem$);
+        this.pageCls.pageAdd(indexPage);
+        this.pageCls.trigger_objReinitEle();
+    }
+
+    trigger_configLoad(temp_config) {
+        const config = {...this.config, ...temp_config};
+        this.configGroupEle$.find(`[name=label]`).val(config.head.label);
+        const prev$ = this.configGroupEle$.find(`[name=title_prev]`);
+        if (config.foot.is_prev === true) {
+            prev$.val(config.foot.title_prev).prop('disabled', false);
+            prev$.closest('.form-group').show();
+        } else {
+            prev$.val('').prop('disabled', true);
+            prev$.closest('.form-group').hide();
+        }
+        const next$ = this.configGroupEle$.find(`[name=title_next]`);
+        if (config.foot.is_next === true){
+            next$.val(config.foot.title_next).prop('disabled', false);
+            next$.closest('.form-group').show();
+        } else {
+            next$.val(config.foot.title_next).prop('disabled', true);
+            next$.closest('.form-group').hide();
+        }
+    }
+
+    trigger_configSave(new_config) {
+        let frm$ = this.configGroupEle$.find('form');
+        if (frm$.valid()) {
+            let config = SetupFormSubmit.serializerObject(frm$);
+            const configSum = {...this.config, ...config, ...new_config}
+
+            super.trigger_configSave(new_config);
+
+            const indexPage = this.pageCls.getConfigIndexHeadOfPage(this.sortableItem$);
+            this.pageCls.pageItemConfigUpdate(
+                indexPage,
+                {
+                    'label': configSum.label,
+                },
+                    {
+                    'title_prev': configSum['title_prev'],
+                    'title_next': configSum['title_next'],
+                }
+            );
+            this.pageCls.trigger_objReinitEle();
+        }
+    }
+
+    trigger_objReinitEle(temp_config, storage) {
+        const config = {...this.config, ...temp_config};
+
+        this.clean_toolbar();
+        this.sortableItem$
+            .attr('data-page', config.foot.page_number)
+            .empty()
+            .append(
+                `<div><p class="page-title">${config.head.label}</p></div>`
+            )
+            .append(this.sortableItemUtil$);
+        this.sortableItem$.alterClass('form-item--*');
+        if (config.head.show_head === false){
+            let settingSpecial$ = this.sortableItem$.find('.group--setting-group');
+            if (settingSpecial$.length === 0) {
+                settingSpecial$ = $('<div class="group--setting-group"></div>');
+                this.sortableItem$.append(settingSpecial$);
+            }
+            settingSpecial$.append(`<div class="group--setting-hide"><i class="fa-solid fa-eye-slash"></i></div>`);
+            this.sortableItem$.addClass('form-item--hide');
+        }
+    }
+
+    trigger_objRemove() {
+        const indexPage = this.pageCls.getConfigIndexHeadOfPage(this.sortableItem$);
+        this.pageCls.pageRemove(indexPage);
+        super.trigger_objRemove();
+        this.pageCls.trigger_objReinitEle();
+    }
+}
+
+class FormPageItemFootComponentType extends FormComponentAbstract {
+    get configGroupEle$() {
+        return $('#page-break-foot');
+    }
+
+    get defaultConfig() {
+        return {
+            'is_prev': false,
+            'is_next': false,
+            'title_prev': '',
+            'title_next': '',
+            'show_page_number': false,
+            'page_number': null,
+            'page_length': null,
+        }
+    }
+
+    get code() {
+        return 'page-break-foot';
+    }
+
+    get pageCls(){
+        return FormPageListComponentType.pageEle$().data('forms').cls;
+    }
+
+    constructor(props) {
+        if (!props) props ={}
+        super(props);
+
+        this.inputs_data = [];
+        this.sortableItem$ = $(`<div></div>`)
+            .addClass('sortable-item form-item form-item-sm sortable-item-fixed')
+            .attr('data-code', this.code)
+            .attr('id', this.idx);
+        this.sortableItem$.addClass('form-item-controller');
+        this.sortableItemUtil$ = this.sortable_toolbar(['setting']);
+        this.sortableItem$.data('forms', this.$dataFormsDefault);
+        this.on_trigger();
+    }
+
+    trigger_configLoad(temp_config) {
+        const config = {...this.config, ...temp_config};
+        const prev$ = this.configGroupEle$.find(`[name=title_prev]`);
+        if (config.is_prev === true) {
+            prev$.val(config.title_prev).prop('disabled', false);
+            prev$.closest('.form-group').show();
+        } else {
+            prev$.val('').prop('disabled', true);
+            prev$.closest('.form-group').hide();
+        }
+        const next$ = this.configGroupEle$.find(`[name=title_next]`);
+        if (config.is_next === true){
+            next$.val(config.title_next).prop('disabled', false);
+            next$.closest('.form-group').show();
+        } else {
+            next$.val('').prop('disabled', true);
+            next$.closest('.form-group').hide();
+        }
+    }
+
+    trigger_configSave(new_config) {
+        let frm$ = this.configGroupEle$.find('form');
+        if (frm$.valid()) {
+            let config = SetupFormSubmit.serializerObject(frm$);
+            const configSum = {...this.config, ...config, ...new_config}
+
+            super.trigger_configSave(new_config);
+
+            const indexPage = this.pageCls.getConfigIndexOfFootOfPage(this.sortableItem$);
+            this.pageCls.pageItemConfigUpdate(
+                indexPage,
+                null,
+                {
+                    'title_prev': configSum['title_prev'],
+                    'title_next': configSum['title_next'],
+                }
+            );
+            this.pageCls.trigger_objReinitEle();
+        }
+    }
+
+    trigger_objReinitEle(temp_config, storage) {
+        const config = {...this.config, ...temp_config};
+        const groupBtn$ = $(`<div class="page-btn-group"></div>`);
+        if (config.is_prev === true) groupBtn$.append(`<button type="button" class="btn-previous">${config.title_prev}</button>`);
+        if (config.is_next === true) groupBtn$.append(`<button type="button" class="btn-next">${config.title_next}</button>`);
+        this.sortableItem$
+            .empty().append(groupBtn$)
+            .attr('data-page', config.page_number);
+        if (config.show_page_number && config.page_number && config.page_length) {
+            this.sortableItem$.append(
+                `<div class="page-number-group"><p>${config.page_number}/${config.page_length}</p></div>`
+            );
+        }
+        this.clean_toolbar();
+        this.sortableItem$.append(this.sortableItemUtil$);
+    }
+
+    trigger_objRemove() {}
 }
 
 class FormSingleLineComponentType extends FormComponentAbstract {
@@ -4292,5 +5160,7 @@ const matchForm = {
     'card-text': FormCardTextComponentType,
     'card-heading': FormCardHeadingComponentType,
     'slider': FormSliderComponentType,
-    // 'page-break': FormPageBreakComponentType,
+    'form-page': FormPageListComponentType,
+    'page-break-head': FormPageItemHeadComponentType,
+    'page-break-foot': FormPageItemFootComponentType,
 }

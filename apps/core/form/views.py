@@ -120,9 +120,7 @@ class FormUpdateAPI(APIView):
     def put(self, request, *args, pk, **kwargs):
         if pk and TypeCheck.check_uuid(pk):
             url = ApiURL.FORM_DETAIL.fill_key(pk=pk)
-            print('calling:', url)
             resp = ServerAPI(request=request, user=request.user, url=url).put(request.data)
-            print('call return:', url)
             return resp.auto_return(key_success='form_update')
         return RespData.resp_404()
 
@@ -144,7 +142,7 @@ def get_publish_data(request, form_code, use_at):
     return resp
 
 
-def get_publish_width_submitted_data(request, form_code, use_at, pk):
+def get_publish_with_submitted_data(request, form_code, use_at, pk):
     domain_code = HttpRequestControl(request).get_sub_domain()
     url = ApiURL.FORM_PUBLISHED_RUNTIME_DETAIL_WITH_SUBMITTED.fill_key(
         form_code=form_code, tenant_code=domain_code, use_at=use_at, pk=pk

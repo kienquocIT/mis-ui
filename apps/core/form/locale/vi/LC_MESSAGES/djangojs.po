@@ -196,3 +196,15 @@ msgstr "Huỷ bỏ phân trang trên biểu mẫu?"
 #
 msgid "Page"
 msgstr "Trang"
+
+#
+msgid "Previous page"
+msgstr "Trang trước"
+
+#
+msgid "Next page"
+msgstr "Trang sau"
+
+#
+msgid "Drag fields from left panel and drop here to add them to your form."
+msgstr "Kéo các trường từ bảng điều khiển bên trái và thả vào đây để thêm chúng vào biểu mẫu của bạn."

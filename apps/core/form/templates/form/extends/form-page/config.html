@@ -4,6 +4,20 @@
     <form>
         {% csrf_token %}
 
+        <div class="form-check mb-3">
+            {% assign_out_random pageDisplayProgressPageIdx as rPageDisplayProgressPageIdx %}
+            <input name="show_progress_page" type="checkbox" class="form-check-input" id="{{ rPageDisplayProgressPageIdx }}" />
+            <label class="form-check-label" for="{{ rPageDisplayProgressPageIdx }}">{% trans 'Show progress page' %}</label>
+        </div>
+
+        <div class="form-check mb-3">
+            {% assign_out_random pageShowPageNumberIdx as rShowPageNumberIdx %}
+            <input name="display_page_number" type="checkbox" class="form-check-input" id="{{ rShowPageNumberIdx }}" />
+            <label class="form-check-label" for="{{ rShowPageNumberIdx }}">{% trans 'Show page number' %}</label>
+        </div>
+
+        <hr/>
+
         <div class="form-group mb-3">
             {% assign_out_random pageDisplayTitleIdx as rPageDisplayTitleIdx %}
             <label for="{{ rPageDisplayTitleIdx }}" class="form-label">{% trans 'Display Title' %}</label>
@@ -11,6 +25,7 @@
                 <option value="">-</option>
                 <option value="bar">{% trans 'Bar' %}</option>
                 <option value="page">{% trans 'Page' %}</option>
+                <option value="bar-and-page">{% trans 'Bar' %} & {% trans 'Page' %}</option>
             </select>
         </div>
 
@@ -18,14 +33,12 @@
             {% assign_out_random pageProgressStyleIdx rPageProgressStyleIdx %}
             <label for="{{ rPageProgressStyleIdx }}" class="form-label">{% trans 'Progress style' %}</label>
             <select name="progress_style" id="{{ rPageProgressStyleIdx }}" class="form-select">
-                <option value="bar">{% trans 'Bar' %}</option>
                 <option value="proportion">{% trans 'Proportion' %}</option>
                 <option value="steps">{% trans 'Steps' %}</option>
-                <option value="steps-piece">{% trans 'Steps piece' %}</option>
+                <option value="bar">{% trans 'Bar' %}</option>
+                <option value="piece">{% trans 'Piece' %}</option>
             </select>
         </div>
-
-        <hr/>
 
         <div class="form-group mb-3">
             {% assign_out_random pageProgressItemAlign as rPageProgressItemAlign %}
@@ -38,58 +51,10 @@
             <small class="form-text text-muted">{% trans 'Some style will not have this configuration applied' %}</small>
         </div>
 
-
-        <hr/>
-
-        <div class="form-check mb-3">
-            {% assign_out_random pageShowPageNumberIdx as rShowPageNumberIdx %}
-            <input type="checkbox" class="form-check-input" id="{{ rShowPageNumberIdx }}" name="display_page_number"/>
-            <label class="form-check-label" for="{{ rShowPageNumberIdx }}">{% trans 'Show page number' %}</label>
+        <div class="mb-3">
+            <small class="form-text text-muted">
+                {% trans '' %}
+            </small>
         </div>
-
-
-        <label class="mb-2">{% trans 'Page title' %}</label>
-        <div id="page-title-group-base" style="display: none;">
-            <div class="d-flex mb-1">
-                <div class="w-50p d-flex justify-content-center align-items-center">
-                    <span class="badge badge-primary badge-outline badge-pill index-number">1</span>
-                </div>
-                <input type="hidden" class="form-control" name="tmp_direction" disabled/>
-                <input type="text" class="form-control" name="tmp_title" disabled/>
-            </div>
-        </div>
-        <div class="w-100" id="page-title-group"></div>
     </form>
 </div>
-
-<script>
-    $(document).ready(function () {
-        let frm$ = $("#form-page-config");
-        const group$ = frm$.find('#page-title-group');
-        const base$ = frm$.find('#page-title-group-base');
-
-        group$.on('data.add', function (event, data) {
-            const ele$ = $(base$.children().prop('outerHTML'));
-            ele$.find('span.index-number').text(data.break_number);
-            ele$.find('[name=tmp_direction]').prop('disabled', false).val(data.idx);
-            ele$.find('[name=tmp_title]').prop('disabled', false).val(data.label);
-            group$.append(ele$);
-        })
-
-        group$.on('data.clean', function () {
-            group$.empty();
-        })
-        group$.on('data.load', function (event, config) {
-            (config?.['title'] || []).map(
-                idx => {
-                    group$.trigger('data.add', {
-                        'idx': '',
-                        'break_number': idx,
-                        'label': '',
-                        ...config?.['title_map']?.[idx],
-                    })
-                }
-            )
-        })
-    })
-</script>

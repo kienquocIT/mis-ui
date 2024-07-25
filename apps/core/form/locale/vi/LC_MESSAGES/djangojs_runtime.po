@@ -60,3 +60,15 @@ msgstr "Một số dữ liệu không đầy đủ. Vui lòng hoàn thành chún
 #
 msgid "This image failed to load"
 msgstr "Hình ảnh này không tải được"
+
+#
+msgid "The data has been recorded"
+msgstr "Dữ liệu đã được ghi nhận"
+
+#
+msgid "review at here"
+msgstr "xem tại đây"
+
+#
+msgid "The feature cannot be used because your public IP address cannot be obtained"
+msgstr "Tính năng không thể sử dụng do không thể lấy được địa chỉ IP công khai của bạn"

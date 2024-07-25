@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Merienda:wght@300..900&display=swap');
+/*@import url();*/
 
 :root {
     --bg-color: rgba(255, 255, 255);
@@ -11,7 +11,7 @@
     --bg-blur-background-color: unset;
 
     --title-color: #000;
-    --title-font-family: "Merienda", cursive, serif;
+    --title-font-family: "Merienda", Arial, sans-serif;
     --title-text-align: center;
     --title-background-color: unset;
     --title-margin-bottom: 0;

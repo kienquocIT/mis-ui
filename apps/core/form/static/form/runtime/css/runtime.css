@@ -38,8 +38,14 @@
 
 .form-item {
     position: relative;
+}
+
+.form-item-sm {
+    padding: 10px 25px;
+}
+
+.form-item-md {
     padding: 25px 25px;
-    /*min-height: 100px;*/
 }
 
 .form-head {

@@ -3,7 +3,7 @@ from django.urls import path
 from apps.core.form.views_runtime import (
     FormPublishedRuntimeView, FormPublishedRuntimeIFrame,
     FormPostNewData, FormPublishedRuntimeSubmitted, FormSubmittedViewEdit, FormSubmittedOnlyView,
-    FormSubmittedUpdate,
+    FormSubmittedUpdate, FormValidEmailOTP, FormValidEmailOTPDetail,
 )
 
 urlpatterns = [
@@ -14,4 +14,6 @@ urlpatterns = [
     path('p/<str:form_code>/<str:use_at>', FormPostNewData.as_view(), name='FormPostNewData'),
     path('p/<str:form_code>/<str:use_at>/<str:pk>', FormSubmittedUpdate.as_view(), name='FormSubmittedUpdate'),
     path('s-ed/<str:form_code>', FormPublishedRuntimeSubmitted.as_view(), name='FormPublishedRuntimeSubmitted'),
+    path('valid/email', FormValidEmailOTP.as_view(), name='FormValidEmailOTP'),
+    path('valid/email/<str:pk>', FormValidEmailOTPDetail.as_view(), name='FormValidEmailOTPDetail'),
 ]

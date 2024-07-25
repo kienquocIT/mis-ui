@@ -3,21 +3,27 @@ $(document).ready(function () {
     if (frm$.length > 0) {
         frm$.find('button:not([type]), button[type=submit]').on('click', function (event){
             event.preventDefault();
-            $(this).prop('disabled', true);
-            frm$.trigger('submit');
+            // disable button 1s after clicked!
+            const btn$ = $(this);
+            btn$.prop('disabled', true);
             setTimeout(
-                () => {
-                    $(this).prop('disabled', false);
-                }
+                () => btn$.prop('disabled', false),
+                1000
             )
+            // submit firing
+            frm$.trigger('submit');
         })
 
         const dataUrl = frm$.data('url');
-        frm$.removeAttr('data-url');
+        const urlSubmitted = frm$.attr('data-url-submitted');
+        const urlSubmittedEdit = frm$.attr('data-url-submitted-edit');
+        const urlSubmittedView = frm$.attr('data-url-submitted-view');
+        // frm$.removeAttr('data-url').removeAttr('data-url-submitted').removeAttr('data-url-submitted-edit').removeAttr('data-url-submitted-view');
 
         let validator = frm$.validateB({
             onsubmit: true,
             submitHandler: function (form, event) {
+                $.fn.formShowLoaders('50%');
                 event.preventDefault();
                 const bodyData = $.fn.formSerializerObject($(form));
                 if (Object.keys(bodyData).length > 0) {
@@ -26,22 +32,36 @@ $(document).ready(function () {
                         method: 'POST',
                         data: $.fn.formSerializerObject($(form)),
                     }).then(resp => {
+                        $.fn.formHideLoaders();
                         if (resp?.status === 201 || resp?.status === 200) {
-                            $.fn.formNotify($.fn.formGettext('Data has been registered'), 'success');
-                            setTimeout(
-                                () => {
-                                    $.fn.formNotify($.fn.formGettext('Automatic reload page after 1 second'), 'info');
-                                    setTimeout(
-                                        () => {
-                                            window.location.reload();
-                                        },
-                                        1000
-                                    )
-                                },
-                                500
-                            )
+                            console.log('resp:', resp);
+                            const formPostId = resp?.['data']?.['form_post']?.['id'] || null;
+                            const formAction$ = $('.form-action');
+                            if (formPostId && formAction$.length > 0){
+                                $.fn.formNotify($.fn.formGettext('Data has been registered'), 'success');
+                                $(`
+                                    <div class="form-item form-item-md">
+                                        <span>${$.fn.formGettext('The data has been recorded')}</span>, 
+                                        <a href="${urlSubmittedView.replaceAll('__pk__', formPostId)}">${$.fn.formGettext('review at here')}</a>
+                                    </div>
+                                `).insertAfter(formAction$);
+                                setTimeout(
+                                    () => {
+                                        $.fn.formNotify($.fn.formGettext('Automatic reload page after 1 second'), 'info');
+                                        setTimeout(
+                                            () => {
+                                                // window.location.reload();
+                                            },
+                                            1000
+                                        )
+                                    },
+                                    500
+                                )
+
+                            }
                         }
                     }, errs => {
+                        $.fn.formHideLoaders();
                         let data = errs?.['data'];
                         if (data) {
                             let errors = data?.['errors'];
@@ -59,6 +79,7 @@ $(document).ready(function () {
                         }
                     },)
                 } else {
+                    $.fn.formHideLoaders();
                     validator.showErrors({
                         'detail': $.fn.formGettext('The body data is empty.')
                     });
@@ -66,11 +87,6 @@ $(document).ready(function () {
                 return false;
             },
         });
-
-        const urlSubmitted = frm$.attr('data-url-submitted');
-        const urlSubmittedEdit = frm$.attr('data-url-submitted-edit');
-        const urlSubmittedView = frm$.attr('data-url-submitted-view');
-        frm$.removeAttr('data-url-submitted').removeAttr('data-url-submitted-edit').removeAttr('data-url-submitted-view');
         if (urlSubmitted) {
             $.fn.formCallAjax({
                 url: urlSubmitted,

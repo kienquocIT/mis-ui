@@ -7,7 +7,7 @@ $(document).ready(function () {
         const btnResetVote$ = $('.rating-group .btn-reset-vote');
         const review$ = $('.rating-group .rating-utils textarea');
 
-        const activeRate = function (state, ele$) {
+        function activeRate(state, ele$=null) {
             const checkedVal = ele$ instanceof jQuery && ele$.length > 0 ? ele$.attr('value') : '';
 
             function hideAll() {
@@ -19,7 +19,7 @@ $(document).ready(function () {
 
             function reviewRequired(state){
                 if (review$.length > 0) {
-                    // review$.attr('required', !!state);
+                    review$.attr('required', !!state);
                     // const frmTmp$ = review$.closest('form');
                     // if (frmTmp$.length > 0) {
                     //     const validator = frmTmp$.data('_validatorForm');

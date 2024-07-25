@@ -788,3 +788,51 @@ msgstr "Đây chỉ là những thông số tương đối. Dữ liệu thực t
 #
 msgid "You has submitted data."
 msgstr "Bạn đã gửi dữ liệu trước đó."
+
+#
+msgid "Show progress page"
+msgstr "Hiển thị thanh tiến trình"
+
+#
+msgid "Show page number"
+msgstr "Hiển thị số trang"
+
+#
+msgid "Display Title"
+msgstr "Hiển thị tiêu đề"
+
+#
+msgid "Progress style"
+msgstr "Định dạng tiến trình"
+
+#
+msgid "Justify progress item"
+msgstr "Căn chỉnh mục tiến độ"
+
+#
+msgid "Some style will not have this configuration applied"
+msgstr "Một số kiểu sẽ không áp dụng cấu hình này"
+
+#
+msgid "Button previous"
+msgstr "Nút điều hướng trước"
+
+#
+msgid "Button next"
+msgstr "Nút điều hướng sau"
+
+#
+msgid "Send OTP"
+msgstr "Gửi OTP"
+
+#
+msgid "Verify"
+msgstr "Xác thực"
+
+#
+msgid "Sender identity verification"
+msgstr "Xác minh danh tính người gửi"
+
+#
+msgid "This feature requires checking the public IP address to make the request."
+msgstr "Tính năng này yêu cầu kiểm tra địa chỉ IP công cộng để thực hiện yêu cầu."

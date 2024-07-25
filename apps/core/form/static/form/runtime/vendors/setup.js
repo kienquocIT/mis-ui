@@ -36,26 +36,96 @@ function resetInputValue() {
                 $(this).remove();
             });
         })
-    })
 
-    const attrKeySkipErrorDetail = [
-        'data-datepicker',
-        'data-timepicker',
-        'data-datetimepicker',
-        'data-rate',
-    ]
-    const namePrefixSkipErrorDetail = [
-        /^rating_[a-zA-Z0-9]*$/,
-    ]
+        $.fn.formPageInit();
+
+        //
+        const emailGroup$ = $('#email-authenticate');
+        const formGetOtp$ = emailGroup$.find('form#form-email-get-otp');
+        const formVerifyOtp$ = emailGroup$.find('form#form-email-verify-otp');
+        const inpPublicIP$ = emailGroup$.find('input[name=public_ip]');
+
+        $.fn.formGetPublicIP().then(
+            ip => {
+                inpPublicIP$.val(ip);
+            }
+        );
+
+        formGetOtp$.on('submit', async function (event){
+            event.preventDefault();
+            const data = $.fn.formSerializerObject($(this));
+            $.fn.formCallAjax({
+                url: '',
+                method: 'POST',
+                data: {
+                    ...data,
+                    'public_ip': inpPublicIP$.val(),
+                }
+            }).then(
+                resp => {
+
+                },
+                errs => console.log(errs),
+            )
+            formVerifyOtp$.find('input[name=email]').val(data.email);
+        });
+
+        formVerifyOtp$.on('submit', function (event){
+            event.preventDefault();
+            const data = $.fn.formSerializerObject($(this));
+        });
+    })
 
     if ($.validator) {
         $.fn.validateB = function (opts) {
-            let defaultConfig = {
-                focusInvalid: true,
+            let timerFormValid;
+            const timeoutValid = 300;
+            const defaultConfig = {
+                ignore: ':not([name])',
+                focusInvalid: false,
+                onkeyup: function (element, event){
+                    if (timerFormValid) clearTimeout(timerFormValid);
+                    timerFormValid = setTimeout(
+                        () => $(this.currentForm).valid(),
+                        timeoutValid
+                    );
+                },
+                onfocusout: function (element, event) {
+                    if (timerFormValid) clearTimeout(timerFormValid);
+                    timerFormValid = setTimeout(
+                        () => $(this.currentForm).valid(),
+                        timeoutValid
+                    );
+                },
+                onclick: function (element, event) {
+                    if (timerFormValid) clearTimeout(timerFormValid);
+                    timerFormValid = setTimeout(
+                        () => $(this.currentForm).valid(),
+                        timeoutValid
+                    );
+                },
                 validClass: "is-valid",
                 errorClass: "is-invalid",
                 errorElement: 'div',
+                success: function (label, element){
+                    $(element).addClass(this.validClass);
+                    if ($(element).hasClass('flatpickr-input')){
+                        const inputFlat$ = $(document).find($(element)).siblings('input');
+                        if (inputFlat$.length > 0){
+                            inputFlat$.removeClass('is-invalid').addClass('is-valid');
+                        }
+                    }
+                },
                 showErrors: function (errorMap, errorList) {
+                    let clsThis = this;
+                    // reset flatpickr class
+                    $(this.currentForm).find('input.flatpickr-input').each(function (){
+                        const inputFlat = $(this).siblings('input');
+                        if (inputFlat.length > 0){
+                            inputFlat.removeClass('is-valid').removeClass('is-invalid');
+                        }
+                    })
+
                     let inpDetail$ = $(this.currentForm).find('input[name=detail]');
                     if (inpDetail$.length === 0) {
                         inpDetail$ = $(`<input name="detail" type="hidden" disabled readonly/>`);
@@ -76,41 +146,21 @@ function resetInputValue() {
                     let errorMapResolve = {};
                     errorList.map(
                         item => {
-                            const messageTmp = Array.isArray(item.message) ? item.message : [item.message];
-                            // 1. Not element
-                            // 2. Is detail
-                            // 3. Is not visible
-                            // => Push to detail
-
-                            const stateNotVisible = !item.element || (
-                                item.element && (
-                                    $(item.element).is(inpDetail$)
-                                    || !$(item.element).is(":visible")
+                            const messageTmp = Array.from(
+                                new Set(
+                                    Array.isArray(item.message) ? item.message : [item.message]
                                 )
-                            )
-                            let stateSkip = false;
-                            if (item.element && stateNotVisible === true) {
-                                for (let i = 0; i < attrKeySkipErrorDetail.length; i++) {
-                                    if (stateSkip === false) {
-                                        if ($(item.element).is(`[${attrKeySkipErrorDetail[i]}]`)) {
-                                            stateSkip = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                for (let i = 0; i < namePrefixSkipErrorDetail.length; i++) {
-                                    if (stateSkip === false) {
-                                        const nameTmp = $(item.element).attr('name');
-                                        if (nameTmp) {
-                                            stateSkip = namePrefixSkipErrorDetail[i].test(nameTmp);
-                                        }
-                                    }
-                                }
-                            }
-                            if (stateNotVisible === true && stateSkip === false) {
+                            );
+                            if (!item.element) {
                                 errorDetailMessage = [...errorDetailMessage, ...messageTmp];
                             } else {
                                 errorMapResolve[$(item.element).attr('name')] = item.message;
+                                if ($(item.element).hasClass('flatpickr-input')) {
+                                    const inputFlat = $(item.element).siblings('input');
+                                    if (inputFlat.length > 0){
+                                        inputFlat.removeClass('is-valid').addClass('is-invalid');
+                                    }
+                                }
                                 errorListResolve.push({
                                     ...item,
                                     'message': messageTmp.map(msg => `<small>${msg}</small>`)
@@ -119,6 +169,7 @@ function resetInputValue() {
                         }
                     );
                     if (errorDetailMessage.length > 0) {
+                        errorDetailMessage = Array.from(new Set(errorDetailMessage));
                         errorListResolve.push({
                             'element': inpDetail$[0],
                             'message': errorDetailMessage.map(msg => `<small>${msg}</small>`),
@@ -141,6 +192,9 @@ function resetInputValue() {
                     this.errorList = errorListResolve
                     this.errorMap = errorMapResolve
                     this.defaultShowErrors();
+
+                    // call valid check page
+                    $.fn.formCountErrorInPage(errorListResolve);
                 },
                 errorPlacement: function (error, element) {
                     let inputParent$ = element.closest('.form-item-input-parent');
@@ -182,6 +236,10 @@ function resetInputValue() {
     }
 
     $.fn.extend({
+        formGetPublicIP: async function () {
+            return await $.get("https://api.ipify.org?format=json").then(data => data.ip);
+        },
+
         formGettext: function (txt) {
             try {
                 return gettext(txt)
@@ -283,11 +341,9 @@ function resetInputValue() {
         },
         formSerializerObject: function (formSelected) {
             const queryExclude = ':not([dont_serialize]):not([name^="DataTables_"])';
-            const query$ = formSelected.find(queryExclude);
-
             let obj = {};
             // first with all
-            query$.find(':input[name]:not(disabled):not([type=radio])').each(function () {
+            formSelected.find(':input[name]:not(disabled):not([type=radio])' + queryExclude).each(function () {
                 let item = $.fn.formSerializerInput($(this));
                 if (item.name in obj) {
                     obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];
@@ -295,7 +351,7 @@ function resetInputValue() {
                 } else obj[item.name] = item.value;
             });
             // case radio | override data
-            query$.find(':input[name]:not(disabled)[type=radio]').each(function () {
+            formSelected.find(':input[name]:not(disabled)[type=radio]' + queryExclude).each(function () {
                 const name = $(this).attr('name');
                 const value = $(this).attr('value');
                 const checked = $(this).prop('checked');
@@ -464,6 +520,9 @@ function resetInputValue() {
             $('#contents').css('opacity', '100');
         },
 
+        formShowLoaders: function (opacity='100%'){
+            $('#content-loaders').css('opacity', opacity).fadeIn('fast');
+        },
         formHideLoaders: function (timeout = null) {
             setTimeout(
                 () => {
@@ -487,6 +546,7 @@ function resetInputValue() {
                     'dropdownParent': $(this).closest('.form-item'),
                     disabled: $(this).prop('disabled'),
                     placeholder: placeholder.toString(),
+                    width: '100%',
                     ...opts,
                 })
             });
@@ -535,6 +595,10 @@ function resetInputValue() {
                     weekNumbers: true,
                     minDate: $(this).attr('data-datepicker-min') ? $(this).attr('data-datepicker-min') : null,
                     maxDate: $(this).attr('data-datepicker-max') ? $(this).attr('data-datepicker-max') : null,
+                    onChange: function (selectedDates, dateStr, instance){
+                        const frm$ = $(instance.input).closest('form');
+                        if (frm$.length > 0) $(frm$).valid();
+                    },
                     ...opts,
                 }
                 if (opts['loadDefault'] === true) {
@@ -573,6 +637,10 @@ function resetInputValue() {
                     weekNumbers: true,
                     minDate: $(this).attr('data-datetimepicker-min') ? $(this).attr('data-datetimepicker-min') : null,
                     maxDate: $(this).attr('data-datetimepicker-max') ? $(this).attr('data-datetimepicker-max') : null,
+                    onChange: function (selectedDates, dateStr, instance){
+                        const frm$ = $(instance.input).closest('form');
+                        if (frm$.length > 0) $(frm$).valid();
+                    },
                     ...opts
                 }
                 if (opts['loadDefault'] === true) {
@@ -601,6 +669,7 @@ function resetInputValue() {
             }
             const pickerI18n = formFlatpickrLanguage(true);
             $("input[data-timepicker]").each(function () {
+                const ele$ = $(this);
                 let pickerOpts = {
                     altInput: true,
                     altFormat: $(this).attr('data-timepicker') ? $(this).attr('data-timepicker') : 'H:i',
@@ -611,6 +680,10 @@ function resetInputValue() {
                     locale: pickerI18n,
                     minTime: $(this).attr('data-timepicker-min') ? $(this).attr('data-timepicker-min') : null,
                     maxTime: $(this).attr('data-timepicker-max') ? $(this).attr('data-timepicker-max') : null,
+                    onChange: function (selectedDates, dateStr, instance){
+                        const frm$ = $(instance.input).closest('form');
+                        if (frm$.length > 0) $(frm$).valid();
+                    },
                     ...opts
                 }
                 if (opts['loadDefault'] === true) {
@@ -634,6 +707,173 @@ function resetInputValue() {
 
         formRangeSlider: function (opts){
             $('[data-rangeslider]').ionRangeSlider();
+        },
+
+        formPageInit: function (){
+            const pageProgres$ = $('.progress-steps');
+            const progress$ = pageProgres$.find('.steps-bar-progress');
+            const stepsGroup$ = pageProgres$.find('.steps-group');
+            const progressJustify = stepsGroup$.attr('data-progress-justify');
+            const progressStyle = stepsGroup$.attr('data-progress-style');
+            const stepItems$ = stepsGroup$.find('.step-item');
+            const stepItemInit = stepsGroup$.find('.step-item.active');
+
+            function activePageProgress(dataPage, nextOrPrev=null) {
+                if (dataPage && pageProgres$.length > 0) {
+                    const stepActive$ = stepsGroup$.find(`.step-item[data-page=${dataPage}]`);
+                    if (stepsGroup$.length > 0 && stepItems$.length > 0 && stepActive$.length > 0) {
+                        stepItems$.removeClass('active');
+                        stepActive$.addClass('active');
+
+                        const maxLength = stepItems$.length;
+                        const indexActive = Array.from(stepItems$).indexOf(stepActive$[0]);
+                        if (indexActive !== -1) {
+                            if (progressStyle === 'steps') {
+                                if (progress$.length > 0){
+                                    switch (progressJustify) {
+                                        case 'evenly':
+                                            const space = `((100% - 32px * ${maxLength})/${maxLength + 1})`
+                                            let width = `${space} * ${indexActive + 1} + 32px * ${indexActive + 1}`;
+                                            width += indexActive + 1 === maxLength ? ` + ${space}` : ` + ${space}/2`;
+                                            progress$.css('width', `calc(${width})`);
+                                            break
+                                        case 'between':
+                                            progress$.css('width', `calc(100% / ${maxLength - 1} * ${indexActive})`);
+                                            break
+                                        case 'around':
+                                        default:
+                                            progress$.css('width', ((indexActive + 1) / maxLength) * 100 + '%');
+                                    }
+                                }
+                            } else if (progressStyle === 'proportion') {
+                                if (progress$.length > 0){
+                                    const percent = ((indexActive + 1) / maxLength) * 100 + '%';
+                                    progress$
+                                        .addClass('steps-style-proportion')
+                                        .text(percent)
+                                        .css('width', percent);
+                                }
+                            } else if (progressStyle === 'bar') {
+                                // const space = `100% / ${maxLength}`;
+                                // progress$
+                                //     .css('width', `calc(${space})`)
+                                //     .css('margin-left', `calc(${space} * ${indexActive})`);
+                            }
+                        }
+                    }
+
+                    const pageGroup$ = $('.page-group');
+                    const pageActive$ = pageGroup$.find(`.form-item-controller[data-page=${dataPage}]`);
+                    const pageActiveGroup$ = pageActive$.closest('.page-group');
+                    const timeAnimated = 200;
+                    pageGroup$.fadeOut(0);
+                    switch (nextOrPrev) {
+                        case 'next':
+                            pageActiveGroup$.show("slide", { direction: "right" }, timeAnimated);
+                            break
+                        case 'prev':
+                            pageActiveGroup$.show("slide", { direction: "left" }, timeAnimated);
+                            break
+                        default:
+                            pageActiveGroup$.slideDown(timeAnimated);
+                            break
+                    }
+                    pageActiveGroup$.show("slide", { direction: nextOrPrev === 'next' ? "right" : "left" }, 200);
+                }
+            }
+
+            $('button.btn-previous').on('click', function (){
+                const currentPage$ = $(this).closest('.page-group');
+                if (currentPage$.length > 0){
+                    const prevPage$ = currentPage$.prev('.page-group');
+                    if (prevPage$.length > 0){
+                        const pageController$ = prevPage$.find('.form-item-controller');
+                        if (pageController$.length > 0){
+                            const dataPage = pageController$.attr('data-page');
+                            if (dataPage) activePageProgress(dataPage, 'prev');
+                        }
+                    }
+                }
+            });
+            $('button.btn-next').on('click', function (){
+                const currentPage$ = $(this).closest('.page-group');
+                if (currentPage$.length > 0){
+                    const nextPage$ = currentPage$.next('.page-group');
+                    if (nextPage$.length > 0){
+                        const pageController$ = nextPage$.find('.form-item-controller');
+                        if (pageController$.length > 0){
+                            const dataPage = pageController$.attr('data-page');
+                            if (dataPage) activePageProgress(dataPage, 'next');
+                        }
+                    }
+                }
+            });
+
+            stepItems$.on('click', function (){
+                activePageProgress($(this).attr('data-page'));
+            })
+
+            if (stepItemInit.length > 0){
+                activePageProgress(stepItemInit.attr('data-page'));
+            }
+
+            const formContent$ = $('.form-content');
+            const pageGroup$ = formContent$.find('.page-group');
+            pageGroup$.on('page.errors.reset', function (){
+                const stepMatch$ = stepsGroup$.find(`.step-item[data-page=${$(this).attr('data-page')}]`);
+                if (stepMatch$.length === 1){
+                    stepMatch$.find('.errs-count').remove();
+                }
+            })
+            pageGroup$.on('page.errors.count', function (event, data){
+                data = {
+                    'countErrs': 0,
+                    ...data
+                }
+                const stepMatch$ = stepsGroup$.find(`.step-item[data-page=${$(this).attr('data-page')}]`);
+                if (stepMatch$.length === 1){
+                    stepMatch$.find('.errs-count').remove();
+                    if (data.countErrs > 0) {
+                        stepMatch$.append(`<span class="errs-count">${data.countErrs}</span>`);
+                    }
+                }
+            })
+        },
+        formCountErrorInPage: function (errorList){
+            const pageProgres$ = $('.progress-steps');
+            const stepsGroup$ = pageProgres$.find('.steps-group');
+            const stepItems$ = stepsGroup$.find('.step-item');
+            const formContent$ = $('.form-content');
+            if (stepItems$.length > 0){
+                let errorsCountOfPage = {};
+                (errorList || []).map(
+                    errs => {
+                        if (errs.element){
+                            const pageGroup$ = $(errs.element).closest('.page-group');
+                            if (pageGroup$.length === 1){
+                                const dataPage = pageGroup$.attr('data-page');
+                                if (dataPage){
+                                    if (!errorsCountOfPage.hasOwnProperty(dataPage)){
+                                        errorsCountOfPage[dataPage] = 0;
+                                    }
+                                    errorsCountOfPage[dataPage] += 1;
+                                }
+                            }
+                        }
+                    }
+                )
+                formContent$.find(`.page-group`).trigger('page.errors.reset');
+                Object.keys(errorsCountOfPage).map(
+                    pageIdx => {
+                        const pageGroup$ = formContent$.find(`.page-group[data-page=${pageIdx}]`);
+                        if (pageGroup$.length > 0){
+                            pageGroup$.trigger('page.errors.count', {
+                                'countErrs': errorsCountOfPage[pageIdx],
+                            });
+                        }
+                    }
+                )
+            }
         },
     });
 })(jQuery);

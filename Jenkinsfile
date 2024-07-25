@@ -19,7 +19,7 @@ pipeline {
             steps {
                 script {
                     if (TELEGRAM_ENABLE == '1') {
-                        sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build started... 💛💛💛 \n  Last commit: ${GIT_COMMIT_MSG}");
+                        sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build started... 💛💛💛 \nLast commit: ${GIT_COMMIT_MSG}");
                     }
                 }
             }

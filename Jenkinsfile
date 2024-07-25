@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         GIT_TAG_COMMIT = sh(script: 'git describe --tags --always', returnStdout: true).trim()
+        GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
         
         BUILD_TRIGGER_BY_NAME = getBuildUser()
 
@@ -17,10 +18,8 @@ pipeline {
         stage('Pre-Build') {
             steps {
                 script {
-                    env.GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
-                    echo "env.GIT_COMMIT_MSG: ${env.GIT_COMMIT_MSG}"
                     if (TELEGRAM_ENABLE == '1') {
-                        sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build started... 💛💛💛");
+                        sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build started... 💛💛💛 \n  Last commit: ${GIT_COMMIT_MSG}");
                     }
                 }
             }

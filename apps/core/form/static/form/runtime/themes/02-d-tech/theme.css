@@ -2,7 +2,7 @@
     --bg-color: rgba(255, 255, 255, 0.7);
     --border-radius: 15px;
     --title-color: #007d88;
-    --bg-image: url("02-d-tech/bg.jpg");
+    --bg-image: url("/static/form/runtime/themes/02-d-tech/bg.jpg");
 
     --input-border-color: #007d88;
     --input-bg-color: rgb(0, 125, 136, 0.15);

@@ -120,6 +120,11 @@
     </div>
 </div>
 
+{% if jsi18n %}
+        <script src="{% url 'javascript-catalog' packages=jsi18n %}"></script>
+{% else %}
+    <script src="{% url 'javascript-catalog' packages='null' %}"></script>
+{% endif %}
 {% compress js %}
     <script src="{% static 'form/runtime/vendors/jquery.min.js' %}"></script>
     <script src="{% static 'form/runtime/vendors/jquery-validation-1.19.5/dist/jquery.validate.min.js' %}"></script>
@@ -146,12 +151,6 @@
     <script src="{% static 'form/runtime/vendors/setup.js' %}"></script>
 
     <script src="{% static 'form/runtime/vendors/rangeSlider/index.js' %}"></script>
-
-    {% if jsi18n %}
-        <script src="{% url 'javascript-catalog' packages=jsi18n %}"></script>
-    {% else %}
-        <script src="{% url 'javascript-catalog' packages='null' %}"></script>
-    {% endif %}
 
     <script src="{% static 'form/runtime/vendors/notify.min.js' %}"></script>
 

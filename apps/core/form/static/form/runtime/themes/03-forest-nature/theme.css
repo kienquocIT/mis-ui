@@ -1,6 +1,6 @@
 :root {
     --bg-color: unset;
-    --bg-image: url("03-forest-nature/bg.jpg");
+    --bg-image: url("/static/form/runtime/themes/03-forest-nature/bg.jpg");
     --bg-blur-background-color: rgb(255, 255, 255, 0.5);
     --border: 0;
 

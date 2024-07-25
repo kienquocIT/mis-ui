@@ -1198,6 +1198,9 @@ $(async function () {
                 }
                 // wf
                 WFRTControl.setWFRuntimeID(res?.['workflow_runtime_id']);
+
+                //
+                WFRTControl.setWFInitialData('orderdeliverysub', $form.attr('data-method'));
             })
     }
 

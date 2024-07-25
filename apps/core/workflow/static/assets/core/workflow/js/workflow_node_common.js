@@ -996,7 +996,7 @@ class NodeDataTableHandle {
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_system'] === true) {
-                            return `<b><span class="table-row-title text-primary" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span></b>`;
+                            return `<b><span class="table-row-title text-primary mr-1" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span></b><i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${NodeLoadDataHandle.transEle.attr('data-system-node')}"></i>`;
                         } else {
                             let form = $('#form-create_workflow');
                             if (form.attr('data-method') !== 'GET') {
@@ -1034,17 +1034,17 @@ class NodeDataTableHandle {
                             }
                         }
                         if (is_approved_complete === false) {
-                            return `<div class="row">
+                            return `<div class="row align-items-center">
                                         <div class="col-8">
                                             <div class="btn-group dropdown">
                                                 <button 
                                                     type="button"
-                                                    class="btn btn-link"
+                                                    class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover"
                                                     data-bs-toggle="dropdown" 
                                                     aria-haspopup="true" 
                                                     aria-expanded="false"
                                                 >
-                                                <i class="fas fa-align-justify" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add action"></i>
+                                                <span class="icon"><i class="fas fa-tasks" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add action"></i></span>
                                                 </button>
                                                 <div class="dropdown-menu w-250p">
                                                     <div data-simplebar class="h-260p nicescroll-bar">
@@ -1059,14 +1059,14 @@ class NodeDataTableHandle {
                                         </div>
                                     </div>`;
                         } else {
-                            return `<div class="row">
+                            return `<div class="row align-items-center">
                                         <div class="col-8">
                                             <button 
                                                 type="button"
-                                                class="btn btn-link"
+                                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover"
                                                 disabled
                                             >
-                                            <i class="fas fa-align-justify"></i>
+                                            <span class="icon"><i class="fas fa-tasks"></i></span>
                                             </button>
                                         </div>
                                         <div class="col-4">
@@ -1088,15 +1088,15 @@ class NodeDataTableHandle {
                             is_system = true;
                         }
                         if (is_system === false) {
-                            return `<div class="row">
+                            return `<div class="row align-items-center">
                                         <div class="col-8">
                                             <button 
                                                 type="button"
-                                                class="btn btn-link btn-node-collab"
+                                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-node-collab"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                             >
-                                            <i class="fas fa-align-justify" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i>
+                                            <span class="icon"><i class="fas fa-users" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i></span>
                                             </button>
                                             <div
                                                 class="modal fade" id="${idModal}" tabindex="-1" role="dialog"
@@ -1171,7 +1171,7 @@ class NodeDataTableHandle {
                                                                             </span>
                                                                         </span>
                                                                     </div>
-                                                                    <div class="offcanvas offcanvas-end w-60 mt-4" tabindex="-1" id="${idOutFormCanvas}" aria-labelledby="${idOutFormCanvas}">
+                                                                    <div class="offcanvas offcanvas-end w-50 mt-4" tabindex="-1" id="${idOutFormCanvas}" aria-labelledby="${idOutFormCanvas}">
                                                                         <div class="offcanvas-header">
                                                                             <h5 id="offcanvasRightLabel">${NodeLoadDataHandle.transEle.attr('data-add-employee')}</h5>
                                                                         </div>
@@ -1183,10 +1183,9 @@ class NodeDataTableHandle {
                                                                             >
                                                                                 <thead>
                                                                                 <tr class="bg-light">
-                                                                                    <th>${NodeLoadDataHandle.transEle.attr('data-code')}</th>
-                                                                                    <th>${NodeLoadDataHandle.transEle.attr('data-full-name')}</th>
-                                                                                    <th>${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
-                                                                                    <th></th>
+                                                                                    <th class="w-30">${NodeLoadDataHandle.transEle.attr('data-code')}</th>
+                                                                                    <th class="w-30">${NodeLoadDataHandle.transEle.attr('data-full-name')}</th>
+                                                                                    <th class="w-30">${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
                                                                                 </tr>
                                                                                 </thead>
                                                                                 <tbody>
@@ -1369,21 +1368,21 @@ class NodeDataTableHandle {
                                     </div>`;
                         } else {
                             if (row?.['code'] === 'initial') {
-                                return `<div class="row">
+                                return `<div class="row align-items-center">
                                         <div class="col-8">
                                             <button 
                                                 type="button"
-                                                class="btn btn-link btn-node-collab"
+                                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-node-collab"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                             >
-                                            <i class="fas fa-align-justify" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i>
+                                            <span class="icon"><i class="fas fa-users" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i></span>
                                             </button>
                                             <div
                                                 class="modal fade" id="${idModal}" tabindex="-1" role="dialog"
                                                 aria-labelledby="${idModal}" aria-hidden="true"
                                             >
-                                                <div class="modal-dialog modal-dialog-centered modal-xl modal-collab" role="document">
+                                                <div class="modal-dialog modal-dialog-centered modal-lg modal-collab" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
@@ -1419,22 +1418,22 @@ class NodeDataTableHandle {
                                         </div>
                                     </div>`;
                             } else {
-                                return `<div class="row">
+                                return `<div class="row align-items-center">
                                         <div class="col-8">
                                             <button 
                                                 type="button"
-                                                class="btn btn-link btn-node-collab"
+                                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-node-collab"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                                 disabled
                                             >
-                                            <i class="fas fa-align-justify" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i>
+                                            <span class="icon"><i class="fas fa-users" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i></span>
                                             </button>
                                             <div
                                                 class="modal fade" id="${idModal}" tabindex="-1" role="dialog"
                                                 aria-labelledby="${idModal}" aria-hidden="true"
                                             >
-                                                <div class="modal-dialog modal-dialog-centered modal-xl modal-collab" role="document">
+                                                <div class="modal-dialog modal-dialog-centered modal-lg modal-collab" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
@@ -1501,13 +1500,13 @@ class NodeDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="badge badge-soft-primary table-row-title" data-row="${dataRow}">${row?.['title']}</span>`;
+                        return `<span class="badge badge-primary badge-outline table-row-title" data-row="${dataRow}">${row?.['title']}</span>`;
                     }
                 },
                 {
                     targets: 1,
                     render: () => {
-                        return `<div class="dropdown-zone node-zone-list"></div>`;
+                        return `<div class="dropdown-zone node-zone-list border-right"></div>`;
                     }
                 },
                 {
@@ -1530,7 +1529,22 @@ class NodeDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-code" data-row="${dataRow}">${row?.['code']}</span>`
+                        let checked = '';
+                        if (row?.['is_checked']) {
+                            checked = 'checked';
+                        }
+                        return `<div class="d-flex align-items-center">
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input table-row-checkbox-out-form"
+                                            data-id="${row?.['id']}"
+                                            data-title="${row?.['full_name']}"
+                                            ${checked}
+                                        >
+                                    </div>
+                                    <p class="table-row-code" data-row="${dataRow}">${row?.['code']}</p>
+                                </div>`;
                     }
                 },
                 {
@@ -1548,31 +1562,6 @@ class NodeDataTableHandle {
                             return result.join(" ");
                         }
                         return '';
-                    }
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
-                        if (!row?.['is_checked']) {
-                            return `<div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input table-row-checkbox-out-form"
-                                            data-id="${row?.['id']}"
-                                            data-title="${row?.['full_name']}"
-                                        >
-                                    </div>`;
-                        } else {
-                            return `<div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input table-row-checkbox-out-form"
-                                            data-id="${row?.['id']}"
-                                            data-title="${row?.['full_name']}"
-                                            checked
-                                        >
-                                    </div>`;
-                        }
                     }
                 },
             ],

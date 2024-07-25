@@ -8032,3 +8032,11 @@ msgstr "Chưa giao hàng"
 #
 msgid "Not receipt yet"
 msgstr "Chưa nhập hàng"
+
+#
+msgid "Add zone"
+msgstr "Tạo vùng"
+
+#
+msgid "System node"
+msgstr "Trạm hệ thống"

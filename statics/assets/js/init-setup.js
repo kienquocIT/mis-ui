@@ -2379,6 +2379,10 @@ class WFRTControl {
                         isCheck = true;
                     }
                 }
+                let runtimeID = WFRTControl.getWFRuntimeID();
+                if (!runtimeID) {
+                    isCheck = true;
+                }
             }
             if (isCheck === true) {
                 let btn = $('#btnLogShow');

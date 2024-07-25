@@ -4,7 +4,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, PICKING_STATE, InputMappingProperties
+from apps.shared import mask_view, ServerAPI, ApiURL, PICKING_STATE, InputMappingProperties, SaleMsg
 
 __all__ = [
     'DeliveryConfigDetail', 'DeliveryConfigDetailAPI', 'OrderPickingList', 'OrderPickingListAPI', 'OrderPickingDetail',
@@ -13,6 +13,14 @@ __all__ = [
 ]
 
 from apps.shared.constant import DELIVERY_STATE
+
+
+def update_delivery(request, url, pk, msg):
+    resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
+    if resp.state:
+        resp.result['message'] = msg
+        return resp.result, status.HTTP_201_CREATED
+    return resp.auto_return()
 
 
 def check_config_lead(user, get_p_or_d='picking'):
@@ -236,5 +244,9 @@ class OrderDeliveryDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SUB_LIST.push_id(pk)).put(request.data)
-        return resp.auto_return()
+        return update_delivery(
+            request=request,
+            url=ApiURL.DELIVERY_SUB_LIST,
+            pk=pk,
+            msg=SaleMsg.DELIVERY_UPDATE
+        )

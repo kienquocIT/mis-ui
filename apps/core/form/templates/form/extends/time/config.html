@@ -1,0 +1,170 @@
+{% load i18n define_action %}
+
+<div class="drawer-config d-none" id="form-time">
+    <form>
+        {% assign_out_random nameIdx as rNameIdx %}
+        <div class="form-group mb-3">
+            <label for="{{ rNameIdx }}" class="form-label">
+                {% trans 'Name of field' %}
+            </label>
+            <input type="text" class="form-control" id="{{ rNameIdx }}" name="name">
+            <small class="form-text text-muted">
+                {% trans 'Corresponds to a stored data field' %}.
+                {% trans 'Employs this name to autofill form fields' %}.
+            </small>
+        </div>
+
+        <hr/>
+
+        {% include 'form/extends/base/title.html' %}
+        {% include 'form/extends/base/instruction.html' %}
+        {% include 'form/extends/base/placeholder.html' %}
+        {% include 'form/extends/base/size.html' %}
+
+        <hr/>
+
+        {% assign_out_random formatOfValue as rFormatOfValue %}
+        <div class="form-group mb-5">
+            <label for="{{ rFormatOfValue }}" class="form-label">
+                {% trans 'Display Format' %}
+                <a class="ml-1" href="{% url 'FormKnowledgeView' %}#timeFormat" target="_blank"><i class="fa-solid fa-book"></i></a>
+            </label>
+            <input type="text" id="{{ rFormatOfValue }}" class="form-control" name="format" list="idx-time-format-suggestion" />
+            <small class="form-text text-muted">
+                <span>{% trans 'Hours: 13' %} • {% trans 'Minute: 59' %}</span>
+            </small>
+            <datalist id="idx-time-format-suggestion">
+                <option value="H:i">13:59</option>
+                <option value="h:i K">1:59 PM</option>
+                <option value="G:i K">01:59 PM</option>
+            </datalist>
+            <label class="form-text text-muted">{% trans 'Preview format with now' %}</label>
+            <input type="text" class="form-control mt-1" readonly disabled id="previewDateFormat" />
+        </div>
+
+        {% assign_out_random typeInitValueIdx as rTypeInitValueIdx %}
+        <div class="form-group mb-3">
+            <label for="{{ rTypeInitValueIdx }}" class="form-label">{% trans 'Type of init value' %}</label>
+            <select name="init_value_type" id="{{ rTypeInitValueIdx }}" class="input-radio-select">
+                <option value="unset" selected>-</option>
+                <option value="now">{% trans 'Now' %}</option>
+                <option value="custom">{% trans 'Custom' %}</option>
+            </select>
+        </div>
+
+        {% assign_out_random customInitValue as rCustomInitValue %}
+        <div class="form-group mb-3" id="date-group-custom-init" style="display: none;">
+            <label for="{{ rCustomInitValue }}">{% trans 'Initial value' %}</label>
+            <input type="text" name="init_value_custom" class="form-control" id="{{ rCustomInitValue }}" />
+        </div>
+
+        <hr/>
+
+        <div class="d-flex mb-3">
+            <div style="flex: 1 1 calc(50% - 5px);margin-right: 5px;">
+                {% assign_out_random timeMinValueIdx as rTimeMinValueIdx %}
+                <label for="{{ rTimeMinValueIdx }}" class="form-label">{% trans 'Min' %}</label>
+                <input type="text" class="form-control" name="min_value" id="{{ rTimeMinValueIdx }}" />
+            </div>
+            <div style="flex: 1 1 calc(50% - 5px);margin-left: 5px;">
+                {% assign_out_random timeMaxValueIdx as rTimeMaxValueIdx %}
+                <label for="{{ rTimeMaxValueIdx }}" class="form-label">{% trans 'Max' %}</label>
+                <input type="text" class="form-control" name="max_value" id="{{ rTimeMaxValueIdx }}" />
+            </div>
+        </div>
+
+        <hr/>
+
+        {% include 'form/extends/base/validation.html' %}
+        {% include 'form/extends/base/visibility.html' %}
+    </form>
+</div>
+
+
+<script>
+    $(document).ready(function (){
+        const frm$ = $('#form-time');
+        const typeInit$ = frm$.find('#{{ rTypeInitValueIdx }}');
+        const groupCustomInit$ = frm$.find('#date-group-custom-init');
+        const inputValueInit$ = frm$.find('#{{ rCustomInitValue }}');
+
+        const previewFormat$ = frm$.find('#previewDateFormat');
+        const inputFormat$ = frm$.find('#{{ rFormatOfValue }}');
+
+        typeInit$.on('change', function (){
+            switch ($(this).val()) {
+                case 'custom':
+                    inputValueInit$.attr('required', true);
+                    groupCustomInit$.slideDown();
+                    break
+                case 'unset':
+                case 'now':
+                default:
+                    inputValueInit$.attr('required', false);
+                    groupCustomInit$.slideUp();
+                    break
+            }
+        });
+
+        inputValueInit$.flatpickr({
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: 'H:i',
+            defaultDate: new Date(),
+            locale: globeLanguage === 'vi' ? 'vn' : 'default',
+        })
+
+        inputFormat$.on('change', function (){
+            const dateFormat = $(this).val();
+            previewFormat$.flatpickr({
+                'dateFormat': dateFormat,
+                'defaultDate': new Date(),
+                'locale': globeLanguage === 'vi' ? 'vn' : 'default',
+            });
+        });
+
+        const timeMin$ = frm$.find('#{{ rTimeMinValueIdx }}');
+        const timeMax$ = frm$.find('#{{ rTimeMaxValueIdx }}');
+        timeMin$.flatpickr({
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: 'H:i',
+            time_24hr: true,
+            locale: globeLanguage === 'vi' ? 'vn' : 'default',
+        });
+        timeMax$.flatpickr({
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: 'H:i',
+            time_24hr: true,
+            locale: globeLanguage === 'vi' ? 'vn' : 'default',
+        });
+
+        timeMin$.on('change', function (){
+            const minPicker = $(timeMin$)[0]._flatpickr;
+            const maxPicker = $(timeMax$)[0]._flatpickr;
+            if (minPicker && maxPicker){
+                const minValue = minPicker.selectedDates[0];
+                const maxValue = maxPicker.selectedDates[0];
+                if (minValue && maxValue){
+                    if (minValue > maxValue) {
+                        maxPicker.clear();
+                    }
+                }
+            }
+        })
+        timeMax$.on('change', function (){
+            const minPicker = $(timeMin$)[0]._flatpickr;
+            const maxPicker = $(timeMax$)[0]._flatpickr;
+            if (minPicker && maxPicker){
+                const minValue = minPicker.selectedDates[0];
+                const maxValue = maxPicker.selectedDates[0];
+                if (minValue && maxValue){
+                    if (minValue > maxValue) {
+                        minPicker.clear();
+                    }
+                }
+            }
+        })
+    })
+</script>

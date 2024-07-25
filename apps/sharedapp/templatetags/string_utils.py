@@ -268,3 +268,8 @@ def permit_mapping_pretty_json(value, app_by_id, exclude_key="", indent=4):
 def split_list(data, order):
     result = data.split(",")[int(order)]
     return result
+
+
+@register.filter
+def get_range(value, from_num=1):
+    return range(from_num, value + from_num)

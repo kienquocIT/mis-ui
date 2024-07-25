@@ -712,23 +712,51 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
 .overflow-y-hidden {
     overflow-y: hidden;
 }
-
+.min-w-10p {
+    min-width: 10px;
+}
+.min-w-20p {
+    min-width: 20px;
+}
+.min-w-25p {
+    min-width: 25px;
+}
+.min-w-30p {
+    min-width: 30px;
+}
+.min-w-40p {
+    min-width: 40px;
+}
+.min-w-50p {
+    min-width: 50px;
+}
+.min-w-75p {
+    min-width: 75px;
+}
 .min-w-100p {
     min-width: 100px;
 }
-
+.min-w-125p {
+    min-width: 125px;
+}
 .min-w-150p {
     min-width: 150px;
 }
-
+.min-w-175p {
+    min-width: 175px;
+}
 .min-w-200p {
     min-width: 200px;
 }
-
+.min-w-225p {
+    min-width: 225px;
+}
 .min-w-250p {
     min-width: 250px;
 }
-
+.min-w-275p {
+    min-width: 275px;
+}
 .min-w-300p {
     min-width: 300px;
 }
@@ -1006,3 +1034,13 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
 .bg-soft-success {
     background: #ebfcf5;
 }
+
+
+/* Notify custom icon */
+.alert span[data-notify="icon"] {
+    font-size: 1.2rem;
+    margin-right: 5px;
+    top: 1px;
+}
+/* -- Notify custom icon */
+

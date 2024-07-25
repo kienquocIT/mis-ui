@@ -9,7 +9,7 @@
             type="button"
     >
                 <span class="icon">
-                    <i class="fa-solid fa-compress"></i>
+                    <i class="bi bi-zoom-out"></i>
                 </span>
     </button>
     <button
@@ -21,7 +21,7 @@
             type="button"
     >
                 <span class="icon">
-                    <i class="fa-solid fa-toolbox"></i>
+                    <i class="bi bi-box"></i>
                 </span>
     </button>
     <div id="more-config-sub">
@@ -30,7 +30,7 @@
                 type="button"
         >
                 <span class="icon">
-                    <i class="fa-solid fa-check"></i>
+                    <i class="bi bi-exclamation-octagon"></i>
                 </span>
         </button>
         <div
@@ -52,6 +52,11 @@
                 <input type="checkbox" id="auto-confirm-delete">
                 <span><span class="chip-text">{% trans 'Delete' %}</span></span>
             </div>
+            <div class="chip chip-primary chip-ticked mr-1">
+                <label for="visible-monitor" class="form-check-label" style="display:none;">{% trans 'Monitor' %}</label>
+                <input type="checkbox" id="visible-monitor" checked />
+                <span><span class="chip-text">{% trans 'Monitor' %}</span></span>
+            </div>
         </div>
 
         <button
@@ -62,7 +67,7 @@
                 type="button"
         >
                 <span class="icon">
-                    <i class="fa-solid fa-palette"></i>
+                    <i class="bi bi-palette"></i>
                 </span>
         </button>
 
@@ -88,7 +93,7 @@
                     id="btn-embed-form"
             >
                     <span class="icon">
-                        <i class="fa-solid fa-code"></i>
+                        <i class="bi bi-code-slash"></i>
                     </span>
             </button>
         {% endif %}
@@ -103,7 +108,7 @@
             >
                 <button class="btn btn-icon btn-xs btn-flush-dark btn-setting-item" type="button">
                     <span class="icon">
-                        <i class="fa-solid fa-square-up-right"></i>
+                        <i class="bi bi-arrow-up-right-square"></i>
                     </span>
                 </button>
             </a>

@@ -609,3 +609,230 @@ msgstr "Bắt đầu"
 msgid "End"
 msgstr "Kết thúc"
 
+#
+msgid "Default"
+msgstr "Mặc định"
+
+#
+msgid "Options"
+msgstr "Lựa chọn"
+
+#
+msgid "Unselect default"
+msgstr "Bỏ chọn mặc định"
+
+#
+msgid "Style of checkbox"
+msgstr "Kiểu dáng của ô chọn"
+
+#
+msgid "Tick"
+msgstr "Đánh dấu"
+
+#
+msgid "Switch"
+msgstr "Công tấc"
+
+#
+msgid "Unchecked"
+msgstr "Không chọn"
+
+#
+msgid "Checked"
+msgstr "Chọn"
+
+#
+msgid "Multiple"
+msgstr "Nhiều lựa chọn"
+
+#
+msgid "Label of choice"
+msgstr "Tiêu đề của lựa chọn"
+
+#
+msgid "Default check all"
+msgstr "Tất cả mặc định chọn"
+
+#
+msgid "Default uncheck all"
+msgstr "Tất cả mặc định không chọn"
+
+#
+msgid "Clean"
+msgstr "Làm trống"
+
+#
+msgid "Now"
+msgstr "Hiện tại"
+
+#
+msgid "Format: yyyy-mm-dd"
+msgstr "Định dạng: yyyy-mm-dd [năm(4 chữ số)-tháng(2 chữ số)-ngày(2 chữ số)]"
+
+#
+msgid "Type of init value"
+msgstr "Kiểu dữ liệu khởi tạo"
+
+#
+msgid "Day: 30"
+msgstr "Ngày: 30"
+
+#
+msgid "Month: 01"
+msgstr "Tháng: 01"
+
+#
+msgid "Year: 1900"
+msgstr "Năm: 1900"
+
+#
+msgid "Display Format"
+msgstr "Định dạng hiển thị"
+
+#
+msgid "Preview format with now"
+msgstr "Xem truớc định dạng với dữ liệu là ngày hôm nay"
+
+#
+msgid "Style and Symbol"
+msgstr "Phong cách và Biểu tượng"
+
+#
+msgid "Star"
+msgstr "Ngôi sao"
+
+#
+msgid "Emoji"
+msgstr "Biểu cảm"
+
+#
+msgid "Title of items"
+msgstr "Tiêu đề của từng mục"
+
+#
+msgid "Isolation animate"
+msgstr "Cô lập hiệu ứng"
+
+#
+msgid "The review message is require"
+msgstr "Trường nhận xét bắt buộc"
+
+#
+msgid "When is turn on, the highlighting effect will be applied only to the currently selected or hovered element, without affecting the adjacent elements."
+msgstr "Khi được bật, hiệu ứng đánh dấu sẽ chỉ được áp dụng cho phần tử hiện được chọn hoặc được di chuột mà không ảnh hưởng đến các phần tử liền kề."
+
+#
+msgid "When is turn off, the highlight will spread to the items on the left, indicating that they are now also selected."
+msgstr "Khi bị tắt, hiệu ứng đánh dấu sẽ lan sang các mục ở bên trái, cho biết rằng chúng hiện cũng đã được chọn."
+
+#
+msgid "Content"
+msgstr "Nội dung"
+
+#
+msgid "The content will be cleaned when this field configuration calling save."
+msgstr "Nội dung sẽ được làm sạch khi thao tác cấu hình trường này."
+
+#
+msgid "Some tags that violate the rules may be removed to protect end users."
+msgstr "Một số thẻ vi pham quy tắc làm sạch sẽ bị loại bỏ để bảo vệ người dùng cuối."
+
+#
+msgid "So it's possible that the display on the form may not be exactly the same as the edit area."
+msgstr "Vì vậy, có thể phần hiển thị trên biểu mẫu có thể không giống hệt với vùng chỉnh sửa."
+
+#
+msgid "Currently, embedding media only allows paths coming from:"
+msgstr "Hiện tại, việc nhúng media chỉ cho phép các đường dẫn đến từ:"
+
+#
+msgid "Design of icon "
+msgstr "Thiết kế của biểu tượng"
+
+#
+msgid "Decorations and Informations"
+msgstr "Trang trí và Thông tin"
+
+#
+msgid "Text"
+msgstr "Văn bản"
+
+#
+msgid "Number"
+msgstr "Số"
+
+#
+msgid "Date and Time"
+msgstr "Ngày và Giờ"
+
+#
+msgid "Decisions"
+msgstr "Quyết định"
+
+#
+msgid "Range"
+msgstr "Phạm vi"
+
+#
+msgid "The content size must be less than 10kilobytes (10kB)."
+msgstr "Kích thước của nội dung bắt buộc phải nhỏ hơn 10kilobytes (10kB)."
+
+#
+msgid "Statistics"
+msgstr "Thống số"
+
+#
+msgid "These are only relative parameters. Actual data may differ from the above figures. The server will check when storing and return an error if the allowed limit is exceeded."
+msgstr "Đây chỉ là những thông số tương đối. Dữ liệu thực tế có thể khác với số liệu trên. Máy chủ sẽ kiểm tra khi lưu trữ và trả về lỗi nếu vượt quá giới hạn cho phép."
+
+#
+msgid "You has submitted data."
+msgstr "Bạn đã gửi dữ liệu trước đó."
+
+#
+msgid "Show progress page"
+msgstr "Hiển thị thanh tiến trình"
+
+#
+msgid "Show page number"
+msgstr "Hiển thị số trang"
+
+#
+msgid "Display Title"
+msgstr "Hiển thị tiêu đề"
+
+#
+msgid "Progress style"
+msgstr "Định dạng tiến trình"
+
+#
+msgid "Justify progress item"
+msgstr "Căn chỉnh mục tiến độ"
+
+#
+msgid "Some style will not have this configuration applied"
+msgstr "Một số kiểu sẽ không áp dụng cấu hình này"
+
+#
+msgid "Button previous"
+msgstr "Nút điều hướng trước"
+
+#
+msgid "Button next"
+msgstr "Nút điều hướng sau"
+
+#
+msgid "Send OTP"
+msgstr "Gửi OTP"
+
+#
+msgid "Verify"
+msgstr "Xác thực"
+
+#
+msgid "Sender identity verification"
+msgstr "Xác minh danh tính người gửi"
+
+#
+msgid "This feature requires checking the public IP address to make the request."
+msgstr "Tính năng này yêu cầu kiểm tra địa chỉ IP công cộng để thực hiện yêu cầu."

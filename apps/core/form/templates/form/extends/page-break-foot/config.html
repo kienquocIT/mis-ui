@@ -1,0 +1,17 @@
+{% load i18n string_utils define_action %}
+
+<div class="drawer-config d-none" id="page-break-foot">
+    <form>
+        <div class="form-group mb-3">
+            {% assign_out_random pageHeadButtonPrevText as rPageHeadButtonPrevText %}
+            <label for="{{ rPageHeadButtonPrevText }}" class="form-label">{% trans 'Button previous' %}</label>
+            <input type="text" class="form-control" name="title_prev" id="{{ rPageHeadButtonPrevText }}">
+        </div>
+
+        <div class="form-group mb-3">
+            {% assign_out_random pageHeadButtonNextText as rPageHeadButtonNextText %}
+            <label for="{{ rPageHeadButtonNextText }}" class="form-label">{% trans 'Button next' %}</label>
+            <input type="text" class="form-control" name="title_next" id="{{ rPageHeadButtonNextText }}">
+        </div>
+    </form>
+</div>

@@ -1,0 +1,182 @@
+:root {
+    --rating-color-default: #7c7c7c;
+}
+
+.rating-group {
+    overflow: hidden;
+}
+
+.rating-group .rating-state {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 10px;
+
+    color: var(--input-color);
+    border: 1px solid #00585f;
+    border-bottom: 0;
+    border-radius: 5px 5px 0 0;
+}
+
+.rating-group .rating-vote {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0 5px 0;
+    overflow: hidden;
+}
+
+.rating-group .rating-utils {
+    padding-top: 10px;
+    display: none;
+}
+
+.rating-group .rating-utils .rating-utils-content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rating-group .rating-utils textarea {
+    width: 100%;
+    padding: 8px;
+}
+
+.rating-group .rating-vote-group {
+    /*border-left: 1px solid #00585f;*/
+    /*border-right: 1px solid #00585f;*/
+    /*border-bottom: 1px solid #00585f;*/
+    border: 1px solid #00585f;
+    border-radius: 0 0 5px 5px;
+    padding: 10px;
+}
+
+.rating-group .btn-reset-vote {
+    border-radius: 3px;
+    height: 1rem;
+    width: 1rem;
+    padding: 0;
+    border: 1px solid #FF0000;
+    color: #FF0000;
+    background-color: transparent;
+    cursor: pointer;
+    display: none;
+
+    position: absolute;
+    right: 1rem;
+    top: calc(50% - 0.5rem);
+}
+
+.rating-group .btn-reset-vote .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.rating-group .btn-reset-vote:hover {
+    background-color: #FF0000;
+    color: #fff
+}
+
+.rating-group .rating-vote label + input {
+    display: none;
+}
+
+.rating-group .rating-vote label {
+    padding: 0.5rem 1rem;
+    color: var(--rating-color-default);
+    flex: 1 1 2rem;
+    flex-flow: row wrap;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Hover & Checked */
+
+.rating-group .rating-vote label:is(:hover, :has(~ :hover)) {
+    /*transform: scale(1.35);*/
+    /*color: #fde335;*/
+    /*animation-name: startRatingSelect;*/
+    /*animation-duration: 0.3s;*/
+}
+
+.rating-group .rating-vote label:has(~ :checked) .icon {
+    /*color: #ffc400;*/
+    /*text-shadow: 0 0 2px #fff, 0 0 8px #ffbf6b, 0 0 10px #fff2c7;*/
+}
+
+
+.rating-group.rating-animated-isolation .rating-vote label:is(:hover) {
+    animation-name: startRatingSelect;
+    animation-duration: 0.3s;
+}
+
+.rating-group.rating-animated-isolation .rating-vote label:has(+ :checked) .icon {
+    text-shadow: 0 0 5px #fff, 0 0 15px var(--rating-color-default);
+}
+
+.rating-group.rating-animated .rating-vote label:is(:hover, :has(~ :hover)) {
+    animation-name: startRatingSelect;
+    animation-duration: 0.3s;
+}
+
+.rating-group.rating-animated .rating-vote label:has(~ :checked) .icon {
+    text-shadow: 0 0 5px #fff, 0 0 15px var(--rating-color-default);
+}
+
+/* -- Hover & Checked */
+
+/* Sizing */
+.rating-group.rating-sm .rating-vote label .icon {
+    font-size: 1rem;
+}
+.rating-group.rating-md .rating-vote label .icon {
+    font-size: 1.5rem;
+}
+.rating-group.rating-lg .rating-vote label .icon {
+    font-size: 2rem;
+}
+
+
+/* -- Sizing */
+
+
+
+@keyframes startRatingSelect {
+    0% {
+        transform: scale(0.8);
+    }
+    100% {
+        transform: scale(1.2);
+    }
+}
+
+@keyframes startRatingSelect1 {
+    0% {
+        transform: translateY(-10%) translateX(-10%) scale(0.8) rotate(-15deg);
+    }
+
+    25% {
+        transform: translateY(10%) translateX(10%) scale(0.8) rotate(15deg);
+    }
+
+    50% {
+        transform: translateY(-5%) translateX(-5%) scale(1.4) rotate(-15deg);
+    }
+
+    75% {
+        transform: translateY(5%) translateX(5%) scale(1.4) rotate(15deg);
+    }
+
+    100% {
+        transform: translateY(0) translateX(0) scale(1.2) rotate(0deg);
+    }
+}

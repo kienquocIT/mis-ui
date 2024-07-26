@@ -38,8 +38,8 @@ $(function () {
                         targets: 0,
                         width: '30%',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-secondary badge-sm">${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}</span>
-                                    <p>${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}</p>`;
+                            return `<span class="badge badge-soft-success">${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}</span>
+                                    <span>${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}</span>`;
                         }
                     },
                     {

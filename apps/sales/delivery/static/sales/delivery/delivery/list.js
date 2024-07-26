@@ -13,18 +13,20 @@ $(document).ready(function () {
         columns: [
             {
                 data: 'code',
+                width: '10%',
                 render: (row, type, data, meta) => {
                     let html = '--';
                     let url = $('#url-factory').attr('data-page-detail');
                     if (row) html = row
-                    html = `<a href="${url.format_url_with_uuid(data.id)}">${html}</a>`
+                    html = `<a href="${url.format_url_with_uuid(data.id)}" class="link-primary underline_hover">${html}</a>`
                     return html
                 },
             }, {
                 data: 'sale_order_data',
+                width: '15%',
                 render: (data, type, row) => {
                     if (data && data.hasOwnProperty('id') && data.hasOwnProperty('code')) {
-                        return `<a href="{0}"><span>{1}</span><span class="badge badge-soft-success">{2}</span></a>`.format_by_idx(
+                        return `<a href="{0}" class="link-primary underline_hover"><span class="badge badge-soft-success">{2}</span><span>{1}</span></a>`.format_by_idx(
                             SetupFormSubmit.getUrlDetailWithID(
                                 tbl.attr('data-url-sale-order-detail'),
                                 data['id']
@@ -37,6 +39,7 @@ $(document).ready(function () {
                 },
             }, {
                 data: 'date_created',
+                width: '10%',
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(data, {
                         'outputFormat': 'DD/MM/YYYY',
@@ -44,6 +47,7 @@ $(document).ready(function () {
                 },
             }, {
                 data: 'estimated_delivery_date',
+                width: '10%',
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(data, {
                         'outputFormat': 'DD/MM/YYYY',
@@ -52,6 +56,7 @@ $(document).ready(function () {
             },
             {
                 data: 'actual_delivery_date',
+                width: '10%',
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(data, {
                         'outputFormat': 'DD/MM/YYYY',
@@ -60,6 +65,7 @@ $(document).ready(function () {
             },
             {
                 data: 'employee_inherit',
+                width: '10%',
                 render: (row, type, data) => {
                     let time = '--';
                     if (Object.keys(row).length > 0) time = `${row.full_name}`
@@ -69,6 +75,7 @@ $(document).ready(function () {
             {
                 data: 'state',
                 class: 'text-center',
+                width: '10%',
                 render: (data, type, row, meta) => {
                     const stateMap = {
                         0: 'warning',
@@ -79,6 +86,7 @@ $(document).ready(function () {
                 }
             },
             {
+                width: '10%',
                 render: (data, type, row) => {
                     let sttTxt = JSON.parse($('#stt_sys').text())
                     let sttData = [
@@ -94,6 +102,7 @@ $(document).ready(function () {
             {
                 class: 'text-center',
                 orderable: false,
+                width: '5%',
                 render: (data, type, row, meta) => {
                     let link = $('#url-factory').attr('data-page-edit').format_url_with_uuid(row?.['id']);
                     let disabled = '';

@@ -60,13 +60,13 @@ $(function () {
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
                             let sttData = [
-                                "soft-light",
-                                "soft-primary",
-                                "soft-info",
-                                "soft-success",
-                                "soft-danger",
+                                "light",
+                                "primary",
+                                "info",
+                                "success",
+                                "danger",
                             ]
-                            return `<div class="row"><span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span></div>`;
+                            return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
                         }
                     },
                     {
@@ -74,27 +74,27 @@ $(function () {
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#gr_status').text())
                             let sttData = [
-                                "soft-light",
-                                "soft-warning",
-                                "soft-info text-sky",
-                                "soft-success",
+                                "light badge-outline",
+                                "warning badge-outline",
+                                "blue badge-outline",
+                                "success badge-outline",
                             ]
-                            return `<div class="row"><span class="badge badge-${sttData[row?.['receipt_status']]}">${sttTxt[row?.['receipt_status']][1]}</span></div>`;
+                            return `<span class="badge badge-${sttData[row?.['receipt_status']]}">${sttTxt[row?.['receipt_status']][1]}</span>`;
                         }
                     },
                     {
                         targets: 6,
                         className: 'action-center',
                         render: (data, type, row) => {
-                            const link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            let isEdit = ``;
-                            if (![2, 3, 4].includes(row?.['system_status'])) {
-                                isEdit = `<a class="dropdown-item" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${transEle.attr('data-change')}</span></a>`;
+                            let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
+                            let disabled = '';
+                            if ([2, 3, 4].includes(row?.['system_status'])) {
+                                disabled = 'disabled';
                             }
                             return `<div class="dropdown">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
-                                        ${isEdit}
+                                        <a class="dropdown-item ${disabled}" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${transEle.attr('data-edit')}</span></a>
                                     </div>
                                 </div>`;
                         },

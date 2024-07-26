@@ -2,3 +2,7 @@
     width: 97vw;
     height: 100%;
 }
+
+.modal-body.modal-body-custom {
+    margin-top: -15px;
+}

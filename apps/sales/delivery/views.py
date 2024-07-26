@@ -4,7 +4,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, PICKING_STATE, InputMappingProperties
+from apps.shared import mask_view, ServerAPI, ApiURL, PICKING_STATE, InputMappingProperties, SaleMsg
 
 __all__ = [
     'DeliveryConfigDetail', 'DeliveryConfigDetailAPI', 'OrderPickingList', 'OrderPickingListAPI', 'OrderPickingDetail',
@@ -12,7 +12,15 @@ __all__ = [
     'OrderDeliveryDetailAPI', 'OrderDeliveryEdit', 'OrderPickingEdit'
 ]
 
-from apps.shared.constant import DELIVERY_STATE
+from apps.shared.constant import DELIVERY_STATE, SYSTEM_STATUS
+
+
+def update_delivery(request, url, pk, msg):
+    resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
+    if resp.state:
+        resp.result['message'] = msg
+        return resp.result, status.HTTP_201_CREATED
+    return resp.auto_return()
 
 
 def check_config_lead(user, get_p_or_d='picking'):
@@ -152,7 +160,10 @@ class OrderDeliveryList(View):
         menu_active='menu_order_delivery_list',
     )
     def get(self, request, *args, **kwargs):
-        return {'state_choices': {key: value for key, value in DELIVERY_STATE}}, status.HTTP_200_OK
+        return {
+                   'state_choices': {key: value for key, value in DELIVERY_STATE},
+                   'stt_sys': SYSTEM_STATUS,
+               }, status.HTTP_200_OK
 
 
 class OrderDeliveryListAPI(APIView):
@@ -188,12 +199,14 @@ class OrderDeliveryDetail(View):
     )
     def get(self, request, *args, pk, **kwargs):
         is_lead, lead, person_list = check_config_lead(request.user, 'delivery')
+        input_mapping_properties = InputMappingProperties.DELIVERY_ORDER_DELIVERY
         result = {
             'pk': pk,
             'state_choices': {key: value for key, value in DELIVERY_STATE},
             'is_lead': is_lead,
             'lead': lead,
-            'person_list': person_list
+            'person_list': person_list,
+            'input_mapping_properties': input_mapping_properties,
         }
         return result, status.HTTP_200_OK
 
@@ -236,5 +249,9 @@ class OrderDeliveryDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SUB_LIST.push_id(pk)).put(request.data)
-        return resp.auto_return()
+        return update_delivery(
+            request=request,
+            url=ApiURL.DELIVERY_SUB_LIST,
+            pk=pk,
+            msg=SaleMsg.DELIVERY_UPDATE
+        )

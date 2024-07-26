@@ -28,7 +28,7 @@ $(document).ready(function () {
                 orderable: true,
                 render: (data, type, row) => {
                     if (data && data.hasOwnProperty('id') && data.hasOwnProperty('code')) {
-                        return `<a href="{0}"><span>{1}</span><span class="badge badge-soft-success">{2}</span></a>`.format_by_idx(
+                        return `<a href="{0}"><span class="badge badge-soft-success">{2}</span><span>{1}</span></a>`.format_by_idx(
                             SetupFormSubmit.getUrlDetailWithID(
                                 tbl.attr('data-url-sale-order-detail'),
                                 data['id']

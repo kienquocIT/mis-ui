@@ -1105,7 +1105,7 @@ class NodeDataTableHandle {
                                                 <div class="modal-dialog modal-dialog-centered modal-lg modal-collab" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
+                                                            <h5 class="modal-title text-primary"><b>${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</b></h5>
                                                             <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                                                         </div>
                                                         <div class="modal-body modal-body-collab">
@@ -1177,15 +1177,14 @@ class NodeDataTableHandle {
                                                                         </div>
                                                                         <div class="offcanvas-body form-group">
                                                                             <table
-                                                                                    class="table nowrap w-100 mb-5 table-out-form-employee"
+                                                                                    class="table nowrap w-100 table-out-form-employee"
                                                                                     data-url="${NodeDataTableHandle.employeeInitEle.attr('data-url')}"
                                                                                     data-method="${NodeDataTableHandle.employeeInitEle.attr('data-method')}"
                                                                             >
                                                                                 <thead>
                                                                                 <tr class="bg-light">
-                                                                                    <th class="w-30">${NodeLoadDataHandle.transEle.attr('data-code')}</th>
-                                                                                    <th class="w-30">${NodeLoadDataHandle.transEle.attr('data-full-name')}</th>
-                                                                                    <th class="w-30">${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
+                                                                                    <th class="w-30">${NodeLoadDataHandle.transEle.attr('data-select-employee')}</th>
+                                                                                    <th class="w-40">${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
                                                                                 </tr>
                                                                                 </thead>
                                                                                 <tbody>
@@ -1336,7 +1335,7 @@ class NodeDataTableHandle {
                                                                     </div>
                                                                 </div>
                                                                 <table
-                                                                    class="table nowrap w-100 mb-5 table-in-workflow-employee"
+                                                                    class="table nowrap w-100 table-in-workflow-employee"
                                                                 >
                                                                     <thead>
                                                                     <tr class="bg-light">
@@ -1543,18 +1542,13 @@ class NodeDataTableHandle {
                                             ${checked}
                                         >
                                     </div>
-                                    <p class="table-row-code" data-row="${dataRow}">${row?.['code']}</p>
+                                    <span class="badge badge-primary mr-2 table-row-code" data-row="${dataRow}">${row?.['code']}</span>
+                                    <span class="badge badge-primary badge-outline table-row-title">${row?.['full_name']}</span>
                                 </div>`;
                     }
                 },
                 {
                     targets: 1,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-title">${row?.['full_name']}</span>`;
-                    }
-                },
-                {
-                    targets: 2,
                     render: (data, type, row) => {
                         if (row.hasOwnProperty('role') && Array.isArray(row?.['role'])) {
                             let result = [];
@@ -1585,7 +1579,10 @@ class NodeDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-primary table-row-group">${row?.['position_choice']?.['title'] ? row?.['position_choice']?.['title'] : 'None'}</span>`;
+                        if (row?.['position_choice']?.['title']) {
+                            return `<span class="badge badge-soft-info table-row-group">${row?.['position_choice']?.['title'] ? row?.['position_choice']?.['title'] : 'None'}</span>`;
+                        }
+                        return `<spam>--</spam>`
                     }
                 },
                 {

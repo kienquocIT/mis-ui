@@ -199,12 +199,14 @@ class OrderDeliveryDetail(View):
     )
     def get(self, request, *args, pk, **kwargs):
         is_lead, lead, person_list = check_config_lead(request.user, 'delivery')
+        input_mapping_properties = InputMappingProperties.DELIVERY_ORDER_DELIVERY
         result = {
             'pk': pk,
             'state_choices': {key: value for key, value in DELIVERY_STATE},
             'is_lead': is_lead,
             'lead': lead,
-            'person_list': person_list
+            'person_list': person_list,
+            'input_mapping_properties': input_mapping_properties,
         }
         return result, status.HTTP_200_OK
 

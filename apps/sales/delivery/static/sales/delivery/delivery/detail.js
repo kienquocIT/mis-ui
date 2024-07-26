@@ -263,7 +263,7 @@ $(async function () {
                             if (data.picked_quantity) quantity = data.picked_quantity
                             let html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
                                 + `<p id="prod_row-${meta.row}">${quantity}<p/>`
-                                + `<button type="button" class="btn btn-flush-primary btn-animated select-prod">`
+                                + `<button type="button" class="btn btn-flush-primary btn-animated select-prod" data-zone="products">`
                                 + `<i class="fa-solid fa-ellipsis"></i></button></div>`;
 
                             let detailDataRaw = $('#request-data').text();

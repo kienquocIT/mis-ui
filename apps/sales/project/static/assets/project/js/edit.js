@@ -73,6 +73,7 @@ $(document).ready(function () {
                 },
                 (err) => {
                     $.fn.notifyB({description: err.data.errors}, 'failure')
+                    $('.lazy_loading').removeClass('active')
                 }
             )
         } else $('.lazy_loading').removeClass('active')
@@ -101,6 +102,7 @@ $(document).ready(function () {
                     w_start_date: moment(start).format('YYYY-MM-DD'),
                     w_end_date: moment(end).format('YYYY-MM-DD'),
                     project: $('#id').val(),
+                    group: task?.['child_of_group'] ? task['child_group_id'] : null
                 })
             },
         }

@@ -12,8 +12,6 @@ pipeline {
         TELEGRAM_ENABLE = credentials('telegram-enable')
         TELEGRAM_TOKEN = credentials('telegram-token') 
         TELEGRAM_CHAT_ID = credentials('telegram-chat-id')
-
-        ERROR_MESSAGE = 'No error message available'
     }
 
     stages {
@@ -81,7 +79,8 @@ pipeline {
         failure {
             script {
                 if (TELEGRAM_ENABLE == '1') {
-                    sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build finished: Failure 💔💔💔 \nErrors: ${env.ERROR_MESSAGE}")
+                    def errorMsg = env.ERROR_MESSAGE ?: 'No error message available'
+                    sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build finished: Failure 💔💔💔 \nErrors: ${errorMsg}")
                 }
             }
         }

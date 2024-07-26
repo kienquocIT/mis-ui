@@ -12,6 +12,8 @@ pipeline {
         TELEGRAM_ENABLE = credentials('telegram-enable')
         TELEGRAM_TOKEN = credentials('telegram-token') 
         TELEGRAM_CHAT_ID = credentials('telegram-chat-id')
+
+        ERROR_MESSAGE = 'No error message available'
     }
 
     stages {
@@ -53,12 +55,15 @@ pipeline {
             steps {
                 echo "START SSH SERVER"
                 script {
-                    catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    try {
                         if (GIT_BRANCH_NAME == 'master') {
                             sh """ssh -tt $DEPLOY_SERVER_USER@$DEPLOY_SERVER_IP $PROJECT_DIR/compile.sh"""
                         } else {
                             sh """ssh -tt $DEPLOY_SERVER_USER@$DEPLOY_SERVER_IP $PROJECT_DIR/deploy.sh"""
                         }
+                    } catch (Exception e) {
+                        env.ERROR_MESSAGE = e.getMessage()
+                        throw e
                     }
                 }
                 echo "DONE SSH SERVER"
@@ -76,8 +81,7 @@ pipeline {
         failure {
             script {
                 if (TELEGRAM_ENABLE == '1') {
-                    def errorMessage = currentBuild.description ?: 'No error message available'
-                    sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build finished: Failure 💔💔💔 \nErrors: ${errorMessage}")
+                    sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build finished: Failure 💔💔💔 \nErrors: ${env.ERROR_MESSAGE}")
                 }
             }
         }

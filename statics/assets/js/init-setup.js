@@ -34,7 +34,17 @@ class SetupFormSubmit {
                 ).format('YYYY-MM-DD HH:mm:ss');
                 break
         }
-        if ($(input$).is(':checkbox')) item['value'] = $(input$).prop('checked');
+        if ($(input$).is(':checkbox')) {
+            item['value'] = $(input$).prop('checked');
+        }
+        if ($(input$).is(':radio')){
+            const radioValue = $(input$).attr('value');
+            if ($(input$).prop('checked') && radioValue){
+                item['value'] = radioValue;
+            } else {
+                return {}; // return without key
+            }
+        }
 
         if (toObject === true) {
             let TempItem = {};
@@ -46,14 +56,25 @@ class SetupFormSubmit {
 
     static serializerObject(formSelected) {
         const queryExclude = ':not([dont_serialize]):not([name^="DataTables_"])';
+        const query$ = formSelected.find(queryExclude);
 
         let obj = {};
-        formSelected.find(queryExclude).find(':input[name]:not(disabled)').each(function () {
+        // case radio
+        query$.find(':input[name]:not([disabled])[type=radio]').each(function (){
+            const name = $(this).attr('name');
+            const value = $(this).attr('value');
+            const checked = $(this).prop('checked');
+            if (value !== null && value !== undefined && checked === true) obj[name] = value;
+        })
+        // another
+        query$.find(':input[name]:not([disabled]):not([type=radio])').each(function () {
             let item = SetupFormSubmit.serializerInput($(this));
-            if (item.name in obj) {
-                obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];
-                obj[item.name].push(item.value);
-            } else obj[item.name] = item.value;
+            if (item && item.hasOwnProperty('name')){
+                if (item.name in obj) {
+                    obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];
+                    obj[item.name].push(item.value);
+                } else obj[item.name] = item.value;
+            }
         })
         return obj;
     }
@@ -3055,6 +3076,13 @@ class UtilControl {
         return b.every(value => a.includes(value));
     }
 
+    static arrayRange(start, end, step = 1) {
+        return Array.from(
+            {length: (end - start) / step + 1},
+            (value, index) => start + index * step
+        )
+    }
+
     static initElementInitSelect(opts, html_or_$ = 'html') {
         let configData = {
             'dummy-data': {},
@@ -3310,10 +3338,38 @@ class UtilControl {
         return !isNaN(Number(dataStr))
     }
 
-    static convertToSlug(Text) {
-        return Text.toLowerCase()
-            .replace(/[^\w ]+/g, "")
-            .replace(/ +/g, "-");
+    static convertToSlug(txt, opts) {
+        opts = {
+            1: [/[^\w -]+/g, ""],
+            2: [/ +/g, "-"],
+            ...opts,
+        }
+
+        Object.keys(opts)
+            .map(
+                key => {
+                    try {
+                        return parseInt(key);
+                    } catch (e) {
+                        return null;
+                    }
+                }
+            )
+            .filter(key => key !== null)
+            .sort()
+            .map(
+                key => {
+                    let config = opts?.[key];
+                    if (!config) {
+                        config = opts?.[key.toString()];
+                    }
+                    if (config && Array.isArray(config) && config.length === 2) {
+                        txt = txt.replace(config[0], config[1]);
+                    }
+                }
+            )
+
+        return txt
     }
 
     static flattenObject(obj, parentKey = '', result = {}) {
@@ -4738,11 +4794,23 @@ class WindowControl {
         })
     }
 
-    static scrollToIdx(idxStrOr$, parentEleStrOr$ = '#idxPageContent .simplebar-content-wrapper') {
+    static getOffsetTop(element, parentElement) {
+        let offsetTop = 0;
+        while(element && element !== parentElement) {
+            offsetTop += element.offsetTop;
+            element = element.offsetParent;
+        }
+        return offsetTop;
+    }
+
+    static scrollToIdx(idxStrOr$, parentEleStrOr$ = '#idxPageContent .simplebar-content-wrapper', timer=200) {
         const ele$ = idxStrOr$ instanceof jQuery ? idxStrOr$ : $(idxStrOr$);
         let parent$ = parentEleStrOr$ instanceof jQuery ? parentEleStrOr$ : $(parentEleStrOr$);
-        let offsetTop = ele$.offset().top;
-        parent$.animate({scrollTop: offsetTop > 150 ? offsetTop - 150 : offsetTop}, 200);
+        // let offsetTop = ele$.offset().top;
+        // parent$.animate({scrollTop: offsetTop > 150 ? offsetTop - 150 : offsetTop}, timer);
+        const offsetTop = WindowControl.getOffsetTop(ele$[0], parent$[0]);
+        const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+        parent$.animate({scrollTop: offsetTop - vh/2}, timer);
     }
 
     static findGetParameter(parameterName) {
@@ -7308,6 +7376,7 @@ let $x = {
         removeEmptyValuesFromObj: UtilControl.removeEmptyValuesFromObj,
         getRandomArbitrary: UtilControl.getRandomArbitrary,
         getRandomInArray: UtilControl.getRandomInArray,
+        arrayRange: UtilControl.arrayRange,
         keepExistInOther: UtilControl.keepExistInOther,
         removeExistInOther: UtilControl.removeExistInOther,
 

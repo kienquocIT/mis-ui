@@ -114,15 +114,21 @@ $.fn.extend({
             })
         return $(this).daterangepicker(optsAfter, funcCallback ? funcCallback: function (start, end, label){});
     },
-    notifyB: function (option, typeAlert = null) {
+    notifyB: function (option, typeAlert = null, alertConfig={}) {
         setTimeout(function () {
             $('.alert.alert-dismissible .close').addClass('btn-close').removeClass('close');
         }, option.timeout || 100);
-        let msg = "";
-        if (option.title) {
-            msg += option.title;
-        }
+
+        let data = {
+            title: option.title || '',
+            message: '',
+            placement: {
+                from: "top",
+                align: "right"
+            },
+        };
         if (option.description) {
+            let msg = "";
             let des_tmp = '';
             if (typeof option.description === 'string') {
                 des_tmp = option.description;
@@ -142,30 +148,39 @@ $.fn.extend({
             } else {
                 msg = des_tmp;
             }
+            data['message'] = msg;
         }
+        let prefixType = `dismissible alert-`  // `` | `dismissible alert-inv alert-inv-`
         let alert_config = {
             animate: {
                 enter: 'animated bounceInDown',
                 exit: 'animated bounceOutUp'
             },
-            type: "dismissible alert-primary",
+            type: prefixType + "primary",
+            allow_dismiss: true,
             z_index: 2147483647, /* Maximum index */
+            delay: 2500,
+            ...alertConfig
         }
         switch (typeAlert) {
             case 'success':
-                alert_config['type'] = "dismissible alert-success";
+                alert_config['type'] = prefixType + "success";
+                data['icon'] = 'bi bi-check2-circle';
                 break
             case 'failure':
-                alert_config['type'] = "dismissible alert-danger";
+                alert_config['type'] = prefixType + "danger";
+                data['icon'] = 'bi bi-info-circle-fill';
                 break
             case 'warning':
-                alert_config['type'] = "dismissible alert-warning";
+                alert_config['type'] = prefixType + "warning";
+                data['icon'] = 'bi bi-info-circle-fill';
                 break
             case 'info':
-                alert_config['type'] = "dismissible alert-info";
+                alert_config['type'] = prefixType + "info";
+                data['icon'] = 'bi bi-info-circle-fill';
                 break
         }
-        $.notify(msg, alert_config);
+        $.notify(data, alert_config);
     },
     valCurrency: function (returnType = null) { // returnType choice in ['string', 'number']
         if (!returnType) returnType = $(this).attr('data-return-type');
@@ -377,7 +392,6 @@ $.fn.extend({
             let isLoading = UtilControl.popKey(opts, 'isLoading', false, true);
             let loadingOpts = UtilControl.popKey(opts, 'loadingOpts', {}, true);
             if (!$.fn.isBoolean(isLoading)) isLoading = false;
-            if (isLoading) $x.fn.showLoadingPage(loadingOpts);
 
             // sweetAlertOpts: {'allowOutsideClick': true},
             let sweetAlertOpts = UtilControl.popKey(opts, 'sweetAlertOpts', {}, true);
@@ -389,119 +403,133 @@ $.fn.extend({
                 // Setup then Call Ajax
                 let url = opts?.['url'] || null;
                 if (url) {
-                    let method = opts?.['method'] || 'GET';
-                    let processData = opts?.['processData'] || true;
-                    let contentType = opts?.['contentType'] || "application/json";
-                    if (contentType === "multipart/form-data") {
-                        contentType = false;
-                        processData = false;
-                    }
+                    function callingAPI(){
+                        let method = opts?.['method'] || 'GET';
+                        let processData = opts?.['processData'] || true;
+                        let contentType = opts?.['contentType'] || "application/json";
+                        if (contentType === "multipart/form-data") {
+                            contentType = false;
+                            processData = false;
+                        }
 
-                    let csrfToken = opts?.['csrf_token'] || $("input[name=csrfmiddlewaretoken]").val();
-                    let headers = opts?.['headers'] || {}
-                    let data = opts?.['data'];
-                    if (method.toLowerCase() === 'put' && typeof data === 'object') {
-                        data = WFRTControl.appendBodyCheckWFTask(method, data, url);
-                    }
-                    if (method.toLowerCase() !== 'get' && contentType === "application/json") {
-                        data = JSON.stringify(data);
-                    }
+                        let csrfToken = opts?.['csrf_token'] || $("input[name=csrfmiddlewaretoken]").val();
+                        let headers = opts?.['headers'] || {}
+                        let data = opts?.['data'];
+                        if (method.toLowerCase() === 'put' && typeof data === 'object') {
+                            data = WFRTControl.appendBodyCheckWFTask(method, data, url);
+                        }
+                        if (method.toLowerCase() !== 'get' && contentType === "application/json") {
+                            data = JSON.stringify(data);
+                        }
 
-                    if (opts?.['cache'] === true) headers["ENABLEXCACHECONTROL"] = true;
+                        if (opts?.['cache'] === true) headers["ENABLEXCACHECONTROL"] = true;
 
-                    let successCallback = opts?.['success'] || null;
-                    let onlySuccessCallback = UtilControl.popKey(opts, 'successOnly', false);
-                    let errorCallback = opts?.['error'] || null;
-                    let onlyErrorCallback = UtilControl.popKey(opts, 'errorOnly', false);
-                    let statusCodeCallback = opts?.['statusCode'] || {};
+                        let successCallback = opts?.['success'] || null;
+                        let onlySuccessCallback = UtilControl.popKey(opts, 'successOnly', false);
+                        let errorCallback = opts?.['error'] || null;
+                        let onlyErrorCallback = UtilControl.popKey(opts, 'errorOnly', false);
+                        let statusCodeCallback = opts?.['statusCode'] || {};
 
-                    let ctx = {
-                        ...opts,
-                        success: function (rest, textStatus, jqXHR) {
-                            if (isLoading) $x.fn.hideLoadingPage();
-                            if (successCallback) successCallback(rest, textStatus, jqXHR);
-                            if (onlySuccessCallback === false) {
-                                let data = $.fn.switcherResp(rest, {
-                                    'isNotify': isNotify,
-                                    'notifyOpts': notifyOpts,
-                                    'swalOpts': sweetAlertOpts,
-                                    ...callbackStatus,
-                                });
-                                if (data) {
-                                    // if (DocumentControl.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') {
-                                    //     let btnSubmit = $('#idxSaveInZoneWFThenNext');
-                                    //     let dataWFAction = btnSubmit.attr('data-wf-action');
-                                    //     if (btnSubmit && dataWFAction) {
-                                    //         let eleActionDoneTask = $('.btn-action-wf[data-value=' + dataWFAction + ']');
-                                    //         if (eleActionDoneTask.length > 0) {
-                                    //             DocumentControl.setBtnIDLastSubmit(null);
-                                    //             $(eleActionDoneTask[0]).attr('data-success-reload', false)
-                                    //             WFRTControl.callActionWF($(eleActionDoneTask[0])).then(() => {
-                                    //                 resolve(rest);
-                                    //             })
-                                    //         } else {
-                                    //             resolve(rest);
-                                    //         }
-                                    //     } else {
-                                    //         resolve(rest);
-                                    //     }
-                                    // } else resolve(rest);
-                                    resolve(rest);
-                                } else resolve({'status': jqXHR.status});
-                            }
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            if (isLoading) $x.fn.hideLoadingPage();
-                            if (errorCallback) errorCallback(jqXHR, textStatus, errorThrown);
-                            if (onlyErrorCallback === false) {
-                                let resp_data = jqXHR.responseJSON;
-                                if (resp_data && typeof resp_data === 'object') {
-                                    $.fn.switcherResp(resp_data, {
+                        let ctx = {
+                            ...opts,
+                            complete: function (jqXHR, textStatus){
+                                if (isLoading) $x.fn.hideLoadingPage();
+                            },
+                            success: function (rest, textStatus, jqXHR) {
+                                if (successCallback) successCallback(rest, textStatus, jqXHR);
+                                if (onlySuccessCallback === false) {
+                                    let data = $.fn.switcherResp(rest, {
                                         'isNotify': isNotify,
                                         'notifyOpts': notifyOpts,
                                         'swalOpts': sweetAlertOpts,
                                         ...callbackStatus,
                                     });
-                                    reject(resp_data);
-                                } else if (jqXHR.status === 204) reject({'status': 204});
-                            }
-                        },
-                        url: url,
-                        type: method,
-                        contentType: contentType,
-                        processData: processData,
-                        data: data,
-                        headers: {
-                            "DTISDD": isDropdown === true ? 'true' : '',
-                            "X-CSRFToken": csrfToken, ...headers
-                        },
-                        statusCode: {
-                            204: function () {
-                                if (isNotify === true) $.fn.notifyB({
-                                    'description': $.fn.transEle.attr('data-success'),
-                                }, 'success');
+                                    if (data) {
+                                        // if (DocumentControl.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') {
+                                        //     let btnSubmit = $('#idxSaveInZoneWFThenNext');
+                                        //     let dataWFAction = btnSubmit.attr('data-wf-action');
+                                        //     if (btnSubmit && dataWFAction) {
+                                        //         let eleActionDoneTask = $('.btn-action-wf[data-value=' + dataWFAction + ']');
+                                        //         if (eleActionDoneTask.length > 0) {
+                                        //             DocumentControl.setBtnIDLastSubmit(null);
+                                        //             $(eleActionDoneTask[0]).attr('data-success-reload', false)
+                                        //             WFRTControl.callActionWF($(eleActionDoneTask[0])).then(() => {
+                                        //                 resolve(rest);
+                                        //             })
+                                        //         } else {
+                                        //             resolve(rest);
+                                        //         }
+                                        //     } else {
+                                        //         resolve(rest);
+                                        //     }
+                                        // } else resolve(rest);
+                                        resolve(rest);
+                                    } else resolve({'status': jqXHR.status});
+                                }
                             },
-                            401: function () {
-                                if (isNotify === true) $.fn.notifyB({
-                                    'description': globeMsgAuthExpires
-                                }, 'failure');
-                                return WindowControl.redirectLogin(1000);
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                if (errorCallback) errorCallback(jqXHR, textStatus, errorThrown);
+                                if (onlyErrorCallback === false) {
+                                    let resp_data = jqXHR.responseJSON;
+                                    if (resp_data && typeof resp_data === 'object') {
+                                        $.fn.switcherResp(resp_data, {
+                                            'isNotify': isNotify,
+                                            'notifyOpts': notifyOpts,
+                                            'swalOpts': sweetAlertOpts,
+                                            ...callbackStatus,
+                                        });
+                                        reject(resp_data);
+                                    } else if (jqXHR.status === 204) reject({'status': 204});
+                                }
                             },
-                            403: function () {
-                                if (isNotify === true) $.fn.notifyB({
-                                    'description': globeMsgHttp403
-                                }, 'failure');
+                            url: url,
+                            type: method,
+                            contentType: contentType,
+                            processData: processData,
+                            data: data,
+                            headers: {
+                                "DTISDD": isDropdown === true ? 'true' : '',
+                                "X-CSRFToken": csrfToken, ...headers
                             },
-                            404: function () {
-                                if (isNotify === true) $.fn.notifyB({
-                                    'description': globeMsgHttp404
-                                }, 'failure');
-                            }, ...statusCodeCallback,
-                        },
-                    };
-                    return $.ajax(ctx);
+                            statusCode: {
+                                204: function () {
+                                    if (isNotify === true) $.fn.notifyB({
+                                        'description': $.fn.transEle.attr('data-success'),
+                                    }, 'success');
+                                },
+                                401: function () {
+                                    if (isNotify === true) $.fn.notifyB({
+                                        'description': globeMsgAuthExpires
+                                    }, 'failure');
+                                    return WindowControl.redirectLogin(1000);
+                                },
+                                403: function () {
+                                    if (isNotify === true) $.fn.notifyB({
+                                        'description': globeMsgHttp403
+                                    }, 'failure');
+                                },
+                                404: function () {
+                                    if (isNotify === true) $.fn.notifyB({
+                                        'description': globeMsgHttp404
+                                    }, 'failure');
+                                }, ...statusCodeCallback,
+                            },
+                        };
+                        return $.ajax(ctx);
+                    }
+
+                    if (isLoading) {
+                        const loadingDidOpenEnd = loadingOpts?.['didOpenEnd'] || null;
+                        loadingOpts['didOpenEnd'] = function (){
+                            if (loadingDidOpenEnd && typeof loadingDidOpenEnd === 'function') loadingDidOpenEnd();
+                            return callingAPI();
+                        }
+                        $x.fn.showLoadingPage(loadingOpts);
+                        return true;
+                    } else return callingAPI();
+                } else {
+                    throw Error('Ajax must be url setup before send');
                 }
-                throw Error('Ajax must be url setup before send');
             });
         }
     },

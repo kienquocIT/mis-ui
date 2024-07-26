@@ -113,6 +113,14 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade show active" id="tab_detail">
+            <label for="change_view_mode" class="label font-weight-bold mr-3">{% trans 'Change view mode' %}: </label>
+            <div class="mx-auto mt-3 btn-group mb-3" role="group" id="change_view_mode">
+                <button type="button" class="btn btn-sm btn-primary" data-value="Quarter Day">{% trans 'Quarter Day' %}</button>
+                <button type="button" class="btn btn-sm btn-primary" data-value="Half Day">{% trans 'Half Day' %}</button>
+                <button type="button" class="btn btn-sm btn-primary active" data-value="Day">{% trans 'Day' %}</button>
+                <button type="button" class="btn btn-sm btn-primary" data-value="Week">{% trans 'Week' %}</button>
+                <button type="button" class="btn btn-sm btn-primary" data-value="Month">{% trans 'Month' %}</button>
+            </div>
             <div class="gantt-wrap">
                 <div class="gantt-block gantt-left">
                 </div>

@@ -1570,6 +1570,7 @@ function LoadDetailPayment(option) {
             if (data) {
                 WFRTControl.setWFRuntimeID(data['payment_detail']?.['workflow_runtime_id']);
                 data = data['payment_detail'];
+                new PrintTinymceControl().render('1010563f-7c94-42f9-ba99-63d5d26a1aca', data, false);
                 DETAIL_DATA = data;
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);

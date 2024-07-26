@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block pageContent %}
+    <div class="w-100 mb-3">
+        <button class="btn btn-primary btnShow">{% trans 'Date format characters' %}</button>
+        <div style="display: none;" class="mt-3" id="dateFormat">
+            {% include 'form/extends/base/knowledge/date_format_characters.html' %}
+            {% include 'form/extends/base/knowledge/date_time_escape.html' %}
+        </div>
+    </div>
+
+    <div class="w-100 mb-3">
+        <button class="btn btn-primary btnShow">{% trans 'Time format characters' %}</button>
+        <div style="display: none;" class="mt-3" id="timeFormat">
+            {% include 'form/extends/base/knowledge/time_format_characters.html' %}
+            {% include 'form/extends/base/knowledge/date_time_escape.html' %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsFooter %}
+    <script>
+        $(document).ready(function (){
+            $('button.btnShow').on('click', function (){
+                $(this).siblings('div').slideToggle();
+            });
+
+            const hashUrl = $x.fn.getHashUrl();
+            if (hashUrl){
+                hashUrl.replace('#', '').split(",").map(
+                    idx => {
+                        const ele$ = $('#' + idx);
+                        if (ele$.length > 0) ele$.slideDown();
+                    }
+                )
+            }
+        })
+    </script>
+{% endblock %}

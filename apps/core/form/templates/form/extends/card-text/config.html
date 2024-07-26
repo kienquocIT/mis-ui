@@ -1,0 +1,90 @@
+{% load i18n define_action %}
+
+<div
+        class="drawer-config d-none" id="form-card-text"
+        data-url-sanitize-html="{% url 'FormSanitizeHTMLAPI' %}"
+>
+    <form>
+        {% include 'form/extends/base/title.html' %}
+
+        <hr/>
+        <div class="form-group mb-3">
+            {% assign_out_random cardTextContentIdx as rCardTextContentIdx %}
+            <label for="{{ rCardTextContentIdx }}" class="form-label">{% trans 'Content' %}</label>
+            <div class="mb-1" style="padding: 1rem; overflow: hidden; background-color: #ffebeb; color: #ff0000;">
+                <small>
+                    {% trans 'The content will be cleaned when this field configuration calling save.' %}
+                </small>
+                <small>
+                    {% trans 'Some tags that violate the rules may be removed to protect end users.' %}
+                </small>
+                <small>
+                    {% trans "So it's possible that the display on the form may not be exactly the same as the edit area." %}
+                </small>
+            </div>
+            <div class="mb-3" style="padding: 1rem 1rem; overflow: hidden; background-color: #fffaeb; color: #ff9100;">
+                <small>
+                    {% trans 'Currently, embedding media only allows paths coming from:' %}
+                </small>
+                <ul style="list-style: circle; margin: 0;">
+                    <li><small>www.bflow.vn</small></li>
+                    <li><small>www.youtube.com</small></li>
+                </ul>
+            </div>
+            <textarea name="content" id="{{ rCardTextContentIdx }}" rows="10" class="form-control"></textarea>
+            <small id="cardTextContentSize" class="form-text text-muted"></small>
+        </div>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function () {
+        const frm$ = $('#form-card-text');
+        const content$ = frm$.find('[name=content]');
+        const heightSuggest = frm$.closest('.drawer-content').height() - 100;
+        const size$ = frm$.find('#cardTextContentSize');
+
+        function updateSizeOfStr(txt){
+            const size = new Blob([txt]).size;
+            size$.text(`${(size/1024).toFixed(2)} Kilobytes (kB)`);
+        }
+
+        content$.tinymce({
+            branding: false,
+            readonly: 0,
+            menubar: false,
+            height: heightSuggest > 300 ? heightSuggest : 300,
+            plugins: [
+                'advlist', 'autolink', 'lists',
+                'hr', 'emoticons', 'table', 'link',
+                'visualchars', 'visualblocks',
+                'wordcount',
+                'image', 'media'
+            ],
+            toolbar: `
+                styleselect fontselect fontsizeselect | bold italic strikethrough forecolor backcolor | link emoticons image media | numlist bullist table |
+                outdent indent hr | visualblocks visualchars removeformat | undo redo
+            `,
+            fontsize_formats: '8px 10px 12px 14px 18px 24px 36px',
+            toolbar_mode: 'sliding',  // float | wrap | sliding
+            setup: function (editor) {
+                editor.on('init', function () {
+                    // https://www.tiny.cloud/blog/tinymce-and-modal-windows/
+                    // Include the following JavaScript into your tiny.init script to prevent the Bootstrap dialog from blocking focus:
+                    document.addEventListener('focusin', (e) => {
+                        if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+                            e.stopImmediatePropagation();
+                        }
+                    });
+                });
+                editor.on("change", (e) => {
+                    updateSizeOfStr(editor.getContent());
+                });
+            },
+            // config of: link
+            default_link_target: '_blank',
+            link_assume_external_targets: true,
+            link_default_protocol: 'https',
+        });
+    })
+</script>

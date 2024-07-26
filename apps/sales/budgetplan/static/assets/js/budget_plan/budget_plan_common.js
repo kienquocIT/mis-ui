@@ -86,7 +86,7 @@ function LoadTabCompanyTable(company_budget_data, space_month) {
     $.fn.initMaskMoney2()
 }
 
-function LoadTabGroupTable(group_budget_data, space_month) {
+function LoadTabGroupTable(group_budget_data, space_month, is_lock) {
     $(document.getElementsByClassName('tab-table')).each(function () {
         let tab_table = $(`
             <table class="table nowrap w-100" id="table-${$(this).attr('data-group-id')}">
@@ -121,23 +121,23 @@ function LoadTabGroupTable(group_budget_data, space_month) {
                 for (const expense of group_data?.['data_expense']) {
                     let expense_row_ele = $(`<tr>
                         <td><span class="index">${expense?.['order']}</span>&nbsp;<button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-row-btn" ${IS_DETAIL ? 'hidden' : ''}><span class="icon"><i class="far fa-trash-alt"></i></span></button></td>
-                        <td><select class="select2 form-select expense-item-select" ${IS_DETAIL ? 'disabled' : ''}></select></td>
-                        <td><input class="form-control mask-money money-m1th belong-q1" value="${expense?.['group_month_list'][0]}" ${IS_DETAIL ? 'readonly' : ''}></td>
-                        <td><input class="form-control mask-money money-m2th belong-q1" value="${expense?.['group_month_list'][1]}" ${IS_DETAIL ? 'readonly' : ''}></td>
-                        <td><input class="form-control mask-money money-m3th belong-q1" value="${expense?.['group_month_list'][2]}" ${IS_DETAIL ? 'readonly' : ''}></td>
-                        <td><input class="text-primary form-control mask-money money-q1th belong-year" value="${expense?.['group_quarter_list'][0]}" readonly></td>
-                        <td><input class="form-control mask-money money-m4th belong-q2" value="${expense?.['group_month_list'][3]}" ${IS_DETAIL ? 'readonly' : ''}></td>
-                        <td><input class="form-control mask-money money-m5th belong-q2" value="${expense?.['group_month_list'][4]}" ${IS_DETAIL ? 'readonly' : ''}></td>
-                        <td><input class="form-control mask-money money-m6th belong-q2" value="${expense?.['group_month_list'][5]}" ${IS_DETAIL ? 'readonly' : ''}></td>
-                        <td><input class="text-primary form-control mask-money money-q2th belong-year" value="${expense?.['group_quarter_list'][1]}" readonly></td>
-                        <td><input class="form-control mask-money money-m7th belong-q3" value="${expense?.['group_month_list'][6]}" ${IS_DETAIL ? 'readonly' : ''}></td>
-                        <td><input class="form-control mask-money money-m8th belong-q3" value="${expense?.['group_month_list'][7]}" ${IS_DETAIL ? 'readonly' : ''}></td>
-                        <td><input class="form-control mask-money money-m9th belong-q3" value="${expense?.['group_month_list'][8]}" ${IS_DETAIL ? 'readonly' : ''}></td>
-                        <td><input class="text-primary form-control mask-money money-q3th belong-year" value="${expense?.['group_quarter_list'][2]}" readonly></td>
-                        <td><input class="form-control mask-money money-m10th belong-q4" value="${expense?.['group_month_list'][9]}" ${IS_DETAIL ? 'readonly' : ''}></td>
-                        <td><input class="form-control mask-money money-m11th belong-q4" value="${expense?.['group_month_list'][10]}" ${IS_DETAIL ? 'readonly' : ''}></td>
-                        <td><input class="form-control mask-money money-m12th belong-q4" value="${expense?.['group_month_list'][11]}" ${IS_DETAIL ? 'readonly' : ''}></td>
-                        <td><input class="text-primary form-control mask-money money-q4th belong-year" value="${expense?.['group_quarter_list'][3]}" readonly></td>
+                        <td><select ${is_lock ? 'disabled' : ''} class="select2 form-select expense-item-select" ${IS_DETAIL ? 'disabled' : ''}></select></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m1th belong-q1" value="${expense?.['group_month_list'][0]}" ${IS_DETAIL ? 'readonly' : ''}></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m2th belong-q1" value="${expense?.['group_month_list'][1]}" ${IS_DETAIL ? 'readonly' : ''}></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m3th belong-q1" value="${expense?.['group_month_list'][2]}" ${IS_DETAIL ? 'readonly' : ''}></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="text-primary form-control mask-money money-q1th belong-year" value="${expense?.['group_quarter_list'][0]}" readonly></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m4th belong-q2" value="${expense?.['group_month_list'][3]}" ${IS_DETAIL ? 'readonly' : ''}></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m5th belong-q2" value="${expense?.['group_month_list'][4]}" ${IS_DETAIL ? 'readonly' : ''}></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m6th belong-q2" value="${expense?.['group_month_list'][5]}" ${IS_DETAIL ? 'readonly' : ''}></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="text-primary form-control mask-money money-q2th belong-year" value="${expense?.['group_quarter_list'][1]}" readonly></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m7th belong-q3" value="${expense?.['group_month_list'][6]}" ${IS_DETAIL ? 'readonly' : ''}></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m8th belong-q3" value="${expense?.['group_month_list'][7]}" ${IS_DETAIL ? 'readonly' : ''}></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m9th belong-q3" value="${expense?.['group_month_list'][8]}" ${IS_DETAIL ? 'readonly' : ''}></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="text-primary form-control mask-money money-q3th belong-year" value="${expense?.['group_quarter_list'][2]}" readonly></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m10th belong-q4" value="${expense?.['group_month_list'][9]}" ${IS_DETAIL ? 'readonly' : ''}></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m11th belong-q4" value="${expense?.['group_month_list'][10]}" ${IS_DETAIL ? 'readonly' : ''}></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m12th belong-q4" value="${expense?.['group_month_list'][11]}" ${IS_DETAIL ? 'readonly' : ''}></td>
+                        <td><input ${is_lock ? 'disabled readonly' : ''} class="text-primary form-control mask-money money-q4th belong-year" value="${expense?.['group_quarter_list'][3]}" readonly></td>
                         <td class="text-right"><span class="text-primary fw-bold mask-money money-year" data-init-money="${expense?.['group_year']}"></span></td>   
                     </tr>`)
                     LoadRowExpenseItem(expense_row_ele.find('.expense-item-select'), expense?.['expense_item'])
@@ -151,7 +151,7 @@ function LoadTabGroupTable(group_budget_data, space_month) {
     })
 }
 
-function LoadTabs(group_budget_data, company_budget_data, space_month, option) {
+function LoadTabs(group_budget_data, company_budget_data, space_month, is_lock, option) {
     let dataParam = {}
     let ajax = $.fn.callAjax2({
         url: url_script.attr('data-url-group-list'),
@@ -173,9 +173,9 @@ function LoadTabs(group_budget_data, company_budget_data, space_month, option) {
     Promise.all([ajax]).then(
         (results) => {
             console.log(results[0])
-            let group_budget_data_id_list = []
+            // let group_budget_data_id_list = []
             for (const item of group_budget_data) {
-                group_budget_data_id_list.push(item?.['group']?.['id'])
+                // group_budget_data_id_list.push(item?.['group']?.['id'])
                 let group = item?.['group']
                 let new_tab = $(`
                     <li class="nav-item">
@@ -186,7 +186,7 @@ function LoadTabs(group_budget_data, company_budget_data, space_month, option) {
                 `)
                 let row_btn = option === 'update' ? `<div class="row mb-5">
                     <div class="col-6 text-left">
-                        <button type="button" class="w-20 btn btn-custom btn-light btn-sm btn-add-new-row" data-group-id="${group?.['id']}">
+                        <button ${is_lock ? 'disabled' : ''} type="button" class="w-20 btn btn-custom btn-light btn-sm btn-add-new-row" data-group-id="${group?.['id']}">
                             <span>
                                 <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
                                 <span>${trans_script.attr('data-trans-add-new-row')}</span>
@@ -194,7 +194,7 @@ function LoadTabs(group_budget_data, company_budget_data, space_month, option) {
                         </button>
                     </div>
                     <div class="col-6 text-right">
-                        <button type="submit" form="tab-budget-${group?.['id']}" class="w-15 btn btn-custom btn-sm btn-animated btn-save-tab" style="background-color: #4885e1; color: #f0f0f0" data-group-id="${group?.['id']}">
+                        <button ${is_lock ? 'disabled' : ''} type="submit" form="tab-budget-${group?.['id']}" class="w-15 btn btn-custom btn-sm btn-animated btn-save-tab" style="background-color: #4885e1; color: #f0f0f0" data-group-id="${group?.['id']}">
                             <span>
                                 <span class="icon"><span class="feather-icon"><i class="fa-regular fa-floppy-disk"></i></span></span>
                                 <span>${trans_script.attr('data-trans-save-tab')}</span>
@@ -248,7 +248,7 @@ function LoadTabs(group_budget_data, company_budget_data, space_month, option) {
                 })
             }
             LoadTabCompanyTable(company_budget_data, space_month)
-            LoadTabGroupTable(group_budget_data, space_month)
+            LoadTabGroupTable(group_budget_data, space_month, is_lock)
 
             // if (results[0].length > group_budget_data.length) {
             //     let all_added_group_title = ''
@@ -431,10 +431,9 @@ function Disabled() {
     $('select').prop('disabled', true)
 }
 
-function LoadDetailBudgetPlan(option) {
+function LoadDetailBudgetPlan(option, dataParam={}) {
     IS_DETAIL = option === 'detail'
     let pk = $.fn.getPkDetail()
-    let dataParam = {}
     let url_loaded = $.fn.callAjax2({
         url: url_script.attr('data-url-budget-plan-detail').replace(0, pk),
         data: dataParam,
@@ -460,13 +459,72 @@ function LoadDetailBudgetPlan(option) {
 
             budgetPlanTitleEle.val(data?.['title'])
             LoadPeriod(data?.['period_mapped'])
-            LoadTabs(data?.['group_budget_data'], data?.['company_budget_data'], data?.['period_mapped']?.['space_month'], option)
+
+            $('#nav-item-company').prop('hidden', !data?.['company_budget_data']?.['emp_can_view_company'])
+            $('#tab_company').prop('hidden', !data?.['company_budget_data']?.['emp_can_view_company'])
+            if (data?.['company_budget_data']?.['emp_can_lock_plan']) {
+                $('#lock-plan').prop('hidden', data?.['is_lock'])
+                $('#unlock-plan').prop('hidden', !data?.['is_lock'])
+            }
+            else {
+                $('#lock-plan').remove()
+                $('#unlock-plan').remove()
+            }
+            $('#locked-noti').prop('hidden', !data?.['is_lock'])
+
+            LoadTabs(data?.['group_budget_data'], data?.['company_budget_data']?.['data_budget'], data?.['period_mapped']?.['space_month'], data?.['is_lock'], option)
 
             Disabled()
 
             $.fn.initMaskMoney2();
         })
 }
+
+$('#lock-plan').on('click', function () {
+    Swal.fire({
+        html:
+        '<div class="mb-3 text-danger"><i class="fas fa-lock"></i></div><h5 class="text-danger">Lock this budget plan ?</h5>',
+        customClass: {
+            confirmButton: 'btn btn-outline-secondary text-danger',
+            cancelButton: 'btn btn-outline-secondary text-gray',
+            container:'swal2-has-bg',
+            actions:'w-100'
+        },
+        showCancelButton: true,
+        buttonsStyling: false,
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.value) {
+            LoadDetailBudgetPlan('detail', {'lock_this_plan': true})
+            location.reload(true);
+        }
+    })
+})
+
+$('#unlock-plan').on('click', function () {
+    Swal.fire({
+        html:
+        '<div class="mb-3 text-primary"><i class="fas fa-unlock"></i></div><h5 class="text-primary">Unlock this budget plan ?</h5>',
+        customClass: {
+            confirmButton: 'btn btn-outline-secondary text-primary',
+            cancelButton: 'btn btn-outline-secondary text-gray',
+            container:'swal2-has-bg',
+            actions:'w-100'
+        },
+        showCancelButton: true,
+        buttonsStyling: false,
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.value) {
+            LoadDetailBudgetPlan('detail', {'unlock_this_plan': true})
+            location.reload(true);
+        }
+    })
+})
 
 // $('#update-group-btn').on('click', function () {
 //     if (confirm("Are you sure?")) {

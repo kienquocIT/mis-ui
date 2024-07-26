@@ -182,35 +182,6 @@ $(document).ready(function () {
         )
     })
 
-    function validWeight(elmObj) {
-        let $elm = $(elmObj), value = elmObj.value, regex = /^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/;
-        if (value && regex.test(value)) {
-            $elm.removeClass('is-invalid cl-red')
-            if (elmObj.value > 100) elmObj.value = 100
-        }
-        else {
-            $elm.addClass('is-invalid cl-red')
-            elmObj.value = 0
-        }
-    }
-
-    function delay(fn, ms) {
-        let timer = 0
-        return function (...args) {
-            clearTimeout(timer)
-            timer = setTimeout(fn.bind(this, ...args), ms || 0)
-        }
-    }
-
-    // valid group weight
-    $('#groupWeight').keyup(delay(function (e) {
-        validWeight(this)
-    }, 500));
-    // valid work weight
-    $('#workWeight').keyup(delay(function (e) {
-        validWeight(this)
-    }, 500));
-
     class createBaseline {
         static baselineSubmit() {
             $('#create_baseline').on('click', function () {
@@ -252,4 +223,12 @@ $(document).ready(function () {
     // run create btn
     createBaseline.init()
 
+
+    // change gantt view mode
+    $('#change_view_mode button').on('click', function(){
+        $('#change_view_mode button').removeClass('active')
+        $(this).addClass('active')
+        let mode = $(this).attr('data-value')
+        new_gantt.change_view_mode(mode)
+    })
 });

@@ -26,42 +26,49 @@
     <form class="container-fluid mt-4" id="project_form" method="post" data-method="put" autocomplete="off"
           data-url-detail="{% url "ProjectDetailAPI" data.pk %}" data-url="{% url "ProjectEditAPI" data.pk %}">
         <input type="hidden" id="id">
-        <div class="row">
-            <div class="col-xs-12 col-md-6 form-group">
-                <label for="titleInput" class="form-label required">{% trans 'Title' %}</label>
-                <input type="text" name="title" id="titleInput" class="form-control" required>
-            </div>
-            <div class="clearfix"></div>
-            <div class="col-xs-12 col-md-6 form-group">
-                <label for="select_project_pm" class="form-label required">{% trans 'Project owner' %}</label>
-                <input type="input" name="employee_inherit" id="employeeInheritInput" class="form-control" readonly>
-            </div>
-            <div class="col-xs-12 col-md-6 form-group">
-                <label for="selectEmployeeInherit" class="form-label required">{% trans 'Project PM' %}</label>
-                <select class="form-select" name="project_pm" id="select_project_pm"
+        <div class="collapse show" id="toggle-ud">
+            <div class="row">
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="titleInput" class="form-label required">{% trans 'Title' %}</label>
+                    <input type="text" name="title" id="titleInput" class="form-control" required>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="select_project_pm" class="form-label required">{% trans 'Project owner' %}</label>
+                    <input type="input" name="employee_inherit" id="employeeInheritInput" class="form-control" readonly>
+                </div>
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="selectEmployeeInherit" class="form-label required">{% trans 'Project PM' %}</label>
+                    <select class="form-select" name="project_pm" id="select_project_pm"
                             data-url="{% url 'EmployeeListAPI' %}"
                             data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
                             data-params="{'list_from_app':'{{ data.list_from_app|escape }}'}"
-                disabled>
+                            disabled>
                     </select>
-            </div>
-            <div class="col-xs-12 col-md-6 form-group">
-                <label for="dateStart" class="form-label">{% trans 'Start date' %}</label>
-                <div class="input-affix-wrapper">
-                    <input type="text" id="dateStart" name="start_date" class="form-control date-picker"
-                           autocomplete="off">
-                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                 </div>
-            </div>
-            <div class="col-xs-12 col-md-6 form-group">
-                <label for="dateFinish" class="form-label">{% trans 'Finish date' %}</label>
-                <div class="input-affix-wrapper">
-                    <input type="text" id="dateFinish" name="finish_date" class="form-control date-picker"
-                           autocomplete="off">
-                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="dateStart" class="form-label">{% trans 'Start date' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input type="text" id="dateStart" name="start_date" class="form-control date-picker"
+                               autocomplete="off" disabled>
+                        <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                    </div>
                 </div>
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="dateFinish" class="form-label">{% trans 'Finish date' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input type="text" id="dateFinish" name="finish_date" class="form-control date-picker"
+                               autocomplete="off" disabled>
+                        <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                    </div>
+                </div>
+                <input type="hidden" name="system_status" id="SystemStatusInput" class="form-control" value="1">
             </div>
-            <input type="hidden" name="system_status" id="SystemStatusInput" class="form-control" value="1">
+        </div>
+        <div class="toggle-ud is_show">
+            <a class="btn btn-lg btn-icon btn-rounded btn-flush-primary flush-soft-hover"
+               data-bs-toggle="collapse" href="#toggle-ud" ontoggle=""><span class="icon">
+                    <i class="fa-solid fa-angles-up"></i></span></a>
         </div>
     </form>
     <!-- Tabs -->

@@ -160,3 +160,7 @@ msgstr "Không, tôi không chắc"
 #
 msgid "Search employee by costs incurred"
 msgstr "Tìm nhân viên theo chi phí phát sinh"
+
+#
+msgid "Title is required"
+msgstr "Tiêu đề là bắt buộc"

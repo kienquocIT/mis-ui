@@ -806,6 +806,7 @@ function LoadDetailGoodsTransfer(option='detail') {
                 DOC_DONE = [2, 3].includes(data?.['goods_transfer_detail']?.['system_status'])
 
                 data = data?.['goods_transfer_detail'];
+                new PrintTinymceControl().render('866f163d-b724-404d-942f-4bc44dc2e2ed', data, false);
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);

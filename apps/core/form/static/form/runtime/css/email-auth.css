@@ -1,0 +1,108 @@
+#email-authenticate {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    z-index: 1054;
+    background-color: transparent;
+}
+
+#email-authenticate .email-authenticate-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+}
+
+.email-authenticate-group hr {
+    width: 100%;
+    background-color: #2a3746;
+    padding: 1px 0 0 0;
+    border: 0;
+    margin: 1rem 0;
+}
+
+.email-authenticate-group .email-login {
+    padding: 0 30px 30px 30px;
+    width: 300px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 0 5px 5px #f2f5f6;
+    border-radius: 5px;
+    border: 1px solid #eaeaea;
+}
+
+.email-authenticate-group .form-group,
+.email-authenticate-group label,
+.email-authenticate-group input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.email-authenticate-group label {
+    margin-bottom: 10px;
+    display: block;
+}
+
+.email-authenticate-group input {
+    padding: 7px 10px;
+    border: 1px solid #5e7d8a;
+    border-radius: 5px;
+}
+
+.email-authenticate-group input:read-only,
+.email-authenticate-group input:disabled {
+    background-color: #f1f1f1;
+    cursor: not-allowed;
+}
+
+.email-authenticate-group input:active,
+.email-authenticate-group input:focus {
+    border: 1px solid #2f343a;
+}
+
+.email-authenticate-group input:focus-visible {
+    outline: 0;
+}
+
+.email-authenticate-group button {
+    padding: 7px 10px;
+    border: 1px solid #298dff;
+    border-radius: 5px;
+    width: 100%;
+    background-color: #298dff;
+    color: #fff;
+}
+
+.email-authenticate-group button:hover {
+    border-color: #257fe6;
+    background-color: #257fe6;
+    cursor: pointer;
+}
+
+form#form-email-get-otp button[type=submit] {
+    background-color: #007d88;
+    border-color: #007d88;
+}
+
+form#form-email-get-otp button[type=submit]:hover {
+    background-color: #00646d;
+    border-color: #00646d;
+}
+
+form#form-email-verify-otp:has(input[name=email]:not(:placeholder-shown)) {
+    display: block !important;
+}
+
+form#form-email-verify-otp button[type=submit] {
+    background-color: #00ab66;
+    border-color: #00ab66;
+}
+
+form#form-email-verify-otp button[type=submit]:hover {
+    background-color: #006b40;
+    border-color: #006b40;
+}

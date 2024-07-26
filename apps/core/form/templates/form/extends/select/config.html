@@ -1,0 +1,256 @@
+{% load i18n string_utils define_action %}
+
+{% assign_out_bool_str idxIsMultiple False as rIdxIsMultiple %}
+
+<div class="drawer-config d-none" id="form-select">
+    <form>
+        {% csrf_token %}
+
+        {% assign_out_random nameIdx as rNameIdx %}
+        <div class="form-group mb-3">
+            <label for="{{ rNameIdx }}" class="form-label">
+                {% trans 'Name of field' %}
+            </label>
+            <input type="text" class="form-control" id="{{ rNameIdx }}" name="name">
+            <small class="form-text text-muted">
+                {% trans 'Corresponds to a stored data field' %}.
+                {% trans 'Employs this name to autofill form fields' %}.
+            </small>
+        </div>
+
+        <hr style="background-color: #2a3746"/>
+
+        {% include 'form/extends/base/title.html' %}
+
+        {% include 'form/extends/base/instruction.html' %}
+
+        {% include 'form/extends/base/placeholder.html' %}
+
+        {% include 'form/extends/base/size.html' %}
+
+        <hr style="background-color: #2a3746"/>
+
+        <div class="form-group mb-3" id="group-select-box-option-config">
+            <label class="form-label">{% trans 'Options' %}</label>
+
+            <div class="w-100">
+                <div class="form-check">
+                    <input type="checkbox" name="is_multiple" class="form-check-input" id="{{ rIdxIsMultiple }}"/>
+                    <label for="{{ rIdxIsMultiple }}" class="form-check-label">{% trans 'Multiple' %}</label>
+                </div>
+            </div>
+
+            <div class="w-100 mb-1 select-box-item select-box-item-data d-none" id="select-option-base">
+                <div class="d-flex">
+                    <div class="select-box-icon-dnd">
+                        <i class="fa-solid fa-grip-vertical"></i>
+                    </div>
+                    <div class="select-box-item-default">
+                        <div class="form-check form-check-lg">
+                            <input type="radio" class="form-check-input" name="select_option_default" disabled/>
+                        </div>
+                    </div>
+                    <div class="select-box-item-default-multiple" style="display: none;">
+                        <div class="form-check form-check-lg">
+                            <input type="checkbox" class="form-check-input" name="select_option_default_multiple" disabled/>
+                        </div>
+                    </div>
+                    <div class="select-box-item-title">
+                        <div class="form-group m-0 p-0 w-100">
+                            <input type="text" class="form-control" name="select_option_title" required disabled/>
+                        </div>
+                    </div>
+                    <div class="select-box-item-action">
+                        <button
+                                type="button" class="btnAddRowAfter btn btn-icon btn-xs btn-outline-primary btn-rounded"
+                        >
+                            <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                        </button>
+                        <button
+                                type="button"
+                                class="btnRemoveRow btn btn-icon btn-xs btn-outline-danger btn-rounded ml-3"
+                        >
+                            <span class="icon"><i class="fa-solid fa-minus"></i></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="w-100" id="select-option-dynamic"></div>
+            <div class="w-100">
+                <input type="text" class="d-none" hidden disabled name="select-option-error-general">
+            </div>
+            <div class="w-100 d-flex">
+                <button
+                        style="margin: 5px;flex: auto;"
+                        class="btn btn-xs btn-icon btn-soft-primary"
+                        type="button"
+                        id="idx-btn-option-new-row"
+                >
+                    <span>
+                        <span class="icon">
+                            <i class="fa-solid fa-plus"></i>
+                        </span>
+                        <span>{% trans 'Add new row' %}</span>
+                    </span>
+                </button>
+                <button
+                        style="margin: 5px;flex: auto;"
+                        class="btn btn-xs btn-icon btn-soft-secondary"
+                        type="button"
+                        id="idx-btn-option-un-select-default"
+                >
+                    <span>
+                        <span class="icon">
+                            <i class="fa-regular fa-circle-xmark"></i>
+                        </span>
+                        <span>{% trans 'Unselect default' %}</span>
+                    </span>
+                </button>
+                <button
+                        style="margin: 5px;flex: auto;"
+                        class="btn btn-xs btn-icon btn-soft-danger"
+                        type="button"
+                        id="idx-btn-option-clean"
+                >
+                    <span>
+                        <span class="icon">
+                            <i class="fa-solid fa-xmark"></i>
+                        </span>
+                        <span>{% trans 'Clean' %}</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <hr style="background-color: #2a3746"/>
+
+        {% include 'form/extends/base/validation.html' with hasUnique=False %}
+
+        {% include 'form/extends/base/visibility.html' %}
+    </form>
+</div>
+<script>
+    $(document).ready(function () {
+        const form$ = $('#form-select');
+        const selectBox$ = form$.find('#group-select-box-option-config');
+        const selectDynamic$ = selectBox$.find('#select-option-dynamic');
+        const optionBase$ = selectBox$.find('#select-option-base');
+        const isMultiple$ = selectBox$.find('input#{{ rIdxIsMultiple }}');
+
+        function insertNewOption(configItem, insertPlacement = 'last') {
+            if (!configItem) {
+                configItem = {
+                    'title': '',
+                    'is_default': false,
+                    'is_default_multiple': false,
+                }
+            }
+            const newEle$ = $(optionBase$.prop('outerHTML'));
+            newEle$.removeClass('d-none');
+            const eleDefault$ = newEle$.find('input[name="select_option_default"]');
+            eleDefault$
+                .prop('required', false)
+                .attr('value', configItem.title)
+                .prop('checked', configItem.is_default)
+                .prop('disabled', false);
+            const eleDefaultMultiple$ = newEle$.find('input[name=select_option_default_multiple]');
+            eleDefaultMultiple$
+                .prop('required', false)
+                .attr('checked', configItem.is_default_multiple)
+                .attr('name', 'select_option_default_multiple_' + $x.fn.randomStr(10))
+                .prop('disabled', false)
+            const eleTitle$ = newEle$.find('input[name="select_option_title"]');
+            eleTitle$
+                .prop('required', true)
+                .attr('name', 'select_option_title_' + $x.fn.randomStr(10))
+                .val(configItem.title)
+                .prop('disabled', false);
+            switch (insertPlacement) {
+                case 'first':
+                    const eleBefore = selectDynamic$.find('.select-box-item-data').first();
+                    if (eleBefore.length > 0) newEle$.insertBefore(eleBefore);
+                    else selectDynamic$.append(newEle$);
+                    break
+                case 'last':
+                    const eleAfter = selectDynamic$.find('.select-box-item-data').last();
+                    if (eleAfter.length > 0) newEle$.insertAfter(eleAfter);
+                    else selectDynamic$.append(newEle$);
+                    break
+                default:
+                    if (insertPlacement instanceof jQuery) {
+                        newEle$.insertAfter(insertPlacement);
+                    } else throw Error(`Insert row not support placement: ${insertPlacement}`)
+            }
+            const rules = {
+                required: true,
+            }
+            eleDefault$.rules('add', {});
+            eleTitle$.rules('add', rules);
+        }
+
+        function setStateChanged(){
+            const configCls = new ConfigField();
+            configCls.state = true;
+        }
+
+        selectBox$
+            .on('input', 'input[name="select_option_title"]', function (event) {
+                setStateChanged();
+            })
+            .on('click', 'button.btnAddRowAfter', function (event) {
+                insertNewOption(null, $(event.target).closest('.select-box-item-data'));
+                setStateChanged();
+            })
+            .on('click', 'button.btnRemoveRow', function (event) {
+                // $(event.target).closest('.select-box-item-data').remove();
+                const ele$ = $(event.target).closest('.select-box-item-data');
+                ele$.remove();
+                setStateChanged();
+            });
+        $('input[name="select_option_title"]').trigger('input');
+
+        optionBase$.on('data.clean', function () {
+            selectDynamic$.find('.select-box-item-data').remove();
+        })
+
+        optionBase$.on('data.load', function (event, config) {
+            config['options'].map(item => insertNewOption(item, 'last'));
+        });
+
+        optionBase$.on('data.multiple.set', function (event, data){
+            if (data === null || data === undefined){
+                data = $(isMultiple$).prop('checked');
+            }
+            if (data === true){
+                selectDynamic$.find('.select-box-item-default').hide();
+                selectDynamic$.find('.select-box-item-default-multiple').show();
+            } else {
+                selectDynamic$.find('.select-box-item-default').show();
+                selectDynamic$.find('.select-box-item-default-multiple').hide();
+            }
+        });
+
+        form$.find('button#idx-btn-option-new-row').on('click', function () {
+            insertNewOption(null, 'last');
+            setStateChanged();
+        });
+
+        form$.find('button#idx-btn-option-un-select-default').on('click', function () {
+            selectDynamic$.find('input[type=radio][name="select_option_default"]').prop('checked', false);
+            setStateChanged();
+        });
+
+        form$.find('button#idx-btn-option-clean').on('click', function(){
+            optionBase$.trigger('data.clean');
+            setStateChanged();
+        });
+
+        form$.find('input#{{ rIdxIsMultiple }}').on('change', function (){
+            optionBase$.trigger('data.multiple.set', $(this).prop('checked'));
+            setStateChanged();
+        })
+
+        selectDynamic$.sortable({});
+        selectDynamic$.disableSelection();
+    })
+</script>

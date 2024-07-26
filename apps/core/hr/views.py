@@ -1,15 +1,13 @@
-import uuid
 from typing import Literal
-
 from django.urls import reverse
 from django.views import View
 from requests_toolbelt import MultipartEncoder
 from rest_framework import status
+from django.core.mail import get_connection
 from rest_framework.parsers import MultiPartParser
-
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck, HRMsg, PermsMsg, TypeCheck
+from apps.shared import mask_view, ServerAPI, ApiURL, HRMsg, PermsMsg, TypeCheck
 from apps.shared.apis import RespData
 
 BELONG_LIST = [
@@ -491,3 +489,22 @@ class GroupDetailAPI(APIView):
         url = ApiURL.GROUP_DETAIL_PK.fill_key(pk=pk)
         resp = ServerAPI(request=request, user=request.user, url=url).delete(request.data)
         return resp.auto_return()
+
+
+class TestEmailConnection(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        try:
+            connection = get_connection(
+                username=request.GET.get('email'),
+                password=request.GET.get('email_app_password'),
+                fail_silently=False,
+            )
+            if connection.open():
+                if request.data.get('email_app_password') == '':
+                    return {}, status.HTTP_502_BAD_GATEWAY
+                else:
+                    return {}, status.HTTP_200_OK
+        except Exception as e:
+            print(e)
+            return {}, status.HTTP_502_BAD_GATEWAY

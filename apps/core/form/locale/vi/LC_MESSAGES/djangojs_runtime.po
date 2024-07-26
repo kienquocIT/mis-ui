@@ -40,3 +40,35 @@ msgstr "Dữ liệu đã được ghi nhận"
 #
 msgid "Automatic reload page after 1 second"
 msgstr "Tự động tải lại trang sau 1 giây"
+
+#
+msgid "We encountered an error while combining the data."
+msgstr "Đã xảy ra lỗi khi kết hợp dữ liệu."
+
+#
+msgid "Please refresh the page and try again."
+msgstr "Vui lòng tải lại trang và thử lại."
+
+#
+msgid "If you continue to experience this issue, please let us know at https://www.bflow.vn/issue/form/new"
+msgstr "Nếu bạn vẫn gặp sự cố này, vui lòng cho chúng tôi biết tại https://www.bflow.vn/issue/form/new"
+
+#
+msgid "Some data are incomplete. Please complete them before submitting data."
+msgstr "Một số dữ liệu không đầy đủ. Vui lòng hoàn thành chúng trước khi gửi dữ liệu."
+
+#
+msgid "This image failed to load"
+msgstr "Hình ảnh này không tải được"
+
+#
+msgid "The data has been recorded"
+msgstr "Dữ liệu đã được ghi nhận"
+
+#
+msgid "review at here"
+msgstr "xem tại đây"
+
+#
+msgid "The feature cannot be used because your public IP address cannot be obtained"
+msgstr "Tính năng không thể sử dụng do không thể lấy được địa chỉ IP công khai của bạn"

@@ -54,6 +54,15 @@ class ConfigField {
             });
 
             let clsThis = this;
+            this.ele$.find('form').each(function () {
+                SetupFormSubmit.call_validate($(this), {
+                    onsubmit: true,
+                    submitHandler: function (form, event) {
+                        event.preventDefault();
+                        return false;
+                    }
+                });
+            });
             this.ele$.find('#drawer-close').on('click', function () {
                 clsThis.firing_close();
             });
@@ -110,31 +119,33 @@ class ConfigField {
                 }).trigger('change');
 
             let timeoutInput = null;
-            this.ele$.find('input,select,textarea').on('change', function () {
-                if (!$(this).hasClass('form-not-check-change')) {
-                    clsThis.state = true;
-                    if (clsThis.current) {
-                        clsThis.current.trigger('config.realtime');
-                    }
-                }
-            }).on('input', function () {
-                if (timeoutInput) clearTimeout(timeoutInput);
-                timeoutInput = setTimeout(() => {
+            this.ele$.find('input,select,textarea')
+                .on('change', function () {
                     if (!$(this).hasClass('form-not-check-change')) {
                         clsThis.state = true;
                         if (clsThis.current) {
                             clsThis.current.trigger('config.realtime');
                         }
                     }
-                }, 300)
-            });
+                })
+                .on('input', function () {
+                    if (timeoutInput) clearTimeout(timeoutInput);
+                    timeoutInput = setTimeout(() => {
+                        if (!$(this).hasClass('form-not-check-change')) {
+                            clsThis.state = true;
+                            if (clsThis.current) {
+                                clsThis.current.trigger('config.realtime');
+                            }
+                        }
+                    }, 300)
+                });
 
             // on "esc" keyup force close drawer
-            $(window).keyup(function(e) {
-                 if (e.key === "Escape") { // escape key maps to keycode `27`
-                     if (clsThis.current){
-                         clsThis.firing_close();
-                     }
+            $(window).keyup(function (e) {
+                if (e.key === "Escape") { // escape key maps to keycode `27`
+                    if (clsThis.current) {
+                        clsThis.firing_close();
+                    }
                 }
             });
         }
@@ -207,18 +218,87 @@ class ConfigField {
             },
             'done': function () {
                 clsThis.ele$.hide(0);
+                clsThis.current.trigger('config.close');
             },
         });
     }
 }
 
 class SortableField {
+    highlight(ele$) {
+        $x.fn.scrollToIdx(ele$, this.eleParent$);
+        ele$.addClass('sortable-item-highlight');
+        setTimeout(
+            () => ele$.removeClass('sortable-item-highlight'),
+            2000
+        )
+    }
+
+    _recheckStats() {
+        const maxLength = 30;
+        const statsLength = this.ele$.find('.sortable-item[data-code]').length;
+        this.statsLength$.alterClass('text-*').addClass(statsLength > maxLength ? 'text-danger' : 'text-success');
+        this.statsLength$.text(statsLength);
+
+        const maxSize = 300;
+        const htmlSanitized = SortableField.sanitize_html(this.html_all()).replace(/<!--(.*?)-->|\s\B/gm, '');
+        const statsSize = (new Blob([htmlSanitized]).size / 1024).toFixed(2);
+        this.statsSize$.alterClass('text-*').addClass(statsSize >= maxSize ? 'text-danger' : 'text-success');
+        this.statsSize$.text(statsSize + ' kB');
+    }
+
+    recheckStats() {
+        new Promise(
+            (resolve, reject) => {
+                this._recheckStats();
+            }
+        )
+    }
+
+    init_new_sortable(element, appendTo = false, scrollToNew = false) {
+        let clsThis = this;
+        const ele$ = $(element);
+        const code = ele$.attr('data-code');
+        const form = clsThis.getForm(code);
+        if (appendTo === true) {
+            ele$.trigger('sortable.add');
+        } else if (appendTo instanceof jQuery) {
+            ele$.trigger('sortable.add', appendTo);
+        }
+        $x.fn.showLoadingPage({
+            'didOpenEnd': function () {
+                if (ele$.prev('.sortable-item').length > 0 || ele$.next('.sortable-item').length > 0 || ele$.parent().is('div#sortable')) {
+                    if (form && typeof form === 'function') {
+                        const data = ele$.data('forms');
+                        let obj;
+                        if (data){
+                            obj = data;
+                        } else {
+                            obj = new form();
+                        }
+                        ele$.replaceWith(obj.sortableItem$);
+                        obj.trigger('sortable.new.before');
+                        obj.trigger('obj.reinit_ele');
+                        obj.trigger('sortable.new.after');
+                        obj.trigger('all.change', true);
+                        clsThis.trigger('sortable.check_empty');
+
+                        if (scrollToNew === true) clsThis.highlight(obj.sortableItem$);
+                        $x.fn.hideLoadingPage();
+                    } else $(element).remove();
+                } else $(element).remove();
+            },
+        })
+
+    }
+
     init() {
         let clsThis = this;
 
         this.ele$.sortable({
-            items: "div.sortable-item:not(.sortable-item-disabled)",
+            items: "div.sortable-item:not(.sortable-item-fixed)",
             revert: true,
+            cancel: "div.sortable-item-disabled",
             placeholder: "sortable-item item-dragging",
             start: function (event, ui) {
                 if ($(ui.item).hasClass('sortable-item')) {
@@ -232,30 +312,19 @@ class SortableField {
             },
             update: function (event, ui) {
                 if (!$(ui.item).hasClass('sortable-item')) {
-                    const code = ui.item[0].getAttribute('data-code');
-                    const form = clsThis.getForm(code);
-                    const ele$ = $(ui.item);
-
-                    if (ele$.prev('.sortable-item').length > 0 || ele$.next('.sortable-item').length > 0 || ele$.parent().is('div#sortable')) {
-                        if (form && typeof form === 'function') {
-                            let obj = new form();
-                            obj.trigger('obj.reinit_ele');
-                            obj.trigger('all.change', true);
-                            ui.item.replaceWith(obj.sortableItem$);
-                            clsThis.trigger('sortable.check_empty');
-                        } else ui.item.remove();
-                    } else ui.item.remove();
+                    clsThis.init_new_sortable(ui.item, false, true);
                 }
             },
         });
         this.ele$.find(".sortable-item").disableSelection();
         this.ele$.on('sortable.check_empty', function () {
             const child$ = clsThis.ele$.find('.sortable-item');
+            const itemEmpty$ = clsThis.ele$.find(clsThis.itemEmptyQuery);
             if (child$.length > 0) {
-                clsThis.itemEmpty$.hide("slide", {direction: "right"}, 200);
+                itemEmpty$.remove();
                 clsThis.itemFoot$.show("slide", {direction: "left"}, 200);
             } else {
-                clsThis.itemEmpty$.show("slide", {direction: "left"}, 200);
+                if (itemEmpty$.length === 0) clsThis.ele$.append(clsThis.itemEmptyHTML);
                 clsThis.itemFoot$.hide("slide", {direction: "right"}, 200);
             }
         });
@@ -267,6 +336,134 @@ class SortableField {
                 item$.trigger('obj.click', ele$);
             } else return false;
         });
+
+        // monitor
+        this.monitorBtn$.on('click', () => {
+            this.monitorDiv$.slideToggle('fast');
+        })
+    }
+
+    static sanitize_html(html_txt) {
+        // ['label', 'input', 'textarea', 'select', 'option', 'button', 'svg', 'path', 'iframe'].map(
+        //     eleName => {
+        //         HtmlSanitizer.AllowedTags[eleName.toUpperCase()] = true;
+        //     }
+        // );
+        // [
+        //     'for', 'type', 'name', 'placeholder', 'required', 'disabled', 'readonly', 'checked', 'value',
+        //     'min', 'max', 'minlength', 'maxlength',
+        //     'name', 'cols', 'rows', 'placeholder', 'required', 'disabled', 'readonly',
+        //     'minlength', 'maxlength',
+        //     'name', 'required', 'disabled', 'readonly', 'placeholder', 'multiple',
+        //     'value', 'selected',
+        //     'type',
+        //     'xmlns', 'fill', 'class', 'viewBox',
+        //     'd',
+        //     'src', 'width', 'height', 'frameborder', 'title', 'allowfullscreen'
+        // ].map(
+        //     attrName => {
+        //         HtmlSanitizer.AllowedAttributes[attrName.toLowerCase()] = true;
+        //     }
+        // )
+        return HtmlSanitizer.SanitizeHtml(html_txt);
+    }
+
+    static cusNext(dataStorage$, matcher, from$, until$=null){
+        let arrResult = [];
+        const resolveFrom$ = dataStorage$.find(from$);
+        if (resolveFrom$.length > 0){
+            const parentFrom$ = resolveFrom$.parent();
+
+            let fromIsMapped = false;
+            let isStopLoop = false;
+            $(parentFrom$).children().each(function (){
+                if (isStopLoop === false){
+                    if ($(this).is($(from$))){
+                        fromIsMapped = true;
+                    } else if($(this).is($(until$))) {
+                        isStopLoop = true;
+                    } else {
+                        if (fromIsMapped === true){
+                            if ($(this).is(matcher)){
+                                arrResult.push($(this));
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        return arrResult;
+    }
+
+    html_all() {
+        const sortable$ = $(this.ele$.prop('outerHTML'));
+        const page$ = $('#page-sortable');
+
+        const pageEnable = page$.data('forms').config?.['enabled'] || false;
+        let pageData = [];
+        if (pageEnable === true){
+            const pageHead$ = sortable$.find('div[data-code=page-break-head]');
+            for (let i=0; i < pageHead$.length ; i++){
+                const currentPage$ = $(pageHead$[i]);
+                const page$ = $('<div class="page-group" style="display: none;"></div>');
+                page$.attr('data-page', currentPage$.attr('data-page'));
+                const itemAndFootPage$ = i === pageHead$.length - 1 ? SortableField.cusNext(
+                    sortable$, 'div.sortable-item', currentPage$, null
+                ) : SortableField.cusNext(
+                    sortable$, 'div.sortable-item', currentPage$, pageHead$[i+1]
+                )
+                page$.append(currentPage$);
+                page$.append(itemAndFootPage$);
+                pageData.push(page$);
+            }
+        } else {
+            const page$ = $('<div class="page-group"></div>');
+            page$.append(sortable$.find('div.sortable-item'));
+            pageData.push(page$);
+        }
+
+        let html = this.eleParent$.prop('outerHTML');
+        let html$ = $(html);
+
+        html$.find('#sortable').removeAttr('id').empty().append(pageData);
+        // remove masker
+        html$.find('.group-masker').remove()
+        // remove group--setting-group
+        html$.find('.group--setting-group').remove();
+        // remove box
+        html$.find('.box').removeClass('box');
+        // show form action
+        html$.find('.form-action').removeClass('d-none');
+        // show form-foot
+        html$.find('.form-foot').show();
+        // remove current user
+        html$.find('#form-head--current-user-name').text('');
+        // remove style of form head
+        html$.find('.form-head').removeAttr('style');
+        // remove style of form foot
+        html$.find('.form-foot').removeAttr('style');
+        // remove form-item--hide
+        html$.find('.form-item--hide').remove();
+        // remove form-head if not display
+
+        // remove id
+        html$.find('#sortable-content').removeAttr('id');
+        html$.find('#head-sortable').removeAttr('id');
+        html$.find('#form-title').removeAttr('id');
+
+        // remove attribute data-code
+        html$.find('[data-code]').removeAttr('data-code').removeAttr('id');
+        // placeholder drop here
+        html$.find('.sortable-drop-here').remove();
+        // remove instruction when empty
+        html$.find('#sortable-item-empty').remove();
+        // remove group control
+        html$.find('.group-control').remove();
+        // remove class
+        html$.find('.ui-sortable').removeClass('ui-sortable');
+        html$.find('.sortable-item').removeClass('sortable-item').alterClass('sortable-item-*');
+
+        return html$.children().prop('outerHTML');
     }
 
     getForm(code) {
@@ -279,8 +476,24 @@ class SortableField {
     constructor() {
         this.ele$ = $('#sortable');
         this.eleContent$ = $('#sortable-content');
-        this.itemEmpty$ = $('#sortable-item-empty');
+        this.eleParent$ = $('#sortable-parent');
+        this.itemEmptyQuery = '#sortable-item-empty'
+        this.itemEmptyHTML = `
+            <div id="sortable-item-empty" class="form-item form-item-md sortable-drop-here sortable-item-disabled">
+                <div>
+                    <h3>${$.fn.gettext('Start building!')}</h3>
+                    <p>${$.fn.gettext('Drag fields from left panel and drop here to add them to your form.')}</p>
+                </div>
+            </div>
+        `;
         this.itemFoot$ = this.eleContent$.find('.form-foot');
+
+        this.monitor$ = $('#sortable-monitor');
+        this.monitorBtn$ = this.monitor$.find('button');
+        this.monitorDiv$ = this.monitor$.find('div');
+        this.statsLength$ = this.monitor$.find('#stats-length');
+        this.statsSize$ = this.monitor$.find('#stats-size');
+
         this.matchForm = matchForm;
 
         let formData = this.ele$.data('forms');
@@ -309,6 +522,7 @@ class SortableField {
 
 class DraggableField {
     init() {
+        // init d&d
         let dragItems$ = this.ele$.find('.draggable-item');
         dragItems$.draggable({
             connectToSortable: "#sortable",
@@ -321,6 +535,17 @@ class DraggableField {
             },
         });
         dragItems$.disableSelection();
+        dragItems$.on('dblclick', function () {
+            let clsSort = new SortableField();
+            let newEle$ = $(this).clone();
+            newEle$.appendTo(clsSort.ele$);
+            clsSort.init_new_sortable(newEle$, true, true);
+        });
+
+        // init collapse group drag
+        this.ele$.find('.draggable-heading .heading-txt').on('click', function () {
+            $(this).siblings('.draggable-group').slideToggle();
+        });
     }
 
     hideAllExclude(arrCode) {
@@ -452,7 +677,7 @@ class ToolboxField {
                 isLoading: true,
             }).then(
                 resp => {
-                    if ($.fn.switcherResp(resp)){
+                    if ($.fn.switcherResp(resp)) {
                         $.fn.notifyB({
                             'description': $.fn.gettext('Successful'),
                         }, 'success');
@@ -561,50 +786,56 @@ class ToolboxField {
         });
 
         this.themes$
-                .find('select.input-radio-select')
-                .hide()
-                .on('change', function () {
-                    let value = $(this).val();
-                    let radioGroup$ = $(this).siblings('.radio-select-group');
-                    if (radioGroup$.length > 0) {
-                        radioGroup$
-                            .find('.radio-select-item')
-                            .each(function () {
-                                if ($(this).attr('data-value') === value) {
-                                    $(this).addClass('active')
-                                } else $(this).removeClass('active')
-                            });
-                    }
-                })
-                .each(function () {
-                    let select$ = $(this);
+            .find('select.input-radio-select')
+            .hide()
+            .on('change', function () {
+                let value = $(this).val();
+                let radioGroup$ = $(this).siblings('.radio-select-group');
+                if (radioGroup$.length > 0) {
+                    radioGroup$
+                        .find('.radio-select-item')
+                        .each(function () {
+                            if ($(this).attr('data-value') === value) {
+                                $(this).addClass('active')
+                            } else $(this).removeClass('active')
+                        });
+                }
+            })
+            .each(function () {
+                let select$ = $(this);
 
-                    let radioGroup$ = select$.siblings('.radio-select-group');
-                    if (radioGroup$.length === 0) {
-                        let radioGroupCls = select$.attr('data-rs-class') ?? 'radio-select-group-full';
-                        radioGroup$ = $(`<div class="radio-select-group ${radioGroupCls}"></div>`);
-                        radioGroup$.insertAfter(select$);
+                let radioGroup$ = select$.siblings('.radio-select-group');
+                if (radioGroup$.length === 0) {
+                    let radioGroupCls = select$.attr('data-rs-class') ?? 'radio-select-group-full';
+                    radioGroup$ = $(`<div class="radio-select-group ${radioGroupCls}"></div>`);
+                    radioGroup$.insertAfter(select$);
 
-                        $(this).find('option:not(:disabled)').each(function () {
-                            let dataValue = $(this).attr('value');
-                            let radioItem$ = $(`
+                    $(this).find('option:not(:disabled)').each(function () {
+                        let dataValue = $(this).attr('value');
+                        let radioItem$ = $(`
                                     <div 
                                         class="radio-select-item" 
                                         data-value="${dataValue}"
                                     >${$(this).text()}</div>
                                 `);
-                            // tooltip
-                            let dataTooltipTitle = $(this).attr('title');
-                            if (dataTooltipTitle) radioItem$.attr('data-bs-toggle', 'tooltip').attr('title', dataTooltipTitle);
+                        // tooltip
+                        let dataTooltipTitle = $(this).attr('title');
+                        if (dataTooltipTitle) radioItem$.attr('data-bs-toggle', 'tooltip').attr('title', dataTooltipTitle);
 
-                            radioGroup$.append(radioItem$);
-                            radioItem$.on('click', function () {
-                                let value = $(this).attr('data-value');
-                                $(select$).val(value).trigger('change');
-                            });
+                        radioGroup$.append(radioItem$);
+                        radioItem$.on('click', function () {
+                            let value = $(this).attr('data-value');
+                            $(select$).val(value).trigger('change');
                         });
-                    }
-                }).trigger('change');
+                    });
+                }
+            }).trigger('change');
+
+        this.visibleMonitor$.on('change', function () {
+            const ele$ = $("#sortable-monitor");
+            if ($(this).prop('checked') === true) ele$.slideDown();
+            else ele$.slideUp();
+        })
     }
 
     constructor(props) {
@@ -612,6 +843,7 @@ class ToolboxField {
 
         this.autoConfirmClone$ = $('#auto-confirm-clone');
         this.autiConfirmRemove$ = $('#auto-confirm-delete');
+        this.visibleMonitor$ = $('#visible-monitor');
 
         this.group$ = $('#more-config-sub');
         this.btnSettingHide$ = $('#btn-setting-item-hide');
@@ -806,6 +1038,11 @@ class FormComponentAbstract {
         return [maskerGroup$, controlGroup$];
     }
 
+    clean_toolbar() {
+        this.sortableItem$.find('.group-control').remove();
+        this.sortableItem$.find('.group-masker').remove();
+    }
+
     get cls_label_group() {
         return 'form-item-group-label'
     }
@@ -831,13 +1068,16 @@ class FormComponentAbstract {
 
     // -- interface
 
-    generateName(counter = 1) {
+    generateName(counter = 1, skipCheckExist = false) {
         if (counter > 10) throw Error('The generate name maximum call')
 
         let prefixCode = $x.fn.convertToSlug(this.code);
         let code = `${prefixCode}_${$x.fn.randomStr(5)}`;
-        if (this.sortableCls.find(`[name=${code}]`).length === 0) return code;
-        return this.generateName(counter + 1);
+        if (skipCheckExist === false) {
+            if (this.sortableCls.find(`[name=${code}]`).length === 0) return code;
+            return this.generateName(counter + 1, skipCheckExist);
+        }
+        return code;
     }
 
     get config() {
@@ -851,6 +1091,7 @@ class FormComponentAbstract {
         data['config'] = this._config;
         data['configRealtime'] = this._config;
         this.sortableItem$.data('forms', data);
+        this.trigger_configWasChanged();
     }
 
     get resolveConfig() {
@@ -889,6 +1130,7 @@ class FormComponentAbstract {
             },
             'label': '', // present role of input | override at client
             'display': true,
+            'element': 'input',
         }
     }
 
@@ -900,7 +1142,7 @@ class FormComponentAbstract {
         let instruction$ = $(`<small class="${this.cls_instruction}"></small>`);
 
         let groupInp$ = $(`<div class="form-item-group-input"></div>`);
-        const instruction_placement = this.formTitleGetConfig('instruction_placement', storage);
+        const instruction_placement = this.instruction_placement ? this.instruction_placement : this.formTitleGetConfig('instruction_placement', storage);
         switch (instruction_placement) {
             case 'top':
                 groupInp$.append(instruction$).append(inp$);
@@ -913,7 +1155,7 @@ class FormComponentAbstract {
         groupAll$
             .append(label$)
             .append(groupInp$);
-        const label_placement = this.formTitleGetConfig('label_placement', storage);
+        const label_placement = this.label_placement ? this.label_placement : this.formTitleGetConfig('label_placement', storage);
         switch (label_placement) {
             case 'top':
                 groupAll$.addClass('form-item-group-top');
@@ -943,10 +1185,12 @@ class FormComponentAbstract {
             ...this.defaultConfig, ...props?.['config'], ...props?.['_config'],
         };
         this.inputs_data = props?.inputs_data ? [...props?.inputs_data] : [];
+        this.instruction_placement = props?.['instruction_placement'] || null;
+        this.label_placement = props?.['label_placement'] || null;
 
         // element pieces
         this.sortableItem$ = $(`<div></div>`)
-            .addClass('sortable-item form-item')
+            .addClass('sortable-item form-item form-item-md')
             .attr('data-code', this.code)
             .attr('id', this.idx);
         this.sortableItemUtil$ = this.sortable_toolbar(['setting', 'clone', 'remove']);
@@ -985,6 +1229,29 @@ class FormComponentAbstract {
         return this;
     }
 
+    register_trigger(trigger_extends){
+        let ele$ = this.sortableItem$;
+        if (ele$ && ele$ instanceof jQuery) {
+            let clsThis = this;
+            // trigger extends
+            if (typeof trigger_extends === 'object') {
+                Object.keys(trigger_extends).map(
+                    triggerName => {
+                        const callbackOfTrigger = trigger_extends[triggerName];
+                        if (triggerName && typeof callbackOfTrigger === 'function') {
+                            ele$.on(
+                                triggerName,
+                                callbackOfTrigger.bind(clsThis)
+                            )
+                        } else {
+                            console.log(`Trigger ${triggerName} has not been registered.`);
+                        }
+                    }
+                )
+            }
+        }
+    }
+
     on_trigger() {
         let ele$ = this.sortableItem$;
         if (ele$ && ele$ instanceof jQuery) {
@@ -995,6 +1262,21 @@ class FormComponentAbstract {
                 clsThis.trigger_sortableAdd(previousEle$ instanceof jQuery || previousEle$ instanceof HTMLElement ? previousEle$ : null);
                 clsThis.sortableCls.trigger('sortable.check_empty');
             });
+            ele$.on('sortable.add_before', function (event, nextEle$) {
+                clsThis.trigger_sortableAddBefore(
+                    nextEle$ instanceof jQuery || nextEle$ instanceof HTMLElement
+                        ? nextEle$ : null
+                );
+                clsThis.sortableCls.trigger('sortable.check_empty');
+            });
+
+            // event sortable new item from Drag and Drop
+            ele$.on('sortable.new.before', function () {
+                clsThis.trigger_sortableNewBefore();
+            })
+            ele$.on('sortable.new.after', function () {
+                clsThis.trigger_sortableNewAfter();
+            })
 
             // re-init element present by configure
             ele$.on('obj.reinit_ele', function (event, props) {
@@ -1013,6 +1295,11 @@ class FormComponentAbstract {
             // open config editor
             ele$.on('config.open', function (event) {
                 clsThis.trigger_configOpen();
+            });
+
+            // close config editor
+            ele$.on('config.close', function (event) {
+                clsThis.trigger_configClose();
             });
 
             // update config
@@ -1041,67 +1328,28 @@ class FormComponentAbstract {
             ele$.on('obj.remove', function (event) {
                 clsThis.trigger_objRemove();
                 clsThis.sortableCls.trigger('sortable.check_empty');
-                clsThis.trigger('all.change', true);
+                // clsThis.trigger('all.change', true); // event not firing because element was removed
+                clsThis.setStateAndCallRecheck(true);
             });
 
             // click
             ele$.on('obj.click', function (event, target$) {
-                let belongToButton$ = $(target$).closest('button');
-                if (belongToButton$.length > 0) {
-                    if (belongToButton$.is('button.btn-setting')) {
-                        clsThis.trigger('config.load');
-                        clsThis.trigger('config.open');
-                        clsThis.configOfFieldCls.open($(this));
-                    } else if (belongToButton$.is('button.btn-clone')) {
-                        if (clsThis.toolboxCls.stateClone === true) clsThis.trigger('obj.clone'); else {
-                            Swal.fire({
-                                title: `${$.fn.gettext('Clone field')}: ${clsThis.config.label}`,
-                                html: `<p>${$.fn.gettext('Are you sure about cloning?')}</p>`,
-                                icon: "question",
-                                showCloseButton: true,
-                                showCancelButton: true,
-                                cancelButtonColor: "#d33",
-                                cancelButtonText: $.fn.gettext('Cancel'),
-                                confirmButtonColor: "#3085d6",
-                                confirmButtonText: $.fn.gettext('Yes, clone it')
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    clsThis.trigger('obj.clone');
-                                }
-                            });
-                        }
-                    } else if (belongToButton$.is('button.btn-remove')) {
-                        if (clsThis.toolboxCls.stateRemove === true) clsThis.trigger('obj.remove'); else {
-                            Swal.fire({
-                                title: `${$.fn.gettext('Delete field')}: ${clsThis.config.label}`,
-                                html: `<p>${$.fn.gettext('Are you sure about deleting?')}</p>`,
-                                icon: "question",
-                                showCloseButton: true,
-                                showCancelButton: true,
-                                cancelButtonColor: "#d33",
-                                cancelButtonText: $.fn.gettext('Cancel'),
-                                confirmButtonColor: "#3085d6",
-                                confirmButtonText: $.fn.gettext('Yes, delete it')
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    clsThis.trigger('obj.remove');
-                                }
-                            });
-                        }
-                    }
-                } else {
-                    clsThis.trigger('config.load');
-                    clsThis.trigger('config.open');
-                    clsThis.configOfFieldCls.open($(this));
-                }
+                clsThis.trigger_objClick(target$);
             });
 
             // globe change all
-            ele$.on('all.change', function (event, state){
-                $('#head-sortable').data('forms').cls.stateChangeAll = !!state;
-            })
+            ele$.on('all.change', function (event, state) {
+                clsThis.setStateAndCallRecheck(state);
+            });
         }
     }
+
+    setStateAndCallRecheck(state){
+        const cls = $('#head-sortable').data('forms').cls;
+        cls.stateChangeAll = !!state;
+    }
+
+    trigger_configWasChanged(){}
 
     trigger_sortableAdd(previousEle$) {
         let ele_exist$ = this.sortableCls.find('#' + this.idx);
@@ -1115,6 +1363,27 @@ class FormComponentAbstract {
         this.trigger('obj.reinit_ele');
     }
 
+    trigger_sortableAddBefore(nextEle$){
+        if (nextEle$){
+            nextEle$ = $(nextEle$);
+            let ele_exist$ = this.sortableCls.find('#' + this.idx);
+            if (ele_exist$.length === 0) {
+                if (nextEle$.length > 0) {
+                    this.sortableItem$.insertBefore(nextEle$);
+                } else {
+                    this.sortableCls.append(this.sortableItem$);
+                }
+            }
+            this.trigger('obj.reinit_ele');
+        }
+    }
+
+    trigger_sortableNewBefore() {
+    }
+
+    trigger_sortableNewAfter() {
+    }
+
     trigger_objReinitEle(temp_config, storage) {
         // Reset
         this.sortableItem$.empty();
@@ -1125,6 +1394,10 @@ class FormComponentAbstract {
         // Add element utils
         // Insert the latest item at the top for display.
         this.sortableItem$.append(this.sortableItemUtil$);
+        setTimeout(
+            () => this.sortableCls.recheckStats(),
+            300
+        )
     }
 
     trigger_configLoad(temp_config) {
@@ -1135,31 +1408,58 @@ class FormComponentAbstract {
             let value = config[input_name];
             let inp$ = this.configGroupEle$.find(`[name=${input_name}]`);
             if (inp$.length > 0) {
-                if (inp$.is('input:checkbox')) $(inp$).prop('checked', value).trigger('change'); else if (inp$.is('input:radio')) {
-                    inp$.removeAttr('checked');
-                    inp$.find(`[value=${value}]`).prop('checked', true).trigger('change');
-                } else if (inp$.is('select') || inp$.is('input') || inp$.is('textarea')) {
-                    inp$.val(value).trigger('change');
+                if (inp$.is('input:radio')) {
+                    this.configGroupEle$.find(`[name=${input_name}][value=${value}]`).prop('checked', true).trigger('change');
+                } else {
+                    let valueArr = Array.isArray(value) ? value : [value];
+                    if (inp$.length <= valueArr.length) {
+                        inp$.each(function () {
+                            if ($(this).is('input:checkbox')) {
+                                $(this).prop('checked', !!value).trigger('change');
+                            } else {
+                                // (inp$.is('select') || inp$.is('input') || inp$.is('textarea'))
+                                $(this).val(value).trigger('change');
+                            }
+                        })
+
+                    }
                 }
             }
         })
     }
 
+    _trigger_configOpen__active() {
+        this.sortableItem$.addClass('active');
+    }
+
     trigger_configOpen() {
+        this._trigger_configOpen__active();
         let parent$ = this.configGroupEle$.closest('.drawer-content');
         parent$.find('.drawer-config').addClass('d-none');
         this.configGroupEle$.removeClass('d-none');
+    }
+
+    trigger_configClose() {
+        this.sortableItem$.removeClass('active');
     }
 
     trigger_configSave(new_config) {
         let frm$ = this.configGroupEle$.find('form');
         if (frm$.valid()) {
             let config = SetupFormSubmit.serializerObject(frm$);
-            this.config = {
-                ...this.config, ...config, ...new_config,
-            }
+            const configSum = {...this.config, ...config, ...new_config}
+            let configResolve = {};
+            Object.keys(configSum).map(
+                key => {
+                    if (this.defaultConfig.hasOwnProperty(key)) {
+                        configResolve[key] = configSum[key];
+                    }
+                }
+            )
+            this.config = configResolve
             this.configOfFieldCls.close();
             this.trigger('obj.reinit_ele', {'config': this.config});
+            this.sortableCls.highlight(this.sortableItem$);
         } else {
             $.fn.notifyB({
                 'description': $.fn.gettext('Some configuration data is not correct')
@@ -1186,12 +1486,81 @@ class FormComponentAbstract {
         this.trigger('obj.reinit_ele');
     }
 
+    get defaultInputsDataItem() {
+        return super._defaultInputsDataItem();
+    }
+
     trigger_objClone() {
-        throw Error('The clone field method is not implement')
+        let config = {
+            ...this,
+            'inputs_data': this.inputs_data.map(data => {
+                return {
+                    ...data,
+                    ...this.defaultInputsDataItem,
+                    'name': this.generateName(),
+                }
+            })
+        }
+        let cls = new this.sortableCls.getForm(this.code)(config);
+        cls.trigger('obj.reinit_ele');
+        cls.trigger('sortable.add', this.sortableItem$);
+        // throw Error('The clone field method is not implement')
     }
 
     trigger_objRemove() {
         this.sortableCls.remove(this.sortableItem$);
+    }
+
+    trigger_objClick(target$) {
+        const clsThis = this;
+        let belongToButton$ = $(target$).closest('button');
+        if (belongToButton$.length > 0) {
+            if (belongToButton$.is('button.btn-setting')) {
+                clsThis.trigger('config.load');
+                clsThis.trigger('config.open');
+                clsThis.configOfFieldCls.open($(this.sortableItem$));
+            } else if (belongToButton$.is('button.btn-clone')) {
+                if (clsThis.toolboxCls.stateClone === true) clsThis.trigger('obj.clone'); else {
+                    Swal.fire({
+                        title: `${$.fn.gettext('Clone field')}: ${clsThis.config.label}`,
+                        html: `<p>${$.fn.gettext('Are you sure about cloning?')}</p>`,
+                        icon: "question",
+                        showCloseButton: true,
+                        showCancelButton: true,
+                        cancelButtonColor: "#d33",
+                        cancelButtonText: $.fn.gettext('Cancel'),
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: $.fn.gettext('Yes, clone it')
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            clsThis.trigger('obj.clone');
+                        }
+                    });
+                }
+            } else if (belongToButton$.is('button.btn-remove')) {
+                if (clsThis.toolboxCls.stateRemove === true) clsThis.trigger('obj.remove'); else {
+                    Swal.fire({
+                        title: `${$.fn.gettext('Delete field')}: ${clsThis.config.label}`,
+                        html: `<p>${$.fn.gettext('Are you sure about deleting?')}</p>`,
+                        icon: "question",
+                        showCloseButton: true,
+                        showCancelButton: true,
+                        cancelButtonColor: "#d33",
+                        cancelButtonText: $.fn.gettext('Cancel'),
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: $.fn.gettext('Yes, delete it')
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            clsThis.trigger('obj.remove');
+                        }
+                    });
+                }
+            }
+        } else {
+            clsThis.trigger('config.load');
+            clsThis.trigger('config.open');
+            clsThis.configOfFieldCls.open($(this.sortableItem$));
+        }
     }
 }
 
@@ -1226,6 +1595,7 @@ class FormTitleComponentType extends FormComponentAbstract {
 
     set stateChangeAll(value) {
         this._stateChangeAll = value;
+        this.pageCls.trigger('obj.reinit_ele');
     }
 
     constructor(props) {
@@ -1245,11 +1615,18 @@ class FormTitleComponentType extends FormComponentAbstract {
             }
         });
 
+        // page
+        this.pageCls = new FormPageListComponentType({
+            'config': this.config.page,
+        })
+
         // auto hide draggable item is not support
         if (this.sortableCls && this.draggableCls) {
             const arrCode = this.sortableCls.matchForm ? Object.keys(this.sortableCls.matchForm) : [];
             this.draggableCls.hideAllExclude(arrCode);
         } else this.draggableCls.hideAllExclude([]);
+
+        clsThis.sortableCls.trigger('sortable.check_empty');
     }
 
     trigger_sortableAdd() {
@@ -1266,7 +1643,11 @@ class FormTitleComponentType extends FormComponentAbstract {
             this.sortableItem$.attr('data-toolbar-loaded', 'true');
             this.sortableItem$.append(this.sortable_toolbar(['setting']));
         }
-        $("#idx-form-head").css('display', config.authentication_required ? 'block' : 'none');
+        if (config.authentication_required){
+            $("#idx-form-head").alterClass('form-item--*');
+        } else {
+            $("#idx-form-head").addClass('form-item--hide');
+        }
     }
 
     trigger_configRealtime() {
@@ -1300,36 +1681,7 @@ class FormTitleComponentType extends FormComponentAbstract {
     // Export for all
 
     return_html_all() {
-        let html = $('#sortable-parent').prop('outerHTML');
-        let html$ = $(html);
-        // remove instruction when empty
-        html$.find('#sortable-item-empty').remove();
-        // remove group control
-        html$.find('.group-control').remove();
-        // remove id
-        html$.find('#sortable-content').removeAttr('id');
-        html$.find('#head-sortable').removeAttr('id');
-        html$.find('#sortable').removeAttr('id');
-        html$.find('#form-title').removeAttr('id');
-        // remove class
-        html$.find('.ui-sortable').removeClass('ui-sortable');
-        html$.find('.sortable-item').removeClass('sortable-item');
-        // remove attribute data-code
-        html$.find('[data-code]').removeAttr('data-code').removeAttr('id');
-        // remove masker
-        html$.find('.group-masker').remove()
-        // remove group--setting-group
-        html$.find('.group--setting-group').remove();
-        // remove box
-        html$.find('.box').removeClass('box');
-        // show form action
-        html$.find('.form-action').removeClass('d-none');
-        // show form-foot
-        html$.find('.form-foot').show();
-        // remove current user
-        html$.find('#form-head--current-user-name').text('');
-
-        return html$.children().prop('outerHTML');
+        return this.sortableCls.html_all();
     }
 
     return_config_all() {
@@ -1340,34 +1692,44 @@ class FormTitleComponentType extends FormComponentAbstract {
                 'display_referrer_name': _mainConfig.display_referrer_name,
                 'display_creator': _mainConfig.display_creator,
             },
+            'page': this.pageCls.resolveConfig.config,
         };
+
         let configsOrder = [];
         let configs = {};
+        let query = '.sortable-item[data-code]';
+        query += ':not([data-code="form-title"])';
+        query += ':not([data-code="form-page"])';
+
         $('#sortable-content')
-            .find('.sortable-item[data-code]:not([data-code="form-title"])')
+            .find(query)
             .each(function () {
                 if ($(this).data('code') !== 'form-title') {
                     let idx = $(this).attr('id');
                     if (idx) {
                         let data = $(this).data('forms');
-                        configsOrder.push($(this).attr('id'));
-                        configs[idx] = data.cls.resolveConfig;
+                        if (data){
+                            configsOrder.push($(this).attr('id'));
+                            configs[idx] = data.cls.resolveConfig;
+                        }
                     }
                 }
             })
+
+        // keep sortable-page at first
         mainConfig['configs_order'] = configsOrder;
         mainConfig['configs'] = configs;
         mainConfig['html_text'] = this.return_html_all();
         return mainConfig;
     }
 
-    check_rules_form_global(mainConfig){
+    check_rules_form_global(mainConfig) {
         let required = 0;
         let inputsDataPass = 0;
         Object.keys(mainConfig['configs']).map(
             idx => {
                 const config = mainConfig['configs'][idx];
-                if (config?.['config']){
+                if (config?.['config']) {
                     if (config['config']?.['required'] === true) required += 1;
                 }
                 if (config?.['inputs_data']?.length > 0) {
@@ -1376,7 +1738,7 @@ class FormTitleComponentType extends FormComponentAbstract {
             }
         )
         let state = true;
-        if (inputsDataPass === 0){
+        if (inputsDataPass === 0) {
             state = false;
             $.fn.notifyB({
                 'description': $.fn.gettext('The form requires at least one input field'),
@@ -1404,9 +1766,778 @@ class FormTitleComponentType extends FormComponentAbstract {
                 }
             }
         });
+        clsThis.pageCls.trigger('obj.reinit_ele');
     }
 
     // -- Export for all
+}
+
+class FormPageListComponentType extends FormComponentAbstract {
+    static pageEle$(){
+        return $('#page-sortable');
+    }
+
+    get configGroupEle$() {
+        return $('#form-page-config');
+    }
+
+    get defaultConfig() {
+        return {
+            'enabled': false,
+            'items': [],
+            'show_progress_page': true,
+            'display_title': 'bar',  // , page, ''
+            'progress_style': 'steps', // bar, proportion, steps, step-piece
+            'justify_progress_item': 'around', // around, between, evenly
+            'display_page_number': true,
+        }
+    }
+
+    get code() {
+        return 'form-page';
+    }
+
+    findPageElement(opts){
+        opts = {
+            from: null,
+            nextOrPrev: 'next',
+            until: null,
+            matcher: 'div.sortable-item',
+            ...opts,
+        }
+        const from$ = opts.from instanceof jQuery ? opts.from : this.sortableCls.eleContent$;
+        const until$ = opts.until instanceof jQuery ? opts.until : null;
+
+        switch (opts.nextOrPrev) {
+            case 'next':
+                if (until$ instanceof jQuery && until$.length > 0){
+                    return from$.nextUntil(until$, opts.matcher);
+                }
+                return from$.nextAll(opts.matcher);
+            case 'prev':
+                if (until$ instanceof jQuery && until$.length > 0){
+                    return from$.prevUntil(until$, opts.matcher);
+                }
+                return from$.prevAll(opts.matcher);
+        }
+        return $(``);
+    }
+
+    get pageLength(){
+        return this.config.items.length;
+    }
+
+    getConfigIndexHeadOfPage(ele$){
+        const allPage$ = this.sortableCls.eleContent$.find(this.queryItemHead);
+        for (let i=0; i < allPage$.length ; i++){
+            if ($(allPage$[i]).is(ele$)) return i;
+        }
+        return null;
+    }
+
+    getConfigIndexOfFootOfPage(ele$){
+        const pageListPrev$ = this.findPageElement({
+            from: ele$,
+            nextOrPrev: 'prev',
+            matcher: this.queryItemHead,
+        });
+        if (pageListPrev$.length > 0){
+            return this.getConfigIndexHeadOfPage(pageListPrev$.eq(0));
+        }
+        return null;
+    }
+
+    getHTMLStepPage(){
+        return `
+            <div class="step-item">
+                <div class="icon-group">
+                    <svg width="64" height="64" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="icon icon-active" viewBox="0 0 16 16">
+                        <circle cx="8" cy="8" r="7.1" fill="#fff"/>
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                        <path d="M12.03 4.97a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                    </svg>
+                    <svg width="64" height="64" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="icon icon-deactivate" viewBox="0 0 16 16">
+                        <circle cx="8" cy="8" r="7.1" fill="#fff"/>
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                    </svg>
+                    <svg width="64" height="64" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="icon icon-current" viewBox="0 0 16 16">
+                        <circle cx="8" cy="8" r="7.1" fill="#fff"/>
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                        <circle cx="8" cy="8" r="4"/>
+                    </svg>
+                </div>
+                <div class="step-mask"></div>
+            </div>
+        `;
+    }
+
+    getHTMLProportionPage(){
+        return `
+            <div class="step-item">
+                <div class="step-mask"></div>
+            </div>
+        `;
+    }
+
+    getHTMLBarPage(){
+        return `
+            <div class="step-item">
+                <div class="step-mask"></div>
+            </div>
+        `;
+    }
+
+    getHTMLPiecePage(){
+        return `
+            <div class="step-item">
+                <div class="step-mask"></div>
+            </div>
+        `;
+    }
+
+    getPlaceHolderEmptyOfPage(){
+        return `
+            <div class="sortable-item form-item form-item-md sortable-drop-here sortable-item-disabled" data-code="page-placeholder">
+                <div><p>${$.fn.gettext('Drag fields from left panel and drop here to add them to your form.')}</p></div>
+            </div>
+        `
+    }
+
+    constructor(props) {
+        if (!props) props = {};
+        super(props);
+
+        this.inputs_data = [];
+        this.sortableItemUtil$ = this.sortable_toolbar(['setting', 'remove']);
+        this.sortableItem$ = FormPageListComponentType.pageEle$();
+        this.sortableItem$.data('forms', this.$dataFormsDefault);
+        this.on_trigger()
+
+        this.queryItemHead = `div.sortable-item[data-code=page-break-head]`;
+        this.queryItemFoot = `div.sortable-item[data-code=page-break-foot]`;
+        this.queryDropHere = 'div.sortable-item[data-code=page-placeholder]';
+    }
+
+    trigger_configWasChanged(){
+        if (this.config.items.length > 0){
+            this.sortableItem$.show();
+        } else {
+            this.sortableItem$.hide();
+        }
+    }
+
+    reloadPageItemConfig(items, temp_config){
+        const config = {...this.config, ...temp_config};
+
+        // show / hide page list
+        if (items.length > 0) this.sortableItem$.show();
+        else this.sortableItem$.hide();
+
+        //
+        let isShowPage = false;
+        switch (config.display_title) {
+            case 'page':
+                isShowPage = true;
+                break
+            case 'bar':
+                isShowPage = false;
+                break
+            case 'bar-and-page':
+                isShowPage = true
+                break
+            case '':
+            default:
+                isShowPage = false
+                break
+        }
+
+        //
+        return items.map(
+            (item, index) => {
+                // head
+                item['head']['show_head'] = isShowPage;
+                // footer
+                item['foot']['page_number'] = index + 1;
+                item['foot']['page_length'] = items.length;
+                item['foot']['is_prev'] = index !== 0;
+                item['foot']['is_next'] = index !== items.length - 1;
+                item['foot']['show_page_number'] = config.display_page_number === true;
+                return item;
+            }
+        )
+    }
+
+    get defaultConfigPageItemHead(){
+        return {
+            'label': `${$.fn.gettext('Page')}`,
+            'show_head': false,
+        }
+    }
+
+    get defaultConfigPageItemFoot(){
+        return {
+                'is_prev': true,
+                'is_next': true,
+                'title_prev': $.fn.gettext('Previous page'),
+                'title_next': $.fn.gettext('Next page'),
+                'page_number': null,
+                'page_length': null,
+            }
+    }
+
+    pageAdd(indexInsert= 0){
+        let items = this.config?.['items'] || [];
+        if (items.length === 0){
+            // add first page element to sortable
+            const firstPageConfig = {
+                'head': {
+                    ...this.defaultConfigPageItemHead,
+                    'label': `${$.fn.gettext('Page')} 1`,
+                },
+                'foot': {
+                    ...this.defaultConfigPageItemFoot,
+                },
+            };
+            const firstPageCls = new FormPageItemHeadComponentType({
+                    'config': firstPageConfig,
+            });
+            firstPageCls.trigger('obj.reinit_ele');
+            this.sortableCls.ele$.prepend(firstPageCls.sortableItem$);
+
+            //
+            items = [
+                firstPageConfig,
+                {
+                    'head': {
+                        ...this.defaultConfigPageItemHead,
+                        'label': `${$.fn.gettext('Page')} 2`,
+                    },
+                    'foot': {
+                        ...this.defaultConfigPageItemFoot,
+                    },
+                },
+            ]
+        } else {
+            const newConfig = {
+                'head': {
+                    ...this.defaultConfigPageItemHead,
+                    'label': `${$.fn.gettext('Page')} ${items.length + 1}`,
+                },
+                'foot': {
+                    ...this.defaultConfigPageItemFoot,
+                },
+            }
+            if (items.length === 0){
+                items = [
+                    newConfig,
+                    ...items
+                ]
+            } else if (items.length === indexInsert) {
+                items = [
+                    ...items,
+                    newConfig,
+                ]
+            } else if (items.length > indexInsert){
+                items = [
+                    ...items.slice(0, indexInsert),
+                    newConfig,
+                    ...items.slice(indexInsert),
+                ]
+            } else return false;
+        }
+        this.config = {
+            'enabled': items.length > 0,
+            'items': this.reloadPageItemConfig(items)
+        }
+        return this.config;
+    }
+
+    pageRemove(indexRemove){
+        let items = this.config.items;
+        if (indexRemove < items.length){
+            items = [
+                ...items.slice(0, indexRemove),
+                ...items.slice(indexRemove + 1),
+            ]
+            this.config = {
+                'enabled': items.length > 0,
+                'items': items
+            };
+        }
+    }
+
+    pageItemConfigUpdate(indexChanges, dataHead, dataFoot){
+        const items = this.config.items;
+        if (Number.isInteger(indexChanges) && indexChanges < items.length){
+            let itemChanges = items[indexChanges];
+            itemChanges['head'] = {
+                ...itemChanges['head'],
+                ...dataHead,
+            }
+            itemChanges['foot'] = {
+                ...itemChanges['foot'],
+                ...dataFoot,
+            }
+            this.config = {
+                'items': [
+                    ...items.slice(0, indexChanges),
+                    itemChanges,
+                    ...items.slice(indexChanges + 1),
+                ]
+            }
+        }
+    }
+
+    trigger_sortableAdd(previousEle$) {
+        this.trigger('obj.reinit_ele');
+        this.trigger_configWasChanged();
+    }
+
+    trigger_sortableAddBefore(nextEle$) {
+        this.trigger('obj.reinit_ele');
+        this.trigger_configWasChanged();
+    }
+
+    trigger_objReinitEle(temp_config, storage){
+        const config = {...this.config, ...temp_config};
+        const items = this.reloadPageItemConfig(config?.['items'] || [], temp_config);
+
+        const progress$ = this.sortableItem$.find('.progress-steps');
+        const group$ = this.sortableItem$.find('.steps-group');
+
+        let addTitle = true;
+        progress$.alterClass('steps-*')
+        switch (config.display_title) {
+            case 'page':
+                addTitle = false;
+                break
+            case 'bar':
+                addTitle = true;
+                progress$.addClass('steps-bar-has-title');
+                break
+            case 'bar-and-page':
+                addTitle = true;
+                progress$.addClass('steps-bar-has-title');
+                break
+            case '':
+            default:
+                addTitle = false;
+                break
+        }
+
+        group$.alterClass('steps-space-*');
+        group$.attr('data-progress-justify', config.justify_progress_item);
+        switch (config.justify_progress_item){
+            case 'around':
+                group$.addClass('steps-space-around');
+                break
+            case 'between':
+                group$.addClass('steps-space-between');
+                break
+            case 'evenly':
+                group$.addClass('steps-space-evenly');
+                break
+        }
+
+        group$.attr('data-progress-style', config.progress_style);
+        group$.empty();
+        switch (config.progress_style){
+            case 'proportion':
+                items.map(
+                    (item, index) => {
+                        const ele$ = $(this.getHTMLProportionPage());
+                        ele$.attr('data-page', item.foot.page_number)
+                        if (addTitle === true) ele$.find('.step-mask').text(item.head.label || '');
+                        if (index === 0) ele$.addClass('active');
+                        group$.append(ele$);
+                    }
+                )
+                break
+            case 'bar':
+                items.map(
+                    (item, index) => {
+                        const ele$ = $(this.getHTMLBarPage());
+                        ele$.attr('data-page', item.foot.page_number)
+                        if (addTitle === true) ele$.find('.step-mask').text(item.head.label || '');
+                        if (index === 0) ele$.addClass('active');
+                        group$.append(ele$);
+                    }
+                )
+                break
+            case 'piece':
+                items.map(
+                    (item, index) => {
+                        const ele$ = $(this.getHTMLPiecePage());
+                        ele$.attr('data-page', item.foot.page_number)
+                        if (addTitle === true) ele$.find('.step-mask').text(item.head.label || '');
+                        if (index === 0) ele$.addClass('active');
+                        group$.append(ele$);
+                    }
+                )
+                break
+            case 'steps':
+            default:
+                items.map(
+                    (item, index) => {
+                        const ele$ = $(this.getHTMLStepPage());
+                        ele$.attr('data-page', item.foot.page_number);
+                        if (addTitle === true) ele$.find('.step-mask').text(item.head.label || '');
+                        if (index === 0) ele$.addClass('active');
+                        group$.append(ele$);
+                    }
+                )
+                break
+        }
+
+        this.sortableItem$.alterClass('form-item--*');
+        let settingSpecial$ = this.sortableItem$.find('.group--setting-group');
+        if (config.show_progress_page === false){
+            if (settingSpecial$.length === 0) {
+                settingSpecial$ = $('<div class="group--setting-group"></div>');
+                this.sortableItem$.append(settingSpecial$);
+            }
+            settingSpecial$.empty().append(`<div class="group--setting-hide"><i class="fa-solid fa-eye-slash"></i></div>`);
+            this.sortableItem$.addClass('form-item--hide');
+        } else {
+            settingSpecial$.remove();
+        }
+
+        this.clean_toolbar();
+        this.sortableItem$.append(this.sortableItemUtil$);
+
+        // step 0: destroy sortable-drop-here
+        this.sortableCls.eleContent$.find(this.queryDropHere).remove();
+        // step 1: destroy footer
+        this.sortableCls.eleContent$.find(this.queryItemFoot).remove();
+        // // step 2: call render of head (foot render depends on)
+        let i = 0;
+        this.sortableCls.eleContent$.find(this.queryItemHead).each(function (){
+            const itemData = items?.[i];
+            if (typeof itemData === 'object'){
+                $(this).trigger('page.head.render', items[i]);
+            } else {
+                $(this).remove();
+            }
+            i += 1;
+        });
+    }
+
+    trigger_objRemove() {
+        this.config = {'items': []};
+        this.trigger_objReinitEle();
+        this.sortableItem$.hide();
+    }
+
+    trigger_objClone() {}
+}
+
+class FormPageItemHeadComponentType extends FormComponentAbstract {
+    get configGroupEle$() {
+        return $('#page-break-head');
+    }
+
+    get defaultConfig() {
+        return {
+            'label': '',
+            'head': {
+                'label': '',
+                'show_head': false,
+            },
+            'foot': {
+                'is_prev': false,
+                'is_next': false,
+                'title_prev': '',
+                'title_next': '',
+                'show_page_number': false,
+                'page_number': null,
+                'page_length': null,
+            },
+        }
+    }
+
+    get code() {
+        return 'page-break-head';
+    }
+
+    get pageCls(){
+        return FormPageListComponentType.pageEle$().data('forms').cls;
+    }
+
+    constructor(props) {
+        if (!props) props = {};
+        super(props);
+
+        this.config = {
+            ...this.config,
+            'head': {
+                ...this.defaultConfig['head'],
+                ...this.config?.['head'],
+            },
+            'foot': {
+                ...this.defaultConfig['foot'],
+                ...this.config?.['foot'],
+            },
+            'label': this.config.head.label || '',
+        }
+
+        this.inputs_data = [];
+
+        this.sortableItem$ = $(`<div></div>`)
+            .addClass('sortable-item form-item form-item-md sortable-item-fixed form-item-page-break')
+            .attr('data-code', this.code)
+            .attr('id', this.idx);
+        this.sortableItemUtil$ = this.sortable_toolbar(['setting', 'remove']);
+        this.sortableItem$.data('forms', this.$dataFormsDefault);
+        this.on_trigger();
+
+        this.register_trigger({
+            'page.head.render': this.trigger_pageHeadRender,
+        });
+    }
+
+    _getNextPage(){
+        const nextPage$ = this.pageCls.findPageElement({
+            from: this.sortableItem$,
+            matcher: this.pageCls.queryItemHead,
+        })
+        if (nextPage$.length > 0){
+            return nextPage$.eq(0);
+        }
+        return null;
+    }
+
+    _getFootOfHead(){
+        const nextPage$ = this._getNextPage();
+        if (nextPage$){
+            const foot$ = this.pageCls.findPageElement({
+                from: this.sortableItem$,
+                until: nextPage$.length > 0 ? nextPage$.eq(0) : null,
+                matcher: this.pageCls.queryItemFoot,
+            })
+
+            return foot$.length > 0 ? foot$.eq(0) : null;
+        }
+        return null;
+    }
+
+    trigger_pageHeadRender(event, config){
+        // head
+        this.config = {
+            ...config,
+            'head': {
+                ...this.defaultConfig['head'],
+                ...config?.['head'],
+            },
+            'foot': {
+                ...this.defaultConfig['foot'],
+                ...config?.['foot'],
+            },
+            'label': this.config.head.label || '',
+        };
+        this.trigger_objReinitEle();
+
+        // footer
+        const nextPage$ = this._getNextPage();
+        const footCls = new FormPageItemFootComponentType({
+            config: this.config?.['foot'] || {},
+        });
+        if (nextPage$){
+            footCls.trigger('sortable.add_before', nextPage$)
+        } else {
+            footCls.trigger('sortable.add');
+        }
+
+        // check between head and foot is empty!
+        const between$ = this.pageCls.findPageElement({
+            from: this.sortableItem$,
+            until: footCls.sortableItem$,
+        });
+        if (between$.length === 0){
+            $(this.pageCls.getPlaceHolderEmptyOfPage()).insertAfter(this.sortableItem$)
+        }
+    }
+
+    trigger_sortableNewAfter() {
+        super.trigger_sortableNewAfter();
+        const indexPage = this.pageCls.getConfigIndexHeadOfPage(this.sortableItem$);
+        this.pageCls.pageAdd(indexPage);
+        this.pageCls.trigger_objReinitEle();
+    }
+
+    trigger_configLoad(temp_config) {
+        const config = {...this.config, ...temp_config};
+        this.configGroupEle$.find(`[name=label]`).val(config.head.label);
+        const prev$ = this.configGroupEle$.find(`[name=title_prev]`);
+        if (config.foot.is_prev === true) {
+            prev$.val(config.foot.title_prev).prop('disabled', false);
+            prev$.closest('.form-group').show();
+        } else {
+            prev$.val('').prop('disabled', true);
+            prev$.closest('.form-group').hide();
+        }
+        const next$ = this.configGroupEle$.find(`[name=title_next]`);
+        if (config.foot.is_next === true){
+            next$.val(config.foot.title_next).prop('disabled', false);
+            next$.closest('.form-group').show();
+        } else {
+            next$.val(config.foot.title_next).prop('disabled', true);
+            next$.closest('.form-group').hide();
+        }
+    }
+
+    trigger_configSave(new_config) {
+        let frm$ = this.configGroupEle$.find('form');
+        if (frm$.valid()) {
+            let config = SetupFormSubmit.serializerObject(frm$);
+            const configSum = {...this.config, ...config, ...new_config}
+
+            super.trigger_configSave(new_config);
+
+            const indexPage = this.pageCls.getConfigIndexHeadOfPage(this.sortableItem$);
+            this.pageCls.pageItemConfigUpdate(
+                indexPage,
+                {
+                    'label': configSum.label,
+                },
+                    {
+                    'title_prev': configSum['title_prev'],
+                    'title_next': configSum['title_next'],
+                }
+            );
+            this.pageCls.trigger_objReinitEle();
+        }
+    }
+
+    trigger_objReinitEle(temp_config, storage) {
+        const config = {...this.config, ...temp_config};
+
+        this.clean_toolbar();
+        this.sortableItem$
+            .attr('data-page', config.foot.page_number)
+            .empty()
+            .append(
+                `<div><p class="page-title">${config.head.label}</p></div>`
+            )
+            .append(this.sortableItemUtil$);
+        this.sortableItem$.alterClass('form-item--*');
+        if (config.head.show_head === false){
+            let settingSpecial$ = this.sortableItem$.find('.group--setting-group');
+            if (settingSpecial$.length === 0) {
+                settingSpecial$ = $('<div class="group--setting-group"></div>');
+                this.sortableItem$.append(settingSpecial$);
+            }
+            settingSpecial$.append(`<div class="group--setting-hide"><i class="fa-solid fa-eye-slash"></i></div>`);
+            this.sortableItem$.addClass('form-item--hide');
+        }
+    }
+
+    trigger_objRemove() {
+        const indexPage = this.pageCls.getConfigIndexHeadOfPage(this.sortableItem$);
+        this.pageCls.pageRemove(indexPage);
+        super.trigger_objRemove();
+        this.pageCls.trigger_objReinitEle();
+    }
+}
+
+class FormPageItemFootComponentType extends FormComponentAbstract {
+    get configGroupEle$() {
+        return $('#page-break-foot');
+    }
+
+    get defaultConfig() {
+        return {
+            'is_prev': false,
+            'is_next': false,
+            'title_prev': '',
+            'title_next': '',
+            'show_page_number': false,
+            'page_number': null,
+            'page_length': null,
+        }
+    }
+
+    get code() {
+        return 'page-break-foot';
+    }
+
+    get pageCls(){
+        return FormPageListComponentType.pageEle$().data('forms').cls;
+    }
+
+    constructor(props) {
+        if (!props) props ={}
+        super(props);
+
+        this.inputs_data = [];
+        this.sortableItem$ = $(`<div></div>`)
+            .addClass('sortable-item form-item form-item-sm sortable-item-fixed')
+            .attr('data-code', this.code)
+            .attr('id', this.idx);
+        this.sortableItem$.addClass('form-item-controller');
+        this.sortableItemUtil$ = this.sortable_toolbar(['setting']);
+        this.sortableItem$.data('forms', this.$dataFormsDefault);
+        this.on_trigger();
+    }
+
+    trigger_configLoad(temp_config) {
+        const config = {...this.config, ...temp_config};
+        const prev$ = this.configGroupEle$.find(`[name=title_prev]`);
+        if (config.is_prev === true) {
+            prev$.val(config.title_prev).prop('disabled', false);
+            prev$.closest('.form-group').show();
+        } else {
+            prev$.val('').prop('disabled', true);
+            prev$.closest('.form-group').hide();
+        }
+        const next$ = this.configGroupEle$.find(`[name=title_next]`);
+        if (config.is_next === true){
+            next$.val(config.title_next).prop('disabled', false);
+            next$.closest('.form-group').show();
+        } else {
+            next$.val('').prop('disabled', true);
+            next$.closest('.form-group').hide();
+        }
+    }
+
+    trigger_configSave(new_config) {
+        let frm$ = this.configGroupEle$.find('form');
+        if (frm$.valid()) {
+            let config = SetupFormSubmit.serializerObject(frm$);
+            const configSum = {...this.config, ...config, ...new_config}
+
+            super.trigger_configSave(new_config);
+
+            const indexPage = this.pageCls.getConfigIndexOfFootOfPage(this.sortableItem$);
+            this.pageCls.pageItemConfigUpdate(
+                indexPage,
+                null,
+                {
+                    'title_prev': configSum['title_prev'],
+                    'title_next': configSum['title_next'],
+                }
+            );
+            this.pageCls.trigger_objReinitEle();
+        }
+    }
+
+    trigger_objReinitEle(temp_config, storage) {
+        const config = {...this.config, ...temp_config};
+        const groupBtn$ = $(`<div class="page-btn-group"></div>`);
+        if (config.is_prev === true) groupBtn$.append(`<button type="button" class="btn-previous">${config.title_prev}</button>`);
+        if (config.is_next === true) groupBtn$.append(`<button type="button" class="btn-next">${config.title_next}</button>`);
+        this.sortableItem$
+            .empty().append(groupBtn$)
+            .attr('data-page', config.page_number);
+        if (config.show_page_number && config.page_number && config.page_length) {
+            this.sortableItem$.append(
+                `<div class="page-number-group"><p>${config.page_number}/${config.page_length}</p></div>`
+            );
+        }
+        this.clean_toolbar();
+        this.sortableItem$.append(this.sortableItemUtil$);
+    }
+
+    trigger_objRemove() {}
 }
 
 class FormSingleLineComponentType extends FormComponentAbstract {
@@ -1458,7 +2589,7 @@ class FormSingleLineComponentType extends FormComponentAbstract {
             for (let idx in this.inputs_data) {
                 if (!this.inputs_data[idx]?.['name']) throw Error('Item must has "name" property.')
             }
-        }  else throw Error('The input data of field configuration must have a length of one item.')
+        } else throw Error('The input data of field configuration must have a length of one item.')
     }
 
     trigger_configLoad(temp_config) {
@@ -2416,10 +3547,1620 @@ class FormEmailComponentType extends FormComponentAbstract {
     }
 }
 
+class FormSelectComponentType extends FormComponentAbstract {
+    get configGroupEle$() {
+        return $('#form-select');
+    }
+
+    get code() {
+        return 'select';
+    }
+
+    get defaultConfig() {
+        return {
+            'label': 'Select Box',
+            'is_hide_label': false,
+            'instruction': '',
+            'place_holder': '',
+            'size': 'medium',
+            'required': false,
+            'visibility': 'unset',
+            'is_multiple': false,
+            'options': [
+                {
+                    'title': $.fn.gettext('First Choice'),
+                    'is_default': false,
+                    'is_default_multiple': false,
+                },
+                {
+                    'title': $.fn.gettext('Second Choice'),
+                    'is_default': false,
+                    'is_default_multiple': false,
+                },
+                {
+                    'title': $.fn.gettext('Third Choice'),
+                    'is_default': false,
+                    'is_default_multiple': false,
+                },
+            ],
+        }
+    }
+
+    get defaultInputsDataItem() {
+        return super._defaultInputsDataItem();
+    }
+
+    constructor(props) {
+        if (!props) props = {};
+        super(props);
+
+        if (this.inputs_data.length === 0) {
+            const name = this.generateName();
+            this.inputs_data = [
+                {
+                    ...this.defaultInputsDataItem,
+                    'name': name,
+                    'element': 'select',
+                },
+            ];
+        } else if (this.inputs_data.length === 1) {
+            for (let idx in this.inputs_data) {
+                if (!this.inputs_data[idx]?.['name']) throw Error('Item must has "name" property.')
+            }
+        } else throw Error('The input data of field configuration must have a length of one item.')
+    }
+
+    trigger_configLoad(temp_config) {
+        super.trigger_configLoad(temp_config);
+
+        let inp$ = this.configGroupEle$.find('input[name="name"]');
+        inp$.prop('readonly', true).prop('disabled', true);
+        if (this.inputs_data.length > 0) {
+            inp$.val(this.inputs_data[0].name);
+        }
+
+        let config = {...this.config, ...temp_config};
+        const optionBase$ = this.configGroupEle$.find('#select-option-base');
+        optionBase$.trigger('data.clean');
+        optionBase$.trigger('data.load', config);
+        optionBase$.trigger('data.multiple.set');
+    }
+
+    trigger_configSave(new_config) {
+        let frm$ = this.configGroupEle$.find('form');
+        let config = SetupFormSubmit.serializerObject(frm$);
+        const configSum = {...this.config, ...config, ...new_config};
+
+        function showErrorOfField(errs) {
+            frm$.validate().showErrors(errs);
+            $.fn.notifyB({
+                'description': $.fn.gettext('Some configuration data is not correct')
+            }, 'failure');
+        }
+
+        let arrTitleName = [];
+        let arrTitle = [];
+        let arrDefaultValueMultiple = [];
+
+        Object.keys(configSum).map(
+            key => {
+                if (key.startsWith('select_option_title_')) {
+                    arrTitleName.push(key);
+                    arrTitle.push(configSum[key]);
+                }
+            }
+        )
+
+        this.configGroupEle$.find('input[name^="select_option_default_multiple_"]').each(function () {
+            if ($(this).prop('checked') === true) {
+                const valueTitleTmp = $(this).closest('.select-box-item-data').find('input[name^="select_option_title"]').val();
+                if (valueTitleTmp) {
+                    arrDefaultValueMultiple.push(valueTitleTmp);
+                }
+            }
+        })
+
+        const defaultValue = configSum['select_option_default'];
+        if (defaultValue && arrTitle.indexOf(defaultValue) === -1) {
+            showErrorOfField({
+                'select-option-error-general': $.validator.messages?.['required'] || 'This field is required',
+                'select_option_default': ''
+            })
+            return false;
+        }
+
+        if (arrTitle.length) {
+            if ((new Set(arrTitle)).size !== arrTitle.length) {
+                let errors = {
+                    'select-option-error-general': $.fn.gettext('Ensure that titles are unique in the list'),
+                };
+                arrTitleName.map(
+                    key => {
+                        errors[key] = ''
+                    }
+                )
+                showErrorOfField(errors);
+                return false;
+            }
+            let configResult = [];
+            for (let i = 0; i < arrTitle.length; i++) {
+                configResult.push({
+                    'title': arrTitle[i].trim(),
+                    'is_default': arrTitle[i] === defaultValue,
+                    'is_default_multiple': arrDefaultValueMultiple.indexOf(arrTitle[i]) !== -1,
+                })
+            }
+            this.config = {'options': configResult};
+            this.trigger('obj.reinit_ele', {'config': this.config});
+            super.trigger_configSave(new_config);
+        }
+    }
+
+    generateField(temp_config) {
+        let config = {
+            ...this.config, ...temp_config,
+        };
+
+        let inputs_data = {
+            ...this.inputs_data[0], // reset args and kwargs before handle
+            ...this.defaultInputsDataItem,
+            'element': 'select',
+        };
+        inputs_data['label'] = config.label_for_report ? config.label_for_report : '';
+
+        let label$ = $(`<label class="form-item-label">${config.label}</label>`);
+        let inp$ = $(`<select class="form-item-input" name="${inputs_data.name}"></select>`);
+        let groupAll$ = this.sortableItem$;
+        groupAll$
+            .find('.' + this.cls_label_group)
+            .css('display', config.is_hide_label === true ? 'none' : 'block')
+            .append(label$);
+        groupAll$
+            .find('.' + this.cls_instruction)
+            .text(config.instruction);
+        groupAll$.find('.' + this.cls_input_group).empty().append(inp$);
+
+        // insert option
+        if (config.required) {
+            label$.addClass('required');
+            inputs_data['args'].add('required');
+        }
+        if (!config.is_multiple) {
+            inp$.empty().append(`<option value="" selected></option>`)
+        }
+        if (config.is_multiple) {
+            inp$.attr('multiple', true);
+            inputs_data['args'].add('multiple');
+        }
+        config['options'].map(
+            item => {
+                let selectedTmp = false;
+                if (config.is_multiple === true) {
+                    selectedTmp = !!(item.is_default_multiple);
+                } else {
+                    selectedTmp = !!(item.is_default);
+                }
+                inp$.append(
+                    `<option 
+                        value="${item.title}"
+                        ${selectedTmp ? "selected" : ""}
+                    >${item.title}</option>`
+                );
+            }
+        )
+        if (config.place_holder) inputs_data['kwargs']['placeholder'] = config.place_holder;
+        switch (config.size) {
+            case 'extra-small':
+                inputs_data['kwargs']['class'].add('form-input-xs');
+                break
+            case 'small':
+                inputs_data['kwargs']['class'].add('form-input-sm');
+                break
+            case 'medium':
+                inputs_data['kwargs']['class'].add('form-input-md');
+                break
+            case 'large':
+                inputs_data['kwargs']['class'].add('form-input-lg');
+                break
+            case 'extra-large':
+                inputs_data['kwargs']['class'].add('form-input-xl');
+                break
+        }
+
+        this.applyInputsDataToInput(inp$, inputs_data);
+        this.inputs_data[0] = inputs_data;
+    }
+}
+
+class FormCheckboxComponentType extends FormComponentAbstract {
+    get configGroupEle$() {
+        return $('#form-checkbox');
+    }
+
+    get code() {
+        return 'checkbox';
+    }
+
+    get defaultConfig() {
+        return {
+            'label': 'Checkbox',
+            'instruction': '',
+            'size': 'medium',
+            'required': false,
+            'visibility': 'unset',
+            'checkbox_style': 'default',
+            'init_value': 'unchecked',
+        }
+    }
+
+    get defaultInputsDataItem() {
+        return super._defaultInputsDataItem();
+    }
+
+    constructor(props) {
+        if (!props) props = {};
+        super(props);
+
+        if (this.inputs_data.length === 0) {
+            const name = this.generateName();
+            this.inputs_data = [
+                {
+                    ...this.defaultInputsDataItem,
+                    'name': name,
+                },
+            ];
+        } else if (this.inputs_data.length === 1) {
+            for (let idx in this.inputs_data) {
+                if (!this.inputs_data[idx]?.['name']) throw Error('Item must has "name" property.')
+            }
+        } else throw Error('The input data of field configuration must have a length of one item.')
+    }
+
+    trigger_configLoad(temp_config) {
+        super.trigger_configLoad(temp_config);
+
+        let inp$ = this.configGroupEle$.find('input[name="name"]');
+        inp$.prop('readonly', true).prop('disabled', true);
+        if (this.inputs_data.length > 0) {
+            inp$.val(this.inputs_data[0].name);
+        }
+    }
+
+    generateField(temp_config) {
+        let config = {
+            ...this.config, ...temp_config,
+        };
+
+        let inputs_data = {
+            ...this.inputs_data[0], // reset args and kwargs before handle
+            ...this.defaultInputsDataItem,
+        }
+        inputs_data['kwargs']['type'] = 'checkbox';
+        inputs_data['label'] = config.label_for_report ? config.label_for_report : '';
+        inputs_data['kwargs']['class'].delete('form-item-input');
+
+        const idx = $x.fn.randomStr(32, true);
+        let label$ = $(`<label class="form-checkbox-label" for="${idx}">${config.label}</label>`);
+        let inp$ = $(`<input class="form-checkbox-input" id="${idx}" name="${inputs_data.name}" type="email" />`);
+        let groupAll$ = this.sortableItem$;
+        groupAll$
+            .find('.' + this.cls_instruction)
+            .text(config.instruction);
+        groupAll$
+            .find('.' + this.cls_input_group)
+            .empty()
+            .append(
+                $(`<div class="form-checkbox-group"></div>`)
+                    .append(inp$)
+                    .append(label$)
+            )
+        switch (config.size) {
+            case 'extra-small':
+                inputs_data['kwargs']['class'].add('form-checkbox-xs');
+                break
+            case 'small':
+                inputs_data['kwargs']['class'].add('form-checkbox-sm');
+                break
+            case 'medium':
+                inputs_data['kwargs']['class'].add('form-checkbox-md');
+                break
+            case 'large':
+                inputs_data['kwargs']['class'].add('form-checkbox-lg');
+                break
+            case 'extra-large':
+                inputs_data['kwargs']['class'].add('form-checkbox-xl');
+                break
+        }
+        if (config.required) {
+            label$.addClass('required');
+            inputs_data['args'].add('required');
+        }
+        if (config.visibility !== 'unset') {
+            this.sortableItem$.alterClass('form-item--hide').alterClass('form-item--disable');
+            let settingSpecial$ = this.sortableItem$.find('.group--setting-group');
+            if (settingSpecial$.length === 0) {
+                settingSpecial$ = $('<div class="group--setting-group"></div>');
+                this.sortableItem$.append(settingSpecial$);
+            }
+            switch (config.visibility) {
+                case 'hide':
+                    settingSpecial$.append(`<div class="group--setting-hide"><i class="fa-solid fa-eye-slash"></i></div>`);
+                    this.sortableItem$.addClass('form-item--hide');
+                    inputs_data['kwargs']['class'].add('hidden');
+                    break
+                case 'disable':
+                    settingSpecial$.append(`<div class="group--setting-disable"><i class="fa-solid fa-ban"></i></div>`);
+                    this.sortableItem$.addClass('form-item--disable')
+                    inputs_data['args'].add('disabled');
+                    break
+            }
+        }
+        switch (config.checkbox_style) {
+            case 'default':
+                break
+            case 'switch':
+                const checkboxGroup$ = inp$.closest('.form-checkbox-group');
+                checkboxGroup$.addClass('form-checkbox-switch');
+                break
+        }
+        switch (config.init_value) {
+            case 'unchecked':
+                inp$.removeAttr('checked');
+                break
+            case 'checked':
+                inp$.attr('checked', true);
+                break
+        }
+
+        this.applyInputsDataToInput(inp$, inputs_data);
+        this.inputs_data[0] = inputs_data;
+    }
+}
+
+class FormManyCheckboxComponentType extends FormComponentAbstract {
+    get configGroupEle$() {
+        return $('#form-many-checkbox');
+    }
+
+    get code() {
+        return 'many-checkbox';
+    }
+
+    get defaultConfig() {
+        return {
+            'label': 'Many Checkbox',
+            'instruction': '',
+            'size': 'medium',
+            'visibility': 'unset',
+            'checkbox_style': 'default',
+            'list_checkbox': [],
+        }
+    }
+
+    get defaultInputsDataItem() {
+        return super._defaultInputsDataItem();
+    }
+
+    defaultItemInListCheckbox(label, isDefault, name = null) {
+        return {
+            'name': name ? name : this.generateName(),
+            'label': label,
+            'is_default': !!isDefault,
+        }
+    }
+
+    constructor(props) {
+        if (!props) props = {};
+        super(props);
+
+        if (this.config['list_checkbox'].length === 0) {
+            this.config = {
+                'list_checkbox': [
+                    this.defaultItemInListCheckbox('First Choice', false, null),
+                    this.defaultItemInListCheckbox('Second Choice', false, null),
+                    this.defaultItemInListCheckbox('Third Choice', false, null),
+                ]
+            }
+        }
+
+        if (this.inputs_data.length === 0) {
+            this.inputs_data = [];
+        } else if (this.inputs_data.length >= 1) {
+            for (let idx in this.inputs_data) {
+                if (!this.inputs_data[idx]?.['name']) throw Error('Item must has "name" property.')
+            }
+        } else throw Error('The input data of field configuration must have a length of one item.')
+    }
+
+    trigger_configLoad(temp_config) {
+        super.trigger_configLoad(temp_config);
+
+        let inp$ = this.configGroupEle$.find('input[name="name"]');
+        inp$.prop('readonly', true).prop('disabled', true);
+        if (this.inputs_data.length > 0) {
+            inp$.val(this.inputs_data[0].name);
+        }
+
+        const groupDynamic$ = this.configGroupEle$.find('#many-checkbox-group-dynamic');
+        groupDynamic$.trigger('data.clean');
+        groupDynamic$.trigger('data.load', {
+            'list_checkbox': this.config.list_checkbox || []
+        })
+    }
+
+    trigger_configSave(new_config) {
+        let clsThis = this;
+        if (!new_config) new_config = {};
+
+        let frm$ = this.configGroupEle$.find('form');
+        if (frm$.valid()) {
+            let config = SetupFormSubmit.serializerObject(frm$);
+            const configSum = {...this.config, ...config, ...new_config}
+
+            let listCheckbox = [];
+            this.configGroupEle$.find('#many-checkbox-group-dynamic').find('.many-checkbox-group').each(function () {
+                const nameVal = $(this).find('input.name_of_choice').val();
+                const labelVal = $(this).find('input.label_of_choice').val();
+                const defaultVal = $(this).find('input.default_of_choice').prop('checked');
+                if (nameVal && labelVal) {
+                    listCheckbox.push(
+                        clsThis.defaultItemInListCheckbox(labelVal, defaultVal, nameVal)
+                    )
+                } else {
+                    let errors = {}
+                    if (!nameVal) {
+                        errors[$(this).find('input.name_of_choice').attr('name')] = $.fn.gettext('This field is required')
+                    }
+                    if (!labelVal) {
+                        errors[$(this).find('input.label_of_choice').attr('name')] = $.fn.gettext('This field is required')
+                    }
+                    frm$.validate().showErrors(errors);
+                    return;
+                }
+            })
+
+            new_config['list_checkbox'] = listCheckbox;
+            super.trigger_configSave(new_config);
+        }
+    }
+
+    generateField(temp_config) {
+        let config = {
+            ...this.config, ...temp_config,
+        };
+
+        let inpArr$ = [];
+        let labelArr$ = [];
+        let configArr = [];
+
+        let groupAll$ = this.sortableItem$;
+        groupAll$
+            .find('.' + this.cls_instruction)
+            .text(config.instruction);
+        groupAll$
+            .find('.' + this.cls_label_group)
+            .append(`<label class="form-item-label">${config.label}</label>`);
+
+        const inputGroup$ = groupAll$.find('.' + this.cls_input_group);
+        inputGroup$.empty()
+        config['list_checkbox'].map(
+            inputData => {
+                let itemConfig = {
+                    ...this.defaultInputsDataItem,
+                    'name': inputData['name'],
+                    'label': inputData['label'],
+                }
+                itemConfig['kwargs']['type'] = 'checkbox';
+                itemConfig['kwargs']['class'].add('form-checkbox-input').delete('form-item-input');
+
+                const idx = `${itemConfig['name']}_${$x.fn.randomStr(10)}`
+                const inp$ = $(`<input type="checkbox" id="${idx}" name="${itemConfig['name']}" />`);
+                const label$ = $(`<label for="${idx}" class="form-checkbox-label">${itemConfig['label']}</label>`);
+
+                switch (config.size) {
+                    case 'sm':
+                        itemConfig['kwargs']['class'].add('form-checkbox-sm');
+                        break
+                    case 'lg':
+                        itemConfig['kwargs']['class'].add('form-checkbox-lg');
+                        break
+                    default:
+                        itemConfig['kwargs']['class'].add('form-checkbox-md');
+                        break
+                }
+
+                switch (config.visibility) {
+                    case 'hide':
+                        itemConfig['kwargs']['class'].add('hidden');
+                        break
+                    case 'disable':
+                        itemConfig['args'].add('disabled');
+                        break
+                }
+
+                if (inputData['is_default'] === true) itemConfig['kwargs']['checked'] = true;
+
+                inpArr$.push(inp$);
+                labelArr$.push(label$);
+                configArr.push(itemConfig);
+            }
+        )
+
+        if (config.visibility !== 'unset') {
+            this.sortableItem$.alterClass('form-item--hide').alterClass('form-item--disable');
+            let settingSpecial$ = this.sortableItem$.find('.group--setting-group');
+            if (settingSpecial$.length === 0) {
+                settingSpecial$ = $('<div class="group--setting-group"></div>');
+                this.sortableItem$.append(settingSpecial$);
+            }
+            switch (config.visibility) {
+                case 'hide':
+                    settingSpecial$.append(`<div class="group--setting-hide"><i class="fa-solid fa-eye-slash"></i></div>`);
+                    this.sortableItem$.addClass('form-item--hide');
+                    break
+                case 'disable':
+                    settingSpecial$.append(`<div class="group--setting-disable"><i class="fa-solid fa-ban"></i></div>`);
+                    this.sortableItem$.addClass('form-item--disable')
+                    break
+            }
+        }
+
+        for (let i = 0; i < configArr.length; i++) {
+            this.applyInputsDataToInput(inpArr$[i], configArr[i]);
+            const ele$ = $(`<div class="form-checkbox-group mb-1"></div>`).append(inpArr$[i]).append(labelArr$[i]);
+            switch (config.checkbox_style) {
+                case 'default':
+                    break
+                case 'switch':
+                    ele$.addClass('form-checkbox-switch')
+                    break
+            }
+            inputGroup$.append(ele$)
+        }
+        this.inputs_data = configArr;
+    }
+}
+
+class FormDateComponentType extends FormComponentAbstract {
+    get configGroupEle$() {
+        return $('#form-date');
+    }
+
+    get code() {
+        return 'date';
+    }
+
+    get defaultConfig() {
+        return {
+            'label': 'Date',
+            'instruction': '',
+            'size': 'medium',
+            'place_holder': '',
+            'visibility': 'unset',
+            'required': false,
+            'init_value_type': 'unset',
+            'init_value_custom': null,
+            'format': 'l, j F Y',
+            'min_value': null,
+            'max_value': null,
+        }
+    }
+
+    get defaultInputsDataItem() {
+        return super._defaultInputsDataItem();
+    }
+
+    constructor(props) {
+        if (!props) props = {};
+        super(props);
+
+        if (this.inputs_data.length === 0) {
+            this.inputs_data = [
+                {
+                    ...this.defaultInputsDataItem,
+                    'name': this.generateName(),
+                }
+            ];
+        } else if (this.inputs_data.length === 1) {
+            for (let idx in this.inputs_data) {
+                if (!this.inputs_data[idx]?.['name']) throw Error('Item must has "name" property.')
+            }
+        } else throw Error('The input data of field configuration must have a length of one item.')
+    }
+
+    trigger_configLoad(temp_config) {
+        super.trigger_configLoad(temp_config);
+
+        let inp$ = this.configGroupEle$.find('input[name="name"]');
+        inp$.prop('readonly', true).prop('disabled', true);
+        if (this.inputs_data.length > 0) {
+            inp$.val(this.inputs_data[0].name);
+        }
+        const resolveConfig = {...this.config, ...temp_config}
+        this.configGroupEle$.find('input[name=min_value]')[0]._flatpickr.setDate(resolveConfig.min_value);
+        this.configGroupEle$.find('input[name=max_value]')[0]._flatpickr.setDate(resolveConfig.max_value);
+    }
+
+    trigger_configSave(new_config) {
+        if (!new_config) new_config = {};
+        let frm$ = this.configGroupEle$.find('form');
+        if (frm$.valid()) {
+            let config = SetupFormSubmit.serializerObject(frm$);
+            const configSum = {...this.config, ...config, ...new_config}
+
+            if (!configSum['init_value_custom']) new_config['init_value_custom'] = null;
+            if (!configSum['min_value']) new_config['min_value'] = null;
+            if (!configSum['max_value']) new_config['max_value'] = null;
+
+            super.trigger_configSave(new_config);
+        }
+    }
+
+    generateField(temp_config) {
+        let config = {
+            ...this.config, ...temp_config,
+        };
+
+        let inputs_data = this.inputs_data[0];
+        inputs_data = {
+            ...inputs_data, // reset args and kwargs before handle
+            ...this.defaultInputsDataItem,
+        }
+
+        inputs_data['kwargs']['type'] = 'text';
+        inputs_data['kwargs']['data-datepicker'] = true;
+        let label$ = $(`<label class="form-item-label">${config.label}</label>`);
+        let inp$ = $(`<input class="form-item-input" name="${inputs_data.name}" />`);
+
+        let groupAll$ = this.sortableItem$;
+        groupAll$
+            .find('.' + this.cls_label_group)
+            .css('display', config.is_hide_label === true ? 'none' : 'block')
+            .append(label$);
+        groupAll$
+            .find('.' + this.cls_input_group)
+            .empty()
+            .append(inp$)
+        groupAll$
+            .find('.' + this.cls_instruction)
+            .text(config.instruction);
+
+        switch (config.size) {
+            case 'extra-small':
+                inputs_data['kwargs']['class'].add('form-input-xs');
+                break
+            case 'small':
+                inputs_data['kwargs']['class'].add('form-input-sm');
+                break
+            case 'medium':
+                inputs_data['kwargs']['class'].add('form-input-md');
+                break
+            case 'large':
+                inputs_data['kwargs']['class'].add('form-input-lg');
+                break
+            case 'extra-large':
+                inputs_data['kwargs']['class'].add('form-input-xl');
+                break
+        }
+        if (config.visibility !== 'unset') {
+            this.sortableItem$.alterClass('form-item--hide').alterClass('form-item--disable');
+            let settingSpecial$ = this.sortableItem$.find('.group--setting-group');
+            if (settingSpecial$.length === 0) {
+                settingSpecial$ = $('<div class="group--setting-group"></div>');
+                this.sortableItem$.append(settingSpecial$);
+            }
+            switch (config.visibility) {
+                case 'hide':
+                    settingSpecial$.append(`<div class="group--setting-hide"><i class="fa-solid fa-eye-slash"></i></div>`);
+                    this.sortableItem$.addClass('form-item--hide');
+                    inputs_data['kwargs']['class'].add('hidden');
+                    break
+                case 'disable':
+                    settingSpecial$.append(`<div class="group--setting-disable"><i class="fa-solid fa-ban"></i></div>`);
+                    this.sortableItem$.addClass('form-item--disable')
+                    inputs_data['args'].add('disabled');
+                    break
+            }
+        }
+        if (config.required) {
+            label$.addClass('required');
+            inputs_data['args'].add('required');
+        }
+        if (config.place_holder) {
+            inputs_data['kwargs']['placeholder'] = config.place_holder;
+        }
+        if (config.format) {
+            inputs_data['kwargs']['data-datepicker'] = config.format;
+        }
+        switch (config.init_value_type) {
+            case 'now':
+                inputs_data['kwargs']['data-datepicker-default'] = 'now';
+                break
+            case 'custom':
+                if (config.init_value_custom) {
+                    inputs_data['kwargs']['data-datepicker-default'] = config.init_value_custom;
+                }
+                break
+            case 'unset':
+                break
+        }
+        if (config.min_value) inputs_data['kwargs']['data-datepicker-min'] = config.min_value;
+        if (config.max_value) inputs_data['kwargs']['data-datepicker-max'] = config.max_value;
+
+        this.applyInputsDataToInput(inp$, inputs_data);
+        this.inputs_data[0] = inputs_data;
+    }
+}
+
+class FormTimeComponentType extends FormComponentAbstract {
+    get configGroupEle$() {
+        return $('#form-time');
+    }
+
+    get code() {
+        return 'time';
+    }
+
+    get defaultConfig() {
+        return {
+            'label': 'Time',
+            'instruction': '',
+            'size': 'medium',
+            'place_holder': '',
+            'required': false,
+            'visibility': 'unset',
+            'format': 'H:i',
+            'init_value_type': 'unset',
+            'init_value_custom': null,
+            'min_value': null,
+            'max_value': null,
+        }
+    }
+
+    get defaultInputsDataItem() {
+        return super._defaultInputsDataItem();
+    }
+
+    constructor(props) {
+        if (!props) props = {};
+        super(props);
+
+        if (this.inputs_data.length === 0) {
+            this.inputs_data = [
+                {
+                    ...this.defaultInputsDataItem,
+                    'name': this.generateName(),
+                }
+            ];
+        } else if (this.inputs_data.length === 1) {
+            for (let idx in this.inputs_data) {
+                if (!this.inputs_data[idx]?.['name']) throw Error('Item must has "name" property.')
+            }
+        } else throw Error('The input data of field configuration must have a length of one item.')
+    }
+
+    trigger_configLoad(temp_config) {
+        super.trigger_configLoad(temp_config);
+
+        let inp$ = this.configGroupEle$.find('input[name="name"]');
+        inp$.prop('readonly', true).prop('disabled', true);
+        if (this.inputs_data.length > 0) {
+            inp$.val(this.inputs_data[0].name);
+        }
+    }
+
+    trigger_configSave(new_config) {
+        if (!new_config) new_config = {};
+        let frm$ = this.configGroupEle$.find('form');
+        if (frm$.valid()) {
+            let config = SetupFormSubmit.serializerObject(frm$);
+            const configSum = {...this.config, ...config, ...new_config}
+
+            if (!configSum['init_value_custom']) new_config['init_value_custom'] = null;
+            if (!configSum['min_value']) new_config['min_value'] = null;
+            if (!configSum['max_value']) new_config['max_value'] = null;
+            super.trigger_configSave(new_config);
+        }
+    }
+
+    generateField(temp_config) {
+        let config = {
+            ...this.config, ...temp_config,
+        };
+
+        let inputs_data = this.inputs_data[0];
+        inputs_data = {
+            ...inputs_data, // reset args and kwargs before handle
+            ...this.defaultInputsDataItem,
+        }
+
+        inputs_data['kwargs']['type'] = 'text';
+        inputs_data['kwargs']['data-timepicker'] = true;
+        let label$ = $(`<label class="form-item-label">${config.label}</label>`);
+        let inp$ = $(`<input class="form-item-input" name="${inputs_data.name}" />`);
+
+        let groupAll$ = this.sortableItem$;
+        groupAll$
+            .find('.' + this.cls_label_group)
+            .css('display', config.is_hide_label === true ? 'none' : 'block')
+            .append(label$);
+        groupAll$
+            .find('.' + this.cls_input_group)
+            .empty()
+            .append(inp$)
+        groupAll$
+            .find('.' + this.cls_instruction)
+            .text(config.instruction);
+
+        switch (config.size) {
+            case 'extra-small':
+                inputs_data['kwargs']['class'].add('form-input-xs');
+                break
+            case 'small':
+                inputs_data['kwargs']['class'].add('form-input-sm');
+                break
+            case 'medium':
+                inputs_data['kwargs']['class'].add('form-input-md');
+                break
+            case 'large':
+                inputs_data['kwargs']['class'].add('form-input-lg');
+                break
+            case 'extra-large':
+                inputs_data['kwargs']['class'].add('form-input-xl');
+                break
+        }
+        if (config.place_holder) {
+            inputs_data['kwargs']['placeholder'] = config.place_holder;
+        }
+        if (config.visibility !== 'unset') {
+            this.sortableItem$.alterClass('form-item--hide').alterClass('form-item--disable');
+            let settingSpecial$ = this.sortableItem$.find('.group--setting-group');
+            if (settingSpecial$.length === 0) {
+                settingSpecial$ = $('<div class="group--setting-group"></div>');
+                this.sortableItem$.append(settingSpecial$);
+            }
+            switch (config.visibility) {
+                case 'hide':
+                    settingSpecial$.append(`<div class="group--setting-hide"><i class="fa-solid fa-eye-slash"></i></div>`);
+                    this.sortableItem$.addClass('form-item--hide');
+                    inputs_data['kwargs']['class'].add('hidden');
+                    break
+                case 'disable':
+                    settingSpecial$.append(`<div class="group--setting-disable"><i class="fa-solid fa-ban"></i></div>`);
+                    this.sortableItem$.addClass('form-item--disable')
+                    inputs_data['args'].add('disabled');
+                    break
+            }
+        }
+        if (config.required) {
+            label$.addClass('required');
+            inputs_data['args'].add('required');
+        }
+
+        if (config.format) {
+            inputs_data['kwargs']['data-timepicker'] = config.format;
+        }
+        switch (config.init_value_type) {
+            case 'now':
+                inputs_data['kwargs']['data-timepicker-default'] = 'now';
+                break
+            case 'custom':
+                if (config.init_value_custom) {
+                    inputs_data['kwargs']['data-timepicker-default'] = config.init_value_custom;
+                }
+                break
+            case 'unset':
+                break
+        }
+        if (config.min_value) inputs_data['kwargs']['data-timepicker-min'] = config.min_value;
+        if (config.max_value) inputs_data['kwargs']['data-timepicker-max'] = config.max_value;
+
+        this.applyInputsDataToInput(inp$, inputs_data);
+        this.inputs_data[0] = inputs_data;
+    }
+}
+
+class FormDatetimeComponentType extends FormComponentAbstract {
+    get configGroupEle$() {
+        return $('#form-datetime');
+    }
+
+    get code() {
+        return 'datetime';
+    }
+
+    get defaultConfig() {
+        return {
+            'label': 'Datetime',
+            'instruction': '',
+            'size': 'medium',
+            'place_holder': '',
+            'visibility': 'unset',
+            'required': false,
+            'init_value_type': 'unset',
+            'init_value_custom': null,
+            'format': 'l, j-m-Y H:i',
+            'min_value': null,
+            'max_value': null,
+        }
+    }
+
+    get defaultInputsDataItem() {
+        return super._defaultInputsDataItem();
+    }
+
+    constructor(props) {
+        if (!props) props = {};
+        super(props);
+
+        if (this.inputs_data.length === 0) {
+            this.inputs_data = [
+                {
+                    ...this.defaultInputsDataItem,
+                    'name': this.generateName(),
+                }
+            ];
+        } else if (this.inputs_data.length === 1) {
+            for (let idx in this.inputs_data) {
+                if (!this.inputs_data[idx]?.['name']) throw Error('Item must has "name" property.')
+            }
+        } else throw Error('The input data of field configuration must have a length of one item.')
+    }
+
+    trigger_configLoad(temp_config) {
+        super.trigger_configLoad(temp_config);
+
+        let inp$ = this.configGroupEle$.find('input[name="name"]');
+        inp$.prop('readonly', true).prop('disabled', true);
+        if (this.inputs_data.length > 0) {
+            inp$.val(this.inputs_data[0].name);
+        }
+
+        const configResolved = {...this.config, ...temp_config}
+        this.configGroupEle$.find('[name=init_value_custom]')[0]._flatpickr.setDate(configResolved['init_value_custom']);
+        this.configGroupEle$.find('input[name=min_value]')[0]._flatpickr.setDate(this.config.min_value);
+        this.configGroupEle$.find('input[name=max_value]')[0]._flatpickr.setDate(this.config.max_value);
+    }
+
+    trigger_configSave(new_config) {
+        if (!new_config) new_config = {};
+        let frm$ = this.configGroupEle$.find('form');
+        if (frm$.valid()) {
+            let config = SetupFormSubmit.serializerObject(frm$);
+            const configSum = {...this.config, ...config, ...new_config}
+
+            if (!configSum['init_value_custom']) new_config['init_value_custom'] = null;
+            if (!configSum['min_value']) new_config['min_value'] = null;
+            if (!configSum['max_value']) new_config['max_value'] = null;
+
+            super.trigger_configSave(new_config);
+        }
+    }
+
+    generateField(temp_config) {
+        let config = {
+            ...this.config, ...temp_config,
+        };
+
+        let inputs_data = this.inputs_data[0];
+        inputs_data = {
+            ...inputs_data, // reset args and kwargs before handle
+            ...this.defaultInputsDataItem,
+        }
+
+        inputs_data['kwargs']['type'] = 'text';
+        inputs_data['kwargs']['data-datetimepicker'] = true;
+        let label$ = $(`<label class="form-item-label">${config.label}</label>`);
+        let inp$ = $(`<input class="form-item-input" name="${inputs_data.name}" />`);
+
+        let groupAll$ = this.sortableItem$;
+        groupAll$
+            .find('.' + this.cls_label_group)
+            .css('display', config.is_hide_label === true ? 'none' : 'block')
+            .append(label$);
+        groupAll$
+            .find('.' + this.cls_input_group)
+            .empty()
+            .append(inp$)
+        groupAll$
+            .find('.' + this.cls_instruction)
+            .text(config.instruction);
+
+        switch (config.size) {
+            case 'extra-small':
+                inputs_data['kwargs']['class'].add('form-input-xs');
+                break
+            case 'small':
+                inputs_data['kwargs']['class'].add('form-input-sm');
+                break
+            case 'medium':
+                inputs_data['kwargs']['class'].add('form-input-md');
+                break
+            case 'large':
+                inputs_data['kwargs']['class'].add('form-input-lg');
+                break
+            case 'extra-large':
+                inputs_data['kwargs']['class'].add('form-input-xl');
+                break
+        }
+        if (config.visibility !== 'unset') {
+            this.sortableItem$.alterClass('form-item--hide').alterClass('form-item--disable');
+            let settingSpecial$ = this.sortableItem$.find('.group--setting-group');
+            if (settingSpecial$.length === 0) {
+                settingSpecial$ = $('<div class="group--setting-group"></div>');
+                this.sortableItem$.append(settingSpecial$);
+            }
+            switch (config.visibility) {
+                case 'hide':
+                    settingSpecial$.append(`<div class="group--setting-hide"><i class="fa-solid fa-eye-slash"></i></div>`);
+                    this.sortableItem$.addClass('form-item--hide');
+                    inputs_data['kwargs']['class'].add('hidden');
+                    break
+                case 'disable':
+                    settingSpecial$.append(`<div class="group--setting-disable"><i class="fa-solid fa-ban"></i></div>`);
+                    this.sortableItem$.addClass('form-item--disable')
+                    inputs_data['args'].add('disabled');
+                    break
+            }
+        }
+        if (config.required) {
+            label$.addClass('required');
+            inputs_data['args'].add('required');
+        }
+        if (config.place_holder) {
+            inputs_data['kwargs']['placeholder'] = config.place_holder;
+        }
+        if (config.format) {
+            inputs_data['kwargs']['data-datetimepicker'] = config.format;
+        }
+        switch (config.init_value_type) {
+            case 'now':
+                inputs_data['kwargs']['data-datetimepicker-default'] = 'now';
+                break
+            case 'custom':
+                if (config.init_value_custom) {
+                    inputs_data['kwargs']['data-datetimepicker-default'] = config.init_value_custom;
+                }
+                break
+            case 'unset':
+                break
+        }
+        if (config.min_value) inputs_data['kwargs']['data-datetimepicker-min'] = config.min_value;
+        if (config.max_value) inputs_data['kwargs']['data-datetimepicker-max'] = config.max_value;
+
+        this.applyInputsDataToInput(inp$, inputs_data);
+        this.inputs_data[0] = inputs_data;
+    }
+}
+
+class FormRatingComponentType extends FormComponentAbstract {
+    get configGroupEle$() {
+        return $('#form-rating');
+    }
+
+    get code() {
+        return 'rating';
+    }
+
+    get defaultConfig() {
+        return {
+            'label': 'Rating',
+            'instruction': '',
+            'size': 'medium',
+            'visibility': 'unset',
+            'required': false,
+            'place_holder': $.fn.gettext('Write a brief review'),
+            'label_of_vote': $.fn.gettext('Vote'),
+            'label_of_review': $.fn.gettext('Review'),
+            'items': [
+                {
+                    'value': $.fn.gettext('Very bad'),
+                    'icon': 'f005',
+                    'color': '#7c7c7c',
+                    'review_require': false,
+                    'icon_style': 'solid',
+                },
+                {
+                    'value': $.fn.gettext('Bad'),
+                    'icon': 'f005',
+                    'color': '#7c7c7c',
+                    'review_require': false,
+                    'icon_style': 'solid',
+                },
+                {
+                    'value': $.fn.gettext('Normal'),
+                    'icon': 'f005',
+                    'color': '#7c7c7c',
+                    'review_require': false,
+                    'icon_style': 'solid',
+                },
+                {
+                    'value': $.fn.gettext('Good'),
+                    'icon': 'f005',
+                    'color': '#7c7c7c',
+                    'review_require': false,
+                    'icon_style': 'solid',
+                },
+                {
+                    'value': $.fn.get('Excellent'),
+                    'icon': 'f005',
+                    'color': '#7c7c7c',
+                    'review_require': false,
+                    'icon_style': 'solid',
+                },
+            ],
+            'isolation_animate': false,
+        }
+    }
+
+    get defaultInputsDataItem() {
+        return super._defaultInputsDataItem();
+    }
+
+    constructor(props) {
+        if (!props) props = {};
+        super(props);
+
+        if (this.inputs_data.length === 0) {
+            this.inputs_data = [
+                {
+                    ...this.defaultInputsDataItem,
+                    'name': this.generateName(),
+                },
+                {
+                    ...this.defaultInputsDataItem,
+                    'name': this.generateName(),
+                    'element': 'textarea',
+                },
+            ];
+        } else if (this.inputs_data.length === 2) {
+            for (let idx in this.inputs_data) {
+                if (!this.inputs_data[idx]?.['name']) throw Error('Item must has "name" property.')
+            }
+        } else throw Error('The input data of field configuration must have a length of one item.')
+    }
+
+    trigger_configLoad(temp_config) {
+        super.trigger_configLoad(temp_config);
+
+        let inp$ = this.configGroupEle$.find('input[name="name"]');
+        inp$.prop('readonly', true).prop('disabled', true);
+        if (this.inputs_data.length > 0) {
+            inp$.val(this.inputs_data[0].name);
+        }
+
+        const frm$ = this.configGroupEle$;
+        const ratingGroup$ = frm$.find('#rating-value-group');
+        const config = {
+            ...this.config, ...temp_config,
+        }
+        ratingGroup$.trigger('data.clean');
+        ratingGroup$.trigger('data.load', config)
+    }
+
+    trigger_configSave(new_config) {
+        if (!new_config) new_config = {};
+        let frm$ = this.configGroupEle$.find('form');
+        if (frm$.valid()) {
+            let config = SetupFormSubmit.serializerObject(frm$);
+            const configSum = {...this.config, ...config, ...new_config}
+
+            let items = [];
+            for (let i = 0; i < configSum['items_title'].length; i++) {
+                items.push({
+                    'value': configSum['items_title'][i],
+                    'icon': configSum['items_symbol'][i],
+                    'color': configSum['items_color'][i],
+                    'review_require': configSum['items_review_require'][i],
+                    'icon_style': configSum['items_icon_style'][i],
+                })
+            }
+            new_config['items'] = items;
+
+            super.trigger_configSave(new_config);
+        }
+    }
+
+    generateField(temp_config) {
+        let config = {
+            ...this.config, ...temp_config,
+        };
+
+        let inputs_data = this.inputs_data[0];
+        inputs_data = {
+            ...inputs_data, // reset args and kwargs before handle
+            ...this.defaultInputsDataItem,
+            'label': config.label_of_vote || '',
+        }
+        let input_data_review = this.inputs_data[1];
+        input_data_review = {
+            ...input_data_review,
+            ...this.defaultInputsDataItem,
+            'label': config.label_of_review || '',
+        }
+
+        inputs_data['kwargs']['type'] = 'text';
+        inputs_data['kwargs']['data-rate'] = true;
+        let label$ = $(`<label class="form-item-label">${config.label}</label>`);
+
+        let groupAll$ = this.sortableItem$;
+        groupAll$
+            .find('.' + this.cls_label_group)
+            .css('display', config.is_hide_label === true ? 'none' : 'block')
+            .append(label$);
+
+        groupAll$
+            .find('.' + this.cls_instruction)
+            .text(config.instruction);
+
+        const groupRate$ = $(`
+            <div class="rating-group">
+                <div class="rating-state">
+                    <span class="state-default">
+                        <span style="opacity: 0;">Vote</span>
+                    </span>
+                    <span class="state-current"></span>
+                    <span class="state-hover"></span>
+                    <button class="btn-reset-vote" type="button">
+                        <span class="icon">
+                            <i class="fa-solid fa-xmark fa-2xs"></i>
+                        </span>
+                    </button>
+                </div>
+                <div class="rating-vote-group">
+                    <div class="rating-vote"></div>
+                    <div class="rating-utils">
+                        <div class="rating-utils-content">
+                            <textarea placeholder="Write a brief review" class="form-item-input"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `);
+        const rateVote$ = groupRate$.find('.rating-vote');
+        const rateBriefReview$ = groupRate$.find('.rating-utils textarea');
+
+        (config.items || []).map(
+            (item, index) => {
+                const idxRd = `rating-${$x.fn.randomStr(10)}`;
+                let clsIcon = 'fa-solid';
+                switch (item.icon_style) {
+                    case 'regular':
+                        clsIcon = 'fa-regular';
+                        break
+                    case 'solid':
+                    default:
+                        clsIcon = 'fa-solid';
+                        break
+                }
+                rateVote$.append(`
+                    <label 
+                        for="${idxRd}" 
+                        style="--rating-color-default: ${item.color};" 
+                    >
+                        <i class="${clsIcon} icon">&#x${item.icon || 'f005'}</i>
+                    </label>
+                    <input 
+                        type="radio" 
+                        id="${idxRd}" 
+                        name="${inputs_data.name}" 
+                        value="${item.value || ''}"
+                        data-review-require=${!!item.review_require}
+                        ${index === 0 && config.required ? "required" : ""} 
+                    />
+                `);
+            }
+        )
+        groupAll$.find('.' + this.cls_input_group).empty().append(groupRate$);
+
+        rateBriefReview$.attr('name', input_data_review['name']).attr('placeholder', config.place_holder || '');
+        input_data_review['kwargs']['placeholder'] = config.place_holder || '';
+
+        if (config.isolation_animate === true) {
+            groupRate$.addClass('rating-animated-isolation');
+        } else {
+            groupRate$.addClass('rating-animated');
+        }
+
+        switch (config.justify_content) {
+            case 'left':
+                groupRate$.addClass('rating-start');
+                break
+            case 'center':
+                groupRate$.addClass('rating-center');
+                break
+        }
+
+        if (config.visibility !== 'unset') {
+            this.sortableItem$.alterClass('form-item--hide').alterClass('form-item--disable');
+            let settingSpecial$ = this.sortableItem$.find('.group--setting-group');
+            if (settingSpecial$.length === 0) {
+                settingSpecial$ = $('<div class="group--setting-group"></div>');
+                this.sortableItem$.append(settingSpecial$);
+            }
+            switch (config.visibility) {
+                case 'hide':
+                    settingSpecial$.append(`<div class="group--setting-hide"><i class="fa-solid fa-eye-slash"></i></div>`);
+                    this.sortableItem$.addClass('form-item--hide');
+                    inputs_data['kwargs']['class'].add('hidden');
+                    break
+                case 'disable':
+                    settingSpecial$.append(`<div class="group--setting-disable"><i class="fa-solid fa-ban"></i></div>`);
+                    this.sortableItem$.addClass('form-item--disable')
+                    inputs_data['args'].add('disabled');
+                    break
+            }
+        }
+
+        switch (config.size) {
+            case 'small':
+                groupRate$.addClass('rating-sm');
+                break
+            case 'medium':
+                groupRate$.addClass('rating-md');
+                break
+            case 'large':
+                groupRate$.addClass('rating-lg');
+                break
+        }
+
+        if (config.required) {
+            label$.addClass('required');
+            inputs_data['args'].add('required');
+        }
+
+        this.applyInputsDataToInput(rateBriefReview$, input_data_review)
+        this.inputs_data[0] = inputs_data;
+        this.inputs_data[1] = input_data_review
+    }
+}
+
+class FormCardTextComponentType extends FormComponentAbstract {
+    get configGroupEle$() {
+        return $('#form-card-text');
+    }
+
+    get code() {
+        return 'card-text';
+    }
+
+    get defaultConfig() {
+        return {
+            'label': 'Description',
+            'content': '',
+        }
+    }
+
+    constructor(props) {
+        if (!props) props = {};
+        props['label_placement'] = 'top';
+        props['instruction_placement'] = 'bottom';
+        super(props);
+
+        this.inputs_data = [];
+    }
+
+    trigger_configLoad(temp_config) {
+        super.trigger_configLoad(temp_config);
+
+        let inp$ = this.configGroupEle$.find('input[name="name"]');
+        inp$.prop('readonly', true).prop('disabled', true);
+        if (this.inputs_data.length > 0) {
+            inp$.val(this.inputs_data[0].name);
+        }
+
+        const config = {
+            ...this.config, ...temp_config,
+        }
+        const ratingGroup$ = this.configGroupEle$.find('[name=content]');
+        let tinyCls = ratingGroup$.tinymce();
+        tinyCls.setContent(config['content']);
+        tinyCls.fire('change');
+    }
+
+    trigger_configSave(new_config) {
+        if (!new_config) new_config = {};
+        let frm$ = this.configGroupEle$.find('form');
+        if (frm$.valid()) {
+            let config = SetupFormSubmit.serializerObject(frm$);
+            const configSum = {...this.config, ...config, ...new_config}
+
+            if (configSum['content']) {
+                $.fn.callAjax2({
+                    url: this.configGroupEle$.data('url-sanitize-html'),
+                    method: 'POST',
+                    data: {'html': configSum['content']},
+                    isLoading: true,
+                }).then(
+                    resp => {
+                        const data = $.fn.switcherResp(resp);
+                        const htmlStr = (data?.['sanitize_html'] || '').toString();
+                        if (data) {
+                            new_config['content'] = htmlStr;
+                        }
+                        super.trigger_configSave(new_config)
+                    },
+                    errs => $.fn.switcherResp(errs),
+                )
+            } else super.trigger_configSave(new_config);
+        }
+    }
+
+    generateField(temp_config) {
+        let config = {
+            ...this.config, ...temp_config,
+        };
+
+        let groupAll$ = this.sortableItem$;
+        groupAll$
+            .find('.' + this.cls_instruction)
+            .text(config.instruction);
+
+        groupAll$
+            .find('.' + this.cls_input_group)
+            .empty()
+            .append(config.content || '');
+    }
+}
+
+class FormCardHeadingComponentType extends FormComponentAbstract {
+    get configGroupEle$() {
+        return $('#form-card-heading');
+    }
+
+    get code() {
+        return 'card-heading';
+    }
+
+    get defaultConfig() {
+        return {
+            'label': 'Heading',
+            'instruction': 'remark',
+        }
+    }
+
+    constructor(props) {
+        if (!props) props = {};
+        super(props);
+
+        this.inputs_data = [];
+    }
+
+    generateField(temp_config) {
+        const config = {
+            ...this.config, ...temp_config,
+        };
+
+        const groupHeading$ = $(`
+            <div class="form-item-group">
+                <p style="font-size: 1.5rem;">${config.label}</p>
+                <hr 
+                    style="border: 0;border-top: 1px solid #000;width: 100%;display: block;margin-bottom: 1rem;margin-top: 1rem;"
+                />
+                <p>${config.instruction}</p>
+            </div>
+        `);
+        this.sortableItem$.empty().append(groupHeading$);
+    }
+}
+
+class FormSliderComponentType extends FormComponentAbstract {
+    get configGroupEle$() {
+        return $('#form-slider');
+    }
+
+    get code() {
+        return 'slider';
+    }
+
+    get defaultConfig() {
+        return {
+            'label': 'Slider',
+            'is_hide_label': false,
+            'instruction': '',
+            'size': 'medium',
+            'init_value': 0,
+            'min_value': 0,
+            'max_value': 100,
+            'unit_prefix': '',
+            'unit_postfix': '',
+            'step': 1,
+            'skin': 'flat',
+        }
+    }
+
+    get defaultInputsDataItem() {
+        return super._defaultInputsDataItem();
+    }
+
+    constructor(props) {
+        if (!props) props = {};
+        super(props);
+
+        if (this.inputs_data.length === 0) {
+            this.inputs_data = [
+                {
+                    ...this.defaultInputsDataItem,
+                    'name': this.generateName(),
+                }
+            ];
+        } else if (this.inputs_data.length === 1) {
+            for (let idx in this.inputs_data) {
+                if (!this.inputs_data[idx]?.['name']) throw Error('Item must has "name" property.')
+            }
+        } else throw Error('The input data of field configuration must have a length of one item.')
+    }
+
+    trigger_configLoad(temp_config) {
+        super.trigger_configLoad(temp_config);
+
+        let inp$ = this.configGroupEle$.find('input[name="name"]');
+        inp$.prop('readonly', true).prop('disabled', true);
+        if (this.inputs_data.length > 0) {
+            inp$.val(this.inputs_data[0].name);
+        }
+    }
+
+    generateField(temp_config) {
+        let config = {
+            ...this.config, ...temp_config,
+        };
+
+        let inputs_data = this.inputs_data[0];
+        inputs_data = {
+            ...inputs_data, // reset args and kwargs before handle
+            ...this.defaultInputsDataItem,
+        }
+
+        inputs_data['kwargs']['type'] = 'range';
+        inputs_data['kwargs']['data-rangeslider'] = true;
+        let label$ = $(`<label class="form-item-label">${config.label}</label>`);
+        let inp$ = $(`<input class="form-item-input" name="${inputs_data.name}" />`);
+
+        let groupAll$ = this.sortableItem$;
+        groupAll$
+            .find('.' + this.cls_label_group)
+            .css('display', config.is_hide_label === true ? 'none' : 'block')
+            .append(label$);
+        groupAll$
+            .find('.' + this.cls_input_group)
+            .empty()
+            .append(inp$)
+        groupAll$
+            .find('.' + this.cls_instruction)
+            .text(config.instruction);
+
+        inputs_data['kwargs']['value'] = config.init_value;
+        inputs_data['kwargs']['data-from'] = config.init_value;
+        inputs_data['kwargs']['data-min'] = config.min_value;
+        inputs_data['kwargs']['data-max'] = config.max_value;
+        inputs_data['kwargs']['data-step'] = config.step;
+        inputs_data['kwargs']['data-prefix'] = config.unit_prefix;
+        inputs_data['kwargs']['data-postfix'] = config.unit_postfix;
+        inputs_data['kwargs']['data-skin'] = config.skin;
+
+        this.applyInputsDataToInput(inp$, inputs_data);
+        this.inputs_data[0] = inputs_data;
+    }
+}
+
 const matchForm = {
     'single-line': FormSingleLineComponentType,
     'multiple-line': FormMultipleLineComponentType,
     'number': FormNumberComponentType,
     'phone': FormPhoneComponentType,
     'email': FormEmailComponentType,
+    'select': FormSelectComponentType,
+    'checkbox': FormCheckboxComponentType,
+    'many-checkbox': FormManyCheckboxComponentType,
+    'date': FormDateComponentType,
+    'time': FormTimeComponentType,
+    'datetime': FormDatetimeComponentType,
+    'rating': FormRatingComponentType,
+    'card-text': FormCardTextComponentType,
+    'card-heading': FormCardHeadingComponentType,
+    'slider': FormSliderComponentType,
+    'form-page': FormPageListComponentType,
+    'page-break-head': FormPageItemHeadComponentType,
+    'page-break-foot': FormPageItemFootComponentType,
 }

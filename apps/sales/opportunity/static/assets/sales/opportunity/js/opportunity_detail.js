@@ -764,17 +764,30 @@ $(document).ready(function () {
                 event.preventDefault();
                 let combinesData = new combinesData_CallLog($(this));
                 if (combinesData) {
+                    WindowControl.showLoading();
                     $.fn.callAjax2(combinesData)
                         .then(
                             (resp) => {
                                 let data = $.fn.switcherResp(resp);
                                 if (data) {
+                                    setTimeout(
+                                        () => {
+                                            WindowControl.hideLoading();
+                                        },
+                                        1000
+                                    )
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     $('#create-new-call-log').hide();
                                     OpportunityActivity.loadDblActivityLogs();
                                 }
                             },
                             (errs) => {
+                                setTimeout(
+                                        () => {
+                                            WindowControl.hideLoading();
+                                        },
+                                        1000
+                                    )
                                 $.fn.notifyB({description: errs.data.errors}, 'failure');
                             }
                         )
@@ -938,17 +951,30 @@ $(document).ready(function () {
                 event.preventDefault();
                 let combinesData = new combinesData_Email($(this));
                 if (combinesData) {
+                    WindowControl.showLoading();
                     $.fn.callAjax2(combinesData)
                         .then(
                             (resp) => {
                                 let data = $.fn.switcherResp(resp);
                                 if (data) {
+                                    setTimeout(
+                                        () => {
+                                            WindowControl.hideLoading();
+                                        },
+                                        1000
+                                    )
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     $('#send-email').hide();
                                     OpportunityActivity.loadDblActivityLogs();
                                 }
                             },
                             (errs) => {
+                                setTimeout(
+                                        () => {
+                                            WindowControl.hideLoading();
+                                        },
+                                        1000
+                                    )
                                 $.fn.notifyB({description: errs.data.errors}, 'failure');
                             }
                         )
@@ -1177,17 +1203,30 @@ $(document).ready(function () {
                 event.preventDefault();
                 let combinesData = new combinesData_Meeting($(this));
                 if (combinesData) {
+                    WindowControl.showLoading();
                     $.fn.callAjax2(combinesData)
                         .then(
                             (resp) => {
                                 let data = $.fn.switcherResp(resp);
                                 if (data) {
+                                    setTimeout(
+                                        () => {
+                                            WindowControl.hideLoading();
+                                        },
+                                        1000
+                                    )
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     $('#create-meeting').hide();
                                     OpportunityActivity.loadDblActivityLogs();
                                 }
                             },
                             (errs) => {
+                                setTimeout(
+                                        () => {
+                                            WindowControl.hideLoading();
+                                        },
+                                        1000
+                                    )
                                 $.fn.notifyB({description: errs.data.errors}, 'failure');
                             }
                         )

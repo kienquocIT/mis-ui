@@ -37,6 +37,7 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    {% include 'printer/print.html' %}
     <script id="script-url"
             data-trans-unplanned="{% trans 'Unplanned expenses' %}"
             data-url-ap-cost-list="{% url "AdvancePaymentCostListAPI" %}"
@@ -52,6 +53,15 @@
           data-url="{% url "AdvancePaymentListAPI" %}">
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
+            <div class="row">
+                <div class="col-12">
+                    <button type="button" class="btn btn-sm btn-gradient-primary" id="print-document"
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Print' %}"
+                    >
+                        <i class="bi bi-printer"></i>
+                    </button>
+                </div>
+            </div>
             {% trans 'Select Sale Person' as inherit_title %}
             {% include 'extends/the-documents/bastion.html' with has_opp=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
             <div class="row">
@@ -358,4 +368,13 @@
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static "assets/js/advancepayment/advance_payment_common.js" %}"></script>
     <script src="{% static "assets/js/advancepayment/advance_payment_detail.js" %}"></script>
+
+    <script src="{% static 'printer/print.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#print-document').on('click', function () {
+                PrintTinymceControl.open_modal();
+            });
+        })
+    </script>
 {% endblock %}

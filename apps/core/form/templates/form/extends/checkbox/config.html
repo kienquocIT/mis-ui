@@ -1,0 +1,58 @@
+{% load i18n string_utils define_action %}
+
+<div class="drawer-config d-none" id="form-checkbox">
+    <form>
+        {% csrf_token %}
+
+        {% assign_out_random nameIdx as rNameIdx %}
+        <div class="form-group mb-3">
+            <label for="{{ rNameIdx }}" class="form-label">
+                {% trans 'Name of field' %}
+            </label>
+            <input type="text" class="form-control" id="{{ rNameIdx }}" name="name">
+            <small class="form-text text-muted">
+                {% trans 'Corresponds to a stored data field' %}.
+                {% trans 'Employs this name to autofill form fields' %}.
+            </small>
+        </div>
+
+        <hr style="background-color: #2a3746"/>
+
+        {% include 'form/extends/base/title.html' with enableHideTitle=False %}
+
+        {% include 'form/extends/base/instruction.html' %}
+        {% include 'form/extends/base/size.html' %}
+
+        <hr style="background-color: #2a3746"/>
+
+        <div class="form-group mb-3">
+            {% assign_out_random styleOfCheckbox as rStyleOfCheckbox %}
+            <label for="{{ rStyleOfCheckbox }}" class="form-label">
+                {% trans 'Style of checkbox' %}
+            </label>
+            <select
+                    name="checkbox_style"
+                    id="{{ rStyleOfCheckbox }}"
+                    class="input-radio-select"
+            >
+                <option value="default">{% trans 'Tick' %}</option>
+                <option value="switch">{% trans 'Switch' %}</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            {% assign_out_random initValueIdx as rInitValueIdx %}
+            <label for="{{ rInitValueIdx }}" class="form-label">
+                {% trans 'Initial value' %}
+            </label>
+            <select name="init_value" id="{{ rInitValueIdx }}" class="input-radio-select">
+                <option value="unchecked" selected>{% trans 'Unchecked' %}</option>
+                <option value="checked">{% trans 'Checked' %}</option>
+            </select>
+        </div>
+
+        <hr style="background-color: #2a3746"/>
+
+        {% include 'form/extends/base/visibility.html' %}
+    </form>
+</div>

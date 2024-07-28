@@ -76,7 +76,7 @@
                     </div>
                     <div class="form-group">
                         <label class="label-field form-label required">{% trans "Industry" %}</label>
-                        <select id="select-box-industry" class="form-select"
+                        <select id="select-box-industry" class="form-select select2"
                                 data-method="GET"
                                 data-url="{% url "IndustryListAPI" %}">
                         </select>
@@ -730,7 +730,7 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label required">{% trans "Contact Owner" %}</label>
-                                <select class="form-control select2" id="select-box-contact-owner"
+                                <select class="form-select select2" id="select-box-contact-owner"
                                         data-method="GET" required
                                         data-url="{% url 'EmployeeListAPI' %}">
                                 </select>

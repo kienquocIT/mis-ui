@@ -17,6 +17,7 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    {% include 'printer/print.html' %}
     <script id="script-url"
             data-url-delivery="{% url 'DeliveryListForGoodsReturnAPI' %}"
             data-url-warehouse="{% url 'WareHouseListAPI' %}"
@@ -32,6 +33,15 @@
     >
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
+            <div class="row mb-3">
+                <div class="col-12">
+                    <button type="button" class="btn btn-sm btn-gradient-primary" id="print-document"
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Print' %}"
+                    >
+                        <i class="bi bi-printer"></i>
+                    </button>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
@@ -152,11 +162,7 @@
                 </div>
             </div>
         </div>
-        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="w-100 btn btn-animated btn-icon btn-xs">
-            <span class="icon">
-                <i class="fas fa-angle-double-up text-primary"></i>
-            </span>
-        </button>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="text-primary btn btn-animated btn-icon btn-xs w-100"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Expand / Collapse' %}"><i class="fas fa-angle-double-up text-primary"></i></span></button>
         <div class="row">
             <div class="col-12">
                 <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
@@ -251,4 +257,13 @@
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goods_return/goods_return_common.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goods_return/goods_return_update.js' %}"></script>
+
+    <script src="{% static 'printer/print.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#print-document').on('click', function () {
+                PrintTinymceControl.open_modal();
+            });
+        })
+    </script>
 {% endblock %}

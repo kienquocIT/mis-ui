@@ -24,7 +24,14 @@ class GoodsTransferCreate(View):
         breadcrumb='GOODS_TRANSFER_CREATE_PAGE'
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp = ServerAPI(
+            request=request,
+            user=request.user,
+            url=ApiURL.COMPANY_DETAIL + '/' + request.user.company_current_data.get('id', None)
+        ).get()
+        return {
+            'is_project': resp.result['config_inventory_management'].get('cost_per_project')
+        }, status.HTTP_200_OK
 
 
 class GoodsTransferDetail(View):
@@ -35,7 +42,14 @@ class GoodsTransferDetail(View):
         breadcrumb='GOODS_TRANSFER_DETAIL_PAGE'
     )
     def get(self, request, pk, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp = ServerAPI(
+            request=request,
+            user=request.user,
+            url=ApiURL.COMPANY_DETAIL + '/' + request.user.company_current_data.get('id', None)
+        ).get()
+        return {
+            'is_project': resp.result['config_inventory_management'].get('cost_per_project')
+        }, status.HTTP_200_OK
 
 
 class GoodsTransferUpdate(View):
@@ -46,8 +60,14 @@ class GoodsTransferUpdate(View):
         breadcrumb='GOODS_TRANSFER_UPDATE_PAGE'
     )
     def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(
+            request=request,
+            user=request.user,
+            url=ApiURL.COMPANY_DETAIL + '/' + request.user.company_current_data.get('id', None)
+        ).get()
         input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_TRANSFER
         return {
+            'is_project': resp.result['config_inventory_management'].get('cost_per_project'),
             'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_goods_transfer_update'
         }, status.HTTP_200_OK
 

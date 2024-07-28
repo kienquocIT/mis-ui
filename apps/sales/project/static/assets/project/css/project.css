@@ -344,7 +344,7 @@
     width: 100%;
     height: 100%;
     top:0;left: 0;
-    z-index: 0;
+    z-index: 2;
     display: none;
     justify-content: center;
     align-items: center;
@@ -367,4 +367,114 @@
 }
 #work_expense_tbl tr.active{
     background: var(--bs-table-hover-bg);
+}
+.work-expense-wrap, .work-expense-wrap tbody tr{
+    background: rgb(247 247 247 / 30%);
+}
+.WE-content > .btn{
+    float: left;
+}
+
+.min-w-1768p {
+    min-width: 1768px;
+}
+.toggle-ud{
+    width: 45px;
+    display:block;
+    margin: 0 auto;
+    position: relative;
+}
+.toggle-ud:before{
+    content:"";
+    height:1px;
+    width: 100px;
+    background:#007D88;
+    display:block;
+    position: absolute;
+    left: -100px;
+    top:50%;
+}
+
+.toggle-ud:after{
+    content:"";
+    height:1px;
+    width: 100px;
+    background:#007D88;
+    display:block;
+    position: absolute;
+    right: -100px;
+    top:50%;
+}
+.toggle-ud .btn{
+    transition: all .30s ease-in-out;
+    --webkit--transition: all .30s ease-in-out;
+}
+.toggle-ud:not(.is_show) .btn{
+    transform: rotate(180deg);
+    --webkit--transform: rotate(180deg);
+}
+.bt-0{
+    border-top: 0!important;
+}
+#check_expense_modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    --webkit--transform: translate(-50%, -50%);
+    width: 500px;
+    z-index: 11;
+}
+#select_expense_role:not(.select2-hidden-accessible){
+    height:36px;
+}
+#check_expense_modalheader{
+    cursor: move;
+    position: relative;
+}
+#check_expense_modalheader:before{
+    content: '\F12F';
+    font-family: bootstrap-icons;
+    position: absolute;
+    right:-40px;
+    top:25%;
+    color:rgb(255 0 0);
+    font-size:1.5rem;
+    display: block;
+    animation-name: arrow_effect;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+@keyframes arrow_effect {
+  0% {right:-40px;opacity: 0;visibility: hidden;}
+  50% {right: -24px;opacity: 1;visibility: visible;}
+  100% {right: -24px;opacity: 1;visibility: visible;}
+}
+
+.info-txt{
+    display: block;
+    position: absolute;
+    left: 102%;
+    top: 40px;
+    color:rgb(255 0 0);
+    width: 100%;
+}
+.off_effect#check_expense_modalheader:before,
+.off_effect .info-txt{display: none;}
+
+.list-group-numbered{
+    max-height: 250px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.wrap-title ~ div{
+    overflow: hidden;
+}
+
+.ui-state-highlight {
+    display: block;
+    height: 30px;
+    border-radius: 4px;
+    border: dashed 1px #ff0000;
+    background-color: #f8f8f8ff;
 }

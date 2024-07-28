@@ -8,12 +8,13 @@ $(document).ready(function () {
     const total_employees = urlParams.get('total_employees');
     const revenue = urlParams.get('revenue');
 
-    $('#inp-account-name').val(name)
-    loadIndustry({'id': industry_id, 'title': industry_title})
-    $('#select-box-industry')
-    $('#select-box-total-emp').val(total_employees)
-    $('#select-box-annual-revenue').val(revenue)
-
+    if (urlParams.size > 0) {
+        $('#inp-account-name').val(name)
+        loadIndustry({'id': industry_id, 'title': industry_title})
+        $('#select-box-industry')
+        $('#select-box-total-emp').val(total_employees)
+        $('#select-box-annual-revenue').val(revenue)
+    }
 
     let frm = $('#form-create-account')
     frm.submit(function (event) {

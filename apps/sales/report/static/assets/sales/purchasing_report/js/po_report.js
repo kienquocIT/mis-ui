@@ -22,7 +22,7 @@ $(document).ready(function () {
     }
 
     $('#btn-collapse').on('click', function () {
-        if ($btn_title.text() === $btn_title.attr('data-trans-show')) {
+        if ($btn_title.text() !== $btn_title.attr('data-trans-show')) {
             $btn_title.text($btn_title.attr('data-trans-hide'))
             $(this).removeClass('btn-primary')
             $(this).addClass('btn-soft-primary')
@@ -97,7 +97,7 @@ $(document).ready(function () {
             callbackDataResp: function (resp, keyResp) {
                 let res = []
                 for (const item of resp.data[keyResp]) {
-                    if (item?.['account_type'].includes('Customer')) {
+                    if (item?.['account_type'].includes('Supplier')) {
                         res.push(item)
                     }
                 }

@@ -1,0 +1,174 @@
+{% load i18n define_action %}
+
+<div class="drawer-config d-none" id="form-date">
+    <form>
+        {% assign_out_random nameIdx as rNameIdx %}
+        <div class="form-group mb-3">
+            <label for="{{ rNameIdx }}" class="form-label">
+                {% trans 'Name of field' %}
+            </label>
+            <input type="text" class="form-control" id="{{ rNameIdx }}" name="name">
+            <small class="form-text text-muted">
+                {% trans 'Corresponds to a stored data field' %}.
+                {% trans 'Employs this name to autofill form fields' %}.
+            </small>
+        </div>
+
+        <hr/>
+
+        {% include 'form/extends/base/title.html' %}
+        {% include 'form/extends/base/instruction.html' %}
+        {% include 'form/extends/base/size.html' %}
+        {% include 'form/extends/base/placeholder.html' %}
+
+        <hr/>
+
+        {% assign_out_random formatOfValue as rFormatOfValue %}
+        <div class="form-group mb-5">
+            <label for="{{ rFormatOfValue }}" class="form-label">
+                {% trans 'Display Format' %}
+                <a class="ml-1" href="{% url 'FormKnowledgeView' %}#dateFormat" target="_blank"><i class="fa-solid fa-book"></i></a>
+            </label>
+            <input type="text" id="{{ rFormatOfValue }}" class="form-control" name="format" list="idx-date-format-suggestion" />
+            <small class="form-text text-muted">
+                <span>{% trans 'Day: 30' %} • {% trans 'Month: 01' %} • {% trans 'Year: 1900' %}</span>
+            </small>
+            <datalist id="idx-date-format-suggestion">
+                <option value="l j F Y">Thứ năm 30 Tháng một 1990</option>
+                <option value="l, j F Y">Thứ năm, 30 Tháng một 1990</option>
+                <option value="l, \\ngà\\y j F Y">Thứ năm, ngày 30 Tháng một 1990</option>
+                <option value="d-m-Y">30-01-1990</option>
+                <option value="d/m/Y">30/01/1990</option>
+                <option value="Y-m-d">1900-01-30</option>
+                  <option value="Y/m/d">1900/01/30</option>
+                <option value="m-d-Y">01-30-1990</option>
+                <option value="m/d/Y">01/30/1990</option>
+                <option value="F j, Y">Tháng một 30, 1900</option>
+                <option value="j F Y">30 Tháng một 1900</option>
+                <option value="Y, F j">1900, Tháng một 30</option>
+            </datalist>
+            <label class="form-text text-muted">{% trans 'Preview format with now' %}</label>
+            <input type="text" class="form-control mt-1" readonly disabled id="previewDateFormat" />
+        </div>
+
+        {% assign_out_random typeInitValueIdx as rTypeInitValueIdx %}
+        <div class="form-group mb-3">
+            <label for="{{ rTypeInitValueIdx }}" class="form-label">{% trans 'Type of init value' %}</label>
+            <select name="init_value_type" id="{{ rTypeInitValueIdx }}" class="input-radio-select">
+                <option value="unset" selected>-</option>
+                <option value="now">{% trans 'Now' %}</option>
+                <option value="custom">{% trans 'Custom' %}</option>
+            </select>
+        </div>
+
+        {% assign_out_random customInitValue as rCustomInitValue %}
+        <div class="form-group mb-3" id="date-group-custom-init" style="display: none;">
+            <label for="{{ rCustomInitValue }}">{% trans 'Initial value' %}</label>
+            <input type="text" name="init_value_custom" class="form-control" id="{{ rCustomInitValue }}" />
+            <small class="form-text text-muted">{% trans 'Format: yyyy-mm-dd' %}</small>
+        </div>
+
+        <hr/>
+
+        <div class="d-flex mb-3">
+            <div style="flex: 1 1 calc(50% - 5px);margin-right: 5px;">
+                {% assign_out_random dateMinValueIdx as rDateMinValueIdx %}
+                <label for="{{ rDateMinValueIdx }}" class="form-label">{% trans 'Min' %}</label>
+                <input type="text" class="form-control" name="min_value" id="{{ rDateMinValueIdx }}" />
+            </div>
+            <div style="flex: 1 1 calc(50% - 5px);margin-left: 5px;">
+                {% assign_out_random dateMaxValueIdx as rDateMaxValueIdx %}
+                <label for="{{ rDateMaxValueIdx }}" class="form-label">{% trans 'Max' %}</label>
+                <input type="text" class="form-control" name="max_value" id="{{ rDateMaxValueIdx }}" />
+            </div>
+        </div>
+
+        <hr/>
+
+        {% include 'form/extends/base/validation.html' %}
+    </form>
+</div>
+
+<script>
+    $(document).ready(function (){
+        const frm$ = $('#form-date');
+        const typeInit$ = frm$.find('#{{ rTypeInitValueIdx }}');
+        const groupCustomInit$ = frm$.find('#date-group-custom-init');
+        const inputValueInit$ = frm$.find('#{{ rCustomInitValue }}');
+
+        const previewFormat$ = frm$.find('#previewDateFormat');
+        const inputFormat$ = frm$.find('#{{ rFormatOfValue }}');
+
+        typeInit$.on('change', function (){
+            switch ($(this).val()) {
+                case 'custom':
+                    inputValueInit$.attr('required', true);
+                    groupCustomInit$.slideDown();
+                    break
+                case 'unset':
+                case 'now':
+                default:
+                    inputValueInit$.attr('required', false);
+                    groupCustomInit$.slideUp();
+                    break
+            }
+        });
+
+        inputValueInit$.datepicker({
+            dateFormat: "yy-mm-dd",
+            gotoCurrent: true,
+            container: '#form-date',
+        })
+
+        inputFormat$.on('change', function (){
+            const dateFormat = $(this).val();
+            previewFormat$.flatpickr({
+                'dateFormat': dateFormat,
+                'defaultDate': new Date(),
+                'locale': globeLanguage === 'vi' ? 'vn' : 'default',
+            });
+        })
+
+        const dateMin$ = frm$.find('#{{ rDateMinValueIdx }}');
+        const dateMax$ = frm$.find('#{{ rDateMaxValueIdx }}');
+        dateMin$.flatpickr({
+            altInput: true,
+            altFormat: 'd-m-Y',
+            dateFormat: 'Y-m-d',
+            locale: globeLanguage === 'vi' ? 'vn' : 'default',
+        });
+        dateMax$.flatpickr({
+            altInput: true,
+            altFormat: 'd-m-Y',
+            dateFormat: 'Y-m-d',
+            locale: globeLanguage === 'vi' ? 'vn' : 'default',
+        });
+
+        dateMin$.on('change', function (){
+            const minPicker = $(dateMin$)[0]._flatpickr;
+            const maxPicker = $(dateMax$)[0]._flatpickr;
+            if (minPicker && maxPicker){
+                const minValue = minPicker.selectedDates[0];
+                const maxValue = maxPicker.selectedDates[0];
+                if (minValue && maxValue){
+                    if (minValue > maxValue) {
+                        maxPicker.clear();
+                    }
+                }
+            }
+        })
+        dateMax$.on('change', function (){
+            const minPicker = $(dateMin$)[0]._flatpickr;
+            const maxPicker = $(dateMax$)[0]._flatpickr;
+            if (minPicker && maxPicker){
+                const minValue = minPicker.selectedDates[0];
+                const maxValue = maxPicker.selectedDates[0];
+                if (minValue && maxValue){
+                    if (minValue > maxValue) {
+                        minPicker.clear();
+                    }
+                }
+            }
+        })
+    })
+</script>

@@ -2,7 +2,7 @@
     --bg-color: #fff;
     --padding: 10px;
     --border-radius: 15px;
-    --bg-image: url("01-modern/bg.jpg");
+    --bg-image: url("/static/form/runtime/themes/01-modern/bg.jpg");
     --bg-blur-background-color: rgb(255, 255, 255, 0.4);
 
     --title-font-family: "Merienda", cursive, serif;

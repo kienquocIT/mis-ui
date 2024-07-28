@@ -40,6 +40,8 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    {% include 'printer/print.html' %}
+    {{ data.is_project | json_script:"is_project" }}
     <script id="trans-script"
             data-trans-product-list="{% trans 'Select product' %}"
             data-trans-out-warehouse-list="{% trans 'Select out warehouse' %}"
@@ -49,6 +51,9 @@
             data-url="{% url 'GoodsTransferDetailAPI' '0' %}"
             data-url-product-list="{% url 'WarehouseGetProductsListAPIForGoodsTransfer' %}"
             data-url-warehouse-list="{% url 'WareHouseListAPI' %}"
+            data-url-project-product-list="{% url 'ProjectProductListAPI' %}"
+            data-url-none-project-product-list="{% url 'NoneProjectProductListAPI' %}"
+            data-url-so-list="{% url 'SaleOrderListAPI' %}"
     ></script>
 
     <form id="frm_goods_transfer_detail"
@@ -57,6 +62,15 @@
           data-url-redirect="{% url "GoodsTransferList" %}">
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
+            <div class="row mb-3">
+                <div class="col-12">
+                    <button type="button" class="btn btn-sm btn-gradient-primary" id="print-document"
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Print' %}"
+                    >
+                        <i class="bi bi-printer"></i>
+                    </button>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
@@ -82,11 +96,7 @@
                 </div>
             </div>
         </div>
-        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="w-100 btn btn-animated btn-icon btn-xs">
-            <span class="icon">
-                <i class="fas fa-angle-double-up text-primary"></i>
-            </span>
-        </button>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="text-primary btn btn-animated btn-icon btn-xs w-100"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Expand / Collapse' %}"><i class="fas fa-angle-double-up text-primary"></i></span></button>
         <div class="row">
             <div class="col-12">
                 <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
@@ -117,6 +127,13 @@
                                         <th style="min-width: 230px">{% trans 'From warehouse' %}</th>
                                         <th style="min-width: 300px">{% trans 'Product' %}</th>
                                         <th style="min-width: 200px">{% trans 'UOM' %}</th>
+                                        <th style="min-width: 300px" id="tr_so" hidden>
+                                            {% trans 'Project sale order' %}
+                                            <i class="fas fa-info-circle icon-info"
+                                               data-bs-toggle="tooltip"
+                                               data-bs-placement="right"
+                                               data-bs-original-title="{% trans 'None-project products if sale order is null' %}"></i>
+                                        </th>
                                         <th style="min-width: 200px">
                                             {% trans 'Quantity' %}
                                             <i class="fas fa-info-circle icon-info"
@@ -256,4 +273,13 @@
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goods_transfer/common.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goods_transfer/detail.js' %}"></script>
+
+    <script src="{% static 'printer/print.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#print-document').on('click', function () {
+                PrintTinymceControl.open_modal();
+            });
+        })
+    </script>
 {% endblock %}

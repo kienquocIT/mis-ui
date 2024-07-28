@@ -1,12 +1,131 @@
+function onlyView() {
+    $('input, textarea, select').prop('disabled', true);
+    $('[type=submit]').remove();
+    $('.form-action').remove();
+    $('.form-foot').remove();
+    // $('.form-head').remove();
+    $('#btnSwitchAccount').remove();
+}
+
+function resetInputValue() {
+    $('textarea').empty().val('');
+    $('select').find('option').removeAttr('checked');
+    $('input[type=checkbox]').prop('checked', false);
+    $('input[type=radio]').prop('checked', false);
+    $('input').removeAttr('value').val('');
+}
+
+
 (function ($) {
+    $(document).ready(function () {
+        $("img").on("error", function(event) {
+            $(this)
+                .off('error')
+                .attr('src', '/static/form/runtime/images/img-thumb.svg')
+                .attr('title', $.fn.formGettext("This image failed to load"));
+        });
+
+        const userLang = navigator.language || navigator.userLanguage;
+        moment.locale(userLang.trim().split("-")[0]);
+
+        $('#contents').on('click', 'button.btn-more-submitted', function () {
+            $(this).closest('p').hide(100, function () {
+                const group$ = $(this).closest('div#data-submitted');
+                const item$ = group$.find('p');
+                item$.show();
+                $(this).remove();
+            });
+        })
+
+        $.fn.formPageInit();
+
+        //
+        const emailGroup$ = $('#email-authenticate');
+        const formGetOtp$ = emailGroup$.find('form#form-email-get-otp');
+        const formVerifyOtp$ = emailGroup$.find('form#form-email-verify-otp');
+        const inpPublicIP$ = emailGroup$.find('input[name=public_ip]');
+
+        $.fn.formGetPublicIP().then(
+            ip => {
+                inpPublicIP$.val(ip);
+            }
+        );
+
+        formGetOtp$.on('submit', async function (event){
+            event.preventDefault();
+            const data = $.fn.formSerializerObject($(this));
+            $.fn.formCallAjax({
+                url: '',
+                method: 'POST',
+                data: {
+                    ...data,
+                    'public_ip': inpPublicIP$.val(),
+                }
+            }).then(
+                resp => {
+
+                },
+                errs => console.log(errs),
+            )
+            formVerifyOtp$.find('input[name=email]').val(data.email);
+        });
+
+        formVerifyOtp$.on('submit', function (event){
+            event.preventDefault();
+            const data = $.fn.formSerializerObject($(this));
+        });
+    })
+
     if ($.validator) {
         $.fn.validateB = function (opts) {
-            let defaultConfig = {
-                focusInvalid: true,
+            let timerFormValid;
+            const timeoutValid = 300;
+            const defaultConfig = {
+                ignore: ':not([name])',
+                focusInvalid: false,
+                onkeyup: function (element, event){
+                    if (timerFormValid) clearTimeout(timerFormValid);
+                    timerFormValid = setTimeout(
+                        () => $(this.currentForm).valid(),
+                        timeoutValid
+                    );
+                },
+                onfocusout: function (element, event) {
+                    if (timerFormValid) clearTimeout(timerFormValid);
+                    timerFormValid = setTimeout(
+                        () => $(this.currentForm).valid(),
+                        timeoutValid
+                    );
+                },
+                onclick: function (element, event) {
+                    if (timerFormValid) clearTimeout(timerFormValid);
+                    timerFormValid = setTimeout(
+                        () => $(this.currentForm).valid(),
+                        timeoutValid
+                    );
+                },
                 validClass: "is-valid",
                 errorClass: "is-invalid",
                 errorElement: 'div',
+                success: function (label, element){
+                    $(element).addClass(this.validClass);
+                    if ($(element).hasClass('flatpickr-input')){
+                        const inputFlat$ = $(document).find($(element)).siblings('input');
+                        if (inputFlat$.length > 0){
+                            inputFlat$.removeClass('is-invalid').addClass('is-valid');
+                        }
+                    }
+                },
                 showErrors: function (errorMap, errorList) {
+                    let clsThis = this;
+                    // reset flatpickr class
+                    $(this.currentForm).find('input.flatpickr-input').each(function (){
+                        const inputFlat = $(this).siblings('input');
+                        if (inputFlat.length > 0){
+                            inputFlat.removeClass('is-valid').removeClass('is-invalid');
+                        }
+                    })
+
                     let inpDetail$ = $(this.currentForm).find('input[name=detail]');
                     if (inpDetail$.length === 0) {
                         inpDetail$ = $(`<input name="detail" type="hidden" disabled readonly/>`);
@@ -27,22 +146,21 @@
                     let errorMapResolve = {};
                     errorList.map(
                         item => {
-                            const messageTmp = Array.isArray(item.message) ? item.message : [item.message];
-                            // 1. Not element
-                            // 2. Is detail
-                            // 3. Is not visible
-                            // => Push to detail
-                            if (
-                                !item.element || (
-                                    item.element && (
-                                        $(item.element).is(inpDetail$)
-                                        || !$(item.element).is(":visible")
-                                    )
+                            const messageTmp = Array.from(
+                                new Set(
+                                    Array.isArray(item.message) ? item.message : [item.message]
                                 )
-                            ) {
+                            );
+                            if (!item.element) {
                                 errorDetailMessage = [...errorDetailMessage, ...messageTmp];
                             } else {
                                 errorMapResolve[$(item.element).attr('name')] = item.message;
+                                if ($(item.element).hasClass('flatpickr-input')) {
+                                    const inputFlat = $(item.element).siblings('input');
+                                    if (inputFlat.length > 0){
+                                        inputFlat.removeClass('is-valid').addClass('is-invalid');
+                                    }
+                                }
                                 errorListResolve.push({
                                     ...item,
                                     'message': messageTmp.map(msg => `<small>${msg}</small>`)
@@ -51,6 +169,7 @@
                         }
                     );
                     if (errorDetailMessage.length > 0) {
+                        errorDetailMessage = Array.from(new Set(errorDetailMessage));
                         errorListResolve.push({
                             'element': inpDetail$[0],
                             'message': errorDetailMessage.map(msg => `<small>${msg}</small>`),
@@ -58,26 +177,29 @@
                         errorMapResolve['detail'] = errorDetailMessage;
                     }
 
+                    // // scroll to first error element
+                    // if (errorListResolve.length > 0) {
+                    //     for (let i = 0; i < errorListResolve.length; i++) {
+                    //         const errItem = errorListResolve[i];
+                    //         if (errItem.element) {
+                    //             $('#contents').animate({
+                    //                 scrollTop: $(errItem.element).position().top
+                    //             }, 100);
+                    //             break;
+                    //         }
+                    //     }
+                    // }
                     this.errorList = errorListResolve
                     this.errorMap = errorMapResolve
                     this.defaultShowErrors();
+
+                    // call valid check page
+                    $.fn.formCountErrorInPage(errorListResolve);
                 },
                 errorPlacement: function (error, element) {
-                    // error.insertAfter(element);
-                    let parentEle = element.parent();
-                    let insertAfterEle = element;
-                    if (
-                        parentEle.hasClass('input-group')
-                        || parentEle.hasClass('input-affix-wrapper')
-                        || parentEle.css('display') === 'flex'
-                    ) {
-                        insertAfterEle = parentEle;
-                    }
-
-                    //
-                    if (insertAfterEle.siblings('.select2-container').length > 0) {
-                        insertAfterEle.parent().append(error);
-                    } else error.insertAfter(insertAfterEle);
+                    let inputParent$ = element.closest('.form-item-input-parent');
+                    if (inputParent$.length === 0) inputParent$ = element.parent();
+                    inputParent$.append(error);
                 },
                 onsubmit: false,
             };
@@ -85,17 +207,89 @@
             let config = $.extend({}, defaultConfig, opts);
             const validator = $.fn.validate.call(this, config);
             $.validator.unpretentious($(this));
+            $(this).data('_validatorForm', validator);
             return validator;
         };
     } else console.log("jQuery Validation was not loaded.");
 
+    function formFlatpickrLanguage(hasWeekend) {
+        let pickerI18n = 'default';
+        const browserLanguage = navigator.language.split('-')[0].toLowerCase();
+        switch (browserLanguage) {
+            case 'vi':
+                pickerI18n = 'vn';
+                if (hasWeekend === false) {
+                    // month + year was wrapped to two line! increase height for showing.
+                    $(document).find('head').append(`
+                        <style>
+                            .flatpickr-months .flatpickr-month {
+                                height: 52px;
+                            }
+                        </style>
+                    `);
+                }
+                break
+            default:
+                pickerI18n = 'default';
+        }
+        return pickerI18n;
+    }
+
     $.fn.extend({
+        formGetPublicIP: async function () {
+            return await $.get("https://api.ipify.org?format=json").then(data => data.ip);
+        },
+
         formGettext: function (txt) {
             try {
                 return gettext(txt)
             } catch (e) {
                 return txt
             }
+        },
+
+        formGenerateRandomString(length = 32, startFromLetter = false) {
+            let result = '';
+            let characterLetter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+            let characterNumber = '0123456789';
+            let characters = characterLetter + characterNumber;
+
+            if (startFromLetter === true) {
+                result += characterLetter.charAt(Math.floor(Math.random() * characterLetter.length));
+                length -= 1;
+            }
+
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        },
+
+        formConvertErrorsBeforeRaise: function (errors) {
+            let result = {};
+            Object.keys(errors).map(
+                key => {
+                    result[key] = errors[key];
+                    if (key.startsWith('rate_')) {
+                        const eleTmp$ = $(`[name=${key}]`);
+                        if (eleTmp$.length > 0) {
+                            const ratingGroup$ = eleTmp$.closest('.rating-group');
+                            if (ratingGroup$.length > 0) {
+                                let inputName = `rate_${$x.fn.formGenerateRandomString(32)}`;
+                                const eleInputErrs$ = ratingGroup$.next('input.fake-input');
+                                if (eleInputErrs$.length === 0) {
+                                    $(`<input class="fake-input" name="${inputName}" type="hidden" disabled readonly/>`).insertAfter(ratingGroup$);
+                                } else {
+                                    eleInputErrs$.prop('disabled', true).prop('readonly', true);
+                                    inputName = eleInputErrs$.attr('name');
+                                }
+                                result[inputName] = errors[key];
+                            }
+                        }
+                    }
+                }
+            )
+            return result;
         },
 
         formSerializerInput: function (input$, toObject = false) {
@@ -147,15 +341,80 @@
         },
         formSerializerObject: function (formSelected) {
             const queryExclude = ':not([dont_serialize]):not([name^="DataTables_"])';
-
             let obj = {};
-            formSelected.find(queryExclude).find(':input[name]:not(disabled)').each(function () {
+            // first with all
+            formSelected.find(':input[name]:not(disabled):not([type=radio])' + queryExclude).each(function () {
                 let item = $.fn.formSerializerInput($(this));
                 if (item.name in obj) {
                     obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];
                     obj[item.name].push(item.value);
                 } else obj[item.name] = item.value;
             });
+            // case radio | override data
+            formSelected.find(':input[name]:not(disabled)[type=radio]' + queryExclude).each(function () {
+                const name = $(this).attr('name');
+                const value = $(this).attr('value');
+                const checked = $(this).prop('checked');
+                if (checked === true) obj[name] = value;
+            })
+
+            // case datepicker | override data
+            function showErrorsObject() {
+                $.fn.formNotify(
+                    $.fn.formGettext("We encountered an error while combining the data.") + $.fn.formGettext("Please refresh the page and try again."),
+                    'failure'
+                )
+                $.fn.formNotify(
+                    $.fn.formGettext("If you continue to experience this issue, please let us know at https://www.bflow.vn/issue/form/new"),
+                    'info',
+                    {
+                        clickToHide: false,
+                        autoHide: true,
+                        autoHideDelay: 10000,
+                    }
+                )
+                throw Error('Report at https://www.bflow.vn/issue/form/new');
+            }
+
+            // query$.find(':input[name][data-datepicker]').each(function () {
+            //     const name = $(this).attr('name');
+            //     const clsPicker = this._flatpickr;
+            //     if (clsPicker) {
+            //         switch (clsPicker.config.mode) {
+            //             case 'single':
+            //                 if (clsPicker.selectedDates[0] instanceof Date) {
+            //                     obj[name] = clsPicker.selectedDates[0].toISOString();
+            //                 } else showErrorsObject();
+            //                 break
+            //             case 'multiple':
+            //                 obj[name] = Array.from(
+            //                     clsPicker.selectedDates.map(
+            //                         dateObj => {
+            //                             if (dateObj instanceof Date) {
+            //                                 return dateObj.toISOString();
+            //                             } else showErrorsObject();
+            //                         }
+            //                     )
+            //                 )
+            //                 break
+            //             case 'range':
+            //                 if (clsPicker.selectedDates.length === 2) {
+            //                     clsPicker.selectedDates.map(
+            //                         dateObj => {
+            //                             if (dateObj instanceof Date) {
+            //                                 return dateObj.toISOString();
+            //                             } else showErrorsObject();
+            //                         }
+            //                     )
+            //                 }
+            //                 break
+            //             default:
+            //                 showErrorsObject();
+            //                 break
+            //         }
+            //     } else showErrorsObject();
+            // })
+
             if ($.fn.formCheckBodyDataEmpty(obj)) {
                 // get csrf token in form
                 let csrf$ = $(formSelected).find('input[name=csrfmiddlewaretoken]');
@@ -223,26 +482,397 @@
             return '_';
         },
 
-        formNotify: function (msg, typeAlert, opts = {}, defaults={}) {
+        formNotify: function (msg, typeAlert, opts = {}, defaults = {}) {
             $.notify.defaults({
                 'globalPosition': 'top center',
                 ...defaults,
             });
             switch (typeAlert) {
                 case 'success':
-                    $.notify(msg, "success", opts);
+                    $.notify(msg, {
+                        ...opts,
+                        "className": "success"
+                    });
                     break
                 case 'failure':
-                    $.notify(msg, "error", opts);
+                    $.notify(msg, {
+                        ...opts,
+                        "className": "error"
+                    });
                     break
                 case 'warning':
-                    $.notify(msg, "warn", opts);
+                    $.notify(msg, {
+                        ...opts,
+                        "className": "warn"
+                    });
                     break
                 case 'info':
-                    $.notify(msg, "info",);
-                    break
                 default:
-                    $.notify(msg);
+                    $.notify(msg, {
+                        ...opts,
+                        "className": "info"
+                    });
+                    break
+            }
+        },
+
+        formShowContent: function () {
+            $('#contents').css('opacity', '100');
+        },
+
+        formShowLoaders: function (opacity='100%'){
+            $('#content-loaders').css('opacity', opacity).fadeIn('fast');
+        },
+        formHideLoaders: function (timeout = null) {
+            setTimeout(
+                () => {
+                    $('#content-loaders').fadeOut('fast');
+                },
+                timeout ? timeout : 0
+            )
+        },
+
+        formShowContentAndHideLoader: function () {
+            $.fn.formHideLoaders();
+            $.fn.formShowContent();
+        },
+
+        formInitSelect2All: function (opts) {
+            $('select').each(function () {
+                const placeholder = $(this).attr('placeholder') || '';
+                const optionEmpty = $(this).find('option[value=""]');
+                if (optionEmpty.length === 0) $(this).prepend(`<option value=""></option>`)
+                $(this).select2({
+                    'dropdownParent': $(this).closest('.form-item'),
+                    disabled: $(this).prop('disabled'),
+                    placeholder: placeholder.toString(),
+                    width: '100%',
+                    ...opts,
+                })
+            });
+        },
+
+        formActiveThemeMode: function () {
+            if ($(document).data('themeModeActivated') !== true) {
+                // enable watch theme mode
+                // if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                //     $(document).data('themeMode', "dark");
+                // }
+                // window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                //     const newColorScheme = e.matches ? "dark" : "light";
+                //     $(document).data('themeMode', newColorScheme);
+                // });
+
+                // const baseFlatSrc = $(document).find('#flatpickr-static').attr('href').split('/').slice(0, -1).join("/");
+                // const themeMode = $(document).data('themeMode');
+                // switch (themeMode) {
+                //     case 'dark':
+                //         $(document).find('head').append(`<link rel="stylesheet" href="${baseFlatSrc}/themes/dark.css" />`)
+                //         break
+                //     default:
+                //         $(document).find('head').append(`<link rel="stylesheet" href="${baseFlatSrc}/themes/airbnb.css" />`)
+                //         break
+                // }
+                // $(document).data('themeModeActivated', true)
+            }
+        },
+
+        formInitDatePickerAll: function (opts) {
+            opts = {
+                loadDefault: true,
+                allowInvalidPreload: false,
+                ...opts,
+            }
+            const pickerI18n = formFlatpickrLanguage(true);
+            $("input[data-datepicker]").each(function () {
+                let pickerOpts = {
+                    altInput: true,
+                    altFormat: $(this).attr('data-datepicker') ? $(this).attr('data-datepicker') : 'l j F Y',
+                    dateFormat: 'Y-m-d',
+                    enableTime: false,
+                    mode: 'single',  // 'single' | 'multiple' | 'range'
+                    locale: pickerI18n,
+                    weekNumbers: true,
+                    minDate: $(this).attr('data-datepicker-min') ? $(this).attr('data-datepicker-min') : null,
+                    maxDate: $(this).attr('data-datepicker-max') ? $(this).attr('data-datepicker-max') : null,
+                    onChange: function (selectedDates, dateStr, instance){
+                        const frm$ = $(instance.input).closest('form');
+                        if (frm$.length > 0) $(frm$).valid();
+                    },
+                    ...opts,
+                }
+                if (opts['loadDefault'] === true) {
+                    let defaultDate = $(this).attr('data-datepicker-default') || null;
+                    switch (defaultDate) {
+                        case 'now':
+                            defaultDate = new Date();
+                            break
+                        default:
+                            try {
+                                defaultDate = Date.parse(defaultDate)
+                            } catch (e) {
+                                defaultDate = null;
+                            }
+                    }
+                    if (defaultDate) pickerOpts['defaultDate'] = defaultDate;
+                }
+                $(this).flatpickr(pickerOpts);
+            });
+        },
+
+        formInitDatetimePickerAll: function (opts) {
+            opts = {
+                loadDefault: true,
+                ...opts,
+            }
+            const pickerI18n = formFlatpickrLanguage(true);
+            $("input[data-datetimepicker]").each(function () {
+                let pickerOpts = {
+                    altInput: true,
+                    altFormat: $(this).attr('data-datetimepicker') ? $(this).attr('data-datetimepicker') : 'l j F Y',
+                    dateFormat: 'Y-m-d H:i:S',
+                    enableTime: true,
+                    mode: 'single',  // 'single' | 'multiple' | 'range'
+                    locale: pickerI18n,
+                    weekNumbers: true,
+                    minDate: $(this).attr('data-datetimepicker-min') ? $(this).attr('data-datetimepicker-min') : null,
+                    maxDate: $(this).attr('data-datetimepicker-max') ? $(this).attr('data-datetimepicker-max') : null,
+                    onChange: function (selectedDates, dateStr, instance){
+                        const frm$ = $(instance.input).closest('form');
+                        if (frm$.length > 0) $(frm$).valid();
+                    },
+                    ...opts
+                }
+                if (opts['loadDefault'] === true) {
+                    let defaultDate = $(this).attr('data-datetimepicker-default') || null;
+                    switch (defaultDate) {
+                        case 'now':
+                            defaultDate = new Date();
+                            break
+                        default:
+                            try {
+                                defaultDate = Date.parse(defaultDate)
+                            } catch (e) {
+                                defaultDate = null;
+                            }
+                    }
+                    if (defaultDate) pickerOpts['defaultDate'] = defaultDate;
+                }
+                $(this).flatpickr(pickerOpts);
+            });
+        },
+
+        formInitTimePickerAll: function (opts) {
+            opts = {
+                loadDefault: true,
+                ...opts,
+            }
+            const pickerI18n = formFlatpickrLanguage(true);
+            $("input[data-timepicker]").each(function () {
+                const ele$ = $(this);
+                let pickerOpts = {
+                    altInput: true,
+                    altFormat: $(this).attr('data-timepicker') ? $(this).attr('data-timepicker') : 'H:i',
+                    dateFormat: 'H:i:S',
+                    enableTime: true,
+                    noCalendar: true,
+                    mode: 'single',  // 'single' | 'multiple' | 'range'
+                    locale: pickerI18n,
+                    minTime: $(this).attr('data-timepicker-min') ? $(this).attr('data-timepicker-min') : null,
+                    maxTime: $(this).attr('data-timepicker-max') ? $(this).attr('data-timepicker-max') : null,
+                    onChange: function (selectedDates, dateStr, instance){
+                        const frm$ = $(instance.input).closest('form');
+                        if (frm$.length > 0) $(frm$).valid();
+                    },
+                    ...opts
+                }
+                if (opts['loadDefault'] === true) {
+                    let defaultDate = $(this).attr('data-timepicker-default') || null;
+                    switch (defaultDate) {
+                        case 'now':
+                            defaultDate = new Date();
+                            break
+                        default:
+                            try {
+                                defaultDate = Date.parse(defaultDate)
+                            } catch (e) {
+                                defaultDate = null;
+                            }
+                    }
+                    if (defaultDate) pickerOpts['defaultDate'] = defaultDate;
+                }
+                $(this).flatpickr(pickerOpts);
+            });
+        },
+
+        formRangeSlider: function (opts){
+            $('[data-rangeslider]').ionRangeSlider();
+        },
+
+        formPageInit: function (){
+            const pageProgres$ = $('.progress-steps');
+            const progress$ = pageProgres$.find('.steps-bar-progress');
+            const stepsGroup$ = pageProgres$.find('.steps-group');
+            const progressJustify = stepsGroup$.attr('data-progress-justify');
+            const progressStyle = stepsGroup$.attr('data-progress-style');
+            const stepItems$ = stepsGroup$.find('.step-item');
+            const stepItemInit = stepsGroup$.find('.step-item.active');
+
+            function activePageProgress(dataPage, nextOrPrev=null) {
+                if (dataPage && pageProgres$.length > 0) {
+                    const stepActive$ = stepsGroup$.find(`.step-item[data-page=${dataPage}]`);
+                    if (stepsGroup$.length > 0 && stepItems$.length > 0 && stepActive$.length > 0) {
+                        stepItems$.removeClass('active');
+                        stepActive$.addClass('active');
+
+                        const maxLength = stepItems$.length;
+                        const indexActive = Array.from(stepItems$).indexOf(stepActive$[0]);
+                        if (indexActive !== -1) {
+                            if (progressStyle === 'steps') {
+                                if (progress$.length > 0){
+                                    switch (progressJustify) {
+                                        case 'evenly':
+                                            const space = `((100% - 32px * ${maxLength})/${maxLength + 1})`
+                                            let width = `${space} * ${indexActive + 1} + 32px * ${indexActive + 1}`;
+                                            width += indexActive + 1 === maxLength ? ` + ${space}` : ` + ${space}/2`;
+                                            progress$.css('width', `calc(${width})`);
+                                            break
+                                        case 'between':
+                                            progress$.css('width', `calc(100% / ${maxLength - 1} * ${indexActive})`);
+                                            break
+                                        case 'around':
+                                        default:
+                                            progress$.css('width', ((indexActive + 1) / maxLength) * 100 + '%');
+                                    }
+                                }
+                            } else if (progressStyle === 'proportion') {
+                                if (progress$.length > 0){
+                                    const percent = ((indexActive + 1) / maxLength) * 100 + '%';
+                                    progress$
+                                        .addClass('steps-style-proportion')
+                                        .text(percent)
+                                        .css('width', percent);
+                                }
+                            } else if (progressStyle === 'bar') {
+                                // const space = `100% / ${maxLength}`;
+                                // progress$
+                                //     .css('width', `calc(${space})`)
+                                //     .css('margin-left', `calc(${space} * ${indexActive})`);
+                            }
+                        }
+                    }
+
+                    const pageGroup$ = $('.page-group');
+                    const pageActive$ = pageGroup$.find(`.form-item-controller[data-page=${dataPage}]`);
+                    const pageActiveGroup$ = pageActive$.closest('.page-group');
+                    const timeAnimated = 200;
+                    pageGroup$.fadeOut(0);
+                    switch (nextOrPrev) {
+                        case 'next':
+                            pageActiveGroup$.show("slide", { direction: "right" }, timeAnimated);
+                            break
+                        case 'prev':
+                            pageActiveGroup$.show("slide", { direction: "left" }, timeAnimated);
+                            break
+                        default:
+                            pageActiveGroup$.slideDown(timeAnimated);
+                            break
+                    }
+                    pageActiveGroup$.show("slide", { direction: nextOrPrev === 'next' ? "right" : "left" }, 200);
+                }
+            }
+
+            $('button.btn-previous').on('click', function (){
+                const currentPage$ = $(this).closest('.page-group');
+                if (currentPage$.length > 0){
+                    const prevPage$ = currentPage$.prev('.page-group');
+                    if (prevPage$.length > 0){
+                        const pageController$ = prevPage$.find('.form-item-controller');
+                        if (pageController$.length > 0){
+                            const dataPage = pageController$.attr('data-page');
+                            if (dataPage) activePageProgress(dataPage, 'prev');
+                        }
+                    }
+                }
+            });
+            $('button.btn-next').on('click', function (){
+                const currentPage$ = $(this).closest('.page-group');
+                if (currentPage$.length > 0){
+                    const nextPage$ = currentPage$.next('.page-group');
+                    if (nextPage$.length > 0){
+                        const pageController$ = nextPage$.find('.form-item-controller');
+                        if (pageController$.length > 0){
+                            const dataPage = pageController$.attr('data-page');
+                            if (dataPage) activePageProgress(dataPage, 'next');
+                        }
+                    }
+                }
+            });
+
+            stepItems$.on('click', function (){
+                activePageProgress($(this).attr('data-page'));
+            })
+
+            if (stepItemInit.length > 0){
+                activePageProgress(stepItemInit.attr('data-page'));
+            }
+
+            const formContent$ = $('.form-content');
+            const pageGroup$ = formContent$.find('.page-group');
+            pageGroup$.on('page.errors.reset', function (){
+                const stepMatch$ = stepsGroup$.find(`.step-item[data-page=${$(this).attr('data-page')}]`);
+                if (stepMatch$.length === 1){
+                    stepMatch$.find('.errs-count').remove();
+                }
+            })
+            pageGroup$.on('page.errors.count', function (event, data){
+                data = {
+                    'countErrs': 0,
+                    ...data
+                }
+                const stepMatch$ = stepsGroup$.find(`.step-item[data-page=${$(this).attr('data-page')}]`);
+                if (stepMatch$.length === 1){
+                    stepMatch$.find('.errs-count').remove();
+                    if (data.countErrs > 0) {
+                        stepMatch$.append(`<span class="errs-count">${data.countErrs}</span>`);
+                    }
+                }
+            })
+        },
+        formCountErrorInPage: function (errorList){
+            const pageProgres$ = $('.progress-steps');
+            const stepsGroup$ = pageProgres$.find('.steps-group');
+            const stepItems$ = stepsGroup$.find('.step-item');
+            const formContent$ = $('.form-content');
+            if (stepItems$.length > 0){
+                let errorsCountOfPage = {};
+                (errorList || []).map(
+                    errs => {
+                        if (errs.element){
+                            const pageGroup$ = $(errs.element).closest('.page-group');
+                            if (pageGroup$.length === 1){
+                                const dataPage = pageGroup$.attr('data-page');
+                                if (dataPage){
+                                    if (!errorsCountOfPage.hasOwnProperty(dataPage)){
+                                        errorsCountOfPage[dataPage] = 0;
+                                    }
+                                    errorsCountOfPage[dataPage] += 1;
+                                }
+                            }
+                        }
+                    }
+                )
+                formContent$.find(`.page-group`).trigger('page.errors.reset');
+                Object.keys(errorsCountOfPage).map(
+                    pageIdx => {
+                        const pageGroup$ = formContent$.find(`.page-group[data-page=${pageIdx}]`);
+                        if (pageGroup$.length > 0){
+                            pageGroup$.trigger('page.errors.count', {
+                                'countErrs': errorsCountOfPage[pageIdx],
+                            });
+                        }
+                    }
+                )
             }
         },
     });

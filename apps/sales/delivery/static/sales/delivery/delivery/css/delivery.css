@@ -1,4 +1,8 @@
 .modal-fullscreen.modal-fullscreen-custom {
     width: 97vw;
-    height: 90%;
+    height: 100%;
+}
+
+.modal-body.modal-body-custom {
+    margin-top: -15px;
 }

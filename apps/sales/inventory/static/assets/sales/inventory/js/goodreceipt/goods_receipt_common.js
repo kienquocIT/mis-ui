@@ -13,10 +13,10 @@ class GRLoadDataHandle {
     static transEle = $('#app-trans-factory');
     static urlEle = $('#url-factory');
     static dataTypeGr = [
-        {
-            'id': 3,
-            'title': GRLoadDataHandle.transEle.attr('data-for-product')
-        },
+        // {
+        //     'id': 3,
+        //     'title': GRLoadDataHandle.transEle.attr('data-for-product')
+        // },
         {
             'id': 2,
             'title': GRLoadDataHandle.transEle.attr('data-for-ia')
@@ -537,6 +537,7 @@ class GRLoadDataHandle {
     };
 
     static loadAreaLotSerial(is_lot = false, is_serial = false) {
+        let $form = $('#frm_good_receipt_create');
         for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
             eleImport.setAttribute('disabled', 'true');
         }
@@ -545,11 +546,15 @@ class GRLoadDataHandle {
         GRDataTableHandle.tableSerial.DataTable().clear().draw();
         if (is_lot === true) {  // lot
             $('#table-good-receipt-manage-lot-area')[0].removeAttribute('hidden');
-            $('#btn-add-manage-lot')[0].removeAttribute('disabled');
+            if ($form.attr('data-method').toLowerCase() !== 'get') {
+                $('#btn-add-manage-lot')[0].removeAttribute('disabled');
+            }
             $('#table-good-receipt-manage-serial-area')[0].setAttribute('hidden', 'true');
         } else if (is_serial === true) {  // serial
             $('#table-good-receipt-manage-serial-area')[0].removeAttribute('hidden');
-            $('#btn-add-manage-serial')[0].removeAttribute('disabled');
+            if ($form.attr('data-method').toLowerCase() !== 'get') {
+                $('#btn-add-manage-serial')[0].removeAttribute('disabled');
+            }
             $('#table-good-receipt-manage-lot-area')[0].setAttribute('hidden', 'true');
         }
     };
@@ -1208,7 +1213,7 @@ class GRLoadDataHandle {
             '3': GRLoadDataHandle.transEle.attr('data-for-product'),
         }
         let idAreaShow = String(data?.['goods_receipt_type'] + 1);
-        GRLoadDataHandle.loadInitS2(GRLoadDataHandle.typeSelectEle, [GRLoadDataHandle.dataTypeGr]);
+        GRLoadDataHandle.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGr);
         GRLoadDataHandle.typeSelectEle.val(idAreaShow);
         let boxRender = $('#good-receipt-type-area')[0]?.querySelector('.select2-selection__rendered');
         if (boxRender) {
@@ -1246,7 +1251,7 @@ class GRLoadDataHandle {
         dataWarehouse['code'] = dataWarehouse?.['warehouse']?.['code'];
         dataWarehouse['warehouse'] = dataWarehouse?.['warehouse']?.['id'];
         for (let dataLot of dataWarehouse?.['lot_data']) {  // lot
-            dataLot['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
+            dataLot['warehouse_id'] = dataWarehouse?.['warehouse'];
             dataLot['expire_date'] = '';
             if (dataLot?.['expire_date']) {
                 dataLot['expire_date'] = moment(dataLot?.['expire_date']).format('DD/MM/YYYY');
@@ -1258,7 +1263,7 @@ class GRLoadDataHandle {
             dataLot['lot'] = dataLot?.['lot_id'];
         }
         for (let dataSerial of dataWarehouse?.['serial_data']) {  // serial
-            dataSerial['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
+            dataSerial['warehouse_id'] = dataWarehouse?.['warehouse'];
             dataSerial['expire_date'] = '';
             if (dataSerial?.['expire_date']) {
                 dataSerial['expire_date'] = moment(dataSerial?.['expire_date']).format('DD/MM/YYYY');
@@ -1416,48 +1421,45 @@ class GRDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<div class="form-check">
-                                    <input 
-                                        type="checkbox" 
-                                        class="form-check-input table-row-checkbox" 
-                                        data-id="${row.id}"
-                                        data-row="${dataRow}"
-                                    >
-                                </div>`
+                        return `<div class="d-flex align-items-center">
+                                        <div class="form-check">
+                                            <input 
+                                                type="radio" 
+                                                class="form-check-input table-row-checkbox" 
+                                                data-id="${row?.['id']}"
+                                                data-row="${dataRow}"
+                                            >
+                                        </div>
+                                        <span class="table-row-item">${row?.['product']?.['title']}</span>
+                                </div>`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-item">${row?.['product']?.['title']}</span>`;
+                        return `<span class="table-row-uom">${row?.['uom_order_actual']?.['title']}</span>`;
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['uom_order_actual']?.['title']}</span>`;
+                        return `<span class="table-row-quantity">${row?.['product_quantity_order_actual'] ? row?.['product_quantity_order_actual'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity">${row?.['product_quantity_order_actual'] ? row?.['product_quantity_order_actual'] : 0}</span>`;
+                        return `<span class="table-row-gr-completed">${row?.['gr_completed_quantity'] ? row?.['gr_completed_quantity'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-gr-completed">${row?.['gr_completed_quantity'] ? row?.['gr_completed_quantity'] : 0}</span>`;
-                    }
-                },
-                {
-                    targets: 5,
-                    render: (data, type, row) => {
                         return `<span class="table-row-gr-remain">${row?.['gr_remain_quantity'] ? row?.['gr_remain_quantity'] : 0}</span>`;
                     }
                 },
                 {
-                    targets: 6,
+                    targets: 5,
                     render: (data, type, row) => {
                         if (row?.['product']?.['product_choice'].includes(1) || row?.['purchase_request_products_data'].length > 0) { // If PO Product have inventory choice or PO have PR
                             return `<b><span class="table-row-import text-primary">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span></b>`;
@@ -1488,48 +1490,45 @@ class GRDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<div class="form-check">
-                                    <input 
-                                        type="checkbox" 
-                                        class="form-check-input table-row-checkbox" 
-                                        data-id="${row.id}" 
-                                        data-row="${dataRow}"
-                                    >
-                                </div>`
+                        return `<div class="d-flex align-items-center">
+                                    <div class="form-check">
+                                        <input 
+                                            type="radio" 
+                                            class="form-check-input table-row-checkbox" 
+                                            data-id="${row?.['id']}" 
+                                            data-row="${dataRow}"
+                                        >
+                                    </div>
+                                    <span class="table-row-item">${row?.['purchase_request_product']?.['purchase_request']?.['code'] ? row?.['purchase_request_product']?.['purchase_request']?.['code'] : 'Stock'}</span>
+                                </div>`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-item">${row?.['purchase_request_product']?.['purchase_request']?.['code'] ? row?.['purchase_request_product']?.['purchase_request']?.['code'] : 'Stock'}</span>`;
+                        return `<span class="table-row-uom">${row?.['purchase_request_product']?.['uom']?.['title'] ? row?.['purchase_request_product']?.['uom']?.['title'] : row?.['uom_stock']?.['title']}</span>`;
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['purchase_request_product']?.['uom']?.['title'] ? row?.['purchase_request_product']?.['uom']?.['title'] : row?.['uom_stock']?.['title']}</span>`;
+                        return `<span class="table-row-quantity">${row?.['quantity_order']}</span>`;
                     }
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity">${row?.['quantity_order']}</span>`;
+                        return `<span class="table-row-gr-completed">${row?.['gr_completed_quantity'] ? row?.['gr_completed_quantity'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-gr-completed">${row?.['gr_completed_quantity'] ? row?.['gr_completed_quantity'] : 0}</span>`;
-                    }
-                },
-                {
-                    targets: 5,
-                    render: (data, type, row) => {
                         return `<span class="table-row-gr-remain">${row?.['gr_remain_quantity'] ? row?.['gr_remain_quantity'] : 0}</span>`;
                     }
                 },
                 {
-                    targets: 6,
+                    targets: 5,
                     render: (data, type, row) => {
                         let dataPOCheckedRaw = GRDataTableHandle.tablePOProduct[0]?.querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
                         if (dataPOCheckedRaw) {
@@ -1562,30 +1561,27 @@ class GRDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<div class="form-check">
-                                    <input 
-                                        type="checkbox" 
-                                        class="form-check-input table-row-checkbox" 
-                                        data-id="${row.id}" 
-                                        data-row="${dataRow}"
-                                    >
-                                </div>`
+                        return `<div class="d-flex align-items-center">
+                                    <div class="form-check">
+                                        <input 
+                                            type="radio" 
+                                            class="form-check-input table-row-checkbox" 
+                                            data-id="${row?.['id']}" 
+                                            data-row="${dataRow}"
+                                        >
+                                    </div>
+                                    <span class="table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>
+                                </div>`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
                         return `<span class="table-row-item">${row?.['title'] ? row?.['title'] : ''}</span>`;
                     }
                 },
                 {
-                    targets: 3,
+                    targets: 2,
                     render: (data, type, row) => {
                         let checked = ``;
                         if (row?.['is_additional'] === true) {
@@ -1597,7 +1593,7 @@ class GRDataTableHandle {
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 3,
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-import validated-number text-primary" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}">
@@ -1605,7 +1601,7 @@ class GRDataTableHandle {
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 4,
                     render: (data, type, row) => {
                         return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
                     }
@@ -1667,6 +1663,12 @@ class GRDataTableHandle {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-manufacture-date" value="${row?.['manufacture_date']}">
                                 </div>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    render: () => {
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
                 },
             ],
@@ -1739,6 +1741,12 @@ class GRDataTableHandle {
                                 </div>`;
                     }
                 },
+                {
+                    targets: 7,
+                    render: () => {
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                    }
+                },
             ],
             drawCallback: function () {
                 // add css to Dtb
@@ -1759,7 +1767,7 @@ class GRDataTableHandle {
             columns: [  // 25,325,325,150,175,325,150,270,25 (1920p)
                 {
                     targets: 0,
-                    width: '1.30208333333%',
+                    width: '1%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" id="${row?.['id']}" data-row="${dataRow}">${row?.['order']}</span>`
@@ -1767,7 +1775,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '16.9270833333%',
+                    width: '17%',
                     render: (data, type, row) => {
                         if (!GRLoadDataHandle.POSelectEle.val()) {
                             return `<div class="row table-row-item-area">
@@ -1805,7 +1813,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '15%',
+                    width: '13%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
@@ -1908,7 +1916,7 @@ class GRDataTableHandle {
                     targets: 8,
                     width: '1.30208333333%',
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
                 },
             ],
@@ -1929,56 +1937,46 @@ class GRDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        if (row?.['product']?.['general_traceability_method'] === 0) {  // Not lot or serial
-                            let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                            return `<div class="form-check">
-                                    <input 
-                                        type="checkbox" 
-                                        class="form-check-input table-row-checkbox" 
-                                        data-id="${row.id}"
-                                        data-row="${dataRow}"
-                                        disabled
-                                    >
-                                </div>`;
-                        } else {
-                            let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                            return `<div class="form-check">
-                                    <input 
-                                        type="checkbox" 
-                                        class="form-check-input table-row-checkbox" 
-                                        data-id="${row.id}"
-                                        data-row="${dataRow}"
-                                    >
-                                </div>`;
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        let disabled = '';
+                        if (row?.['product']?.['general_traceability_method'] === 0) {
+                            disabled = 'disabled';
                         }
+                        let checkbox = `<div class="form-check">
+                                            <input 
+                                                type="radio" 
+                                                class="form-check-input table-row-checkbox" 
+                                                data-id="${row?.['id']}"
+                                                data-row="${dataRow}"
+                                                ${disabled}
+                                            >
+                                        </div>`;
+                        return `<div class="d-flex align-items-center">
+                                    ${checkbox}
+                                    <span class="table-row-item">${row?.['product']?.['title']}</span>
+                                </div>`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-item">${row?.['product']?.['title']}</span>`;
+                        return `<span class="table-row-item">${row?.['warehouse']?.['title']}</span>`;
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-item">${row?.['warehouse']?.['title']}</span>`;
+                        return `<span class="table-row-quantity">${row?.['quantity_ia'] ? row?.['quantity_ia'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity">${row?.['quantity_ia'] ? row?.['quantity_ia'] : 0}</span>`;
-                    }
-                },
-                {
-                    targets: 4,
-                    render: (data, type, row) => {
                         return `<span class="table-row-uom">${row?.['uom']?.['title']}</span>`;
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 4,
                     render: (data, type, row) => {
                         let checked = ``;
                         if (row?.['is_additional'] === true) {
@@ -1990,7 +1988,7 @@ class GRDataTableHandle {
                     }
                 },
                 {
-                    targets: 6,
+                    targets: 5,
                     render: (data, type, row) => {
                         if (row?.['product']?.['general_traceability_method'] === 0) {  // Not lot or serial
                             return `<div class="row">
@@ -3192,14 +3190,20 @@ class GRSubmitHandle {
                 ]
                 filterFieldList(field_list, lot);
                 if (lot?.['expire_date']) {
-                  lot['expire_date'] = moment(lot?.['expire_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    let date = moment(lot?.['expire_date'],
+                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    if (date !== "Invalid date") {
+                        lot['expire_date'] = date;
+                    }
                 } else {
                     lot['expire_date'] = null;
                 }
                 if (lot?.['manufacture_date']) {
-                    lot['manufacture_date'] = moment(lot?.['manufacture_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    let date = moment(lot?.['manufacture_date'],
+                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    if (date !== "Invalid date") {
+                        lot['manufacture_date'] = date;
+                    }
                 } else {
                     lot['manufacture_date'] = null;
                 }
@@ -3215,26 +3219,38 @@ class GRSubmitHandle {
                 ]
                 filterFieldList(field_list, serial);
                 if (serial?.['expire_date']) {
-                    serial['expire_date'] = moment(serial?.['expire_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    let date = moment(serial?.['expire_date'],
+                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    if (date !== "Invalid date") {
+                        serial['expire_date'] = date;
+                    }
                 } else {
                     serial['expire_date'] = null;
                 }
                 if (serial?.['manufacture_date']) {
-                    serial['manufacture_date'] = moment(serial?.['manufacture_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    let date = moment(serial?.['manufacture_date'],
+                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    if (date !== "Invalid date") {
+                        serial['manufacture_date'] = date;
+                    }
                 } else {
                     serial['manufacture_date'] = null;
                 }
                 if (serial?.['warranty_start']) {
-                    serial['warranty_start'] = moment(serial?.['warranty_start'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    let date = moment(serial?.['warranty_start'],
+                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    if (date !== "Invalid date") {
+                        serial['warranty_start'] = date;
+                    }
                 } else {
                     serial['warranty_start'] = null;
                 }
                 if (serial?.['warranty_end']) {
-                    serial['warranty_end'] = moment(serial?.['warranty_end'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    let date = moment(serial?.['warranty_end'],
+                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                    if (date !== "Invalid date") {
+                        serial['warranty_end'] = date;
+                    }
                 } else {
                     serial['warranty_end'] = null;
                 }
@@ -3266,9 +3282,9 @@ class GRSubmitHandle {
                             dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                         }
                         if (dataInfo) {
-                            rowData['product'] = dataInfo.id;
-                            rowData['product_title'] = dataInfo.title;
-                            rowData['product_code'] = dataInfo.code;
+                            rowData['product'] = dataInfo?.['id'];
+                            rowData['product_title'] = dataInfo?.['title'];
+                            rowData['product_code'] = dataInfo?.['code'];
                         }
                         let eleDescription = row.querySelector('.table-row-description');
                         if (eleDescription) {
@@ -3278,7 +3294,7 @@ class GRSubmitHandle {
                         if ($(eleUOM).val()) {
                             let dataInfo = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
                             if (dataInfo) {
-                                rowData['uom'] = dataInfo.id;
+                                rowData['uom'] = dataInfo?.['id'];
                             }
                         }
                         let eleQuantityImport = row.querySelector('.table-row-import');
@@ -3293,9 +3309,9 @@ class GRSubmitHandle {
                         if ($(eleTax).val()) {
                             let dataInfo = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
                             if (dataInfo) {
-                                rowData['tax'] = dataInfo.id;
-                                rowData['product_tax_title'] = dataInfo.title;
-                                rowData['product_tax_value'] = dataInfo.rate;
+                                rowData['tax'] = dataInfo?.['id'];
+                                rowData['product_tax_title'] = dataInfo?.['title'];
+                                rowData['product_tax_value'] = dataInfo?.['rate'];
                             } else {
                                 rowData['product_tax_value'] = 0;
                             }
@@ -3412,18 +3428,6 @@ function filterFieldList(field_list, data_json) {
     return data_json;
 }
 
-function deleteRowTable(currentRow, $table) {
-    // Get the index of the current row within the DataTable
-    let rowIndex = $table.DataTable().row(currentRow).index();
-    let row = $table.DataTable().row(rowIndex);
-    // Delete current row
-    row.remove().draw();
-    // Re order
-    reOrderRowTable($table);
-    // Re calculate
-    GRCalculateHandle.calculateTable($table);
-}
-
 function reOrderRowTable($table) {
     for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
         let row = $table[0].tBodies[0].rows[i];
@@ -3434,4 +3438,10 @@ function reOrderRowTable($table) {
             row?.querySelector('.table-row-order').setAttribute('data-row', JSON.stringify(dataRow));
         }
     }
+}
+
+function deleteRowGR(currentRow, $table) {
+    let rowIndex = $table.DataTable().row(currentRow).index();
+    let row = $table.DataTable().row(rowIndex);
+    row.remove().draw();
 }

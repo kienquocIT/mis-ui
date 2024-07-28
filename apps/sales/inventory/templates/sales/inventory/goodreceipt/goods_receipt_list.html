@@ -32,7 +32,7 @@
         <thead>
         <tr>
             <th class="w-10">{% trans 'Code' %}</th>
-            <th class="w-40">{% trans 'Name' %}</th>
+            <th class="w-30">{% trans 'Name' %}</th>
             <th class="w-15">{% trans 'Type' %}</th>
             <th class="w-10">{% trans 'Code' %} {% trans 'IA/PO' %}</th>
             <th class="w-10">{% trans 'Received date' %}</th>
@@ -54,6 +54,7 @@
     <input
             type="text"
             id="app-trans-factory"
+            data-edit="{% trans 'Edit' %}"
             data-change="{% trans 'Change' %}"
             data-cancel="{% trans 'Cancel' %}"
     >

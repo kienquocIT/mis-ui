@@ -67,8 +67,8 @@ $(function () {
                         targets: 1,
                         width: '12%',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-secondary badge-sm">${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</span>
-                                    <p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
+                            return `<span class="badge badge-soft-success">${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</span>
+                                    <span>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</span>`;
                         }
                     },
                     {

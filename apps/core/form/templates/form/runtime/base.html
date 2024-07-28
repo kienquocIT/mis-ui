@@ -8,6 +8,18 @@
             content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     >
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta
+            http-equiv="Content-Security-Policy"
+            content="
+                default-src 'none';
+                script-src 'self';
+                style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+                font-src 'self' https://fonts.gstatic.com;
+                img-src 'self' https: data:;
+                frame-src 'self' https:;
+                connect-src 'self' https://api.ipify.org;
+            "
+    >
 
     {% get_logo logo as logo_resolve %}
 
@@ -21,58 +33,48 @@
 
     <title>{{ title }}</title>
 
+    <style>
+        /* vietnamese */
+        @font-face {
+          font-family: 'Merienda';
+          font-style: normal;
+          font-weight: 300 900;
+          font-display: swap;
+          src: url("{% static 'form/runtime/vendors/fonts/Merienda/Merienda-VariableFont_wght.ttf' %}") format('truetype');
+          unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+        }
+        /* latin-ext */
+        @font-face {
+          font-family: 'Merienda';
+          font-style: normal;
+          font-weight: 300 900;
+          font-display: swap;
+          src: url("{% static 'form/runtime/vendors/fonts/Merienda/Merienda-VariableFont_wght.ttf' %}") format('truetype');
+          unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        }
+        /* latin */
+        @font-face {
+          font-family: 'Merienda';
+          font-style: normal;
+          font-weight: 300 900;
+          font-display: swap;
+          src: url("{% static 'form/runtime/vendors/fonts/Merienda/Merienda-VariableFont_wght.ttf' %}") format('truetype');
+          unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+    </style>
     {% compress css %}
-        <style>
-            html, body {
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                font-family: Arial, Helvetica, sans-serif;
-                font-optical-sizing: auto;
-                font-weight: 400;
-                font-style: normal;
-                font-size: 16px;
-                color: #000;
-            }
-
-            #bg, #bg-blur, #contents {
-                position: fixed;
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-            }
-
-            #bg {
-                z-index: 1052;
-            }
-
-            #bg-blur {
-                z-index: 1053;
-            }
-
-            #contents {
-                z-index: 1054;
-                overflow: auto;
-            }
-        </style>
-        <style>
-            .flag-icon {
-                width: 1rem;
-                height: 1rem;
-            }
-            .notifyjs-corner {
-                z-index: 2147483647!important;
-            }
-        </style>
-        <link rel="stylesheet" href="{% static 'form/runtime/runtime.css' %}">
-        <link rel="stylesheet" href="{% static 'form/runtime/scrollbar.css' %}">
+        <link rel="stylesheet" href="{% static 'form/runtime/vendors/flatpickr/flatpickr.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'form/runtime/vendors/jquery-ui/jquery-ui.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'form/runtime/vendors/select2/select2.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'form/runtime/vendors/font-awesome/6.4.0/css/all.min.css' %}">
+        <link rel="stylesheet" href="{% static 'form/runtime/vendors/rating/rating.css' %}">
+        <link rel="stylesheet" href="{% static 'form/runtime/css/base.css' %}">
+        <link rel="stylesheet" href="{% static 'form/runtime/css/runtime.css' %}">
+        <link rel="stylesheet" href="{% static 'form/runtime/css/select-box.css' %}">
+        <link rel="stylesheet" href="{% static 'form/runtime/css/scrollbar.css' %}">
         <link rel="stylesheet" href="{% static 'form/runtime/themes/style.css' %}">
 
-        <link href="{% static 'form/runtime/vendors/select2/select2.min.css' %}" rel="stylesheet"/>
-        <link href="{% static 'form/runtime/vendors/select2/select2-bootstrap.min.css' %}" rel="stylesheet"/>
+        <link rel="stylesheet" href="{% static 'form/runtime/vendors/rangeSlider/style.css' %}">
 
         {% for item in css %}
             {% check_split_static item as item_resolve %}
@@ -80,14 +82,77 @@
                 <link rel="stylesheet" href="{% static item_resolve %}">
             {% endif %}
         {% endfor %}
+
+        <link rel="stylesheet" href="{% static 'form/runtime/css/loading.css' %}">
+        <link rel="stylesheet" href="{% static 'form/runtime/vendors/page/style.css' %}">
+        <link rel="stylesheet" href="{% static 'form/runtime/css/email-auth.css' %}">
     {% endcompress %}
 </head>
 <body>
 <div id="bg"></div>
 <div id="bg-blur"></div>
-<div id="contents" style="opacity: 0;">
+<div id="contents">
     {% block Contents %}{% endblock %}
 </div>
+
+<div id="content-loaders">
+    <div class="content-loaders-full">
+        <div class="content">
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+        </div>
+    </div>
+</div>
+<div id="email-authenticate" style="display: none;">
+    <div class="email-authenticate-group">
+        <div class="email-login">
+            <div style="display: block;width: 100%;padding-bottom: 30px;padding-top: 10px;">
+                <div style="width: 100%;display: flex;justify-content: center;">
+                    <img src="{{ logo_resolve }}" alt="Original Company" style="max-width: 100px;object-fit: initial;">
+                </div>
+                <p style="width: 100%;text-align: center;font-size: large;margin: 0;">{% trans 'Sender identity verification' %}</p>
+            </div>
+            <input type="text" name="public_ip" placeholder="" required readonly style="margin-bottom: 10px;" />
+            <small style="margin-bottom: 10px;display: block;">{% trans 'This feature requires checking the public IP address to make the request.' %}</small>
+            <form id="form-email-get-otp">
+                <div style="width: 100%; display: flex;">
+                    <div style="flex-basis: auto;margin-right: 5px;">
+                        <div class="form-group">
+                            <label for="email-auth-email" style="display: none;">Email</label>
+                            <input type="email" id="email-auth-email" name="email" placeholder="Email" />
+                        </div>
+                    </div>
+                    <div style="flex-basis: 100px">
+                        <button type="submit">{% trans 'Send OTP' %}</button>
+                    </div>
+                </div>
+            </form>
+            <form id="form-email-verify-otp" style="display: none;">
+                <hr/>
+                <input type="text" name="email" placeholder=" " required readonly style="margin-bottom: 10px;" />
+                <div style="width: 100%; display: flex;">
+                    <div style="flex-basis: auto;margin-right: 5px;">
+                        <div class="form-group">
+                            <label for="email-ath-password" style="display: none;">OTP</label>
+                            <input type="text" id="email-ath-password" name="otp" placeholder="OTP" />
+                        </div>
+                    </div>
+                    <div style="flex-basis: 100px">
+                        <button type="submit">{% trans 'Verify' %}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% if jsi18n %}
+        <script src="{% url 'javascript-catalog' packages=jsi18n %}"></script>
+{% else %}
+    <script src="{% url 'javascript-catalog' packages='null' %}"></script>
+{% endif %}
 {% compress js %}
     <script src="{% static 'form/runtime/vendors/jquery.min.js' %}"></script>
     <script src="{% static 'form/runtime/vendors/jquery-validation-1.19.5/dist/jquery.validate.min.js' %}"></script>
@@ -95,33 +160,29 @@
     {% if language == 'vi' %}
         <script src="{% static 'form/runtime/vendors/validation_message_vi.js' %}"></script>
     {% endif %}
-    <script src="{% static 'form/runtime/vendors/moment/min/moment.min.js' %}"></script>
-    <script src="{% static 'form/runtime/vendors/moment-upgrade/moment-locales-upgrade-vi-en.js' %}"></script>
-    <script>
-        const userLang = navigator.language || navigator.userLanguage;
-        moment.locale(userLang.trim().split("-")[0]);
-    </script>
-    <script src="{% static 'form/runtime/vendors/setup.js' %}"></script>
     <script src="{% static 'form/runtime/vendors/validation_add_method.js' %}"></script>
 
-    {% if jsi18n %}
-        <script src="{% url 'javascript-catalog' packages=jsi18n %}"></script>
-    {% else %}
-        <script src="{% url 'javascript-catalog' packages='null' %}"></script>
-    {% endif %}
+    <script src="{% static 'form/runtime/vendors/jquery-ui/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'form/runtime/vendors/jquery-ui/ui/i18n/datepicker-vi.js' %}"></script>
+
+    <script src="{% static 'form/runtime/vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'form/runtime/vendors/moment/moment-timezone-with-data.js' %}"></script>
+    <script src="{% static 'form/runtime/vendors/moment-upgrade/moment-locales-upgrade-vi-en.js' %}"></script>
+
+    <script src="{% static 'form/runtime/vendors/flatpickr/flatpickr.min.js' %}"></script>
+    <script src="{% static 'form/runtime/vendors/flatpickr/i18n/vn.js' %}"></script>
+
+    <script src="{% static 'form/runtime/vendors/rating/rating.js' %}"></script>
+
+    <script src="{% static 'form/runtime/vendors/select2/select2.min.js' %}"></script>
+
+    <script src="{% static 'form/runtime/vendors/setup.js' %}"></script>
+
+    <script src="{% static 'form/runtime/vendors/rangeSlider/index.js' %}"></script>
+
+    <script src="{% static 'form/runtime/vendors/notify.min.js' %}"></script>
 
     <script src="{% static 'form/runtime/runtime.js' %}"></script>
-    <script>
-        function onlyView() {
-            $('input, textarea').prop('disabled', true);
-            $('[type=submit]').remove();
-            $('.form-action').remove();
-            $('.form-foot').remove();
-            // $('.form-head').remove();
-            $('#btnSwitchAccount').remove();
-        }
-    </script>
-    <script src="{% static 'form/runtime/vendors/notify.min.js' %}"></script>
 
     {% block jsContent %}{% endblock %}
 {% endcompress %}

@@ -764,17 +764,30 @@ $(document).ready(function () {
                 event.preventDefault();
                 let combinesData = new combinesData_CallLog($(this));
                 if (combinesData) {
+                    WindowControl.showLoading();
                     $.fn.callAjax2(combinesData)
                         .then(
                             (resp) => {
                                 let data = $.fn.switcherResp(resp);
                                 if (data) {
+                                    setTimeout(
+                                        () => {
+                                            WindowControl.hideLoading();
+                                        },
+                                        1000
+                                    )
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     $('#create-new-call-log').hide();
                                     OpportunityActivity.loadDblActivityLogs();
                                 }
                             },
                             (errs) => {
+                                setTimeout(
+                                        () => {
+                                            WindowControl.hideLoading();
+                                        },
+                                        1000
+                                    )
                                 $.fn.notifyB({description: errs.data.errors}, 'failure');
                             }
                         )
@@ -938,17 +951,30 @@ $(document).ready(function () {
                 event.preventDefault();
                 let combinesData = new combinesData_Email($(this));
                 if (combinesData) {
+                    WindowControl.showLoading();
                     $.fn.callAjax2(combinesData)
                         .then(
                             (resp) => {
                                 let data = $.fn.switcherResp(resp);
                                 if (data) {
+                                    setTimeout(
+                                        () => {
+                                            WindowControl.hideLoading();
+                                        },
+                                        1000
+                                    )
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     $('#send-email').hide();
                                     OpportunityActivity.loadDblActivityLogs();
                                 }
                             },
                             (errs) => {
+                                setTimeout(
+                                        () => {
+                                            WindowControl.hideLoading();
+                                        },
+                                        1000
+                                    )
                                 $.fn.notifyB({description: errs.data.errors}, 'failure');
                             }
                         )
@@ -1177,17 +1203,30 @@ $(document).ready(function () {
                 event.preventDefault();
                 let combinesData = new combinesData_Meeting($(this));
                 if (combinesData) {
+                    WindowControl.showLoading();
                     $.fn.callAjax2(combinesData)
                         .then(
                             (resp) => {
                                 let data = $.fn.switcherResp(resp);
                                 if (data) {
+                                    setTimeout(
+                                        () => {
+                                            WindowControl.hideLoading();
+                                        },
+                                        1000
+                                    )
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     $('#create-meeting').hide();
                                     OpportunityActivity.loadDblActivityLogs();
                                 }
                             },
                             (errs) => {
+                                setTimeout(
+                                        () => {
+                                            WindowControl.hideLoading();
+                                        },
+                                        1000
+                                    )
                                 $.fn.notifyB({description: errs.data.errors}, 'failure');
                             }
                         )
@@ -1304,134 +1343,6 @@ $(document).ready(function () {
             })
 
             // TIMELINE
-
-            function tabSubtask(subTaskList) {
-                if (!subTaskList) return false
-                const $wrap = $('.wrap-subtask')
-                for (let [key, item] of subTaskList.entries()) {
-                    const template = $(`<div class="d-flex justify-content-start align-items-center subtask_item">
-                                    <p class="sub-tit" title="${item.title}">${item.title}</p>
-                                    <p class="sub-employee" title="${item.employee_inherit}"><span class="chip chip-primary chip-pill"><span class="chip-text">${item.employee_inherit}</span></span></p>
-                                    <button class="btn btn-flush-primary btn-icon btn-rounded ml-auto flush-soft-hover" disabled>
-                                        <span><i class="fa-regular fa-trash-can fa-sm"></i></span>
-                                    </button>
-                                 </div>`);
-                    $wrap.append(template);
-                }
-            }
-
-            function tabLogWork(dataList) {
-                let $table = $('#table_log-work')
-                if ($table.hasClass('datatable'))
-                    $table.DataTable().clear().rows.add(dataList).draw();
-                else
-                    $table.DataTable({
-                        searching: false,
-                        ordering: false,
-                        paginate: false,
-                        info: false,
-                        data: dataList,
-                        columns: [
-                            {
-                                data: 'employee_created',
-                                targets: 0,
-                                width: "35%",
-                                render: (data, type, row) => {
-                                    let avatar = ''
-                                    let avClass = 'avatar-rounded avatar-xs avatar-' + $x.fn.randomColor()
-                                    avatar = $x.fn.renderAvatar(data, avClass)
-                                    return avatar;
-                                }
-                            },
-                            {
-                                data: 'start_date',
-                                targets: 1,
-                                width: "35%",
-                                render: (data, type, row) => {
-                                    let date = moment(data, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
-                                    if (data !== row.end_date) {
-                                        date += ' ~ '
-                                        date += moment(row.end_date, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
-                                    }
-                                    return date;
-                                }
-                            },
-                            {
-                                data: 'time_spent',
-                                targets: 2,
-                                width: "20%",
-                                render: (data, type, row) => {
-                                    return data;
-                                }
-                            },
-                            {
-                                data: 'id',
-                                targets: 3,
-                                width: "10%",
-                                render: (data, type, row) => {
-                                    return ''
-                                }
-                            }
-                        ]
-                    })
-            }
-
-            function displayTaskView(url) {
-                if (url)
-                    $.fn.callAjax2({
-                        url: url,
-                        method: 'GET'
-                    })
-                        .then((resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                // enable side panel\
-                                if (!$('#drawer_task_create').hasClass('open'))
-                                    $('[data-drawer-target="#drawer_task_create"]').trigger('click')
-                                resetFormTask()
-                                $('.title-create').addClass('hidden')
-                                $('.title-detail').removeClass('hidden')
-                                $('#inputTextTitle').val(data.title)
-                                $('#inputTextCode').val(data.code)
-                                $('#rangeValue').text(data['percent_completed'])
-                                $('#percent_completed').val(data['percent_completed'])
-                                $('#selectStatus').attr('data-onload', JSON.stringify(data.task_status)).append(
-                                    `<option value="${data.task_status.id}" selected>${data.task_status.title}</option>`
-                                ).trigger('change')
-                                $('#inputTextStartDate').val(
-                                    moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                                )
-                                $('#inputTextEndDate').val(
-                                    moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                                )
-                                $('#inputTextEstimate').val(data.estimate)
-                                $('#selectPriority').val(data.priority).trigger('change')
-                                $('.btn-log_work').addClass('disabled')
-                                // render label
-                                let htmlElm = $('.label-mark')
-                                htmlElm.html('')
-                                for (let item of data.label)
-                                    htmlElm.append($(`<span class="item-tag"><span>${item}</span></span>`))
-                                $('#inputAssigner').val(data.employee_created.full_name)
-                                    .attr('value', data.employee_created.id)
-                                if (data?.employee_inherit.hasOwnProperty("id"))
-                                    $('#employee_inherit_id').attr('data-onload', JSON.stringify(data.employee_inherit))
-                                        .append(`<option value="${data.employee_inherit.id}" selected>${
-                                            data.employee_inherit.full_name}</option>`).trigger("change")
-                                window.editor.setData(data.remark)
-                                window.checklist.setDataList = data.checklist
-                                window.checklist.render()
-                                $('.create-subtask, .create-checklist').addClass('hidden')
-                                if (data?.['task_log_work'].length) tabLogWork(data['task_log_work'])
-                                if (data?.['sub_task_list']) tabSubtask(data['sub_task_list'])
-                                if (data.attach) {
-                                    const fileDetail = data.attach[0]?.['files']
-                                    FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
-                                }
-                                $('.create-task').attr('disabled', true)
-                            }
-                        })
-            }
 
             OpportunityActivity.loadDblActivityLogs();
 

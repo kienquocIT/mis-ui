@@ -216,7 +216,7 @@ class POLoadDataHandle {
     static loadDataMergeProductTable() {
         let tableMerged = $('#datable-purchase-request-product-merge');
         tableMerged.DataTable().clear().draw();
-        let data = setupMergeProduct();
+        let data = POSubmitHandle.setupMergeProduct();
         tableMerged.DataTable().rows.add(data).draw();
         return true;
     };
@@ -411,15 +411,22 @@ class POLoadDataHandle {
         }
     };
 
-    static loadTableProductByPurchaseRequest() {
+    static loadReDataTbl() {
         let $tableProductPR = $('#datable-purchase-order-product-request');
         let $tableProductAdd = $('#datable-purchase-order-product-add');
-        // clear dataTable
-        $tableProductPR.DataTable().clear().draw();
         $tableProductPR.DataTable().destroy();
         PODataTableHandle.dataTablePurchaseOrderProductRequest();
+        // clear dataTable
+        $tableProductPR.DataTable().clear().draw();
         $tableProductAdd.DataTable().clear().draw();
-        let data = setupMergeProduct();
+        return true;
+    };
+
+    static loadTableProductByPurchaseRequest() {
+        let $tableProductPR = $('#datable-purchase-order-product-request');
+        // clear dataTable
+        $tableProductPR.DataTable().clear().draw();
+        let data = POSubmitHandle.setupMergeProduct();
         POLoadDataHandle.eleDivTablePOProductAdd[0].setAttribute('hidden', 'true');
         POLoadDataHandle.eleDivTablePOProductRequest[0].removeAttribute('hidden');
         $tableProductPR.DataTable().rows.add(data).draw();
@@ -748,36 +755,6 @@ class POLoadDataHandle {
         return true
     };
 
-    static loadAddPaymentStage() {
-        let $table = $('#datable-po-payment-stage');
-        let dataAdd = {
-            'remark': '',
-            'payment_ratio': 0,
-            'value_before_tax': 0,
-            'tax': {},
-            'value_after_tax': 0,
-        }
-        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-        // init select2
-        POLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-        // init datePicker
-        $(newRow.querySelector('.table-row-due-date')).daterangepicker({
-            singleDatePicker: true,
-            timepicker: false,
-            showDropdowns: false,
-            minYear: 2023,
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-            maxYear: parseInt(moment().format('YYYY'), 10),
-            drops: 'up',
-            autoApply: true,
-        });
-        $(newRow.querySelector('.table-row-due-date')).val(null).trigger('change');
-        // init maskMoney
-        $.fn.initMaskMoney2();
-    };
-
     static loadCssToDTScrollBody() {
         let tableAddWrapper = document.getElementById('datable-purchase-order-product-add_wrapper');
         let tablePRWrapper = document.getElementById('datable-purchase-order-product-request_wrapper');
@@ -848,7 +825,38 @@ class POLoadDataHandle {
         }
     };
 
-    static loadChangePaymentRate(ele) {
+    // TABLE PAYMENT STAGE
+    static loadAddPaymentStage() {
+        let $table = $('#datable-po-payment-stage');
+        let dataAdd = {
+            'remark': '',
+            'payment_ratio': 0,
+            'value_before_tax': 0,
+            'tax': {},
+            'value_after_tax': 0,
+        }
+        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
+        // init select2
+        POLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+        // init datePicker
+        $(newRow.querySelector('.table-row-due-date')).daterangepicker({
+            singleDatePicker: true,
+            timepicker: false,
+            showDropdowns: false,
+            minYear: 2023,
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            drops: 'up',
+            autoApply: true,
+        });
+        $(newRow.querySelector('.table-row-due-date')).val(null).trigger('change');
+        // init maskMoney
+        $.fn.initMaskMoney2();
+    };
+
+    static loadChangePSRate(ele) {
         let tableWrapper = document.getElementById('datable-purchase-order-product-add_wrapper');
         if (POLoadDataHandle.PRDataEle.val()) { // PO PR products
             tableWrapper = document.getElementById('datable-purchase-order-product-request_wrapper');
@@ -866,6 +874,7 @@ class POLoadDataHandle {
                             $(eleValBT).attr('value', String(value));
                             // mask money
                             $.fn.initMaskMoney2();
+                            POCalculateHandle.calculateValueAfterTax(row);
                             let check = POValidateHandle.validatePOPSValue(eleValBT);
                             if (check === false) {
                                 ele.value = 0;
@@ -876,6 +885,17 @@ class POLoadDataHandle {
             }
         }
         return true;
+    };
+
+    static loadChangePSRateAllTbl() {
+        let $table = $('#datable-po-payment-stage');
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            let eleRate = row.querySelector('.table-row-ratio');
+            if (eleRate) {
+                POLoadDataHandle.loadChangePSRate(eleRate);
+            }
+        });
     };
 
     // LOAD DETAIL
@@ -1007,7 +1027,7 @@ class POLoadDataHandle {
     static loadPRProductNotInPO(data) {
         let PRProductIDList = [];
         for (let PRProduct of data?.['purchase_request_products_data']) {
-            PRProductIDList.push(PRProduct?.['purchase_request_product']?.['id'])
+            PRProductIDList.push(PRProduct?.['purchase_request_product']?.['id']);
         }
         let PQCode = null;
         for (let PQ of data?.['purchase_quotations_data']) {
@@ -1036,7 +1056,6 @@ class POLoadDataHandle {
     };
 
     static loadTablesDetailPage(data) {
-        let form = $('#frm_purchase_order_create');
         let tableProductAdd = $('#datable-purchase-order-product-add');
         let tableProductRequest = $('#datable-purchase-order-product-request');
         let tablePaymentStage = $('#datable-po-payment-stage');
@@ -1223,33 +1242,26 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
-                            if (POLoadDataHandle.PRDataEle.val()) {
-                                let PRIDList = JSON.parse(POLoadDataHandle.PRDataEle.val());
-                                if (PRIDList.includes(row.id)) {
-                                    return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked></div>`;
-                                }
+                        let checked = '';
+                        let disabled = '';
+                        if (POLoadDataHandle.PRDataEle.val()) {
+                            let PRIDList = JSON.parse(POLoadDataHandle.PRDataEle.val());
+                            if (PRIDList.includes(row?.['id'])) {
+                                checked = 'checked';
                             }
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}"></div>`;
-                        } else {
-                            if (POLoadDataHandle.PRDataEle.val()) {
-                                let PRIDList = JSON.parse(POLoadDataHandle.PRDataEle.val());
-                                if (PRIDList.includes(row.id)) {
-                                    return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>`;
-                                }
-                            }
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
                         }
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.title}</span>`
+                        if ($('#frm_purchase_order_create').attr('data-method').toLowerCase() === 'get') {
+                            disabled = 'disabled';
+                        }
+                        let checkbox = `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row?.['id']}" ${checked} ${disabled}></div>`;
+                        return `<div class="d-flex align-items-center">
+                                    ${checkbox}
+                                    <span class="table-row-title">${row.title}</span>
+                                </div>`;
                     },
                 },
                 {
-                    targets: 3,
+                    targets: 2,
                     render: (data, type, row) => {
                         return `<span class="table-row-code">${row.code}</span>`
                     }
@@ -1279,93 +1291,62 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        let purchase_request_id = "";
+                        let checked = '';
+                        let disabled = '';
+                        let purchase_request_id = '';
                         if (Object.keys(row?.['purchase_request']).length !== 0) {
                             purchase_request_id = row?.['purchase_request']?.['id'];
                         }
-                        if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
-                            if (!row.hasOwnProperty('is_checked')) {
-                                return `<div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input table-row-checkbox" 
-                                            data-id="${row.id}" 
-                                            data-purchase-request-id="${purchase_request_id}"
-                                            data-sale-order-product-id="${row?.['sale_order_product_id']}"
-                                        >
-                                    </div>`
-                            } else {
-                                return `<div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input table-row-checkbox" 
-                                            data-id="${row.id}" 
-                                            data-purchase-request-id="${purchase_request_id}"
-                                            data-sale-order-product-id="${row?.['sale_order_product_id']}"
-                                            checked
-                                        >
-                                    </div>`
-                            }
-                        } else {
-                            if (!row.hasOwnProperty('is_checked')) {
-                                return `<div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input table-row-checkbox" 
-                                            data-id="${row.id}" 
-                                            data-purchase-request-id="${purchase_request_id}"
-                                            data-sale-order-product-id="${row?.['sale_order_product_id']}"
-                                            disabled
-                                        >
-                                    </div>`
-                            } else {
-                                return `<div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input table-row-checkbox" 
-                                            data-id="${row.id}" 
-                                            data-purchase-request-id="${purchase_request_id}"
-                                            data-sale-order-product-id="${row?.['sale_order_product_id']}"
-                                            checked
-                                            disabled
-                                        >
-                                    </div>`
-                            }
+                        if (row?.['is_checked']) {
+                            checked = 'checked';
                         }
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-item" id="${row.product.id}">${row.product.title}</span>`
+                        if ($('#frm_purchase_order_create').attr('data-method').toLowerCase() === 'get') {
+                            disabled = 'disabled';
+                        }
+                        let checkbox = `<div class="form-check">
+                                            <input 
+                                                type="checkbox" 
+                                                class="form-check-input table-row-checkbox" 
+                                                data-id="${row?.['id']}" 
+                                                data-purchase-request-id="${purchase_request_id}"
+                                                data-sale-order-product-id="${row?.['sale_order_product_id']}"
+                                                ${checked}
+                                                ${disabled}
+                                            >
+                                        </div>`;
+
+                        return `<div class="d-flex align-items-center">
+                                    ${checkbox}
+                                    <span class="table-row-item" id="${row?.['product']?.['id']}">${row?.['product']?.['title']}</span>
+                                </div>`;
                     },
                 },
                 {
-                    targets: 3,
+                    targets: 2,
                     render: (data, type, row) => {
                         return `<span class="table-row-code">${row?.['purchase_request']?.['code']}</span>`
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 3,
                     render: (data, type, row) => {
                         return `<span class="table-row-uom-request" id="${row.uom.id}">${row.uom.title}</span>`
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 4,
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-request">${row.quantity}</span>`
                     }
                 },
                 {
-                    targets: 6,
+                    targets: 5,
                     render: (data, type, row) => {
                         return `<span class="table-row-remain">${row?.['remain_for_purchase_order']}</span>`
                     }
                 },
                 {
-                    targets: 7,
+                    targets: 6,
                     render: (data, type, row) => {
                         if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
                             if (row.hasOwnProperty('quantity_order')) {
@@ -1394,7 +1375,6 @@ class PODataTableHandle {
         let $table = $('#datable-purchase-request-product-merge');
         $table.DataTableDefault({
             data: data ? data : [],
-            // searching: false,
             paging: false,
             info: false,
             columns: [
@@ -1407,20 +1387,17 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>`
-                    }
+                        return `<div class="d-flex align-items-center">
+                                    <div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>
+                                    <span class="table-row-title">${row?.['product_title']}</span>
+                                </div>`;
+                    },
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.product_title}</span>`
-                    },
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
                         let codeList = ``;
-                        for (let item of row.code_list) {
+                        for (let item of row?.['code_list']) {
                             codeList += `<span class="dropdown-item">${item}</span>`
                         }
                         return `<button
@@ -1435,27 +1412,27 @@ class PODataTableHandle {
                     }
                 },
                 {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-uom-request">${row?.['uom_order_request']?.['title']}</span>`
+                    }
+                },
+                {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom-request">${row.uom_order_request.title}</span>`
+                        return `<span class="table-row-quantity-request">${row?.['product_quantity_request']}</span>`
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-request">${row.product_quantity_request}</span>`
+                        return `<span class="table-row-remain">${row?.['remain']}</span>`
                     }
                 },
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        return `<span class="table-row-remain">${row.remain}</span>`
-                    }
-                },
-                {
-                    targets: 7,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity-order">${row.product_quantity_order_actual}</span>`
+                        return `<span class="table-row-quantity-order">${row?.['product_quantity_order_actual']}</span>`
                     }
                 },
             ],
@@ -1475,48 +1452,46 @@ class PODataTableHandle {
                     targets: 0,
                     render: (data, type, row, meta) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${(meta.row + 1)}</span>`
+                        return `<span class="table-row-order" id="${row?.['id']}" data-row="${dataRow}">${(meta.row + 1)}</span>`
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
-                            if (!row.hasOwnProperty('is_checked')) {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}"></div>`;
-                            } else {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked></div>`;
+                        if (row?.['title'] && row?.['code']) {
+                            let checked = '';
+                            let disabled = '';
+                            if (row?.['is_checked']) {
+                                checked = 'checked';
                             }
-                        } else {
-                            if (!row.hasOwnProperty('is_checked')) {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
-                            } else {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>`;
+                            if ($('#frm_purchase_order_create').attr('data-method').toLowerCase() === 'get') {
+                                disabled = 'disabled';
                             }
+                            let checkbox = `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row?.['id']}" ${checked} ${disabled}></div>`;
+                            return `<div class="d-flex align-items-center">
+                                        ${checkbox}
+                                        <div>
+                                            <span class="badge badge-soft-success table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>
+                                            <span class="table-row-title">${row?.['title']}</span>
+                                        </div>
+                                    </div>`;
                         }
-                    }
+                        return `<span>--</span>`;
+                    },
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<div class="row"><span class="badge badge-primary table-row-code">${row?.['code']}</span></div>`
-                    },
+                        let dataSupplier = JSON.stringify(row?.['supplier_mapped']).replace(/"/g, "&quot;");
+                        if (row?.['supplier_mapped']?.['name'] && row?.['supplier_mapped']?.['code']) {
+                            return `<span class="badge badge-soft-pink">${row?.['supplier_mapped']?.['code'] ? row?.['supplier_mapped']?.['code'] : ''}</span>
+                                    <span class="table-row-supplier" data-supplier="${dataSupplier}" id="${row?.['supplier_mapped']?.['id']}">${row?.['supplier_mapped']?.['name']}</span>`;
+                        }
+                        return `<span>--</span>`;
+                    }
                 },
                 {
                     targets: 3,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-title">${row?.['title']}</span>`
-                    }
-                },
-                {
-                    targets: 4,
-                    render: (data, type, row) => {
-                        let dataSupplier = JSON.stringify(row?.['supplier_mapped']).replace(/"/g, "&quot;");
-                        return `<div class="row"><span class="badge badge-soft-warning table-row-supplier" data-supplier="${dataSupplier}" id="${row?.['supplier_mapped']?.['id']}">${row?.['supplier_mapped']?.['name']}</span></div>`
-                    }
-                },
-                {
-                    targets: 5,
                     render: (data, type, row) => {
                         return `<span class="table-row-purchase-quotation-request">${row?.['purchase_quotation_request_mapped']?.['code'] ? row?.['purchase_quotation_request_mapped']?.['code'] : ''}</span>`
                     }
@@ -1533,12 +1508,13 @@ class PODataTableHandle {
             ordering: false,
             paging: false,
             info: false,
+            searching: false,
             autoWidth: true,
             scrollX: true,
             columns: [  // 25,325,325,100,100,100,125,125,300,125,270 (1920p)
                 {
                     targets: 0,
-                    width: '1.30208333333%',
+                    width: '1%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" id="${row?.['id']}" data-row="${dataRow}">${row?.['order']}</span>`
@@ -1546,7 +1522,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '16.9270833333%',
+                    width: '17%',
                     render: (data, type, row) => {
                         return `<div class="row table-row-item-area">
                                     <div class="col-12 col-md-12 col-lg-12">
@@ -1567,7 +1543,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '16.9270833333%',
+                    width: '13%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
@@ -1576,7 +1552,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '5.20833333333%',
+                    width: '5%',
                     render: (data, type, row) => {
                         let dataStr = JSON.stringify(row?.['uom_order_request']).replace(/"/g, "&quot;");
                         return `<span class="table-row-uom-order-request" id="${row?.['uom_order_request']?.['id']}">${row?.['uom_order_request']?.['title']}<input type="hidden" class="data-info" value="${dataStr}"></span>`;
@@ -1584,14 +1560,14 @@ class PODataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '5.20833333333%',
+                    width: '5%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-order-request">${row?.['product_quantity_order_request']}</span>`;
                     }
                 },
                 {
                     targets: 5,
-                    width: '5.20833333333%',
+                    width: '5%',
                     render: (data, type, row) => {
                         return `<span class="table-row-stock">${row?.['stock']}</span>`
                     }
@@ -1703,12 +1679,13 @@ class PODataTableHandle {
             ordering: false,
             paging: false,
             info: false,
+            searching: false,
             autoWidth: true,
             scrollX: true,
             columns: [  // 25,325,325,150,175,325,150,270,25 (1920p)
                 {
                     targets: 0,
-                    width: '1.30208333333%',
+                    width: '1%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${row?.['order']}</span>`
@@ -1716,7 +1693,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '16.9270833333%',
+                    width: '17%',
                     render: () => {
                         return `<div class="row table-row-item-area">
                                     <div class="col-12 col-md-12 col-lg-12">
@@ -1727,7 +1704,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '15%',
+                    width: '13%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
@@ -1830,7 +1807,7 @@ class PODataTableHandle {
                     targets: 8,
                     width: '1.30208333333%',
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
                 },
             ],
@@ -1903,12 +1880,12 @@ class PODataTableHandle {
                         if (row?.['due_date'] !== '') {
                             return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-due-date" value="${moment(row?.['due_date']).format('DD/MM/YYYY')}">
-                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
+                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
                                     </div>`;
                         } else {
                             return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-due-date" value="">
-                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
+                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
                                     </div>`;
                         }
                     }
@@ -1916,7 +1893,7 @@ class PODataTableHandle {
                 {
                     targets: 6,
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
                 },
             ],
@@ -2158,28 +2135,139 @@ class POValidateHandle {
 
 // Submit Form
 class POSubmitHandle {
-
-    static setupDataPRProduct() {
-        let result = []
+    static setupMergeProduct() {
+        let data = [];
+        let dataJson = {};
         let table = $('#datable-purchase-request-product');
-        for (let eleChecked of table[0].querySelectorAll('.disabled-by-pq')) {
-            let sale_order_id = eleChecked.getAttribute('data-sale-order-product-id');
-            if (sale_order_id === "null") {
-                sale_order_id = null;
+        if (!table[0].querySelector('.dataTables_empty')) {
+            let order = 0;
+            let productMapUOMList = {};
+            // Setup smallest UOM from many UOM of PRs
+            for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked:not(.disabled-by-pq)')) {
+                let row = eleChecked.closest('tr');
+                let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
+                if (dataRowRaw) {
+                    let dataRow = JSON.parse(dataRowRaw);
+                    if (dataRow?.['product']?.['id'] && dataRow?.['uom']) {
+                        if (!productMapUOMList.hasOwnProperty(dataRow?.['product']?.['id'])) {
+                            productMapUOMList[dataRow?.['product']?.['id']] = [dataRow?.['uom']];
+                        } else {
+                            productMapUOMList[dataRow?.['product']?.['id']].push(dataRow?.['uom']);
+                        }
+                    }
+                }
             }
-            let row = eleChecked.closest('tr');
-            let quantity_order = parseFloat(row.querySelector('.table-row-quantity-order').value);
-            let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
-            if (dataRowRaw) {
-                let dataRow = JSON.parse(dataRowRaw);
-                result.push({
-                    'purchase_request_product': dataRow?.['id'],
-                    'sale_order_product': sale_order_id,
-                    'quantity_order': quantity_order,
-                })
+            for (let key in productMapUOMList) {
+                let uomApply = {};
+                for (let uom of productMapUOMList[key]) {
+                    if (Object.keys(uomApply).length === 0) {
+                        uomApply = uom;
+                    } else {
+                        if (uom?.['ratio'] && uomApply?.['ratio']) {
+                            if (uom?.['ratio'] < uomApply?.['ratio']) {
+                                uomApply = uom;
+                            }
+                        }
+                    }
+                }
+                productMapUOMList[key] = uomApply;
+            }
+            for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked:not(.disabled-by-pq)')) {
+                let row = eleChecked.closest('tr');
+                let sale_order_id = eleChecked.getAttribute('data-sale-order-product-id');
+                if (sale_order_id === "null") {
+                    sale_order_id = null;
+                }
+                let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
+                if (dataRowRaw) {
+                    let dataRow = JSON.parse(dataRowRaw);
+                    let tax = dataRow?.['tax'];
+                    let product_id = dataRow?.['product']?.['id'];
+                    let quantity = parseFloat(dataRow?.['quantity']);
+                    let quantity_order = parseFloat(row.querySelector('.table-row-quantity-order').value);
+                    let remain = (parseFloat(row.querySelector('.table-row-remain').innerHTML) - quantity_order);
+                    if (dataRow?.['uom']?.['ratio'] && productMapUOMList[product_id]?.['ratio']) {
+                        let finalRatio = (parseFloat(dataRow?.['uom']?.['ratio']) / parseFloat(productMapUOMList[product_id]?.['ratio']));
+                        quantity = (parseFloat(dataRow?.['quantity']) * finalRatio);
+                        quantity_order = (parseFloat(row.querySelector('.table-row-quantity-order').value) * finalRatio);
+                        remain = ((parseFloat(row.querySelector('.table-row-remain').innerHTML) * finalRatio) - quantity_order);
+                    }
+                    // origin data to check
+                    let quantity_origin = parseFloat(dataRow?.['quantity']);
+                    let quantity_order_origin = parseFloat(row.querySelector('.table-row-quantity-order').value);
+                    let remain_origin = (parseFloat(row.querySelector('.table-row-remain').innerHTML) - quantity_order);
+                    if (parseFloat(row.querySelector('.table-row-remain').innerHTML) > 0) {
+                        if (!dataJson.hasOwnProperty(product_id)) {
+                            order++
+                            dataJson[product_id] = {
+                                'id': dataRow?.['id'],
+                                'purchase_request_products_data': [{
+                                    'purchase_request_product': dataRow,
+                                    'sale_order_product': sale_order_id,
+                                    'quantity_order': quantity_order_origin,
+                                    'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
+                                }],
+                                'product': dataRow?.['product'],
+                                'uom_order_request': productMapUOMList[product_id],
+                                'uom_order_actual': productMapUOMList[product_id],
+                                'uom_list': [dataRow?.['uom']],
+                                'uom_id_list': [dataRow?.['uom']?.['id']],
+                                'tax': tax,
+                                'stock': 0,
+                                'product_title': dataRow?.['product']?.['title'],
+                                'code_list': [dataRow?.['purchase_request']?.['code']],
+                                'product_description': 'xxxxx',
+                                'product_quantity_request': quantity,
+                                'product_quantity_order_request': quantity_order,
+                                'product_quantity_order_actual': quantity_order,
+                                'remain': remain,
+                                'quantity_origin': quantity_origin,
+                                'quantity_order_origin': quantity_order_origin,
+                                'remain_origin': remain_origin,
+                                'product_unit_price': 0,
+                                'product_tax_title': '',
+                                'product_tax_amount': 0,
+                                'product_subtotal_price': 0,
+                                'order': order,
+                            };
+                        } else {
+                            if (!dataJson[product_id].code_list.includes(dataRow?.['purchase_request']?.['code'])) {
+                                dataJson[product_id].code_list.push(dataRow?.['purchase_request']?.['code']);
+                            }
+                            dataJson[product_id].purchase_request_products_data.push({
+                                'purchase_request_product': dataRow,
+                                'sale_order_product': sale_order_id,
+                                'quantity_order': quantity_order_origin,
+                                'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
+                            });
+                            dataJson[product_id].product_quantity_request += quantity;
+                            dataJson[product_id].product_quantity_order_request += quantity_order;
+                            dataJson[product_id].product_quantity_order_actual += quantity_order;
+                            dataJson[product_id].remain += remain;
+
+                            dataJson[product_id].quantity_origin += quantity_origin;
+                            dataJson[product_id].quantity_order_origin += quantity_order_origin;
+                            dataJson[product_id].remain_origin += remain_origin;
+                            dataJson[product_id].uom_list.push(dataRow?.['uom']);
+                            dataJson[product_id].uom_id_list.push(dataRow?.['uom']?.['id']);
+                        }
+                    }
+                }
+            }
+            for (let key in dataJson) {
+                if (dataJson[key]['uom_id_list'].length > 0 && areAllEqual(dataJson[key]['uom_id_list']) === true) {
+                    dataJson[key]['uom_order_request'] = dataJson[key]['uom_list'][0];
+                    dataJson[key]['uom_order_actual'] = dataJson[key]['uom_list'][0];
+
+                    dataJson[key]['product_quantity_request'] = dataJson[key]['quantity_origin'];
+                    dataJson[key]['product_quantity_order_request'] = dataJson[key]['quantity_order_origin'];
+                    dataJson[key]['product_quantity_order_actual'] = dataJson[key]['quantity_order_origin'];
+                    dataJson[key]['remain'] = dataJson[key]['remain_origin'];
+                }
+                data.push(dataJson[key]);
             }
         }
-        return result;
+        return data
     };
 
     static setupDataProduct() {
@@ -2201,9 +2289,9 @@ class POSubmitHandle {
                     dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                 }
                 if (dataInfo) {
-                    rowData['product'] = dataInfo.id;
-                    rowData['product_title'] = dataInfo.title;
-                    rowData['product_code'] = dataInfo.code;
+                    rowData['product'] = dataInfo?.['id'];
+                    rowData['product_title'] = dataInfo?.['title'];
+                    rowData['product_code'] = dataInfo?.['code'];
                 }
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
@@ -2212,13 +2300,13 @@ class POSubmitHandle {
                 let eleUOMRequest = row.querySelector('.table-row-uom-order-request');
                 if (eleUOMRequest) {
                     let dataInfo = JSON.parse(eleUOMRequest.querySelector('.data-info').value);
-                    rowData['uom_order_request'] = dataInfo.id;
+                    rowData['uom_order_request'] = dataInfo?.['id'];
                 }
                 let eleUOMOrder = row.querySelector('.table-row-uom-order-actual');
                 if ($(eleUOMOrder).val()) {
                     let dataInfo = SelectDDControl.get_data_from_idx($(eleUOMOrder), $(eleUOMOrder).val());
                     if (dataInfo) {
-                        rowData['uom_order_actual'] = dataInfo.id;
+                        rowData['uom_order_actual'] = dataInfo?.['id'];
                     }
                 }
                 let eleTax = row.querySelector('.table-row-tax');
@@ -2275,6 +2363,18 @@ class POSubmitHandle {
                     if (eleOrder.getAttribute('data-row')) {
                         let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
                         rowData['purchase_request_products_data'] = dataRow?.['purchase_request_products_data'];
+                        if (rowData['purchase_request_products_data']) {
+                            for (let PRProductData of rowData['purchase_request_products_data']) {
+                                if (PRProductData?.['purchase_request_product']?.['id']) {
+                                    PRProductData['purchase_request_product'] = PRProductData?.['purchase_request_product']?.['id'];
+                                }
+                                if (PRProductData?.['uom_stock']?.['id']) {
+                                    PRProductData['uom_stock'] = PRProductData?.['uom_stock']?.['id'];
+                                } else {
+                                    PRProductData['uom_stock'] = null;
+                                }
+                            }
+                        }
                         // Check if stock > 0
                         if (rowData['stock'] > 0) {
                             rowData['purchase_request_products_data'].push({
@@ -2403,141 +2503,6 @@ function areAllEqual(arr) {
         }
     }
     return true; // All elements are equal.
-}
-
-function setupMergeProduct() {
-    let data = [];
-    let dataJson = {};
-    let table = $('#datable-purchase-request-product');
-    if (!table[0].querySelector('.dataTables_empty')) {
-        let order = 0;
-        let productMapUOMList = {};
-        // Setup smallest UOM from many UOM of PRs
-        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked:not(.disabled-by-pq)')) {
-            let row = eleChecked.closest('tr');
-            let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
-            if (dataRowRaw) {
-                let dataRow = JSON.parse(dataRowRaw);
-                if (dataRow?.['product']?.['id'] && dataRow?.['uom']) {
-                    if (!productMapUOMList.hasOwnProperty(dataRow?.['product']?.['id'])) {
-                        productMapUOMList[dataRow?.['product']?.['id']] = [dataRow?.['uom']];
-                    } else {
-                        productMapUOMList[dataRow?.['product']?.['id']].push(dataRow?.['uom']);
-                    }
-                }
-            }
-        }
-        for (let key in productMapUOMList) {
-            let uomApply = {};
-            for (let uom of productMapUOMList[key]) {
-                if (Object.keys(uomApply).length === 0) {
-                    uomApply = uom;
-                } else {
-                    if (uom?.['ratio'] && uomApply?.['ratio']) {
-                        if (uom?.['ratio'] < uomApply?.['ratio']) {
-                            uomApply = uom;
-                        }
-                    }
-                }
-            }
-            productMapUOMList[key] = uomApply;
-        }
-        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked:not(.disabled-by-pq)')) {
-            let row = eleChecked.closest('tr');
-            let sale_order_id = eleChecked.getAttribute('data-sale-order-product-id');
-            if (sale_order_id === "null") {
-                sale_order_id = null;
-            }
-            let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
-            if (dataRowRaw) {
-                let dataRow = JSON.parse(dataRowRaw);
-                let tax = dataRow?.['tax'];
-                let product_id = dataRow?.['product']?.['id'];
-                let quantity = parseFloat(dataRow?.['quantity']);
-                let quantity_order = parseFloat(row.querySelector('.table-row-quantity-order').value);
-                let remain = (parseFloat(row.querySelector('.table-row-remain').innerHTML) - quantity_order);
-                if (dataRow?.['uom']?.['ratio'] && productMapUOMList[product_id]?.['ratio']) {
-                    let finalRatio = (parseFloat(dataRow?.['uom']?.['ratio']) / parseFloat(productMapUOMList[product_id]?.['ratio']));
-                    quantity = (parseFloat(dataRow?.['quantity']) * finalRatio);
-                    quantity_order = (parseFloat(row.querySelector('.table-row-quantity-order').value) * finalRatio);
-                    remain = ((parseFloat(row.querySelector('.table-row-remain').innerHTML) * finalRatio) - quantity_order);
-                }
-                // origin data to check
-                let quantity_origin = parseFloat(dataRow?.['quantity']);
-                let quantity_order_origin = parseFloat(row.querySelector('.table-row-quantity-order').value);
-                let remain_origin = (parseFloat(row.querySelector('.table-row-remain').innerHTML) - quantity_order);
-                if (parseFloat(row.querySelector('.table-row-remain').innerHTML) > 0) {
-                    if (!dataJson.hasOwnProperty(product_id)) {
-                        order++
-                        dataJson[product_id] = {
-                            'id': dataRow?.['id'],
-                            'purchase_request_products_data': [{
-                                'purchase_request_product': dataRow?.['id'],
-                                'sale_order_product': sale_order_id,
-                                'quantity_order': quantity_order_origin,
-                                'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
-                            }],
-                            'product': dataRow?.['product'],
-                            'uom_order_request': productMapUOMList[product_id],
-                            'uom_order_actual': productMapUOMList[product_id],
-                            'uom_list': [dataRow?.['uom']],
-                            'uom_id_list': [dataRow?.['uom']?.['id']],
-                            'tax': tax,
-                            'stock': 0,
-                            'product_title': dataRow?.['product']?.['title'],
-                            'code_list': [dataRow?.['purchase_request']?.['code']],
-                            'product_description': 'xxxxx',
-                            'product_quantity_request': quantity,
-                            'product_quantity_order_request': quantity_order,
-                            'product_quantity_order_actual': quantity_order,
-                            'remain': remain,
-                            'quantity_origin': quantity_origin,
-                            'quantity_order_origin': quantity_order_origin,
-                            'remain_origin': remain_origin,
-                            'product_unit_price': 0,
-                            'product_tax_title': '',
-                            'product_tax_amount': 0,
-                            'product_subtotal_price': 0,
-                            'order': order,
-                        };
-                    } else {
-                        if (!dataJson[product_id].code_list.includes(dataRow?.['purchase_request']?.['code'])) {
-                            dataJson[product_id].code_list.push(dataRow?.['purchase_request']?.['code']);
-                        }
-                        dataJson[product_id].purchase_request_products_data.push({
-                            'purchase_request_product': dataRow?.['id'],
-                            'sale_order_product': sale_order_id,
-                            'quantity_order': quantity_order_origin,
-                            'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
-                        });
-                        dataJson[product_id].product_quantity_request += quantity;
-                        dataJson[product_id].product_quantity_order_request += quantity_order;
-                        dataJson[product_id].product_quantity_order_actual += quantity_order;
-                        dataJson[product_id].remain += remain;
-
-                        dataJson[product_id].quantity_origin += quantity_origin;
-                        dataJson[product_id].quantity_order_origin += quantity_order_origin;
-                        dataJson[product_id].remain_origin += remain_origin;
-                        dataJson[product_id].uom_list.push(dataRow?.['uom']);
-                        dataJson[product_id].uom_id_list.push(dataRow?.['uom']?.['id']);
-                    }
-                }
-            }
-        }
-        for (let key in dataJson) {
-            if (dataJson[key]['uom_id_list'].length > 0 && areAllEqual(dataJson[key]['uom_id_list']) === true) {
-                dataJson[key]['uom_order_request'] = dataJson[key]['uom_list'][0];
-                dataJson[key]['uom_order_actual'] = dataJson[key]['uom_list'][0];
-
-                dataJson[key]['product_quantity_request'] = dataJson[key]['quantity_origin'];
-                dataJson[key]['product_quantity_order_request'] = dataJson[key]['quantity_order_origin'];
-                dataJson[key]['product_quantity_order_actual'] = dataJson[key]['quantity_order_origin'];
-                dataJson[key]['remain'] = dataJson[key]['remain_origin'];
-            }
-            data.push(dataJson[key]);
-        }
-    }
-    return data
 }
 
 function deleteRow(currentRow, table) {

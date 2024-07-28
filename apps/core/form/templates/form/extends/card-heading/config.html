@@ -1,0 +1,11 @@
+{% load i18n define_action %}
+
+<div
+        class="drawer-config d-none" id="form-card-heading"
+        data-url-sanitize-html="{% url 'FormSanitizeHTMLAPI' %}"
+>
+    <form>
+        {% include 'form/extends/base/title.html' %}
+        {% include 'form/extends/base/instruction.html' %}
+    </form>
+</div>

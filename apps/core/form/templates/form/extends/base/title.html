@@ -2,12 +2,15 @@
 
 {% assign_out_random titleIdx as rTitleIdx %}
 {% assign_out_random hideTitleIdx as rHideTitleIdx %}
+{% assign_out_bool_str enableHideTitle False as rEnableHideTitle %}
 
 <div class="form-group mb-3">
     <label for="{{ rTitleIdx }}" class="form-label">{% trans 'Title' %}</label>
     <input type="text" id="{{ rTitleIdx }}" name="label" class="form-control"/>
-    <div class="form-check mt-1">
-        <input type="checkbox" class="form-check-input" id="{{ rHideTitleIdx }}" name="is_hide_label"/>
-        <label class="form-check-label" for="{{ rHideTitleIdx }}">{% trans 'Hide field label' %}</label>
-    </div>
+    {% if rEnableHideTitle == '1' %}
+        <div class="form-check mt-1">
+            <input type="checkbox" class="form-check-input" id="{{ rHideTitleIdx }}" name="is_hide_label"/>
+            <label class="form-check-label" for="{{ rHideTitleIdx }}">{% trans 'Hide field label' %}</label>
+        </div>
+    {% endif %}
 </div>

@@ -37,6 +37,7 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    {% include 'printer/print.html' %}
     <script id="script-url"
             data-trans-unplanned="{% trans 'Unplanned expenses' %}"
             data-url-ap-cost-list="{% url "AdvancePaymentCostListAPI" %}"
@@ -53,6 +54,15 @@
     >
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
+            <div class="row">
+                <div class="col-12">
+                    <button type="button" class="btn btn-sm btn-gradient-primary" id="print-document"
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Print' %}"
+                    >
+                        <i class="bi bi-printer"></i>
+                    </button>
+                </div>
+            </div>
             {% trans 'Select Sale Person' as inherit_title %}
             {% include 'extends/the-documents/bastion.html' with has_opp=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
             <div class="row">
@@ -207,11 +217,7 @@
                 </div>
             </div>
         </div>
-        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="w-100 btn btn-animated btn-icon btn-xs">
-            <span class="icon">
-                <i class="fas fa-angle-double-up text-primary"></i>
-            </span>
-        </button>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="text-primary btn btn-animated btn-icon btn-xs w-100"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Expand / Collapse' %}"><i class="fas fa-angle-double-up text-primary"></i></span></button>
         <div class="row">
             <div class="col-12">
                 <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
@@ -355,4 +361,13 @@
     <script src="{% static 'vendors/jquery-steps/build/jquery.steps.min.js' %}" type="text/javascript"></script>
     <script src="{% static "assets/js/payment/payment_common.js" %}"></script>
     <script src="{% static "assets/js/payment/payment_detail.js" %}"></script>
+
+    <script src="{% static 'printer/print.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#print-document').on('click', function () {
+                PrintTinymceControl.open_modal();
+            });
+        })
+    </script>
 {% endblock %}

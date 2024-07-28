@@ -13,6 +13,18 @@ from apps.shared.exceptions import handle_exception_all_view
 from apps.shared.http import HttpRequestControl
 
 
+class FormKnowledgeView(View):
+    @mask_view(
+        login_require=True,
+        template='form/extends/base/knowledge/index.html',
+        jsi18n='form',
+        breadcrumb='FORM_KNOWLEDGE',
+        menu_active='menu_form_data',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class FormListView(View):
     @mask_view(
         login_require=True,
@@ -130,7 +142,7 @@ def get_publish_data(request, form_code, use_at):
     return resp
 
 
-def get_publish_width_submitted_data(request, form_code, use_at, pk):
+def get_publish_with_submitted_data(request, form_code, use_at, pk):
     domain_code = HttpRequestControl(request).get_sub_domain()
     url = ApiURL.FORM_PUBLISHED_RUNTIME_DETAIL_WITH_SUBMITTED.fill_key(
         form_code=form_code, tenant_code=domain_code, use_at=use_at, pk=pk

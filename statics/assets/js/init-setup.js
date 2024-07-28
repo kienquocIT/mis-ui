@@ -34,7 +34,17 @@ class SetupFormSubmit {
                 ).format('YYYY-MM-DD HH:mm:ss');
                 break
         }
-        if ($(input$).is(':checkbox')) item['value'] = $(input$).prop('checked');
+        if ($(input$).is(':checkbox')) {
+            item['value'] = $(input$).prop('checked');
+        }
+        if ($(input$).is(':radio')){
+            const radioValue = $(input$).attr('value');
+            if ($(input$).prop('checked') && radioValue){
+                item['value'] = radioValue;
+            } else {
+                return {}; // return without key
+            }
+        }
 
         if (toObject === true) {
             let TempItem = {};
@@ -46,14 +56,25 @@ class SetupFormSubmit {
 
     static serializerObject(formSelected) {
         const queryExclude = ':not([dont_serialize]):not([name^="DataTables_"])';
+        const query$ = formSelected.find(queryExclude);
 
         let obj = {};
-        formSelected.find(queryExclude).find(':input[name]:not(disabled)').each(function () {
+        // case radio
+        query$.find(':input[name]:not([disabled])[type=radio]').each(function (){
+            const name = $(this).attr('name');
+            const value = $(this).attr('value');
+            const checked = $(this).prop('checked');
+            if (value !== null && value !== undefined && checked === true) obj[name] = value;
+        })
+        // another
+        query$.find(':input[name]:not([disabled]):not([type=radio])').each(function () {
             let item = SetupFormSubmit.serializerInput($(this));
-            if (item.name in obj) {
-                obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];
-                obj[item.name].push(item.value);
-            } else obj[item.name] = item.value;
+            if (item && item.hasOwnProperty('name')){
+                if (item.name in obj) {
+                    obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];
+                    obj[item.name].push(item.value);
+                } else obj[item.name] = item.value;
+            }
         })
         return obj;
     }
@@ -2179,14 +2200,8 @@ class WFRTControl {
                     if (result.dismiss === Swal.DismissReason.timer || result.value) {
                         let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
                         if (eleChecked) {
-                            if (_form.dataMethod.toLowerCase() === 'post') {
-                                _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
-                            }
-                            if (_form.dataMethod.toLowerCase() === 'put') {
-                                if (_form.dataForm.hasOwnProperty('system_status')) {
-                                    _form.dataForm['system_status'] = 1;
-                                }
-                            }
+                            _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+                            _form.dataForm['system_status'] = 1;
                         } else {
                             return "You need to select one person!";
                         }
@@ -2202,15 +2217,16 @@ class WFRTControl {
     static setupHTMLSelectCollab(collabOutForm) {
         let htmlCustom = ``;
         for (let collab of collabOutForm) {
-            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
                                 <div class="d-flex align-items-center">
+                                    <i class="fas fa-user mr-2 fs-7"></i>
                                     <span class="mr-2">${collab?.['full_name']}</span>
                                     <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="radio" class="form-check-input checkbox-next-node-collab" data-id="${collab?.['id']}">
                                 </div>
-                            </div><hr class="bg-teal">`;
+                            </div>`;
         }
         return htmlCustom;
     }
@@ -2218,6 +2234,10 @@ class WFRTControl {
     static setupHTMLDraftOrSave() {
         let htmlCustom = ``;
         let statusList = [0, 1];
+        let statusMapIcon = {
+            0: "far fa-list-alt mr-2 fs-7",
+            1: "fas fa-sitemap mr-2 fs-7",
+        };
         let statusMapText = {
             0: $.fn.transEle.attr('data-save-draft'),
             1: $.fn.transEle.attr('data-save-run-wf'),
@@ -2227,12 +2247,15 @@ class WFRTControl {
             1: "text-primary",
         };
         for (let status of statusList) {
-            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
-                                <span class="${statusMapColor[status]}">${statusMapText[status]}</span>
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
+                                <div class="d-flex align-items-center">
+                                    <i class="${statusMapIcon[status]} ${statusMapColor[status]}"></i>
+                                    <span class="${statusMapColor[status]}">${statusMapText[status]}</span>
+                                </div>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="radio" class="form-check-input checkbox-save-status" data-status="${status}">
                                 </div>
-                            </div><hr class="bg-teal">`;
+                            </div>`;
         }
         return htmlCustom;
     }
@@ -2325,20 +2348,24 @@ class WFRTControl {
                         }
                         // zones handler
                         if (window.location.href.includes('/update/')) {
-                            if (actionMySelf.hasOwnProperty('zones') && actionMySelf.hasOwnProperty('zones_hidden') && actionMySelf.hasOwnProperty('is_edit_all_zone')) {
-                                WFRTControl.activeButtonOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden'], actionMySelf['is_edit_all_zone']);
-                            } else {
-                                WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
-                            }
+                            let isCR = false;
                             // active btn save change and back if current employee is owner, status is finished
                             let eleDocCR = $('#documentCR');
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
                             if (eleDocCR.attr('data-status') === '5' && eleDocCR.attr('data-inherit') === currentEmployee) {
                                 WFRTControl.setBtnWFAfterFinishUpdate();
+                                isCR = true;
+                            }
+                            if (isCR === false) {
+                                if (actionMySelf.hasOwnProperty('zones') && actionMySelf.hasOwnProperty('zones_hidden') && actionMySelf.hasOwnProperty('is_edit_all_zone')) {
+                                    WFRTControl.activeBtnOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden'], actionMySelf['is_edit_all_zone']);
+                                } else {
+                                    WFRTControl.activeSetZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
+                                }
                             }
                         }
                         if (window.location.href.includes('/detail/')) {
-                            WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
+                            WFRTControl.activeSetZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
                             // active btn change and cancel if current employee is owner, status is finished
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
                             if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
@@ -2367,6 +2394,10 @@ class WFRTControl {
                         isCheck = true;
                     }
                 }
+                let runtimeID = WFRTControl.getWFRuntimeID();
+                if (!runtimeID) {
+                    isCheck = true;
+                }
             }
             if (isCheck === true) {
                 let btn = $('#btnLogShow');
@@ -2378,17 +2409,56 @@ class WFRTControl {
                     'data': {'code': app_code},
                 }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
-                    if (data?.['app_list'].length === 1) {  // check only 1 wf config for application
-                        let WFconfig = data?.['app_list'][0];
-                        if (WFconfig?.['mode'] !== 0) {  // check if wf mode is not unapply (0)
-                            let workflow_current = WFconfig?.['workflow_currently'];
-                            if (workflow_current) {
-                                // zones handler
-                                if (window.location.href.includes('/create/')) {
-                                    WFRTControl.activeButtonOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
+                    if (data) {
+                        if (data.hasOwnProperty('app_list') && Array.isArray(data.app_list)) {
+                            if (data?.['app_list'].length === 1) {  // check only 1 wf config for application
+                                let WFconfig = data?.['app_list'][0];
+                                if (WFconfig?.['mode'] !== 0) {  // check if wf mode is not unapply (!== 0)
+                                    let workflow_current = WFconfig?.['workflow_currently'];
+                                    if (workflow_current) {
+                                        // zones handler
+                                        if (window.location.href.includes('/create/')) {
+                                            WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
+                                        }
+                                        // collab out form handler
+                                        WFRTControl.setCollabOutFormData(workflow_current['collab_out_form']);
+                                    }
                                 }
-                                // collab out form handler
-                                WFRTControl.setCollabOutFormData(workflow_current['collab_out_form']);
+                                if (WFconfig?.['mode'] === 0) {
+                                    let url = btn.attr('data-url-app-emp-config');
+                                    let currentEmployee = $x.fn.getEmployeeCurrentID();
+                                    $.fn.callAjax2({
+                                        'url': url,
+                                        'method': 'GET',
+                                        'data': {
+                                            'application__model_code': app_code,
+                                            'employee_created_id': currentEmployee
+                                        },
+                                    }).then((resp) => {
+                                        let data = $.fn.switcherResp(resp);
+                                        if (data) {
+                                            if (data.hasOwnProperty('app_emp_config_list') && Array.isArray(data.app_emp_config_list)) {
+                                                if (data?.['app_emp_config_list'].length > 0) {
+                                                    let zonesData = [];
+                                                    let zonesHiddenData = [];
+                                                    for (let appEmpConfig of data?.['app_emp_config_list']) {
+                                                        for (let zone of appEmpConfig?.['zones_editing_data']) {
+                                                            for (let property of zone?.['properties_data']) {
+                                                                zonesData.push(property);
+                                                            }
+                                                        }
+                                                        for (let zone of appEmpConfig?.['zones_hidden_data']) {
+                                                            for (let property of zone?.['properties_data']) {
+                                                                zonesHiddenData.push(property);
+                                                            }
+                                                        }
+                                                    }
+                                                    WFRTControl.activeBtnOpenZone(zonesData, zonesHiddenData, false);
+                                                }
+                                            }
+                                        }
+                                    })
+                                }
                             }
                         }
                     }
@@ -2431,9 +2501,8 @@ class WFRTControl {
         let zonesData = WFRTControl.getZoneData();
         let zonesHiddenData = WFRTControl.getZoneHiddenData();
         let isEditAllZone = WFRTControl.getIsEditAllZone();
+        // Case user is allowed to edit all page
         if (isEditAllZone === 'true') {
-            // add button save at zones
-            // idFormID
             if (window.location.href.includes('/update/')) {
                 let idFormID = globeFormMappedZone;
                 if (idFormID) {
@@ -2441,7 +2510,6 @@ class WFRTControl {
                     $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
                         DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
                     });
-
                     let actionList = WFRTControl.getActionsList();
                     let actionBubble = null;
                     if (actionList.includes(1)) {
@@ -2458,24 +2526,25 @@ class WFRTControl {
             }
             return true;
         }
+        // Case user can only edit page by zones
         if (Array.isArray(zonesData) && Array.isArray(zonesHiddenData)) {
             let pageEle = DocumentControl.getElePageContent();
             let input_mapping_properties = WFRTControl.getInputMappingProperties();
 
-            // disable + readonly field (chỉ disabled các field trong form)
+            // Step1: remove required & set disable, readonly field (chỉ disabled các field trong form)
             pageEle.find('.required').removeClass('required');
             pageEle.find('input, select, textarea, button, span[data-zone]').each(function (event) {
-
                 let inputMapProperties = input_mapping_properties[$(this).attr('name')];
                 if (!inputMapProperties)
                     inputMapProperties = input_mapping_properties[$(this).attr('data-zone')];
                 if (inputMapProperties && typeof inputMapProperties === 'object') {
                     let arrTmpFind = [];
+                    // main: name + data-zone
                     inputMapProperties['name'].map((nameFind) => {
                         arrTmpFind.push("[name=" + nameFind + "]");
-                        // cho các field trong table or list
                         if ($(this).attr('data-zone')) arrTmpFind.push("[data-zone=" + nameFind + "]");
                     })
+                    // optional: id, class
                     inputMapProperties['id'].map((idFind) => {
                         arrTmpFind.push("[id=" + idFind + "]");
                     })
@@ -2488,139 +2557,116 @@ class WFRTControl {
                     arrTmpFind.map((item) => {
                         pageEle.find(item).each(function (event) {
                             $(this).changePropertiesElementIsZone({
-                                add_disable: true,
-                                add_readonly: true,
-                                remove_required: true,
+                                'add_disable': true,
+                                'add_readonly': true,
+                                'remove_required': true,
                             });
                         });
                     })
                 } else {
                     $(this).changePropertiesElementIsZone({
-                        add_disable: true,
-                        add_readonly: true,
-                        remove_required: true,
+                        'add_disable': true,
+                        'add_readonly': true,
+                        'remove_required': true,
                     });
                 }
-
                 // case: input is Files
                 if ($(this).hasClass('dm-uploader-ids')) {
                     let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
                     uploaderEle.dmUploader('disable');
                 }
             });
-
-            // apply zones editable config
+            // Step2: apply zones editable config
             if (zonesData.length > 0) {
-                // $('#select-box-emp').prop('readonly', true);
                 zonesData.map((item) => {
-                    if (item.code) {
-                        let inputMapProperties = input_mapping_properties[item.code];
+                    if (item?.['code']) {
+                        let inputMapProperties = input_mapping_properties[item?.['code']];
                         if (inputMapProperties && typeof inputMapProperties === 'object') {
-                            let arrTmpFind = {};
-                            let arrTmpOfDataListFind = {}
-                            let readonly_not_disable = inputMapProperties['readonly_not_disable'];
+                            let arrTmpFind = [];
                             inputMapProperties['name'].map((nameFind) => {
-                                arrTmpFind[nameFind] = "[name=" + nameFind + "]";
-                                // cho trường hợp field là table or list
-                                arrTmpOfDataListFind[nameFind] = "[data-zone=" + nameFind + "]"
+                                arrTmpFind.push("[name=" + nameFind + "]");
+                                arrTmpFind.push("[data-zone=" + nameFind + "]");
                             })
                             inputMapProperties['id'].map((idFind) => {
-                                arrTmpFind[idFind] = "[id=" + idFind + "]";
+                                arrTmpFind.push("[id=" + idFind + "]");
                             })
-                            Object.keys(arrTmpFind).map((key) => {
-                                let findText = arrTmpFind[key];
-                                if (pageEle.find(findText).length <= 0 && arrTmpOfDataListFind.hasOwnProperty(key))
-                                    findText = arrTmpOfDataListFind[key]
+                            arrTmpFind.map((findText) => {
                                 pageEle.find(findText).each(function () {
-                                    if (readonly_not_disable.includes(key)) {
-                                        $(this).changePropertiesElementIsZone({
+                                    let optsSetZone = {
+                                        'add_require_label': true,
+                                        'add_require': false,
+                                        'remove_disable': true,
+                                        'remove_readonly': true,
+                                        'add_border': true,
+                                        'add_class_active': true,
+                                    };
+                                    let dmUploaderAttr = 'enable';
+                                    if (this.classList.contains('zone-readonly')) {
+                                        optsSetZone = {
                                             'add_require_label': true,
                                             'add_require': false,
                                             'remove_disable': true,
                                             'add_readonly': true,
                                             'add_border': true,
                                             'add_class_active': true,
-                                        });
-
-                                        // case: input is Files
-                                        if ($(this).hasClass('dm-uploader-ids')) {
-                                            let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
-                                            uploaderEle.dmUploader('disable');
-                                        }
-                                    } else {
-                                        $(this).changePropertiesElementIsZone({
-                                            'add_require_label': true,
-                                            'add_require': false,
-                                            'remove_disable': true,
-                                            'remove_readonly': true,
-                                            'add_border': true,
-                                            'add_class_active': true,
-                                        });
-
-                                        // case: input is Files
-                                        if ($(this).hasClass('dm-uploader-ids')) {
-                                            let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
-                                            uploaderEle.dmUploader('enable');
-                                        }
+                                        };
+                                        dmUploaderAttr = 'disable';
                                     }
+                                    $(this).changePropertiesElementIsZone(optsSetZone);
+                                    $(this).find('input, select, textarea, button').each(function (event) {
+                                        $(this).changePropertiesElementIsZone(optsSetZone);
+                                    });
+                                    // case: input is Files
+                                    if ($(this).hasClass('dm-uploader-ids')) {
+                                        let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
+                                        uploaderEle.dmUploader(dmUploaderAttr);
+                                    }
+
                                 })
                             });
                             inputMapProperties['id_border_zones'].map((item) => {
                                 pageEle.find('#' + item).changePropertiesElementIsZone({
-                                    add_border: true,
-                                    add_readonly: true,
+                                    'add_border': true,
+                                    'add_readonly': true,
                                 });
                             })
                             inputMapProperties['cls_border_zones'].map((item) => {
                                 pageEle.find('.' + item).changePropertiesElementIsZone({
-                                    add_border: true,
-                                    add_readonly: true,
+                                    'add_border': true,
+                                    'add_readonly': true,
                                 });
                             })
                         }
                     }
                 })
             }
-
-            // apply zones hidden config
+            // Step3: apply zones hidden config
             if (zonesHiddenData.length > 0) {
-                // $('#select-box-emp').prop('readonly', true);
                 zonesHiddenData.map((item) => {
-                    if (item.code) {
-                        let inputMapProperties = input_mapping_properties[item.code];
+                    if (item?.['code']) {
+                        let inputMapProperties = input_mapping_properties[item?.['code']];
                         if (inputMapProperties && typeof inputMapProperties === 'object') {
-                            let arrTmpFind = {};
-                            let arrTmpOfDataListFind = {}
-                            let readonly_not_disable = inputMapProperties['readonly_not_disable'];
+                            let arrTmpFind = [];
                             inputMapProperties['name'].map((nameFind) => {
-                                arrTmpFind[nameFind] = "[name=" + nameFind + "]";
-                                // cho trường hợp field là table or list
-                                arrTmpOfDataListFind[nameFind] = "[data-zone=" + nameFind + "]"
+                                arrTmpFind.push("[name=" + nameFind + "]");
+                                arrTmpFind.push("[data-zone=" + nameFind + "]");
                             })
                             inputMapProperties['id'].map((idFind) => {
-                                arrTmpFind[idFind] = "[id=" + idFind + "]";
+                                arrTmpFind.push("[id=" + idFind + "]");
                             })
-                            Object.keys(arrTmpFind).map((key) => {
-                                let findText = arrTmpFind[key];
-                                if (pageEle.find(findText).length <= 0 && arrTmpOfDataListFind.hasOwnProperty(key))
-                                    findText = arrTmpOfDataListFind[key]
+                            arrTmpFind.map((findText) => {
                                 pageEle.find(findText).each(function () {
-                                    if (readonly_not_disable.includes(key)) {
-                                        $(this).changePropertiesElementIsZone({
-                                            'add_empty_value': true,
-                                        });
-                                    } else {
-                                        $(this).changePropertiesElementIsZone({
-                                            'add_empty_value': true,
-                                        });
-                                    }
+                                    let optsSetZone = {'add_empty_value': true};
+                                    $(this).changePropertiesElementIsZone(optsSetZone);
+                                    $(this).find('input, select, textarea, button, span, p').each(function (event) {
+                                        $(this).changePropertiesElementIsZone(optsSetZone);
+                                    });
                                 })
                             });
                         }
                     }
                 })
             }
-
             // add button save at zones
             // idFormID
             if (zonesData.length > 0) {  // check if user has zone edit then show button save at zones
@@ -2658,36 +2704,25 @@ class WFRTControl {
 
             // apply zones hidden config
             if (zonesHiddenData.length > 0) {
-                // $('#select-box-emp').prop('readonly', true);
                 zonesHiddenData.map((item) => {
                     if (item.code) {
                         let inputMapProperties = input_mapping_properties[item.code];
                         if (inputMapProperties && typeof inputMapProperties === 'object') {
-                            let arrTmpFind = {};
-                            let arrTmpOfDataListFind = {}
-                            let readonly_not_disable = inputMapProperties['readonly_not_disable'];
+                            let arrTmpFind = [];
                             inputMapProperties['name'].map((nameFind) => {
-                                arrTmpFind[nameFind] = "[name=" + nameFind + "]";
-                                // cho trường hợp field là table or list
-                                arrTmpOfDataListFind[nameFind] = "[data-zone=" + nameFind + "]"
+                                arrTmpFind.push("[name=" + nameFind + "]");
+                                arrTmpFind.push("[data-zone=" + nameFind + "]");
                             })
                             inputMapProperties['id'].map((idFind) => {
-                                arrTmpFind[idFind] = "[id=" + idFind + "]";
+                                arrTmpFind.push("[id=" + idFind + "]");
                             })
-                            Object.keys(arrTmpFind).map((key) => {
-                                let findText = arrTmpFind[key];
-                                if (pageEle.find(findText).length <= 0 && arrTmpOfDataListFind.hasOwnProperty(key))
-                                    findText = arrTmpOfDataListFind[key]
+                            arrTmpFind.map((findText) => {
                                 pageEle.find(findText).each(function () {
-                                    if (readonly_not_disable.includes(key)) {
-                                        $(this).changePropertiesElementIsZone({
-                                            'add_empty_value': true,
-                                        });
-                                    } else {
-                                        $(this).changePropertiesElementIsZone({
-                                            'add_empty_value': true,
-                                        });
-                                    }
+                                    let optsSetZone = {'add_empty_value': true};
+                                    $(this).changePropertiesElementIsZone(optsSetZone);
+                                    $(this).find('input, select, textarea, button, span, p').each(function (event) {
+                                        $(this).changePropertiesElementIsZone(optsSetZone);
+                                    });
                                 })
                             });
                         }
@@ -2697,7 +2732,7 @@ class WFRTControl {
         }
     }
 
-    static activeButtonOpenZone(zonesData, zonesHiddenData, isEditAllZone) {
+    static activeBtnOpenZone(zonesData, zonesHiddenData, isEditAllZone) {
         if (window.location.href.includes('/update/') || window.location.href.includes('/create')) {
             WFRTControl.setZoneData(zonesData);
             WFRTControl.setZoneHiddenData(zonesHiddenData);
@@ -2708,7 +2743,7 @@ class WFRTControl {
         }
     }
 
-    static activeDataZoneHiddenMySelf(zonesHiddenData) {
+    static activeSetZoneHiddenMySelf(zonesHiddenData) {
         if (window.location.href.includes('/detail/') || window.location.href.includes('/update/')) {
             WFRTControl.setZoneHiddenData(zonesHiddenData);
             WFRTControl.activeZoneHiddenMySelf();
@@ -2883,10 +2918,10 @@ class WFRTControl {
             'add_class_active': false,  // flag to know element is active zone
             'add_empty_value': false, ...opts
         }
-        if (config.add_require_label === true) {
+        if (config?.['add_require_label'] === true) {
             $(ele$).closest('.form-group').find('.form-label').addClass('required');
         }
-        if (config.add_disable === true) {
+        if (config?.['add_disable'] === true) {
             if (!$(ele$).hasClass('zone-active')) {
                 $(ele$).attr('disabled', 'disabled');
                 if ($(ele$).is('div')) {
@@ -2895,14 +2930,15 @@ class WFRTControl {
                 }
             }
         }
-        if (config.remove_required === true) {
+        if (config?.['remove_required'] === true) {
             $(ele$).removeAttr('required');
         }
-        if (config.remove_disable === true) {
+        if (config?.['remove_disable'] === true) {
             $(ele$).removeAttr('disabled');
+            $(ele$).removeClass('bg-light');
         }
-        if (config.add_readonly === true) {
-            if (!$(ele$).hasClass('zone-active')) {
+        if (config?.['add_readonly'] === true) {
+            if (!$(ele$).hasClass('zone-active') || $(ele$).hasClass('zone-readonly')) {
                 if ($(ele$).is('div')) {
                     $(ele$).addClass('bg-light');
                 } else {
@@ -2910,43 +2946,47 @@ class WFRTControl {
                 }
             }
         }
-        if (config.remove_readonly === true) {
+        if (config?.['remove_readonly'] === true) {
             $(ele$).removeAttr('readonly');
+            $(ele$).removeClass('bg-light');
         }
-        if (config.add_require === true) {
+        if (config?.['add_require'] === true) {
             $(ele$).prop('required', true);
         }
-        if (config.add_border === true) {
+        if (config?.['add_border'] === true) {
             $(ele$).addClass('border-warning');
         }
 
-        if (config.add_class_active === true) {  // flag to know which fields are active by WF zones
+        if (config?.['add_class_active'] === true) {  // flag to know which fields are active by WF zones
             $(ele$).addClass('zone-active');
         }
-        if (config.add_empty_value === true) {  // set value to empty
+        if (config?.['add_empty_value'] === true) {  // set value to empty
             if (!$(ele$).hasClass('zone-active')) {
-                if ($(ele$).is('input')) {  // if input
+                if ($(ele$).is('input')) {  // if <input>
                     $(ele$).val('');
-                    if ($(ele$).hasClass('mask-money')) {  // if input mask-money
+                    if ($(ele$).hasClass('mask-money')) {  // if <input class="mask-money">
                         $(ele$).attr('value', '');
                     }
                     // add class hidden-zone (for use css in my-style.css)
                     $(ele$).attr('placeholder', '');
                     $(ele$).addClass('hidden-zone');
+                    $(ele$).addClass('border');
+                    $(ele$).addClass('border-dashed');
+                    $(ele$).addClass('border-red');
                 }
                 if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible")) {  // if select2
                     $(ele$).html(`<option value="" selected></option>`);
                     // add class hidden-zone (for use css in my-style.css)
-                    $(ele$).initSelect2({placeholder: $.fn.transEle.attr('data-hidden-by-workflow-config'),});
+                    $(ele$).initSelect2({placeholder: $.fn.transEle.attr('data-in-hidden-zone'),});
                     $(ele$).next('.select2-container').addClass('hidden-zone');
                 }
-                if ($(ele$).is('textarea')) {  // if textarea
+                if ($(ele$).is('textarea')) {  // if <textarea>
                     $(ele$).val('');
                     // add class hidden-zone (for use css in my-style.css)
-                    $(ele$).attr('placeholder', $.fn.transEle.attr('data-hidden-by-workflow-config'));
+                    $(ele$).attr('placeholder', $.fn.transEle.attr('data-in-hidden-zone'));
                     $(ele$).addClass('hidden-zone');
                 }
-                if ($(ele$).is('span')) {  // if span (only span that have attr data-zone)
+                if ($(ele$).is('span')) {  // if <span> (only span that have attr data-zone)
                     if ($(ele$).attr('data-zone')) {
                         if ($(ele$).hasClass('mask-money')) {
                             $(ele$).attr('data-init-money', '').html(``);
@@ -2955,15 +2995,17 @@ class WFRTControl {
                         }
                     }
                 }
-                if ($(ele$).is('button')) {  // if button (only button that have attr data-zone)
+                if ($(ele$).is('p')) {  // if <p>
+                    $(ele$).html(`${$.fn.transEle.attr('data-in-hidden-zone')}`);
+                }
+                if ($(ele$).is('button')) {  // if <button> (only button that have attr data-zone)
                     if ($(ele$).attr('data-zone')) {
                         $(ele$).attr('hidden', 'true');
                     }
                 }
             }
         }
-
-        // active border for select2
+        // active border for <select2>
         if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible"))
             WFRTControl.changePropertiesElementIsZone($(ele$).next('.select2-container').find('.select2-selection'), config)
     }
@@ -3032,6 +3074,13 @@ class UtilControl {
 
     static arrayIncludesAll(a, b) {
         return b.every(value => a.includes(value));
+    }
+
+    static arrayRange(start, end, step = 1) {
+        return Array.from(
+            {length: (end - start) / step + 1},
+            (value, index) => start + index * step
+        )
     }
 
     static initElementInitSelect(opts, html_or_$ = 'html') {
@@ -3289,10 +3338,38 @@ class UtilControl {
         return !isNaN(Number(dataStr))
     }
 
-    static convertToSlug(Text) {
-        return Text.toLowerCase()
-            .replace(/[^\w ]+/g, "")
-            .replace(/ +/g, "-");
+    static convertToSlug(txt, opts) {
+        opts = {
+            1: [/[^\w -]+/g, ""],
+            2: [/ +/g, "-"],
+            ...opts,
+        }
+
+        Object.keys(opts)
+            .map(
+                key => {
+                    try {
+                        return parseInt(key);
+                    } catch (e) {
+                        return null;
+                    }
+                }
+            )
+            .filter(key => key !== null)
+            .sort()
+            .map(
+                key => {
+                    let config = opts?.[key];
+                    if (!config) {
+                        config = opts?.[key.toString()];
+                    }
+                    if (config && Array.isArray(config) && config.length === 2) {
+                        txt = txt.replace(config[0], config[1]);
+                    }
+                }
+            )
+
+        return txt
     }
 
     static flattenObject(obj, parentKey = '', result = {}) {
@@ -4717,11 +4794,23 @@ class WindowControl {
         })
     }
 
-    static scrollToIdx(idxStrOr$, parentEleStrOr$ = '#idxPageContent .simplebar-content-wrapper') {
+    static getOffsetTop(element, parentElement) {
+        let offsetTop = 0;
+        while(element && element !== parentElement) {
+            offsetTop += element.offsetTop;
+            element = element.offsetParent;
+        }
+        return offsetTop;
+    }
+
+    static scrollToIdx(idxStrOr$, parentEleStrOr$ = '#idxPageContent .simplebar-content-wrapper', timer=200) {
         const ele$ = idxStrOr$ instanceof jQuery ? idxStrOr$ : $(idxStrOr$);
         let parent$ = parentEleStrOr$ instanceof jQuery ? parentEleStrOr$ : $(parentEleStrOr$);
-        let offsetTop = ele$.offset().top;
-        parent$.animate({scrollTop: offsetTop > 150 ? offsetTop - 150 : offsetTop}, 200);
+        // let offsetTop = ele$.offset().top;
+        // parent$.animate({scrollTop: offsetTop > 150 ? offsetTop - 150 : offsetTop}, timer);
+        const offsetTop = WindowControl.getOffsetTop(ele$[0], parent$[0]);
+        const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+        parent$.animate({scrollTop: offsetTop - vh/2}, timer);
     }
 
     static findGetParameter(parameterName) {
@@ -7069,14 +7158,19 @@ class DiagramControl {
             let urlDiagram = globeDiagramList;
             if ($btnLog && $btnLog.length > 0) {
                 let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
-                                <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
-                                    <div class="offcanvas-header"></div>
+                                <div class="offcanvas offcanvas-end w-95 mt-5" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
                                     <div class="offcanvas-body">
-                                        <div class="d-flex justify-content-start">
-                                            <button type="button" class="btn btn-icon mt-3 bm-sm btn-sm" data-bs-dismiss="offcanvas" aria-label="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
-                                            <button type="button" class="btn btn-icon mt-3 bm-sm btn-sm" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-redo-alt"></i></span></button>
+                                        <div class="d-flex justify-content-start mt-4 mb-2">
+                                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                                <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Close">
+                                                    <button type="button" class="btn btn-outline-secondary btn-square btn-sm" data-bs-dismiss="offcanvas" aria-label="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
+                                                </span>
+                                                <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reload">
+                                                    <button type="button" class="btn btn-outline-secondary btn-square btn-sm" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-redo-alt"></i></span></button>
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="min-w-1600p position-relative overflow-y-scroll">
+                                        <div data-simplebar class="min-w-1600p nicescroll-bar">
                                             <div class="card-group h-800p" id="flowchart_diagram"></div>
                                         </div>
                                     </div>
@@ -7282,6 +7376,7 @@ let $x = {
         removeEmptyValuesFromObj: UtilControl.removeEmptyValuesFromObj,
         getRandomArbitrary: UtilControl.getRandomArbitrary,
         getRandomInArray: UtilControl.getRandomInArray,
+        arrayRange: UtilControl.arrayRange,
         keepExistInOther: UtilControl.keepExistInOther,
         removeExistInOther: UtilControl.removeExistInOther,
 

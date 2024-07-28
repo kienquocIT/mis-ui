@@ -91,6 +91,9 @@ function loadIndustry(industryData) {
             url: industryEle.attr('data-url'),
             method: 'GET',
         },
+        callbackDataResp: function (resp, keyResp) {
+            return resp.data[keyResp];
+        },
         data: (industryData ? industryData : null),
         keyResp: 'industry_list',
         keyId: 'id',
@@ -846,7 +849,7 @@ function get_contacts_mapped() {
 }
 
 class AccountHandle {
-    load() {
+     load() {
         loadAccountType();
         loadAccountManager();
         loadIndustry();

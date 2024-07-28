@@ -62,7 +62,7 @@ $(document).ready(function () {
     function loadMainTable(category_list=[], product_list=[], warehouse_list=[], status_list=[]) {
         $main_table.DataTable().clear().destroy()
         $main_table.DataTableDefault({
-            dom: '',
+            // dom: '',
             rowIdx: true,
             paging: false,
             useDataServer: true,
@@ -112,19 +112,19 @@ $(document).ready(function () {
                     data: 'product',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-primary w-25">${data?.['code']}</span>&nbsp;<span class="fw-bold">${data?.['title']}</span>`;
+                        return `<span class="badge badge-soft-primary w-25">${data?.['code']}</span>&nbsp;<span>${data?.['title']}</span>`;
                     }
                 },
                 {
                     data: 'goods_receipt',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-secondary gr-code">${data?.['code']}</span>`;
+                        return `<span class="badge badge-soft-secondary gr-code w-100">${data?.['code']}</span>`;
                     }
                 },
                 {
                     data: 'goods_receipt',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (data?.['date_approved']) {
                             return `<span>${moment(data?.['date_approved'].split(' ')[0]).format('DD/MM/YYYY')}</span>`;
@@ -134,44 +134,46 @@ $(document).ready(function () {
                 },
                 {
                     data: 'person_in_charge',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `<span>${data?.['full_name']}</span>`;
+                        return `<span class="badge badge-soft-secondary w-100">${data?.['full_name']}</span>`;
                     }
                 },
                 {
                     data: 'warehouse',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-blue badge-sm w-20">${data?.['code']}</span>&nbsp;<span>${data?.['title']}</span>`;
+                        return `<span class="badge badge-soft-blue w-100">${data?.['code']}</span>`;
                     }
                 },
                 {
                     data: 'quantity_import',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         return `${data}`;
                     }
                 },
                 {
                     data: 'serial_list',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['product']?.['type'] === 2) {
                             let status = row?.['status'] ? $trans_script.attr('data-trans-done') : $trans_script.attr('data-trans-not-yet')
-                            let color = row?.['status'] ? 'badge badge-soft-success w-70' : 'badge badge-soft-warning w-70'
+                            let color = row?.['status'] ? 'success' : 'warning'
                             return `
-                                <span class="${color} row-status">${status}</span>
                                 <button type="button"
                                         data-bs-toggle="modal"
                                         data-bs-target="#modal-serial"
-                                        class="btn-open-modal-serial btn btn-icon btn-rounded btn-flush-secondary flush-hover btn-xs"
+                                        class="btn btn-custom btn-soft-${color} btn-rounded btn-sm btn-open-modal-serial w-100"
                                         data-quantity-import="${row?.['quantity_import']}"
                                         data-product-id="${row?.['product']?.['id']}"
                                         data-warehouse-id="${row?.['warehouse']?.['id']}"
                                         data-goods-receipt-id="${row?.['goods_receipt']?.['id']}"
-                                        >
-                                    <span class="icon"><i class="bi bi-box-arrow-up-right"></i></span>
+                                >
+                                    <span>
+                                        <span class="row-status">${status}</span>
+                                        <span class="icon"><i class="bi bi-box-arrow-up-right"></i></span>
+                                    </span>
                                 </button>
                                 <script class="serial_list_data">${JSON.stringify(data)}</script>
                             `;
@@ -377,15 +379,25 @@ $(document).ready(function () {
         frm.dataForm['is_serial_update'] = true
         frm.dataForm['serial_data'] = []
         $table_serial.find('tbody tr').each(function () {
-            frm.dataForm['serial_data'].push({
-                "serial_id": $(this).find('.vendor_serial_number').attr('data-serial-id') !== "null" ? $(this).find('.vendor_serial_number').attr('data-serial-id') : null,
-                "vendor_serial_number": $(this).find('.vendor_serial_number').val(),
-                "serial_number": $(this).find('.serial_number').val(),
-                "expire_date": $(this).find('.expire_date').val() ? moment($(this).find('.expire_date').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null,
-                "manufacture_date": $(this).find('.manufacture_date').val() ? moment($(this).find('.manufacture_date').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null,
-                "warranty_start": $(this).find('.warranty_start').val() ? moment($(this).find('.warranty_start').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null,
-                "warranty_end": $(this).find('.warranty_end').val() ? moment($(this).find('.warranty_end').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null,
-            })
+            let serial_id = $(this).find('.vendor_serial_number').attr('data-serial-id') !== "null" ? $(this).find('.vendor_serial_number').attr('data-serial-id') : null
+            let vendor_serial_number = $(this).find('.vendor_serial_number').val()
+            let serial_number = $(this).find('.serial_number').val()
+            let expire_date = $(this).find('.expire_date').val() ? moment($(this).find('.expire_date').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
+            let manufacture_date = $(this).find('.manufacture_date').val() ? moment($(this).find('.manufacture_date').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
+            let warranty_start = $(this).find('.warranty_start').val() ? moment($(this).find('.warranty_start').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
+            let warranty_end = $(this).find('.warranty_end').val() ? moment($(this).find('.warranty_end').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
+
+            if (vendor_serial_number && serial_number) {
+                frm.dataForm['serial_data'].push({
+                    "serial_id": serial_id,
+                    "vendor_serial_number": vendor_serial_number,
+                    "serial_number": serial_number,
+                    "expire_date": expire_date,
+                    "manufacture_date": manufacture_date,
+                    "warranty_start": warranty_start,
+                    "warranty_end": warranty_end,
+                })
+            }
         })
         return {
             url: frm.dataUrl,

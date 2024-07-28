@@ -61,6 +61,14 @@
                     {% trans 'Require user login before submitting data' %}
                 </label>
             </div>
+{#            <label for="form-title-authentication-required" class="form-check-label">#}
+{#                {% trans 'Require user login before submitting data' %}#}
+{#            </label>#}
+{#            <select name="authentication_required" id="form-title-authentication-required" class="input-radio-select">#}
+{#                <option value="">-</option>#}
+{#                <option value="user">BFlow User</option>#}
+{#                <option value="email">Email</option>#}
+{#            </select>#}
             <ul style="list-style-type:circle">
                 <li>
                     <small class="form-text text-muted">
@@ -96,28 +104,6 @@
                 </small>
             </div>
         </div>
-
-{#        <hr style="background-color: #2a3746"/>#}
-
-{#        <div class="mb-3">#}
-{#            <b>{% trans 'Date published' %}</b>#}
-{#            <div class="d-flex">#}
-{#                <div style="flex: calc(50% - 5px);margin-right: 5px;">#}
-{#                    {% assign_out_random idxDatePublishedStart as rIdxPublishedStart %}#}
-{#                    <div class="form-group">#}
-{#                        <label class="form-label" for="{{ rIdxPublishedStart }}">{% trans 'Start' %}</label>#}
-{#                        <input class="form-control" type="datetime-local" name="date_publish_start" id="{{ rIdxPublishedStart }}" />#}
-{#                    </div>#}
-{#                </div>#}
-{#                <div style="flex: calc(50% - 5px);margin-left: 5px;">#}
-{#                    {% assign_out_random idxDatePublishedEnd as rIdxPublishedEnd %}#}
-{#                    <div class="form-group">#}
-{#                        <label class="form-label" for="{{ rIdxPublishedEnd }}">{% trans 'End' %}</label>#}
-{#                        <input class="form-control" type="datetime-local" name="date_publish_end" id="{{ rIdxPublishedEnd }}" />#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
 
         <hr style="background-color: #2a3746"/>
 

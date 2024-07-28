@@ -1211,6 +1211,7 @@ var Gantt = (function () {
         }
 
         change_view_mode(mode = this.options.view_mode) {
+            jQuery('.gantt-left .gantt-left-outerwrap').remove()
             this.update_view_scale(mode);
             this.setup_dates();
             this.render();
@@ -1530,7 +1531,9 @@ var Gantt = (function () {
         }
 
         get_date_info(date, last_date, i) {
+            let flagIsNull = false
             if (!last_date) {
+                flagIsNull = true
                 last_date = date_utils.add(date, 1, 'year');
             }
             const date_text = {
@@ -1569,19 +1572,19 @@ var Gantt = (function () {
                             : date_utils.format(date, 'D', this.options.language)
                         : '',
                 Day_upper:
-                    date.getMonth() !== last_date.getMonth()
+                    date.getMonth() !== last_date.getMonth() || flagIsNull
                         ? date_utils.format(date, 'MMMM', this.options.language)
                         : '',
                 Week_upper:
-                    date.getMonth() !== last_date.getMonth()
+                    date.getMonth() !== last_date.getMonth() || flagIsNull
                         ? date_utils.format(date, 'MMMM', this.options.language)
                         : '',
                 Month_upper:
-                    date.getFullYear() !== last_date.getFullYear()
+                    date.getFullYear() !== last_date.getFullYear() || flagIsNull
                         ? date_utils.format(date, 'YYYY', this.options.language)
                         : '',
                 Year_upper:
-                    date.getFullYear() !== last_date.getFullYear()
+                    date.getFullYear() !== last_date.getFullYear() || flagIsNull
                         ? date_utils.format(date, 'YYYY', this.options.language)
                         : '',
             };
@@ -1857,7 +1860,6 @@ var Gantt = (function () {
                 bar.progress_changed();
                 bar.set_action_completed();
             });
-            $()
         }
 
         get_all_dependent_tasks(task_id) {
@@ -2048,11 +2050,13 @@ var Gantt = (function () {
                         jQuery('.btn-item-row-assign', htmlBtn2).on('click', function(){
                             const $form = jQuery('#formOpportunityTask')
                             jQuery('.btn-show-task_f').trigger('click');
+                            jQuery('#work_id', $form).remove()
                             $form.append(`<input type="hidden" name="work_id" value="${item.id}"/>`);
 
                         })
 
                         jQuery('.btn-row-task_list', htmlBtn2).on('click',() =>{
+                            jQuery('#assign_modal .modal-body #modal_work_id').remove()
                             jQuery('#assign_modal .modal-body').append(`<input type="hidden" id="modal_work_id" value="${item.id}"/>`)
                             jQuery('#assign_modal').modal('show')
                         })

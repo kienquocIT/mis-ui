@@ -5,6 +5,40 @@
 {% endblock %}
 {% block cssHeader %}
 {#    <link href="{% static 'assets/css/eoffice/assettools/list.css' %}" rel="stylesheet" type="text/css"/>#}
+    <style>
+        .proj-badge {
+            font-size: .7rem;
+            border-radius: 5px;
+            font-weight: 400;
+            right: -25px;
+            top: -12px;
+        }
+
+        .proj-badge img {
+            margin-right: 4px;
+        }
+
+        .btn-sh-baseline i {
+            transition: all .15s ease-in;
+        }
+
+        .btn-sh-baseline:hover i {
+            transform: rotate(90deg)
+        }
+
+        .baseline_tr > td {
+            padding: 0;
+        }
+        .baseline_tr .wrap-baseline > table tr:last-child td {
+            border-bottom: 0;
+        }
+        .baseline_tr .wrap-baseline > table tr td {
+            background-color: rgb(0 0 0 / 5%);
+        }
+        div.dataTables_wrapper .dataTables_scrollBody table{
+            margin-bottom:0!important;
+        }
+    </style>
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'ProjectCreate' %}">
@@ -32,14 +66,15 @@
                 >
                     <thead>
                         <tr>
-                            <td>{% trans 'Code' %}</td>
-                            <td>{% trans 'Name' %}</td>
-                            <td>{% trans 'Project PM' %}</td>
-                            <td>{% trans 'Start date' %}</td>
-                            <td>{% trans 'Finish date' %}</td>
-                            <td>{% trans 'Completion rate' %}</td>
-                            <td>{% trans 'Project works' %}</td>
-                            <td>{% trans 'Tasks' %}</td>
+                            <td></td>
+                            <td><span>{% trans 'Code' %}</span></td>
+                            <td><span>{% trans 'Name' %}</span></td>
+                            <td><span>{% trans 'Project PM' %}</span></td>
+                            <td><span>{% trans 'Start date' %}</span></td>
+                            <td><span>{% trans 'Finish date' %}</span></td>
+                            <td><span>{% trans 'Completion rate' %}</span></td>
+                            <td><span>{% trans 'Project works' %}</span></td>
+                            <td><span>{% trans 'Tasks' %}</span></td>
                             <td></td>
                         </tr>
                     </thead>
@@ -58,9 +93,11 @@
             </span>
         </a>
     </div>
-    <input type="text" id="url-factory" aria-label="url-factory"
+    <input type="hidden" id="url-factory" aria-label="url-factory"
+           data-img-url="{% static 'assets/project/images/graph.png' %}"
+           data-baseline-url="{% url 'ProjectBaselineDetail' 1 %}"
     >
-    <input type="text" id="trans-factory" aria-label="trans-factory"
+    <input type="hidden" id="trans-factory" aria-label="trans-factory"
     >
 {% endblock %}
 {% block jsFooter %}

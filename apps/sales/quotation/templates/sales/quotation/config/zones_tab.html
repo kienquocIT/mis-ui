@@ -1,0 +1,145 @@
+{% load static i18n %}
+<!-- Config General -->
+<div class="row">
+    <table
+            id="table_zones"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url 'ZonesApplicationListAPI' %}"
+            data-method="get"
+    >
+        <thead>
+        <tr class="bg-light">
+            <th class="w-5"></th>
+            <th class="w-20">{% trans 'Employee' %}</th>
+            <th class="w-25">{% trans 'Editing zone' %}</th>
+            <th class="w-25">{% trans 'Hidden zone' %}</th>
+            <th class="w-20">{% trans 'Description' %}</th>
+            <th class="w-5"></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-start">
+        <button type="button" class="btn btn-outline-primary btn-add-zone" data-bs-toggle="modal" data-bs-target="#addZoneMdl">
+            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
+        </button>
+    </div>
+</div>
+
+<div class="modal-area">
+        <div class="modal fade" id="addZoneMdl" tabindex="-1" role="dialog" aria-labelledby="addZoneMdl" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'New zone' %}</h5>
+                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label required" for="add-zone-box-employee">{% trans 'Employee' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="add-zone-box-employee"
+                                    data-url="{% url "EmployeeListAPI" %}"
+                                    data-method="GET"
+                                    name="employee"
+                                    data-keyResp="employee_list"
+                                    data-keyText="full_name"
+                            ></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required" for="add-zone-box-zones-editing">{% trans 'Editing zone' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="add-zone-box-zones-editing"
+                                    data-url="{% url "ZonesListAPI" %}"
+                                    data-method="GET"
+                                    name="zones"
+                                    data-keyResp="zones_list"
+                                    multiple
+                            ></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required" for="add-zone-box-zones-hidden">{% trans 'Hidden zone' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="add-zone-box-zones-hidden"
+                                    data-url="{% url "ZonesListAPI" %}"
+                                    data-method="GET"
+                                    name="zones"
+                                    data-keyResp="zones_list"
+                                    multiple
+                            ></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="add-zone-remark">{% trans 'Description' %}</label>
+                            <textarea class="form-control" rows="5" id="add-zone-remark" name="remark"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btn-confirm-add">{% trans 'Save' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editZoneMdl" tabindex="-1" role="dialog" aria-labelledby="editZoneMdl" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Edit zone' %}</h5>
+                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label required" for="edit-zone-box-employee">{% trans 'Employee' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="edit-zone-box-employee"
+                                    data-url="{% url "EmployeeListAPI" %}"
+                                    data-method="GET"
+                                    name="employee"
+                                    data-keyResp="employee_list"
+                                    data-keyText="full_name"
+                            ></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required" for="edit-zone-box-zones-editing">{% trans 'Editing zone' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="edit-zone-box-zones-editing"
+                                    data-url="{% url "ZonesListAPI" %}"
+                                    data-method="GET"
+                                    name="zones"
+                                    data-keyResp="zones_list"
+                                    multiple
+                            ></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required" for="edit-zone-box-zones-hidden">{% trans 'Hidden zone' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="edit-zone-box-zones-hidden"
+                                    data-url="{% url "ZonesListAPI" %}"
+                                    data-method="GET"
+                                    name="zones"
+                                    data-keyResp="zones_list"
+                                    multiple
+                            ></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-zone-remark">{% trans 'Description' %}</label>
+                            <textarea class="form-control" rows="5" id="edit-zone-remark" name="remark"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btn-confirm-edit">{% trans 'Save' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Config General -->

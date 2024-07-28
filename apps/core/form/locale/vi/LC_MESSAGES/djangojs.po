@@ -128,3 +128,83 @@ msgstr "Biểu mẫu phải có ít nhất một trường dữ liệu bắt bu�
 #
 msgid "The form requires at least one input field"
 msgstr "Biểu mẫu yêu cầu ít nhất một trường dữ liệu đầu vào"
+
+#
+msgid "First Choice"
+msgstr "Lựa chọn 1"
+
+#
+msgid "Second Choice"
+msgstr "Lựa chọn 2"
+
+#
+msgid "Third Choice"
+msgstr "Lựa chọn 3"
+
+#
+msgid "Ensure that values are unique in the list"
+msgstr "Đảm bảo rằng các giá trị trong danh sách là duy nhất"
+
+#
+msgid "Ensure that titles are unique in the list"
+msgstr "Đảm bảo rằng các tiêu đề trong danh sách là duy nhất"
+
+#
+msgid "Ensure that there is always data between the title and value"
+msgstr "Đảm bảo rằng luôn có dữ liệu giữa tiêu đề và giá trị"
+
+#
+msgid "Very bad"
+msgstr "Rất tệ"
+
+#
+msgid "Bad"
+msgstr "Tệ"
+
+#
+msgid "Normal"
+msgstr "Bình thường"
+
+#
+msgid "Good"
+msgstr "Tốt"
+
+#
+msgid "Excellent"
+msgstr "Tuyệt vời"
+
+#
+msgid "Vote"
+msgstr "Bầu chọn"
+
+#
+msgid "Review"
+msgstr "Nhận xét"
+
+#
+msgid "General"
+msgstr "Chung"
+
+#
+msgid "Emoji"
+msgstr "Biểu cảm"
+
+#
+msgid "Cancel pagination in form?"
+msgstr "Huỷ bỏ phân trang trên biểu mẫu?"
+
+#
+msgid "Page"
+msgstr "Trang"
+
+#
+msgid "Previous page"
+msgstr "Trang trước"
+
+#
+msgid "Next page"
+msgstr "Trang sau"
+
+#
+msgid "Drag fields from left panel and drop here to add them to your form."
+msgstr "Kéo các trường từ bảng điều khiển bên trái và thả vào đây để thêm chúng vào biểu mẫu của bạn."

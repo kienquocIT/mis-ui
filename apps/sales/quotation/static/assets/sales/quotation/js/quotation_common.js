@@ -238,11 +238,21 @@ class QuotationLoadDataHandle {
                 QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
                     'dataParams': {'employee_inherit': QuotationLoadDataHandle.salePersonSelectEle.val()},
                     'allowClear': true,
+                    templateResult: function (state) {
+                        let titleHTML = `<span>${state.data?.title ? state.data.title : "_"}</span>`
+                        let codeHTML = `<span class="badge badge-soft-primary mr-2">${state.text ? state.text : "_"}</span>`
+                        return $(`<span>${codeHTML} ${titleHTML}</span>`);
+                    },
                 });
             } else {
                 QuotationLoadDataHandle.opportunitySelectEle.empty();
                 QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
                     'allowClear': true,
+                    templateResult: function (state) {
+                        let titleHTML = `<span>${state.data?.title ? state.data.title : "_"}</span>`
+                        let codeHTML = `<span class="badge badge-soft-primary mr-2">${state.text ? state.text : "_"}</span>`
+                        return $(`<span>${codeHTML} ${titleHTML}</span>`);
+                    },
                 });
             }
             // load customer, contact, payment
@@ -251,6 +261,15 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         }
     };
+
+    static loadInitDate() {
+        let currentDate = new Date();
+        let day = String(currentDate.getDate()).padStart(2, '0');
+        let month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        let year = currentDate.getFullYear();
+        let formattedDate = `${day}/${month}/${year}`;
+        $('#quotation-create-date-created').html(formattedDate)
+    }
 
     static loadBoxQuotationPrice() {
         let ele = $('#select-box-quotation-create-price-list');
@@ -551,7 +570,7 @@ class QuotationLoadDataHandle {
         }
     };
 
-    // PRODUCT
+    // TABLE PRODUCT
     static loadAddRowProductGr() {
         let tableProduct = $('#datable-quotation-create-product');
         let order = tableProduct[0].querySelectorAll('.table-row-group').length + 1;
@@ -1481,7 +1500,6 @@ class QuotationLoadDataHandle {
             $tableProduct.DataTable().rows().every(function () {
                 let row = this.node();
                 let valueQuantity = 0;
-                let valuePrice = 0;
                 let valueTaxAmount = 0;
                 let valueSubtotal = 0;
                 let dataProduct = {};
@@ -1589,7 +1607,7 @@ class QuotationLoadDataHandle {
                 }
             })
             // Re calculate
-            QuotationCalculateCaseHandle.calculateAllRowsTableCost($table);
+            QuotationCalculateCaseHandle.calculateAllRowsTableCost();
             // load cost list
             $table.DataTable().rows().every(function () {
                 let row = this.node();
@@ -1617,7 +1635,7 @@ class QuotationLoadDataHandle {
         }
     };
 
-    static loadCopyData(ele) {
+    static loadSetupCopy(ele) {
         let formSubmit = $('#frm_quotation_create');
         let divCopyOption = $('#copy-quotation-option');
         let tableCopyQuotationProduct = $('#datable-copy-quotation-product');
@@ -1663,16 +1681,7 @@ class QuotationLoadDataHandle {
                 }
                 // BEGIN COPY DATA
                 if (type === 'copy-from') { // COPY FROM (SALE ORDER CREATE -> CHOOSE QUOTATION)
-                    // Begin load data copy FROM
-                    document.getElementById('customer-price-list').value = dataCopy?.['customer']?.['customer_price_list'];
-                    QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-                    QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
-                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
-                    // Check promotion -> re calculate
-                    QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
-                    // Set form novalidate
-                    formSubmit[0].setAttribute('novalidate', 'novalidate');
-                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');
+                    QuotationLoadDataHandle.loadCopyData(dataCopy);
                 } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                     // create URL and add to href
                     let eleRedirect = document.getElementById('link-to-sale-order-create');
@@ -1683,6 +1692,24 @@ class QuotationLoadDataHandle {
                 }
             }
         }
+    };
+
+    static loadCopyData(dataCopy) {
+        let $form = $('#frm_quotation_create');
+        let tableProduct = $('#datable-quotation-create-product');
+        document.getElementById('customer-price-list').value = dataCopy?.['customer']?.['customer_price_list'];
+        QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
+        QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
+        QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
+        QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
+        // Check promotion -> re calculate
+        QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
+        // Set form novalidate
+        $form[0].setAttribute('novalidate', 'novalidate');
+        $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');
+        // set again WF runtime
+        QuotationLoadDataHandle.loadSetWFRuntimeZone();
+        return true;
     };
 
     static loadCssToDTScrollBody() {
@@ -1746,10 +1773,13 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term_data'])
         }
         if (data?.['quotation'] && data?.['sale_person']) {
-            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.quotationSelectEle, [data?.['quotation']]);
+            if (data?.['quotation']?.['title']) {
+                QuotationLoadDataHandle.quotationSelectEle.empty().html(data?.['quotation']?.['title']);
+            }
+            QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(data?.['quotation']));
         }
         if (data?.['date_created']) {
-            $('#quotation-create-date-created').val(moment(data?.['date_created']).format('DD/MM/YYYY'));
+            $('#quotation-create-date-created').html(moment(data?.['date_created']).format('DD/MM/YYYY'));
         }
         if (data?.['is_customer_confirm'] && is_copy === false) {
             $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
@@ -1757,31 +1787,23 @@ class QuotationLoadDataHandle {
         if (is_copy === false) {
             // check if not finish or reject then remove hidden btn edit page
             if (![2, 3, 4].includes(data?.['system_status'])) {
-                let $btn = $('#btn-enable-edit');
-                if ($btn.length) {
-                    $btn[0].removeAttribute('hidden');
+                let btnEdit = $('#btn-enable-edit');
+                if (btnEdit && btnEdit.length > 0) {
+                    btnEdit[0].removeAttribute('hidden');
                 }
             }
-            // check if is not finish then hidden btn delivery (Sale Order)
-            if (![2, 3].includes(data?.['system_status'])) {
-                if (form.classList.contains('sale-order')) {
-                    let btnDelivery = $('#btnDeliverySaleOrder');
-                    if (btnDelivery.length > 0){
-                        btnDelivery[0].setAttribute('hidden', 'true');
-                    }
+            // check if finish then remove hidden btnDelivery (SO)
+            if (data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get' && form.classList.contains('sale-order')) {
+                let btnDelivery = $('#btnDeliverySaleOrder');
+                if (btnDelivery && btnDelivery.length > 0) {
+                    btnDelivery[0].removeAttribute('hidden');
                 }
             }
-            // check if is not finish then disable btn copy
-            if (![2, 3].includes(data?.['system_status'])) {
-                let btnCopy = document.getElementById('btn-copy-quotation');
-                let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
-                if (btnCopy) {
-                    btnCopy.setAttribute('disabled', 'true');
-                }
-                if (eleTooltipBtnCopy) {
-                    eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
-                    eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
-                    eleTooltipBtnCopy.setAttribute('title', QuotationLoadDataHandle.transEle.attr('data-not-allow-use'));
+            // check if finish then remove hidden btnCopy
+            if (data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get') {
+                let btnCopy = $('#btn-copy-quotation');
+                if (btnCopy && btnCopy.length > 0) {
+                    btnCopy[0].removeAttribute('hidden');
                 }
             }
         }
@@ -1791,7 +1813,9 @@ class QuotationLoadDataHandle {
                 'title': data?.['title'],
                 'code': data?.['code'],
             }
-            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.quotationSelectEle, [dataQuotationCopy]);
+            QuotationLoadDataHandle.quotationSelectEle.empty().html(data?.['title']);
+            QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(dataQuotationCopy));
+
         }
         if (data?.['quotation_logistic_data']) {
             document.getElementById('quotation-create-shipping-address').value = data?.['quotation_logistic_data']?.['shipping_address'];
@@ -1856,13 +1880,13 @@ class QuotationLoadDataHandle {
         }
     };
 
-    static loadDataTablesAndDropDowns(data, is_detail = false) {
-        QuotationLoadDataHandle.loadDataTables(data, is_detail);
+    static loadDataTablesAndDropDowns(data) {
+        QuotationLoadDataHandle.loadDataTables(data);
         QuotationLoadDataHandle.loadTableDropDowns();
         return true;
     };
 
-    static loadDataTables(data, is_detail = false) {
+    static loadDataTables(data) {
         let form = document.getElementById('frm_quotation_create');
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
@@ -1959,8 +1983,8 @@ class QuotationLoadDataHandle {
                 })
             }
         }
-        // load indicators & set attr disabled
-        if (is_detail === true) {
+        // load indicators & set attr disabled for detail page
+        if ($(form).attr('data-method').toLowerCase() === 'get') {
             // load indicators
             tableIndicator.DataTable().clear().draw();
             tableIndicator.DataTable().rows.add(indicators_data).draw();
@@ -2142,8 +2166,21 @@ class QuotationLoadDataHandle {
             for (let dataProduct of dataProductList) {
                 if (Object.keys(dataProduct?.['promotion']).length > 0) {
                     let check = promotionHandle.checkPromotionValid(dataProduct?.['promotion'], data?.['customer']?.['id']);
-                    let promotionResult = promotionHandle.getPromotionResult(check?.['condition']);
-                    promotionHandle.calculatePromotion(table, promotionResult?.['discount_rate_on_order'], promotionResult?.['product_price']);
+                    let promotionParse = promotionHandle.getPromotionResult(check);
+                    let tableProduct = $('#datable-quotation-create-product');
+                    if (promotionParse?.['is_discount'] === true) { // DISCOUNT
+                        if (promotionParse?.['row_apply_index'] === null) { // on Specific product
+                            if (promotionParse.hasOwnProperty('discount_rate_on_order')) {
+                                if (promotionParse.discount_rate_on_order !== null) {
+                                    if (promotionParse.is_before_tax === true) {
+                                        promotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price']);
+                                    } else {
+                                        promotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price'], false)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -2168,12 +2205,13 @@ class QuotationDataTableHandle {
             ordering: false,
             paging: false,
             info: false,
+            searching: false,
             autoWidth: true,
             scrollX: true,
-            columns: [  // 25,325,325,150,175,325,150,150,270,25 (1920p)
+            columns: [
                 {
                     targets: 0,
-                    width: '1.30208333333%',
+                    width: '1%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_group'] === true) {
@@ -2449,7 +2487,7 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
                 },
             ],
@@ -2467,6 +2505,7 @@ class QuotationDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
+            searching: false,
             columns: [
                 {
                     targets: 0,
@@ -2479,9 +2518,9 @@ class QuotationDataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data_readonly";
+                        let dataZone = "quotation_costs_data";
                         if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data_readonly";
+                            dataZone = "sale_order_costs_data";
                         }
                         let itemType = 0  // product
                         if (row.hasOwnProperty('product') && row.hasOwnProperty('shipping')) {
@@ -2493,7 +2532,7 @@ class QuotationDataTableHandle {
                             return `<div class="row table-row-item-area">
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <select
-                                                class="form-select table-row-item disabled-custom-show"
+                                                class="form-select table-row-item disabled-custom-show zone-readonly"
                                                 data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
                                                 data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
                                                 data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
@@ -2518,7 +2557,7 @@ class QuotationDataTableHandle {
                                                 <i class="fas fa-shipping-fast text-teal"></i>
                                             </a>
                                         </span>
-                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row?.['product_title']}" data-id="${row?.['shipping']?.['id']}" data-bs-toggle="tooltip" title="${row.product_title}" data-zone="${dataZone}" disabled>
+                                        <input type="text" class="form-control table-row-shipping disabled-custom-show zone-readonly" value="${row?.['product_title']}" data-id="${row?.['shipping']?.['id']}" data-bs-toggle="tooltip" title="${row?.['product_title']}" data-zone="${dataZone}" disabled>
                                     </span>
                                 </div>
                                 </div>`;
@@ -2529,12 +2568,12 @@ class QuotationDataTableHandle {
                     targets: 2,
                     render: () => {
                         let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data_readonly";
+                        let dataZone = "quotation_costs_data";
                         if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data_readonly";
+                            dataZone = "sale_order_costs_data";
                         }
                         return `<select 
-                                    class="form-select table-row-uom disabled-custom-show"
+                                    class="form-select table-row-uom disabled-custom-show zone-readonly"
                                     data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
                                     data-keyResp="unit_of_measure"
@@ -2548,11 +2587,11 @@ class QuotationDataTableHandle {
                     targets: 3,
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data_readonly";
+                        let dataZone = "quotation_costs_data";
                         if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data_readonly";
+                            dataZone = "sale_order_costs_data";
                         }
-                        return `<input type="text" class="form-control table-row-quantity disabled-custom-show" value="${row?.['product_quantity']}" data-zone="${dataZone}" disabled>`;
+                        return `<input type="text" class="form-control table-row-quantity disabled-custom-show zone-readonly" value="${row?.['product_quantity']}" data-zone="${dataZone}" disabled>`;
                     }
                 },
                 {
@@ -2691,7 +2730,7 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
                     }
                 },
             ],
@@ -2707,12 +2746,13 @@ class QuotationDataTableHandle {
             ordering: false,
             paging: false,
             info: false,
+            searching: false,
             autoWidth: true,
             scrollX: true,
             columns: [  // 50,300,300,100,150,250,100,200,50 (1500p)
                 {
                     targets: 0,
-                    width: '3.33%',
+                    width: '1%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" data-row="${dataRow}">${row?.['order']}</span>`
@@ -2899,7 +2939,7 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
                     }
                 },
             ],
@@ -2952,40 +2992,36 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-copy-quotation');
         $tables.DataTableDefault({
             data: data ? data : [],
-            // paging: false,
-            // ordering: false,
-            // info: false,
             columns: [
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<div class="form-check">
-                                    <input type="radio" class="form-check-input table-row-check" data-id="${row?.['id']}">
-                                </div>`
+                        if (row?.['title'] && row?.['code']) {
+                            return `<div class="d-flex align-items-center">
+                                        <div class="form-check">
+                                            <input type="radio" class="form-check-input table-row-check" data-id="${row?.['id']}">
+                                        </div>
+                                        <div>
+                                            <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
+                                            <span class="table-row-title">${row?.['title']}</span>
+                                        </div>
+                                    </div>`;
+                        }
+                        return `<span>--</span>`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        if (row?.['title'] && row?.['code']) {
-                            return `<span class="badge badge-primary badge-sm">${row?.['code'] ? row?.['code'] : ''}</span>
-                                    <p class="table-row-title">${row?.['title']}</p>`;
-                        }
-                        return `<p>--</p>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
                         if (row?.['opportunity']?.['title'] && row?.['opportunity']?.['code']) {
-                            return `<span class="badge badge-secondary badge-sm">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>
-                                    <p class="table-row-customer">${row?.['opportunity']?.['title']}</p>`;
+                            return `<span class="badge badge-soft-pink">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>
+                                    <span class="table-row-customer">${row?.['opportunity']?.['title']}</span>`;
                         }
-                        return `<p>--</p>`;
+                        return `<span>--</span>`;
                     },
                 },
                 {
-                    targets: 3,
+                    targets: 2,
                     render: (data, type, row) => {
                         if (row?.['customer']?.['title']) {
                             return `<p class="table-row-customer">${row?.['customer']?.['title']}</p>`;
@@ -3054,7 +3090,7 @@ class QuotationDataTableHandle {
     static dataTableShipping(data) {
         // init dataTable
         let $tables = $('#datable-quotation-create-shipping');
-        $tables.DataTableDefault({
+        $tables.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             // searching: false,
             paging: false,
@@ -3091,51 +3127,52 @@ class QuotationDataTableHandle {
                 }
             ],
         });
+        if ($tables.hasClass('dataTable')) {
+            $tables.DataTable().clear().draw();
+            $tables.DataTable().rows.add(data ? data : []).draw();
+        }
     };
 
-    static loadTableQuotationShipping(shipping_id) {
-        let self = this;
-        let jqueryId = '#' + shipping_id;
-        let ele = $(jqueryId);
+    static loadTableQuotationShipping() {
+        let ele = $('#data-init-quotation-create-shipping');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         let passList = [];
         let failList = [];
         let checkList = [];
+        QuotationDataTableHandle.dataTableShipping();
         $.fn.callAjax2({
                 'url': url,
                 'method': method,
                 'isDropdown': true,
             }
-            // url, method
         ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('shipping_check_list') && Array.isArray(data.shipping_check_list)) {
-                        $('#datable-quotation-create-shipping').DataTable().destroy();
                         let shippingAddress = $('#quotation-create-shipping-address').val();
                         if (shippingAddress) {
                             data.shipping_check_list.map(function (item) {
-                                if (!checkList.includes(item.id)) {
-                                    let check = shippingHandle.checkShippingValid(item, shippingAddress)
+                                if (!checkList.includes(item?.['id'])) {
+                                    let check = shippingHandle.checkShippingValid(item, shippingAddress);
                                     if (check.is_pass === true) {
                                         item['is_pass'] = true;
                                         item['final_shipping_price'] = check.final_shipping_price;
                                         item['margin_shipping_price'] = check.margin_shipping_price;
-                                        item['data_shipping'] = check.data_shipping;
-                                        passList.push(item)
+                                        item['data_shipping'] = check?.['data_shipping'];
+                                        passList.push(item);
                                     } else {
                                         item['is_pass'] = false;
-                                        failList.push(item)
+                                        failList.push(item);
                                     }
-                                    checkList.push(item.id)
+                                    checkList.push(item?.['id']);
                                 }
                             })
                             passList = passList.concat(failList);
-                            self.dataTableShipping(passList);
+                            QuotationDataTableHandle.dataTableShipping(passList);
                         } else {
-                            self.dataTableShipping(passList);
+                            QuotationDataTableHandle.dataTableShipping(passList);
                             $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-check-if-shipping-address')}, 'info');
                         }
                     }
@@ -3145,7 +3182,8 @@ class QuotationDataTableHandle {
     };
 
     static dataTableQuotationIndicator(data) {
-        $('#datable-quotation-create-indicator').DataTableDefault({
+        let $tables = $('#datable-quotation-create-indicator');
+        $tables.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -3180,10 +3218,15 @@ class QuotationDataTableHandle {
                 }
             ],
         });
+        if ($tables.hasClass('dataTable')) {
+            $tables.DataTable().clear().draw();
+            $tables.DataTable().rows.add(data ? data : []).draw();
+        }
     };
 
     static dataTableSaleOrderIndicator(data) {
-        $('#datable-quotation-create-indicator').DataTableDefault({
+        let $tables = $('#datable-quotation-create-indicator');
+        $tables.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -3232,6 +3275,10 @@ class QuotationDataTableHandle {
                 }
             ],
         });
+        if ($tables.hasClass('dataTable')) {
+            $tables.DataTable().clear().draw();
+            $tables.DataTable().rows.add(data ? data : []).draw();
+        }
     };
 
     static dataTablePaymentStage(data) {
@@ -3241,6 +3288,7 @@ class QuotationDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
+            searching: false,
             columns: [
                 {
                     targets: 0,
@@ -3255,12 +3303,12 @@ class QuotationDataTableHandle {
                         if (row?.['date'] !== '') {
                             return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${moment(row?.['date']).format('DD/MM/YYYY')}">
-                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
+                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
                                     </div>`;
                         } else {
                             return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="">
-                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
+                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
                                     </div>`;
                         }
                     },
@@ -3300,12 +3348,12 @@ class QuotationDataTableHandle {
                         if (row?.['due_date'] !== '') {
                             return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-due-date" value="${moment(row?.['due_date']).format('DD/MM/YYYY')}">
-                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
+                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
                                     </div>`;
                         } else {
                             return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-due-date" value="">
-                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
+                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
                                     </div>`;
                         }
                     }
@@ -3323,7 +3371,7 @@ class QuotationDataTableHandle {
                 {
                     targets: 7,
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
                 },
             ],
@@ -3358,16 +3406,18 @@ class QuotationCalculateCaseHandle {
         if (table.id === 'datable-quotation-create-product') {
             if (tableProductWrapper) {
                 let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-                elePretaxAmount = tableProductFt.querySelector('.quotation-create-product-pretax-amount');
-                eleTaxes = tableProductFt.querySelector('.quotation-create-product-taxes');
-                eleTotal = tableProductFt.querySelector('.quotation-create-product-total');
-                eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount');
-                elePretaxAmountRaw = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
-                eleTaxesRaw = tableProductFt.querySelector('.quotation-create-product-taxes-raw');
-                eleTotalRaw = tableProductFt.querySelector('.quotation-create-product-total-raw');
-                eleDiscountRaw = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
-                eleDiscountRateTotal = tableProductFt.querySelector('.quotation-create-product-discount');
-                finalRevenueBeforeTax = tableProductFt.querySelector('.quotation-final-revenue-before-tax');
+                if (tableProductFt) {
+                    elePretaxAmount = tableProductFt.querySelector('.quotation-create-product-pretax-amount');
+                    eleTaxes = tableProductFt.querySelector('.quotation-create-product-taxes');
+                    eleTotal = tableProductFt.querySelector('.quotation-create-product-total');
+                    eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount');
+                    elePretaxAmountRaw = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+                    eleTaxesRaw = tableProductFt.querySelector('.quotation-create-product-taxes-raw');
+                    eleTotalRaw = tableProductFt.querySelector('.quotation-create-product-total-raw');
+                    eleDiscountRaw = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+                    eleDiscountRateTotal = tableProductFt.querySelector('.quotation-create-product-discount');
+                    finalRevenueBeforeTax = tableProductFt.querySelector('.quotation-final-revenue-before-tax');
+                }
             }
         } else if (table.id === 'datable-quotation-create-cost') {
             let tableCost = document.getElementById('datable-quotation-create-cost');
@@ -3616,23 +3666,24 @@ class QuotationCalculateCaseHandle {
         QuotationCalculateCaseHandle.updateTotal(table[0]);
     };
 
-    static calculateAllRowsTableProduct(table) {
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
+    static calculateAllRowsTableProduct() {
+        let $table = $('#datable-quotation-create-product');
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
             if (row.querySelector('.table-row-item')) {
-                QuotationCalculateCaseHandle.calculate(row);
+                QuotationCalculateCaseHandle.commonCalculate($table, row);
             }
-        }
-        QuotationCalculateCaseHandle.updateTotal(table[0]);
+        });
     };
 
-    static calculateAllRowsTableCost(table) {
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
+    static calculateAllRowsTableCost() {
+        let $table = $('#datable-quotation-create-cost');
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
             if (row.querySelector('.table-row-item')) {
-                QuotationCalculateCaseHandle.commonCalculate(table, row);
+                QuotationCalculateCaseHandle.commonCalculate($table, row);
             }
-        }
+        });
     };
 
 }
@@ -3827,12 +3878,11 @@ class QuotationCheckConfigHandle {
 
 // Indicator
 class indicatorHandle {
-    static loadQuotationIndicator(indicator_id, is_load_init_indicator = false) {
-        let jqueryId = '#' + indicator_id;
-        let ele = $(jqueryId);
-        if (!ele.val()) {
-            let url = ele.attr('data-url');
-            let method = ele.attr('data-method');
+    static loadQuotationIndicator() {
+        let $ele = $('#quotation-indicator-data');
+        if (!$ele.val()) {
+            let url = $ele.attr('data-url');
+            let method = $ele.attr('data-method');
             $.fn.callAjax2({
                     'url': url,
                     'method': method,
@@ -3843,19 +3893,15 @@ class indicatorHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
-                            ele.val(JSON.stringify(data.quotation_indicator_list));
-                            if (is_load_init_indicator === false) {
-                                indicatorHandle.calculateIndicator(data.quotation_indicator_list);
-                            }
+                            $ele.val(JSON.stringify(data.quotation_indicator_list));
+                            indicatorHandle.calculateIndicator(data.quotation_indicator_list);
                         }
                     }
                 }
             )
         } else {
-            if (is_load_init_indicator === false) {
-                let data_list = JSON.parse(ele.val());
-                indicatorHandle.calculateIndicator(data_list);
-            }
+            let data_list = JSON.parse($ele.val());
+            indicatorHandle.calculateIndicator(data_list);
         }
     };
 
@@ -3863,7 +3909,6 @@ class indicatorHandle {
         let result_list = [];
         let result_json = {};
         let revenueValue = 0;
-        let rateValue = 0;
         let formSubmit = $('#frm_quotation_create');
         let is_sale_order = false;
         let _form = new SetupFormSubmit(formSubmit);
@@ -3900,7 +3945,7 @@ class indicatorHandle {
                 // set data detail to zones hidden
                 if (data_form && dataDetail) {
                     for (let key of keyHidden) {
-                        if (!data_form.hasOwnProperty(key) && dataDetail.hasOwnProperty(key)) {
+                        if (dataDetail.hasOwnProperty(key)) {
                             data_form[key] = dataDetail[key];
                         }
                     }
@@ -3910,6 +3955,7 @@ class indicatorHandle {
         // Check special case
         indicatorHandle.checkSpecialCaseIndicator(data_form);
         for (let indicator of indicator_list) {
+            let rateValue = 0;
             let parse_formula = "";
             let formula_data = indicator.formula_data;
             for (let item of formula_data) {
@@ -4001,10 +4047,15 @@ class indicatorHandle {
                 'indicator_rate': rateValue
             }
         }
-        //
-        let $table = $('#datable-quotation-create-indicator');
-        $table.DataTable().clear().draw();
-        $table.DataTable().rows.add(result_list).draw();
+        // let $table = $('#datable-quotation-create-indicator');
+        // $table.DataTable().clear().draw();
+        // $table.DataTable().rows.add(result_list).draw();
+
+        if (!formSubmit.hasClass('sale-order')) {
+            QuotationDataTableHandle.dataTableQuotationIndicator(result_list);
+        } else {
+            QuotationDataTableHandle.dataTableSaleOrderIndicator(result_list);
+        }
     };
 
     static evaluateFormula(formulaText) {
@@ -4587,7 +4638,7 @@ class promotionHandle {
                         }
                     } else if (times_condition === 2) { // IN CURRENT WEEK
                         let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM'));
-                        let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM'));
+                        let dateCurrent = new Date(moment($('#quotation-create-date-created')[0].innerHTML).format('YYYY-MM'));
                         const weekNumber1 = self.getWeekNumber(dateToCheck);
                         const weekNumber2 = self.getWeekNumber(dateCurrent);
                         if (weekNumber1 === weekNumber2) {
@@ -4595,7 +4646,7 @@ class promotionHandle {
                         }
                     } else if (times_condition === 3) { // IN CURRENT MONTH
                         let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM')).getTime();
-                        let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM')).getTime();
+                        let dateCurrent = new Date(moment($('#quotation-create-date-created')[0].innerHTML).format('YYYY-MM')).getTime();
                         if (dateToCheck === dateCurrent) {
                             check_use_count++
                         }
@@ -5902,16 +5953,13 @@ class QuotationSubmitHandle {
             quotation_logistic_data = 'sale_order_logistic_data';
             quotation_indicators_data = 'sale_order_indicators_data';
 
-            let eleQuotation = $('#select-box-quotation');
-            if (eleQuotation) {
-                if (eleQuotation.val()) {
-                    _form.dataForm['quotation'] = eleQuotation.val()
+            if (QuotationLoadDataHandle.quotationSelectEle && QuotationLoadDataHandle.quotationSelectEle.length >0) {
+                if (QuotationLoadDataHandle.quotationSelectEle.attr('data-detail')) {
+                    let dataQuotation = JSON.parse(QuotationLoadDataHandle.quotationSelectEle.attr('data-detail'));
+                    _form.dataForm['quotation'] = dataQuotation?.['id'];
                 }
+
             }
-        }
-        let dateCreatedVal = $('#quotation-create-date-created').val();
-        if (dateCreatedVal) {
-            _form.dataForm['date_created'] = moment(dateCreatedVal).format('YYYY-MM-DD HH:mm:ss');
         }
         if (is_sale_order === false) {
             _form.dataForm['is_customer_confirm'] = $('#quotation-customer-confirm')[0].checked;
@@ -6055,10 +6103,8 @@ class QuotationSubmitHandle {
 
 // *** COMMON FUNCTIONS ***
 function deleteRow(currentRow, table) {
-    // Get the index of the current row within the DataTable
     let rowIndex = table.DataTable().row(currentRow).index();
     let row = table.DataTable().row(rowIndex);
-    // Delete current row
     row.remove().draw();
 }
 

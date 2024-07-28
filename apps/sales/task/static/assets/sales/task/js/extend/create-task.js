@@ -311,6 +311,7 @@ $(document).ready(function () {
         $form,
         {
             submitHandler: function (form) {
+                form.find('.create-task').attr('disabled', true)
                 let _form = new SetupFormSubmit(form);
                 let formData = _form.dataForm
                 const $assignerElm = $('#inputAssigner')
@@ -379,14 +380,13 @@ $(document).ready(function () {
 
                 const $attElm = $('[name="attach"]').val()
                 if ($attElm) formData.attach = [...$attElm]
-
                 let method = 'POST'
                 let url = form.attr('data-url')
+                formData.id = $('input[name="id"]', form).val()
                 if (formData.id && formData.id !== '') {
                     method = 'PUT'
                     url = $('#url-factory').attr('data-task-detail').format_url_with_uuid(formData.id)
                 }
-
                 $.fn.callAjax2({
                     'url': url,
                     'method': method,
@@ -423,10 +423,12 @@ $(document).ready(function () {
                             }
                             if ($('.current-create-task').length) $('.cancel-task').trigger('click')
                         }
+                        form.find('.create-task').attr('disabled', false)
                     },
                     (errs) => {
                         if (errs?.data?.errors)
                             $.fn.notifyB({'description': errs?.data?.errors}, 'failure')
+                        form.find('.create-task').attr('disabled', false)
                     }
                 )
             }

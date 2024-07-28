@@ -64,3 +64,7 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     PROJECT_ASSIGN_TASK = _('Project assign task')
     GOODS_REGISTRATION_CREATE = _('Goods registration create successfully')
     GOODS_REGISTRATION_UPDATE = _('Goods registration update successfully')
+    BASELINE = _('Baseline')
+    GOODS_REGISTRATION_BORROW_CREATE = _('Goods registration borrow create successfully')
+    GOODS_REGISTRATION_BORROW_UPDATE = _('Goods registration borrow update successfully')
+    DELIVERY_UPDATE = _('Delivery update successfully')

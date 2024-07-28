@@ -13,8 +13,14 @@ from apps.sales.inventory.views import (
     GoodsDetail, GoodsDetailAPI,
     GoodsTransferList, GoodsTransferDetail, GoodsTransferCreate,
     GoodsTransferListAPI, GoodsTransferDetailAPI, GoodsTransferUpdate,
-    GoodsRegistrationList, GoodsRegistrationCreate, GoodsRegistrationUpdate,
-    GoodsRegistrationDetail, GoodsRegistrationDetailAPI, GoodsRegistrationListAPI
+    GoodsRegistrationList,
+    GoodsRegistrationDetail, GoodsRegistrationDetailAPI, GoodsRegistrationListAPI,
+    GoodsRegistrationGeneralListAPI,
+    GoodsRegistrationLotListAPI,
+    GoodsRegistrationSerialListAPI, ProjectProductListAPI, NoneProjectProductListAPI,
+    GoodsRegistrationItemBorrowListAPI,
+    GoodsRegistrationItemBorrowDetailAPI,
+    GoodsRegistrationItemSubListAPI, GoodsRegistrationItemAvailableQuantityAPI, GoodsRegisBorrowListAPI
 )
 
 urlpatterns = [
@@ -31,10 +37,13 @@ urlpatterns = [
     path('inventory-adjustment/detail/<str:pk>', InventoryAdjustmentDetail.as_view(), name='InventoryAdjustmentDetail'),
     path('inventory-adjustment/update/<str:pk>', InventoryAdjustmentUpdate.as_view(), name='InventoryAdjustmentUpdate'),
     path('inventory-adjustment/api/list', InventoryAdjustmentListAPI.as_view(), name='InventoryAdjustmentListAPI'),
-    path('inventory-adjustment/api/list-other', InventoryAdjustmentOtherListAPI.as_view(), name='InventoryAdjustmentOtherListAPI'),
+    path('inventory-adjustment/api/list-other', InventoryAdjustmentOtherListAPI.as_view(),
+         name='InventoryAdjustmentOtherListAPI'),
     path('inventory-adjustment/api', InventoryAdjustmentListAPI.as_view(), name='InventoryAdjustmentListAPI'),
-    path('inventory-adjustment/api/<str:pk>', InventoryAdjustmentDetailAPI.as_view(), name='InventoryAdjustmentDetailAPI'),
-    path('inventory-adjustment/product/list/api/<str:ia_id>', InventoryAdjustmentProductListAPI.as_view(), name='InventoryAdjustmentProductListAPI'),
+    path('inventory-adjustment/api/<str:pk>', InventoryAdjustmentDetailAPI.as_view(),
+         name='InventoryAdjustmentDetailAPI'),
+    path('inventory-adjustment/product/list/api/<str:ia_id>', InventoryAdjustmentProductListAPI.as_view(),
+         name='InventoryAdjustmentProductListAPI'),
 ]
 
 # goods transfer
@@ -65,7 +74,8 @@ urlpatterns += [
     path('goods-return/update/<str:pk>', GoodsReturnUpdate.as_view(), name='GoodsReturnUpdate'),
     path('goods-return/list/api', GoodsReturnListAPI.as_view(), name='GoodsReturnListAPI'),
     path('goods-return/detail/api/<str:pk>', GoodsReturnDetailAPI.as_view(), name='GoodsReturnDetailAPI'),
-    path('sale-orders-for-goods-return/list', SaleOrderListAPIForGoodsReturn.as_view(), name='SaleOrderListAPIForGoodsReturn'),
+    path('sale-orders-for-goods-return/list', SaleOrderListAPIForGoodsReturn.as_view(),
+         name='SaleOrderListAPIForGoodsReturn'),
     path('deliveries/api', DeliveryListForGoodsReturnAPI.as_view(), name='DeliveryListForGoodsReturnAPI'),
 ]
 
@@ -78,9 +88,27 @@ urlpatterns += [
 # goods registration
 urlpatterns += [
     path('goods-registration/list', GoodsRegistrationList.as_view(), name='GoodsRegistrationList'),
-    path('goods-registration/create', GoodsRegistrationCreate.as_view(), name='GoodsRegistrationCreate'),
     path('goods-registration/detail/<str:pk>', GoodsRegistrationDetail.as_view(), name='GoodsRegistrationDetail'),
-    path('goods-registration/update/<str:pk>', GoodsRegistrationUpdate.as_view(), name='GoodsRegistrationUpdate'),
     path('goods-registration/list/api', GoodsRegistrationListAPI.as_view(), name='GoodsRegistrationListAPI'),
-    path('goods-registration/detail/api/<str:pk>', GoodsRegistrationDetailAPI.as_view(), name='GoodsRegistrationDetailAPI'),
+    path('goods-registration/detail/api/<str:pk>', GoodsRegistrationDetailAPI.as_view(),
+         name='GoodsRegistrationDetailAPI'),
+
+    path('goods-registration-item-sub/list/api', GoodsRegistrationItemSubListAPI.as_view(),
+         name='GoodsRegistrationItemSubListAPI'),
+    path('goods-registration-general/list/api', GoodsRegistrationGeneralListAPI.as_view(),
+         name='GoodsRegistrationGeneralListAPI'),
+    path('goods-registration-lot/list/api', GoodsRegistrationLotListAPI.as_view(), name='GoodsRegistrationLotListAPI'),
+    path('goods-registration-sn/list/api', GoodsRegistrationSerialListAPI.as_view(),
+         name='GoodsRegistrationSerialListAPI'),
+    path('product-list-for-project/list/api', ProjectProductListAPI.as_view(), name='ProjectProductListAPI'),
+    path('product-list-for-none-project/list/api', NoneProjectProductListAPI.as_view(),
+         name='NoneProjectProductListAPI'),
+
+    path('goods-registration-item-borrow/list/api', GoodsRegistrationItemBorrowListAPI.as_view(),
+         name='GoodsRegistrationItemBorrowListAPI'),
+    path('goods-registration-item-borrow/detail/api/<str:pk>', GoodsRegistrationItemBorrowDetailAPI.as_view(),
+         name='GoodsRegistrationItemBorrowDetailAPI'),
+    path('goods-registration-item-available-quantity/list/api', GoodsRegistrationItemAvailableQuantityAPI.as_view(),
+         name='GoodsRegistrationItemAvailableQuantityAPI'),
+    path('goods-regis-borrow/api/list', GoodsRegisBorrowListAPI.as_view(), name='GoodsRegisBorrowListAPI'),
 ]

@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AnonymousUser
 from django.http.request import HttpHeaders
 from django.shortcuts import render
 from django.views import View
@@ -6,7 +7,7 @@ from rest_framework.views import APIView
 
 from apps.core.form.views import (
     get_publish_data, publish_data, auto_return_view, get_submitted_data,
-    get_publish_width_submitted_data,
+    get_publish_with_submitted_data,
 )
 from apps.shared import ApiURL, ServerAPI, mask_view, TypeCheck
 from apps.shared.apis import RespData
@@ -43,20 +44,40 @@ class FormSubmittedViewEdit(View):
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, form_code, pk, **kwargs):
         if len(form_code) == FORM_CODE_LENGTH and TypeCheck.check_uuid(pk):
-            resp = get_publish_width_submitted_data(request, form_code, 'view', pk)
+            resp = get_publish_with_submitted_data(request, form_code, 'view', pk)
             if resp.state:
                 if resp.result.get('is_public', False) is True:
-                    edit_submitted = resp.result.get('edit_submitted', False)
-                    if edit_submitted is True:
-                        submitted_data = resp.result.get('submitted_data', {})
-                        ctx = publish_data(
-                            resp=resp, code=form_code, request=request, use_at='view',
-                            submitted_data=submitted_data
-                        )
-                        return render(request, 'form/runtime/edit.html', {
-                            **ctx,
-                            'pk': pk,
-                        })
+                    authentication_required = resp.result.get('authentication_required', False)
+                    submitted_data = resp.result.get('submitted_data', {})
+                    if authentication_required is True:
+                        if request.user.is_authenticated and not isinstance(request.user, AnonymousUser):
+                            edit_submitted = resp.result.get('edit_submitted', False)
+                            if edit_submitted is True:
+
+                                ctx = publish_data(
+                                    resp=resp, code=form_code, request=request, use_at='view',
+                                    submitted_data=submitted_data
+                                )
+                                return render(
+                                    request, 'form/runtime/edit.html', {
+                                        **ctx,
+                                        'pk': pk,
+                                    }
+                                )
+                    else:
+                        submit_view_of_anonymous = resp.result.get('submit_view_of_anonymous', False)
+                        if submit_view_of_anonymous is True:
+                            ctx = publish_data(
+                                resp=resp, code=form_code, request=request, use_at='view',
+                                submitted_data=submitted_data,
+                            )
+                            return render(
+                                request, 'form/runtime/edit.html', {
+                                    **ctx,
+                                    'pk': pk,
+                                }
+                            )
+                        return OutLayoutRender(request=request).render_404()
             return auto_return_view(resp, request)
         return OutLayoutRender(request=request).render_404()
 
@@ -65,7 +86,7 @@ class FormSubmittedOnlyView(View):
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, form_code, pk, **kwargs):
         if len(form_code) == FORM_CODE_LENGTH and TypeCheck.check_uuid(pk):
-            resp = get_publish_width_submitted_data(request, form_code, 'view', pk)
+            resp = get_publish_with_submitted_data(request, form_code, 'view', pk)
             if resp.state:
                 if resp.result.get('is_public', False) is True:
                     submitted_data = resp.result.get('submitted_data', {})
@@ -222,3 +243,17 @@ class FormPublishedRuntimeSubmitted(APIView):
             if resp.status == 200:
                 return resp.result, 200
         return {}, 204
+
+
+
+class FormValidEmailOTP(APIView):
+    @mask_view()
+    def post(self, request, *args, **kwargs):
+        ...
+
+
+class FormValidEmailOTPDetail(APIView):
+
+    @mask_view()
+    def put(self, request, *args, pk, **kwargs):
+        ...

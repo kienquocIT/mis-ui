@@ -1,0 +1,336 @@
+{% load i18n string_utils define_action %}
+
+<div class="drawer-config d-none" id="form-rating">
+    <form>
+        {% csrf_token %}
+
+        {% assign_out_random nameIdx as rNameIdx %}
+        <div class="form-group mb-3">
+            <label for="{{ rNameIdx }}" class="form-label">
+                {% trans 'Name of field' %}
+            </label>
+            <input type="text" class="form-control" id="{{ rNameIdx }}" name="name">
+            <small class="form-text text-muted">
+                {% trans 'Corresponds to a stored data field' %}.
+                {% trans 'Employs this name to autofill form fields' %}.
+            </small>
+        </div>
+
+        <hr/>
+
+        {% include 'form/extends/base/title.html' with enableHideTitle=True %}
+
+        {% include 'form/extends/base/instruction.html' %}
+
+        {% include 'form/extends/base/size.html' %}
+
+        {% include 'form/extends/base/placeholder.html' %}
+
+        <hr/>
+
+        <div class="w-100 d-flex">
+            <div class="form-group" style="flex: 0 0 50%;">
+                <label for="" class="form-label">{% trans 'Title of vote report' %}</label>
+                <input type="text" class="form-control" name="label_of_vote"/>
+            </div>
+            <div class="form-group ml-1" style="flex: 0 0 50%;">
+                <label for="" class="form-label">{% trans 'Title of review report' %}</label>
+                <input type="text" class="form-control" name="label_of_review"/>
+            </div>
+        </div>
+
+        <div class="form-group mb-5">
+            <label class="form-label">{% trans 'Amount' %} & {% trans 'Title of items' %}</label>
+            <div
+                    id="rating-value-base"
+                    class="rating-value-item w-100 d-flex align-items-center mb-1"
+                    style="display: none!important; visibility: hidden; opacity: 0;"
+            >
+                <span class="rating-value-order w-25p text-center">1</span>
+                <div class="mr-1" style="flex: auto;">
+                    <input type="text" class="form-control" name="items_title" required disabled/>
+                </div>
+                <div class="mr-1" style="width: 100px;margin-right: 5px;">
+                    <select
+                            name="items_icon_style" class="form-select" disabled
+                            data-bs-toggle="tooltip"
+                            title="{% trans 'Design of icon' %}"
+                    >
+                        <option value="regular">Regular</option>
+                        <option value="solid">Solid</option>
+                    </select>
+                </div>
+                <div class="mr-1" style="width: 100px;margin-top: 5px;">
+                    <select name="items_symbol" class="form-select" disabled></select>
+                </div>
+                <div class="mr-1" style="width: 50px;">
+                    <input
+                            type="color" value="#563d7c" class="form-control form-control-color" name="items_color"
+                            disabled
+                    />
+                </div>
+                <div class="mr-1" style="width: 50px;">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <div
+                                class="form-check form-check-lg"
+                                data-bs-toggle="tooltip"
+                                title="{% trans 'The review message is require' %}"
+                        >
+                            <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    name="items_review_require"
+                                    disabled
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center align-items-center" style="width: 60px;">
+                    <button
+                            class="rating-add-line btn btn-xs btn-soft-success btn-icon btn-rounded mr-2"
+                            type="button"
+                    >
+                        <span class="icon"><i class="fa-solid fa-add"></i></span>
+                    </button>
+                    <button
+                            class="rating-remove-line btn btn-xs btn-soft-danger btn-icon btn-rounded"
+                            type="button"
+                    >
+                        <span class="icon"><i class="fa-solid fa-xmark"></i></span>
+                    </button>
+                </div>
+            </div>
+            <div id="rating-value-group" class="w-100 mb-2"></div>
+            <div class="w-100 mb-1 d-flex align-items-center justify-content-center">
+                <button
+                        id="rating-value-add"
+                        class="btn btn-xs btn-soft-primary mr-1"
+                        style="flex: auto;"
+                        type="button"
+                >{% trans 'Add new row' %}</button>
+                <button
+                        id="rating-value-clean"
+                        class="btn btn-xs btn-soft-danger mr-1"
+                        style="flex: auto;"
+                        type="button"
+                >{% trans 'Clean' %}</button>
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
+            {% assign_out_random ratingIsolationTransiton as rRatingIsolationTransition %}
+            <div class="form-check">
+                <input
+                        type="checkbox" class="form-check-input" id="{{ rRatingIsolationTransition }}"
+                        name="isolation_animate"
+                />
+                <label for="{{ rRatingIsolationTransition }}" class="form-label">{% trans 'Isolation animate' %}</label>
+            </div>
+            <ul style="list-style: circle;">
+                <li>
+                    <small class="form-text text-muted">{% trans "When is turn off, the highlight will spread to the items on the left, indicating that they are now also selected." %}</small>
+                </li>
+                <li>
+                    <small class="form-text text-muted">{% trans "When is turn on, the highlighting effect will be applied only to the currently selected or hovered element, without affecting the adjacent elements." %}</small>
+                </li>
+            </ul>
+
+        </div>
+
+        <hr/>
+
+        {% include 'form/extends/base/validation.html' %}
+
+        {% include 'form/extends/base/visibility.html' %}
+    </form>
+</div>
+
+<script>
+    $(document).ready(function () {
+        const frm$ = $('#form-rating');
+        const ratingBase$ = frm$.find('#rating-value-base');
+        const ratingGroup$ = frm$.find('#rating-value-group');
+        const ratingAdd$ = frm$.find('button#rating-value-add');
+        const ratingClean$ = frm$.find('button#rating-value-clean')
+
+        ratingGroup$.on('data.clean', function () {
+            ratingGroup$.empty();
+        });
+
+        ratingGroup$.on('data.recount', function () {
+            ratingGroup$.find('.rating-value-item').each(function (index) {
+                $(this).find('span.rating-value-order').text(index + 1);
+            })
+        })
+
+        ratingGroup$.on('data.add', function (event, opts) {
+            const {
+                ele,
+                value,
+                color,
+                icon,
+                review_require,
+                icon_style
+            } = {
+                'ele': $(ratingGroup$.find('.rating-value-item').last()),
+                'value': '',
+                'color': '#000',
+                'icon': 'f005',
+                'review_require': false,
+                'icon_style': 'solid',
+                ...opts,
+            }
+            console.log(
+                ele,
+                value,
+                color,
+                icon,
+                review_require,
+                icon_style
+            )
+            const eleTmp$ = $(ratingBase$.prop('outerHTML')).removeAttr('id').removeAttr('style');
+            eleTmp$.find('span.rating-value-order').text('');
+            eleTmp$.find('input[name=items_title]').prop('disabled', false).val(value);
+            eleTmp$.find('input[name=items_color]').prop('disabled', false).val(color);
+            eleTmp$.find('input[name=items_review_require]').prop('disabled', false).prop('checked', !!review_require);
+            eleTmp$.find('button.rating-add-line').on('click', function () {
+                ratingGroup$.trigger('data.add', {
+                    'ele': $(this).closest('.rating-value-item'),
+                });
+                ratingGroup$.trigger('data.recount');
+            })
+            eleTmp$.find('button.rating-remove-line').on('click', function () {
+                $(this).closest('.rating-value-item').remove();
+                ratingGroup$.trigger('data.recount');
+            });
+            if (ele && ele.length > 0) eleTmp$.insertAfter(ele);
+            else ratingGroup$.append(eleTmp$);
+            eleTmp$.find('[data-bs-toggle="tooltip"]').tooltip();
+
+            const symbolData = [
+                {
+                    'text': $.fn.gettext('General'),
+                    'children': [
+                        {
+                            'id': 'f005',
+                            'title': 'Star',
+                        },
+                        {
+                            'id': 'f004',
+                            'title': 'Heart',
+                        },
+                        {
+                            'id': 'e574',
+                            'title': 'Shield heart',
+                        },
+                        {
+                            'id': 'f46a',
+                            'title': 'Fire flame',
+                        },
+                        {
+                            'id': 'f7e4',
+                            'title': 'Fire flame curved'
+                        },
+                    ]
+                },
+                {
+                    'text': $.fn.gettext('Emoji'),
+                    'children': [
+                        {
+                            'id': 'f556',
+                            'title': 'Face angry',
+                        },
+                        {
+                            'id': 'f119',
+                            'title': 'Face frown',
+                        },
+                        {
+                            'id': 'f11a',
+                            'title': 'Face meh',
+                        },
+                        {
+                            'id': 'f118',
+                            'title': 'Face smile',
+                        },
+                        {
+                            'id': 'f584',
+                            'title': 'Face hearts',
+                        },
+                        {
+                            'id': 'f587',
+                            'title': 'Face stars',
+                        },
+                        {
+                            'id': 'f599',
+                            'title': 'Face laugh',
+                        },
+                        {
+                            'id': 'f59c',
+                            'title': 'Face laugh wink'
+                        },
+                        {
+                            'id': 'f59b',
+                            'title': 'Face laugh squint'
+                        },
+                        {
+                            'id': 'f59a',
+                            'title': 'Face laugh beam',
+                        },
+                        {
+                            'id': 'f589',
+                            'title': 'Face grin tongue',
+                        },
+                        {
+                            'id': 'f579',
+                            'title': 'Face flushed',
+                        },
+                        {
+                            'id': 'f5b4',
+                            'title': 'Face sad tear',
+                        },
+                        {
+                            'id': 'f5b3',
+                            'title': 'Face sad cry',
+                        },
+                        {
+                            'id': 'f567',
+                            'title': 'Face dizzy',
+                        },
+                    ],
+                },
+            ]
+
+            eleTmp$.find('select[name="items_symbol"]').prop('disabled', false).initSelect2({
+                minimumResultsForSearch: -1,
+                data: symbolData,
+                templateResult: function (state) {
+                    if (state?.['children']){
+                        return state.text;
+                    }
+                    return $(`<span><i class="fa-solid fa-lg">&#x${state.id}</i> <i class="fa-regular fa-lg">&#x${state.id}</i></span>`);
+                },
+                templateSelection: function (state) {
+                    return $(`<span style="display: block;width: 100%;text-align: center;"><i class="fa-solid fa-lg">&#x${state.id}</i> <i class="fa-regular fa-lg">&#x${state.id}</i></span>`);
+                },
+            }).val(icon).trigger('change');
+            eleTmp$.find('select[name=items_icon_style]').prop('disabled', false).val(icon_style).trigger('change');
+
+            ratingGroup$.trigger('data.recount');
+        })
+
+        ratingGroup$.on('data.load', function (event, config) {
+            (config?.['items'] || []).map(
+                (value) => ratingGroup$.trigger('data.add', value)
+            )
+        });
+
+        ratingAdd$.on('click', function () {
+            ratingGroup$.trigger('data.add');
+        })
+
+        ratingClean$.on('click', function () {
+            ratingGroup$.trigger('data.clean');
+        })
+
+    })
+</script>

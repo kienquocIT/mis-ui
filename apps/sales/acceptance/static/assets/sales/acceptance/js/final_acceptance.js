@@ -55,8 +55,8 @@ $(function () {
                                 title = row?.['delivery_sub']?.['title'] ? row?.['delivery_sub']?.['title'] : '';
                                 code = row?.['delivery_sub']?.['code'] ? row?.['delivery_sub']?.['code'] : '';
                             }
-                            return `<span class="badge badge-secondary badge-sm">${code}</span>
-                                    <p class="table-row-title">${title}</p>`;
+                            return `<span class="badge badge-soft-success">${code}</span>
+                                    <span class="table-row-title">${title}</span>`;
                         }
                     },
                     {

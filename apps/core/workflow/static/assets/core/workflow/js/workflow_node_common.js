@@ -80,7 +80,7 @@ class NodeLoadDataHandle {
                     } else {
                         inputEle = `<input type="checkbox" class="form-check-input check-action-node" data-id="${String(key)}" disabled>`;
                     }
-                    actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
+                    actionEle += `<li class="d-flex align-items-center justify-content-between mb-3 border-bottom">
                             <div class="media d-flex align-items-center">
                                 <div class="media-body">
                                     <div>
@@ -100,7 +100,7 @@ class NodeLoadDataHandle {
                     } else {
                         inputEle = `<input type="checkbox" class="form-check-input check-action-node" data-id="${String(key)}">`;
                     }
-                    actionEle += `<li class="d-flex align-items-center justify-content-between mb-3">
+                    actionEle += `<li class="d-flex align-items-center justify-content-between mb-3 border-bottom">
                             <div class="media d-flex align-items-center">
                                 <div class="media-body">
                                     <div>
@@ -346,7 +346,9 @@ class NodeLoadDataHandle {
                     });
                     for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
                         if ($(eleZoneList).empty()) {
-                            $(eleZoneList).append(result);
+                            $(eleZoneList).append(`<div data-simplebar class="h-150p nicescroll-bar">
+                                                        <ul class="p-0">${result}</ul>
+                                                    </div>`);
                         }
                     }
                     return true;
@@ -378,7 +380,9 @@ class NodeLoadDataHandle {
             });
             for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
                 if ($(eleZoneList).empty()) {
-                    $(eleZoneList).append(result);
+                    $(eleZoneList).append(`<div data-simplebar class="h-150p nicescroll-bar">
+                                                <ul class="p-0">${result}</ul>
+                                            </div>`);
                 }
             }
             return true;
@@ -424,7 +428,9 @@ class NodeLoadDataHandle {
                     });
                     for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
                         if ($(eleZoneList).empty()) {
-                            $(eleZoneList).append(result);
+                            $(eleZoneList).append(`<div data-simplebar class="h-100p nicescroll-bar">
+                                                        <ul class="p-0">${result}</ul>
+                                                    </div>`);
                         }
                     }
                     return true;
@@ -448,7 +454,9 @@ class NodeLoadDataHandle {
             });
             for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
                 if ($(eleZoneList).empty()) {
-                    $(eleZoneList).append(result);
+                    $(eleZoneList).append(`<div data-simplebar class="h-100p nicescroll-bar">
+                                                <ul class="p-0">${result}</ul>
+                                            </div>`);
                 }
             }
             return true;
@@ -538,7 +546,7 @@ class NodeLoadDataHandle {
             let row = this.node();
             let eleCheck = row.querySelector('.table-row-checkbox-out-form');
             if (eleCheck.checked === true) {
-                $(eleEmpShow).append(`<span class="badge badge-soft-primary mr-1">${$(eleCheck).attr('data-title')}</span>`);
+                $(eleEmpShow).append(`<span class="badge badge-primary badge-outline mr-1 mb-1">${$(eleCheck).attr('data-title')}</span>`);
                 emp_list.push($(eleCheck).attr('data-id'));
             }
         });
@@ -988,7 +996,7 @@ class NodeDataTableHandle {
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_system'] === true) {
-                            return `<b><span class="table-row-title text-primary" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span></b>`;
+                            return `<b><span class="table-row-title text-primary mr-1" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span></b><i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${NodeLoadDataHandle.transEle.attr('data-system-node')}"></i>`;
                         } else {
                             let form = $('#form-create_workflow');
                             if (form.attr('data-method') !== 'GET') {
@@ -1026,25 +1034,21 @@ class NodeDataTableHandle {
                             }
                         }
                         if (is_approved_complete === false) {
-                            return `<div class="row">
+                            return `<div class="row align-items-center">
                                         <div class="col-8">
                                             <div class="btn-group dropdown">
                                                 <button 
                                                     type="button"
-                                                    class="btn btn-link"
+                                                    class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover"
                                                     data-bs-toggle="dropdown" 
                                                     aria-haspopup="true" 
                                                     aria-expanded="false"
                                                 >
-                                                <i class="fas fa-align-justify" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add action"></i>
+                                                <span class="icon"><i class="fas fa-tasks" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add action"></i></span>
                                                 </button>
                                                 <div class="dropdown-menu w-250p">
-                                                    <div class="h-250p">
-                                                        <div data-simplebar class="nicescroll-bar">
-                                                            <ul class="node-action-list p-0">
-                                                                ${actionEle}
-                                                            </ul>
-                                                        </div>
+                                                    <div data-simplebar class="h-260p nicescroll-bar">
+                                                        <ul class="node-action-list p-0">${actionEle}</ul>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1055,14 +1059,14 @@ class NodeDataTableHandle {
                                         </div>
                                     </div>`;
                         } else {
-                            return `<div class="row">
+                            return `<div class="row align-items-center">
                                         <div class="col-8">
                                             <button 
                                                 type="button"
-                                                class="btn btn-link"
+                                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover"
                                                 disabled
                                             >
-                                            <i class="fas fa-align-justify"></i>
+                                            <span class="icon"><i class="fas fa-tasks"></i></span>
                                             </button>
                                         </div>
                                         <div class="col-4">
@@ -1084,27 +1088,25 @@ class NodeDataTableHandle {
                             is_system = true;
                         }
                         if (is_system === false) {
-                            return `<div class="row">
+                            return `<div class="row align-items-center">
                                         <div class="col-8">
                                             <button 
                                                 type="button"
-                                                class="btn btn-link btn-node-collab"
+                                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-node-collab"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                             >
-                                            <i class="fas fa-align-justify" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i>
+                                            <span class="icon"><i class="fas fa-users" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i></span>
                                             </button>
                                             <div
                                                 class="modal fade" id="${idModal}" tabindex="-1" role="dialog"
                                                 aria-labelledby="${idModal}" aria-hidden="true"
                                             >
-                                                <div class="modal-dialog modal-dialog-centered modal-xl modal-collab" role="document">
+                                                <div class="modal-dialog modal-dialog-centered modal-lg modal-collab" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
+                                                            <h5 class="modal-title text-primary"><b>${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</b></h5>
+                                                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                                                         </div>
                                                         <div class="modal-body modal-body-collab">
                                                             <div class="row collab-common-area">
@@ -1134,16 +1136,12 @@ class NodeDataTableHandle {
                                                                     </select>
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div class="col-12 col-md-6 col-lg-6">
+                                                                    <div class="col-12 col-md-6 col-lg-6 border-right">
                                                                         <div class="form-group">
                                                                             <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
                                                                             <input type="hidden" class="node-zone-submit">
                                                                             <input type="hidden" class="node-zone-json-submit">
-                                                                            <div class="dropdown-zone">
-                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                                    <ul class="node-zone-list p-0"></ul>
-                                                                                </div>
-                                                                            </div>
+                                                                            <div class="dropdown-zone node-zone-list"></div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-12 col-md-6 col-lg-6">
@@ -1151,18 +1149,14 @@ class NodeDataTableHandle {
                                                                             <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</label>
                                                                             <input type="hidden" class="node-zone-hidden-submit">
                                                                             <input type="hidden" class="node-zone-hidden-json-submit">
-                                                                            <div class="dropdown-zone">
-                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                                    <ul class="node-zone-hidden-list p-0"></ul>
-                                                                                </div>
-                                                                            </div>
+                                                                            <div class="dropdown-zone node-zone-hidden-list"></div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div class="row collab-area collab-out-form-area mb-5">
                                                                 <div class="form-group">
-                                                                    <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-employee-list')}</label>
+                                                                    <label class="form-label required">${NodeLoadDataHandle.transEle.attr('data-employee-list')}</label>
                                                                     <div 
                                                                         class="input-group input-group-out-form-employee mb-3" 
                                                                         data-bs-toggle="offcanvas" 
@@ -1173,26 +1167,24 @@ class NodeDataTableHandle {
                                                                             <div class="form-control div-input node-out-form-employee-show"></div>
                                                                             <input type="hidden" class="node-out-form-employee-submit">
                                                                             <span class="input-suffix">
-                                                                                <div class="btn-group btn-link"><i class="fa fa-user"></i></div>
+                                                                                <div class="btn-group btn-link btn-sm"><i class="fa fa-user"></i></div>
                                                                             </span>
                                                                         </span>
                                                                     </div>
-                                                                    <div class="offcanvas offcanvas-end w-60 mt-4" tabindex="-1" id="${idOutFormCanvas}" aria-labelledby="${idOutFormCanvas}">
+                                                                    <div class="offcanvas offcanvas-end w-50 mt-4" tabindex="-1" id="${idOutFormCanvas}" aria-labelledby="${idOutFormCanvas}">
                                                                         <div class="offcanvas-header">
                                                                             <h5 id="offcanvasRightLabel">${NodeLoadDataHandle.transEle.attr('data-add-employee')}</h5>
                                                                         </div>
                                                                         <div class="offcanvas-body form-group">
                                                                             <table
-                                                                                    class="table nowrap w-100 mb-5 table-out-form-employee"
+                                                                                    class="table nowrap w-100 table-out-form-employee"
                                                                                     data-url="${NodeDataTableHandle.employeeInitEle.attr('data-url')}"
                                                                                     data-method="${NodeDataTableHandle.employeeInitEle.attr('data-method')}"
                                                                             >
                                                                                 <thead>
-                                                                                <tr>
-                                                                                    <th>${NodeLoadDataHandle.transEle.attr('data-code')}</th>
-                                                                                    <th>${NodeLoadDataHandle.transEle.attr('data-full-name')}</th>
-                                                                                    <th>${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
-                                                                                    <th></th>
+                                                                                <tr class="bg-light">
+                                                                                    <th class="w-30">${NodeLoadDataHandle.transEle.attr('data-select-employee')}</th>
+                                                                                    <th class="w-40">${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
                                                                                 </tr>
                                                                                 </thead>
                                                                                 <tbody>
@@ -1212,16 +1204,12 @@ class NodeDataTableHandle {
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div class="col-12 col-md-6 col-lg-6">
+                                                                    <div class="col-12 col-md-6 col-lg-6 border-right">
                                                                         <div class="form-group">
                                                                             <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
                                                                             <input type="hidden" class="node-zone-submit">
                                                                             <input type="hidden" class="node-zone-json-submit">
-                                                                            <div class="dropdown-zone">
-                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                                    <ul class="node-zone-list p-0"></ul>
-                                                                                </div>
-                                                                            </div>
+                                                                            <div class="dropdown-zone node-zone-list"></div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-12 col-md-6 col-lg-6">
@@ -1229,11 +1217,7 @@ class NodeDataTableHandle {
                                                                             <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</label>
                                                                             <input type="hidden" class="node-zone-hidden-submit">
                                                                             <input type="hidden" class="node-zone-hidden-json-submit">
-                                                                            <div class="dropdown-zone">
-                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                                    <ul class="node-zone-hidden-list p-0"></ul>
-                                                                                </div>
-                                                                            </div>
+                                                                            <div class="dropdown-zone node-zone-hidden-list"></div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -1243,12 +1227,12 @@ class NodeDataTableHandle {
                                                                     <div class="col-2">
                                                                         <button
                                                                                 type="button"
-                                                                                class="btn btn-outline-primary"
+                                                                                class="btn btn-outline-primary btn-sm"
                                                                                 data-bs-toggle="offcanvas"
                                                                                 data-bs-target="#${idInWFCanvas}"
                                                                                 aria-controls="${idInWFCanvas}"
                                                                         >
-                                                                            <span><span>${NodeLoadDataHandle.transEle.attr('data-add-employee')}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                                                            <span><span>${NodeLoadDataHandle.transEle.attr('data-add-new')}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                                                         </button>
                                                                     </div>
                                                                     <div class="col-10"></div>
@@ -1299,7 +1283,7 @@ class NodeDataTableHandle {
                                                                             </select>
                                                                         </div>
                                                                         <div class="form-group employee-area" hidden>
-                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-select-employee')}</label>
+                                                                            <label class="form-label required">${NodeLoadDataHandle.transEle.attr('data-select-employee')}</label>
                                                                             <select 
                                                                                 class="form-control box-in-workflow-employee"
                                                                                 data-url="${NodeDataTableHandle.employeeCompanyInitEle.attr('data-url')}"
@@ -1310,16 +1294,12 @@ class NodeDataTableHandle {
                                                                             </select>
                                                                         </div>
                                                                         <div class="row">
-                                                                            <div class="col-12 col-md-6 col-lg-6">
+                                                                            <div class="col-12 col-md-6 col-lg-6 border-right">
                                                                                 <div class="form-group">
                                                                                     <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
                                                                                     <input type="hidden" class="node-zone-submit">
                                                                                     <input type="hidden" class="node-zone-json-submit">
-                                                                                    <div class="dropdown-zone">
-                                                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                                            <ul class="node-zone-list p-0"></ul>
-                                                                                        </div>
-                                                                                    </div>
+                                                                                    <div class="dropdown-zone node-zone-list"></div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-12 col-md-6 col-lg-6">
@@ -1327,11 +1307,7 @@ class NodeDataTableHandle {
                                                                                     <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</label>
                                                                                     <input type="hidden" class="node-zone-hidden-submit">
                                                                                     <input type="hidden" class="node-zone-hidden-json-submit">
-                                                                                    <div class="dropdown-zone">
-                                                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                                            <ul class="node-zone-hidden-list p-0"></ul>
-                                                                                        </div>
-                                                                                    </div>
+                                                                                    <div class="dropdown-zone node-zone-hidden-list"></div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -1359,16 +1335,16 @@ class NodeDataTableHandle {
                                                                     </div>
                                                                 </div>
                                                                 <table
-                                                                    class="table nowrap w-100 mb-5 table-in-workflow-employee"
+                                                                    class="table nowrap w-100 table-in-workflow-employee"
                                                                 >
                                                                     <thead>
-                                                                    <tr>
+                                                                    <tr class="bg-light">
                                                                         <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
-                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-select-position')}</th>
+                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-select-position')}</th>
                                                                         <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
-                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
-                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
-                                                                        <th class="w-10"></th>
+                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
+                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
+                                                                        <th class="w-5"></th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -1391,27 +1367,25 @@ class NodeDataTableHandle {
                                     </div>`;
                         } else {
                             if (row?.['code'] === 'initial') {
-                                return `<div class="row">
+                                return `<div class="row align-items-center">
                                         <div class="col-8">
                                             <button 
                                                 type="button"
-                                                class="btn btn-link btn-node-collab"
+                                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-node-collab"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                             >
-                                            <i class="fas fa-align-justify" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i>
+                                            <span class="icon"><i class="fas fa-users" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i></span>
                                             </button>
                                             <div
                                                 class="modal fade" id="${idModal}" tabindex="-1" role="dialog"
                                                 aria-labelledby="${idModal}" aria-hidden="true"
                                             >
-                                                <div class="modal-dialog modal-dialog-centered modal-xl modal-collab" role="document">
+                                                <div class="modal-dialog modal-dialog-centered modal-lg modal-collab" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
+                                                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                                                         </div>
                                                         <div class="modal-body modal-body-collab">
                                                             <div class="row collab-area collab-initial-area">
@@ -1419,7 +1393,7 @@ class NodeDataTableHandle {
                                                                     class="table nowrap w-100 mb-5 table-initial-node-collaborator"
                                                                 >
                                                                     <thead>
-                                                                    <tr>
+                                                                    <tr class="bg-light">
                                                                         <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
                                                                         <th class="w-40">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
                                                                         <th class="w-40">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
@@ -1443,28 +1417,26 @@ class NodeDataTableHandle {
                                         </div>
                                     </div>`;
                             } else {
-                                return `<div class="row">
+                                return `<div class="row align-items-center">
                                         <div class="col-8">
                                             <button 
                                                 type="button"
-                                                class="btn btn-link btn-node-collab"
+                                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-node-collab"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                                 disabled
                                             >
-                                            <i class="fas fa-align-justify" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i>
+                                            <span class="icon"><i class="fas fa-users" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i></span>
                                             </button>
                                             <div
                                                 class="modal fade" id="${idModal}" tabindex="-1" role="dialog"
                                                 aria-labelledby="${idModal}" aria-hidden="true"
                                             >
-                                                <div class="modal-dialog modal-dialog-centered modal-xl modal-collab" role="document">
+                                                <div class="modal-dialog modal-dialog-centered modal-lg modal-collab" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
+                                                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                                                         </div>
                                                         <div class="modal-body modal-body-collab">
                                                             <div class="row collab-area collab-initial-area">
@@ -1472,7 +1444,7 @@ class NodeDataTableHandle {
                                                                     class="table nowrap w-100 mb-5 table-initial-node-collaborator"
                                                                 >
                                                                     <thead>
-                                                                    <tr>
+                                                                    <tr class="bg-light">
                                                                         <th>${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
                                                                         <th>${NodeLoadDataHandle.transEle.attr('data-select-group')}</th>
                                                                         <th>${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
@@ -1506,7 +1478,7 @@ class NodeDataTableHandle {
                         if (row?.['is_system'] === true) {
                             return ``;
                         } else {
-                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                            return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
                         }
                     }
                 },
@@ -1527,27 +1499,19 @@ class NodeDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="badge badge-soft-primary table-row-title" data-row="${dataRow}">${row?.['title']}</span>`;
+                        return `<span class="badge badge-primary badge-outline table-row-title" data-row="${dataRow}">${row?.['title']}</span>`;
                     }
                 },
                 {
                     targets: 1,
                     render: () => {
-                        return `<div class="dropdown-zone">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                        <ul class="node-zone-list p-0"></ul>
-                                    </div>
-                                </div>`;
+                        return `<div class="dropdown-zone node-zone-list border-right"></div>`;
                     }
                 },
                 {
                     targets: 2,
                     render: () => {
-                        return `<div class="dropdown-zone">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                        <ul class="node-zone-hidden-list p-0"></ul>
-                                    </div>
-                                </div>`;
+                        return `<div class="dropdown-zone node-zone-hidden-list"></div>`;
                     }
                 },
             ],
@@ -1564,17 +1528,27 @@ class NodeDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-code" data-row="${dataRow}">${row?.['code']}</span>`
+                        let checked = '';
+                        if (row?.['is_checked']) {
+                            checked = 'checked';
+                        }
+                        return `<div class="d-flex align-items-center">
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input table-row-checkbox-out-form"
+                                            data-id="${row?.['id']}"
+                                            data-title="${row?.['full_name']}"
+                                            ${checked}
+                                        >
+                                    </div>
+                                    <span class="badge badge-primary mr-2 table-row-code" data-row="${dataRow}">${row?.['code']}</span>
+                                    <span class="badge badge-primary badge-outline table-row-title">${row?.['full_name']}</span>
+                                </div>`;
                     }
                 },
                 {
                     targets: 1,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-title">${row?.['full_name']}</span>`;
-                    }
-                },
-                {
-                    targets: 2,
                     render: (data, type, row) => {
                         if (row.hasOwnProperty('role') && Array.isArray(row?.['role'])) {
                             let result = [];
@@ -1582,31 +1556,6 @@ class NodeDataTableHandle {
                             return result.join(" ");
                         }
                         return '';
-                    }
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
-                        if (!row?.['is_checked']) {
-                            return `<div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input table-row-checkbox-out-form"
-                                            data-id="${row?.['id']}"
-                                            data-title="${row?.['full_name']}"
-                                        >
-                                    </div>`;
-                        } else {
-                            return `<div class="form-check">
-                                        <input 
-                                            type="checkbox" 
-                                            class="form-check-input table-row-checkbox-out-form"
-                                            data-id="${row?.['id']}"
-                                            data-title="${row?.['full_name']}"
-                                            checked
-                                        >
-                                    </div>`;
-                        }
                     }
                 },
             ],
@@ -1624,13 +1573,16 @@ class NodeDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-title" data-row="${dataRow}">${row?.['employee']?.['full_name'] ? row?.['employee']?.['full_name'] : ''}</span>`;
+                        return `<span class="table-row-title badge badge-primary badge-outline" data-row="${dataRow}">${row?.['employee']?.['full_name'] ? row?.['employee']?.['full_name'] : ''}</span>`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-primary table-row-group">${row?.['position_choice']?.['title'] ? row?.['position_choice']?.['title'] : 'None'}</span>`;
+                        if (row?.['position_choice']?.['title']) {
+                            return `<span class="badge badge-soft-info table-row-group">${row?.['position_choice']?.['title'] ? row?.['position_choice']?.['title'] : 'None'}</span>`;
+                        }
+                        return `<spam>--</spam>`
                     }
                 },
                 {

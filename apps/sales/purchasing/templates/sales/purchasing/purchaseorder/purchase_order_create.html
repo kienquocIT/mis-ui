@@ -27,115 +27,115 @@
     >
         {% csrf_token %}
         <div class="container-fluid">
-            <div class="collapse multi-collapse show" id="collapseExample">
-                <div class="row" id="common-information-area">
-                    <div class="row">
-                        <div class="col-12 col-md-5 col-lg-5">
-                            <div class="form-group">
-                                <label class="form-label required" for="purchase-order-title">{% trans 'Title' %}</label>
-                                <div class="input-group">
-                                    <div class="input-affix-wrapper">
-                                        <input
-                                            type="text" class="form-control"
-                                            name="title"
-                                            id="purchase-order-title"
-                                            required
-                                        >
+            <div class="card">
+                <div class="card-header card-header-action bg-teal-light-5 h-40p">
+                    <b class="text-primary">{% trans 'Information' %}</b>
+                    <div class="card-action-wrap">
+                        <a class="btn btn-xs btn-icon btn-rounded btn-flush-secondary flush-soft-hover"  data-bs-toggle="collapse" href="#collapseExample" aria-expanded="true"><span class="icon"><span class="feather-icon"><i data-feather="chevron-down"></i></span></span></a>
+                    </div>
+                </div>
+                <div class="collapse multi-collapse show" id="collapseExample">
+                    <div class="card-body">
+                        <div class="row" id="common-information-area">
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="purchase-order-title">{% trans 'Title' %}</label>
+                                        <div class="input-group">
+                                            <div class="input-affix-wrapper">
+                                                <input
+                                                    type="text" class="form-control"
+                                                    name="title"
+                                                    id="purchase-order-title"
+                                                    required
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Purchase Request' %}</label>
+                                        <div class="input-group input-group-wth-btn">
+                                            <div class="input-affix-wrapper">
+                                                <div class="form-control div-input border-green" id="purchase-order-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
+                                                <input type="hidden" id="purchase_requests_data">
+                                                <div class="input-suffix">
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-icon btn-outline-primary btn-xs"
+                                                        id="btn-purchase-request-modal"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#purchaseRequestModalCenter"
+                                                    ><i class="fas fa-pencil-alt"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Purchase quotation' %}</label>
+                                        <div class="input-group input-group-wth-btn">
+                                            <div class="input-affix-wrapper">
+                                                <div class="form-control div-input border-green" id="purchase-order-purchase-quotation" data-link-detail="{% url "PurchaseQuotationDetail" 1 %}"></div>
+                                                <input type="hidden" id="purchase_quotations_data">
+                                                <div class="input-suffix">
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-icon btn-outline-primary btn-xs"
+                                                        id="btn-purchase-quotation-modal"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#purchaseQuotationModalCenter"
+                                                    ><i class="fas fa-pencil-alt"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label required" for="box-purchase-order-supplier">{% trans 'Supplier' %}</label>
-                                <select
-                                        class="form-select"
-                                        id="box-purchase-order-supplier"
-                                        data-url="{% url "AccountForSaleListAPI" %}"
-                                        data-method="GET"
-                                        data-link-detail="{% url "AccountDetail" 1 %}"
-                                        name="supplier"
-                                        data-keyResp="account_sale_list"
-                                        data-keyText="name"
-                                        required
-                                ></select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label required" for="box-purchase-order-contact">{% trans 'Select Contact' %}</label>
-                                <select
-                                        class="form-select"
-                                        id="box-purchase-order-contact"
-                                        data-url="{% url "ContactListAPI" %}"
-                                        data-method="GET"
-                                        data-link-detail="{% url 'ContactDetail' 1 %}"
-                                        name="contact"
-                                        data-keyResp="contact_list"
-                                        data-keyText="fullname"
-                                        required
-                                ></select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-5 col-lg-5">
                             <div class="row">
-                                <div class="col-12 col-md-5 col-lg-5">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-purchase-order-supplier">{% trans 'Supplier' %}</label>
+                                        <select
+                                                class="form-select"
+                                                id="box-purchase-order-supplier"
+                                                data-url="{% url "AccountForSaleListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url "AccountDetail" 1 %}"
+                                                name="supplier"
+                                                data-keyResp="account_sale_list"
+                                                data-keyText="name"
+                                                required
+                                        ></select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-purchase-order-contact">{% trans 'Contact' %}</label>
+                                        <select
+                                                class="form-select"
+                                                id="box-purchase-order-contact"
+                                                data-url="{% url "ContactListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url 'ContactDetail' 1 %}"
+                                                name="contact"
+                                                data-keyResp="contact_list"
+                                                data-keyText="fullname"
+                                                required
+                                        ></select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-3">
                                     <div class="form-group">
                                         <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
                                         <div class="input-affix-wrapper">
                                             <input type="text" name="delivered-date" id="purchase-order-date-delivered"
                                                    class="form-control date-picker" autocomplete="off">
                                             <div class="input-suffix">
-                                                <i class="far fa-calendar"></i>
+                                                <i class="fas fa-calendar-alt"></i>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-6 col-lg-6">
-                                    <div class="form-group">
-                                        <label class="form-label" for="purchase-order-status-delivered">{% trans 'Delivered status' %}</label>
-                                        <div class="input-group">
-                                            <div class="input-affix-wrapper">
-                                                <input
-                                                    type="text" class="form-control"
-                                                    name="status-delivered"
-                                                    id="purchase-order-status-delivered"
-                                                    value="None"
-                                                    data-value="0"
-                                                >
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Purchase Request' %}</label>
-                                <div class="input-group input-group-wth-btn">
-                                    <div class="input-affix-wrapper">
-                                        <div class="form-control div-input" id="purchase-order-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
-                                        <input type="hidden" id="purchase_requests_data">
-                                        <div class="input-suffix">
-                                            <button
-                                                type="button"
-                                                class="btn btn-link"
-                                                id="btn-purchase-request-modal"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#purchaseRequestModalCenter"
-                                            ><i class="fas fa-ellipsis-h"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Purchase quotation' %}</label>
-                                <div class="input-group input-group-wth-btn">
-                                    <div class="input-affix-wrapper">
-                                        <div class="form-control div-input" id="purchase-order-purchase-quotation" data-link-detail="{% url "PurchaseQuotationDetail" 1 %}"></div>
-                                        <input type="hidden" id="purchase_quotations_data">
-                                        <div class="input-suffix">
-                                            <button
-                                                type="button"
-                                                class="btn btn-link"
-                                                id="btn-purchase-quotation-modal"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#purchaseQuotationModalCenter"
-                                            ><i class="fas fa-ellipsis-h"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -144,32 +144,19 @@
                     </div>
                 </div>
             </div>
-            <div class="row collapse-arrow mt-2 mb-2">
-                <div class="d-flex justify-content-end">
-                    <button
-                            type="button"
-                            class="btn btn-icon btn-rounded flush-soft-hover"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#collapseExample"
-                            data-bs-placement="top"
-                            aria-expanded="false"
-                            aria-controls="collapseExample"
-                            id="btn-collapse"
-                    >
-                        <span class="icon"><small><i class="fas fa-angle-double-up text-primary collapse-icon"></i></small></span>
-                    </button>
-                </div>
-            </div>
+
             <div class="row">
                 <div class="row">
                     <ul class="nav nav-light nav-tabs" id="quotation-tabs">
                         <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
-                                <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                                <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
+                                <span class="nav-link-text">{% trans 'Product' %}</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_payment">
+                                <span class="nav-icon-wrap mr-1"><i class="fas fa-receipt"></i></span>
                                 <span class="nav-link-text">{% trans 'Payment' %}</span>
                             </a>
                         </li>
@@ -192,13 +179,13 @@
                                     data-method="get"
                                 >
                                     <thead>
-                                    <tr>
+                                    <tr class="bg-light">
                                         <th></th>
                                         <th>{% trans 'Product' %}</th>
                                         <th>{% trans 'Description' %}</th>
                                         <th>{% trans 'UOM' %} (PR)</th>
                                         <th>{% trans 'Quantity' %} (PR)</th>
-                                        <th>{% trans 'Stock' %}</th>
+                                        <th>{% trans 'Quantity' %} ({% trans 'not PR' %})</th>
                                         <th>{% trans 'UOM' %} (PO)</th>
                                         <th>{% trans 'Quantity' %} (PO)</th>
                                         <th>{% trans 'Unit Price' %}</th>
@@ -265,7 +252,7 @@
                                     data-method="get"
                                 >
                                     <thead>
-                                    <tr>
+                                    <tr class="bg-light">
                                         <th></th>
                                         <th>{% trans 'Product' %}</th>
                                         <th>{% trans 'Description' %}</th>
@@ -336,7 +323,7 @@
                                     class="table nowrap w-100 mb-5"
                             >
                                 <thead>
-                                <tr>
+                                <tr class="bg-light">
                                     <th class="w-25">{% trans 'Description' %}</th>
                                     <th class="w-10">% {% trans 'Payment' %}</th>
                                     <th class="w-20">{% trans 'Value before tax' %}</th>
@@ -369,10 +356,13 @@
 
 
         <div class="modal fade" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
                 <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="row ml-2"><h6 class="text-primary"><b>{% trans 'Select items from purchase request' %}</b></h6></div>
+                    <div class="modal-header h-65p">
+                        <h5 class="modal-title text-primary ml-3"><b>{% trans 'Select items from purchase request' %}</b></h5>
+                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                    </div>
+                    <div class="modal-body modal-body-custom">
                         <div class="row mb-1">
                             <div class="col-4"></div>
                             <div class="col-8">
@@ -386,8 +376,8 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-4">
-                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-700p position-relative overflow-y-scroll">
+                            <div class="col-4 border-right">
+                                <div data-simplebar class="h-700p nicescroll-bar">
                                     <table
                                         id="datable-purchase-request"
                                         class="table nowrap w-100"
@@ -395,11 +385,10 @@
                                         data-method="GET"
                                     >
                                         <thead>
-                                        <tr>
+                                        <tr class="bg-light">
                                             <th class="w-5"></th>
-                                            <th class="w-5"><div class="form-check"><input type="checkbox" class="form-check-input table-checkbox-all"></div></th>
-                                            <th class="w-45">{% trans 'Title' %}</th>
-                                            <th class="w-45">{% trans 'Code' %}</th>
+                                            <th class="w-60"><div class="d-flex align-items-center"><div class="form-check"><input type="checkbox" class="form-check-input table-checkbox-all"></div>{% trans 'Title' %}</div></th>
+                                            <th class="w-35">{% trans 'Code' %}</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -408,7 +397,7 @@
                                 </div>
                             </div>
                             <div class="col-8">
-                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-700p position-relative overflow-y-scroll" id="sroll-datable-purchase-request-product">
+                                <div data-simplebar class="h-700p nicescroll-bar" id="sroll-datable-purchase-request-product">
                                     <div id="table-purchase-request-product-area">
                                         <table
                                             id="datable-purchase-request-product"
@@ -417,10 +406,9 @@
                                             data-method="GET"
                                         >
                                             <thead>
-                                            <tr>
+                                            <tr class="bg-light">
                                                 <th class="w-5"></th>
-                                                <th class="w-5"></th>
-                                                <th class="w-40">{% trans 'Product' %}</th>
+                                                <th class="w-45">{% trans 'Product' %}</th>
                                                 <th class="w-5">{% trans 'PR code' %}</th>
                                                 <th class="w-5">{% trans 'UOM' %}</th>
                                                 <th class="w-5">{% trans 'Quantity' %}</th>
@@ -441,10 +429,9 @@
                                             data-method="get"
                                         >
                                             <thead>
-                                            <tr>
+                                            <tr class="bg-light">
                                                 <th class="w-5"></th>
-                                                <th class="w-5"></th>
-                                                <th class="w-40">{% trans 'Product' %}</th>
+                                                <th class="w-45">{% trans 'Product' %}</th>
                                                 <th class="w-5">{% trans 'PR code' %}</th>
                                                 <th class="w-5">{% trans 'UOM' %}</th>
                                                 <th class="w-5">{% trans 'Quantity' %}</th>
@@ -472,8 +459,11 @@
         <div class="modal fade" id="purchaseQuotationModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseQuotationModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                 <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-primary"><b>{% trans 'Select purchase quotation' %}</b></h5>
+                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                    </div>
                     <div class="modal-body">
-                        <div class="row mb-2"><h6 class="text-primary"><b>{% trans 'Select purchase quotation' %}</b></h6></div>
                         <div class="row" hidden>
                             <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
@@ -482,7 +472,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-450p position-relative overflow-y-scroll expense-option-list" id="sroll-datable-purchase-quotation">
+                        <div class="row expense-option-list" id="sroll-datable-purchase-quotation">
                             <table
                                 id="datable-purchase-quotation"
                                 class="table nowrap w-100"
@@ -490,11 +480,9 @@
                                 data-method="get"
                             >
                                 <thead>
-                                <tr>
+                                <tr class="bg-light">
                                     <th class="w-5"></th>
-                                    <th class="w-5"></th>
-                                    <th class="w-20">{% trans 'Purchase quotation' %}</th>
-                                    <th class="w-20">{% trans 'Title' %}</th>
+                                    <th class="w-30">{% trans 'Purchase quotation' %}</th>
                                     <th class="w-30">{% trans 'Supplier' %}</th>
                                     <th class="w-20">{% trans 'PQ request' %}</th>
                                 </tr>

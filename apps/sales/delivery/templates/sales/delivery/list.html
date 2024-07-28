@@ -42,7 +42,7 @@
     >
         <thead>
         <tr>
-            <th>{% trans 'Number' %}
+            <th>{% trans 'Delivery' %}
                 <i class="fas fa-info-circle icon-info tit_visible_tb-head"
                    data-bs-toggle="tooltip"
                    data-bs-placement="bottom"
@@ -61,6 +61,7 @@
             <th>{% trans 'Expected Date' %}</th>
             <th>{% trans 'Actual Date' %}</th>
             <th>{% trans 'Person delivery' %}</th>
+            <th>{% trans 'Delivery status' %}</th>
             <th>{% trans 'Status' %}</th>
             <th>{% trans 'Action' %}</th>
         </tr>
@@ -101,13 +102,16 @@
 
 {% block dataHiddenGroup %}
     {{ data.state_choices|json_script:"dataStateChoices" }}
-    <input type="hidden" id="url-factory" data-page-detail="{% url 'OrderDeliveryDetail' 1 %}"
+    <input type="hidden" id="url-factory"
+           data-page-detail="{% url 'OrderDeliveryDetail' 1 %}"
+           data-page-edit="{% url 'OrderDeliveryEdit' 1 %}"
            data-sale-order="{% url 'SaleOrderListAPI' %}"
            data-create-delivery="{% url 'SaleOrderDetailDeliveryAPI' 1 %}"
            data-picking="{% url 'OrderPickingList' %}"
     >
-    <input type="hidden" id="trans-factory"
-    data-return="{% trans 'Return' %}">
+    <input type="hidden" id="app-trans-factory"
+    data-edit="{% trans 'Edit' %}">
+    {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 
 {% block jsFooter %}

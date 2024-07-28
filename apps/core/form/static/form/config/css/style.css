@@ -1,9 +1,10 @@
 :root {
     --draggable-width: 400px;
-    --draggable-padding: 10px;
+    --draggable-padding: 5px;
+    --draggable-padding-heading: 5px 10px 5px 10px;
     --draggable-item-margin: 5px;
     --draggable-item-height: 50px;
-    --draggable-item-color-helper: #56a2ff;
+    --draggable-item-color-helper: #3d9ca5;
     --drawer-properties-width: 30vw;
     --drawer-properties-height: calc(100vh - 65px);
 
@@ -24,15 +25,36 @@
     float: left;
     background-color: #f1f1f1;
     height: 100%;
-    overflow: auto;
     border-right: 1px solid #d3d3d3;
+}
+
+#sortable-monitor {
+    width: 150px;
+    background-color: #fff;
+    border: 1px solid #9e9e9e;
+    border-top: 0;
+    border-left: 0;
+    border-radius: 0 0 7px 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: var(--draggable-width);
+    z-index: 1034;
+}
+
+@media screen and (max-width: 700px) {
+    #sortable-monitor {
+        display: none;
+        visibility: hidden;
+        opacity: 0;
+    }
 }
 
 #draggable {
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
     padding: var(--draggable-padding);
+    height: calc(100% - 50px); /* minus height tab group */
+    overflow: auto;
 }
 
 .draggable-item {
@@ -50,6 +72,29 @@
     font-size: 0.9rem;
 }
 
+.draggable-heading {
+    width: 100%;
+    border: 1px solid #00646d;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: #c7e2e5;
+}
+
+.draggable-heading .heading-txt {
+    background-color: #00646d;
+    color: #fff;
+    padding: var(--draggable-padding-heading);
+    text-align: center;
+    cursor: pointer;
+}
+
+.draggable-heading .draggable-group {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    padding: var(--draggable-padding);
+}
+
 #sortable-parent {
     width: calc(100% - var(--draggable-width));
     height: 100%;
@@ -62,6 +107,7 @@
     padding-bottom: 50px;
     padding-top: 30px;
     transition: transform 700ms;
+    line-height: 1.5; /* override line-height of _reboot */
 }
 
 #sortable-content.drawer-showing {
@@ -95,11 +141,15 @@
     border-color: #c2c2c2;
 }
 
-#sortable-item-empty > * {
+.sortable-drop-here > * {
     border: 1px dashed #c2c2c2;
     padding: 20px 15px;
     background-color: #fafafa;
     text-align: center;
+}
+
+#sortable-item-empty > * {
+
 }
 
 .item-dragging {
@@ -117,7 +167,13 @@
     background-color: var(--draggable-item-color-helper);
     color: #fff;
     z-index: 99999;
+    border-color: #00717a;
 }
+
+.drag-item-start .drag-item-image {
+    color: #fff;
+}
+
 
 .sortable-item:hover .group-control,
 .sortable-item .group-control:hover,
@@ -276,6 +332,10 @@
     padding: 0 20px;
 }
 
+.drawer-config hr {
+    background-color: #2a3746
+}
+
 .radio-select-group {
     display: flex;
 }
@@ -338,14 +398,15 @@
 }
 
 .chip.chip-ticked input:checked + span .chip-text {
-    margin-left: 0;
+    /*margin-left: 0;*/
 }
 
 /* Table field group */
 #field-tab-group {
     width: 100%;
-    margin-bottom: 10px;
+    /*margin-bottom: 10px;*/
     background-color: #fff;
+    height: 50px;
 }
 
 .field-tab.active {
@@ -391,13 +452,17 @@
     color: #000;
 }
 
+.form-item-page-break {
+    margin-top: 1rem;
+}
+
 .form-title {
     background-color: #fff;
 }
 
 .form-content {
-    background-color: #fff;
-    color: #000;
+    /*background-color: #fff;*/
+    /*color: #000;*/
 }
 
 /* Sortables */
@@ -409,13 +474,169 @@
 .drag-item-text {
     margin-left: 10px;
 }
+
 /* -- Sortables */
 .flex-basic-100 {
     flex-basis: 100%;
 }
+
 .flex-basic-40 {
     flex-basis: 40%;
 }
+
 .flex-basic-60 {
     flex-basis: 60%;
 }
+
+/* select box / option config */
+.select-box-item {
+    padding: 5px;
+    border: 0;
+    border-radius: 5px;
+}
+
+.select-box-item-head {
+    padding: 0 5px;
+}
+
+.select-box-item-data {
+    background-color: rgba(237, 252, 254, 0.5);
+    border: 1px dashed #99cbcf;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.select-box-item-data:hover .select-box-icon-dnd {
+    opacity: 100;
+}
+
+.select-box-icon-dnd {
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 10px;
+    margin-right: 1px;
+    color: #7c7c7c;
+}
+
+.select-box-item-default {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex: 34px;
+    margin-right: 5px;
+}
+
+.select-box-item-default .form-check {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.select-box-item-default-multiple {
+    flex: 34px;
+}
+
+.select-box-item-default-multiple .form-check {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.select-box-item-title {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex: calc(100% - 60px - 100px - 15px);
+    margin-right: 5px;
+}
+
+.select-box-item-value {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex: calc((100% - 60px - 100px - 15px) / 2 - 50px);
+    margin-right: 5px;
+}
+
+.select-box-item-action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 100px;
+}
+
+/* -- select box / option config */
+
+/* many checkbox */
+.many-checkbox-group {
+    padding: 7px 5px;
+    background-color: rgba(237, 252, 254, 0.5);
+    border: 1px dashed #99cbcf;
+    margin-top: 1px;
+    border-radius: 5px;
+}
+
+#many-checkbox-button-group > div {
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+}
+
+#many-checkbox-button-group > div > * {
+    margin-top: 5px;
+    min-width: 0;
+    flex: 25%;
+}
+
+#many-checkbox-button-group > div > *:not(:last-child) {
+    margin-right: 5px;
+}
+
+#many-checkbox-button-group > div > div button {
+    text-transform: unset !important;
+    width: 100%;
+}
+
+#many-checkbox-button-group div button .icon {
+    margin-right: 3px;
+}
+
+.many-checkbox-dragging {
+    background-color: #99cbcf;
+    color: #fff;
+    border-color: #99cbcf;
+}
+
+/* -- many checkbox */
+
+.form-select.is-valid:not([multiple]):not([size]), .form-select.is-valid:not([multiple])[size="1"], .was-validated .form-select:valid:not([multiple]):not([size]), .was-validated .form-select:valid:not([multiple])[size="1"] {
+    padding-right: 2rem;
+}
+
+.select2-container--bootstrap4 .select2-results__options[id^=select2-items_symbol] .select2-results__option[role="group"] .select2-results__options--nested .select2-results__option {
+    padding-left: 5px;
+}
+
+/* highlight */
+.sortable-item-highlight {
+    z-index: 99999;
+    animation: sortableHighlight 1s;
+}
+
+@keyframes sortableHighlight {
+    0% {
+        transform: scale(1)
+    }
+    50% {
+        border-color: #81e230;
+        background: #e3f9d1;
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* -- highlight */

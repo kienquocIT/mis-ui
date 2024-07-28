@@ -10,6 +10,8 @@ from apps.masterdata.saledata.views.accounts import (
     AccountDetail, AccountGroupListAPI, AccountGroupCreateAPI, AccountGroupDetailAPI, AccountForSaleListAPI
 )
 from apps.masterdata.saledata.views.balance_init import BalanceInitList, BalanceInitListAPI
+from apps.masterdata.saledata.views.budget_plan_config import BudgetPlanConfigList, BudgetPlanConfigListAPI, \
+    ListCanViewCompanyBudgetPlanAPI, ListCanLockBudgetPlanAPI
 from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
 from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, \
     ExpenseDetailAPI, ExpenseForSaleListAPI, ExpenseUpdate
@@ -295,6 +297,25 @@ urlpatterns += [
     path(
         'revenue-plan-config/api', RevenuePlanConfigListAPI.as_view(),
         name='RevenuePlanConfigListAPI'
+    ),
+]
+
+urlpatterns += [
+    path(
+        'budget-plan-config', BudgetPlanConfigList.as_view(),
+        name='BudgetPlanConfigList'
+    ),
+    path(
+        'budget-plan-config/api', BudgetPlanConfigListAPI.as_view(),
+        name='BudgetPlanConfigListAPI'
+    ),
+    path(
+        'list-can-view-company-budget-plan/api', ListCanViewCompanyBudgetPlanAPI.as_view(),
+        name='ListCanViewCompanyBudgetPlanAPI'
+    ),
+    path(
+        'list-can-lock-budget-plan/api', ListCanLockBudgetPlanAPI.as_view(),
+        name='ListCanLockBudgetPlanAPI'
     ),
 ]
 

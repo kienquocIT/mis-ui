@@ -440,6 +440,14 @@ class SelectDDControl {
         }
     }
 
+    get templateSelection(){
+        let clsThis = this;
+        return function (state) {
+            let setupFunc = clsThis.opts?.['templateSelection'];
+            return setupFunc ? setupFunc(state) : state.text;
+        }
+    }
+
     get multipleAndAllowClear() {
         // Setup multiple + allowClear + closeOnSelect
         // Prepend option empty to first when (!multiple & allowClear)
@@ -519,18 +527,43 @@ class SelectDDControl {
             let autoSelected = (this.__auto_selected_data_onload === true);
             let keyId = this._data_keyId;
             let keyText = this._data_keyText;
-            initData = data.map((item) => {
-                let selected = item?.['selected']
-                if (typeof selected !== "boolean") selected = autoSelected;
-                let _txt = this.callbackTextDisplay(item, keyText);
-                return {
-                    'id': this.callbackValueId(item, keyId),
-                    'text': _txt,
-                    'title': _txt,
-                    'data': item,
-                    'selected': selected,
+            initData = data.map(
+                (item) => {
+                    let children = item?.['children'];
+                    if (children && Array.isArray(children)) {
+                        // case: otp group data
+                        children.map(
+                            item2 => {
+                                let selected = item2?.['selected']
+                                if (typeof selected !== "boolean") selected = autoSelected;
+                                let _txt = this.callbackTextDisplay(item2, keyText);
+                                return {
+                                    'id': this.callbackValueId(item2, keyId),
+                                    'text': _txt,
+                                    'title': _txt,
+                                    'data': item2,
+                                    'selected': selected,
+                                }
+                            }
+                        )
+                        return {
+                            ...item,
+                            'children': children,
+                        }
+                    } else {
+                        let selected = item?.['selected']
+                        if (typeof selected !== "boolean") selected = autoSelected;
+                        let _txt = this.callbackTextDisplay(item, keyText);
+                        return {
+                            'id': this.callbackValueId(item, keyId),
+                            'text': _txt,
+                            'title': _txt,
+                            'data': item,
+                            'selected': selected,
+                        }
+                    }
                 }
-            })
+            )
         }
         this.initData = initData;
         return {'data': initData.length > 0 ? initData : null};
@@ -693,6 +726,7 @@ class SelectDDControl {
             ...this.multipleAndAllowClear,
             ...this.tagsToken,
             'templateResult': this.templateResult,
+            'templateSelection': this.templateSelection,
             ...this.dropdownParent,
             ...this.data,
             ...this.ajax,

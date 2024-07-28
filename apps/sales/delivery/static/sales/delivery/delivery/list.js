@@ -65,7 +65,7 @@ $(document).ready(function () {
             },
             {
                 data: 'employee_inherit',
-                width: '10%',
+                width: '15%',
                 render: (row, type, data) => {
                     let time = '--';
                     if (Object.keys(row).length > 0) time = `${row.full_name}`

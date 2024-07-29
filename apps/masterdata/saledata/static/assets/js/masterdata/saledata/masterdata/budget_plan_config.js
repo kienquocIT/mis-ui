@@ -38,14 +38,14 @@ $(document).ready(function () {
                             let html = ''
                             if (row?.['can_view_company'] || row?.['can_lock_plan']) {
                                 html += `
-                                    <span class="w-10 mb-2 badge-sm badge badge-pill badge-primary">${row?.['company']?.['code']}</span>
+                                    <span class="w-20 mb-2 badge-sm badge badge-pill badge-primary">${row?.['company']?.['code']}</span>
                                     <label class="w-40 ml-2 text-primary fw-bold">${trans_script.attr('data-trans-company')}</label>
                                     <br>
                                 `
                             }
                             for (const gr of row?.['group_allowed']) {
                                 html += `
-                                    <span class="w-10 mb-2 badge-sm badge badge-pill badge-soft-primary">${gr?.['group']?.['code']}</span>
+                                    <span class="w-20 mb-2 badge-sm badge badge-pill badge-soft-primary">${gr?.['group']?.['code']}</span>
                                     <label class="w-40 ml-2 text-primary">${gr?.['group']?.['title']}</label>
                                     <br>
                                 `

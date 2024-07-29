@@ -8127,16 +8127,16 @@ msgstr "Trạng thái giao hàng"
 
 #
 msgid "Allowed view Company budget plan"
-msgstr "Được phép xem KH ngân sách của công toàn công ty"
+msgstr "Được phép xem KHNS toàn công ty"
 
 #
 msgid "Allowed lock Company budget plan"
-msgstr "Được phép khoá KH ngân sách của công toàn công ty"
+msgstr "Được phép khoá KHNS toàn công ty"
 
 #
 msgid "view company budget plan"
-msgstr "xem KHNS của công ty"
+msgstr "xem KHNS toàn công ty"
 
 #
 msgid "lock company budget plan"
-msgstr "khoá KHNS của công ty"
+msgstr "khoá KHNS toàn công ty"

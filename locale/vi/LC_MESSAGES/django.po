@@ -7983,7 +7983,7 @@ msgstr "đã được thêm vào sau khi tạo Kế hoạch ngân sách, c�
 
 #
 msgid "Budget plan config"
-msgstr "Cấu hình kế hoạch ngân sách"
+msgstr "Cấu hình Kế hoạch ngân sách"
 
 #
 msgid "QUARTER"
@@ -8100,3 +8100,19 @@ msgstr "Khoá Kế hoạch ngân sách"
 #
 msgid "Unlock this budget plan"
 msgstr "Mở khoá Kế hoạch ngân sách"
+
+#
+msgid "Allowed view Company budget plan"
+msgstr "Được phép xem KH ngân sách của công toàn công ty"
+
+#
+msgid "Allowed lock Company budget plan"
+msgstr "Được phép khoá KH ngân sách của công toàn công ty"
+
+#
+msgid "view company budget plan"
+msgstr "xem KHNS của công ty"
+
+#
+msgid "lock company budget plan"
+msgstr "khoá KHNS của công ty"

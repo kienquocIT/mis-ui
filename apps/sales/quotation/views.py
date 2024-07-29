@@ -6,16 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
-from apps.shared.msg import BaseMsg
-
-
-SYSTEM_STATUS = (
-    (0, BaseMsg.DRAFT),
-    (1, BaseMsg.CREATED),
-    (2, BaseMsg.ADDED),
-    (3, BaseMsg.FINISH),
-    (4, BaseMsg.CANCEL),
-)
+from apps.shared.constant import SYSTEM_STATUS
 
 
 def create_quotation(request, url, msg):

@@ -4,15 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties, PermCheck
-from apps.shared.msg import BaseMsg, PurchasingMsg
-
-SYSTEM_STATUS = (
-    (0, BaseMsg.DRAFT),
-    (1, BaseMsg.CREATED),
-    (2, BaseMsg.ADDED),
-    (3, BaseMsg.FINISH),
-    (4, BaseMsg.CANCEL),
-)
+from apps.shared.msg import PurchasingMsg
+from apps.shared.constant import SYSTEM_STATUS
 
 PO_GR_STATUS = (
     (0, PurchasingMsg.PO_GR_NONE),

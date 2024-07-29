@@ -29,7 +29,7 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header card-header-action bg-teal-light-5 h-40p">
-                    <h6 class="text-primary">{% trans 'Information' %}</h6>
+                    <b class="text-primary">{% trans 'Information' %}</b>
                     <div class="card-action-wrap">
                         <a class="btn btn-xs btn-icon btn-rounded btn-flush-secondary flush-soft-hover"  data-bs-toggle="collapse" href="#collapseExample" aria-expanded="true"><span class="icon"><span class="feather-icon"><i data-feather="chevron-down"></i></span></span></a>
                     </div>
@@ -52,6 +52,50 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Purchase Request' %}</label>
+                                        <div class="input-group input-group-wth-btn">
+                                            <div class="input-affix-wrapper">
+                                                <div class="form-control div-input border-green" id="purchase-order-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
+                                                <input type="hidden" id="purchase_requests_data">
+                                                <div class="input-suffix">
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-icon btn-outline-primary btn-xs"
+                                                        id="btn-purchase-request-modal"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#purchaseRequestModalCenter"
+                                                    ><i class="fas fa-pencil-alt"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Purchase quotation' %}</label>
+                                        <div class="input-group input-group-wth-btn">
+                                            <div class="input-affix-wrapper">
+                                                <div class="form-control div-input border-green" id="purchase-order-purchase-quotation" data-link-detail="{% url "PurchaseQuotationDetail" 1 %}"></div>
+                                                <input type="hidden" id="purchase_quotations_data">
+                                                <div class="input-suffix">
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-icon btn-outline-primary btn-xs"
+                                                        id="btn-purchase-quotation-modal"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#purchaseQuotationModalCenter"
+                                                    ><i class="fas fa-pencil-alt"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
                                     <div class="form-group">
                                         <label class="form-label required" for="box-purchase-order-supplier">{% trans 'Supplier' %}</label>
                                         <select
@@ -67,76 +111,30 @@
                                         ></select>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-lg-6">
-                                    <div class="row">
-                                        <div class="col-12 col-md-6 col-lg-6">
-                                            <div class="form-group">
-                                                <label class="form-label required" for="box-purchase-order-contact">{% trans 'Contact' %}</label>
-                                                <select
-                                                        class="form-select"
-                                                        id="box-purchase-order-contact"
-                                                        data-url="{% url "ContactListAPI" %}"
-                                                        data-method="GET"
-                                                        data-link-detail="{% url 'ContactDetail' 1 %}"
-                                                        name="contact"
-                                                        data-keyResp="contact_list"
-                                                        data-keyText="fullname"
-                                                        required
-                                                ></select>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-6 col-lg-6">
-                                            <div class="form-group">
-                                                <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
-                                                <div class="input-affix-wrapper">
-                                                    <input type="text" name="delivered-date" id="purchase-order-date-delivered"
-                                                           class="form-control date-picker" autocomplete="off">
-                                                    <div class="input-suffix">
-                                                        <i class="fas fa-calendar-alt"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div class="col-12 col-md-3 col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-purchase-order-contact">{% trans 'Contact' %}</label>
+                                        <select
+                                                class="form-select"
+                                                id="box-purchase-order-contact"
+                                                data-url="{% url "ContactListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url 'ContactDetail' 1 %}"
+                                                name="contact"
+                                                data-keyResp="contact_list"
+                                                data-keyText="fullname"
+                                                required
+                                        ></select>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12 col-md-6 col-lg-6">
-                                            <div class="form-group">
-                                                <label class="form-label">{% trans 'Purchase Request' %}</label>
-                                                <div class="input-group input-group-wth-btn">
-                                                    <div class="input-affix-wrapper">
-                                                        <div class="form-control div-input border-green" id="purchase-order-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
-                                                        <input type="hidden" id="purchase_requests_data">
-                                                        <div class="input-suffix">
-                                                            <button
-                                                                type="button"
-                                                                class="btn btn-icon btn-outline-primary btn-sm"
-                                                                id="btn-purchase-request-modal"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#purchaseRequestModalCenter"
-                                                            ><i class="fas fa-pencil-alt"></i></button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-6 col-lg-6">
-                                            <div class="form-group">
-                                                <label class="form-label">{% trans 'Purchase quotation' %}</label>
-                                                <div class="input-group input-group-wth-btn">
-                                                    <div class="input-affix-wrapper">
-                                                        <div class="form-control div-input border-green" id="purchase-order-purchase-quotation" data-link-detail="{% url "PurchaseQuotationDetail" 1 %}"></div>
-                                                        <input type="hidden" id="purchase_quotations_data">
-                                                        <div class="input-suffix">
-                                                            <button
-                                                                type="button"
-                                                                class="btn btn-icon btn-outline-primary btn-sm"
-                                                                id="btn-purchase-quotation-modal"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#purchaseQuotationModalCenter"
-                                                            ><i class="fas fa-pencil-alt"></i></button>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" name="delivered-date" id="purchase-order-date-delivered"
+                                                   class="form-control date-picker" autocomplete="off">
+                                            <div class="input-suffix">
+                                                <i class="fas fa-calendar-alt"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -151,7 +149,7 @@
                     <ul class="nav nav-light nav-tabs" id="quotation-tabs">
                         <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
-                                <span class="nav-icon-wrap mr-1"><i class="fas fa-kaaba"></i></span>
+                                <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
                                 <span class="nav-link-text">{% trans 'Product' %}</span>
                             </a>
                         </li>
@@ -372,10 +370,10 @@
             <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
                 <div class="modal-content">
                     <div class="modal-header h-65p">
-                        <h5 class="text-primary ml-3 mt-2"><b>{% trans 'Select items from purchase request' %}</b></h5>
+                        <h5 class="modal-title text-primary ml-3"><b>{% trans 'Select items from purchase request' %}</b></h5>
                         <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body modal-body-custom">
                         <div class="row mb-1">
                             <div class="col-4"></div>
                             <div class="col-8">
@@ -400,9 +398,8 @@
                                         <thead>
                                         <tr class="bg-light">
                                             <th class="w-5"></th>
-                                            <th class="w-5"><div class="form-check"><input type="checkbox" class="form-check-input table-checkbox-all"></div></th>
-                                            <th class="w-45">{% trans 'Title' %}</th>
-                                            <th class="w-45">{% trans 'Code' %}</th>
+                                            <th class="w-60"><div class="d-flex align-items-center"><div class="form-check"><input type="checkbox" class="form-check-input table-checkbox-all"></div>{% trans 'Title' %}</div></th>
+                                            <th class="w-35">{% trans 'Code' %}</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -422,8 +419,7 @@
                                             <thead>
                                             <tr class="bg-light">
                                                 <th class="w-5"></th>
-                                                <th class="w-5"></th>
-                                                <th class="w-40">{% trans 'Product' %}</th>
+                                                <th class="w-45">{% trans 'Product' %}</th>
                                                 <th class="w-5">{% trans 'PR code' %}</th>
                                                 <th class="w-5">{% trans 'UOM' %}</th>
                                                 <th class="w-5">{% trans 'Quantity' %}</th>
@@ -446,8 +442,7 @@
                                             <thead>
                                             <tr class="bg-light">
                                                 <th class="w-5"></th>
-                                                <th class="w-5"></th>
-                                                <th class="w-40">{% trans 'Product' %}</th>
+                                                <th class="w-45">{% trans 'Product' %}</th>
                                                 <th class="w-5">{% trans 'PR code' %}</th>
                                                 <th class="w-5">{% trans 'UOM' %}</th>
                                                 <th class="w-5">{% trans 'Quantity' %}</th>
@@ -475,7 +470,7 @@
             <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="text-primary mt-2"><b>{% trans 'Select purchase quotation' %}</b></h5>
+                        <h5 class="modal-title text-primary"><b>{% trans 'Select purchase quotation' %}</b></h5>
                         <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                     </div>
                     <div class="modal-body">
@@ -496,7 +491,6 @@
                             >
                                 <thead>
                                 <tr class="bg-light">
-                                    <th class="w-5"></th>
                                     <th class="w-5"></th>
                                     <th class="w-30">{% trans 'Purchase quotation' %}</th>
                                     <th class="w-30">{% trans 'Supplier' %}</th>

@@ -43,13 +43,15 @@
 {% endblock %}
 
 {% block dataHiddenGroup %}
-    <input type="hidden" id="trans-factory"
-    data-change="{% trans 'Change' %}"
-    data-delivery="{% trans 'Delivery' %}"
-    data-status-none="{% trans 'None' %}"
-    data-status-delivering="{% trans 'Delivering' %}"
-    data-status-partially="{% trans 'Partially delivered' %}"
-    data-status-delivered="{% trans 'Delivered' %}"
+    <input
+            type="hidden" id="trans-factory"
+            data-edit="{% trans 'Edit' %}"
+            data-change="{% trans 'Change' %}"
+            data-delivery="{% trans 'Delivery' %}"
+            data-status-none="{% trans 'None' %}"
+            data-status-delivering="{% trans 'Delivering' %}"
+            data-status-partially="{% trans 'Partially delivered' %}"
+            data-status-delivered="{% trans 'Delivered' %}"
     >
     {{ data.stt_sys|json_script:'stt_sys' }}
     {{ data.delivery_status|json_script:'delivery_status' }}

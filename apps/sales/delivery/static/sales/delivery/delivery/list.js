@@ -2,6 +2,7 @@ $(document).ready(function () {
     let letStateChoices = JSON.parse($('#dataStateChoices').text());
     let tbl = $('#dtbDeliveryList');
     let frm = new SetupFormSubmit(tbl);
+    let transEle = $('#app-trans-factory');
     tbl.DataTableDefault({
         useDataServer: true,
         ajax: {
@@ -12,18 +13,20 @@ $(document).ready(function () {
         columns: [
             {
                 data: 'code',
+                width: '10%',
                 render: (row, type, data, meta) => {
                     let html = '--';
                     let url = $('#url-factory').attr('data-page-detail');
                     if (row) html = row
-                    html = `<a href="${url.format_url_with_uuid(data.id)}">${html}</a>`
+                    html = `<a href="${url.format_url_with_uuid(data.id)}" class="link-primary underline_hover">${html}</a>`
                     return html
                 },
             }, {
                 data: 'sale_order_data',
+                width: '15%',
                 render: (data, type, row) => {
                     if (data && data.hasOwnProperty('id') && data.hasOwnProperty('code')) {
-                        return `<a href="{0}"><span>{1}</span><span class="badge badge-soft-success">{2}</span></a>`.format_by_idx(
+                        return `<a href="{0}" class="link-primary underline_hover"><span class="badge badge-soft-success">{2}</span><span>{1}</span></a>`.format_by_idx(
                             SetupFormSubmit.getUrlDetailWithID(
                                 tbl.attr('data-url-sale-order-detail'),
                                 data['id']
@@ -36,6 +39,7 @@ $(document).ready(function () {
                 },
             }, {
                 data: 'date_created',
+                width: '10%',
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(data, {
                         'outputFormat': 'DD/MM/YYYY',
@@ -43,6 +47,7 @@ $(document).ready(function () {
                 },
             }, {
                 data: 'estimated_delivery_date',
+                width: '10%',
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(data, {
                         'outputFormat': 'DD/MM/YYYY',
@@ -51,6 +56,7 @@ $(document).ready(function () {
             },
             {
                 data: 'actual_delivery_date',
+                width: '10%',
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(data, {
                         'outputFormat': 'DD/MM/YYYY',
@@ -59,6 +65,7 @@ $(document).ready(function () {
             },
             {
                 data: 'employee_inherit',
+                width: '15%',
                 render: (row, type, data) => {
                     let time = '--';
                     if (Object.keys(row).length > 0) time = `${row.full_name}`
@@ -68,6 +75,7 @@ $(document).ready(function () {
             {
                 data: 'state',
                 class: 'text-center',
+                width: '10%',
                 render: (data, type, row, meta) => {
                     const stateMap = {
                         0: 'warning',
@@ -78,18 +86,34 @@ $(document).ready(function () {
                 }
             },
             {
+                width: '10%',
+                render: (data, type, row) => {
+                    let sttTxt = JSON.parse($('#stt_sys').text())
+                    let sttData = [
+                        "light",
+                        "primary",
+                        "info",
+                        "success",
+                        "danger",
+                    ]
+                    return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
+                }
+            },
+            {
                 class: 'text-center',
                 orderable: false,
+                width: '5%',
                 render: (data, type, row, meta) => {
-                    const isTxt = $('#trans-factory').attr('data-return')
-                    return `<div class="dropdown pointer mr-2">
-                                <i class="far fa-window-maximize"
-                                   data-bs-toggle="dropdown"
-                                   data-dropdown-animation
-                                   aria-haspopup="true"
-                                   aria-expanded="false"></i>
-                                <div class="dropdown-menu w-210p mt-2">
-                                <a class="dropdown-item" href="#">${isTxt}</a></div>
+                    let link = $('#url-factory').attr('data-page-edit').format_url_with_uuid(row?.['id']);
+                    let disabled = '';
+                    if ([2, 3, 4].includes(row?.['system_status'])) {
+                        disabled = 'disabled';
+                    }
+                    return `<div class="dropdown">
+                                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                                <div role="menu" class="dropdown-menu">
+                                    <a class="dropdown-item ${disabled}" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${transEle.attr('data-edit')}</span></a>
+                                </div>
                             </div>`;
                 }
             }

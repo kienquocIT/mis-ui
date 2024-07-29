@@ -67,3 +67,4 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     BASELINE = _('Baseline')
     GOODS_REGISTRATION_BORROW_CREATE = _('Goods registration borrow create successfully')
     GOODS_REGISTRATION_BORROW_UPDATE = _('Goods registration borrow update successfully')
+    DELIVERY_UPDATE = _('Delivery update successfully')

@@ -103,11 +103,11 @@
                         <button
                                 type="button"
                                 class="btn btn-outline-primary"
-                                title="{% trans 'Add new zone' %}"
+                                title="{% trans 'Add zone' %}"
                                 data-bs-target="#add_zone"
                                 data-required-text="{% trans 'Please select Function Applied first' %}"
                         >
-                            <span><span>{% trans 'Add new zone' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                            <span><span>{% trans 'Add zone' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                         </button>
                     </div>
                 </div>
@@ -116,7 +116,7 @@
                     <div class="col-12">
                         <table id="table_workflow_zone" class="table nowrap w-100 mb-5">
                             <thead>
-                            <tr>
+                            <tr class="bg-light">
                                 <th>
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" >
@@ -171,7 +171,7 @@
                                 data-bs-target="#nodeModalCreate"
                                 disabled
                         >
-                            <span><span>{% trans 'Add new node' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                            <span><span>{% trans 'New' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                         </button>
 
                         <div class="modal fade" id="nodeModalCreate" tabindex="-1" role="dialog"
@@ -236,7 +236,7 @@
                                 class="table nowrap w-100 mb-5"
                         >
                             <thead>
-                            <tr>
+                            <tr class="bg-light">
                                 <th class="w-20">{% trans 'Node name' %}</th>
                                 <th class="w-30">{% trans 'Description' %}</th>
                                 <th class="w-15">{% trans 'Node Actions' %}</th>
@@ -360,7 +360,8 @@
         data-node-approved="{% trans 'Approved node' %}"
         data-node-completed="{% trans 'Completed node' %}"
         data-employee-list="{% trans 'Employee list' %}"
-        data-add-new="{% trans 'Add new' %}"
+        data-add-new="{% trans 'New' %}"
+        data-system-node="{% trans 'System node' %}"
     >
 
 
@@ -471,7 +472,7 @@
                         <div class="col">
                             <table id="table_workflow_rename" class="table">
                                 <thead>
-                                <tr>
+                                <tr class="bg-light">
                                     <th>{% trans 'Action' %}</th>
                                     <th>{% trans 'Default name' %}</th>
                                     <th>{% trans 'Rename' %}</th>

@@ -2,6 +2,8 @@
 $(function () {
     $(document).ready(function () {
 
+        let transEle = $('#trans-factory');
+
         function loadDbl() {
             let $table = $('#table_sale_order_list')
             let frm = new SetupFormSubmit($table);
@@ -35,15 +37,15 @@ $(function () {
                         targets: 0,
                         width: '5%',
                         render: (data, type, row) => {
+                            let link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);
                             if (row?.['code']) {
-                                const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);
                                 if (row?.['is_change'] === true && row?.['document_root_id'] && row?.['system_status'] === 3) {
-                                    let target = `.change-${row?.['document_root_id'].replace(/-/g, "")}`;
+                                    let target = `.cl-${row?.['document_root_id'].replace(/-/g, "")}`;
                                     return `<div class="d-flex">
                                             <div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']} <span class="badge-child badge-child-blue">CR</span></span></a></div>
                                             <small><button 
                                                 type="button" 
-                                                class="btn btn-icon btn-xs group-change" 
+                                                class="btn btn-icon btn-xs cl-parent" 
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="${target}"
                                                 data-bs-placement="top"
@@ -59,12 +61,12 @@ $(function () {
                                 }
                                 return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']}</span></a></div>`;
                             }
-                            return `<p></p>`;
+                            return `<a href="${link}" class="link-primary underline_hover">--</a>`;
                         }
                     },
                     {
                         targets: 1,
-                        width: '20%',
+                        width: '15%',
                         render: (data, type, row) => {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
@@ -72,24 +74,22 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '20%',
+                        width: '15%',
                         render: (data, type, row) => {
-                            let ele = `<p></p>`;
                             if (Object.keys(row?.['customer']).length !== 0) {
-                                ele = `<p>${row?.['customer']?.['title']}</p>`;
+                                return `<p>${row?.['customer']?.['title']}</p>`;
                             }
-                            return ele;
+                            return `<p></p>`;
                         }
                     },
                     {
                         targets: 3,
-                        width: '10%',
+                        width: '15%',
                         render: (data, type, row) => {
-                            let ele = `<p></p>`;
                             if (Object.keys(row?.['sale_person']).length !== 0) {
-                                ele = `<div class="row"><span class="badge badge-primary badge-outline">${row?.['sale_person']?.['full_name']}</span></div>`;
+                                return `<p>${row?.['sale_person']?.['full_name']}</p>`;
                             }
-                            return ele;
+                            return `<p></p>`;
                         }
                     },
                     {
@@ -111,31 +111,31 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '8%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
                             let sttData = [
-                                "soft-light",
-                                "soft-primary",
-                                "soft-info",
-                                "soft-success",
-                                "soft-danger",
+                                "light",
+                                "primary",
+                                "info",
+                                "success",
+                                "danger",
                             ]
-                            return `<div class="row"><span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span></div>`;
+                            return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
                         }
                     },
                     {
                         targets: 7,
-                        width: '8%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#delivery_status').text())
                             let sttData = [
-                                "soft-light",
-                                "soft-warning",
-                                "soft-info text-sky",
-                                "soft-success",
+                                "light badge-outline",
+                                "warning badge-outline",
+                                "blue badge-outline",
+                                "success badge-outline",
                             ]
-                            return `<div class="row"><span class="badge badge-${sttData[row?.['delivery_status']]}">${sttTxt[row?.['delivery_status']][1]}</span></div>`;
+                            return `<span class="badge badge-${sttData[row?.['delivery_status']]}">${sttTxt[row?.['delivery_status']][1]}</span>`;
                         }
                     },
                     {
@@ -143,21 +143,20 @@ $(function () {
                         width: '5%',
                         className: 'action-center',
                         render: (data, type, row) => {
-                            const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            const $elmTrans = $('#trans-factory')
-                            let isEdit = ``;
-                            let isDelivery = ``;
-                            if (![2, 3, 4].includes(row?.['system_status'])) {
-                                isEdit = `<a class="dropdown-item" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${$elmTrans.attr('data-change')}</span></a>`;
+                            let link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);
+                            let disabledEdit = '';
+                            let disabledDeli = '';
+                            if ([2, 3, 4].includes(row?.['system_status'])) {
+                                disabledEdit = 'disabled';
                             }
-                            if (!row.delivery_call && [2, 3].includes(row?.['system_status'])) {
-                                isDelivery = `<a class="dropdown-item" href="#" id="create_delivery"><i class="dropdown-icon fas fa-truck text-primary"></i><span>${$elmTrans.attr('data-delivery')}</span></a>`;
+                            if (row?.['delivery_call'] === true || ![2, 3].includes(row?.['system_status'])) {
+                                disabledDeli = 'disabled';
                             }
                             return `<div class="dropdown">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
-                                        ${isEdit}
-                                        ${isDelivery}
+                                        <a class="dropdown-item ${disabledEdit} border-bottom mb-2" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${transEle.attr('data-edit')}</span></a>
+                                        <a class="dropdown-item ${disabledDeli}" href="#" id="create_delivery"><i class="dropdown-icon fas fa-truck text-primary"></i><span>${transEle.attr('data-delivery')}</span></a>
                                     </div>
                                 </div>`;
                         },
@@ -196,21 +195,21 @@ $(function () {
                     // mask money
                     $.fn.initMaskMoney2();
                     // setup groupChild to groupParent
-                    for (let eleGroup of $table[0].querySelectorAll('.group-change')) {
-                        if ($(eleGroup).is('button') && $(eleGroup).attr('data-bs-toggle') === 'collapse') {
+                    for (let parent of $table[0].querySelectorAll('.cl-parent')) {
+                        if ($(parent).is('button') && $(parent).attr('data-bs-toggle') === 'collapse') {
                             let tableDtb = $table.DataTable();
-                            let rowChange = $(eleGroup)[0].closest('tr');
-                            let targetCls = $(eleGroup).attr('data-bs-target');
+                            let rowParent = $(parent)[0].closest('tr');
+                            let targetCls = $(parent).attr('data-bs-target');
                             if (targetCls) {
                                 if ($table[0].querySelectorAll(`${targetCls}`).length <= 0) {
                                     for (let data of changeList) {
-                                        let classCl = '.change-' + data?.['document_root_id'].replace(/-/g, "");
+                                        let classCl = '.cl-' + data?.['document_root_id'].replace(/-/g, "");
                                         if (classCl === targetCls) {
                                             let newRow = tableDtb.row.add(data).node();
                                             $(newRow).addClass(classCl.slice(1));
                                             $(newRow).addClass('collapse');
                                             $(newRow).css('background-color', '#eaeaea');
-                                            $(newRow).detach().insertAfter(rowChange);
+                                            $(newRow).detach().insertAfter(rowParent);
                                         }
                                     }
                                 }
@@ -219,7 +218,7 @@ $(function () {
                             $.fn.initMaskMoney2();
                         }
                     }
-                    $table.on('click', '.group-change', function () {
+                    $table.on('click', '.cl-parent', function () {
                         $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
                     });
                 },

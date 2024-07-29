@@ -58,7 +58,7 @@
                     {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
                     <div class="card">
                         <div class="card-header card-header-action bg-teal-light-5 h-40p">
-                            <h6 class="text-primary">{% trans 'Information' %}</h6>
+                            <b class="text-primary">{% trans 'Information' %}</b>
                             <div class="card-action-wrap">
                                 <a class="btn btn-xs btn-icon btn-rounded btn-flush-secondary flush-soft-hover"  data-bs-toggle="collapse" href="#collapseExample" aria-expanded="true"><span class="icon"><span class="feather-icon"><i data-feather="chevron-down"></i></span></span></a>
                             </div>
@@ -148,7 +148,7 @@
                             <ul class="nav nav-light nav-tabs" id="quotation-tabs">
                                 <li class="nav-item tab-detail">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
-                                        <span class="nav-icon-wrap mr-1"><i class="fas fa-kaaba"></i></span>
+                                        <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
                                         <span class="nav-link-text">{% trans 'Product' %}</span>
                                     </a>
                                 </li>
@@ -260,7 +260,7 @@
                                             <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
                                         </button>
                                         <div class="dropdown-menu w-210p">
-                                            <a class="dropdown-item" href="#" id="btn-add-product-quotation-create"><i class="dropdown-icon fas fa-kaaba text-primary"></i><span class="mt-2">{% trans 'Add Product' %}</span></a>
+                                            <a class="dropdown-item" href="#" id="btn-add-product-quotation-create"><i class="dropdown-icon fas fa-cube text-primary"></i><span class="mt-2">{% trans 'Add Product' %}</span></a>
                                             <a class="dropdown-item" href="#" id="btn-add-product-group-quotation"><i class="dropdown-icon fas fa-layer-group text-primary"></i><span>{% trans 'Add group' %}</span></a>
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#" id="btn-add-shipping" data-bs-toggle="modal" data-bs-target="#shippingFeeModalCenter"><i class="dropdown-icon fas fa-shipping-fast text-primary"></i><span class="mt-2">{% trans 'Shipping fee' %}</span></a>
@@ -622,10 +622,10 @@
                     role="dialog" aria-labelledby="quotationModalCenter"
                     aria-hidden="true" data-zone="title"
             >
-                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">{% trans 'Select Quotation' %}</h5>
+                            <h5 class="modal-title text-primary"><b>{% trans 'Select Quotation' %}</b></h5>
                             <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                         </div>
                         <div class="modal-body">
@@ -635,7 +635,6 @@
                             >
                                 <thead>
                                 <tr class="bg-light">
-                                    <th class="w-10"></th>
                                     <th class="w-30">{% trans 'Quotation' %}</th>
                                     <th class="w-30">{% trans 'Opportunity' %}</th>
                                     <th class="w-30">{% trans 'Customer' %}</th>

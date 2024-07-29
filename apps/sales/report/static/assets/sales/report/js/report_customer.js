@@ -37,8 +37,8 @@ $(function () {
                         targets: 0,
                         width: '30%',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-secondary badge-sm">${row?.['customer']?.['code'] ? row?.['customer']?.['code'] : ''}</span>
-                                    <p>${row?.['customer']?.['title'] ? row?.['customer']?.['title'] : ''}</p>`;
+                            return `<span class="badge badge-soft-success">${row?.['customer']?.['code'] ? row?.['customer']?.['code'] : ''}</span>
+                                    <span>${row?.['customer']?.['title'] ? row?.['customer']?.['title'] : ''}</span>`;
                         }
                     },
                     {

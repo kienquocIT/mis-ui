@@ -44,7 +44,7 @@
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'OrderDeliveryEdit' data.pk %}">
-    <button class="btn btn-outline-primary" id="btn-enable-edit">
+    <button class="btn btn-outline-primary" id="btn-enable-edit" hidden>
         <span>
             <span>{% trans 'Edit' %}</span>
             <span class="icon">
@@ -59,26 +59,21 @@
           novalidate data-url-redirect="{% url 'OrderDeliveryList' %}">
         <div class="row mb-3">
             {% csrf_token %}
-            <div class="col-xs-12 col-sm-6">
-                <div class="form-group">
-                    <label for="inputSaleOrder" class="form-label">{% trans 'Sale Order' %}</label>
-                    <input type="text" name="sale_order" id="inputSaleOrder" class="form-control" readonly/>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <div class="form-group">
-                    <label for="inputDeliveryDate"
-                           class="form-label">{% trans 'Estimated Delivery Date' %}</label>
-                    <div class="input-affix-wrapper">
-                        <input type="text" name="estimated_delivery_date" id="inputDeliveryDate"
-                               class="form-control date-picker" autocomplete="off" disabled>
-                        <span class="input-suffix">
-                            <i class="fas fa-calendar-alt"></i>
-                        </span>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="inputSaleOrder" class="form-label">{% trans 'Sale Order' %}</label>
+                            <p class="mt-2 border-bottom" id="inputSaleOrder">{% trans 'None' %}</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label">{% trans 'Delivery status' %}</label>
+                            <p id="state"></p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 mb-3">
                 <div class="form-group">
                     <label for="customer_id" class="form-label">{% trans 'to Customer' %}</label>
                     <div class="input-group">
@@ -93,56 +88,66 @@
                         <input type="text" name="customer_id" id="customer_id" class="form-control" readonly/>
                     </div>
                 </div>
-            </div>
-
-            <div class="col-xs-12 col-sm-6">
-                <div class="form-group">
-                    <label for="inputActualDate" class="form-label">{% trans 'Actual Date' %}</label>
-                    <div class="input-affix-wrapper">
-                        <input type="text" name="actual_delivery_date" id="inputActualDate"
-                               class="form-control date-picker" autocomplete="off" disabled>
-                        <span class="input-suffix">
-                            <i class="fas fa-calendar-alt"></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 mb-3">
-                <div class="form-group">
-                    <label for="contact_id" class="form-label">{% trans 'Contact name' %}</label>
-                    <div class="input-group">
-                        <div class="dropdown input-group-text pointer">
-                            <i class="fas fa-info-circle text-blue"
-                               data-bs-toggle="dropdown"
-                               data-dropdown-animation
-                               aria-haspopup="true"
-                               aria-expanded="false"></i>
-                            <div class="dropdown-menu w-210p mt-2"></div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="contact_id" class="form-label">{% trans 'Contact name' %}</label>
+                            <div class="input-group">
+                                <div class="dropdown input-group-text pointer">
+                                    <i class="fas fa-info-circle text-blue"
+                                       data-bs-toggle="dropdown"
+                                       data-dropdown-animation
+                                       aria-haspopup="true"
+                                       aria-expanded="false"></i>
+                                    <div class="dropdown-menu w-210p mt-2"></div>
+                                </div>
+                                <input type="text" name="contact_id" id="contact_id" class="form-control" readonly/>
+                            </div>
                         </div>
-                        <input type="text" name="contact_id" id="contact_id" class="form-control" readonly/>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="selectEmployeeInherit" class="form-label">{% trans 'Employee inherit' %}</label>
+                            <select class="form-control" name="employee_inherit" id="selectEmployeeInherit" disabled>
+                                {% if data.lead %}
+                                    <option value="{{ data.lead.id }}">{{ data.lead.full_name }}</option>
+                                {% endif %}
+                                {% for item in data.person_list %}
+                                    <option value="{{ item.id }}">{{ item.full_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-6 mb-3">
-                <div class="form-group">
-                    <label class="form-label">{% trans 'Status' %}</label>
-                    <p id="state"></p>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="inputDeliveryDate"
+                                   class="form-label">{% trans 'Estimated Delivery Date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="estimated_delivery_date" id="inputDeliveryDate"
+                                       class="form-control date-picker" autocomplete="off" disabled>
+                                <span class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="inputActualDate" class="form-label">{% trans 'Actual Date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="actual_delivery_date" id="inputActualDate"
+                                       class="form-control date-picker" autocomplete="off" disabled>
+                                <span class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <div class="form-group">
-                    <label for="selectEmployeeInherit" class="form-label">{% trans 'Employee inherit' %}</label>
-                    <select class="form-control" name="employee_inherit" id="selectEmployeeInherit" disabled>
-                        {% if data.lead %}
-                            <option value="{{ data.lead.id }}">{{ data.lead.full_name }}</option>
-                        {% endif %}
-                        {% for item in data.person_list %}
-                            <option value="{{ item.id }}">{{ item.full_name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
                     <label for="textareaRemarks" class="form-label">{% trans 'Notes' %}</label>
                     <textarea class="form-control" name="remarks" id="textareaRemarks" readonly></textarea>
@@ -154,7 +159,8 @@
         <ul class="nav nav-light nav-tabs">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_detail">
-                    <span class="nav-link-text">{% trans 'Detail' %}</span>
+                    <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
+                    <span class="nav-link-text">{% trans 'Product' %}</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -243,33 +249,29 @@
         <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
         <div class="modal-content">
             <div class="modal-header h-65p">
-                <h5 class="text-primary ml-3 mt-2"><b class="title-mdl"></b></h5>
+                <h5 class="modal-title text-primary ml-3"><b class="title-mdl"></b></h5>
                 <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body modal-body-custom">
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6 border-right">
                         <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-wh">
                             <table id="productStockDetail" class="table w-100">
                                 <thead>
                                 <tr class="bg-light">
-                                    <th></th>
                                     <th>{% trans 'Warehouse Code' %}</th>
                                     <th>{% trans 'Warehouse Name' %}</th>
-                                    <th><p class="stock-picked-exchange">{% trans 'Stock' %}</p></th>
+                                    <th>{% trans 'UOM' %}</th>
                                     <th>{% trans 'Available' %}<i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Not included products for other projects' %}"></i></th>
                                     <th>{% trans 'Get' %}</th>
-                                    <th>{% trans 'UOM' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody></tbody>
                                 <tfoot>
                                     <tr>
                                         <th colspan="3"><p style="text-align:right">{% trans 'Total' %}:</p></th>
-                                        <th><b><i>0</i></b></th>
-                                        <th><b><i class="text-success">0</i></b></th>
-                                        <th><b><i>0</i></b></th>
-                                        <th></th>
+                                        <th><b><i class="text-success total-available">0</i></b></th>
+                                        <th><b><i class="total-picked">0</i></b></th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -286,13 +288,12 @@
                             >
                                 <thead>
                                 <tr class="bg-light">
-                                    <th class="w-20">{% trans 'Lot number' %}</th>
-                                    <th class="w-10">{% trans 'Quantity' %}</th>
-                                    <th>{% trans 'Available' %}<i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Not included other registered products' %}"></i></th>
-                                    <th class="w-10">{% trans 'UOM' %}</th>
-                                    <th class="w-20">{% trans 'Exp date' %}</th>
-                                    <th class="w-20">{% trans 'Mfg date' %}</th>
-                                    <th class="w-20">{% trans 'Get' %}</th>
+                                    <th>{% trans 'Lot number' %}</th>
+                                    <th>{% trans 'Quantity' %}</th>
+                                    <th>{% trans 'UOM' %}</th>
+                                    <th>{% trans 'Exp date' %}</th>
+                                    <th>{% trans 'Mfg date' %}</th>
+                                    <th>{% trans 'Get' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -309,11 +310,11 @@
                             >
                                 <thead>
                                 <tr class="bg-light">
-                                    <th class="w-5"></th>
-                                    <th class="w-20">{% trans 'Vendor serial no.' %}</th>
-                                    <th class="w-20">{% trans 'Serial no.' %}</th>
-                                    <th class="w-20">{% trans 'Warranty start' %}</th>
-                                    <th class="w-20">{% trans 'Warranty end' %}</th>
+                                    <th></th>
+                                    <th>{% trans 'Vendor serial no.' %}</th>
+                                    <th>{% trans 'Serial no.' %}</th>
+                                    <th>{% trans 'Warranty start' %}</th>
+                                    <th>{% trans 'Warranty end' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -324,8 +325,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-				<button type="button" class="btn btn-primary" id="save-stock">{% trans 'Get' %}</button>
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+				<button type="button" class="btn btn-primary" id="save-stock" data-zone="products">{% trans 'Get' %}</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="products">{% trans 'Cancel' %}</button>
 			</div>
         </div>
     </div>
@@ -367,6 +368,7 @@
            data-picked-ready="{% trans 'Picked' %}"
            data-available="{% trans 'Available' %}"
            data-title-mdl="{% trans 'Get Product' %}"
+           data-project="{% trans 'Project' %}"
     >
     <input type="hidden" id="url-factory"
            data-prod-detail="{% url 'ProductDetail' 1 %}"
@@ -375,7 +377,7 @@
            data-contact="{% url 'ContactDetail' 1 %}"
            data-warehouse-prod="{% url 'WarehouseProductAPI' %}"
            data-product-warehouse="{% url 'WarehouseGetProductsListAPI' %}?interact=1"
-           data-product-regis="{% url 'GoodsRegistrationGeneralListAPI' %}"
+           data-product-regis="{% url 'GoodsRegisBorrowListAPI' %}"
     >
     <script id="request-data" type="application/json"></script>
     <div class="html-table-title">

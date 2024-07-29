@@ -1773,7 +1773,9 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term_data'])
         }
         if (data?.['quotation'] && data?.['sale_person']) {
-            QuotationLoadDataHandle.quotationSelectEle.empty().html(data?.['quotation']?.['title']);
+            if (data?.['quotation']?.['title']) {
+                QuotationLoadDataHandle.quotationSelectEle.empty().html(data?.['quotation']?.['title']);
+            }
             QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(data?.['quotation']));
         }
         if (data?.['date_created']) {
@@ -2990,40 +2992,36 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-copy-quotation');
         $tables.DataTableDefault({
             data: data ? data : [],
-            // paging: false,
-            // ordering: false,
-            // info: false,
             columns: [
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<div class="form-check">
-                                    <input type="radio" class="form-check-input table-row-check" data-id="${row?.['id']}">
-                                </div>`
+                        if (row?.['title'] && row?.['code']) {
+                            return `<div class="d-flex align-items-center">
+                                        <div class="form-check">
+                                            <input type="radio" class="form-check-input table-row-check" data-id="${row?.['id']}">
+                                        </div>
+                                        <div>
+                                            <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
+                                            <span class="table-row-title">${row?.['title']}</span>
+                                        </div>
+                                    </div>`;
+                        }
+                        return `<span>--</span>`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        if (row?.['title'] && row?.['code']) {
-                            return `<span class="badge badge-primary badge-sm">${row?.['code'] ? row?.['code'] : ''}</span>
-                                    <p class="table-row-title">${row?.['title']}</p>`;
-                        }
-                        return `<p>--</p>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
                         if (row?.['opportunity']?.['title'] && row?.['opportunity']?.['code']) {
-                            return `<span class="badge badge-secondary badge-sm">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>
-                                    <p class="table-row-customer">${row?.['opportunity']?.['title']}</p>`;
+                            return `<span class="badge badge-soft-pink">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>
+                                    <span class="table-row-customer">${row?.['opportunity']?.['title']}</span>`;
                         }
-                        return `<p>--</p>`;
+                        return `<span>--</span>`;
                     },
                 },
                 {
-                    targets: 3,
+                    targets: 2,
                     render: (data, type, row) => {
                         if (row?.['customer']?.['title']) {
                             return `<p class="table-row-customer">${row?.['customer']?.['title']}</p>`;

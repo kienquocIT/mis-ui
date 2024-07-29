@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         GIT_TAG_COMMIT = sh(script: 'git describe --tags --always', returnStdout: true).trim()
+        GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
         
         BUILD_TRIGGER_BY_NAME = getBuildUser()
 
@@ -18,7 +19,7 @@ pipeline {
             steps {
                 script {
                     if (TELEGRAM_ENABLE == '1') {
-                        sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build started... 💛💛💛");
+                        sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build started... 💛💛💛 \nLast commit: ${GIT_COMMIT_MSG}");
                     }
                 }
             }
@@ -30,7 +31,7 @@ pipeline {
                     env.GIT_BRANCH_NAME = getGitBranchName();
                     env.PUSHER = sh (script: 'whoami', returnStdout: true).trim();
                     if (GIT_BRANCH_NAME == 'master') {
-                        env.PROJECT_DIR = '${SERVER_PATH_DELOY_DEFAULT}COMPILE/UI';
+                        env.PROJECT_DIR = '${SERVER_PATH_DELOY_DEFAULT}COMPILE/ui';
                         env.DEPLOY_SERVER_IP = SERVER_IP_DEPLOY_DEFAULT;
                     }
                     if (GIT_BRANCH_NAME == 'dev') {
@@ -52,10 +53,15 @@ pipeline {
             steps {
                 echo "START SSH SERVER"
                 script {
-                    if (GIT_BRANCH_NAME == 'master') {
-                        sh """ssh -tt $DEPLOY_SERVER_USER@$DEPLOY_SERVER_IP $PROJECT_DIR/compile.sh"""
-                    } else {
-                        sh """ssh -tt $DEPLOY_SERVER_USER@$DEPLOY_SERVER_IP $PROJECT_DIR/deploy.sh"""
+                    try {
+                        if (GIT_BRANCH_NAME == 'master') {
+                            sh """ssh -tt $DEPLOY_SERVER_USER@$DEPLOY_SERVER_IP $PROJECT_DIR/compile.sh"""
+                        } else {
+                            sh """ssh -tt $DEPLOY_SERVER_USER@$DEPLOY_SERVER_IP $PROJECT_DIR/deploy.sh"""
+                        }
+                    } catch (Exception e) {
+                        env.ERROR_MESSAGE = e.getMessage()
+                        throw e
                     }
                 }
                 echo "DONE SSH SERVER"
@@ -73,7 +79,8 @@ pipeline {
         failure {
             script {
                 if (TELEGRAM_ENABLE == '1') {
-                    sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build finished: Failure 💔💔💔")
+                    def errorMsg = env.ERROR_MESSAGE ?: 'No error message available'
+                    sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build finished: Failure 💔💔💔 \nErrors: ${errorMsg}")
                 }
             }
         }
@@ -96,5 +103,5 @@ def sendTelegram(message) {
 @NonCPS
 def getBuildUser() {
     // [_class:hudson.model.Cause$UserIdCause, shortDescription:Started by user ADMIN, userId:admin, userName:ADMIN]
-    return currentBuild.getBuildCauses()[0].userName
+    return "${currentBuild.getBuildCauses()[0].userId} : ${currentBuild.getBuildCauses()[0].userName}"
 }

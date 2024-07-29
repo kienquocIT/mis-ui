@@ -5954,15 +5954,15 @@ msgstr "Đã giao một phần"
 
 #
 msgid "Delivered"
-msgstr "Đã giao"
+msgstr "Đã giao xong"
 
 #
 msgid "Partially received"
-msgstr "Nhập một phần"
+msgstr "Đã nhập một phần"
 
 #
 msgid "Received"
-msgstr "Đã nhập"
+msgstr "Đã nhập xong"
 
 #
 msgid "From Price List in left side"
@@ -8100,6 +8100,30 @@ msgstr "Khoá Kế hoạch ngân sách"
 #
 msgid "Unlock this budget plan"
 msgstr "Mở khoá Kế hoạch ngân sách"
+
+#
+msgid "In transit"
+msgstr "Đang vận chuyển"
+
+#
+msgid "Not delivery yet"
+msgstr "Chưa giao hàng"
+
+#
+msgid "Not receipt yet"
+msgstr "Chưa nhập hàng"
+
+#
+msgid "Add zone"
+msgstr "Tạo vùng"
+
+#
+msgid "System node"
+msgstr "Trạm hệ thống"
+
+#
+msgid "Delivery status"
+msgstr "Trạng thái giao hàng"
 
 #
 msgid "Allowed view Company budget plan"

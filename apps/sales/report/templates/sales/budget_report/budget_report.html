@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Budget report' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        .sticky {
+            position: sticky;
+            top: 0;
+        }
+    </style>
+{% endblock %}
+{% block pageAction %}{% endblock %}
+{% block pageContent %}
+    {{ data.data.current_period | json_script:"current_period" }}
+
+    <script id="trans-script"
+            data-trans-m1th="{% trans 'January' %}"
+            data-trans-m2th="{% trans 'February' %}"
+            data-trans-m3th="{% trans 'March' %}"
+            data-trans-m4th="{% trans 'April' %}"
+            data-trans-m5th="{% trans 'May' %}"
+            data-trans-m6th="{% trans 'June' %}"
+            data-trans-m7th="{% trans 'July' %}"
+            data-trans-m8th="{% trans 'August' %}"
+            data-trans-m9th="{% trans 'September' %}"
+            data-trans-m10th="{% trans 'October' %}"
+            data-trans-m11th="{% trans 'November' %}"
+            data-trans-m12th="{% trans 'December' %}"
+            data-trans-revenue="{% trans 'Revenue' %}"
+            data-trans-net-profit="{% trans 'Net income' %}"
+            data-trans-gross-profit="{% trans 'Gross profit' %}"
+            data-trans-we="{% trans 'Weighted average' %}"
+            data-trans-ob="{% trans 'Opening balance' %}"
+            data-trans-grc="{% trans 'Goods receipt' %}"
+            data-trans-grt="{% trans 'Goods return' %}"
+            data-trans-dlvr="{% trans 'Delivery' %}"
+            data-trans-gis="{% trans 'Goods issue' %}"
+            data-trans-gtf="{% trans 'Goods transfer' %}"
+            data-trans-no-info="{% trans 'Have not done. Please finish in Goods Detail.' %}"
+            data-trans-all="{% trans 'Default all' %}"
+    ></script>
+
+    <script id="url-script"
+            data-url-budget-report-list="{% url 'BudgetReportListAPI' %}"
+            data-url-payment-list="{% url 'PaymentListForBudgetReportAPI' %}"
+    ></script>
+
+    <div class="row">
+        <div class="col-12 col-lg-5 col-md-5">
+            <div class="form-group">
+                <label for="group-select" class="form-label">{% trans 'Group' %}</label>
+                <select disabled class="form-select select2" id="group-select" data-method="GET" data-url="{% url 'GroupListAPI' %}"></select>
+            </div>
+        </div>
+        <div class="col-12 col-lg-3 col-md-3">
+            <div class="form-group">
+                <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
+                <select disabled class="form-select select2" id="period-select" data-method="GET" data-url="{% url 'PeriodsConfigListAPI' %}"></select>
+            </div>
+        </div>
+        <div class="col-12 col-lg-2 col-md-2">
+            <div class="form-group">
+                <div class="row">
+                    <div class='col-12'>
+                        <input disabled type="checkbox" id="quarter-filter">
+                        <label for="quarter-select" class="form-label">{% trans 'Quarter' %}</label>
+                    </div>
+                </div>
+                <select disabled class="form-select select2" id="quarter-select">
+                    <option value="1">{% trans 'Quarter' %} 1</option>
+                    <option value="2">{% trans 'Quarter' %} 2</option>
+                    <option value="3">{% trans 'Quarter' %} 3</option>
+                    <option value="4">{% trans 'Quarter' %} 4</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-12 col-lg-2 col-md-2">
+            <div class="form-group">
+                <div class="row">
+                    <div class='col-12'>
+                        <input type="checkbox" id="month-filter" checked>
+                        <label for="month-select" class="form-label">{% trans 'Month' %}</label>
+                    </div>
+                </div>
+                <select class="form-select select2" id="month-select"></select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-lg-2 col-md-2">
+            <div class="form-check form-check-sm">
+                <input disabled type="radio" id="cumulative" name="res-view" class="form-check-input" checked>
+                <label class="form-check-label" for="cumulative">{% trans 'Cumulative result' %}</label>
+            </div>
+        </div>
+        <div class="col-12 col-lg-2 col-md-2">
+            <div class="form-check form-check-sm">
+                <input disabled type="radio" id="periodic" name="res-view" class="form-check-input">
+                <label class="form-check-label" for="periodic">{% trans 'Periodic result' %}</label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-lg-12 col-md-12 mt-2">
+            <button type="button" class="btn btn-primary" id="btn-view">
+                <span>
+                    <span>{% trans 'View' %}</span>
+                    <span class="icon">
+                        <span class="feather-icon">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </span>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-8" style="position: relative; overflow: auto; max-height: 70vh">
+            <table id="main-table" class="table nowrap w-100">
+                <thead class="sticky bg-gradient-primary">
+                <tr>
+                    <td></td>
+                    <td class="text-white">{% trans 'Expense item' %}</td>
+                    <td class="text-white">{% trans 'Plan' %}</td>
+                    <td class="text-white">{% trans 'Actual' %}</td>
+                    <td class="text-white">{% trans 'Difference' %}</td>
+                    <td class="text-white">{% trans 'Rate' %}</td>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+
+    <script src="{% static 'assets/sales/budget_report/js/budget_report.js' %}"></script>
+{% endblock %}

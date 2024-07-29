@@ -8140,3 +8140,7 @@ msgstr "xem KHNS toàn công ty"
 #
 msgid "lock company budget plan"
 msgstr "khoá KHNS toàn công ty"
+
+#
+msgid "Budget report"
+msgstr "Báo cáo ngân sách"

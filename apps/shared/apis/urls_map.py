@@ -645,3 +645,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ZONES_LIST = StringUrl('base/zones/list')
     # Employee config on app
     APP_EMP_CONFIG_LIST = StringUrl('base/app-emp-config/list')
+
+    # Budget report
+    BUDGET_REPORT_LIST = StringUrl('report/budget-report/list')
+    BUDGET_REPORT_PAYMENT_LIST = StringUrl('report/budget-report-payment/list')

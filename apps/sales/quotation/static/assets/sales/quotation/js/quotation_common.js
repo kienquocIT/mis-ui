@@ -2289,7 +2289,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '13%',
+                    width: '12%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;

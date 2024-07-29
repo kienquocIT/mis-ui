@@ -1283,6 +1283,7 @@ class PODataTableHandle {
             columns: [
                 {
                     targets: 0,
+                    width: '1%',
                     render: (data, type, row, meta) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" data-row="${dataRow}">${(meta.row + 1)}</span>`
@@ -1290,6 +1291,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 1,
+                    width: '25%',
                     render: (data, type, row) => {
                         let checked = '';
                         let disabled = '';
@@ -1323,30 +1325,35 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-code">${row?.['purchase_request']?.['code']}</span>`
                     }
                 },
                 {
                     targets: 3,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-uom-request" id="${row.uom.id}">${row.uom.title}</span>`
                     }
                 },
                 {
                     targets: 4,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-request">${row.quantity}</span>`
                     }
                 },
                 {
                     targets: 5,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-remain">${row?.['remain_for_purchase_order']}</span>`
                     }
                 },
                 {
                     targets: 6,
+                    width: '20%',
                     render: (data, type, row) => {
                         if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
                             if (row.hasOwnProperty('quantity_order')) {
@@ -1380,12 +1387,14 @@ class PODataTableHandle {
             columns: [
                 {
                     targets: 0,
+                    width: '1%',
                     render: (data, type, row, meta) => {
                         return `<span class="table-row-order">${(meta.row + 1)}</span>`
                     }
                 },
                 {
                     targets: 1,
+                    width: '25%',
                     render: (data, type, row) => {
                         return `<div class="d-flex align-items-center">
                                     <div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>
@@ -1395,6 +1404,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
+                    width: '10%',
                     render: (data, type, row) => {
                         let codeList = ``;
                         for (let item of row?.['code_list']) {
@@ -1402,10 +1412,10 @@ class PODataTableHandle {
                         }
                         return `<button
                                     type="button"
-                                    class="btn btn-link"
+                                    class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover"
                                     aria-expanded="false"
                                     data-bs-toggle="dropdown"
-                                ><i class="fas fa-ellipsis-h"></i></button>
+                                ><span class="icon"><i class="fas fa-ellipsis-h"></i></span></button>
                                 <div role="menu" class="dropdown-menu">
                                     ${codeList}
                                 </div>`
@@ -1413,24 +1423,28 @@ class PODataTableHandle {
                 },
                 {
                     targets: 3,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-uom-request">${row?.['uom_order_request']?.['title']}</span>`
                     }
                 },
                 {
                     targets: 4,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-request">${row?.['product_quantity_request']}</span>`
                     }
                 },
                 {
                     targets: 5,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-remain">${row?.['remain']}</span>`
                     }
                 },
                 {
                     targets: 6,
+                    width: '20%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-order">${row?.['product_quantity_order_actual']}</span>`
                     }
@@ -1543,7 +1557,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '13%',
+                    width: '12%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
@@ -1704,7 +1718,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '13%',
+                    width: '12%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
@@ -2481,7 +2495,9 @@ class POSubmitHandle {
             _form.dataForm['purchase_order_payment_stage'] = dataPaymentStage;
         }
         // attachment
-        _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm['attachment'], []);
+        if (_form.dataForm?.['attachment']) {
+          _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm['attachment'], []);
+        }
     };
 }
 

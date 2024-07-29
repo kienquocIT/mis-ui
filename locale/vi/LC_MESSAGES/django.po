@@ -4602,7 +4602,7 @@ msgstr "Chưa mua"
 
 #
 msgid "Quantity order"
-msgstr "Số lượng đặt mua"
+msgstr "SL đặt mua"
 
 #
 msgid "Received date"

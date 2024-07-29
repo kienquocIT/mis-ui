@@ -2615,13 +2615,13 @@ class WFRTControl {
                                     $(this).changePropertiesElementIsZone(optsSetZone);
                                     $(this).find('input, select, textarea, button').each(function (event) {
                                         $(this).changePropertiesElementIsZone(optsSetZone);
-                                    });
-                                    // case: input is Files
-                                    if ($(this).hasClass('dm-uploader-ids')) {
-                                        let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
-                                        uploaderEle.dmUploader(dmUploaderAttr);
-                                    }
 
+                                        // case: input is Files
+                                        if ($(this).hasClass('dm-uploader-ids')) {
+                                            let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
+                                            uploaderEle.dmUploader(dmUploaderAttr);
+                                        }
+                                    });
                                 })
                             });
                             inputMapProperties['id_border_zones'].map((item) => {

@@ -154,202 +154,190 @@
                 </div>
             </div>
         </div>
+        <div class="row mb-3">
+            <ul class="nav nav-light nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_detail">
+                        <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
+                        <span class="nav-link-text">{% trans 'Product' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_logistics">
+                        <span class="nav-link-text">{% trans 'Logistics' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#attachment">
+                        <span class="nav-icon-wrap mr-1"><i class="fas fa-paperclip"></i></span>
+                        <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab_detail">
+                    <table id="dtbPickingProductList"
+                           class="table nowrap w-100 mb-5"
+                           data-method="GET"
+                           data-url="{% url "OrderPickingListAPI" %}"
+                           data-url-detail="{% url 'OrderPickingDetail' pk=1 %}">
+                        <thead>
+                        <tr class="bg-light">
+                            <th>#</th>
+                            <th>{% trans 'Product' %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="bottom"
+                                   title="{% trans 'Press row here to open detail page.' %}"></i>
+                            </th>
+                            <th>{% trans 'UoM' %}</th>
+                            <th>{% trans 'Total order' %}</th>
+                            <th>{% trans 'Delivery before' %}</th>
+                            <th>{% trans 'Remain' %}</th>
+                            <th>{% trans 'Ready' %}</th>
+                            <th class="table-handle-btn">
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="tab_logistics">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label" for="textareaShippingAddress">{% trans 'Shipping Address' %}</label>
+                        <span class="pointer logistics-btn"
+                              data-is-address="true"
+                              data-bs-toggle="modal"
+                              data-bs-target="#modal_choise_logistics"
+                        ><i class="fa-regular fa-pen-to-square mr-2"></i>{% trans 'Change' %}</span>
+                    </div>
+                    <textarea class="form-control mb-3 txt-cl-black" name="shipping_address" id="textareaShippingAddress"
+                              disabled></textarea>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label" for="textareaBilling">
+                            {% trans 'Billing/Invoice Address' %}
+                        </label>
+                        <span class="pointer logistics-btn"
+                              data-is-invoice="true"
+                              data-bs-toggle="modal"
+                              data-bs-target="#modal_choise_logistics"
+                        ><i class="fa-regular fa-pen-to-square mr-2"></i>{% trans 'Change' %}</span>
+                    </div>
+                    <textarea class="form-control txt-cl-black" name="billing_address" id="textareaBilling"
+                              disabled></textarea>
+                </div>
+                <div class="tab-pane fade" id="attachment" data-zone="attachments">
+                    {% include 'extends/files/all.html' %}
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="warehouseStockModal" tabindex="-1" role="dialog" aria-labelledby="warehouseStockModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
+                <div class="modal-content">
+                    <div class="modal-header h-65p">
+                        <h5 class="modal-title text-primary ml-3"><b class="title-mdl"></b></h5>
+                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                    </div>
+                    <div class="modal-body modal-body-custom">
+                        <div class="row">
+                            <div class="col-12 col-md-6 col-lg-6 border-right">
+                                <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-wh">
+                                    <table id="productStockDetail" class="table w-100">
+                                        <thead>
+                                        <tr class="bg-light">
+                                            <th>{% trans 'Warehouse Code' %}</th>
+                                            <th>{% trans 'Warehouse Name' %}</th>
+                                            <th>{% trans 'UOM' %}</th>
+                                            <th>{% trans 'Available' %}<i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Not included products for other projects' %}"></i></th>
+                                            <th>{% trans 'Get' %}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="3"><p style="text-align:right">{% trans 'Total' %}:</p></th>
+                                                <th><b><i class="text-success total-available">0</i></b></th>
+                                                <th><b><i class="total-picked">0</i></b></th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-lot" hidden>
+                                    <table
+                                        id="datable-delivery-wh-lot"
+                                        class="table nowrap w-100"
+                                        data-url="{% url "WarehouseLotListAPI" %}"
+                                        data-url-regis="{% url "GoodsRegistrationLotListAPI" %}"
+                                        data-method="GET"
+                                    >
+                                        <thead>
+                                        <tr class="bg-light">
+                                            <th>{% trans 'Lot number' %}</th>
+                                            <th>{% trans 'Quantity' %}</th>
+                                            <th>{% trans 'UOM' %}</th>
+                                            <th>{% trans 'Exp date' %}</th>
+                                            <th>{% trans 'Mfg date' %}</th>
+                                            <th>{% trans 'Get' %}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-serial" hidden>
+                                    <table
+                                        id="datable-delivery-wh-serial"
+                                        class="table nowrap w-100"
+                                        data-url="{% url "WarehouseSerialListAPI" %}"
+                                        data-url-regis="{% url "GoodsRegistrationSerialListAPI" %}"
+                                        data-method="GET"
+                                    >
+                                        <thead>
+                                        <tr class="bg-light">
+                                            <th></th>
+                                            <th>{% trans 'Vendor serial no.' %}</th>
+                                            <th>{% trans 'Serial no.' %}</th>
+                                            <th>{% trans 'Warranty start' %}</th>
+                                            <th>{% trans 'Warranty end' %}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="save-stock" data-zone="products">{% trans 'Get' %}</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="products">{% trans 'Cancel' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modal_choise_logistics">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Address delivery' %}</h5>
+                    </div>
+                    <div class="modal-body position-relative">
+                        <div class="position-absolute top-50 w-100 text-center opacity-50 translate-middle-y left-0">
+                            <div class="spinner-border " role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
-    <div class="row mb-3">
-        <ul class="nav nav-light nav-tabs">
-            <li class="nav-item">
-                <a class="nav-link active" data-bs-toggle="tab" href="#tab_detail">
-                    <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
-                    <span class="nav-link-text">{% trans 'Product' %}</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_logistics">
-                    <span class="nav-link-text">{% trans 'Logistics' %}</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
-                    <span class="nav-link-text">{% trans 'Attachment' %}</span>
-                </a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane fade show active" id="tab_detail">
-                <table id="dtbPickingProductList"
-                       class="table nowrap w-100 mb-5"
-                       data-method="GET"
-                       data-url="{% url "OrderPickingListAPI" %}"
-                       data-url-detail="{% url 'OrderPickingDetail' pk=1 %}">
-                    <thead>
-                    <tr class="bg-light">
-                        <th>#</th>
-                        <th>{% trans 'Product' %}
-                            <i class="fas fa-info-circle icon-info"
-                               data-bs-toggle="tooltip"
-                               data-bs-placement="bottom"
-                               title="{% trans 'Press row here to open detail page.' %}"></i>
-                        </th>
-                        <th>{% trans 'UoM' %}</th>
-                        <th>{% trans 'Total order' %}</th>
-                        <th>{% trans 'Delivery before' %}</th>
-                        <th>{% trans 'Remain' %}</th>
-                        <th>{% trans 'Ready' %}</th>
-                        <th class="table-handle-btn">
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div class="tab-pane fade" id="tab_logistics">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <label class="form-label" for="textareaShippingAddress">{% trans 'Shipping Address' %}</label>
-                    <span class="pointer logistics-btn"
-                          data-is-address="true"
-                          data-bs-toggle="modal"
-                          data-bs-target="#modal_choise_logistics"
-                    ><i class="fa-regular fa-pen-to-square mr-2"></i>{% trans 'Change' %}</span>
-                </div>
-                <textarea class="form-control mb-3 txt-cl-black" name="shipping_address" id="textareaShippingAddress"
-                          disabled></textarea>
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <label class="form-label" for="textareaBilling">
-                        {% trans 'Billing/Invoice Address' %}
-                    </label>
-                    <span class="pointer logistics-btn"
-                          data-is-invoice="true"
-                          data-bs-toggle="modal"
-                          data-bs-target="#modal_choise_logistics"
-                    ><i class="fa-regular fa-pen-to-square mr-2"></i>{% trans 'Change' %}</span>
-                </div>
-                <textarea class="form-control txt-cl-black" name="billing_address" id="textareaBilling"
-                          disabled></textarea>
-            </div>
-            <div class="tab-pane fade" id="tab_attachment">
-                <div class="form-group">
-                    <div class="col-4">
-                        <div class="form-group">
-                            <button
-                                    type="button"
-                                    class="form-control btn btn-info btn-file-upload text-white"
-                                    data-f-input-name="attachments"
-                                    data-f-input-required="false"
-                                    data-f-input-disabled="false"
-                                    data-f-name-ele-id="#fileNameTestDisplay"
-                            >{% trans 'Click here to upload image' %}</button>
-                            <p id="fileNameTestDisplay"></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="warehouseStockModal" tabindex="-1" role="dialog" aria-labelledby="warehouseStockModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
-        <div class="modal-content">
-            <div class="modal-header h-65p">
-                <h5 class="modal-title text-primary ml-3"><b class="title-mdl"></b></h5>
-                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-            </div>
-            <div class="modal-body modal-body-custom">
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-6 border-right">
-                        <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-wh">
-                            <table id="productStockDetail" class="table w-100">
-                                <thead>
-                                <tr class="bg-light">
-                                    <th>{% trans 'Warehouse Code' %}</th>
-                                    <th>{% trans 'Warehouse Name' %}</th>
-                                    <th>{% trans 'UOM' %}</th>
-                                    <th>{% trans 'Available' %}<i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Not included products for other projects' %}"></i></th>
-                                    <th>{% trans 'Get' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody></tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="3"><p style="text-align:right">{% trans 'Total' %}:</p></th>
-                                        <th><b><i class="text-success total-available">0</i></b></th>
-                                        <th><b><i class="total-picked">0</i></b></th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-lot" hidden>
-                            <table
-                                id="datable-delivery-wh-lot"
-                                class="table nowrap w-100"
-                                data-url="{% url "WarehouseLotListAPI" %}"
-                                data-url-regis="{% url "GoodsRegistrationLotListAPI" %}"
-                                data-method="GET"
-                            >
-                                <thead>
-                                <tr class="bg-light">
-                                    <th>{% trans 'Lot number' %}</th>
-                                    <th>{% trans 'Quantity' %}</th>
-                                    <th>{% trans 'UOM' %}</th>
-                                    <th>{% trans 'Exp date' %}</th>
-                                    <th>{% trans 'Mfg date' %}</th>
-                                    <th>{% trans 'Get' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-serial" hidden>
-                            <table
-                                id="datable-delivery-wh-serial"
-                                class="table nowrap w-100"
-                                data-url="{% url "WarehouseSerialListAPI" %}"
-                                data-url-regis="{% url "GoodsRegistrationSerialListAPI" %}"
-                                data-method="GET"
-                            >
-                                <thead>
-                                <tr class="bg-light">
-                                    <th></th>
-                                    <th>{% trans 'Vendor serial no.' %}</th>
-                                    <th>{% trans 'Serial no.' %}</th>
-                                    <th>{% trans 'Warranty start' %}</th>
-                                    <th>{% trans 'Warranty end' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-				<button type="button" class="btn btn-primary" id="save-stock" data-zone="products">{% trans 'Get' %}</button>
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="products">{% trans 'Cancel' %}</button>
-			</div>
-        </div>
-    </div>
-    </div>
-    <div class="modal fade" id="modal_choise_logistics">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Address delivery' %}</h5>
-                </div>
-                <div class="modal-body position-relative">
-                    <div class="position-absolute top-50 w-100 text-center opacity-50 translate-middle-y left-0">
-                        <div class="spinner-border " role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                </div>
-            </div>
-        </div>
-    </div>
 {% endblock %}
 
 {% block dataHiddenGroup %}
@@ -398,5 +386,8 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'sales/delivery/delivery/detail.js' %}"></script>
+    <script>
+        new $x.cls.file($('#attachment')).init({'name': 'attachment'});
+    </script>
 {% endblock %}
 

@@ -229,7 +229,7 @@ $(document).ready(function () {
         frm.dataForm['can_lock_plan'] = $('#can-lock-plan').prop('checked')
         frm.dataForm['group_allowed_list'] = group_allowed_list
 
-        console.log(frm)
+        // console.log(frm)
         return {
             url: frmEle.attr('data-url'),
             method: frmEle.attr('data-method'),

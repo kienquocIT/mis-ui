@@ -429,7 +429,7 @@ $(async function () {
                                             >
                                                 <span class="icon"><i class="fas fa-chevron-down"></i></span>
                                             </button>
-                                            <span class="badge badge-primary">${$trans.attr('data-project')}: ${row?.['sale_order']?.['code']}</span>
+                                            <span class="badge badge-primary badge-outline">${$trans.attr('data-project')}: ${row?.['sale_order']?.['code']}</span>
                                         </div>`;
                             }
                             let checked = '';

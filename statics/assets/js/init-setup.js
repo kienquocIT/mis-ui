@@ -2218,14 +2218,8 @@ class WFRTControl {
                     if (result.dismiss === Swal.DismissReason.timer || result.value) {
                         let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
                         if (eleChecked) {
-                            if (_form.dataMethod.toLowerCase() === 'post') {
-                                _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
-                            }
-                            if (_form.dataMethod.toLowerCase() === 'put') {
-                                if (_form.dataForm.hasOwnProperty('system_status')) {
-                                    _form.dataForm['system_status'] = 1;
-                                }
-                            }
+                            _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+                            _form.dataForm['system_status'] = 1;
                         } else {
                             return "You need to select one person!";
                         }
@@ -2417,6 +2411,10 @@ class WFRTControl {
                     if (eleCR.attr('data-status') === '5') {
                         isCheck = true;
                     }
+                }
+                let runtimeID = WFRTControl.getWFRuntimeID();
+                if (!runtimeID) {
+                    isCheck = true;
                 }
             }
             if (isCheck === true) {

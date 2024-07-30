@@ -213,7 +213,7 @@ $(async function () {
             data = data?.['picking_detail']
             $x.fn.renderCodeBreadcrumb(data);
             let $saleOrder = $('#inputSaleOrder');
-            $saleOrder.val(data?.['sale_order_data']?.['code']);
+            $saleOrder.html(data?.['sale_order_data']?.['code']);
             $saleOrder.attr('data-so', JSON.stringify(data?.['sale_order_data']));
             // state
             let state = data?.state;
@@ -287,6 +287,21 @@ $(async function () {
         return {'isRegis': isRegis, 'dataSO': {}}
     }
 
+    function setupDataPW(dataSrc, warehouseID) {
+        let data = {};
+        for (let pwh of dataSrc) {
+            if (pwh?.['warehouse']?.['id'] === warehouseID) {
+                if (Object.keys(data).length === 0) {
+                    data = pwh;
+                } else {
+                    data['available_stock'] += pwh['available_stock'];
+                    data['available_picked'] += pwh['available_picked'];
+                }
+            }
+        }
+        return data;
+    }
+
     function getStockByProdID(prod, $menuDD) {
         let $elmTrans = $('#trans-factory')
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$('#base-trans-factory').attr('data-more-info')}</h6>`;
@@ -305,11 +320,10 @@ $(async function () {
             if (isRegis === true && dataSO) {
                 url = $urlFact.attr('data-product-regis');
                 dataParam = {
-                    'gre_item__so_item__sale_order_id': dataSO?.['id'],
-                    'gre_item__product_id': prod?.['product_data']?.['id'],
-                    'warehouse_id': warehouseID,
+                    'so_item__sale_order_id': dataSO?.['id'],
+                    'product_id': prod?.['product_data']?.['id'],
                 };
-                keyResp = 'good_registration_general';
+                keyResp = 'regis_borrow_list';
             }
 
         $.fn.callAjax2(
@@ -328,6 +342,7 @@ $(async function () {
                 let link = '';
                 let warehouseTitle = '';
                 let $eleWH = $('#inputWareHouse');
+                let whID = $eleWH.val();
                 if ($eleWH && $eleWH.length > 0) {
                     let dataWHSelected = SelectDDControl.get_data_from_idx($eleWH, $eleWH.val());
                     if (dataWHSelected?.['title']) {
@@ -340,6 +355,24 @@ $(async function () {
 
                 if (data?.[keyResp].length > 0) {
                     let dataPW = data?.[keyResp][0];
+                    if (keyResp === 'regis_borrow_list') {
+                        dataPW = {};
+                        let dataRegis = setupDataPW(data?.[keyResp][0]?.['regis_data'], whID);
+                        if (dataRegis.hasOwnProperty('available_stock') && dataRegis.hasOwnProperty('available_picked')) {
+                            dataPW = dataRegis;
+                        }
+                        for (let borrow_data of data?.[keyResp][0]?.['borrow_data']) {
+                            let dataBorrow = setupDataPW(borrow_data?.['regis_data'], whID);
+                            if (dataBorrow.hasOwnProperty('available_stock') && dataBorrow.hasOwnProperty('available_picked')) {
+                                if (Object.keys(dataPW).length !== 0) {
+                                    dataPW['available_stock'] += dataBorrow?.['available_stock'];
+                                    dataPW['available_picked'] += dataBorrow?.['available_picked'];
+                                } else {
+                                    dataPW = dataBorrow;
+                                }
+                            }
+                        }
+                    }
                     let finalRate = 1;
                     if (dataPW?.['uom'] && prod?.['uom_data']) {
                         if (dataPW?.['uom']?.['ratio'] && prod?.['uom_data']?.['ratio']) {
@@ -348,18 +381,12 @@ $(async function () {
                             }
                         }
                     }
-                    stock = dataPW?.['available_stock'] * finalRate;
-                    picked = dataPW?.['available_picked'] * finalRate;
                     available = (dataPW?.['available_stock'] - dataPW?.['available_picked']) * finalRate;
                     link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(dataPW?.['product']?.['id']);
                 }
                 let areaTitle = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-warehouse')}:</b><p>${warehouseTitle}</p></div>`;
                 let areaUOM = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-uom')}:</b><p>${prod?.['uom_data']?.['title']}</p></div>`;
-                let areaStock = `<div class="d-flex mb-3">
-                                    <div class="mr-3"><p>${$elmTrans.attr('data-stock')}</p><p>${stock}</p></div>
-                                    <div class="mr-3"><p>${$elmTrans.attr('data-picked')}</p><p>${picked}</p></div>
-                                    <div class="mr-3"><p>${$elmTrans.attr('data-available')}</p><p class="pw-available text-success">${available}</p></div>
-                                </div>`;
+                let areaStock = `<div class="d-flex mb-3"><b class="mr-2">${$elmTrans.attr('data-available')}:</b><p class="pw-available text-success">${available}</p></div>`;
                 let areaView = `<div class="dropdown-divider"></div><div class="text-right">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover">
                                         <span>${$elmTrans.attr('data-view-detail')}</span>

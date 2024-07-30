@@ -582,6 +582,12 @@ class MenusReport:
                 view_name='ReportCashflowList',
                 icon='<i class="fas fa-hand-holding-usd"></i>',
             ),
+            MenuCommon(
+                name='Budget report',
+                code='menu_budget_report',
+                view_name='BudgetReportList',
+                icon='<i class="fas fa-wallet"></i>',
+            ),
         ],
     )
     INVENTORY_REPORT = MenuCommon(

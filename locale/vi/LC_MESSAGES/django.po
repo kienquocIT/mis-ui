@@ -5954,15 +5954,15 @@ msgstr "Đã giao một phần"
 
 #
 msgid "Delivered"
-msgstr "Đã giao"
+msgstr "Đã giao xong"
 
 #
 msgid "Partially received"
-msgstr "Nhập một phần"
+msgstr "Đã nhập một phần"
 
 #
 msgid "Received"
-msgstr "Đã nhập"
+msgstr "Đã nhập xong"
 
 #
 msgid "From Price List in left side"
@@ -7983,7 +7983,7 @@ msgstr "đã được thêm vào sau khi tạo Kế hoạch ngân sách, c�
 
 #
 msgid "Budget plan config"
-msgstr "Cấu hình kế hoạch ngân sách"
+msgstr "Cấu hình Kế hoạch ngân sách"
 
 #
 msgid "QUARTER"
@@ -8011,7 +8011,7 @@ msgstr "Thêm người được cấp quyền"
 
 #
 msgid "Add new Budget plan config"
-msgstr "Thêm cấu hình kế hoạch doanh thu"
+msgstr "Thêm cấu hình kế hoạch ngân sách"
 
 #
 msgid "Allowed view"
@@ -8100,3 +8100,47 @@ msgstr "Khoá Kế hoạch ngân sách"
 #
 msgid "Unlock this budget plan"
 msgstr "Mở khoá Kế hoạch ngân sách"
+
+#
+msgid "In transit"
+msgstr "Đang vận chuyển"
+
+#
+msgid "Not delivery yet"
+msgstr "Chưa giao hàng"
+
+#
+msgid "Not receipt yet"
+msgstr "Chưa nhập hàng"
+
+#
+msgid "Add zone"
+msgstr "Tạo vùng"
+
+#
+msgid "System node"
+msgstr "Trạm hệ thống"
+
+#
+msgid "Delivery status"
+msgstr "Trạng thái giao hàng"
+
+#
+msgid "Allowed view Company budget plan"
+msgstr "Được phép xem KHNS toàn công ty"
+
+#
+msgid "Allowed lock Company budget plan"
+msgstr "Được phép khoá KHNS toàn công ty"
+
+#
+msgid "view company budget plan"
+msgstr "xem KHNS toàn công ty"
+
+#
+msgid "lock company budget plan"
+msgstr "khoá KHNS toàn công ty"
+
+#
+msgid "Budget report"
+msgstr "Báo cáo ngân sách"

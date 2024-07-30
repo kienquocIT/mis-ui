@@ -467,7 +467,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EXPENSE_ITEM_LIST = StringUrl('saledata/expense-items')
     EXPENSE_ITEM_DETAIL = StringUrl('saledata/expense-item/{pk}')
 
-    # Inventory
+    # Goods receipt
     GOODS_RECEIPT_LIST = StringUrl('inventory/goods-receipt/list')
     GOODS_RECEIPT_DETAIL = StringUrl('inventory/goods-receipt')
     GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
@@ -608,6 +608,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_REGISTRATION_ITEM_BORROW_LIST = StringUrl('inventory/goods-registration-item-borrow/list')
     GOODS_REGISTRATION_ITEM_BORROW_DETAIL = StringUrl('inventory/goods-registration-item-borrow/{pk}')
     GOODS_REGISTRATION_ITEM_AVAILABLE_QUANTITY = StringUrl('inventory/goods-registration-item-available-quantity')
+    GOODS_REGISTRATION_BORROW_LIST = StringUrl('inventory/goods-regis-borrow/list')
 
     INVOICE_SIGN_LIST = StringUrl('ar-invoice/sign/list')
     INVENTORY_INTERACT_LIST = StringUrl('saledata/warehouses/config-interact')
@@ -644,3 +645,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ZONES_LIST = StringUrl('base/zones/list')
     # Employee config on app
     APP_EMP_CONFIG_LIST = StringUrl('base/app-emp-config/list')
+
+    # Budget report
+    BUDGET_REPORT_LIST = StringUrl('report/budget-report/list')
+    BUDGET_REPORT_PAYMENT_LIST = StringUrl('report/budget-report-payment/list')

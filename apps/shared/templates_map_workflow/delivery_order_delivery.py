@@ -25,4 +25,7 @@ DELIVERY_DATA_MAP = {
     'ready_quantity': FieldMapCommon(
         name_mapping=['ready_quantity'],
     ).data,
+    'products': FieldMapCommon(
+        name_mapping=['products'],
+    ).data,
 }

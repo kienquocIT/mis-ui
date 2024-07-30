@@ -340,6 +340,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     REPORT_INVENTORY_LIST_PAGE = BreadcrumbChildren(_('Inventory Report'), 'ReportInventoryList')
     REPORT_INVENTORY_DETAIL_LIST_PAGE = BreadcrumbChildren(_('Items Detail Report'), 'ReportInventoryDetailList')
     REPORT_PURCHASING_LIST_PAGE = BreadcrumbChildren(_('Purchase order report'), 'PurchaseOrderReportList')
+    BUDGET_REPORT_LIST_PAGE = BreadcrumbChildren(_('Budget report'), 'BudgetReportList')
 
     GOODS_RETURN_LIST_PAGE = BreadcrumbChildren(_('Goods return list'), 'GoodsReturnList')
     GOODS_RETURN_CREATE_PAGE = BreadcrumbChildren(_('Goods return create'), 'GoodsReturnCreate')

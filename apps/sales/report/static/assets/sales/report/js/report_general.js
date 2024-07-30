@@ -25,7 +25,7 @@ $(function () {
                             if (row?.['type_group_by'] === 0) {
                                 return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
                             } else {
-                                return `<div class="row"><span class="badge badge-primary">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span></div>`;
+                                return `<div class="row"><span class="badge badge-indigo">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span></div>`;
                             }
                         }
                     },

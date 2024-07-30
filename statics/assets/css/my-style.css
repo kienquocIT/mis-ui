@@ -474,22 +474,23 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
 
 /* -- Select2 customize css */
 
+/* Select2  */
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    text-transform: unset!important;
+}
+.select2-container--default .select2-search--inline .select2-search__field{
+    width:initial!important;
+}
+.select2-container .select2-selection--multiple .select2-selection__choice {
+    background-color: #f7f7f7;
+    color: #262a2e;
+}
+/* Select2  */
+
 /* Group input has button info */
 
 .overflow-unset {
     overflow: unset !important;
-}
-
-.select2-hidden-accessible:not(.is-valid):not(.is-invalid) + * + .info-btn-more {
-    border-color: #d8d8d8;
-}
-
-.select2-hidden-accessible.is-valid + * + .info-btn-more {
-    border-color: #28a745;
-}
-
-.select2-hidden-accessible.is-invalid + * + .info-btn-more {
-    border-color: #dc3545;
 }
 
 /* -- Group input has button info */

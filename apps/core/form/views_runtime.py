@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AnonymousUser
 from django.http.request import HttpHeaders
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
 from rest_framework.views import APIView
@@ -94,10 +94,12 @@ class FormSubmittedOnlyView(View):
                         resp=resp, code=form_code, request=request, use_at='view',
                         submitted_data=submitted_data
                     )
-                    return render(request, 'form/runtime/only_view.html', {
-                        **ctx,
-                        'pk': pk,
-                    })
+                    return render(
+                        request, 'form/runtime/only_view.html', {
+                            **ctx,
+                            'pk': pk,
+                        }
+                    )
             return auto_return_view(resp, request)
         return OutLayoutRender(request=request).render_404()
 
@@ -244,6 +246,28 @@ class FormPublishedRuntimeSubmitted(APIView):
                 return resp.result, 200
         return {}, 204
 
+
+class FormRuntimeReverseUrlGet(View):
+    @mask_view(login_require=False)
+    def get(self, request, *args, **kwargs):
+        return render(request, 'form/runtime/gateway_reverse.html')
+
+
+class FormRuntimeReverseUrl(View):
+    @mask_view(login_require=False)
+    def get(self, request, *args, **kwargs):
+        form_code = request.GET.get('form_code', None)
+        form_record = request.GET.get('form_record')
+        form_action = request.GET.get('action', 'view')
+        if form_action in ['view', 'edit']:
+            if form_code:
+                if form_record:
+                    if TypeCheck.check_uuid(form_record):
+                        return redirect('FormSubmittedViewEdit', form_code=form_code, pk=form_record)
+                    return OutLayoutRender(request=request).render_404()
+                else:
+                    return redirect('FormPublishedRuntimeView', form_code=form_code)
+        return OutLayoutRender(request=request).render_404()
 
 
 class FormValidEmailOTP(APIView):

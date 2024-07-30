@@ -24,20 +24,30 @@ $(function () {
                 columns: [
                     {
                         targets: 0,
+                        width: '1%',
+                        render: (data, type, row, meta) => {
+                            return `<span class="table-row-order">${(meta.row + 1)}</span>`
+                        }
+                    },
+                    {
+                        targets: 1,
+                        width: '10%',
                         render: (data, type, row) => {
                             let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {
-                        targets: 1,
+                        targets: 2,
+                        width: '25%',
                         render: (data, type, row) => {
                             const link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
                         }
                     },
                     {
-                        targets: 2,
+                        targets: 3,
+                        width: '25%',
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
                             if (Object.keys(row?.['supplier']).length !== 0) {
@@ -47,7 +57,8 @@ $(function () {
                         }
                     },
                     {
-                        targets: 3,
+                        targets: 4,
+                        width: '10%',
                         render: (data, type, row) => {
                             if (row?.['delivered_date']) {
                                 return `<p>${moment(row?.['delivered_date']).format('DD/MM/YYYY')}</p>`;
@@ -56,7 +67,8 @@ $(function () {
                         }
                     },
                     {
-                        targets: 4,
+                        targets: 5,
+                        width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
                             let sttData = [
@@ -70,7 +82,8 @@ $(function () {
                         }
                     },
                     {
-                        targets: 5,
+                        targets: 6,
+                        width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#gr_status').text())
                             let sttData = [
@@ -83,8 +96,9 @@ $(function () {
                         }
                     },
                     {
-                        targets: 6,
+                        targets: 7,
                         className: 'action-center',
+                        width: '5%',
                         render: (data, type, row) => {
                             let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
                             let disabled = '';

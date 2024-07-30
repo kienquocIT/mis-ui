@@ -3194,24 +3194,28 @@ class QuotationDataTableHandle {
             columns: [
                 {
                     targets: 0,
+                    width: '1%',
                     render: (data, type, row, meta) => {
                         return `<span class="table-row-order" data-value="${(meta.row + 1)}" data-zone="quotation_indicators_data">${(meta.row + 1)}</span>`
                     }
                 },
                 {
                     targets: 1,
+                    width: '40%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-title" data-id="${row?.['indicator']?.['id']}" data-zone="quotation_indicators_data">${row?.['indicator']?.['title']}</span>`
+                        return `<span class="table-row-title text-primary" data-id="${row?.['indicator']?.['id']}" data-zone="quotation_indicators_data">${row?.['indicator']?.['title']}</span>`
                     }
                 },
                 {
                     targets: 2,
+                    width: '30%',
                     render: (data, type, row) => {
                         return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['indicator_value'])}" data-value="${row?.['indicator_value']}" data-zone="quotation_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 3,
+                    width: '20%',
                     render: (data, type, row) => {
                         return `<span class="table-row-rate" data-value="${row?.['indicator_rate']}" data-zone="quotation_indicators_data">${row?.['indicator_rate']} %</span>`
                     }
@@ -3239,36 +3243,42 @@ class QuotationDataTableHandle {
             columns: [
                 {
                     targets: 0,
+                    width: '1%',
                     render: (data, type, row, meta) => {
                         return `<span class="table-row-order" data-value="${(meta.row + 1)}" data-zone="sale_order_indicators_data">${(meta.row + 1)}</span>`
                     }
                 },
                 {
                     targets: 1,
+                    width: '20%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-title" data-id="${row.quotation_indicator.id}" data-zone="sale_order_indicators_data">${row.quotation_indicator.title}</span>`
+                        return `<span class="table-row-title text-primary" data-id="${row.quotation_indicator.id}" data-zone="sale_order_indicators_data">${row.quotation_indicator.title}</span>`
                     }
                 },
                 {
                     targets: 2,
+                    width: '20%',
                     render: (data, type, row) => {
                         return `<span class="mask-money table-row-quotation-value" data-init-money="${parseFloat(row.quotation_indicator_value)}" data-value="${row.quotation_indicator_value}" data-zone="sale_order_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 3,
+                    width: '20%',
                     render: (data, type, row) => {
                         return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row.indicator_value)}" data-value="${row.indicator_value}" data-zone="sale_order_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 4,
+                    width: '20%',
                     render: (data, type, row) => {
                         return `<span class="mask-money table-row-difference-value" data-init-money="${parseFloat(row.difference_indicator_value)}" data-value="${row.difference_indicator_value}" data-zone="sale_order_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 5,
+                    width: '15%',
                     render: (data, type, row) => {
                         return `<span class="table-row-rate" data-value="${row.indicator_rate}" data-zone="sale_order_indicators_data">${row.indicator_rate} %</span>`
                     }
@@ -3720,33 +3730,36 @@ class QuotationCheckConfigHandle {
     };
 
     static checkConfig(check_type, row = null) {
-        let configRaw = $('#quotation-config-data').val();
-        if (configRaw) {
-            let opportunity = QuotationLoadDataHandle.opportunitySelectEle.val();
-            let config = JSON.parse(configRaw);
-            if (["", null].includes(opportunity)) {
-                opportunity = null;
-            }
-            if (!opportunity) { // short sale
-                if (check_type === 0) {  // check All
-                    QuotationCheckConfigHandle.checkOnTotal(config, 0);
-                    QuotationCheckConfigHandle.checkTableRows(config, 0);
+        let $form = $('#frm_quotation_create');
+        if ($form.attr('data-method').toLowerCase() !== 'get') {
+            let configRaw = $('#quotation-config-data').val();
+            if (configRaw) {
+                let opportunity = QuotationLoadDataHandle.opportunitySelectEle.val();
+                let config = JSON.parse(configRaw);
+                if (["", null].includes(opportunity)) {
+                    opportunity = null;
                 }
-                if (check_type === 1) {  // check Single Row
-                    QuotationCheckConfigHandle.checkTableRow(config, 0, row);
+                if (!opportunity) { // short sale
+                    if (check_type === 0) {  // check All
+                        QuotationCheckConfigHandle.checkOnTotal(config, 0);
+                        QuotationCheckConfigHandle.checkTableRows(config, 0);
+                    }
+                    if (check_type === 1) {  // check Single Row
+                        QuotationCheckConfigHandle.checkTableRow(config, 0, row);
+                    }
+                    $.fn.initMaskMoney2();
+                    return true;
+                } else { // long sale
+                    if (check_type === 0) {  // check All
+                        QuotationCheckConfigHandle.checkOnTotal(config, 1);
+                        QuotationCheckConfigHandle.checkTableRows(config, 1);
+                    }
+                    if (check_type === 1) {  // check Single Row
+                        QuotationCheckConfigHandle.checkTableRow(config, 1, row);
+                    }
+                    $.fn.initMaskMoney2();
+                    return true;
                 }
-                $.fn.initMaskMoney2();
-                return true;
-            } else { // long sale
-                if (check_type === 0) {  // check All
-                    QuotationCheckConfigHandle.checkOnTotal(config, 1);
-                    QuotationCheckConfigHandle.checkTableRows(config, 1);
-                }
-                if (check_type === 1) {  // check Single Row
-                    QuotationCheckConfigHandle.checkTableRow(config, 1, row);
-                }
-                $.fn.initMaskMoney2();
-                return true;
             }
         }
         return true;

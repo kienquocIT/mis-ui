@@ -24,20 +24,30 @@ $(function () {
                 columns: [
                     {
                         targets: 0,
+                        width: '1%',
+                        render: (data, type, row, meta) => {
+                            return `<span class="table-row-order">${(meta.row + 1)}</span>`
+                        }
+                    },
+                    {
+                        targets: 1,
+                        width: '10%',
                         render: (data, type, row) => {
                             let link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`;
                         }
                     },
                     {
-                        targets: 1,
+                        targets: 2,
+                        width: '30%',
                         render: (data, type, row) => {
                             const link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="underline_hover">${row?.['title']}</a>`
                         }
                     },
                     {
-                        targets: 2,
+                        targets: 3,
+                        width: '15%',
                         render: (data, type, row) => {
                             let type_data = [
                                 "primary badge-outline",
@@ -48,7 +58,8 @@ $(function () {
                         }
                     },
                     {
-                        targets: 3,
+                        targets: 4,
+                        width: '10%',
                         render: (data, type, row) => {
                             let type_data = [
                                 "primary",
@@ -62,7 +73,8 @@ $(function () {
                         }
                     },
                     {
-                        targets: 4,
+                        targets: 5,
+                        width: '10%',
                         render: (data, type, row) => {
                             if (row?.['date_received']) {
                                 return `<p>${moment(row?.['date_received']).format('DD/MM/YYYY')}</p>`;
@@ -71,7 +83,8 @@ $(function () {
                         }
                     },
                     {
-                        targets: 5,
+                        targets: 6,
+                        width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
                             let sttData = [
@@ -85,7 +98,8 @@ $(function () {
                         }
                     },
                     {
-                        targets: 6,
+                        targets: 7,
+                        width: '5%',
                         className: 'action-center',
                         render: (data, type, row) => {
                             let link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row?.['id']);

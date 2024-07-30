@@ -306,7 +306,7 @@ class BudgetReportList(View):
         return {}, status.HTTP_200_OK
 
 
-class BudgetReportListAPI(APIView):
+class BudgetReportCompanyListAPI(APIView):
 
     @mask_view(
         auth_require=True,
@@ -314,8 +314,20 @@ class BudgetReportListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.BUDGET_REPORT_LIST).get(data)
-        return resp.auto_return(key_success='budget_report_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.BUDGET_REPORT_COMPANY_LIST).get(data)
+        return resp.auto_return(key_success='budget_report_company_list')
+
+
+class BudgetReportGroupListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.BUDGET_REPORT_GROUP_LIST).get(data)
+        return resp.auto_return(key_success='budget_report_group_list')
 
 
 class PaymentListForBudgetReportAPI(APIView):

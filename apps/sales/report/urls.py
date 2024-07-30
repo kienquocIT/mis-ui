@@ -7,7 +7,7 @@ from apps.sales.report.views import (
     ReportCashflowList, ReportCashflowListAPI, ReportInventoryDetailListAPI,
     ReportInventoryList, ReportInventoryListAPI, ReportGeneralList, ReportGeneralListAPI,
     PurchaseOrderReportList, PurchaseOrderReportListAPI, ReportInventoryProductWarehouseViewAPI, BudgetReportList,
-    BudgetReportListAPI, PaymentListForBudgetReportAPI
+    BudgetReportCompanyListAPI, PaymentListForBudgetReportAPI, BudgetReportGroupListAPI
 )
 
 urlpatterns = [
@@ -38,6 +38,7 @@ urlpatterns = [
 
     # budget report
     path('budget-report', BudgetReportList.as_view(), name='BudgetReportList'),
-    path('api/budget-report', BudgetReportListAPI.as_view(), name='BudgetReportListAPI'),
+    path('api/budget-report-company', BudgetReportCompanyListAPI.as_view(), name='BudgetReportCompanyListAPI'),
+    path('api/budget-report-group', BudgetReportGroupListAPI.as_view(), name='BudgetReportGroupListAPI'),
     path('api/budget-report-payment', PaymentListForBudgetReportAPI.as_view(), name='PaymentListForBudgetReportAPI'),
 ]

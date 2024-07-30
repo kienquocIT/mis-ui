@@ -1,19 +1,34 @@
 $(document).ready(function () {
     const $trans_script = $('#trans-script')
     const $url_script = $('#url-script')
-    const $periodMonthEle = $('#month-select')
     const $periodEle = $('#period-select')
+    const $month_filter = $('#month-filter')
+    const $quarter_filter = $('#quarter-filter')
+    const $month_select = $('#month-select')
+    const $quarter_select = $('#quarter-select')
 
     const $current_period_Ele = $('#current_period')
     let current_period = {}
     if ($current_period_Ele.text() !== '') {
         current_period = JSON.parse($current_period_Ele.text())
         getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
-        $periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
+        $month_select.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
+    }
+
+    function getQuarterMonth(quarter) {
+        let month_list = []
+        for (let i = 0; i < 3; i++) {
+            month_list.push(
+                [
+                    [1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]
+                ][parseFloat(quarter) - 1][i] + parseFloat(current_period['space_month'])
+            )
+        }
+        return month_list
     }
 
     function getMonthOrder(space_month, fiscal_year) {
-        $periodMonthEle.html(``)
+        $month_select.html(``)
         let data = []
         for (let i = 0; i < 12; i++) {
             let year_temp = fiscal_year
@@ -24,7 +39,7 @@ $(document).ready(function () {
             }
             if (fiscal_year !== current_period['fiscal_year'] || trans_order <= new Date().getMonth() + 1) {
                 if (year_temp === new Date().getFullYear()) {
-                    $periodMonthEle.append(`<option value="${i + 1}">${$trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
+                    $month_select.append(`<option value="${i + 1}">${$trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
                     data.push({
                         'id': i + 1,
                         'title': $trans_script.attr(`data-trans-m${trans_order}th`),
@@ -40,8 +55,8 @@ $(document).ready(function () {
             'month': 0,
             'year': 0,
         })
-        $periodMonthEle.empty();
-        $periodMonthEle.initSelect2({
+        $month_select.empty();
+        $month_select.initSelect2({
             placeholder: $trans_script.attr('data-trans-all'),
             data: data,
             allowClear: true,
@@ -55,16 +70,27 @@ $(document).ready(function () {
     function LoadGroup(ele, data) {
         ele.initSelect2({
             allowClear: true,
-            placeholder: $trans_script.attr('data-trans-all'),
+            placeholder: $trans_script.attr('data-trans-get-by-config'),
             ajax: {
                 url: ele.attr('data-url'),
+                data: {'current_emp': true},
                 method: 'GET',
             },
             callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp] ? resp.data[keyResp] : []
+                let res = []
+                for (const config of resp.data?.['budget_plan_config']) {
+                    if (config?.['can_view_company']) {
+                        res.push({'id': '0', 'title': $trans_script.attr('data-trans-all-group')})
+                    }
+                    for (const group_allowed of config?.['group_allowed']) {
+                        if (group_allowed?.['can_view']) {
+                            res.push(group_allowed?.['group'])
+                        }
+                    }
+                }
+                return res
             },
             data: (data ? data : null),
-            keyResp: 'group_list',
             keyId: 'id',
             keyText: 'title',
         })
@@ -85,29 +111,40 @@ $(document).ready(function () {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            $('#quarter-select').empty()
+            current_period = SelectDDControl.get_data_from_idx(ele, ele.val())
+            getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
         })
     }
     LoadPeriod($periodEle, current_period)
-    $('#quarter-select').empty()
 
-    $('#btn-view').on('click', function () {
+    function LoadTableForAllCompany() {
         WindowControl.showLoading();
         let dataParam = {}
-        dataParam['budget_plan__period_mapped_id'] = $periodEle.val() ? $periodEle.val() : null
-        let budget_report_list_ajax = $.fn.callAjax2({
-            url: $url_script.attr('data-url-budget-report-list'),
+        dataParam['budget_plan__period_mapped_id'] = $periodEle.val()
+        let budget_report_company_list_ajax = $.fn.callAjax2({
+            url: $url_script.attr('data-url-budget-report-company-list'),
             data: dataParam,
             method: 'GET'
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('budget_report_list')) {
-                    let filtered_data = data?.['budget_report_list']
-                    filtered_data = filter_by_month(filtered_data)
-                    // filtered_data = filter_by_po_staff(filtered_data)
-                    // filtered_data = filter_by_sale_order(filtered_data)
-                    console.log(filtered_data)
+                if (data && typeof data === 'object' && data.hasOwnProperty('budget_report_company_list')) {
+                    if ($month_filter.prop('checked')) {
+                        return filter_by_month(data?.['budget_report_company_list'], true)
+                    }
+                    if ($quarter_filter.prop('checked')) {
+                        return filter_by_quarter(data?.['budget_report_company_list'], true)
+                    }
+                    let filtered_data = []
+                    for (let i = 0; i < data?.['budget_report_company_list'].length; i++) {
+                        filtered_data.push({
+                            'expense_item': data?.['budget_report_company_list'][i]?.['expense_item'],
+                            'plan_value': data?.['budget_report_company_list'][i]?.['company_year'],
+                            'actual_value': 0,
+                            'difference_value': 0 - data?.['budget_report_company_list'][i]?.['company_year'],
+                            'rate_value': 0
+                        })
+                    }
                     return filtered_data;
                 }
                 return {};
@@ -117,9 +154,9 @@ $(document).ready(function () {
             }
         )
 
-        Promise.all([budget_report_list_ajax]).then(
+        Promise.all([budget_report_company_list_ajax]).then(
             (results) => {
-                RenderTable($('#main-table'), results[0])
+                RenderTable($('#main-table'), results[0], null)
                 setTimeout(
                     () => {
                         WindowControl.hideLoading();
@@ -127,15 +164,94 @@ $(document).ready(function () {
                     500
                 )
             })
-    })
-    $('#btn-view').trigger('click')
+    }
 
-    function filter_by_month(data) {
-        if ($('#month-filter').prop('checked')) {
-            let month = $periodMonthEle.val()
+    function LoadTableForEachGroup(group_id) {
+        WindowControl.showLoading();
+        let dataParam = {}
+        dataParam['budget_plan__period_mapped_id'] = $periodEle.val()
+        dataParam['budget_plan_group__group_mapped_id'] = group_id
+        let budget_report_group_list_ajax = $.fn.callAjax2({
+            url: $url_script.attr('data-url-budget-report-group-list'),
+            data: dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('budget_report_group_list')) {
+                    if ($month_filter.prop('checked')) {
+                        return filter_by_month(data?.['budget_report_group_list'], false)
+                    }
+                    if ($quarter_filter.prop('checked')) {
+                        return filter_by_quarter(data?.['budget_report_group_list'], false)
+                    }
+                    let filtered_data = []
+                    for (let i = 0; i < data?.['budget_report_group_list'].length; i++) {
+                        filtered_data.push({
+                            'expense_item': data?.['budget_report_company_list'][i]?.['expense_item'],
+                            'plan_value': data?.['budget_report_company_list'][i]?.['group_year'],
+                            'actual_value': 0,
+                            'difference_value': 0 - data?.['budget_report_company_list'][i]?.['group_year'],
+                            'rate_value': 0
+                        })
+                    }
+                    return filtered_data;
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([budget_report_group_list_ajax]).then(
+            (results) => {
+                RenderTable($('#main-table'), results[0], group_id)
+                setTimeout(
+                    () => {
+                        WindowControl.hideLoading();
+                    },
+                    500
+                )
+            })
+    }
+
+    $('#btn-view').on('click', function () {
+        let group_id = $('#group-select').val()
+        if (group_id) {
+            if (group_id === '0') {
+                LoadTableForAllCompany()
+            }
+            else {
+                LoadTableForEachGroup(group_id)
+            }
+        }
+        else {
+            $.fn.notifyB({"description": 'Please select a group.', "timeout": 3500}, 'warning')
+        }
+    })
+
+    function filter_by_month(data, company=true) {
+        if (company) {
+            let month_order = parseFloat($month_select.val()) - 1
             let filtered_data = []
             for (let i = 0; i < data.length; i++) {
-                let plan_value = data[i]?.['company_month_list'] ? parseFloat(data[i]?.['company_month_list']?.[month]) : 0
+                let plan_value = data[i]?.['company_month_list'] ? parseFloat(data[i]?.['company_month_list']?.[month_order]) : 0
+                filtered_data.push({
+                    'expense_item': data[i]?.['expense_item'],
+                    'plan_value': plan_value,
+                    'actual_value': 0,
+                    'difference_value': 0 - plan_value,
+                    'rate_value': 0
+                })
+            }
+            return filtered_data
+        }
+        else {
+            let month_order = parseFloat($month_select.val()) - 1
+            let filtered_data = []
+            for (let i = 0; i < data.length; i++) {
+                let plan_value = data[i]?.['group_month_list'] ? parseFloat(data[i]?.['group_month_list']?.[month_order]) : 0
                 filtered_data.push({
                     'expense_item': data[i]?.['expense_item'],
                     'plan_value': plan_value,
@@ -148,7 +264,40 @@ $(document).ready(function () {
         }
     }
 
-    function RenderTable(table, data_list=[]) {
+    function filter_by_quarter(data, company=true) {
+        if (company) {
+            let quarter_order = $quarter_select.val() - 1
+            let filtered_data = []
+            for (let i = 0; i < data.length; i++) {
+                let plan_value = data[i]?.['company_quarter_list'] ? parseFloat(data[i]?.['company_quarter_list']?.[quarter_order]) : 0
+                filtered_data.push({
+                    'expense_item': data[i]?.['expense_item'],
+                    'plan_value': plan_value,
+                    'actual_value': 0,
+                    'difference_value': 0 - plan_value,
+                    'rate_value': 0
+                })
+            }
+            return filtered_data
+        }
+        else {
+            let quarter_order = $quarter_select.val() - 1
+            let filtered_data = []
+            for (let i = 0; i < data.length; i++) {
+                let plan_value = data[i]?.['group_quarter_list'] ? parseFloat(data[i]?.['group_quarter_list']?.[quarter_order]) : 0
+                filtered_data.push({
+                    'expense_item': data[i]?.['expense_item'],
+                    'plan_value': plan_value,
+                    'actual_value': 0,
+                    'difference_value': 0 - plan_value,
+                    'rate_value': 0
+                })
+            }
+            return filtered_data
+        }
+    }
+
+    function BuildTable(table, data_list=[], group_id) {
         table.DataTable().clear().destroy()
         table.DataTableDefault({
             ordering: false,
@@ -164,77 +313,169 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'text-primary w-35',
+                    className: 'w-35',
                     render: (data, type, row) => {
-                        return `<span data-expense-id="${row?.['expense_item']?.['id']}" class="expense-item-span fw-bold">${row?.['expense_item']?.['title']}</span>`
+                        if (row?.['plan_value'] === 0) {
+                            return `<span data-expense-id="${row?.['expense_item']?.['id']}" class="expense-item-span text-danger">${row?.['expense_item']?.['title']}</span>`
+                        }
+                        return `<span data-expense-id="${row?.['expense_item']?.['id']}" class="expense-item-span text-primary">${row?.['expense_item']?.['title']}</span>`
                     }
                 },
                 {
-                    className: 'text-primary text-right w-15',
+                    className: 'text-right w-15',
                     render: (data, type, row) => {
-                        return `<span class="mask-money plan_value_span" data-init-money="${row?.['plan_value']}"></span>`
+                        if (row?.['plan_value'] === 0) {
+                            return `<span class="text-danger mask-money plan_value_span" data-init-money="${row?.['plan_value']}"></span>`
+                        }
+                        return `<span class="text-primary mask-money plan_value_span" data-init-money="${row?.['plan_value']}"></span>`
                     }
                 },
                 {
-                    className: 'text-primary text-right w-15',
+                    className: 'text-right w-15',
                     render: (data, type, row) => {
-                        return `<span class="mask-money actual_value_span" data-init-money="${row?.['actual_value']}"></span>`
+                        if (row?.['plan_value'] === 0) {
+                            return `<span class="text-danger mask-money actual_value_span" data-init-money="${row?.['actual_value']}"></span>`
+                        }
+                        return `<span class="text-primary mask-money actual_value_span" data-init-money="${row?.['actual_value']}"></span>`
                     }
                 },
                 {
-                    className: 'text-primary text-right w-15',
+                    className: 'text-right w-15',
                     render: (data, type, row) => {
-                        return `<span class="mask-money difference_value_span" data-init-money="${row?.['difference_value']}"></span>`
+                        if (row?.['plan_value'] === 0) {
+                            return `<span class="text-danger mask-money difference_value_span" data-init-money="${row?.['difference_value']}"></span>`
+                        }
+                        if (row?.['difference_value'] < 0) {
+                            return `<span class="text-primary">(<span class="text-primary mask-money difference_value_span" data-init-money="${row?.['difference_value'] * (-1)}"></span>)</span>`
+                        }
+                        return `<span class="text-primary mask-money difference_value_span" data-init-money="${row?.['difference_value']}"></span>`
                     }
                 },
                 {
-                    className: 'text-primary text-right w-15',
+                    className: 'text-right w-15',
                     render: (data, type, row) => {
-                        return `<span class="rate_value_span">${row?.['rate_value'] !== -1 ? row?.['rate_value'] : '***'} %</span>`
+                        if (row?.['plan_value'] === 0) {
+                            return `<span class="text-danger rate_value_span">${row?.['rate_value']} %</span>`
+                        }
+                        return `<span class="text-primary rate_value_span">${row?.['rate_value']} %</span>`
                     }
                 },
             ],
-            initComplete: function () {
-                let dataParam = {'date_approved_month': $periodMonthEle.val()}
-                let payment_list_ajax = $.fn.callAjax2({
-                    url: $url_script.attr('data-url-payment-list'),
-                    data: dataParam,
-                    method: 'GET'
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && typeof data === 'object' && data.hasOwnProperty('budget_report_payment_list')) {
-                            return data?.['budget_report_payment_list'];
-                        }
-                        return {};
-                    },
-                    (errs) => {
-                        console.log(errs);
-                    }
-                )
-
-                Promise.all([payment_list_ajax]).then(
-                    (results) => {
-                        console.log(results[0])
-                        table.find('tbody tr').each(function () {
-                            let row = $(this)
-                            let plan_value = row.find('.plan_value_span').attr('data-init-money')
-                            let actual_value = 0
-                            for (const payment of results[0]) {
-                                for (const payment_expense of payment?.['expense_items']) {
-                                    if (row.find('.expense-item-span').attr('data-expense-id') === payment_expense?.['id']) {
-                                        actual_value += parseFloat(payment_expense?.['value'])
-                                    }
-                                }
-                            }
-                            row.find('.actual_value_span').attr('data-init-money', actual_value)
-                            actual_value < plan_value ? row.find('.difference_value_span').closest('td').prepend('(').append(')') : ''
-                            row.find('.difference_value_span').attr('data-init-money', actual_value < plan_value ? (actual_value - plan_value) * (-1) : actual_value - plan_value)
-                            row.find('.rate_value_span').text(plan_value !== 0 ? (actual_value*100/plan_value).toFixed(2).toString() + ' %' : '***')
-                        })
-                        $.fn.initMaskMoney2()
-                    })
-            }
+            initComplete: function () {}
         });
     }
+
+    function RenderTable(table, data_planned_list=[], group_id=null, init=false) {
+        if (!init) {
+            let dataParam = {}
+            if ($month_filter.prop('checked') && $month_select.val()) {
+                dataParam['month_list'] = JSON.stringify([$month_select.val()])
+            }
+            else if ($quarter_filter.prop('checked') && $quarter_select.val()) {
+                dataParam['month_list'] = JSON.stringify(getQuarterMonth($quarter_select.val()))
+            }
+            else {
+                dataParam['date_approved__year'] = current_period?.['fiscal_year']
+            }
+            if (group_id) {
+                dataParam['employee_inherit__group_id'] = group_id
+            }
+            let payment_list_ajax = $.fn.callAjax2({
+                url: $url_script.attr('data-url-payment-list'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('budget_report_payment_list')) {
+                        return data?.['budget_report_payment_list'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([payment_list_ajax]).then(
+                (results) => {
+                    let table_data = []
+                    for (const data of data_planned_list) {
+                        let actual_value = 0
+                        for (const payment of results[0]) {
+                            for (const payment_expense of payment?.['expense_items']) {
+                                if (data?.['expense_item']?.['id'] === payment_expense?.['id']) {
+                                    actual_value += parseFloat(payment_expense?.['value'])
+                                    payment_expense['planned'] = true
+                                }
+                            }
+                        }
+                        let plan_value = data['plan_value']
+                        data['actual_value'] = actual_value
+                        data['difference_value'] = actual_value - plan_value
+                        data['rate_value'] = (actual_value * 100 / plan_value).toFixed(2)
+                        table_data.push(data)
+                    }
+
+                    let not_in_plan = []
+                    for (const payment of results[0]) {
+                        for (const payment_expense of payment?.['expense_items']) {
+                            if (payment_expense?.['planned'] !== true) {
+                                not_in_plan.push(
+                                    {
+                                        "expense_item": {
+                                            "id": payment_expense?.['id'],
+                                            "code": payment_expense?.['code'],
+                                            "title": payment_expense?.['title']
+                                        },
+                                        "plan_value": 0,
+                                        "actual_value": payment_expense?.['value'],
+                                        "difference_value": payment_expense?.['value'],
+                                        "rate_value": "---"
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    const aggregatedData = not_in_plan.reduce((acc, item) => {
+                        const id = item.expense_item.id;
+                        if (!acc[id]) {
+                            acc[id] = {
+                                expense_item: item.expense_item,
+                                plan_value: 0,
+                                actual_value: 0,
+                                difference_value: 0,
+                                rate_value: item.rate_value
+                            };
+                        }
+                        acc[id].plan_value += item.plan_value;
+                        acc[id].actual_value += item.actual_value;
+                        acc[id].difference_value += item.difference_value;
+                        return acc;
+                    }, {});
+
+                    BuildTable(table, table_data.concat(Object.values(aggregatedData)), group_id)
+                })
+        }
+        else {
+            BuildTable(table, [])
+        }
+    }
+    RenderTable($('#main-table'), [], true, true)
+
+    $month_filter.on('change', function () {
+        if ($(this).prop('checked')) {
+            $quarter_filter.prop('checked', !$(this).prop('checked'))
+            $quarter_select.prop('disabled', $(this).prop('checked'))
+        }
+        $month_select.prop('disabled', !$(this).prop('checked'))
+    })
+
+    $quarter_filter.on('change', function () {
+        if ($(this).prop('checked')) {
+            $month_filter.prop('checked', !$(this).prop('checked'))
+            $month_select.prop('disabled', $(this).prop('checked'))
+        }
+        $quarter_select.prop('disabled', !$(this).prop('checked'))
+    })
 })

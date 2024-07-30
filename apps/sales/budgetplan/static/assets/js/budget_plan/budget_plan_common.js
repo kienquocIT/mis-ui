@@ -76,7 +76,7 @@ function LoadTabCompanyTable(company_budget_data, space_month) {
             <td class="text-right"><span class="mask-money money-m11th belong-q4" data-init-money="${company_data?.['company_month_list'][10]}"></td>
             <td class="text-right"><span class="mask-money money-m12th belong-q4" data-init-money="${company_data?.['company_month_list'][11]}"></td>
             <td class="text-right"><span class="text-primary mask-money money-q4th belong-year" data-init-money="${company_data?.['company_quarter_list'][3]}"></td>
-            <td class="text-right"><span class="text-primary fw-bold text-primary mask-money money-year" data-init-money="${company_data?.['company_year']}"></span></td>   
+            <td class="text-right"><span class="text-primary fw-bold mask-money money-year" data-init-money="${company_data?.['company_year']}"></span></td>   
         </tr>`)
         expense_row_ele.find('.expense-item-span').text(company_data?.['expense_item']?.['title'])
         tab_table.append(expense_row_ele)
@@ -325,23 +325,23 @@ $(document).on("click", '.btn-add-new-row', function () {
         <tr>
             <td><span class="index"></span>&nbsp;<button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-row-btn"><span class="icon"><i class="far fa-trash-alt"></i></span></button></td>
             <td><select class="select2 form-select expense-item-select"></select></td>
-            <td><input class="form-control mask-money money-m1th belong-q1" value="0"></td>
-            <td><input class="form-control mask-money money-m2th belong-q1" value="0"></td>
-            <td><input class="form-control mask-money money-m3th belong-q1" value="0"></td>
-            <td><input class="form-control mask-money money-q1th belong-year" value="0" readonly></td>
-            <td><input class="form-control mask-money money-m4th belong-q2" value="0"></td>
-            <td><input class="form-control mask-money money-m5th belong-q2" value="0"></td>
-            <td><input class="form-control mask-money money-m6th belong-q2" value="0"></td>
-            <td><input class="form-control mask-money money-q2th belong-year" value="0" readonly></td>
-            <td><input class="form-control mask-money money-m7th belong-q3" value="0"></td>
-            <td><input class="form-control mask-money money-m8th belong-q3" value="0"></td>
-            <td><input class="form-control mask-money money-m9th belong-q3" value="0"></td>
-            <td><input class="form-control mask-money money-q3th belong-year" value="0" readonly></td>
-            <td><input class="form-control mask-money money-m10th belong-q4" value="0"></td>
-            <td><input class="form-control mask-money money-m11th belong-q4" value="0"></td>
-            <td><input class="form-control mask-money money-m12th belong-q4" value="0"></td>
-            <td><input class="form-control mask-money money-q4th belong-year" value="0" readonly></td>
-            <td><span class="mask-money money-year" data-init-money="0"></span></td>   
+            <td class="text-right"><input class="text-primary form-control mask-money money-m1th belong-q1" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-m2th belong-q1" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-m3th belong-q1" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-q1th belong-year" value="0" readonly></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-m4th belong-q2" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-m5th belong-q2" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-m6th belong-q2" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-q2th belong-year" value="0" readonly></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-m7th belong-q3" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-m8th belong-q3" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-m9th belong-q3" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-q3th belong-year" value="0" readonly></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-m10th belong-q4" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-m11th belong-q4" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-m12th belong-q4" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-q4th belong-year" value="0" readonly></td>
+            <td class="text-right"><span class="text-primary mask-money money-year" data-init-money="0"></span></td>   
         </tr>
     `)
     tab_table.find('tbody').append(row)

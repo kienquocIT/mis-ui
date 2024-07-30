@@ -5842,7 +5842,7 @@ msgstr "Số lượng đếm"
 
 #
 msgid "Difference"
-msgstr "Khác biệt"
+msgstr "Chênh lệch"
 
 #
 msgid "Select for actions"
@@ -8144,3 +8144,11 @@ msgstr "khoá KHNS toàn công ty"
 #
 msgid "Budget report"
 msgstr "Báo cáo ngân sách"
+
+#
+msgid "Get by Budget plan config permission"
+msgstr "Lấy theo quyền trong Cấu hình KHNS"
+
+#
+msgid "Red lines are the expenses out of plan."
+msgstr "Dòng màu đỏ là những chi phí phát sinh ngoài kế hoạch"

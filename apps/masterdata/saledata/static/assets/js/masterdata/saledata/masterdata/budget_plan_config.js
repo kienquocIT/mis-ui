@@ -57,9 +57,9 @@ $(document).ready(function () {
                         className: '',
                         render: (data, type, row) => {
                             let html = ''
-                            if (row?.['can_view_company']) {
+                            if (row?.['can_view_company'] || row?.['can_lock_plan']) {
                                 html += `<div class="form-check form-switch form-check-inline ml-3 mr-3">
-                                        <input type="checkbox" class="form-check-input" disabled checked>
+                                        <input type="checkbox" class="form-check-input" disabled ${row?.['can_view_company'] ? 'checked' : ''}>
                                         <label class="form-check-label">${trans_script.attr('data-trans-can-view-company')}</label>
                                     </div>
                                     <br>
@@ -81,9 +81,9 @@ $(document).ready(function () {
                         className: '',
                         render: (data, type, row) => {
                             let html = ''
-                            if (row?.['can_lock_plan']) {
+                            if (row?.['can_view_company'] || row?.['can_lock_plan']) {
                                 html += `<div class="form-check form-switch form-check-inline ml-3">
-                                        <input type="checkbox" class="form-check-input" disabled checked>
+                                        <input type="checkbox" class="form-check-input" disabled ${row?.['can_lock_plan'] ? 'checked' : ''}>
                                         <label class="form-check-label">${trans_script.attr('data-trans-can-lock-plan')}</label>
                                     </div>
                                     <br>

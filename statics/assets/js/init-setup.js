@@ -375,20 +375,25 @@ class LogController {
                         }
                     }
                     let msgMapIcon = "";
+                    let arrayNew = ["new"];
                     let arrayDone = ["finish", "approved"];
                     let arrayCancel = ["canceled", "rejected"];
                     let arrayUpdate = ["update", "zone"];
+                    let isNew = arrayNew.some(item => itemLog?.['msg'].toLowerCase().includes(item));
                     let isDone = arrayDone.some(item => itemLog?.['msg'].toLowerCase().includes(item));
                     let isCancel = arrayCancel.some(item => itemLog?.['msg'].toLowerCase().includes(item));
                     let isUpdate = arrayUpdate.some(item => itemLog?.['msg'].toLowerCase().includes(item));
+                    if (isNew === true) {
+                        msgMapIcon = '<i class="fas fa-tasks ml-2 mt-1"></i>';
+                    }
                     if (isDone === true) {
-                        msgMapIcon = '<i class="fas fa-check text-green ml-1 mt-1"></i>';
+                        msgMapIcon = '<i class="fas fa-check text-green ml-2 mt-1"></i>';
                     }
                     if (isCancel === true) {
-                        msgMapIcon = '<i class="fas fa-times text-red ml-1 mt-1"></i>';
+                        msgMapIcon = '<i class="fas fa-times text-red ml-2 mt-1"></i>';
                     }
                     if (isUpdate === true) {
-                        msgMapIcon = '<i class="fas fa-edit text-yellow ml-1 mt-1"></i>';
+                        msgMapIcon = '<i class="fas fa-user-edit ml-2 mt-1"></i>';
                     }
                     childLogHTML += ` <span class="text-low-em">${itemLog['msg']}</span>${msgMapIcon}</div>`;
                     logHTML.push(childLogHTML);
@@ -2265,13 +2270,13 @@ class WFRTControl {
         let htmlFinish = `<div class="row">
                             <div class="d-flex">
                                 <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
-                                <span class="text-low-em">${$.fn.transEle.attr('data-finish-wf-non-apply')}</span><i class="fas fa-check text-green ml-1 mt-1"></i>
+                                <span class="text-low-em">${$.fn.transEle.attr('data-finish-wf-non-apply')}</span><i class="fas fa-check text-green ml-2 mt-1"></i>
                             </div>
                         </div>`;
         let htmlCancel = `<div class="row mb-3">
                             <div class="d-flex">
                                 <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
-                                <span class="text-low-em">${$.fn.transEle.attr('data-canceled-by-creator')}</span><i class="fas fa-times text-red ml-1 mt-1"></i>
+                                <span class="text-low-em">${$.fn.transEle.attr('data-canceled-by-creator')}</span><i class="fas fa-times text-red ml-2 mt-1"></i>
                             </div>
                         </div>`;
         htmlBody = htmlFinish;

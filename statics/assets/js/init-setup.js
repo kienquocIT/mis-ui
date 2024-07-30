@@ -7,6 +7,24 @@ class SetupFormSubmit {
         return null;
     }
 
+    static setInputValue(input$, value){
+        if ($(input$).is(':checkbox')) {
+            $(input$).prop('checked', !!value);
+        } else if ($(input$).is(':radio')){
+            const nameRadio = $(input$).attr('name');
+            if (nameRadio){
+                const frm$ = $(input$).closest('form');
+                if (frm$.length > 0){
+                    frm$.find(`:radio[name=${nameRadio}]`).prop('checked', false);
+                }
+                const eleChecked$ = frm$.find(`:radion[name=${nameRadio}][value=${value}]`);
+                if (eleChecked$.length > 0) eleChecked$.prop('checked', true);
+            }
+        } else {
+            $(input$).val(value)
+        }
+    }
+
     static serializerInput(input$, toObject = false) {
         let item = {
             'name': $(input$).attr('name'),

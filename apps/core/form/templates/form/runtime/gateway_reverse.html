@@ -1,0 +1,110 @@
+{% load i18n static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+            name="viewport"
+            content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    >
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% trans 'Form Url - Gateway' %}</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/images/bflow/icon/icon_36x36.png' %}"/>
+    <style>
+        body {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+        }
+
+        .main-form {
+            width: 80%;
+            min-width: 300px;
+            max-width: 600px;
+            background-color: #fff;
+            box-shadow: 0 0 5px 3px #f7f7f7, 0 0 8px 5px #f1f1f1;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-group {
+            box-sizing: border-box;
+            width: 100%;
+            outline: 0;
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 7px 10px;
+            box-sizing: border-box;
+            border: 1px solid #c7c7c7;
+        }
+
+        button {
+            padding: 7px 10px;
+            border: 0;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            color: #000;
+        }
+        button:hover {
+            background-color: #7c7c7c;
+            color: #fff;
+        }
+
+        label:has(+ input[required]):after {
+            content: "*";
+            color: red;
+            padding-left: 5px;
+        }
+    </style>
+    <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+</head>
+<body>
+<div class="main-form">
+    <form data-url="{% url 'FormRuntimeReverseUrl' %}">
+        <div style="padding: 30px;">
+            <div class="form-group">
+                <label for="">Form code</label>
+                <input type="text" name="form_code" required/>
+            </div>
+            <div class="form-group">
+                <label for="">Record ID</label>
+                <input type="text" name="form_record">
+            </div>
+            <button>Redirect</button>
+        </div>
+    </form>
+
+    <script>
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            for (const [key, value] of urlParams) {
+                const ele$ = $(`:input[name=${key}]`);
+                if (ele$.length === 1) ele$.val(value).trigger('change');
+            }
+
+            $('form').on('submit', function (event) {
+                event.preventDefault();
+                const data = $(this).serialize();
+                setTimeout(
+                    () => window.location.href = $(this).attr('data-url') + '?' + data,
+                    100
+                )
+            })
+        })
+    </script>
+</div>
+</body>
+</html>

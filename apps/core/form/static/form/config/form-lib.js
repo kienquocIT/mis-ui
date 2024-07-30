@@ -770,18 +770,8 @@ class ToolboxField {
                 $(this).addClass('active');
 
                 clsThis.publishTypeData$.find('.publish-data').hide();
-                switch ($(this).attr('data-code')) {
-                    case 'share-with':
-                        clsThis.publishTypeData$.find('#publish-form-type-share').show();
-                        break
-                    case 'embed':
-                        clsThis.publishTypeData$.find('#publish-form-type-embed').show();
-                        break
-                    case 'email-campaigns':
-                        break
-                    case 'track-entries':
-                        break
-                }
+                const group$ = clsThis.publishTypeData$.find(`.publish-data[data-code=${$(this).attr('data-code')}]`);
+                if (group$.length > 0) group$.show();
             }
         });
 
@@ -1580,7 +1570,7 @@ class FormTitleComponentType extends FormComponentAbstract {
             'edit_submitted': false,
             'display_referrer_name': false,
             'display_creator': false,
-            'theme_selected': '',
+            'theme_selected': 'simple',
             'theme_assets': {},
         }
     }
@@ -3561,7 +3551,7 @@ class FormSelectComponentType extends FormComponentAbstract {
             'label': 'Select Box',
             'is_hide_label': false,
             'instruction': '',
-            'place_holder': '',
+            'place_holder': $.fn.gettext("Select..."),
             'size': 'medium',
             'required': false,
             'visibility': 'unset',

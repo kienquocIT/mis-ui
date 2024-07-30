@@ -33,6 +33,10 @@
                         <p>{% trans 'Embed' %}</p>
                         <small>{% trans 'Embed your form on a website using the embed codes that suits your need.' %}</small>
                     </div>
+                    <div class="publish-type-item" data-code="notifications">
+                        <p>{% trans 'Notifications' %}</p>
+                        <small>{% trans 'Configure form data related notifications.' %}</small>
+                    </div>
                     <div class="publish-type-item disable" data-code="email-campaigns">
                         <p>{% trans 'Email Campaigns' %}</p>
                         <small>{% trans 'Share your form with a list of contacts using email campaign software.' %}</small>
@@ -42,7 +46,7 @@
                         <small>{% trans 'Use advanced tracking codes in your forms to measure your campaign metrics.' %}</small>
                     </div>
                 </div>
-                <div id="publish-form-type-share" class="publish-data">
+                <div id="publish-form-type-share" class="publish-data" data-code="share-with">
                     <div class="publish-form-type-data">
                         <div class="publish-type-sub">
                             <p class="type-sub-title">{% trans 'Share With' %}</p>
@@ -180,7 +184,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="publish-form-type-embed" class="publish-data" style="display: none;">
+                <div id="publish-form-type-embed" class="publish-data" data-code="embed" style="display: none;">
                     <div
                             class="h-50p w-100 d-flex justify-content-start align-items-center"
                             style="color: #00ab66; background-color: #ebfcf5;margin-bottom: 10px;padding: 10px;border: 1px solid #f1f1f1;box-shadow: 0 0.25rem 0.375rem 0.125rem #d9d9d9"
@@ -236,6 +240,87 @@
                         </div>
                     </div>
                 </div>
+                <form class="publish-data" data-code="notifications" style="display: none;">
+                    <div
+                            class="h-50p w-100 d-flex justify-content-start align-items-center"
+                            style="color: #00ab66; background-color: #fff;margin-bottom: 10px;padding: 10px;border: 1px solid #f1f1f1;box-shadow: 0 0.25rem 0.375rem 0.125rem #d9d9d9"
+                    >
+                        <b>{% trans 'Notifications' %}</b>
+                        <button class="btn btn-primary" style="margin-left: auto;">{% trans 'Save' %}</button>
+                    </div>
+                    <div class="publish-form-type-data" style="height: calc(100% - 50px - 10px)!important;">
+                        <div class="publish-type-data" style="overflow-x: hidden;overflow-y: scroll;flex-basis: 100%;width: 100%;">
+                            <div>
+                                <div style="border-left: 1px solid #dce2e5;margin-bottom: 30px;">
+                                <button class="btn btn-primary btn-square px-5 no-transform" type="button">
+                                    <span>
+                                        <span>{% trans "User management" %}</span>
+{#                                        <span class="icon"><i class="fa-solid fa-caret-up"></i></span>#}
+                                    </span>
+                                </button>
+                                <div style="padding-left: 30px;padding-top: 10px;">
+                                    <div class="form-check mb-3">
+                                        <input name="user_management_enable_new" type="checkbox" class="form-check-input" id="notification-user-management-enable">
+                                        <label class="form-check-label" for="notification-user-management-enable">{% trans 'Enabled with new' %}</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input name="user_management_enable_change" type="checkbox" class="form-check-input" id="notification-user-management-apply-change">
+                                        <label class="form-check-label" for="notification-user-management-apply-change">{% trans 'Enabled with change' %}</label>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="notification-user-management-destination" class="form-label">{% trans 'Destination email' %}</label>
+                                        <select
+                                                name="user_management_destination" id="notification-user-management-destination" class="form-select"
+                                                multiple
+                                        ></select>
+                                        <small class="form-text text-muted">
+                                            {% trans 'It is receiver in notify mail.' %}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                                <div style="border-left: 1px solid #dce2e5;">
+                                    <button class="btn btn-primary btn-square px-5 no-transform" type="button">
+                                        <span>
+                                            <span>{% trans "Creator" %}</span>
+{#                                            <span class="icon"><i class="fa-solid fa-caret-up"></i></span>#}
+                                        </span>
+                                    </button>
+                                    <div style="padding-left: 30px;padding-top: 10px;">
+                                        <div class="form-check mb-3">
+                                            <input name="creator_enable_new" type="checkbox" class="form-check-input" id="notification-creator-enable">
+                                            <label class="form-check-label" for="notification-creator-enable">{% trans 'Enabled with new' %}</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input name="creator_enable_change" type="checkbox" class="form-check-input" id="notification-creator-apply-change">
+                                            <label class="form-check-label" for="notification-creator-apply-change">{% trans 'Enabled with change' %}</label>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <label for="notification-creator-receiver-from" class="form-label">{% trans 'Mail receiver from' %}</label>
+                                            <select name="creator_receiver_from" class="form-select" id="notification-creator-receiver-from">
+                                                <option value="authenticated">{% trans "Authenticated" %}</option>
+                                                <option value="field" class="hidden">{% trans 'Field in form' %}</option>
+                                            </select>
+                                            <small class="form-text text-muted">
+                                                <ul style="list-style: circle">
+                                                    <li>{% trans 'With authenticated, it is not available if form is not require authenticated' %}</li>
+                                                    <li>{% trans 'With field in form, it is not available if field was removed or value of files is empty' %}</li>
+                                                    <li>{% trans 'In failed case, if user management is available, the note text will add to mail send notify to User Management' %}</li>
+                                                </ul>
+                                            </small>
+                                        </div>
+                                        <div class="form-group mb-3 hidden">
+                                            <label for="notification-creator-field" class="form-label">{% trans 'Select field' %}</label>
+                                            <select name="creator_field" class="form-select" id="notification-creator-field">
+                                                <option value=""></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

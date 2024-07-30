@@ -836,3 +836,59 @@ msgstr "Xác minh danh tính người gửi"
 #
 msgid "This feature requires checking the public IP address to make the request."
 msgstr "Tính năng này yêu cầu kiểm tra địa chỉ IP công cộng để thực hiện yêu cầu."
+
+#
+msgid "Configure form data related notifications."
+msgstr "Cấu hình thông báo liên quan đến dữ liệu biểu mẫu."
+
+#
+msgid "Select..."
+msgstr "Chọn..."
+
+#
+msgid "User management"
+msgstr "Người quản trị biểu mẫu"
+
+#
+msgid "Enabled with new"
+msgstr "Hiệu lực với tạo mới"
+
+#
+msgid "Enabled with change"
+msgstr "Hiệu lực với chỉnh sửa"
+
+#
+msgid "Destination email"
+msgstr "Danh sách email nhận thông báo"
+
+#
+msgid "It is receiver in notify mail."
+msgstr "Đây là danh sách email của những người nhận thông báo."
+
+#
+msgid "Mail receiver from"
+msgstr "Lấy email người nhận thông báo từ"
+
+#
+msgid "Authenticated"
+msgstr "Xác thực người gửi"
+
+#
+msgid "Field in form"
+msgstr "Trường dữ liệu trong biểu mẫu"
+
+#
+msgid "With authenticated, it is not available if form is not require authenticated"
+msgstr "Với xác thực người gửi, sẽ khả dụng khi cấu hình yêu cầu xác thực được bật"
+
+#
+msgid "With field in form, it is not available if field was removed or value of files is empty"
+msgstr "Với trường trên biểu mẫu, sẽ không khả dụng nếu trường đó đã bị loại bỏ hoặc dữ liệu trường đó trống"
+
+#
+msgid "In failed case, if user management is available, the note text will add to mail send notify to User Management"
+msgstr "Trường hợp không lấy được thông tin, một lưu ý sẽ được gửi kèm trong thông báo gửi đến Quản trị biểu mẫu nếu khả dụng"
+
+#
+msgid "Select field"
+msgstr "Chọn trường dữ liệu"

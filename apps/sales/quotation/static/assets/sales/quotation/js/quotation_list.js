@@ -66,7 +66,7 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '20%',
+                        width: '15%',
                         render: (data, type, row) => {
                             const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
@@ -74,7 +74,7 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '20%',
+                        width: '15%',
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
                             if (Object.keys(row?.['customer']).length !== 0) {

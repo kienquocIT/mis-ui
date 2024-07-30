@@ -91,31 +91,34 @@ $(document).ready(function () {
                 const label = config.label ?? '';
                 const inputReadyLength = inputs_data.filter(item => item.display === true).length;
 
-                headTmp$.push([
-                    label, inputReadyLength > 1 ? {
-                        'r': 1,
-                        'c': inputReadyLength
-                    } : {
-                        'r': 2,
-                        'c': 1,
-                    }
-                ]);
+                if (inputReadyLength > 0){
+                    headTmp$.push([
+                        label, inputReadyLength > 1 ? {
+                            'r': 1,
+                            'c': inputReadyLength
+                        } : {
+                            'r': 2,
+                            'c': 1,
+                        }
+                    ]);
 
-                inputs_data.map(inputConfig => {
-                    if (inputConfig.display === true) {
-                        const nameOfInput = inputConfig.name ?? '';
-                        keyNameOrder.push(nameOfInput);
-                        if (inputReadyLength > 1) headTmpSub$.push(inputConfig?.['label'] || '');
-                        columnsTmp.push({
-                            'className': 'wrap-text min-w-150p',
-                            'render': function (data, type, row) {
-                                const bodyData = row?.['body_data'];
-                                if (bodyData) return displayCellDataWithType(configOfItem, bodyData?.[nameOfInput] ?? '');
-                                return '-';
-                            }
-                        })
-                    }
-                })
+                    inputs_data.map(inputConfig => {
+                        if (inputConfig.display === true) {
+                            const nameOfInput = inputConfig.name ?? '';
+                            keyNameOrder.push(nameOfInput);
+                            if (inputReadyLength > 1) headTmpSub$.push(inputConfig?.['label'] || '');
+                            columnsTmp.push({
+                                'className': 'wrap-text min-w-150p',
+                                'render': function (data, type, row) {
+                                    const bodyData = row?.['body_data'];
+                                    if (bodyData) return displayCellDataWithType(configOfItem, bodyData?.[nameOfInput] ?? '');
+                                    return '-';
+                                }
+                            })
+                        }
+                    })
+
+                }
             }
         })
         return {
@@ -222,61 +225,65 @@ $(document).ready(function () {
             }, // No.
         ];
         let currentCol = 0;
-        configsOrder.map((idx) => {
-            const configOfField = configs[idx];
-            if (
-                configOfField
-                && typeof configOfField === 'object'
-                && configOfField.hasOwnProperty('type')
-                && typeof configOfField['type'] === "string"
-                && fieldTypeSkip.has(configOfField['type']) === false
-                && configOfField.hasOwnProperty('config')
-                && typeof configOfField['config'] === 'object'
-                && configOfField.hasOwnProperty('inputs_data')
-                && Array.isArray(configOfField['inputs_data'])
-            ) {
-                const currentColNum = currentCol;
-                let mergesOfField;
+        configsOrder.map(
+            (idx) => {
+                const configOfField = configs[idx];
+                if (
+                    configOfField
+                    && typeof configOfField === 'object'
+                    && configOfField.hasOwnProperty('type')
+                    && typeof configOfField['type'] === "string"
+                    && fieldTypeSkip.has(configOfField['type']) === false
+                    && configOfField.hasOwnProperty('config')
+                    && typeof configOfField['config'] === 'object'
+                    && configOfField.hasOwnProperty('inputs_data')
+                    && Array.isArray(configOfField['inputs_data'])
+                ) {
+                    const currentColNum = currentCol;
+                    let mergesOfField;
 
-                const inputsOfField = configOfField['inputs_data'] || [];
+                    const inputsOfField = configOfField['inputs_data'] || [];
 
-                const inputReadyLength = inputsOfField.filter(item => item.display === true).length;
+                    const inputReadyLength = inputsOfField.filter(item => item.display === true).length;
+                    if (inputReadyLength > 0){
+                        dataHeading.push(configOfField?.['config']?.['label'] || '')
+                        if (inputReadyLength === 1) {
+                            mergesOfField = {
+                                's': {
+                                    'r': 0,
+                                    'c': currentColNum + 1
+                                },
+                                'e': {
+                                    'r': 1,
+                                    'c': currentColNum + 1
+                                },
+                            }
+                        } else {
+                            mergesOfField = {
+                                's': {
+                                    'r': 0,
+                                    'c': currentColNum + 1
+                                },
+                                'e': {
+                                    'r': 0,
+                                    'c': currentColNum + 1 + inputReadyLength - 1
+                                },
+                            }
+                        }
 
-                dataHeading.push(configOfField?.['config']?.['label'] || '')
-                if (inputReadyLength === 1) {
-                    mergesOfField = {
-                        's': {
-                            'r': 0,
-                            'c': currentColNum + 1
-                        },
-                        'e': {
-                            'r': 1,
-                            'c': currentColNum + 1
-                        },
-                    }
-                } else {
-                    mergesOfField = {
-                        's': {
-                            'r': 0,
-                            'c': currentColNum + 1
-                        },
-                        'e': {
-                            'r': 0,
-                            'c': currentColNum + 1 + inputReadyLength - 1
-                        },
+                        inputsOfField.map((itemOfField, idx) => {
+                            if (itemOfField.display === true) {
+                                if (idx !== 0) dataHeading.push('');
+                                dataHeadingSub.push(itemOfField?.['label'] || '');
+                                currentCol += 1;
+                            }
+                        })
+                        if (mergesOfField) merges.push(mergesOfField);
+
                     }
                 }
-
-                inputsOfField.map((itemOfField, idx) => {
-                    if (itemOfField.display === true) {
-                        if (idx !== 0) dataHeading.push('');
-                        dataHeadingSub.push(itemOfField?.['label'] || '');
-                        currentCol += 1;
-                    }
-                })
-                if (mergesOfField) merges.push(mergesOfField);
             }
-        })
+        )
         // push system cols
         dataHeading.push($.fn.gettext('Created time'));
         merges.push({

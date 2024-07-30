@@ -5339,8 +5339,39 @@ class ExcelSheetJSController {
 class ExcelJSController {
     // https://www.npmjs.com/package/exceljs
 
+    static coordToIndex(coord){
+        let index = 0;
+        for (let i=0; i < coord.length ; i++){
+            const ascii = coord[i].charCodeAt(0);
+            const coefficient = coord.length - i - 1;
+            index += (ascii - 64) * 26 ** coefficient
+        }
+        // Trừ thêm cho 1 do index bắt đầu từ 0 còn công thức thì index bắt đầu từ 1.
+        return index - 1;
+    }
+
     static indexToCoord(r, c) {
-        return String.fromCharCode(65 + c) + (r + 1);
+        // Công thức toán của toạ độ: Tổ hợp cộng của `(Ci - 64) x 26 ^ ( n - i - 1)` với i=0 đến n-1
+        // Tổ hợp sau đó trừ thêm cho 1 do index bắt đầu từ 0 còn công thức thì index bắt đầu từ 1.
+        // Ci là mã ASCII của ký tự tại vị trí i trong chuỗi (với A=65)
+        // n là độ dài chuỗi ký tự
+        // Ví dụ `ABC`
+        // A = 65, B = 66, C = 67
+        // Vị trí 0: (A - 64) * 26² = 1 * 26² = 676
+        // Vị trí 1: (B - 64) * 26¹ = 2 * 26¹ = 52
+        // Vị trí 2: (C - 64) * 26⁰ = 3 * 26⁰ = 3
+        // Tổng: 676 + 52 + 3 = 731
+        // Trừ thêm đi 1: Kết quả: 730
+
+        // return String.fromCharCode(65 + c) + (r + 1);
+        let letter = '';
+        let temp;
+        while (c >= 0) {
+            temp = c % 26;
+            letter = String.fromCharCode(temp + 65) + letter;
+            c = (c - temp - 1) / 26;
+        }
+        return letter + (r + 1);
     }
 
     static indexToCoordRange(coord1, coord2) {
@@ -5426,11 +5457,9 @@ class ExcelJSController {
                 dataItem.map(
                     (subItem, idx) => {
                         let currentByIdx = colWidth?.[idx] || 0;
-                        if (currentByIdx === undefined) {
-                            currentByIdx = minWch;
-                        }
-                        let currentLength = subItem.length;
-
+                        if (currentByIdx === undefined) currentByIdx = minWch;
+                        let currentLength = subItem.toString().length;
+                        if (typeof subItem === 'boolean' && currentLength < 12) currentLength = 12;
                         if (currentLength > currentByIdx) {
                             colWidth[idx] = currentLength > maxWch ? maxWch : currentLength;
                         }
@@ -5476,7 +5505,9 @@ class ExcelJSController {
                 )
             )
 
-            merges.map(mergeItem => worksheet.mergeCells(mergeItem))
+            merges.map(mergeItem => {
+                worksheet.mergeCells(mergeItem);
+            })
 
             styles.map(styleItem => {
                 let [coord, config] = styleItem;

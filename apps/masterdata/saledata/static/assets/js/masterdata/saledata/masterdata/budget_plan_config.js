@@ -316,4 +316,13 @@ $(document).ready(function () {
             }
         })
     })
+
+    $(document).on("change", '.can-edit', function () {
+        if ($(this).prop('checked')) {
+            $(this).closest('tr').find('.can-view').prop('checked', true).prop('disabled', true)
+        }
+        else {
+            $(this).closest('tr').find('.can-view').prop('checked', false).prop('disabled', false)
+        }
+    })
 });

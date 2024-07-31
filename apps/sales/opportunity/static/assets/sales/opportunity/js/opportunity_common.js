@@ -1227,7 +1227,7 @@ function loadDtbOpportunityList() {
                     className: 'wrap-text w-10',
                     render: (data, type, row) => {
                         const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
-                        return `<a href="${link}"><span class="badge badge-soft-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`
+                        return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`
                     }
                 },
                 {

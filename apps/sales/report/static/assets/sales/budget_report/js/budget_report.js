@@ -188,10 +188,10 @@ $(document).ready(function () {
                     let filtered_data = []
                     for (let i = 0; i < data?.['budget_report_group_list'].length; i++) {
                         filtered_data.push({
-                            'expense_item': data?.['budget_report_company_list'][i]?.['expense_item'],
-                            'plan_value': data?.['budget_report_company_list'][i]?.['group_year'],
+                            'expense_item': data?.['budget_report_group_list'][i]?.['expense_item'],
+                            'plan_value': data?.['budget_report_group_list'][i]?.['group_year'],
                             'actual_value': 0,
-                            'difference_value': 0 - data?.['budget_report_company_list'][i]?.['group_year'],
+                            'difference_value': 0 - data?.['budget_report_group_list'][i]?.['group_year'],
                             'rate_value': 0
                         })
                     }
@@ -315,7 +315,7 @@ $(document).ready(function () {
                 {
                     className: 'w-35',
                     render: (data, type, row) => {
-                        if (row?.['plan_value'] === 0) {
+                        if (!row?.['planned']) {
                             return `<span data-expense-id="${row?.['expense_item']?.['id']}" class="expense-item-span text-danger">${row?.['expense_item']?.['title']}</span>`
                         }
                         return `<span data-expense-id="${row?.['expense_item']?.['id']}" class="expense-item-span text-primary">${row?.['expense_item']?.['title']}</span>`
@@ -324,8 +324,8 @@ $(document).ready(function () {
                 {
                     className: 'text-right w-15',
                     render: (data, type, row) => {
-                        if (row?.['plan_value'] === 0) {
-                            return `<span class="text-danger mask-money plan_value_span" data-init-money="${row?.['plan_value']}"></span>`
+                        if (!row?.['planned']) {
+                            return `<span class="text-danger plan_value_span">---</span>`
                         }
                         return `<span class="text-primary mask-money plan_value_span" data-init-money="${row?.['plan_value']}"></span>`
                     }
@@ -333,7 +333,7 @@ $(document).ready(function () {
                 {
                     className: 'text-right w-15',
                     render: (data, type, row) => {
-                        if (row?.['plan_value'] === 0) {
+                        if (!row?.['planned']) {
                             return `<span class="text-danger mask-money actual_value_span" data-init-money="${row?.['actual_value']}"></span>`
                         }
                         return `<span class="text-primary mask-money actual_value_span" data-init-money="${row?.['actual_value']}"></span>`
@@ -342,7 +342,7 @@ $(document).ready(function () {
                 {
                     className: 'text-right w-15',
                     render: (data, type, row) => {
-                        if (row?.['plan_value'] === 0) {
+                        if (!row?.['planned']) {
                             return `<span class="text-danger mask-money difference_value_span" data-init-money="${row?.['difference_value']}"></span>`
                         }
                         if (row?.['difference_value'] < 0) {
@@ -354,8 +354,8 @@ $(document).ready(function () {
                 {
                     className: 'text-right w-15',
                     render: (data, type, row) => {
-                        if (row?.['plan_value'] === 0) {
-                            return `<span class="text-danger rate_value_span">${row?.['rate_value']} %</span>`
+                        if (!row?.['planned']) {
+                            return `<span class="text-danger rate_value_span">---</span>`
                         }
                         return `<span class="text-primary rate_value_span">${row?.['rate_value']} %</span>`
                     }
@@ -411,9 +411,10 @@ $(document).ready(function () {
                             }
                         }
                         let plan_value = data['plan_value']
+                        data['planned'] = true
                         data['actual_value'] = actual_value
                         data['difference_value'] = actual_value - plan_value
-                        data['rate_value'] = (actual_value * 100 / plan_value).toFixed(2)
+                        data['rate_value'] = plan_value !== 0 ? parseFloat((actual_value * 100 / plan_value).toFixed(2)) : 0
                         table_data.push(data)
                     }
 
@@ -431,7 +432,7 @@ $(document).ready(function () {
                                         "plan_value": 0,
                                         "actual_value": payment_expense?.['value'],
                                         "difference_value": payment_expense?.['value'],
-                                        "rate_value": "---"
+                                        "rate_value": 0
                                     }
                                 )
                             }

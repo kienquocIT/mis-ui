@@ -8128,3 +8128,15 @@ msgstr "Trạng thái giao hàng"
 #
 msgid "Diagram"
 msgstr "Biểu đồ"
+
+#
+msgid "Version"
+msgstr "Phiên bản"
+
+#
+msgid "Document name"
+msgstr "Tên tài liệu"
+
+#
+msgid "File name"
+msgstr "Tên tập tin"

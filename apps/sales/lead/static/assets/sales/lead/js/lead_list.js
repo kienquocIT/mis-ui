@@ -7,6 +7,14 @@ $(document).ready(function () {
         'Disqualified',
         'Not a target'
     ]
+    const STATUS_LIST_STYLE = {
+        'Prospect': 'badge badge-outline badge-soft-warning',
+        'Open - not contacted': 'badge badge-outline badge-soft-success',
+        'Working': 'badge badge-outline badge-soft-primary',
+        'Opportunity created': 'badge badge-outline badge-soft-blue',
+        'Disqualified': 'badge badge-outline badge-secondary',
+        'Not a target': 'badge badge-outline badge-secondary'
+    }
 
     function loadLeadList() {
         if (!$.fn.DataTable.isDataTable('#lead-list-table')) {
@@ -34,33 +42,39 @@ $(document).ready(function () {
                         }
                     },
                     {
+                        className: 'wrap-text w-10',
                         'render': (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
                             return `<a href="${link}"><span class="badge badge-soft-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
+                        className: 'wrap-text w-25',
                         'render': (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
                             return `<a href="${link}">${row?.['title']}</a>`;
                         }
                     },
                     {
+                        className: 'wrap-text w-10',
                         'render': (data, type, row) => {
                             return `<span class="badge badge-sm badge-blue">${row?.['source']}</span>`;
                         }
                     },
                     {
+                        className: 'wrap-text w-15',
                         'render': (data, type, row) => {
                             return `${row?.['contact_name']}`;
                         }
                     },
                     {
+                        className: 'wrap-text w-10',
                         'render': (data, type, row) => {
                             return `${moment(row?.['date_created'].split(' ')[0]).format('DD/MM/YYYY')}`;
                         }
                     },
                     {
+                        className: 'wrap-text w-15',
                         'render': (data, type, row) => {
                             return `<span class="badge-status">
                                         <span class="badge badge-primary badge-indicator"></span>
@@ -69,8 +83,9 @@ $(document).ready(function () {
                         }
                     },
                     {
+                        className: 'wrap-text text-center w-15',
                         'render': (data, type, row) => {
-                            return `<span class="fst-italic">${row?.['lead_status']}</span>`;
+                            return `<span class="w-80 ${STATUS_LIST_STYLE[row?.['lead_status']]}">${row?.['lead_status']}</span>`;
                         }
                     },
                 ],
@@ -126,7 +141,7 @@ $(document).ready(function () {
                 },
             },
             legend: {
-                position: 'bottom',
+                position: 'left',
             },
         };
 
@@ -165,7 +180,7 @@ $(document).ready(function () {
                 opacity: 1
             },
             legend: {
-                position: 'bottom',
+                position: 'left',
             },
         };
 

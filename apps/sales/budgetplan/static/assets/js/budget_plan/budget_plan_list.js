@@ -90,41 +90,48 @@ $(document).ready(function () {
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="text-primary">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}"><span class="badge badge-soft-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-45',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="text-primary ap_info" data-id="${row.id}" data-title="${row.title}" data-code="${row.code}"><b>${row.title}</b></span></a>`
+                            return `<a href="${link}"><span class="text-primary" data-id="${row.id}" data-title="${row.title}" data-code="${row.code}"><b>${row.title}</b></span></a>`
                         }
                     },
                     {
                         data: 'period',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `<span class="text-secondary"><b>${row.period_mapped.title}</b></span>`
+                            return `<span>${row.period_mapped.title}</span>`
+                        }
+                    },
+                                        {
+                        data: 'employee_created',
+                        className: 'wrap-text w-15',
+                        render: (data, type, row) => {
+                            return `<span class="text-blue">${row.employee_created.full_name}</span>`
                         }
                     },
                     {
                         data: 'date_created',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             let parsedDate = new Date(row.date_created.split(' ')[0]);
                             let formattedDate = `${parsedDate.getDate().toString().padStart(2, '0')}-${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}-${parsedDate.getFullYear()}`;
-                            return `<span class="text-secondary">${formattedDate}</span>`
+                            return `<span>${formattedDate}</span>`
                         }
                     },
                     {
                         data: 'is_lock',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center w-10',
                         render: (data, type, row) => {
-                            return `<span class="text-muted">${row?.['is_lock'] ? 'Lock' : 'Open'}</span>`
+                            return `<span class="w-100 badge badge-soft-${row?.['is_lock'] ? 'danger' : 'success'}">${row?.['is_lock'] ? 'Lock' : 'Open'}</span>`
                         }
                     }
                 ],

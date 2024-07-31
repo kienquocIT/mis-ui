@@ -8160,3 +8160,7 @@ msgstr "Tổng trong kế hoạch"
 #
 msgid "Total out plan"
 msgstr "Tổng ngoài kế hoạch"
+
+#
+msgid "Source"
+msgstr "Nguồn"

@@ -7,25 +7,18 @@
         td, th {
             min-width: 230px;
         }
-        .month-target, .month-target:read-only, .quarter-target, .quarter-target:read-only {
-            color: rgba(0, 125, 136, var(--bs-text-opacity)) !important;
+        .sticky {
+            position: sticky;
+            top: 0;
         }
-
-        .fixed_header tbody {
-            display: block;
-            width: 100%;
-            overflow: auto;
-            max-height: 400px;
+        input {
+            text-align: right;
         }
-        .fixed_header thead {
-            display: block;
-            width: 100%;
-            overflow: auto;
+        td {
+            text-align: right;
         }
-        .fixed_header tfoot {
-            display: block;
-            width: 100%;
-            overflow: auto;
+        th {
+            text-align: right;
         }
     </style>
 {% endblock %}
@@ -179,38 +172,35 @@
             </div>
         </div>
         <div class="row mt-5 mb-10 main">
-            <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
+            <div class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 50vh">
                 <table class="table nowrap w-100 fixed_header" id="revenue-plan-table"
                        data-group-url="{% url 'GroupDetailAPI' '0' %}"
                 >
-                    <thead>
+                    <thead class="sticky bg-gradient-primary">
                         <tr>
-                            <th>{% trans 'Group' %}</th>
-                            <th>{% trans 'Employee' %}</th>
-                            <th>{% trans 'Target item' %}</th>
-                            <th id="m1th"></th>
-                            <th id="m2th"></th>
-                            <th id="m3th"></th>
-                            <th><span class="text-primary"><b>{% trans 'Quarter' %} 1</b></span></th>
-                            <th id="m4th"></th>
-                            <th id="m5th"></th>
-                            <th id="m6th"></th>
-                            <th><span class="text-primary"><b>{% trans 'Quarter' %} 2</b></span></th>
-                            <th id="m7th"></th>
-                            <th id="m8th"></th>
-                            <th id="m9th"></th>
-                            <th><span class="text-primary"><b>{% trans 'Quarter' %} 3</b></span></th>
-                            <th id="m10th"></th>
-                            <th id="m11th"></th>
-                            <th id="m12th"></th>
-                            <th><span class="text-primary"><b>{% trans 'Quarter' %} 4</b></span></th>
-                            <th><span class="text-primary"><b>{% trans 'Year' %}</b></span></th>
+                            <th class="text-white">{% trans 'Group' %}</th>
+                            <th class="text-white">{% trans 'Employee' %}</th>
+                            <th class="text-white">{% trans 'Target item' %}</th>
+                            <th class="text-white" id="m1th"></th>
+                            <th class="text-white" id="m2th"></th>
+                            <th class="text-white" id="m3th"></th>
+                            <th><span class="text-white"><b>{% trans 'QUARTER' %} 1</b></span></th>
+                            <th class="text-white" id="m4th"></th>
+                            <th class="text-white" id="m5th"></th>
+                            <th class="text-white" id="m6th"></th>
+                            <th><span class="text-white"><b>{% trans 'QUARTER' %} 2</b></span></th>
+                            <th class="text-white" id="m7th"></th>
+                            <th class="text-white" id="m8th"></th>
+                            <th class="text-white" id="m9th"></th>
+                            <th><span class="text-white"><b>{% trans 'QUARTER' %} 3</b></span></th>
+                            <th class="text-white" id="m10th"></th>
+                            <th class="text-white" id="m11th"></th>
+                            <th class="text-white" id="m12th"></th>
+                            <th><span class="text-white"><b>{% trans 'QUARTER' %} 4</b></span></th>
+                            <th><span class="text-white"><b>{% trans 'YEAR' %}</b></span></th>
                         </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tfoot>
-                        <tr class="bg-overlay bg-primary bg-opacity-10 company-row">
-                            <td><span class="text-primary"><b>{% trans 'Company' %}</b></span></td>
+                        <tr class="company-row bg-white">
+                            <td><span class="text-primary"><b>{% trans 'TOTAL' %}</b></span></td>
                             <td></td>
                             <td>
                                 <label class="col-form-label text-primary">{% trans 'Revenue' %}</label>
@@ -303,7 +293,8 @@
                                 <span class="sum-company-year-profit mask-money text-secondary" data-init-money="0"></span>
                             </td>
                         </tr>
-                    </tfoot>
+                    </thead>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>

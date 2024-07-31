@@ -8174,8 +8174,20 @@ msgid "Lead status"
 msgstr "Trạng thái lead"
 
 #
-msgid "Qualify lead"
-msgstr "Phê duyệt lead"
+msgid "Lead name"
+msgstr "Tên lead"
+
+#
+msgid "Add new note"
+msgstr "Thêm ghi chú"
+
+#
+msgid "Lead create"
+msgstr "Tạo mới lead"
+
+#
+msgid "Qualify Lead"
+msgstr "Đánh giá lead"
 
 #
 msgid "Convert to a new Contact"

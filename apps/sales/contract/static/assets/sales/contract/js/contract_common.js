@@ -45,16 +45,16 @@ class ContractDataTableHandle {
                 {
                     targets: 0,
                     width: '1%',
-                    render: (data, type, row, meta) => {
-                        return `<span class="table-row-order">${(meta.row + 1)}</span>`;
+                    render: (data, type, row) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-order" data-row="${dataRow}">${row?.['order'] ? row?.['order'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 1,
                     width: '60%',
                     render: (data, type, row) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<input type="text" class="form-control table-row-title" data-row="${dataRow}" value="${row?.['remark'] ? row?.['remark'] : ''}" required>`;
+                        return `<input type="text" class="form-control table-row-title" value="${row?.['remark'] ? row?.['remark'] : ''}" required>`;
                     }
                 },
                 {
@@ -85,7 +85,7 @@ class ContractDataTableHandle {
                 {
                     targets: 0,
                     width: '40%',
-                    render: (data, type, row, meta) => {
+                    render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-title" data-row="${dataRow}">${row?.['title'] ? row?.['title'] : ''}</span>`;
                     }
@@ -118,4 +118,39 @@ class ContractDataTableHandle {
             },
         });
     };
+}
+
+// Common
+class ContractCommonHandle {
+    static commonDeleteRow(currentRow, $table) {
+        ContractCommonHandle.deleteRowContract(currentRow, $table);
+        ContractCommonHandle.reOrderTbl($table);
+        return true;
+    };
+
+    static reOrderTbl($table) {
+        let itemCount = $table[0].querySelectorAll('.table-row-order').length;
+        if (itemCount === 0) {
+            $table.DataTable().clear().draw();
+        } else {
+            let order = 1;
+            for (let eleOrder of $table[0].querySelectorAll('.table-row-order')) {
+                eleOrder.innerHTML = order;
+                order++
+                if (order > itemCount) {
+                    break;
+                }
+            }
+        }
+        return true;
+    };
+
+    static deleteRowContract(currentRow, $table) {
+        let rowIdx = $table.DataTable().row(currentRow).index();
+        let row = $table.DataTable().row(rowIdx);
+        row.remove().draw();
+        return true;
+    };
+
+
 }

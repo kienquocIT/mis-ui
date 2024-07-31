@@ -364,6 +364,14 @@ $(document).ready(function () {
             initComplete: function () {
                 if (table.find('tbody tr .in-plan').length + table.find('tbody tr .out-plan').length > 0) {
                     table.find('tfoot').html('')
+                    table.find('tfoot').append(`<tr>
+                        <td class="border-bottom-0"></td>
+                        <td class="border-bottom-0"></td>
+                        <td class="border-bottom-0"></td>
+                        <td class="border-bottom-0"></td>
+                        <td class="border-bottom-0"></td>
+                        <td class="border-bottom-0"></td>
+                    </tr>`)
 
                     let sum_in_planned = 0
                     let sum_in_actual = 0
@@ -388,12 +396,12 @@ $(document).ready(function () {
 
                     table.find('tfoot').append(`
                         <tr>
-                            <td></td>
-                            <td class="fst-italic">${$trans_script.attr('data-trans-total-in-plan')}</td>
-                            <td class="text-right"><span class="text-secondary mask-money" data-init-money="${sum_in_planned}"></span></td>
-                            <td class="text-right"><span class="text-secondary mask-money" data-init-money="${sum_in_actual}"></span></td>
-                            <td class="text-right">${difference_html}</td>
-                            <td class="text-right"><span class="text-secondary">${sum_in_rate} %</span></td>
+                            <td class="border-0"></td>
+                            <td class="fst-italic text-decoration-underline border-0">${$trans_script.attr('data-trans-total-in-plan')}</td>
+                            <td class="text-right border-0"><span class="text-secondary mask-money" data-init-money="${sum_in_planned}"></span></td>
+                            <td class="text-right border-0"><span class="text-secondary mask-money" data-init-money="${sum_in_actual}"></span></td>
+                            <td class="text-right border-0">${difference_html}</td>
+                            <td class="text-right border-0"><span class="text-secondary">${sum_in_rate} %</span></td>
                         </tr>
                     `)
 
@@ -406,14 +414,22 @@ $(document).ready(function () {
 
                     table.find('tfoot').append(`
                         <tr>
-                            <td></td>
-                            <td class="fst-italic">${$trans_script.attr('data-trans-total-out-plan')}</td>
-                            <td class="text-right"><span class="text-secondary">-</span></td>
-                            <td class="text-right"><span class="text-secondary mask-money" data-init-money="${sum_out_actual}"></span></td>
-                            <td class="text-right"><span class="text-secondary">-</span></td>
-                            <td class="text-right"><span class="text-secondary">-</span></td>
+                            <td class="border-0"></td>
+                            <td class="fst-italic text-decoration-underline border-0">${$trans_script.attr('data-trans-total-out-plan')}</td>
+                            <td class="text-right border-0"><span class="text-secondary">-</span></td>
+                            <td class="text-right border-0"><span class="text-secondary mask-money" data-init-money="${sum_out_actual}"></span></td>
+                            <td class="text-right border-0"><span class="text-secondary">-</span></td>
+                            <td class="text-right border-0"><span class="text-secondary">-</span></td>
                         </tr>
                     `)
+                    table.find('tfoot').append(`<tr>
+                        <td class="border-top-0"></td>
+                        <td class="border-top-0"></td>
+                        <td class="border-top-0"></td>
+                        <td class="border-top-0"></td>
+                        <td class="border-top-0"></td>
+                        <td class="border-top-0"></td>
+                    </tr>`)
                     $.fn.initMaskMoney2()
                 }
             }

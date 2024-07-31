@@ -389,19 +389,19 @@ $(document).ready(function () {
                         sum_in_rate += rate
                     })
 
-                    let difference_html = `<span class="text-secondary mask-money" data-init-money="${sum_in_difference}"></span>`
+                    let difference_html = `<span class="text-primary mask-money" data-init-money="${sum_in_difference}"></span>`
                     if (sum_in_difference < 0) {
-                        difference_html = `<span>(<span class="text-secondary mask-money" data-init-money="${sum_in_difference * (-1)}"></span>)</span>`
+                        difference_html = `<span>(<span class="text-primary mask-money" data-init-money="${sum_in_difference * (-1)}"></span>)</span>`
                     }
 
                     table.find('tfoot').append(`
-                        <tr>
+                        <tr class="in-plan-total">
                             <td class="border-0"></td>
-                            <td class="fst-italic text-decoration-underline border-0">${$trans_script.attr('data-trans-total-in-plan')}</td>
-                            <td class="text-right border-0"><span class="text-secondary mask-money" data-init-money="${sum_in_planned}"></span></td>
-                            <td class="text-right border-0"><span class="text-secondary mask-money" data-init-money="${sum_in_actual}"></span></td>
+                            <td class="fst-italic text-primary text-decoration-underline border-0">${$trans_script.attr('data-trans-total-in-plan')}</td>
+                            <td class="text-right border-0"><span class="text-primary mask-money" data-init-money="${sum_in_planned}"></span></td>
+                            <td class="text-right border-0"><span class="text-primary mask-money" data-init-money="${sum_in_actual}"></span></td>
                             <td class="text-right border-0">${difference_html}</td>
-                            <td class="text-right border-0"><span class="text-secondary">${sum_in_rate} %</span></td>
+                            <td class="text-right border-0"><span class="text-primary">${sum_in_rate} %</span></td>
                         </tr>
                     `)
 
@@ -413,13 +413,13 @@ $(document).ready(function () {
                     })
 
                     table.find('tfoot').append(`
-                        <tr>
+                        <tr class="out-plan-total">
                             <td class="border-0"></td>
-                            <td class="fst-italic text-decoration-underline border-0">${$trans_script.attr('data-trans-total-out-plan')}</td>
-                            <td class="text-right border-0"><span class="text-secondary">-</span></td>
-                            <td class="text-right border-0"><span class="text-secondary mask-money" data-init-money="${sum_out_actual}"></span></td>
-                            <td class="text-right border-0"><span class="text-secondary">-</span></td>
-                            <td class="text-right border-0"><span class="text-secondary">-</span></td>
+                            <td class="fst-italic text-danger text-decoration-underline border-0">${$trans_script.attr('data-trans-total-out-plan')}</td>
+                            <td class="text-right border-0"><span class="text-danger">-</span></td>
+                            <td class="text-right border-0"><span class="text-danger mask-money" data-init-money="${sum_out_actual}"></span></td>
+                            <td class="text-right border-0"><span class="text-danger">-</span></td>
+                            <td class="text-right border-0"><span class="text-danger">-</span></td>
                         </tr>
                     `)
                     table.find('tfoot').append(`<tr>

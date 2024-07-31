@@ -25,27 +25,24 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'code',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="text-primary">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
-                        data: 'title',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-30',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="text-primary ap_info" data-id="${row.id}" data-title="${row.title}"><b>${row.title}</b></span></a>`
+                            return `<a href="${link}"><span class="text-primary" data-id="${row.id}" data-title="${row.title}"><b>${row.title}</b></span></a>`
                         }
                     },
                     {
-                        data: 'sale_order',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             if (row?.['sale_order_mapped']?.['id']) {
-                                return `<span class="badge badge-soft-primary">${row?.['sale_order_mapped']?.['code']}</span> ${row?.['sale_order_mapped']?.['title']}`
+                                return `<span class="badge badge-soft-blue badge-outline badge-sm w-30">${row?.['sale_order_mapped']?.['code']}</span> ${row?.['sale_order_mapped']?.['title']}`
                             }
                             else {
                                 return ``
@@ -53,8 +50,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'supplier',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-25',
                         render: (data, type, row) => {
                             if (row?.['customer_mapped']?.['id']) {
                                 return `<b>${row?.['customer_mapped']?.['name']}</b>`
@@ -68,24 +64,22 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'invoice_number',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `${row?.['invoice_number'] !== '0' ? row?.['invoice_number'] : `<span class="text-danger">Chưa cấp số</span>`}`
+                            return `${row?.['invoice_number'] !== '0' ? `<span class="text-primary">${row?.['invoice_number']}</span>` : `<span class="text-danger small">Chưa cấp số</span>`}`
                         }
                     },
                     {
-                        data: 'status',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             let color = [
-                                'badge-soft-primary',
-                                'badge-primary',
-                                'badge-info',
-                                'badge-soft-warning',
-                                'badge-warning'
+                                'text-blue',
+                                'text-primary',
+                                'text-info',
+                                'text-danger',
+                                'text-warning'
                             ]
-                            return `<span class="badge ${color[row?.['invoice_status']]} status-span">${[
+                            return `<span class="${color[row?.['invoice_status']]}">${[
                                 'Khởi tạo', 'Đã phát hành', 'Đã kê khai', 'Đã thay thế', 'Đã điều chỉnh'
                             ][row?.['invoice_status']]}</span>`;
                         }

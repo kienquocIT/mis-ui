@@ -26,12 +26,13 @@ $(document).ready(function () {
                 'data': 'code',
                 render: (data, type, row) => {
                     const link = url_detail.replace(0, row.id);
-                    return `<a href="${link}" class="text-primary">${row?.['code']}</a> ${$x.fn.buttonLinkBlank(link)}`
+                    return `<a href="${link}"><span class="w-60 badge badge-soft-primary">${row?.['code']}</span></a> ${$x.fn.buttonLinkBlank(link)}`
                 }
             }, {
                 'data': 'title',
                 render: (data, type, row) => {
-                    return `<span><b>${row.title}</b></span>`
+                    const link = url_detail.replace(0, row.id);
+                    return `<a href="${link}" class="text-primary"><span><b>${row.title}</b></span></a>`
                 }
             }, {
                 'className': 'text-center',
@@ -56,12 +57,12 @@ $(document).ready(function () {
             }, {
                 'className': 'text-center',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-soft-primary w-80" data-bs-toggle="tooltip" data-bs-placement="left" title=""><b>${row?.['stock_amount'] ? row?.['stock_amount'] : 0}</b></span>`;
+                    return `<span class="text-secondary">${row?.['stock_amount'] ? row?.['stock_amount'] : 0}</span>`;
                 }
             }, {
                 'className': 'text-center',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-soft-success w-80" data-bs-toggle="tooltip" data-bs-placement="left" title=""><b>${row?.['available_amount'] ? row?.['available_amount']: 0}</b></span>`;
+                    return `<span class="text-primary">${row?.['available_amount'] ? row?.['available_amount']: 0}</span>`;
                 }
             }
         ],

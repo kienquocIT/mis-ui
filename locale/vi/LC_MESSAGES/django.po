@@ -1304,7 +1304,7 @@ msgstr "Chức danh"
 
 #
 msgid "Account Manager"
-msgstr "Người quản lý tài khoản"
+msgstr "Người QL tài khoản"
 
 #
 msgid "Account Type"
@@ -1416,7 +1416,7 @@ msgstr "Địa chỉ của Tài khoản"
 
 #
 msgid "Contact owner"
-msgstr "Người có thông tin liên hệ"
+msgstr "Chủ liên hệ"
 
 #
 msgid "Mobile"
@@ -1428,7 +1428,7 @@ msgstr "Thêm liên hệ mới"
 
 #
 msgid "Contact Owner"
-msgstr "Người có thông tin liên hệ"
+msgstr "Chủ liên hệ"
 
 #
 msgid "Account Title"
@@ -5842,7 +5842,7 @@ msgstr "Số lượng đếm"
 
 #
 msgid "Difference"
-msgstr "Khác biệt"
+msgstr "Chênh lệch"
 
 #
 msgid "Select for actions"
@@ -6526,7 +6526,7 @@ msgstr "Hoạt động khách hàng"
 
 #
 msgid "Sale person"
-msgstr "Nv bán hàng"
+msgstr "NV bán hàng"
 
 #
 msgid "Period"
@@ -6914,7 +6914,7 @@ msgstr "Doanh thu năm"
 
 #
 msgid "Number of order"
-msgstr "Số lượng đơn hàng"
+msgstr "SL đơn hàng"
 
 #
 msgid "Revenue average"
@@ -8144,3 +8144,83 @@ msgstr "khoá KHNS toàn công ty"
 #
 msgid "Budget report"
 msgstr "Báo cáo ngân sách"
+
+#
+msgid "Get by Budget plan config permission"
+msgstr "Lấy theo quyền trong Cấu hình KHNS"
+
+#
+msgid "Red lines are the expenses out of plan."
+msgstr "Dòng màu đỏ là những chi phí phát sinh ngoài kế hoạch"
+
+#
+msgid "Total in plan"
+msgstr "Tổng trong kế hoạch"
+
+#
+msgid "Total out plan"
+msgstr "Tổng ngoài kế hoạch"
+
+#
+msgid "Source"
+msgstr "Nguồn"
+
+#
+msgid "Lead source"
+msgstr "Nguồn lead"
+
+#
+msgid "Lead status"
+msgstr "Trạng thái lead"
+
+#
+msgid "Lead name"
+msgstr "Tên lead"
+
+#
+msgid "Add new note"
+msgstr "Thêm ghi chú"
+
+#
+msgid "Lead create"
+msgstr "Tạo mới lead"
+
+#
+msgid "Qualify Lead"
+msgstr "Đánh giá lead"
+
+#
+msgid "Convert to a new Contact"
+msgstr "Chuyển thành Liên hệ mới"
+
+#
+msgid "Convert to Opportunity"
+msgstr "Chuyển thành CHKD"
+
+#
+msgid "Convert to a new Opportunity"
+msgstr "Chuyển thành một CHKD mới"
+
+#
+msgid "Select an existing Opportunity"
+msgstr "Chọn một CHKD đang có"
+
+#
+msgid "Select account"
+msgstr "Chọn tài khoản"
+
+#
+msgid "Create new account"
+msgstr "Tạo tài khoản mới"
+
+#
+msgid "Convert"
+msgstr "Chuyển đổi"
+
+#
+msgid "Assign to sale"
+msgstr "Gán cho nhân viên Sale"
+
+#
+msgid "Total employees"
+msgstr "Số lượng nhân viên"

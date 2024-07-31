@@ -40,31 +40,36 @@
             data-trans-gtf="{% trans 'Goods transfer' %}"
             data-trans-no-info="{% trans 'Have not done. Please finish in Goods Detail.' %}"
             data-trans-all="{% trans 'Default all' %}"
+            data-trans-all-group="{% trans 'Company' %}"
+            data-trans-get-by-config="{% trans 'Get by Budget plan config permission' %}"
+            data-trans-total-in-plan="{% trans 'Total in plan' %}"
+            data-trans-total-out-plan="{% trans 'Total out plan' %}"
     ></script>
 
     <script id="url-script"
-            data-url-budget-report-list="{% url 'BudgetReportListAPI' %}"
+            data-url-budget-report-company-list="{% url 'BudgetReportCompanyListAPI' %}"
+            data-url-budget-report-group-list="{% url 'BudgetReportGroupListAPI' %}"
             data-url-payment-list="{% url 'PaymentListForBudgetReportAPI' %}"
     ></script>
 
     <div class="row">
         <div class="col-12 col-lg-5 col-md-5">
             <div class="form-group">
-                <label for="group-select" class="form-label">{% trans 'Group' %}</label>
-                <select disabled class="form-select select2" id="group-select" data-method="GET" data-url="{% url 'GroupListAPI' %}"></select>
+                <label for="group-select" class="form-label required">{% trans 'Group' %}</label>
+                <select class="form-select select2" id="group-select" data-method="GET" data-url="{% url 'BudgetPlanConfigListAPI' %}"></select>
             </div>
         </div>
         <div class="col-12 col-lg-3 col-md-3">
             <div class="form-group">
                 <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
-                <select disabled class="form-select select2" id="period-select" data-method="GET" data-url="{% url 'PeriodsConfigListAPI' %}"></select>
+                <select class="form-select select2" id="period-select" data-method="GET" data-url="{% url 'PeriodsConfigListAPI' %}"></select>
             </div>
         </div>
         <div class="col-12 col-lg-2 col-md-2">
             <div class="form-group">
                 <div class="row">
                     <div class='col-12'>
-                        <input disabled type="checkbox" id="quarter-filter">
+                        <input type="checkbox" id="quarter-filter">
                         <label for="quarter-select" class="form-label">{% trans 'Quarter' %}</label>
                     </div>
                 </div>
@@ -91,7 +96,7 @@
     <div class="row">
         <div class="col-12 col-lg-2 col-md-2">
             <div class="form-check form-check-sm">
-                <input disabled type="radio" id="cumulative" name="res-view" class="form-check-input" checked>
+                <input disabled type="radio" id="cumulative" name="res-view" class="form-check-input">
                 <label class="form-check-label" for="cumulative">{% trans 'Cumulative result' %}</label>
             </div>
         </div>
@@ -117,20 +122,29 @@
         </div>
     </div>
 
-    <div class="row mt-5">
-        <div class="col-8" style="position: relative; overflow: auto; max-height: 70vh">
+    <div class="row mt-3">
+        <div class="col-12" style="position: relative; overflow: auto; max-height: 60vh">
             <table id="main-table" class="table nowrap w-100">
                 <thead class="sticky bg-gradient-primary">
                 <tr>
                     <td></td>
                     <td class="text-white">{% trans 'Expense item' %}</td>
-                    <td class="text-white">{% trans 'Plan' %}</td>
+                    <td class="text-white">
+                        {% trans 'Plan' %}
+                        <i class="fas fa-info-circle icon-info"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="bottom"
+                           title=""
+                           data-bs-original-title="{% trans 'Red lines are the expenses out of plan.' %}">
+                        </i>
+                    </td>
                     <td class="text-white">{% trans 'Actual' %}</td>
                     <td class="text-white">{% trans 'Difference' %}</td>
                     <td class="text-white">{% trans 'Rate' %}</td>
                 </tr>
                 </thead>
                 <tbody></tbody>
+                <tfoot></tfoot>
             </table>
         </div>
     </div>

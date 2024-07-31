@@ -1241,7 +1241,7 @@ function loadDtbOpportunityList() {
                     targets: 3,
                     className: 'wrap-text w-20',
                     render: (data, type, row) => {
-                        return `<span>${row.customer.title}</span>`
+                        return `<span class="fw-bold">${row.customer.title}</span>`
                     }
                 },
                 {

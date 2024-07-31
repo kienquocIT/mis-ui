@@ -1304,7 +1304,7 @@ msgstr "Chức danh"
 
 #
 msgid "Account Manager"
-msgstr "Người quản lý tài khoản"
+msgstr "Người QL tài khoản"
 
 #
 msgid "Account Type"
@@ -1416,7 +1416,7 @@ msgstr "Địa chỉ của Tài khoản"
 
 #
 msgid "Contact owner"
-msgstr "Người có thông tin liên hệ"
+msgstr "Chủ liên hệ"
 
 #
 msgid "Mobile"
@@ -1428,7 +1428,7 @@ msgstr "Thêm liên hệ mới"
 
 #
 msgid "Contact Owner"
-msgstr "Người có thông tin liên hệ"
+msgstr "Chủ liên hệ"
 
 #
 msgid "Account Title"
@@ -6914,7 +6914,7 @@ msgstr "Doanh thu năm"
 
 #
 msgid "Number of order"
-msgstr "Số lượng đơn hàng"
+msgstr "SL đơn hàng"
 
 #
 msgid "Revenue average"

@@ -101,7 +101,7 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '10%',
+                        width: '12%',
                         data: "date_created",
                         render: (data) => {
                             return $x.fn.displayRelativeTime(data, {
@@ -147,7 +147,7 @@ $(function () {
                     },
                     {
                         targets: 9,
-                        width: '5%',
+                        width: '1%',
                         className: 'action-center',
                         render: (data, type, row) => {
                             let link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);

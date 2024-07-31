@@ -17,13 +17,22 @@ $(function () {
             ContractCommonHandle.commonDeleteRow(this.closest('tr'), ContractDataTableHandle.$tableDocument);
         });
 
-        ContractLoadDataHandle.$attachment.on('change', '.dm-uploader-ids', function () {
-            let dataAdd = {
-                'title': 'tap tin so 1',
-                'version': 1,
-                'date_created': '',
-            };
-            ContractDataTableHandle.$tableFile.DataTable().row.add(dataAdd).draw().node();
+        ContractLoadDataHandle.$attachment.find('input[type="file"]').on('change', '', function () {
+            let is_current = true;
+            ContractDataTableHandle.$tableFile.DataTable().clear().draw();
+            for (let mediaBody of ContractLoadDataHandle.$attachment[0].querySelectorAll('.media-body')) {
+                let fileName = mediaBody.querySelector('.f-item-name');
+                let dataAdd = {
+                    'title': fileName.innerHTML,
+                    'version': 1,
+                    'date_created': ContractCommonHandle.getCurrentDate(),
+                    'is_current': is_current,
+                };
+                ContractDataTableHandle.$tableFile.DataTable().row.add(dataAdd).draw().node();
+                is_current = false;
+            }
+
+
         });
 
 

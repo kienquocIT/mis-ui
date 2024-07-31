@@ -72,7 +72,7 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '15%',
+                        width: '17%',
                         render: (data, type, row) => {
                             const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
@@ -80,7 +80,7 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '15%',
+                        width: '17%',
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
                             if (Object.keys(row?.['customer']).length !== 0) {
@@ -101,7 +101,7 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '10%',
+                        width: '12%',
                         data: "date_created",
                         render: (data) => {
                             return $x.fn.displayRelativeTime(data, {

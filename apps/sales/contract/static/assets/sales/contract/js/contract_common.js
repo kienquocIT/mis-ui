@@ -106,10 +106,13 @@ class ContractDataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '20%',
+                    width: '5%',
                     render: (data, type, row) => {
+                        if (row?.['is_current'] === true) {
+                            return `<i class="fas fa-check text-green ml-2"></i>`;
+                        }
                         return `<div class="d-flex">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="fas fa-retweet"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-change-to-current')}"><span class="icon"><i class="fas fa-retweet"></i></span></button>
                                 </div>`;
                     }
                 },
@@ -152,5 +155,12 @@ class ContractCommonHandle {
         return true;
     };
 
+    static getCurrentDate() {
+        let currentDate = new Date();
+        let day = String(currentDate.getDate()).padStart(2, '0');
+        let month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        let year = currentDate.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
 
 }

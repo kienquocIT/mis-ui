@@ -364,15 +364,7 @@ $(document).ready(function () {
             initComplete: function () {
                 if (table.find('tbody tr .in-plan').length + table.find('tbody tr .out-plan').length > 0) {
                     table.find('tfoot').html('')
-                    table.find('tfoot').append(`<tr>
-                        <td class="border-bottom-0"></td>
-                        <td class="border-bottom-0"></td>
-                        <td class="border-bottom-0"></td>
-                        <td class="border-bottom-0"></td>
-                        <td class="border-bottom-0"></td>
-                        <td class="border-bottom-0"></td>
-                    </tr>`)
-
+                    let space_top = $(`<tr><td class="border-bottom-0"></td><td class="border-bottom-0"></td><td class="border-bottom-0"></td><td class="border-bottom-0"></td><td class="border-bottom-0"></td><td class="border-bottom-0"></td></tr>`)
                     let sum_in_planned = 0
                     let sum_in_actual = 0
                     let sum_in_difference = 0
@@ -388,13 +380,11 @@ $(document).ready(function () {
                         sum_in_difference += difference
                         sum_in_rate += rate
                     })
-
                     let difference_html = `<span class="text-primary mask-money" data-init-money="${sum_in_difference}"></span>`
                     if (sum_in_difference < 0) {
                         difference_html = `<span>(<span class="text-primary mask-money" data-init-money="${sum_in_difference * (-1)}"></span>)</span>`
                     }
-
-                    table.find('tfoot').append(`
+                    let in_plan_html = $(`
                         <tr class="in-plan-total">
                             <td class="border-0"></td>
                             <td class="fst-italic text-primary text-decoration-underline border-0">${$trans_script.attr('data-trans-total-in-plan')}</td>
@@ -404,15 +394,13 @@ $(document).ready(function () {
                             <td class="text-right border-0"><span class="text-primary">${sum_in_rate} %</span></td>
                         </tr>
                     `)
-
                     let sum_out_actual = 0
                     table.find('tbody tr .out-plan').each(function () {
                         let row = $(this).closest('tr')
                         let actual = parseFloat(row.find('.actual_value_span').attr('data-init-money'))
                         sum_out_actual += actual
                     })
-
-                    table.find('tfoot').append(`
+                    let out_plan_html = $(`
                         <tr class="out-plan-total">
                             <td class="border-0"></td>
                             <td class="fst-italic text-danger text-decoration-underline border-0">${$trans_script.attr('data-trans-total-out-plan')}</td>
@@ -422,14 +410,18 @@ $(document).ready(function () {
                             <td class="text-right border-0"><span class="text-danger">-</span></td>
                         </tr>
                     `)
-                    table.find('tfoot').append(`<tr>
-                        <td class="border-top-0"></td>
-                        <td class="border-top-0"></td>
-                        <td class="border-top-0"></td>
-                        <td class="border-top-0"></td>
-                        <td class="border-top-0"></td>
-                        <td class="border-top-0"></td>
-                    </tr>`)
+                    let space_bottom = $(`<tr><td class="border-top-0"></td><td class="border-top-0"></td><td class="border-top-0"></td><td class="border-top-0"></td><td class="border-top-0"></td><td class="border-top-0"></td></tr>`)
+
+                    if (sum_in_planned > 0 || sum_out_actual > 0) {
+                        table.find('tfoot').append(space_top)
+                        if (sum_in_planned > 0) {
+                            table.find('tfoot').append(in_plan_html)
+                        }
+                        if (sum_out_actual > 0) {
+                            table.find('tfoot').append(out_plan_html)
+                        }
+                        table.find('tfoot').append(space_bottom)
+                    }
                     $.fn.initMaskMoney2()
                 }
             }

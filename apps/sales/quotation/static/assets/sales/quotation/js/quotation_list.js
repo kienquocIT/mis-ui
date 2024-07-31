@@ -9,6 +9,7 @@ $(function () {
             let frm = new SetupFormSubmit($table);
             let changeList = [];
             $table.DataTableDefault({
+                rowIdx: true,
                 useDataServer: true,
                 ajax: {
                     url: frm.dataUrl,
@@ -29,13 +30,15 @@ $(function () {
                         throw Error('Call data raise errors.')
                     },
                 },
-                autoWidth: true,
-                scrollX: true,
-                pageLength:50,
                 columns: [  // (1280p)
                     {
+                        'render': () => {
+                            return ``;
+                        }
+                    },
+                    {
                         targets: 0,
-                        width: '5%',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             let link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
                             if (row?.['code']) {
@@ -66,36 +69,36 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '20%',
+                        className: 'wrap-text w-20',
                         render: (data, type, row) => {
                             const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id'])
-                            return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
+                            return `<a href="${link}"><span class="text-primary fw-bold">${row?.['title']}</span></a>`
                         }
                     },
                     {
                         targets: 2,
-                        width: '20%',
+                        className: 'wrap-text w-20',
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
                             if (Object.keys(row?.['customer']).length !== 0) {
-                                ele = `<p>${row?.['customer']?.['title']}</p>`;
+                                ele = `<span class="fw-bold">${row?.['customer']?.['title']}</span>`;
                             }
                             return ele;
                         }
                     },
                     {
                         targets: 3,
-                        width: '15%',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             if (Object.keys(row?.['sale_person']).length !== 0) {
-                                return `<p>${row?.['sale_person']?.['full_name']}</p>`;
+                                return `<span class="text-blue">${row?.['sale_person']?.['full_name']}</span>`;
                             }
                             return `<p></p>`;
                         }
                     },
                     {
                         targets: 4,
-                        width: '10%',
+                        className: 'wrap-text w-10',
                         data: "date_created",
                         render: (data) => {
                             return $x.fn.displayRelativeTime(data, {
@@ -105,14 +108,14 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '15%',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `<span class="mask-money" data-init-money="${parseFloat(row?.['indicator_revenue'])}"></span>`;
+                            return `<span class="text-primary mask-money" data-init-money="${parseFloat(row?.['indicator_revenue'])}"></span>`;
                         }
                     },
                     {
                         targets: 6,
-                        width: '10%',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
                             let sttData = [
@@ -122,13 +125,12 @@ $(function () {
                                 "success",
                                 "danger",
                             ]
-                            return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
+                            return `<span class="w-80 badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
                         }
                     },
                     {
                         targets: 7,
-                        width: '5%',
-                        className: 'action-center',
+                        className: 'wrap-text w-5 action-center',
                         render: (data, type, row) => {
                             let link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
                             let disabled = '';

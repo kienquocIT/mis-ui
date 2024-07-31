@@ -316,9 +316,9 @@ $(document).ready(function () {
                     className: 'w-35',
                     render: (data, type, row) => {
                         if (!row?.['planned']) {
-                            return `<span data-expense-id="${row?.['expense_item']?.['id']}" class="expense-item-span text-danger">${row?.['expense_item']?.['title']}</span>`
+                            return `<span data-expense-id="${row?.['expense_item']?.['id']}" class="expense-item-span out-plan text-danger">${row?.['expense_item']?.['title']}</span>`
                         }
-                        return `<span data-expense-id="${row?.['expense_item']?.['id']}" class="expense-item-span text-primary">${row?.['expense_item']?.['title']}</span>`
+                        return `<span data-expense-id="${row?.['expense_item']?.['id']}" class="expense-item-span in-plan text-primary">${row?.['expense_item']?.['title']}</span>`
                     }
                 },
                 {
@@ -361,7 +361,62 @@ $(document).ready(function () {
                     }
                 },
             ],
-            initComplete: function () {}
+            initComplete: function () {
+                if (table.find('tbody tr .in-plan').length + table.find('tbody tr .out-plan').length > 0) {
+                    table.find('tfoot').html('')
+
+                    let sum_in_planned = 0
+                    let sum_in_actual = 0
+                    let sum_in_difference = 0
+                    let sum_in_rate = 0
+                    table.find('tbody tr .in-plan').each(function () {
+                        let row = $(this).closest('tr')
+                        let planned = parseFloat(row.find('.plan_value_span').attr('data-init-money'))
+                        let actual = parseFloat(row.find('.actual_value_span').attr('data-init-money'))
+                        let difference = actual - planned
+                        let rate = planned !== 0 ? actual / planned : 0
+                        sum_in_planned += planned
+                        sum_in_actual += actual
+                        sum_in_difference += difference
+                        sum_in_rate += rate
+                    })
+
+                    let difference_html = `<span class="text-secondary mask-money" data-init-money="${sum_in_difference}"></span>`
+                    if (sum_in_difference < 0) {
+                        difference_html = `<span>(<span class="text-secondary mask-money" data-init-money="${sum_in_difference * (-1)}"></span>)</span>`
+                    }
+
+                    table.find('tfoot').append(`
+                        <tr>
+                            <td></td>
+                            <td class="fst-italic">Total in plan</td>
+                            <td class="text-right"><span class="text-secondary mask-money" data-init-money="${sum_in_planned}"></span></td>
+                            <td class="text-right"><span class="text-secondary mask-money" data-init-money="${sum_in_actual}"></span></td>
+                            <td class="text-right">${difference_html}</td>
+                            <td class="text-right"><span class="text-secondary">${sum_in_rate} %</span></td>
+                        </tr>
+                    `)
+
+                    let sum_out_actual = 0
+                    table.find('tbody tr .out-plan').each(function () {
+                        let row = $(this).closest('tr')
+                        let actual = parseFloat(row.find('.actual_value_span').attr('data-init-money'))
+                        sum_out_actual += actual
+                    })
+
+                    table.find('tfoot').append(`
+                        <tr>
+                            <td></td>
+                            <td class="fst-italic">Total out plan</td>
+                            <td class="text-right"><span class="text-secondary">-</span></td>
+                            <td class="text-right"><span class="text-secondary mask-money" data-init-money="${sum_out_actual}"></span></td>
+                            <td class="text-right"><span class="text-secondary">-</span></td>
+                            <td class="text-right"><span class="text-secondary">-</span></td>
+                        </tr>
+                    `)
+                    $.fn.initMaskMoney2()
+                }
+            }
         });
     }
 

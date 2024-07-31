@@ -8152,3 +8152,11 @@ msgstr "Lấy theo quyền trong Cấu hình KHNS"
 #
 msgid "Red lines are the expenses out of plan."
 msgstr "Dòng màu đỏ là những chi phí phát sinh ngoài kế hoạch"
+
+#
+msgid "Total in plan"
+msgstr "Tổng trong kế hoạch"
+
+#
+msgid "Total out plan"
+msgstr "Tổng ngoài kế hoạch"

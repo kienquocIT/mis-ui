@@ -389,7 +389,7 @@ $(document).ready(function () {
                     table.find('tfoot').append(`
                         <tr>
                             <td></td>
-                            <td class="fst-italic">Total in plan</td>
+                            <td class="fst-italic">${$trans_script.attr('data-trans-total-in-plan')}</td>
                             <td class="text-right"><span class="text-secondary mask-money" data-init-money="${sum_in_planned}"></span></td>
                             <td class="text-right"><span class="text-secondary mask-money" data-init-money="${sum_in_actual}"></span></td>
                             <td class="text-right">${difference_html}</td>
@@ -407,7 +407,7 @@ $(document).ready(function () {
                     table.find('tfoot').append(`
                         <tr>
                             <td></td>
-                            <td class="fst-italic">Total out plan</td>
+                            <td class="fst-italic">${$trans_script.attr('data-trans-total-out-plan')}</td>
                             <td class="text-right"><span class="text-secondary">-</span></td>
                             <td class="text-right"><span class="text-secondary mask-money" data-init-money="${sum_out_actual}"></span></td>
                             <td class="text-right"><span class="text-secondary">-</span></td>

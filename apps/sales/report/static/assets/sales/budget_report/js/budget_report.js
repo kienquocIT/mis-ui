@@ -325,7 +325,7 @@ $(document).ready(function () {
                     className: 'text-right w-15',
                     render: (data, type, row) => {
                         if (!row?.['planned']) {
-                            return `<span class="text-danger plan_value_span">---</span>`
+                            return `<span class="text-danger plan_value_span">-</span>`
                         }
                         return `<span class="text-primary mask-money plan_value_span" data-init-money="${row?.['plan_value']}"></span>`
                     }
@@ -343,7 +343,7 @@ $(document).ready(function () {
                     className: 'text-right w-15',
                     render: (data, type, row) => {
                         if (!row?.['planned']) {
-                            return `<span class="text-danger mask-money difference_value_span" data-init-money="${row?.['difference_value']}"></span>`
+                            return `<span class="text-danger difference_value_span">-</span>`
                         }
                         if (row?.['difference_value'] < 0) {
                             return `<span class="text-primary">(<span class="text-primary mask-money difference_value_span" data-init-money="${row?.['difference_value'] * (-1)}"></span>)</span>`
@@ -355,7 +355,7 @@ $(document).ready(function () {
                     className: 'text-right w-15',
                     render: (data, type, row) => {
                         if (!row?.['planned']) {
-                            return `<span class="text-danger rate_value_span">---</span>`
+                            return `<span class="text-danger rate_value_span">-</span>`
                         }
                         return `<span class="text-primary rate_value_span">${row?.['rate_value']} %</span>`
                     }

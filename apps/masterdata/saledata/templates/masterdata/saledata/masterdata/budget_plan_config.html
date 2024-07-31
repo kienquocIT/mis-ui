@@ -45,6 +45,9 @@
             data-trans-group="{% trans 'Group' %}"
             data-trans-view="{% trans 'view' %}"
             data-trans-edit="{% trans 'edit' %}"
+            data-trans-company="{% trans 'Company' %}"
+            data-trans-can-view-company="{% trans 'view company budget plan' %}"
+            data-trans-can-lock-plan="{% trans 'lock company budget plan' %}"
     ></script>
     {{ data.revenue_plan_config | json_script:"budget_plan_config" }}
 
@@ -61,40 +64,14 @@
                 <tr>
                     <th class="w-5"></th>
                     <th class="w-15">{% trans 'Allowed person' %}</th>
-                    <th class="w-75">{% trans 'Group' %}</th>
+                    <th class="w-35">{% trans 'Group' %}</th>
+                    <th class="w-20"></th>
+                    <th class="w-20"></th>
                     <th class="w-5 text-center">{% trans 'Action' %}</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
             </table>
-        </div>
-    </div>
-    <div class="row mt-10">
-        <div class="col-6">
-            <button class="btn btn-custom btn-primary" data-bs-toggle="modal" data-bs-target="#can-view-company-modal" type="button" id="can-view-company-btn">
-                <span>
-                    <span>{% trans 'Employee can view Company budget plan' %}</span>
-                    <span class="icon">
-                        <span class="feather-icon">
-                            <i data-feather="arrow-right-circle"></i>
-                        </span>
-                    </span>
-                </span>
-            </button>
-        </div>
-    </div>
-    <div class="row mt-3">
-        <div class="col-6">
-            <button class="btn btn-custom btn-primary" data-bs-toggle="modal" data-bs-target="#can-lock-bp-modal" type="button" id="can-lock-bp-btn">
-                <span>
-                    <span>{% trans 'Employee can lock Budget plan' %}</span>
-                    <span class="icon">
-                        <span class="feather-icon">
-                            <i data-feather="arrow-right-circle"></i>
-                        </span>
-                    </span>
-                </span>
-            </button>
         </div>
     </div>
 
@@ -118,7 +95,17 @@
                                 <label class="form-label required" for="select-allowed-person">{% trans 'Employee' %}</label>
                                 <select class="form-select select2" id="select-allowed-person"></select>
                             </div>
-                            <div class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 40vh">
+                            <div class="col-12">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="can-view-company">
+                                    <label class="form-check-label" for="can-view-company">{% trans 'Allowed view Company budget plan' %}</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="can-lock-plan">
+                                    <label class="form-check-label" for="can-lock-plan">{% trans 'Allowed lock Company budget plan' %}</label>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-5" style="position: relative; overflow: auto; width: 100%; max-height: 40vh">
                                 <table id="group-allowed-table" class="table nowrap w-100">
                                     <thead class="sticky bg-primary">
                                     <tr>
@@ -138,74 +125,6 @@
                             </div>
                         </div>
                     </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="can-view-company-modal" tabindex="-1" role="dialog" aria-labelledby="can-view-company-modal" aria-hidden="true">
-        <div class="modal-dialog modal-lg min-w-1000p" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Employee can view Company budget plan' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 40vh">
-                            <table class="table nowrap w-100" id="can-view-company-table">
-                                <thead class="sticky bg-primary">
-                                <tr>
-                                    <th class="text-white"></th>
-                                    <th class="text-white">{% trans 'Employee code' %}</th>
-                                    <th class="text-white">{% trans 'Fullname' %}</th>
-                                    <th class="text-white">{% trans 'Allowed' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 text-right">
-                            <button type="button" id="save-can-view-company" class="btn btn-primary">{% trans 'Save' %}</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="can-lock-bp-modal" tabindex="-1" role="dialog" aria-labelledby="can-lock-bp-modal" aria-hidden="true">
-        <div class="modal-dialog modal-lg min-w-1000p" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Employee can lock budget plan' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 40vh">
-                            <table class="table nowrap w-100" id="can-lock-bp-table">
-                                <thead class="sticky bg-primary">
-                                <tr>
-                                    <th class="text-white"></th>
-                                    <th class="text-white">{% trans 'Employee code' %}</th>
-                                    <th class="text-white">{% trans 'Fullname' %}</th>
-                                    <th class="text-white">{% trans 'Allowed' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 text-right">
-                            <button type="button" id="save-can-lock-bp" class="btn btn-primary">{% trans 'Save' %}</button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

@@ -45,19 +45,6 @@ $(document).ready(function () {
                                         <a href="${urlSubmittedView.replaceAll('__pk__', formPostId)}">${$.fn.formGettext('review at here')}</a>
                                     </div>
                                 `).insertAfter(formAction$);
-                                setTimeout(
-                                    () => {
-                                        $.fn.formNotify($.fn.formGettext('Automatic reload page after 1 second'), 'info');
-                                        setTimeout(
-                                            () => {
-                                                // window.location.reload();
-                                            },
-                                            1000
-                                        )
-                                    },
-                                    500
-                                )
-
                             }
                         }
                     }, errs => {

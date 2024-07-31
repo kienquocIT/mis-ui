@@ -51,6 +51,60 @@ $(document).ready(function () {
             )
         });
 
+        const notificationFrm$ = $('form.publish-data[data-code="notifications"]');
+        Object.entries(published?.['notifications'] || {}).map(
+            ([key, value]) => {
+                const ele$ = notificationFrm$.find(`[name=${key}]`);
+                if (ele$.length > 0){
+                    if (key === 'user_management_destination'){
+                        ele$.append(`<option value="${value}">${value}</option>`);
+                    }
+                    SetupFormSubmit.setInputValue(ele$, value)
+                }
+            }
+        )
+        const validator = notificationFrm$.validate({
+            submitHandler: function (form, event){
+                event.preventDefault();
+                let body = SetupFormSubmit.serializerObject($(form));
+                let errors = {};
+
+                if (body['notify_user_management_enable'] === true && body['notify_user_management_destination'].length === 0){
+                    errors['notify_user_management_destination'] = $.fn.gettext('This field is required');
+                }
+                if (body['notify_creator_receiver_from'] === "field" && !body['notify_creator_field']) {
+                    errors['notify_creator_field'] = $.fn.gettext('This field is required');
+                }
+
+                if (Object.keys(errors).length > 0){
+                    validator.showErrors(errors);
+                } else {
+                    $.fn.callAjax2({
+                        url: embed$.attr('data-url'),
+                        method: 'PUT',
+                        data: {
+                            'notifications': body,
+                        },
+                        isLoading: true,
+                    }).then(
+                        resp => {
+                            const data = $.fn.switcherResp(resp);
+                            if (data){
+                                $.fn.notifyB({
+                                    'description': $.fn.gettext('Successful'),
+                                }, 'success');
+                            }
+                        },
+                        errs => {
+                            $.fn.switcherResp(errs);
+                            validator.showErrors(errs?.data?.errors || {});
+                        },
+                    )
+                }
+                return null;
+            }
+        })
+
         let code = published?.['code'];
         if (code) {
             const formPermalink$ = $('#form-permalink');
@@ -195,4 +249,27 @@ $(document).ready(function () {
         },
         errs => $.fn.switcherResp(errs),
     )
+
+    const notifyEmailConfig = {
+        multiple: true,
+        tags: true,
+        tokenSeparators: [',', ' '],
+        data: [],
+        theme: 'default',
+        maximumInputLength: 100,
+        createTag: function (params) {
+            const email = params.term;
+            if (email.indexOf('@') !== -1){
+                const arr = email.split("@");
+                const nameEmail = arr.slice(0, arr.length - 1).join("@");
+                const domainEmail = arr[arr.length - 1];
+                if (nameEmail && domainEmail) return {
+                    id: email,
+                    text: email
+                }
+            }
+            return null;
+        }
+    };
+    $('#notification-user-management-destination').initSelect2(notifyEmailConfig);
 })

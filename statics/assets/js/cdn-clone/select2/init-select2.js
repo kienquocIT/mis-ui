@@ -478,16 +478,13 @@ class SelectDDControl {
         let tagsData = this.opts?.tags ? true : (this.ele.attr('data-tags') === 'true');
         let tokenSeparators = null;
         if (tagsData) {
-            tokenSeparators = this.ele.attr('data-tokenSeparators');
-            if (tokenSeparators) {
+            if (this.opts?.tokenSeparators){
+                tokenSeparators = this.opts?.tokenSeparators;
+            } else if (this.ele.attr('data-tokenSeparators')) {
                 try {
-                    tokenSeparators = JSON.parse(tokenSeparators)
+                    tokenSeparators = JSON.parse(this.ele.attr('data-tokenSeparators'))
                 } catch (e) {
                 }
-            } else if (this.opts?.tags) {
-                tokenSeparators = this.opts.tags || null;
-            } else {
-                tokenSeparators = null;
             }
         }
         return {

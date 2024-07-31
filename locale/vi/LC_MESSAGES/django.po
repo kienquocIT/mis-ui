@@ -8224,3 +8224,7 @@ msgstr "Gán cho nhân viên Sale"
 #
 msgid "Total employees"
 msgstr "Số lượng nhân viên"
+
+#
+msgid "had been changed. Update here!"
+msgstr "đã bị thay đổi. Cập nhập tại đây!"

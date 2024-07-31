@@ -52,7 +52,7 @@ $(document).ready(function () {
                         className: 'wrap-text w-25',
                         'render': (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}">${row?.['title']}</a>`;
+                            return `<a href="${link}"><b>${row?.['title']}</b></a>`;
                         }
                     },
                     {

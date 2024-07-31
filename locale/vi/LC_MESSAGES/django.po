@@ -6526,7 +6526,7 @@ msgstr "Hoạt động khách hàng"
 
 #
 msgid "Sale person"
-msgstr "Nv bán hàng"
+msgstr "NV bán hàng"
 
 #
 msgid "Period"
@@ -8164,3 +8164,51 @@ msgstr "Tổng ngoài kế hoạch"
 #
 msgid "Source"
 msgstr "Nguồn"
+
+#
+msgid "Lead source"
+msgstr "Nguồn lead"
+
+#
+msgid "Lead status"
+msgstr "Trạng thái lead"
+
+#
+msgid "Qualify lead"
+msgstr "Phê duyệt lead"
+
+#
+msgid "Convert to a new Contact"
+msgstr "Chuyển thành Liên hệ mới"
+
+#
+msgid "Convert to Opportunity"
+msgstr "Chuyển thành CHKD"
+
+#
+msgid "Convert to a new Opportunity"
+msgstr "Chuyển thành một CHKD mới"
+
+#
+msgid "Select an existing Opportunity"
+msgstr "Chọn một CHKD đang có"
+
+#
+msgid "Select account"
+msgstr "Chọn tài khoản"
+
+#
+msgid "Create new account"
+msgstr "Tạo tài khoản mới"
+
+#
+msgid "Convert"
+msgstr "Chuyển đổi"
+
+#
+msgid "Assign to sale"
+msgstr "Gán cho nhân viên Sale"
+
+#
+msgid "Total employees"
+msgstr "Số lượng nhân viên"

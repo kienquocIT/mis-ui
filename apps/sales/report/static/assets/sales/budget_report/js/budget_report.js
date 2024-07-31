@@ -382,7 +382,7 @@ $(document).ready(function () {
                     })
                     let difference_html = `<span class="text-primary mask-money" data-init-money="${sum_in_difference}"></span>`
                     if (sum_in_difference < 0) {
-                        difference_html = `<span>(<span class="text-primary mask-money" data-init-money="${sum_in_difference * (-1)}"></span>)</span>`
+                        difference_html = `<span class="text-primary">(<span class="text-primary mask-money" data-init-money="${sum_in_difference * (-1)}"></span>)</span>`
                     }
                     let in_plan_html = $(`
                         <tr class="in-plan-total">

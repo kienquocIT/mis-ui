@@ -284,6 +284,18 @@ function updatePriceAfterReloadGroupMember() {
     $('#notify-change-group').remove()
 }
 
+$(document).on("click", '.minimize-group', function () {
+    let group_id = $(this).attr('data-group-id')
+    let hidden_state = $(`.${group_id}:eq(0)`).prop('hidden')
+    revenuePlanTable.find(`.${group_id}`).prop('hidden', !hidden_state)
+    if (hidden_state) {
+        $(this).find('.icon').html('<i class="fas fa-angle-double-up"></i>')
+    }
+    else {
+        $(this).find('.icon').html('<i class="fas fa-angle-double-down"></i>')
+    }
+})
+
 $(document).on("change", '.month-target', function () {
     calculatePlan($(this).closest('tr'))
     let sum_month_target_company = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -452,110 +464,110 @@ function UpdateTablePlan(group_employee_list, group_selected) {
     });
     if (group_employee_valid.length > 0) {
         revenuePlanTable.find('tbody').append(
-            `<tr class="bg-overlay bg-secondary bg-opacity-10" data-row="group-sum-row" data-group-id="${group_selected.id}">
-                <td><span class="text-primary"><b>${group_selected.title}</b></span></td>
-                <td></td>
-                <td>
+            `<tr class="group-row" data-row="group-sum-row" data-group-id="${group_selected.id}">
+                <td class="fix1 bg-white">
+                    <button type="button" data-group-id="${group_selected.id}" class="minimize-group btn btn-custom btn-light icon-wthot-bg btn-rounded w-100"><span><span>${group_selected.title}</span><span class="icon"><i class="fas fa-angle-double-up"></i> </span></span></button>
+                </td>
+                <td class="fix2 bg-white">
                     <label class="col-form-label text-primary">${trans_script.attr('data-trans-revenue')}</label>
                     <div class="my-1"></div>
-                    <label class="profit-type-span col-form-label text-success">${profit_type}</label>
+                    <label class="profit-type-span col-form-label text-secondary">${profit_type}</label>
                 </td>
                 <td class="sum-m1">
-                    <span class="sum-group-m1 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m1 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-m1-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m1-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-m2">
-                    <span class="sum-group-m2 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m2 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-m2-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m2-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-m3">
-                    <span class="sum-group-m3 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m3 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-m3-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m3-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-q1">
-                    <span class="sum-group-q1 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-q1 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-q1-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-q1-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-m4">
-                    <span class="sum-group-m4 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m4 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-m4-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m4-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-m5">
-                    <span class="sum-group-m5 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m5 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-m5-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m5-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-m6">
-                    <span class="sum-group-m6 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m6 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-m6-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m6-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-q2">
-                    <span class="sum-group-q2 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-q2 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-q2-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-q2-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-m7">
-                    <span class="sum-group-m7 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m7 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-m7-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m7-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-m8">
-                    <span class="sum-group-m8 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m8 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-m8-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m8-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-m9">
-                    <span class="sum-group-m9 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m9 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-m9-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m9-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-q3">
-                    <span class="sum-group-q3 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-q3 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-q3-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-q3-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-m10">
-                    <span class="sum-group-m10 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m10 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-m10-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m10-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-m11">
-                    <span class="sum-group-m11 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m11 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-m11-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m11-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-m12">
-                    <span class="sum-group-m12 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m12 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-m12-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-m12-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-q4">
-                    <span class="sum-group-q4 mask-money text-primary" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-q4 mask-money form-control text-primary" value="0">
                     <div class="my-3"></div>
-                    <span class="sum-group-q4-profit mask-money text-success" data-init-money="0"></span>
+                    <input readonly disabled class="sum-group-q4-profit mask-money form-control text-secondary" value="0">
                 </td>
                 <td class="sum-year">
                     <span class="sum-group-year mask-money text-primary" data-init-money="0"></span>
                     <div class="my-3"></div>
-                    <span class="sum-group-year-profit mask-money text-success" data-init-money="0"></span>
+                    <span class="sum-group-year-profit mask-money text-secondary" data-init-money="0"></span>
                 </td>
             </tr>`
         )
         for (let i = 0; i < group_employee_valid.length; i++) {
             revenuePlanTable.find('tbody').append(
                 `<tr class="${group_selected.id}">
-                    <td></td>
-                    <td class="employee-mapped" data-employee-id="${group_employee_valid[i]?.['id']}"><b>${group_employee_valid[i]?.['full_name']}</b></td>
-                    <td>
+                    <td class="employee-mapped text-blue fix1 bg-white" data-employee-id="${group_employee_valid[i]?.['id']}">${group_employee_valid[i]?.['full_name']}</td>
+                    <td class="fix2 bg-white">
                         <label class="col-form-label text-primary">${trans_script.attr('data-trans-revenue')}</label>
                         <div class="my-1"></div>
-                        <label class="profit-type-span col-form-label text-success">${profit_type}</label>
+                        <label class="profit-type-span col-form-label text-secondary">${profit_type}</label>
                     </td>
                     <td class="mtarget-td" data-type="m1"></td>
                     <td class="mtarget-td" data-type="m2"></td>
@@ -583,16 +595,16 @@ function UpdateTablePlan(group_employee_list, group_selected) {
                 if ($(this).html() === '') {
                     let quarter_belong = getQuarterBelong($(this).closest('td').attr('data-type'))
                     $(this).append(`
-                        <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target ${quarter_belong} ${$(this).closest('td').attr('data-type')}targetvalue">
-                        <input value="0" data-return-type="number" class="is-valid mask-money form-control month-target-profit ${quarter_belong}-profit ${$(this).closest('td').attr('data-type')}targetvalue-profit">
+                        <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary ${quarter_belong} ${$(this).closest('td').attr('data-type')}targetvalue">
+                        <input value="0" data-return-type="number" class="mask-money form-control month-target-profit ${quarter_belong}-profit ${$(this).closest('td').attr('data-type')}targetvalue-profit">
                     `)
                 }
             })
             revenuePlanTable.find('.qtarget-td').each(function () {
                 if ($(this).html() === '') {
                     $(this).append(`
-                        <input readonly value="0" data-return-type="number" class="mb-1 mask-money form-control quarter-target ${$(this).closest('td').attr('data-type')}targetvalue">
-                        <input readonly value="0" data-return-type="number" class="is-valid mask-money form-control quarter-target-profit ${$(this).closest('td').attr('data-type')}targetvalue-profit">
+                        <input readonly value="0" data-return-type="number" class="mb-1 mask-money form-control quarter-target text-primary ${$(this).closest('td').attr('data-type')}targetvalue">
+                        <input readonly value="0" data-return-type="number" class="mask-money form-control quarter-target-profit ${$(this).closest('td').attr('data-type')}targetvalue-profit">
                     `)
                 }
             })
@@ -601,13 +613,16 @@ function UpdateTablePlan(group_employee_list, group_selected) {
                     $(this).append(`
                         <span class="mask-money text-primary yeartargetvalue" data-init-money="0"></span>
                         <div class="my-3"></div>
-                        <span class="mask-money text-success yeartargetvalue-profit" data-init-money="0"></span>
+                        <span class="mask-money text-secondary yeartargetvalue-profit" data-init-money="0"></span>
                     `)
                 }
             })
 
             $.fn.initMaskMoney2()
         }
+    }
+    else {
+        $.fn.notifyB({description: "No role accepted in this group."}, 'warning')
     }
 }
 
@@ -715,75 +730,74 @@ btn_update_group.on('click', function () {
                 else {
                     new_html = `
                         <tr class="${group['group_id']} bg-warning-light-5">
-                            <td></td>
-                            <td class="employee-mapped" data-employee-id="${emp?.['id']}"><b>${emp?.['full_name']}</b></td>
-                            <td>
+                            <td class="employee-mapped text-blue fix1 bg-warning-light-5" data-employee-id="${emp?.['id']}">${emp?.['full_name']}</td>
+                            <td class="fix2 bg-warning-light-5">
                                 <label class="col-form-label text-primary">${trans_script.attr('data-trans-revenue')}</label>
                                 <div class="my-1"></div>
                                 <label class="profit-type-span col-form-label text-secondary">${profit_type}</label>
                             </td>
                             <td class="mtarget-td" data-type="m1">
-                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target quarter1belong m1targetvalue">
+                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter1belong m1targetvalue">
                                 <input value="0" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter1belong-profit m1targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m2">
-                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target quarter1belong m2targetvalue">
+                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter1belong m2targetvalue">
                                 <input value="0" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter1belong-profit m2targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m3">
-                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target quarter1belong m3targetvalue">
+                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter1belong m3targetvalue">
                                 <input value="0" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter1belong-profit m3targetvalue-profit">
                             </td>
                             <td class="qtarget-td q1target-td" data-type="q1">
-                                <input readonly value="0" data-return-type="number" class="mb-1 mask-money form-control quarter-target q1targetvalue">
+                                <input readonly value="0" data-return-type="number" class="mb-1 mask-money form-control quarter-target text-primary q1targetvalue">
                                 <input readonly value="0" data-return-type="number" class="net-income-form-control mask-money form-control quarter-target-profit q1targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m4">
-                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target quarter2belong m4targetvalue">
+                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter2belong m4targetvalue">
                                 <input value="0" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter2belong-profit m4targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m5">
-                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target quarter2belong m5targetvalue">
+                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter2belong m5targetvalue">
                                 <input value="0" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter2belong-profit m5targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m6">
-                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target quarter2belong m6targetvalue">
+                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter2belong m6targetvalue">
                                 <input value="0" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter2belong-profit m6targetvalue-profit">
                             </td>
                             <td class="qtarget-td q2target-td" data-type="q2">
-                                <input readonly value="0" data-return-type="number" class="mb-1 mask-money form-control quarter-target q2targetvalue">
+                                <input readonly value="0" data-return-type="number" class="mb-1 mask-money form-control quarter-target text-primary q2targetvalue">
                                 <input readonly value="0" data-return-type="number" class="net-income-form-control mask-money form-control quarter-target-profit q2targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m7">
-                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target quarter3belong m7targetvalue">
+                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter3belong m7targetvalue">
                                 <input value="0" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter3belong-profit m7targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m8">
-                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target quarter3belong m8targetvalue">
+                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter3belong m8targetvalue">
                                 <input value="0" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter3belong-profit m8targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m9">
-                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target quarter3belong m9targetvalue">
+                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter3belong m9targetvalue">
                                 <input value="0" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter3belong-profit m9targetvalue-profit">
                             </td>
                             <td class="qtarget-td q3target-td" data-type="q3">
-                                <input readonly value="0" data-return-type="number" class="mb-1 mask-money form-control quarter-target q3targetvalue">
+                                <input readonly value="0" data-return-type="number" class="mb-1 mask-money form-control quarter-target text-primary q3targetvalue">
                                 <input readonly value="0" data-return-type="number" class="net-income-form-control mask-money form-control quarter-target-profit q3targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m10">
-                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target quarter4belong m10targetvalue">
+                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter4belong m10targetvalue">
                                 <input value="0" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter4belong-profit m10targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m11">
-                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target quarter4belong m11targetvalue">
+                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter4belong m11targetvalue">
                                 <input value="0" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter4belong-profit m11targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m12">
-                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target quarter4belong m12targetvalue">
+                                <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter4belong m12targetvalue">
                                 <input value="0" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter4belong-profit m12targetvalue-profit">
                             </td>
                             <td class="qtarget-td q4target-td" data-type="q4">
-                                <input readonly value="0" data-return-type="number" class="mb-1 mask-money form-control quarter-target q4targetvalue">
+                                <input readonly value="0" data-return-type="number" class="mb-1 mask-money form-control quarter-target text-primary q4targetvalue">
                                 <input readonly value="0" data-return-type="number" class="net-income-form-control mask-money form-control quarter-target-profit q4targetvalue-profit">
                             </td>
                             <td class="ytarget-td" data-type="year">
@@ -840,20 +854,20 @@ class RevenuePlanHandle {
         frm.dataForm['company_month_profit_target'] = []
         for (let i = 0; i < 12; i++) {
             frm.dataForm['company_month_target'].push(
-                parseFloat($(`.sum-company-m${i+1}`).attr('data-init-money'))
+                parseFloat($(`.sum-company-m${i+1}`).attr('value'))
             )
             frm.dataForm['company_month_profit_target'].push(
-                parseFloat($(`.sum-company-m${i+1}-profit`).attr('data-init-money'))
+                parseFloat($(`.sum-company-m${i+1}-profit`).attr('value'))
             )
         }
         frm.dataForm['company_quarter_target'] = []
         frm.dataForm['company_quarter_profit_target'] = []
         for (let i = 0; i < 4; i++) {
             frm.dataForm['company_quarter_target'].push(
-                parseFloat($(`.sum-company-q${i+1}`).attr('data-init-money'))
+                parseFloat($(`.sum-company-q${i+1}`).attr('value'))
             )
             frm.dataForm['company_quarter_profit_target'].push(
-                parseFloat($(`.sum-company-q${i+1}-profit`).attr('data-init-money'))
+                parseFloat($(`.sum-company-q${i+1}-profit`).attr('value'))
             )
         }
         frm.dataForm['company_year_target'] = parseFloat($('.sum-company-year').attr('data-init-money'))
@@ -868,14 +882,14 @@ class RevenuePlanHandle {
                     parseFloat(
                         revenuePlanTable.find(
                             `tbody tr[data-group-id="${frm.dataForm['group_mapped_list'][i]}"] .sum-group-m${j+1}`
-                        ).attr('data-init-money')
+                        ).attr('value')
                     )
                 )
                 group_month_profit_target.push(
                     parseFloat(
                         revenuePlanTable.find(
                             `tbody tr[data-group-id="${frm.dataForm['group_mapped_list'][i]}"] .sum-group-m${j+1}-profit`
-                        ).attr('data-init-money')
+                        ).attr('value')
                     )
                 )
             }
@@ -886,14 +900,14 @@ class RevenuePlanHandle {
                     parseFloat(
                         revenuePlanTable.find(
                             `tbody tr[data-group-id="${frm.dataForm['group_mapped_list'][i]}"] .sum-group-q${j+1}`
-                        ).attr('data-init-money')
+                        ).attr('value')
                     )
                 )
                 group_quarter_profit_target.push(
                     parseFloat(
                         revenuePlanTable.find(
                             `tbody tr[data-group-id="${frm.dataForm['group_mapped_list'][i]}"] .sum-group-q${j+1}-profit`
-                        ).attr('data-init-money')
+                        ).attr('value')
                     )
                 )
             }
@@ -908,7 +922,7 @@ class RevenuePlanHandle {
                 ).attr('data-init-money')
             )
             let employee_mapped_list = []
-            revenuePlanTable.find(`tr[class="${frm.dataForm['group_mapped_list'][i]}"] td[class="employee-mapped"]`).each(function () {
+            revenuePlanTable.find(`tr[class="${frm.dataForm['group_mapped_list'][i]}"] .employee-mapped`).each(function () {
                 employee_mapped_list.push($(this).attr('data-employee-id'))
             })
             frm.dataForm['RevenuePlanGroup_data'].push({
@@ -942,7 +956,7 @@ class RevenuePlanHandle {
                 let emp_year_profit_target = parseFloat($(this).find(`.ytarget-td .yeartargetvalue-profit`).attr('data-init-money'))
                 frm.dataForm['RevenuePlanGroupEmployee_data'].push({
                     'revenue_plan_group_mapped_id': frm.dataForm['group_mapped_list'][i],
-                    'employee_mapped_id': $(this).find('td[class="employee-mapped"]').attr('data-employee-id'),
+                    'employee_mapped_id': $(this).find('.employee-mapped').attr('data-employee-id'),
                     'emp_month_target': emp_month_target,
                     'emp_quarter_target': emp_quarter_target,
                     'emp_year_target': emp_year_target,
@@ -953,7 +967,7 @@ class RevenuePlanHandle {
             })
         }
 
-        // console.log(frm.dataForm)
+        console.log(frm.dataForm)
         if (for_update) {
             let pk = $.fn.getPkDetail();
             return {
@@ -1015,20 +1029,20 @@ function LoadDetailRevenuePlan(option) {
             $('#equal').prop('checked', data?.['auto_sum_target'])
 
             for (let i = 0; i < data?.['company_month_target'].length; i++) {
-                revenuePlanTable.find('tfoot .company-row').find(`.sum-m${i+1} .sum-company-m${i+1}`).attr('data-init-money', data?.['company_month_target'][i])
+                revenuePlanTable.find('thead .company-row').find(`.sum-m${i+1} .sum-company-m${i+1}`).attr('value', data?.['company_month_target'][i])
             }
             for (let i = 0; i < data?.['company_quarter_target'].length; i++) {
-                revenuePlanTable.find('tfoot .company-row').find(`.sum-q${i+1} .sum-company-q${i+1}`).attr('data-init-money', data?.['company_quarter_target'][i])
+                revenuePlanTable.find('thead .company-row').find(`.sum-q${i+1} .sum-company-q${i+1}`).attr('value', data?.['company_quarter_target'][i])
             }
-            revenuePlanTable.find('tfoot .company-row').find(`.sum-company-year`).attr('data-init-money', data?.['company_year_target'])
+            revenuePlanTable.find('thead .company-row').find(`.sum-company-year`).attr('data-init-money', data?.['company_year_target'])
 
             for (let i = 0; i < data?.['company_month_profit_target'].length; i++) {
-                revenuePlanTable.find('tfoot .company-row').find(`.sum-m${i+1} .sum-company-m${i+1}-profit`).attr('data-init-money', data?.['company_month_profit_target'][i])
+                revenuePlanTable.find('thead .company-row').find(`.sum-m${i+1} .sum-company-m${i+1}-profit`).attr('value', data?.['company_month_profit_target'][i])
             }
             for (let i = 0; i < data?.['company_quarter_profit_target'].length; i++) {
-                revenuePlanTable.find('tfoot .company-row').find(`.sum-q${i+1} .sum-company-q${i+1}-profit`).attr('data-init-money', data?.['company_quarter_profit_target'][i])
+                revenuePlanTable.find('thead .company-row').find(`.sum-q${i+1} .sum-company-q${i+1}-profit`).attr('value', data?.['company_quarter_profit_target'][i])
             }
-            revenuePlanTable.find('tfoot .company-row').find(`.sum-company-year-profit`).attr('data-init-money', data?.['company_year_profit_target'])
+            revenuePlanTable.find('thead .company-row').find(`.sum-company-year-profit`).attr('data-init-money', data?.['company_year_profit_target'])
 
             $('#net-income').prop('checked', data?.['profit_target_type'])
             let profit_type = trans_script.attr('data-trans-gross-profit')
@@ -1037,6 +1051,7 @@ function LoadDetailRevenuePlan(option) {
             }
             $('.profit-type-span').text(profit_type)
 
+            console.log(data?.['revenue_plan_group_data'])
             let data_get_group_emp = []
             for (let i = 0; i < data?.['revenue_plan_group_data'].length; i++) {
                 let group_selected = data?.['revenue_plan_group_data'][i]?.['group_mapped']
@@ -1047,93 +1062,94 @@ function LoadDetailRevenuePlan(option) {
                 let group_quarter_profit_target = data?.['revenue_plan_group_data'][i]?.['group_quarter_profit_target']
                 let group_year_profit_target = data?.['revenue_plan_group_data'][i]?.['group_year_profit_target']
                 revenuePlanTable.find('tbody').append(
-                    `<tr class="bg-overlay bg-secondary bg-opacity-10" data-row="group-sum-row" data-group-id="${group_selected.id}">
-                        <td><span class="text-primary"><b>${group_selected.title}</b></span></td>
-                        <td></td>
-                        <td>
+                    `<tr class="group-row" data-row="group-sum-row" data-group-id="${group_selected.id}">
+                        <td class="fix1 bg-white">
+                            <button type="button" data-group-id="${group_selected.id}" class="minimize-group btn btn-custom btn-light icon-wthot-bg btn-rounded w-100"><span><span>${group_selected.title}</span><span class="icon"><i class="fas fa-angle-double-up"></i> </span></span></button>
+                        </td>
+                        <td class="fix2 bg-white">
                             <label class="col-form-label text-primary">${trans_script.attr('data-trans-revenue')}</label>
                             <div class="my-1"></div>
                             <label class="profit-type-span col-form-label text-secondary">${profit_type}</label>
                         </td>
                         <td class="sum-m1">
-                            <span class="sum-group-m1 mask-money text-primary" data-init-money="${group_month_target[0]}"></span>
+                            <input readonly disabled class="sum-group-m1 mask-money form-control text-primary" value="${group_month_target[0]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-m1-profit mask-money text-secondary" data-init-money="${group_month_profit_target[0]}"></span>
+                            <input readonly disabled class="sum-group-m1-profit mask-money form-control text-secondary" value="${group_month_profit_target[0]}">
                         </td>
                         <td class="sum-m2">
-                            <span class="sum-group-m2 mask-money text-primary" data-init-money="${group_month_target[1]}"></span>
+                            <input readonly disabled class="sum-group-m2 mask-money form-control text-primary" value="${group_month_target[1]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-m2-profit mask-money text-secondary" data-init-money="${group_month_profit_target[1]}"></span>
+                            <input readonly disabled class="sum-group-m2-profit mask-money form-control text-secondary" value="${group_month_profit_target[1]}">
                         </td>
                         <td class="sum-m3">
-                            <span class="sum-group-m3 mask-money text-primary" data-init-money="${group_month_target[2]}"></span>
+                            <input readonly disabled class="sum-group-m3 mask-money form-control text-primary" value="${group_month_target[2]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-m3-profit mask-money text-secondary" data-init-money="${group_month_profit_target[2]}"></span>
+                            <input readonly disabled class="sum-group-m3-profit mask-money form-control text-secondary" value="${group_month_profit_target[2]}">
                         </td>
                         <td class="sum-q1">
-                            <span class="sum-group-q1 mask-money text-primary" data-init-money="${group_quarter_target[0]}"></span>
+                            <input readonly disabled class="sum-group-q1 mask-money form-control text-primary" value="${group_quarter_target[0]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-q1-profit mask-money text-secondary" data-init-money="${group_quarter_profit_target[0]}"></span>
+                            <input readonly disabled class="sum-group-q1-profit mask-money form-control text-secondary" value="${group_quarter_profit_target[0]}">
                         </td>
                         <td class="sum-m4">
-                            <span class="sum-group-m4 mask-money text-primary" data-init-money="${group_month_target[3]}"></span>
+                            <input readonly disabled class="sum-group-m4 mask-money form-control text-primary" value="${group_month_target[3]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-m4-profit mask-money text-secondary" data-init-money="${group_month_profit_target[3]}"></span>
+                            <input readonly disabled class="sum-group-m4-profit mask-money form-control text-secondary" value="${group_month_profit_target[3]}">
                         </td>
                         <td class="sum-m5">
-                            <span class="sum-group-m5 mask-money text-primary" data-init-money="${group_month_target[4]}"></span>
+                            <input readonly disabled class="sum-group-m5 mask-money form-control text-primary" value="${group_month_target[4]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-m5-profit mask-money text-secondary" data-init-money="${group_month_profit_target[4]}"></span>
+                            <input readonly disabled class="sum-group-m5-profit mask-money form-control text-secondary" value="${group_month_profit_target[4]}">
                         </td>
                         <td class="sum-m6">
-                            <span class="sum-group-m6 mask-money text-primary" data-init-money="${group_month_target[5]}"></span>
+                            <input readonly disabled class="sum-group-m6 mask-money form-control text-primary" value="${group_month_target[5]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-m6-profit mask-money text-secondary" data-init-money="${group_month_profit_target[5]}"></span>
+                            <input readonly disabled class="sum-group-m6-profit mask-money form-control text-secondary" value="${group_month_profit_target[5]}">
                         </td>
                         <td class="sum-q2">
-                            <span class="sum-group-q2 mask-money text-primary" data-init-money="${group_quarter_target[1]}"></span>
+                            <input readonly disabled class="sum-group-q2 mask-money form-control text-primary" value="${group_quarter_target[1]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-q2-profit mask-money text-secondary" data-init-money="${group_quarter_profit_target[1]}"></span>
+                            <input readonly disabled class="sum-group-q2-profit mask-money form-control text-secondary" value="${group_quarter_profit_target[1]}">
                         </td>
                         <td class="sum-m7">
-                            <span class="sum-group-m7 mask-money text-primary" data-init-money="${group_month_target[6]}"></span>
+                            <input readonly disabled class="sum-group-m7 mask-money form-control text-primary" value="${group_month_target[6]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-m7-profit mask-money text-secondary" data-init-money="${group_month_profit_target[6]}"></span>
+                            <input readonly disabled class="sum-group-m7-profit mask-money form-control text-secondary" value="${group_month_profit_target[6]}">
                         </td>
                         <td class="sum-m8">
-                            <span class="sum-group-m8 mask-money text-primary" data-init-money="${group_month_target[7]}"></span>
+                            <input readonly disabled class="sum-group-m8 mask-money form-control text-primary" value="${group_month_target[7]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-m8-profit mask-money text-secondary" data-init-money="${group_month_profit_target[7]}"></span>
+                            <input readonly disabled class="sum-group-m8-profit mask-money form-control text-secondary" value="${group_month_profit_target[7]}">
                         </td>
                         <td class="sum-m9">
-                            <span class="sum-group-m9 mask-money text-primary" data-init-money="${group_month_target[8]}"></span>
+                            <input readonly disabled class="sum-group-m9 mask-money form-control text-primary" value="${group_month_target[8]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-m9-profit mask-money text-secondary" data-init-money="${group_month_profit_target[8]}"></span>
+                            <input readonly disabled class="sum-group-m9-profit mask-money form-control text-secondary" value="${group_month_profit_target[8]}">
                         </td>
                         <td class="sum-q3">
-                            <span class="sum-group-q3 mask-money text-primary" data-init-money="${group_quarter_target[2]}"></span>
+                            <input readonly disabled class="sum-group-q3 mask-money form-control text-primary" value="${group_quarter_target[2]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-q3-profit mask-money text-secondary" data-init-money="${group_quarter_profit_target[2]}"></span>
+                            <input readonly disabled class="sum-group-q3-profit mask-money form-control text-secondary" value="${group_quarter_profit_target[2]}">
                         </td>
                         <td class="sum-m10">
-                            <span class="sum-group-m10 mask-money text-primary" data-init-money="${group_month_target[9]}"></span>
+                            <input readonly disabled class="sum-group-m10 mask-money form-control text-primary" value="${group_month_target[9]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-m10-profit mask-money text-secondary" data-init-money="${group_month_profit_target[9]}"></span>
+                            <input readonly disabled class="sum-group-m10-profit mask-money form-control text-secondary" value="${group_month_profit_target[9]}">
                         </td>
                         <td class="sum-m11">
-                            <span class="sum-group-m11 mask-money text-primary" data-init-money="${group_month_target[10]}"></span>
+                            <input readonly disabled class="sum-group-m11 mask-money form-control text-primary" value="${group_month_target[10]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-m11-profit mask-money text-secondary" data-init-money="${group_month_profit_target[10]}"></span>
+                            <input readonly disabled class="sum-group-m11-profit mask-money form-control text-secondary" value="${group_month_profit_target[10]}">
                         </td>
                         <td class="sum-m12">
-                            <span class="sum-group-m12 mask-money text-primary" data-init-money="${group_month_target[11]}"></span>
+                            <input readonly disabled class="sum-group-m12 mask-money form-control text-primary" value="${group_month_target[11]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-m12-profit mask-money text-secondary" data-init-money="${group_month_profit_target[11]}"></span>
+                            <input readonly disabled class="sum-group-m12-profit mask-money form-control text-secondary" value="${group_month_profit_target[11]}">
                         </td>
                         <td class="sum-q4">
-                            <span class="sum-group-q4 mask-money text-primary" data-init-money="${group_quarter_target[3]}"></span>
+                            <input readonly disabled class="sum-group-q4 mask-money form-control text-primary" value="${group_quarter_target[3]}">
                             <div class="my-3"></div>
-                            <span class="sum-group-q4-profit mask-money text-secondary" data-init-money="${group_quarter_profit_target[3]}"></span>
+                            <input readonly disabled class="sum-group-q4-profit mask-money form-control text-secondary" value="${group_quarter_profit_target[3]}">
                         </td>
                         <td class="sum-year">
                             <span class="sum-group-year mask-money text-primary" data-init-money="${group_year_target}"></span>
@@ -1155,75 +1171,74 @@ function LoadDetailRevenuePlan(option) {
                     let emp_year_profit_target = group_employee_valid[j]?.['emp_year_profit_target']
                     revenuePlanTable.find('tbody').append(
                         `<tr class="${group_selected.id}">
-                            <td></td>
-                            <td class="employee-mapped" data-employee-id="${group_employee_valid[j]?.['id']}"><b>${group_employee_valid[j]?.['full_name']}</b></td>
-                            <td>
+                            <td class="employee-mapped text-blue fix1 bg-white" data-employee-id="${group_employee_valid[j]?.['id']}">${group_employee_valid[j]?.['full_name']}</td>
+                            <td class="fix2 bg-white">
                                 <label class="col-form-label text-primary">${trans_script.attr('data-trans-revenue')}</label>
                                 <div class="my-1"></div>
                                 <label class="profit-type-span col-form-label text-secondary">${profit_type}</label>
                             </td>
                             <td class="mtarget-td" data-type="m1">
-                                <input value="${emp_month_target[0]}" data-return-type="number" class="mb-1 mask-money form-control month-target quarter1belong m1targetvalue">
+                                <input value="${emp_month_target[0]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter1belong m1targetvalue">
                                 <input value="${emp_month_profit_target[0]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter1belong-profit m1targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m2">
-                                <input value="${emp_month_target[1]}" data-return-type="number" class="mb-1 mask-money form-control month-target quarter1belong m2targetvalue">
+                                <input value="${emp_month_target[1]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter1belong m2targetvalue">
                                 <input value="${emp_month_profit_target[1]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter1belong-profit m2targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m3">
-                                <input value="${emp_month_target[2]}" data-return-type="number" class="mb-1 mask-money form-control month-target quarter1belong m3targetvalue">
+                                <input value="${emp_month_target[2]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter1belong m3targetvalue">
                                 <input value="${emp_month_profit_target[2]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter1belong-profit m3targetvalue-profit">
                             </td>
                             <td class="qtarget-td q1target-td" data-type="q1">
-                                <input readonly value="${emp_quarter_target[0]}" data-return-type="number" class="mb-1 mask-money form-control quarter-target q1targetvalue">
+                                <input readonly value="${emp_quarter_target[0]}" data-return-type="number" class="mb-1 mask-money form-control quarter-target text-primary q1targetvalue">
                                 <input readonly value="${emp_quarter_profit_target[0]}" data-return-type="number" class="net-income-form-control mask-money form-control quarter-target-profit q1targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m4">
-                                <input value="${emp_month_target[3]}" data-return-type="number" class="mb-1 mask-money form-control month-target quarter2belong m4targetvalue">
+                                <input value="${emp_month_target[3]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter2belong m4targetvalue">
                                 <input value="${emp_month_profit_target[3]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter2belong-profit m4targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m5">
-                                <input value="${emp_month_target[4]}" data-return-type="number" class="mb-1 mask-money form-control month-target quarter2belong m5targetvalue">
+                                <input value="${emp_month_target[4]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter2belong m5targetvalue">
                                 <input value="${emp_month_profit_target[4]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter2belong-profit m5targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m6">
-                                <input value="${emp_month_target[5]}" data-return-type="number" class="mb-1 mask-money form-control month-target quarter2belong m6targetvalue">
+                                <input value="${emp_month_target[5]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter2belong m6targetvalue">
                                 <input value="${emp_month_profit_target[5]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter2belong-profit m6targetvalue-profit">
                             </td>
                             <td class="qtarget-td q2target-td" data-type="q2">
-                                <input readonly value="${emp_quarter_target[1]}" data-return-type="number" class="mb-1 mask-money form-control quarter-target q2targetvalue">
+                                <input readonly value="${emp_quarter_target[1]}" data-return-type="number" class="mb-1 mask-money form-control quarter-target text-primary q2targetvalue">
                                 <input readonly value="${emp_quarter_profit_target[1]}" data-return-type="number" class="net-income-form-control mask-money form-control quarter-target-profit q2targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m7">
-                                <input value="${emp_month_target[6]}" data-return-type="number" class="mb-1 mask-money form-control month-target quarter3belong m7targetvalue">
+                                <input value="${emp_month_target[6]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter3belong m7targetvalue">
                                 <input value="${emp_month_profit_target[6]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter3belong-profit m7targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m8">
-                                <input value="${emp_month_target[7]}" data-return-type="number" class="mb-1 mask-money form-control month-target quarter3belong m8targetvalue">
+                                <input value="${emp_month_target[7]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter3belong m8targetvalue">
                                 <input value="${emp_month_profit_target[7]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter3belong-profit m8targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m9">
-                                <input value="${emp_month_target[8]}" data-return-type="number" class="mb-1 mask-money form-control month-target quarter3belong m9targetvalue">
+                                <input value="${emp_month_target[8]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter3belong m9targetvalue">
                                 <input value="${emp_month_profit_target[8]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter3belong-profit m9targetvalue-profit">
                             </td>
                             <td class="qtarget-td q3target-td" data-type="q3">
-                                <input readonly value="${emp_quarter_target[2]}" data-return-type="number" class="mb-1 mask-money form-control quarter-target q3targetvalue">
+                                <input readonly value="${emp_quarter_target[2]}" data-return-type="number" class="mb-1 mask-money form-control quarter-target text-primary q3targetvalue">
                                 <input readonly value="${emp_quarter_profit_target[2]}" data-return-type="number" class="net-income-form-control mask-money form-control quarter-target-profit q3targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m10">
-                                <input value="${emp_month_target[9]}" data-return-type="number" class="mb-1 mask-money form-control month-target quarter4belong m10targetvalue">
+                                <input value="${emp_month_target[9]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter4belong m10targetvalue">
                                 <input value="${emp_month_profit_target[9]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter4belong-profit m10targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m11">
-                                <input value="${emp_month_target[10]}" data-return-type="number" class="mb-1 mask-money form-control month-target quarter4belong m11targetvalue">
+                                <input value="${emp_month_target[10]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter4belong m11targetvalue">
                                 <input value="${emp_month_profit_target[10]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter4belong-profit m11targetvalue-profit">
                             </td>
                             <td class="mtarget-td" data-type="m12">
-                                <input value="${emp_month_target[11]}" data-return-type="number" class="mb-1 mask-money form-control month-target quarter4belong m12targetvalue">
+                                <input value="${emp_month_target[11]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter4belong m12targetvalue">
                                 <input value="${emp_month_profit_target[11]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter4belong-profit m12targetvalue-profit">
                             </td>
                             <td class="qtarget-td q4target-td" data-type="q4">
-                                <input readonly value="${emp_quarter_target[3]}" data-return-type="number" class="mb-1 mask-money form-control quarter-target q4targetvalue">
+                                <input readonly value="${emp_quarter_target[3]}" data-return-type="number" class="mb-1 mask-money form-control quarter-target text-primary q4targetvalue">
                                 <input readonly value="${emp_quarter_profit_target[3]}" data-return-type="number" class="net-income-form-control mask-money form-control quarter-target-profit q4targetvalue-profit">
                             </td>
                             <td class="ytarget-td" data-type="year">
@@ -1261,10 +1276,12 @@ function LoadDetailRevenuePlan(option) {
                                 return item?.['group_id'] === data?.['id']
                             })[0]
                             let valid_emp = []
+                            let valid_emp_existed = []
                             for (const emp of data?.['group_employee']) {
                                 for (const role of emp?.['role']) {
-                                    if (revenue_plan_config_list.includes(role?.['id'])) {
+                                    if (revenue_plan_config_list.includes(role?.['id']) && !valid_emp_existed.includes(emp?.['id'])) {
                                         valid_emp.push(emp)
+                                        valid_emp_existed.push(emp?.['id'])
                                     }
                                 }
                             }

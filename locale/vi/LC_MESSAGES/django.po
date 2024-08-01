@@ -8226,6 +8226,10 @@ msgid "Total employees"
 msgstr "Số lượng nhân viên"
 
 #
+msgid "had been changed. Update here!"
+msgstr "đã bị thay đổi. Cập nhập tại đây!"
+
+#
 msgid "Diagram"
 msgstr "Biểu đồ"
 

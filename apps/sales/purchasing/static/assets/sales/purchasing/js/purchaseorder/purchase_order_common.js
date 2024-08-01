@@ -254,10 +254,10 @@ class POLoadDataHandle {
             POLoadDataHandle.PRDataEle.val('');
         }
         // clear supplier, contact
-        POLoadDataHandle.supplierSelectEle.empty();
-        POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [], {'account_types_mapped__account_type_order': 1}, null, true);
-        POLoadDataHandle.contactSelectEle.empty();
-        POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle);
+        // POLoadDataHandle.supplierSelectEle.empty();
+        // POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [], {'account_types_mapped__account_type_order': 1}, null, true);
+        // POLoadDataHandle.contactSelectEle.empty();
+        // POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle);
         POLoadDataHandle.loadResetPQAndPriceList();
         // uncheck merge product
         let eleMergeProduct = $('#merge-same-product');

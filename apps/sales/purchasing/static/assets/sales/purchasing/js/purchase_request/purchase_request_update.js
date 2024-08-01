@@ -2,6 +2,21 @@ $(document).ready(function () {
     const frmDetail = $('#frmUpdate');
     const pk = $.fn.getPkDetail();
 
+    $('[name="delivered_date"]').daterangepicker({
+        singleDatePicker: true,
+        timepicker: false,
+        showDropdowns: false,
+        minYear: 2023,
+        locale: {
+            format: 'DD/MM/YYYY',
+        },
+        maxYear: parseInt(moment().format('YYYY'), 10),
+        autoApply: true,
+        autoUpdateInput: false,
+    }).on('apply.daterangepicker', function (ev, picker) {
+        $(this).val(picker.startDate.format('DD/MM/YYYY'));
+    }).val('');
+
     PurchaseRequestLoadPage.loadDetail(frmDetail, pk, 1);
 
     new PurchaseRequestEvent().load();

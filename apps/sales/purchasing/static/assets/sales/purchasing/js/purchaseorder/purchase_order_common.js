@@ -2495,8 +2495,8 @@ class POSubmitHandle {
             _form.dataForm['purchase_order_payment_stage'] = dataPaymentStage;
         }
         // attachment
-        if (_form.dataForm?.['attachment']) {
-          _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm['attachment'], []);
+        if (_form.dataForm.hasOwnProperty('attachment')) {
+          _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);
         }
     };
 }

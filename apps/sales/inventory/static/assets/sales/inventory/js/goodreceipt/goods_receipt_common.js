@@ -3418,8 +3418,8 @@ class GRSubmitHandle {
             _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
         }
         // attachment
-        if (_form.dataForm?.['attachment']) {
-          _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm['attachment'], []);
+        if (_form.dataForm.hasOwnProperty('attachment')) {
+          _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);
         }
     };
 }

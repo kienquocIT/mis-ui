@@ -1228,7 +1228,7 @@ $(async function () {
             putData['remaining_quantity'] = $storedData.remaining_quantity
             putData['ready_quantity'] = $storedData.ready_quantity
             putData['is_updated'] = $storedData.is_updated
-            if (_form.dataForm?.['attachment']) {
+            if (_form.dataForm.hasOwnProperty('attachment')) {
                 putData['attachments'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);
             }
             putData['delivery_logistic'] = {

@@ -512,16 +512,16 @@ $(async function () {
                 rowCallback(row, data, index) {
                     $(`input.form-control`, row).on('blur', function (e) {
                         e.preventDefault();
-                        let eleStock = row.querySelector('.table-row-stock');
-                        if (parseFloat(this.value) > 0 && eleStock) {
-                            if (parseFloat(this.value) > parseFloat(eleStock.innerHTML)) {
+                        let eleAvailable = row.querySelector('.table-row-available');
+                        if (parseFloat(this.value) > 0 && eleAvailable) {
+                            if (parseFloat(this.value) > parseFloat(eleAvailable.innerHTML)) {
                                 $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
                                 this.value = 0;
-                                data.picked = this.value;
+                                data['picked'] = this.value;
                                 $table.DataTable().row(index).data(data).draw();
                                 return false
                             }
-                            data.picked = this.value
+                            data['picked'] = this.value
                             $table.DataTable().row(index).data(data).draw();
                             prodTable.setupTotal();
                         }

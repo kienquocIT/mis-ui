@@ -8244,3 +8244,15 @@ msgstr "Tên tài liệu"
 #
 msgid "File name"
 msgstr "Tên tập tin"
+
+#
+msgid "Extra"
+msgstr "Thêm"
+
+#
+msgid "Set to current file"
+msgstr "Đặt thành tập tin hiện tại"
+
+#
+msgid "View current file"
+msgstr "Xem tập tin hiện tại"

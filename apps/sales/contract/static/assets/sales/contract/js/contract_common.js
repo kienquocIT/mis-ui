@@ -6,6 +6,7 @@ class ContractLoadDataHandle {
     static $attachment = $('#attachment');
     static $trans = $('#app-trans-factory');
 
+    // DOCUMENT
     static loadAddDoc() {
         let TotalOrder = ContractDataTableHandle.$tableDocument[0].querySelectorAll('.table-row-order').length;
         let order = TotalOrder + 1;
@@ -28,6 +29,63 @@ class ContractLoadDataHandle {
         ContractLoadDataHandle.$attachment[0].removeAttribute('hidden');
         return true;
     };
+
+    // FILE
+    static loadAddFile(dataList) {
+        ContractDataTableHandle.$tableFile.DataTable().clear().draw();
+        ContractDataTableHandle.$tableFile.DataTable().rows.add(dataList).draw();
+        return true;
+    }
+
+    static loadSetupAddFile() {
+        let result = [];
+        let is_current = true;
+        let order = 1;
+        for (let mediaBody of ContractLoadDataHandle.$attachment[0].querySelectorAll('.media-body')) {
+            let fileName = mediaBody.querySelector('.f-item-name');
+            let dataAdd = {
+                'title': fileName.innerHTML,
+                'version': 1,
+                'date_created': ContractCommonHandle.getCurrentDate(),
+                'is_current': is_current,
+                'order': order,
+            };
+            result.push(dataAdd);
+            is_current = false;
+            order += 1;
+        }
+        return result;
+    }
+
+    static loadSetupSetCurrent(ele) {
+        let result = [];
+        let row = ele.closest('tr');
+        let fileIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+        if (row && fileIds) {
+            let eleOrder = row.querySelector('.table-row-order');
+            if (eleOrder) {
+                if (eleOrder.getAttribute('data-row')) {
+                    let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
+                    dataRow['is_current'] = true;
+                    dataRow['order'] = 1;
+                    result.push(dataRow);
+                    ContractCommonHandle.commonDeleteRow(row, ContractDataTableHandle.$tableFile);
+                }
+            }
+            let order = 2;
+            for (let eleOrder of ContractDataTableHandle.$tableFile[0].querySelectorAll('.table-row-order')) {
+                if (eleOrder.getAttribute('data-row')) {
+                    let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
+                    dataRow['is_current'] = false;
+                    dataRow['oder'] = order;
+                    order += 1;
+                    result.push(dataRow);
+                }
+            }
+            let ids = $x.cls.file.get_val(fileIds.value, []);
+        }
+        return result;
+    }
 }
 
 // DataTable
@@ -87,7 +145,7 @@ class ContractDataTableHandle {
                     width: '40%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-title" data-row="${dataRow}">${row?.['title'] ? row?.['title'] : ''}</span>`;
+                        return `<span class="table-row-order" data-row="${dataRow}" hidden>${row?.['order'] ? row?.['order'] : 0}</span><span class="table-row-title" data-row="${dataRow}">${row?.['title'] ? row?.['title'] : ''}</span>`;
                     }
                 },
                 {
@@ -138,6 +196,10 @@ class ContractCommonHandle {
         } else {
             let order = 1;
             for (let eleOrder of $table[0].querySelectorAll('.table-row-order')) {
+                if (eleOrder.getAttribute('data-row')) {
+                    let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
+                    dataRow['order'] = order;
+                }
                 eleOrder.innerHTML = order;
                 order++
                 if (order > itemCount) {

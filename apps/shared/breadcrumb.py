@@ -361,7 +361,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     FORM_ENTRIES_LIST_PAGE = BreadcrumbChildren(_('Entries Data'))
 
     # PROJECT
+    PROJECT_HOME = BreadcrumbChildren(_('Project home'), 'ProjectList')
     PROJECT_LIST = BreadcrumbChildren(_('Project list'), 'ProjectList')
+    PROJECT_CONFIG = BreadcrumbChildren(_('Project config'), 'ProjectConfig')
 
     # Zones
     ZONES_LIST_PAGE = BreadcrumbChildren(_('Zones'), 'ZonesList')
@@ -925,6 +927,8 @@ class BreadcrumbView:
     IMPORT_CREATE_PAGE = IMPORT_LIST + [BreadcrumbItem.BASTION_CREATE]
 
     # project
+    PROJECT_CONFIG = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_CONFIG]
+    PROJECT_HOME = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_HOME]
     PROJECT_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_LIST]
     PROJECT_CREATE_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_CREATE]
     PROJECT_DETAIL_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_DETAIL]

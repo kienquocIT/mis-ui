@@ -202,6 +202,11 @@ class MenusCoreConfigurations:
                 view_name='InvoiceSignList',
                 icon='<i class="fas fa-signature"></i>',
             ),
+            MenuCommon(
+                name='Project config', code='menu_project_config',
+                view_name='ProjectConfig',
+                icon='<i class="fa-brands fa-r-project"></i>',
+            ),
         ]
     )
     TEMPLATES_DATA_CONFIG = MenuCommon(
@@ -617,6 +622,7 @@ class MenusReport:
 class MenusProject:
     HOME = MenuCommon(
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+        # name='Project home', code='id_menu_project_home', view_name='ProjectHome', icon='<i class="fas fa-home"></i>',
     )
     LIST = MenuCommon(
         name='Project list', code='menu_project', view_name='ProjectList',

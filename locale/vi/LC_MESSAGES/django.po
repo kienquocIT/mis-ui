@@ -8036,3 +8036,11 @@ msgstr "Nửa ngày"
 #
 msgid "Change view mode"
 msgstr "Thay đổi chế độ xem"
+
+#
+msgid "Project config"
+msgstr "Cấu hình dự án"
+
+#
+msgid "Employee can complete project"
+msgstr "Nhân viên có quyền đóng dự án"

@@ -66,6 +66,11 @@ class ContractLoadDataHandle {
             if (eleOrder) {
                 if (eleOrder.getAttribute('data-row')) {
                     let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
+                    let ids = $x.cls.file.get_val(fileIds.value, []);
+                    let id = ids[dataRow?.['order'] - 1];
+                    ids.splice(dataRow?.['order'] - 1, 1);
+                    ids.unshift(id);
+                    fileIds.value = ids.join(',');
                     dataRow['is_current'] = true;
                     dataRow['order'] = 1;
                     result.push(dataRow);
@@ -82,7 +87,6 @@ class ContractLoadDataHandle {
                     result.push(dataRow);
                 }
             }
-            let ids = $x.cls.file.get_val(fileIds.value, []);
         }
         return result;
     }

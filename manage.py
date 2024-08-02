@@ -3,11 +3,16 @@
 import os
 import sys
 
+from misui.opentelemetry import init as open_telemetry_init
+
 
 # pylint: disable=C0415
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'misui.settings')
+
+    open_telemetry_init()
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

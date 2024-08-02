@@ -9,6 +9,7 @@ $(function () {
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 useDataServer: true,
+                rowIdx: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -23,42 +24,37 @@ $(function () {
                 pageLength:50,
                 columns: [
                     {
-                        targets: 0,
-                        width: '1%',
-                        render: (data, type, row, meta) => {
-                            return `<span class="table-row-order">${(meta.row + 1)}</span>`
+                        className: 'wrap-text',
+                        render: () => {
+                            return ``
                         }
                     },
                     {
-                        targets: 1,
-                        width: '10%',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`
+                            return `<a href="${link}"><span class="badge badge-primary w-70">${row?.['code']}</span></a> ${$x.fn.buttonLinkBlank(link)}`
                         }
                     },
                     {
-                        targets: 2,
-                        width: '25%',
+                        className: 'wrap-text w-30',
                         render: (data, type, row) => {
                             const link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
                         }
                     },
                     {
-                        targets: 3,
-                        width: '25%',
+                        className: 'wrap-text w-25',
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
                             if (Object.keys(row?.['supplier']).length !== 0) {
-                                ele = `<p>${row?.['supplier']?.['name']}</p>`;
+                                ele = `<b>${row?.['supplier']?.['name']}</b>`;
                             }
                             return ele;
                         }
                     },
                     {
-                        targets: 4,
-                        width: '10%',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             if (row?.['delivered_date']) {
                                 return `<p>${moment(row?.['delivered_date']).format('DD/MM/YYYY')}</p>`;
@@ -67,8 +63,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 5,
-                        width: '10%',
+                        className: 'wrap-text text-center w-10',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
                             let sttData = [
@@ -78,12 +73,11 @@ $(function () {
                                 "success",
                                 "danger",
                             ]
-                            return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
+                            return `<span class="w-80 badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
                         }
                     },
                     {
-                        targets: 6,
-                        width: '10%',
+                        className: 'wrap-text w-10 text-center',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#gr_status').text())
                             let sttData = [
@@ -92,13 +86,11 @@ $(function () {
                                 "blue badge-outline",
                                 "success badge-outline",
                             ]
-                            return `<span class="badge badge-${sttData[row?.['receipt_status']]}">${sttTxt[row?.['receipt_status']][1]}</span>`;
+                            return `<span class="w-80 badge badge-${sttData[row?.['receipt_status']]}">${sttTxt[row?.['receipt_status']][1]}</span>`;
                         }
                     },
                     {
-                        targets: 7,
-                        className: 'action-center',
-                        width: '5%',
+                        className: 'action-center w-5',
                         render: (data, type, row) => {
                             let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
                             let disabled = '';

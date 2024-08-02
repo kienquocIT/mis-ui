@@ -1234,7 +1234,8 @@ function loadDtbOpportunityList() {
                     targets: 2,
                     className: 'wrap-text w-25',
                     render: (data, type, row) => {
-                        return `<span class="fw-bold text-primary">${row.title}</span>`
+                        const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
+                        return `<a href="${link}"><span class="fw-bold text-primary">${row.title}</span></a>`
                     }
                 },
                 {

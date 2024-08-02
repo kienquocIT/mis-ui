@@ -178,7 +178,7 @@ function TaskSubmitFunc(platform) {
     }
 
     formData.work = $('input[name="work_id"]', platform).val()
-    formData.project = formData.project_id
+    formData.project = $('#id').val()
     let method = 'POST', url = platform.attr('data-url')
     if ($('input[name="id"]', platform).length)
         if ($('input[name="id"]', platform).val().length) {

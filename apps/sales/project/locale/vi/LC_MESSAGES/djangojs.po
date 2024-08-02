@@ -164,3 +164,7 @@ msgstr "Tìm nhân viên theo chi phí phát sinh"
 #
 msgid "Title is required"
 msgstr "Tiêu đề là bắt buộc"
+
+#
+msgid "Project new"
+msgstr "mới"

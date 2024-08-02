@@ -11,12 +11,12 @@
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="project_form">
-            <span>
-                <span>{% trans 'Save' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-floppy-disk"></i>
-                </span>
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
+        </span>
     </button>
 {% endblock %}
 
@@ -32,10 +32,10 @@
                     <label for="titleInput" class="form-label required">{% trans 'Title' %}</label>
                     <input type="text" name="title" id="titleInput" class="form-control" required>
                 </div>
-                <div class="col-xs-12 col-md-6">
-                    {{ data.employee_info|json_script:'current_info' }}
+                <div class="col-xs-12 col-md-6 d-flex align-items-center">
+                    {{ data.employee_info|json_script:'current_info'}}
                     <input type="hidden" id="data_form">
-                    <a href="#" class="btn btn-primary mt-5" id="create_baseline" disabled>
+                    <a href="#" class="btn btn-primary" id="create_baseline" disabled>
                         <span>
                             <span class="icon">
                                 <i class="bi bi-graph-up"></i>
@@ -43,6 +43,10 @@
                             <span>{% trans 'Create Baseline' %}</span>
                         </span>
                     </a>
+                    <div class="completion_rate_block">
+                        <p class="heading">0%</p>
+                        <span class="title">{% trans 'Completion rate' %}</span>
+                    </div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="col-xs-12 col-md-6 form-group">

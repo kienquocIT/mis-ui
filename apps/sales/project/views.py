@@ -3,7 +3,7 @@ __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI',
            'ProjectWorkListAPI', 'ProjectGroupDetailAPI', 'ProjectWorkDetailAPI', 'ProjectMemberAddAPI',
            'ProjectMemberDetailAPI', 'ProjectUpdateOrderAPI', 'ProjectTaskListAPI', 'ProjectGroupDDListAPI',
            'ProjectTaskDetailAPI', 'ProjectWorkExpenseAPI', 'ProjectCreateBaselineAPI', 'ProjectBaselineDetail',
-           'ProjectBaselineDetailAPI',
+           'ProjectBaselineDetailAPI', 'ProjectHome', 'ProjectConfig', 'ProjectConfigAPI'
            ]
 
 from django.views import View
@@ -417,4 +417,49 @@ class ProjectBaselineDetailAPI(APIView):
     )
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_BASELINE_DETAIL.push_id(pk)).get()
+        return resp.auto_return()
+
+
+class ProjectHome(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/project/extends/home.html',
+        breadcrumb='PROJECT_HOME',
+        menu_active='id_menu_project_home',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class ProjectConfig(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/project/extends/configs.html',
+        breadcrumb='PROJECT_CONFIG',
+        menu_active='menu_project_config',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class ProjectConfigAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_CONFIG).get()
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_CONFIG).put(request.data)
+        if resp.state:
+            resp.result['message'] = f'{BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
+            return resp.result, status.HTTP_200_OK
         return resp.auto_return()

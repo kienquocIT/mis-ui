@@ -2050,7 +2050,7 @@ var Gantt = (function () {
                         jQuery('.btn-item-row-assign', htmlBtn2).on('click', function(){
                             const $form = jQuery('#formOpportunityTask')
                             jQuery('.btn-show-task_f').trigger('click');
-                            jQuery('#work_id', $form).remove()
+                            jQuery('input[name="work_id"]', $form).remove()
                             $form.append(`<input type="hidden" name="work_id" value="${item.id}"/>`);
 
                         })

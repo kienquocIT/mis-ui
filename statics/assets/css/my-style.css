@@ -825,6 +825,15 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
 .dm-uploader.active {
     border-color: #0ebd0f;
     border-style: solid;
+    background-color: rgba(0, 107, 64, 0.1);
+}
+
+.dm-uploader.active .dm-uploader-text > p {
+    color: #00d67f;
+}
+
+.dm-uploader.active .dm-uploader-text > svg {
+    fill: #00d67f;
 }
 
 ul.dm-uploader-result-list li {

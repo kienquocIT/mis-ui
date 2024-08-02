@@ -6069,8 +6069,8 @@ msgid "No files uploaded"
 msgstr "Không có tệp được tải lên"
 
 #
-msgid "Drag & drop Files here"
-msgstr "Kéo và thả tệp ở đây"
+msgid "Drag and drop the file within the dashed border for upload"
+msgstr "Kéo và thả tệp trong đường viền nét đứt để tải lên"
 
 #
 msgid "Open the file Browser"
@@ -8256,3 +8256,63 @@ msgstr "Đặt thành tập tin hiện tại"
 #
 msgid "View current file"
 msgstr "Xem tập tin hiện tại"
+
+#
+msgid "Select Contacts"
+msgstr "Chọn Liên hệ"
+
+#
+msgid "Contacts"
+msgstr "Liên hệ"
+
+#
+msgid "Full address"
+msgstr "Địa chỉ đầy đủ"
+
+#
+msgid "Account information"
+msgstr "Thông tin Tài khoản"
+
+#
+msgid "Role of Customer"
+msgstr "Vai trò Khách hàng"
+
+#
+msgid "Role of Supplier"
+msgstr "Vai trò Nhà cung cấp"
+
+#
+msgid "Bank Account Information"
+msgstr "Thông tin Tài khoản ngân hàng"
+
+#
+msgid "Credit Card Account Information"
+msgstr "Thông tin Tài khoản Credit Card"
+
+#
+msgid "Add new bank account"
+msgstr "Thêm tài khoản ngân hàng"
+
+#
+msgid "Add new credit card"
+msgstr "Thêm Credit card"
+
+#
+msgid "Go to Stage"
+msgstr "Nhảy đến trạng thái này"
+
+#
+msgid "Details"
+msgstr "Chi tiết"
+
+#
+msgid "Shortcut"
+msgstr "Lối tắt"
+
+#
+msgid "View Quotation"
+msgstr "Xem Báo giá"
+
+#
+msgid "View Sale Order"
+msgstr "Xem Đơn hàng"

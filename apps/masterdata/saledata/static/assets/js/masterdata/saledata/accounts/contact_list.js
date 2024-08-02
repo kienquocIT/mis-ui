@@ -28,20 +28,20 @@ $(document).ready(function () {
                 },
             },
             {
-                className: 'wrap-text w-15',
+                className: 'wrap-text w-20',
                 'data': 'full_name',
                 render: (data, type, row, meta) => {
                     let urlDetail = baseUrlDetail.replace("0", row?.['id']);
                     return `<a href="${urlDetail}"><b>${row.fullname}</b></a>`
                 }
             }, {
-                className: 'wrap-text w-10',
+                className: 'wrap-text w-15',
                 'data': 'job_title',
                 render: (data, type, row, meta) => {
                     return `<span>${row.job_title}</span>`
                 }
             }, {
-                className: 'wrap-text w-25',
+                className: 'wrap-text w-15',
                 'data': 'account_name',
                 'render': (data, type, row, meta) => {
                     return `<span class="fw-bold">${row?.['account_name']?.['name'] ? row['account_name']['name'] : ''}</span>`
@@ -50,7 +50,7 @@ $(document).ready(function () {
                 className: 'wrap-text w-10',
                 'data': 'mobile',
                 'render': (data, type, row, meta) => {
-                    return `<span>${row.mobile ? row.mobile : ''}</span>`;
+                    return `<span>${row.mobile ? row.mobile : ''}</span><span>${row.phone && row.mobile ? ' | ' : ''}<span>${row.phone ? row.phone : ''}</span>`;
                 }
             }, {
                 className: 'wrap-text w-15',

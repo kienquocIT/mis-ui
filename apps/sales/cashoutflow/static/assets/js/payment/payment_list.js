@@ -20,7 +20,7 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text w-5',
+                        className: 'wrap-text',
                         'render': (data, type, row, meta) => {
                             return ``;
                         }
@@ -30,12 +30,12 @@ $(document).ready(function () {
                         className: 'wrap-text w-10',
                         render: (data, type, row, meta) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}" class="text-primary">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}" class="badge badge-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text w-20',
+                        className: 'wrap-text w-25',
                         render: (data, type, row, meta) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
                             return `<a href="${link}"><span class="text-primary"><b>${row.title}</b></span></a>`
@@ -94,24 +94,24 @@ $(document).ready(function () {
                     },
                     {
                         data: 'status',
-                        className: 'wrap-text w-10',
+                        className: 'wrap-text text-center w-10',
                         render: (data, type, row) => {
                             let approved_trans = ``
                             let text_color = ``
                             if (row.system_status_raw === 0) {
-                                text_color = 'badge-secondary'
+                                text_color = 'badge-soft-secondary'
                             }
                             else if (row.system_status_raw === 1) {
-                                text_color = 'badge-primary'
+                                text_color = 'badge-soft-primary'
                             }
                             else if (row.system_status_raw === 2) {
-                                text_color = 'badge-blue'
+                                text_color = 'badge-soft-blue'
                             }
                             else if (row.system_status_raw === 3) {
-                                text_color = 'badge-success'
+                                text_color = 'badge-soft-success'
                             }
                             else if (row.system_status_raw === 4) {
-                                text_color = 'badge-danger'
+                                text_color = 'badge-soft-danger'
                             }
                             return `<span class="badge ${text_color}">${row?.['system_status']}</span>`
                         }

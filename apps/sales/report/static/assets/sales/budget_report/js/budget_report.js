@@ -368,17 +368,14 @@ $(document).ready(function () {
                     let sum_in_planned = 0
                     let sum_in_actual = 0
                     let sum_in_difference = 0
-                    let sum_in_rate = 0
                     table.find('tbody tr .in-plan').each(function () {
                         let row = $(this).closest('tr')
                         let planned = parseFloat(row.find('.plan_value_span').attr('data-init-money'))
                         let actual = parseFloat(row.find('.actual_value_span').attr('data-init-money'))
                         let difference = actual - planned
-                        let rate = planned !== 0 ? actual / planned : 0
                         sum_in_planned += planned
                         sum_in_actual += actual
                         sum_in_difference += difference
-                        sum_in_rate += rate
                     })
                     let difference_html = `<span class="text-primary mask-money" data-init-money="${sum_in_difference}"></span>`
                     if (sum_in_difference < 0) {
@@ -391,7 +388,7 @@ $(document).ready(function () {
                             <td class="text-right border-0"><span class="text-primary mask-money" data-init-money="${sum_in_planned}"></span></td>
                             <td class="text-right border-0"><span class="text-primary mask-money" data-init-money="${sum_in_actual}"></span></td>
                             <td class="text-right border-0">${difference_html}</td>
-                            <td class="text-right border-0"><span class="text-primary">${sum_in_rate} %</span></td>
+                            <td class="text-right border-0"><span class="text-primary">${sum_in_planned !== 0 ? sum_in_actual / sum_in_planned : 0} %</span></td>
                         </tr>
                     `)
                     let sum_out_actual = 0

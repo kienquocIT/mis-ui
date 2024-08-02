@@ -381,34 +381,39 @@ class LogController {
 
                 let logHTML = [];
                 item['logs'].map((itemLog) => {
-                    let childLogHTML = `<div class="mt-3"><span class="badge badge-secondary badge-outline mr-1">${UtilControl.parseDateTime(itemLog?.['date_created'])}</span>`;
+                    let childLogHTML = `<div class="mt-3"><span class="badge badge-soft-secondary mr-1">${UtilControl.parseDateTime(itemLog?.['date_created'])}</span>`;
                     if (itemLog['is_system'] === true) {
                         childLogHTML += `<span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span>`;
                         if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
-                            childLogHTML += `<span class="badge badge-soft-blue mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
+                            childLogHTML += `<span class="badge badge-primary badge-outline mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
                         }
                     } else {
                         if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
-                            childLogHTML += `<span class="badge badge-soft-blue mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
+                            childLogHTML += `<span class="badge badge-primary badge-outline mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
                         }
                     }
-                    let msgMapColor = "";
+                    let msgMapIcon = "";
+                    let arrayNew = ["new"];
                     let arrayDone = ["finish", "approved"];
                     let arrayCancel = ["canceled", "rejected"];
                     let arrayUpdate = ["update", "zone"];
+                    let isNew = arrayNew.some(item => itemLog?.['msg'].toLowerCase().includes(item));
                     let isDone = arrayDone.some(item => itemLog?.['msg'].toLowerCase().includes(item));
                     let isCancel = arrayCancel.some(item => itemLog?.['msg'].toLowerCase().includes(item));
                     let isUpdate = arrayUpdate.some(item => itemLog?.['msg'].toLowerCase().includes(item));
+                    if (isNew === true) {
+                        msgMapIcon = '<i class="fas fa-tasks ml-2 mt-1"></i>';
+                    }
                     if (isDone === true) {
-                        msgMapColor = "text-green"
+                        msgMapIcon = '<i class="fas fa-check text-green ml-2 mt-1"></i>';
                     }
                     if (isCancel === true) {
-                        msgMapColor = "text-red"
+                        msgMapIcon = '<i class="fas fa-times text-red ml-2 mt-1"></i>';
                     }
                     if (isUpdate === true) {
-                        msgMapColor = "text-yellow"
+                        msgMapIcon = '<i class="fas fa-user-edit ml-2 mt-1"></i>';
                     }
-                    childLogHTML += ` <span class="text-low-em ${msgMapColor}">${itemLog['msg']}</span></div>`;
+                    childLogHTML += ` <span class="text-low-em">${itemLog['msg']}</span>${msgMapIcon}</div>`;
                     logHTML.push(childLogHTML);
                 })
                 let logGroupHTML = `<div class="card-body mt-4"><div class="card-text">${logHTML.join("")}</div></div>`
@@ -2283,13 +2288,13 @@ class WFRTControl {
         let htmlFinish = `<div class="row">
                             <div class="d-flex">
                                 <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
-                                <small><p class="text-success">${$.fn.transEle.attr('data-finish-wf-non-apply')}</p></small>
+                                <span class="text-low-em">${$.fn.transEle.attr('data-finish-wf-non-apply')}</span><i class="fas fa-check text-green ml-2 mt-1"></i>
                             </div>
                         </div>`;
         let htmlCancel = `<div class="row mb-3">
                             <div class="d-flex">
                                 <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
-                                <small><p class="text-red">${$.fn.transEle.attr('data-canceled-by-creator')}</p></small>
+                                <span class="text-low-em">${$.fn.transEle.attr('data-canceled-by-creator')}</span><i class="fas fa-times text-red ml-2 mt-1"></i>
                             </div>
                         </div>`;
         htmlBody = htmlFinish;
@@ -2633,13 +2638,13 @@ class WFRTControl {
                                     $(this).changePropertiesElementIsZone(optsSetZone);
                                     $(this).find('input, select, textarea, button').each(function (event) {
                                         $(this).changePropertiesElementIsZone(optsSetZone);
-                                    });
-                                    // case: input is Files
-                                    if ($(this).hasClass('dm-uploader-ids')) {
-                                        let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
-                                        uploaderEle.dmUploader(dmUploaderAttr);
-                                    }
 
+                                        // case: input is Files
+                                        if ($(this).hasClass('dm-uploader-ids')) {
+                                            let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
+                                            uploaderEle.dmUploader(dmUploaderAttr);
+                                        }
+                                    });
                                 })
                             });
                             inputMapProperties['id_border_zones'].map((item) => {
@@ -7209,7 +7214,8 @@ class DiagramControl {
                 let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
                                 <div class="offcanvas offcanvas-end w-95 mt-5" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
                                     <div class="offcanvas-body">
-                                        <div class="d-flex justify-content-start mt-4 mb-2">
+                                        <div class="d-flex justify-content-between mt-4 mb-2 border-bottom">
+                                            <h5 id="offcanvasTopLabel">Diagram</h5>
                                             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                                 <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Close">
                                                     <button type="button" class="btn btn-outline-secondary btn-square btn-sm" data-bs-dismiss="offcanvas" aria-label="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
@@ -7219,8 +7225,8 @@ class DiagramControl {
                                                 </span>
                                             </div>
                                         </div>
-                                        <div data-simplebar class="min-w-1600p nicescroll-bar">
-                                            <div class="card-group h-800p" id="flowchart_diagram"></div>
+                                        <div data-simplebar class="h-800p min-w-1680p nicescroll-bar">
+                                            <div class="card-group" id="flowchart_diagram"></div>
                                         </div>
                                     </div>
                                 </div>`;

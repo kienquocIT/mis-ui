@@ -4602,7 +4602,7 @@ msgstr "Chưa mua"
 
 #
 msgid "Quantity order"
-msgstr "Số lượng đặt mua"
+msgstr "SL đặt mua"
 
 #
 msgid "Received date"
@@ -8224,3 +8224,35 @@ msgstr "Gán cho nhân viên Sale"
 #
 msgid "Total employees"
 msgstr "Số lượng nhân viên"
+
+#
+msgid "had been changed. Update here!"
+msgstr "đã bị thay đổi. Cập nhập tại đây!"
+
+#
+msgid "Diagram"
+msgstr "Biểu đồ"
+
+#
+msgid "Version"
+msgstr "Phiên bản"
+
+#
+msgid "Document name"
+msgstr "Tên tài liệu"
+
+#
+msgid "File name"
+msgstr "Tên tập tin"
+
+#
+msgid "Extra"
+msgstr "Thêm"
+
+#
+msgid "Set to current file"
+msgstr "Đặt thành tập tin hiện tại"
+
+#
+msgid "View current file"
+msgstr "Xem tập tin hiện tại"

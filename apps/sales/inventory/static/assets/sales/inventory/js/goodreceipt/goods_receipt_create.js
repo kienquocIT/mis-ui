@@ -318,6 +318,8 @@ $(function () {
                 'date_received',
                 // tab product
                 'goods_receipt_product',
+                // attachment
+                'attachment',
                 // abstract
                 'system_status',
                 'next_node_collab_id',

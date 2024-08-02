@@ -21,15 +21,17 @@ $(document).ready(async function () {
 
     $('[name="delivered_date"]').daterangepicker({
         singleDatePicker: true,
-        timePicker: true,
-        showDropdowns: true,
-        drops: 'down',
-        minYear: 2000,
+        timepicker: false,
+        showDropdowns: false,
+        minYear: 2023,
         locale: {
-            format: 'YYYY-MM-DD'
+            format: 'DD/MM/YYYY',
         },
-        "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY-MM-DD'), 10) + 100
+        maxYear: parseInt(moment().format('YYYY'), 10),
+        autoApply: true,
+        autoUpdateInput: false,
+    }).on('apply.daterangepicker', function (ev, picker) {
+        $(this).val(picker.startDate.format('DD/MM/YYYY'));
     }).val('');
 
     PurchaseRequestLoadPage.loadSupplier()
@@ -88,6 +90,12 @@ $(document).ready(async function () {
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
             let frm_data = PurchaseRequestAction.getDataForm(frm.dataForm, ele_request_for, ele_sale_order);
+            if (frm_data.hasOwnProperty('delivered_date')) {
+                if (frm_data?.['delivered_date']) {
+                    frm_data['delivered_date'] = moment(frm_data?.['delivered_date'],
+                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                }
+            }
             $.fn.callAjax2({
                 url: frm.dataUrl,
                 method: frm.dataMethod,

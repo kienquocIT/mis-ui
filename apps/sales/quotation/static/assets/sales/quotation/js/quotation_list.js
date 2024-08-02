@@ -1,4 +1,3 @@
-
 $(function () {
     $(document).ready(function () {
 
@@ -35,6 +34,13 @@ $(function () {
                 columns: [  // (1280p)
                     {
                         targets: 0,
+                        width: '1%',
+                        render: (data, type, row, meta) => {
+                            return `<span class="table-row-order">${(meta.row + 1)}</span>`
+                        }
+                    },
+                    {
+                        targets: 1,
                         width: '5%',
                         render: (data, type, row) => {
                             let link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
@@ -65,16 +71,16 @@ $(function () {
                         }
                     },
                     {
-                        targets: 1,
-                        width: '20%',
+                        targets: 2,
+                        width: '17%',
                         render: (data, type, row) => {
                             const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
                         }
                     },
                     {
-                        targets: 2,
-                        width: '20%',
+                        targets: 3,
+                        width: '17%',
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
                             if (Object.keys(row?.['customer']).length !== 0) {
@@ -84,7 +90,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 3,
+                        targets: 4,
                         width: '15%',
                         render: (data, type, row) => {
                             if (Object.keys(row?.['sale_person']).length !== 0) {
@@ -94,8 +100,8 @@ $(function () {
                         }
                     },
                     {
-                        targets: 4,
-                        width: '10%',
+                        targets: 5,
+                        width: '12%',
                         data: "date_created",
                         render: (data) => {
                             return $x.fn.displayRelativeTime(data, {
@@ -104,14 +110,14 @@ $(function () {
                         }
                     },
                     {
-                        targets: 5,
+                        targets: 6,
                         width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money" data-init-money="${parseFloat(row?.['indicator_revenue'])}"></span>`;
                         }
                     },
                     {
-                        targets: 6,
+                        targets: 7,
                         width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
@@ -126,7 +132,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 7,
+                        targets: 8,
                         width: '5%',
                         className: 'action-center',
                         render: (data, type, row) => {

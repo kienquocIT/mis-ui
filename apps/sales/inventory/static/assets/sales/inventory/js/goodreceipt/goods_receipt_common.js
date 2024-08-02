@@ -1813,7 +1813,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '13%',
+                    width: '12%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
@@ -3416,6 +3416,10 @@ class GRSubmitHandle {
             _form.dataForm['total_product_tax'] = parseFloat($(eleTaxesRaw).val());
             _form.dataForm['total_product'] = parseFloat($(eleTotalRaw).val());
             _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
+        }
+        // attachment
+        if (_form.dataForm.hasOwnProperty('attachment')) {
+          _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);
         }
     };
 }

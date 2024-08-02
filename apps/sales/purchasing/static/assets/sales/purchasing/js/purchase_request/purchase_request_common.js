@@ -155,7 +155,14 @@ class PurchaseRequestLoadPage {
                 PurchaseRequestAction.loadMoreInfoContact(moreInfoContactEle, detail.contact)
 
                 $('[name="purchase_status"]').val(detail.purchase_status);
-                $('[name="delivered_date"]').val(detail.delivered_date.split(' ')[0]);
+                // $('[name="delivered_date"]').val(detail.delivered_date.split(' ')[0]);
+
+                let delivered_date = '';
+                if (detail?.['delivered_date']) {
+                    delivered_date = detail?.['delivered_date'];
+                    $('[name="delivered_date"]').val(moment(delivered_date).format('DD/MM/YYYY'));
+                }
+
                 $('[name="note"]').val(detail.note);
 
                 if (detail.sale_order) {

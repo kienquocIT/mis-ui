@@ -12,6 +12,12 @@ $(document).ready(function () {
         },
         columns: [
             {
+                width: '1%',
+                render: (data, type, row, meta) => {
+                    return `<span class="table-row-order">${(meta.row + 1)}</span>`
+                }
+            },
+            {
                 data: 'code',
                 width: '10%',
                 render: (row, type, data, meta) => {

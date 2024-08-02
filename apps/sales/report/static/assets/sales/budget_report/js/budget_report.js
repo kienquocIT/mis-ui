@@ -388,7 +388,7 @@ $(document).ready(function () {
                             <td class="text-right border-0"><span class="text-primary mask-money" data-init-money="${sum_in_planned}"></span></td>
                             <td class="text-right border-0"><span class="text-primary mask-money" data-init-money="${sum_in_actual}"></span></td>
                             <td class="text-right border-0">${difference_html}</td>
-                            <td class="text-right border-0"><span class="text-primary">${sum_in_planned !== 0 ? sum_in_actual / sum_in_planned : 0} %</span></td>
+                            <td class="text-right border-0"><span class="text-primary">${sum_in_planned !== 0 ? sum_in_actual * 100 / sum_in_planned : 0} %</span></td>
                         </tr>
                     `)
                     let sum_out_actual = 0

@@ -1564,6 +1564,7 @@ $(document).ready(function () {
     // submit form edit
     new SetupFormSubmit(frmDetail).validate({
         submitHandler: function (form) {
+            WindowControl.showLoading();
             let frm = new SetupFormSubmit($(form));
             // autoLoadStage(
             //     true,
@@ -1585,11 +1586,20 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect.format_url_with_uuid($.fn.getPkDetail()), 1000);
+                        $.fn.notifyB({description: 'Successfully'}, 'success')
+                        setTimeout(() => {
+                            window.location.replace(frm.dataUrlRedirect.format_url_with_uuid($.fn.getPkDetail()));
+                            location.reload.bind(location);
+                        }, 1000);
                     }
                 },
                 (errs) => {
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
                     $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )

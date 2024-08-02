@@ -6069,8 +6069,8 @@ msgid "No files uploaded"
 msgstr "Không có tệp được tải lên"
 
 #
-msgid "Drag & drop Files here"
-msgstr "Kéo và thả tệp ở đây"
+msgid "Drag and drop the file within the dashed border for upload"
+msgstr "Kéo và thả tệp trong đường viền nét đứt để tải lên"
 
 #
 msgid "Open the file Browser"

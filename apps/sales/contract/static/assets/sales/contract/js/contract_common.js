@@ -23,10 +23,25 @@ class ContractLoadDataHandle {
             let row = this.node();
             $(row).css('background-color', '');
         });
-        $(ele.closest('tr')).css('background-color', '#ebfcf5');
-        ContractLoadDataHandle.$fileArea[0].classList.remove('bg-light');
-        ContractLoadDataHandle.$remark[0].removeAttribute('disabled');
-        ContractLoadDataHandle.$attachment[0].removeAttribute('hidden');
+        let row = ele.closest('tr');
+        if (row) {
+            $(row).css('background-color', '#ebfcf5');
+            ContractLoadDataHandle.$fileArea[0].classList.remove('bg-light');
+            let eleOrder = row.querySelector('.table-row-order');
+            if (eleOrder) {
+                ContractLoadDataHandle.$fileArea[0].setAttribute('data-doc', eleOrder.innerHTML);
+            }
+            ContractLoadDataHandle.$remark[0].removeAttribute('disabled');
+            ContractLoadDataHandle.$remark.val('');
+            ContractLoadDataHandle.loadAddFile([]);
+            if (ele.getAttribute('data-store')) {
+                let dataStore = JSON.parse(ele.getAttribute('data-store'));
+                ContractLoadDataHandle.$remark.val(dataStore?.['remark']);
+                ContractLoadDataHandle.loadAddFile(dataStore?.['file_data']);
+            }
+            ContractLoadDataHandle.$attachment[0].removeAttribute('hidden');
+            ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-results').setAttribute('hidden', 'true');
+        }
         return true;
     };
 
@@ -45,7 +60,6 @@ class ContractLoadDataHandle {
             let fileName = mediaBody.querySelector('.f-item-name');
             let dataAdd = {
                 'title': fileName.innerHTML,
-                'version': 1,
                 'date_created': ContractCommonHandle.getCurrentDate(),
                 'is_current': is_current,
                 'order': order,
@@ -125,7 +139,7 @@ class ContractDataTableHandle {
                     width: '10%',
                     render: (data, type, row) => {
                         return `<div class="d-flex">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover attach-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-attach-file')}"><span class="icon"><i class="fas fa-paperclip"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover attach-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-attach-file')}" data-store="" data-order="${row?.['order']}"><span class="icon"><i class="fas fa-paperclip"></i></span></button>
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover view-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-view-file')}"><span class="icon"><i class="far fa-eye"></i></span></button>
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-delete')}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                                 </div>`;
@@ -156,14 +170,17 @@ class ContractDataTableHandle {
                     targets: 1,
                     width: '20%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-version">${row?.['version'] ? row?.['version'] : ''}</span>`;
+                        if (row?.['order'] === 1) {
+                            return `<span class="table-row-version">Current version</span>`;
+                        }
+                        return `<span class="table-row-version">Old version</span>`;
                     }
                 },
                 {
                     targets: 2,
                     width: '20%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-version">${row?.['date_created'] ? row?.['date_created'] : ''}</span>`;
+                        return `<span class="table-row-date">${row?.['date_created'] ? row?.['date_created'] : ''}</span>`;
                     }
                 },
                 {
@@ -182,6 +199,42 @@ class ContractDataTableHandle {
             drawCallback: function () {
             },
         });
+    };
+}
+
+// Store data
+class ContractStoreHandle {
+    static storeAttachment() {
+        let dataStore = {};
+        let fileData = [];
+        dataStore['remark'] = ContractLoadDataHandle.$remark.val();
+        ContractDataTableHandle.$tableFile.DataTable().rows().every(function () {
+            let row = this.node();
+            let eleOrder = row.querySelector('.table-row-order');
+            let eleTitle = row.querySelector('.table-row-title');
+            let eleDate = row.querySelector('.table-row-date');
+            if (eleOrder && eleTitle && eleDate) {
+                let is_current = false;
+                if (eleOrder.innerHTML === '1') {
+                    is_current = true;
+                }
+                fileData.push({
+                    'title': eleTitle.innerHTML,
+                    'date_created': eleDate.innerHTML,
+                    'is_current': is_current,
+                    'order': parseInt(eleOrder.innerHTML),
+                })
+            }
+        })
+        dataStore['file_data'] = fileData;
+        let doc = ContractLoadDataHandle.$fileArea.attr('data-doc');
+        if (doc) {
+            let btnStore = ContractDataTableHandle.$tableDocument[0].querySelector(`.attach-file[data-order="${doc}"]`);
+            if (btnStore) {
+                btnStore.setAttribute('data-store', JSON.stringify(dataStore));
+            }
+        }
+        return true;
     };
 }
 

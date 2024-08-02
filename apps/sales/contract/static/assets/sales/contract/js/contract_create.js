@@ -10,6 +10,7 @@ $(function () {
         });
 
         ContractDataTableHandle.$tableDocument.on('click', '.attach-file', function () {
+            ContractStoreHandle.storeAttachment();
             ContractLoadDataHandle.loadOpenAttachFile(this);
         });
 

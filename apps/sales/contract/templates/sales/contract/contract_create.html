@@ -5,7 +5,6 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-{#    {% include 'extends/systems/page_actions.html' with is_save=True is_save_draft=True save_frm='frm_quotation_create' %}#}
     <button class="btn btn-outline-primary" type="submit" form="frm_quotation_create">
         <span>
             <span>{% trans 'Save' %}</span>
@@ -65,6 +64,9 @@
                     <textarea class="form-control" rows="3" id="contract-doc-remark" name="remarks" disabled></textarea>
                 </div>
                 <label class="form-label">{% trans 'Attachment' %}</label>
+                <div id="attachment" hidden>
+                    {% include 'extends/files/all.html' %}
+                </div>
                 <table
                     id="datable-contract-file"
                     class="table nowrap w-100"
@@ -82,9 +84,6 @@
                     <tbody>
                     </tbody>
                 </table>
-                <div id="attachment" hidden>
-                    {% include 'extends/files/all.html' %}
-                </div>
             </div>
         </div>
     </form>

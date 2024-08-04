@@ -54,6 +54,12 @@
     <link rel="stylesheet" href="{% static 'form/config/css/embed_form.css' %}">
     <link rel="stylesheet" href="{% static 'form/config/css/scrollbar-textarea.css' %}">
     <link rel="stylesheet" href="{% static 'form/config/css/style.css' %}">
+    <style>
+        .select2-container .select2-search.select2-search--inline,
+        .select2-container .select2-results .select2-results__option {
+            padding: 0!important;
+        }
+    </style>
 {% endblock %}
 
 {% block pageContent %}

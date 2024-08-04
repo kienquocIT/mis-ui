@@ -104,6 +104,7 @@ INSTALLED_APPS = \
         'apps.sales.lead',
         'apps.sales.project',
         'apps.sales.budgetplan',
+        'apps.sales.contract',
     ] + [  # e-office Application
         'apps.eoffice.leave',
         'apps.eoffice.businesstrip',
@@ -123,7 +124,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'apps.core.auths.middleware.CustomMiddleware',
 ]
-MIDDLEWARE += ['apps.shared.middleware.JaegerTracingMiddleware']
 
 ROOT_URLCONF = 'misui.urls'
 
@@ -387,9 +387,8 @@ if os.environ.get('ENABLE_LOGGING', False) in [1, '1']:
 # -- Logging
 
 # Tracing
-JAEGER_TRACING_ENABLE = os.environ.get('ENABLE_TRACING', False)
-if JAEGER_TRACING_ENABLE in [1, '1']:
-    JAEGER_TRACING_ENABLE = True
+JAEGER_TRACING_ENABLE = os.environ.get('ENABLE_TRACING', False) in [1, '1']
+if JAEGER_TRACING_ENABLE is True:
     JAEGER_TRACING_HOST = os.environ.get('JAEGER_TRACING_HOST', 'jaeger_global')
     JAEGER_TRACING_PORT = os.environ.get('JAEGER_TRACING_PORT', 6831)
     JAEGER_TRACING_PROJECT_NAME = os.environ.get('JAEGER_TRACING_PROJECT_NAME', 'MiS UI')

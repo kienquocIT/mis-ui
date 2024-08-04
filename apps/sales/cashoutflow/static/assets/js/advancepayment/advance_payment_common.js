@@ -23,8 +23,8 @@ APTypeEle.on('change', function () {
 })
 
 opp_mapped_select.on('change', function () {
-    quotation_mapped_select.find('option').remove();
-    sale_order_mapped_select.find('option').remove();
+    quotation_mapped_select.empty();
+    sale_order_mapped_select.empty();
     if (opp_mapped_select.val()) {
         let opp_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
         if (opp_mapped_opp?.['is_close']) {
@@ -50,7 +50,7 @@ opp_mapped_select.on('change', function () {
 
 function APLoadQuotation(data) {
     quotation_mapped_select.initSelect2({
-        allowClear: true,
+        allowClear: data === null,
         ajax: {
             url: quotation_mapped_select.attr('data-url'),
             method: 'GET',
@@ -112,7 +112,7 @@ function APLoadQuotation(data) {
 
 function APLoadSaleOrder(data) {
     sale_order_mapped_select.initSelect2({
-        allowClear: true,
+        allowClear: data === null,
         ajax: {
             url: sale_order_mapped_select.attr('data-url'),
             method: 'GET',
@@ -131,8 +131,8 @@ function APLoadSaleOrder(data) {
         keyId: 'id',
         keyText: 'title',
     }).on('change', function () {
-        opp_mapped_select.find('option').remove();
-        quotation_mapped_select.find('option').remove();
+        opp_mapped_select.empty();
+        quotation_mapped_select.empty();
         if (sale_order_mapped_select.val()) {
             opp_mapped_select.prop('disabled', true);
             quotation_mapped_select.prop('disabled', true);
@@ -1080,8 +1080,8 @@ $(document).on("click", '#btn-add-row-line-detail', function () {
 
 function Disable(option) {
     if (option === 'detail') {
-        $('.form-control').prop('disabled', true).css({color: 'black'});
-        $('.form-select').prop('disabled', true).css({color: 'black'});
+        $('.form-control').prop('readonly', true);
+        $('.form-select').prop('disabled', true);
         $('.select2').prop('disabled', true);
         $('input').prop('disabled', true);
         $('.del-address-item').prop('hidden', true);
@@ -1266,8 +1266,8 @@ function LoadDetailAP(option) {
                 })
 
                 Disable(option);
-                quotation_mapped_select.attr('disabled', true).attr('readonly', true);
-                sale_order_mapped_select.attr('disabled', true).attr('readonly', true);
+                quotation_mapped_select.attr('disabled', true);
+                sale_order_mapped_select.attr('disabled', true);
             }
         })
 }

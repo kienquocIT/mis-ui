@@ -30,10 +30,10 @@ function LoadPeriod(data) {
 function LoadTabCompanyTable(company_budget_data, space_month) {
     let tab_table = $(`
         <table class="table nowrap w-100" id="table-company">
-            <thead class="sticky bg-gradient-primary">
+            <thead class="sticky bg-primary">
             <tr>
-                <th></th>
-                <th class="expense-item">${trans_script.attr('data-trans-expense-item')}</th>
+                <th class="fix1 bg-primary"></th>
+                <th class="fix2 bg-primary expense-item">${trans_script.attr('data-trans-expense-item')}</th>
                 <th class="text-right m1th money-input"></th>
                 <th class="text-right m2th money-input"></th>
                 <th class="text-right m3th money-input"></th>
@@ -58,8 +58,8 @@ function LoadTabCompanyTable(company_budget_data, space_month) {
     `)
     for (const company_data of company_budget_data) {
         let expense_row_ele = $(`<tr>
-            <td><span class="index">${company_data?.['order']}</span></td>
-            <td><span class="fw-bold text-primary expense-item-span"></span></td>
+            <td class="fix1 bg-white"><span class="index">${company_data?.['order']}</span></td>
+            <td class="fix2 bg-white"><span class="fw-bold text-primary expense-item-span"></span></td>
             <td class="text-right"><span class="mask-money money-m1th belong-q1" data-init-money="${company_data?.['company_month_list'][0]}"></td>
             <td class="text-right"><span class="mask-money money-m2th belong-q1" data-init-money="${company_data?.['company_month_list'][1]}"></td>
             <td class="text-right"><span class="mask-money money-m3th belong-q1" data-init-money="${company_data?.['company_month_list'][2]}"></td>
@@ -76,7 +76,7 @@ function LoadTabCompanyTable(company_budget_data, space_month) {
             <td class="text-right"><span class="mask-money money-m11th belong-q4" data-init-money="${company_data?.['company_month_list'][10]}"></td>
             <td class="text-right"><span class="mask-money money-m12th belong-q4" data-init-money="${company_data?.['company_month_list'][11]}"></td>
             <td class="text-right"><span class="text-primary mask-money money-q4th belong-year" data-init-money="${company_data?.['company_quarter_list'][3]}"></td>
-            <td class="text-right"><span class="text-primary fw-bold text-primary mask-money money-year" data-init-money="${company_data?.['company_year']}"></span></td>   
+            <td class="text-right"><span class="text-primary fw-bold mask-money money-year" data-init-money="${company_data?.['company_year']}"></span></td>   
         </tr>`)
         expense_row_ele.find('.expense-item-span').text(company_data?.['expense_item']?.['title'])
         tab_table.append(expense_row_ele)
@@ -90,10 +90,10 @@ function LoadTabGroupTable(group_budget_data, space_month, is_lock) {
     $(document.getElementsByClassName('tab-table')).each(function () {
         let tab_table = $(`
             <table class="table nowrap w-100" id="table-${$(this).attr('data-group-id')}">
-                <thead class="sticky bg-gradient-primary">
+                <thead class="sticky bg-primary">
                 <tr>
-                    <th></th>
-                    <th class="expense-item">${trans_script.attr('data-trans-expense-item')}</th>
+                    <th class="fix1 bg-primary"></th>
+                    <th class="fix2 bg-primary expense-item">${trans_script.attr('data-trans-expense-item')}</th>
                     <th class="text-right m1th money-input"></th>
                     <th class="text-right m2th money-input"></th>
                     <th class="text-right m3th money-input"></th>
@@ -120,8 +120,8 @@ function LoadTabGroupTable(group_budget_data, space_month, is_lock) {
             if (group_data?.['group']?.['id'] === $(this).attr('data-group-id')) {
                 for (const expense of group_data?.['data_expense']) {
                     let expense_row_ele = $(`<tr>
-                        <td><span class="index">${expense?.['order']}</span>&nbsp;<button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-row-btn" ${IS_DETAIL ? 'hidden' : ''}><span class="icon"><i class="far fa-trash-alt"></i></span></button></td>
-                        <td><select ${is_lock ? 'disabled' : ''} class="select2 form-select expense-item-select" ${IS_DETAIL ? 'disabled' : ''}></select></td>
+                        <td class="fix1 bg-white"><span class="index">${expense?.['order']}</span>&nbsp;<button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-row-btn" ${IS_DETAIL ? 'hidden' : ''}><span class="icon"><i class="far fa-trash-alt"></i></span></button></td>
+                        <td class="fix2 bg-white"><select ${is_lock ? 'disabled' : ''} class="select2 form-select expense-item-select" ${IS_DETAIL ? 'disabled' : ''}></select></td>
                         <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m1th belong-q1" value="${expense?.['group_month_list'][0]}" ${IS_DETAIL ? 'readonly' : ''}></td>
                         <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m2th belong-q1" value="${expense?.['group_month_list'][1]}" ${IS_DETAIL ? 'readonly' : ''}></td>
                         <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m3th belong-q1" value="${expense?.['group_month_list'][2]}" ${IS_DETAIL ? 'readonly' : ''}></td>
@@ -186,7 +186,7 @@ function LoadTabs(group_budget_data, company_budget_data, space_month, is_lock, 
                 `)
                 let row_btn = option === 'update' ? `<div class="row mb-5">
                     <div class="col-6 text-left">
-                        <button ${is_lock ? 'disabled' : ''} type="button" class="w-20 btn btn-custom btn-light btn-sm btn-add-new-row" data-group-id="${group?.['id']}">
+                        <button ${is_lock ? 'disabled' : ''} type="button" class="btn btn-custom btn-light btn-sm btn-add-new-row" data-group-id="${group?.['id']}">
                             <span>
                                 <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
                                 <span>${trans_script.attr('data-trans-add-new-row')}</span>
@@ -194,7 +194,7 @@ function LoadTabs(group_budget_data, company_budget_data, space_month, is_lock, 
                         </button>
                     </div>
                     <div class="col-6 text-right">
-                        <button ${is_lock ? 'disabled' : ''} type="submit" form="tab-budget-${group?.['id']}" class="w-15 btn btn-custom btn-sm btn-animated btn-save-tab" style="background-color: #4885e1; color: #f0f0f0" data-group-id="${group?.['id']}">
+                        <button ${is_lock ? 'disabled' : ''} type="submit" form="tab-budget-${group?.['id']}" class="btn btn-custom btn-sm btn-animated btn-save-tab" style="background-color: #4885e1; color: #f0f0f0" data-group-id="${group?.['id']}">
                             <span>
                                 <span class="icon"><span class="feather-icon"><i class="fa-regular fa-floppy-disk"></i></span></span>
                                 <span>${trans_script.attr('data-trans-save-tab')}</span>
@@ -325,23 +325,23 @@ $(document).on("click", '.btn-add-new-row', function () {
         <tr>
             <td><span class="index"></span>&nbsp;<button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-row-btn"><span class="icon"><i class="far fa-trash-alt"></i></span></button></td>
             <td><select class="select2 form-select expense-item-select"></select></td>
-            <td><input class="form-control mask-money money-m1th belong-q1" value="0"></td>
-            <td><input class="form-control mask-money money-m2th belong-q1" value="0"></td>
-            <td><input class="form-control mask-money money-m3th belong-q1" value="0"></td>
-            <td><input class="form-control mask-money money-q1th belong-year" value="0" readonly></td>
-            <td><input class="form-control mask-money money-m4th belong-q2" value="0"></td>
-            <td><input class="form-control mask-money money-m5th belong-q2" value="0"></td>
-            <td><input class="form-control mask-money money-m6th belong-q2" value="0"></td>
-            <td><input class="form-control mask-money money-q2th belong-year" value="0" readonly></td>
-            <td><input class="form-control mask-money money-m7th belong-q3" value="0"></td>
-            <td><input class="form-control mask-money money-m8th belong-q3" value="0"></td>
-            <td><input class="form-control mask-money money-m9th belong-q3" value="0"></td>
-            <td><input class="form-control mask-money money-q3th belong-year" value="0" readonly></td>
-            <td><input class="form-control mask-money money-m10th belong-q4" value="0"></td>
-            <td><input class="form-control mask-money money-m11th belong-q4" value="0"></td>
-            <td><input class="form-control mask-money money-m12th belong-q4" value="0"></td>
-            <td><input class="form-control mask-money money-q4th belong-year" value="0" readonly></td>
-            <td><span class="mask-money money-year" data-init-money="0"></span></td>   
+            <td class="text-right"><input class="form-control mask-money money-m1th belong-q1" value="0"></td>
+            <td class="text-right"><input class="form-control mask-money money-m2th belong-q1" value="0"></td>
+            <td class="text-right"><input class="form-control mask-money money-m3th belong-q1" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-q1th belong-year" value="0" readonly></td>
+            <td class="text-right"><input class="form-control mask-money money-m4th belong-q2" value="0"></td>
+            <td class="text-right"><input class="form-control mask-money money-m5th belong-q2" value="0"></td>
+            <td class="text-right"><input class="form-control mask-money money-m6th belong-q2" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-q2th belong-year" value="0" readonly></td>
+            <td class="text-right"><input class="form-control mask-money money-m7th belong-q3" value="0"></td>
+            <td class="text-right"><input class="form-control mask-money money-m8th belong-q3" value="0"></td>
+            <td class="text-right"><input class="form-control mask-money money-m9th belong-q3" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-q3th belong-year" value="0" readonly></td>
+            <td class="text-right"><input class="form-control mask-money money-m10th belong-q4" value="0"></td>
+            <td class="text-right"><input class="form-control mask-money money-m11th belong-q4" value="0"></td>
+            <td class="text-right"><input class="form-control mask-money money-m12th belong-q4" value="0"></td>
+            <td class="text-right"><input class="text-primary form-control mask-money money-q4th belong-year" value="0" readonly></td>
+            <td class="text-right"><span class="text-primary fw-bold mask-money money-year" data-init-money="0"></span></td>   
         </tr>
     `)
     tab_table.find('tbody').append(row)

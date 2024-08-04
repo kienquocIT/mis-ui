@@ -75,6 +75,7 @@ $(document).ready(function () {
                 $('.gaw-btn').addClass('hidden')
                 Task_in_project.init(project)
                 ProjectWorkExpenseHandle.init(work)
+                $('.completion_rate_block .heading').text(`${project['completion_rate']}%`)
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )

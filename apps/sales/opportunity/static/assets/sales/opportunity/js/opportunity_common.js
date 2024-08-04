@@ -1224,31 +1224,37 @@ function loadDtbOpportunityList() {
                 },
                 {
                     targets: 1,
+                    className: 'wrap-text w-10',
                     render: (data, type, row) => {
                         const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
-                        return `<a href="${link}" class="badge badge-soft-primary">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`
+                        return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`
                     }
                 },
                 {
                     targets: 2,
+                    className: 'wrap-text w-25',
                     render: (data, type, row) => {
-                        return `<p class="fw-bold">${row.title}</p>`
+                        const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
+                        return `<a href="${link}"><span class="fw-bold text-primary">${row.title}</span></a>`
                     }
                 },
                 {
                     targets: 3,
+                    className: 'wrap-text w-20',
                     render: (data, type, row) => {
-                        return `<p>${row.customer.title}</p>`
+                        return `<span class="fw-bold">${row.customer.title}</span>`
                     }
                 },
                 {
                     targets: 4,
+                    className: 'wrap-text w-15',
                     render: (data, type, row) => {
-                        return `<span class="badge badge badge-soft-blue ml-2 mt-2">${row?.['sale_person'].full_name}</span>`
+                        return `<span class="text-blue">${row?.['sale_person'].full_name}</span>`
                     }
                 },
                 {
                     targets: 5,
+                    className: 'wrap-text w-10',
                     data: "open_date",
                     render: (data, type, row) => {
                         return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
@@ -1261,6 +1267,7 @@ function loadDtbOpportunityList() {
                 },
                 {
                     targets: 6,
+                    className: 'wrap-text w-10',
                     data: "close_date",
                     render: (data, type, row) => {
                         return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
@@ -1273,25 +1280,15 @@ function loadDtbOpportunityList() {
                 },
                 {
                     targets: 7,
+                    className: 'wrap-text w-10 text-center',
                     render: (data, type, row) => {
                         let stage_current;
                         stage_current = row.stage.find(function (obj) {
                             return obj.is_current === true;
                         });
-                        return `<span style="font-style: italic">${stage_current.indicator}</span>`
+                        return `<span class="badge badge-soft-secondary badge-outline w-80">${stage_current.indicator}</span>`
                     }
                 },
-                // {
-                //     targets: 8,
-                //     className: 'action-center',
-                //     render: (data, type, row) => {
-                //         let urlUpdate = $('#opportunity-link').attr('data-link-update').format_url_with_uuid(row.id)
-                //         return `<div><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" `
-                //             + `data-bs-original-title="Delete" href="javascript:void(0)" data-url="${urlUpdate}" `
-                //             + `data-method="DELETE"><span class="btn-icon-wrap"><span class="feather-icon">`
-                //             + `<i data-feather="trash-2"></i></span></span></a></div>`;
-                //     },
-                // }
             ],
         });
     }

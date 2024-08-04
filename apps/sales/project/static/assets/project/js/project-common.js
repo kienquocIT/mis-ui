@@ -151,24 +151,19 @@ function saveWork(gantt_obj) {
             'w_end_date': moment($startE.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
             'order': childIdx,
         };
-        if (workParent.val()){
+        if (workParent.val())
             data.work_dependencies_parent = workParent.val()
-            data.order = $(`.gantt-left-container .grid-row[data-id="${workParent.val()}"]`).index() + 1
-        }else data.work_dependencies_parent = null
+        else data.work_dependencies_parent = null
 
         if (workType) data.work_dependencies_type = parseInt(workType)
         else data.work_dependencies_type = null
-        let work_order = null, num_order = 0;
-        if (groupElm.val()){
-            work_order = $(`.gantt-left-container .grid-row[data-group="${groupElm.val()}"]`);
-            if (!work_order.length)
-                work_order = $(`.gantt-left-container .grid-row[data-id="${groupElm.val()}"]`)
-            num_order = work_order.last().index() + 1
+        if (groupElm.val()) {
             data.group = groupElm.val();
+            if (workParent.val())
+                data.order = $(`.gantt-left-container .grid-row[data-id="${workParent.val()}"]`).index() + 1
         }
 
-        let url = $urlFact.attr('data-work'),
-            method = 'post';
+        let url = $urlFact.attr('data-work'), method = 'post';
         if ($workID.val()) {
             url = $urlFact.attr('data-work-detail').format_url_with_uuid($workID.val())
             method = 'put'

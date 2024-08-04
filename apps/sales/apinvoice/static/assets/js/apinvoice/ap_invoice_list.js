@@ -27,15 +27,15 @@ $(document).ready(function () {
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="text-primary">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-30',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
                             return `<a href="${link}"><span class="text-primary ap_info" data-id="${row.id}" data-title="${row.title}"><b>${row.title}</b></span></a>`
@@ -43,33 +43,33 @@ $(document).ready(function () {
                     },
                     {
                         data: 'po',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             return `<span class="badge badge-soft-primary">${row?.['po_mapped']?.['code']}</span> ${row?.['po_mapped']?.['title']}`
                         }
                     },
                     {
                         data: 'supplier',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-20',
                         render: (data, type, row) => {
                             if (row?.['supplier_mapped']) {
-                                return `${row?.['supplier_mapped']?.['name']}`
+                                return `<b>${row?.['supplier_mapped']?.['name']}</b>`
                             }
-                            return `${row?.['supplier_name']}`
+                            return `<b>${row?.['supplier_name']}</b`
                         }
                     },
                     {
                         data: 'invoice_number',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             return `${row.invoice_number}`
                         }
                     },
                     {
                         data: 'status',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-success">Open</span>`;
+                            return `<span class="badge badge-soft-success w-80">Open</span>`;
                         }
                     },
                 ],

@@ -9,6 +9,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 useDataServer: true,
+                rowIdx: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -22,17 +23,21 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
+                        className: '',
+                        render: (data, type, row) => {
+                            return ``;
+                        }
+                    },
+                    {
                         data: 'code',
-                        targets: 0,
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             let urlDetail = url_detail.format_url_with_uuid(row.id);
-                            return `<a href="${urlDetail}"><span class="badge badge-primary">${data}</span></a>` + $x.fn.buttonLinkBlank(urlDetail);
+                            return `<a href="${urlDetail}"><span class="badge badge-primary w-70">${data}</span></a>` + $x.fn.buttonLinkBlank(urlDetail);
                         }
                     },
                     {
                         data: 'title',
-                        targets: 1,
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             let urlDetail = url_detail.format_url_with_uuid(row.id);
@@ -41,7 +46,6 @@ $(document).ready(function () {
                     },
                     {
                         data: 'request_for',
-                        targets: 2,
                         className: 'wrap-text w-15',
                         render: (data) => {
                             return `<span class="fst-italic">${data}</span>`
@@ -49,7 +53,6 @@ $(document).ready(function () {
                     },
                     {
                         data: 'sale_order',
-                        targets: 3,
                         className: 'wrap-text w-15',
                         render: (data) => {
                             return `<p class="fw-bold text-blue">${data?.['title'] ? data?.['title'] : ''}</p>`;
@@ -57,7 +60,6 @@ $(document).ready(function () {
                     },
                     {
                         data: 'supplier',
-                        targets: 4,
                         className: 'wrap-text w-15',
                         render: (data) => {
                             return `<p class="text-muted fw-bold">${data.title}</p>`
@@ -65,17 +67,15 @@ $(document).ready(function () {
                     },
                     {
                         data: 'delivered_date',
-                        targets: 5,
                         className: 'wrap-text w-10',
                         orderable: true,
                         render: (data) => {
-                            return `<p>${data.split(' ')[0]}</p>`
+                            return moment(data.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY');
                         }
                     },
                     {
                         data: 'system_status',
-                        targets: 6,
-                        className: 'wrap-text w-10',
+                        className: 'wrap-text text-center w-10',
                         render: (data) => {
                             let status_data = {
                                 "Draft": "badge badge-soft-light",
@@ -84,27 +84,20 @@ $(document).ready(function () {
                                 "Finish": "badge badge-soft-success",
                                 "Cancel": "badge badge-soft-danger",
                             }
-                            return `<span class="${status_data[data]}">${data}</span>`;
+                            return `<span class="w-80 ${status_data[data]}">${data}</span>`;
                         }
                     },
                     {
                         data: 'purchase_status',
-                        targets: 7,
-                        className: 'wrap-text w-10',
-                        render: (data) => {
+                        className: 'wrap-text text-center w-10',
+                        render: (data, type, row) => {
+                            console.log(data)
                             let status_data = {
-                                "Wait": "badge badge-soft-light",
-                                "Partially ordered": "badge badge-soft-warning",
-                                "Ordered": "badge badge-soft-success",
+                                0: "badge-outline badge badge-light",
+                                1: "badge-outline badge badge-warning",
+                                2: "badge-outline badge badge-success",
                             }
-                            return `<span class="${status_data[data]}">${data}</span>`;
-                        }
-                    },
-                    {
-                        targets: 8,
-                        className: 'wrap-text',
-                        render: () => {
-                            return ``
+                            return `<span class="w-80 ${status_data[row?.['purchase_status_raw']]}">${data}</span>`;
                         }
                     },
                 ],

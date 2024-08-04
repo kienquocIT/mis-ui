@@ -1,7 +1,6 @@
 $(document).ready(function () {
     let tbl = $('#datatable_contact_list');
     let baseUrlDetail = tbl.attr('data-url-detail');
-    let baseUrlUpdate = tbl.attr('data-url-update');
     tbl.DataTableDefault({
         rowIdx: true,
         useDataServer: true,
@@ -21,51 +20,51 @@ $(document).ready(function () {
                 }
             },
             {
+                className: 'wrap-text w-10',
                 'data': 'code',
                 render: (data, type, row) => {
-                    return data || '';
+                    const link = baseUrlDetail.replace(0, row.id);
+                    return `<a href="${link}"><span class="badge badge-primary w-70">${row?.['code']}</span></a> ${$x.fn.buttonLinkBlank(link)}`
                 },
             },
             {
+                className: 'wrap-text w-20',
                 'data': 'full_name',
                 render: (data, type, row, meta) => {
-                    let urlDetail = baseUrlDetail.replace("__pk__", row?.['id']);
-                    return `<a href="${urlDetail}"><span><b>${row.fullname}</b></span></a>`
+                    let urlDetail = baseUrlDetail.replace("0", row?.['id']);
+                    return `<a href="${urlDetail}"><b>${row.fullname}</b></a>`
                 }
             }, {
+                className: 'wrap-text w-15',
                 'data': 'job_title',
                 render: (data, type, row, meta) => {
-                    return `<span style="min-width: max-content; width: 100%" class="badge badge-soft-danger">${row.job_title}</span>`
+                    return `<span>${row.job_title}</span>`
                 }
             }, {
-                'data': 'owner',
-                'render': (data, type, row, meta) => {
-                    return `<span style="min-width: max-content; width: 100%" class="badge badge-soft-indigo">${row.owner.fullname ? row.owner.fullname : ''}</span>`
-                }
-            }, {
+                className: 'wrap-text w-15',
                 'data': 'account_name',
                 'render': (data, type, row, meta) => {
-                    return `<span>${row?.['account_name']?.['name'] ? row['account_name']['name'] : ''}</span>`
+                    return `<span class="fw-bold">${row?.['account_name']?.['name'] ? row['account_name']['name'] : ''}</span>`
                 }
             }, {
+                className: 'wrap-text w-10',
                 'data': 'mobile',
                 'render': (data, type, row, meta) => {
-                    return `<span>${row.mobile ? row.mobile : ''}</span>`;
+                    return `<span>${row.mobile ? row.mobile : ''}</span><span>${row.phone && row.mobile ? ' | ' : ''}<span>${row.phone ? row.phone : ''}</span>`;
                 }
             }, {
+                className: 'wrap-text w-15',
                 'data': 'email',
                 'render': (data, type, row, meta) => {
                     return `<span>${row.email ? row.email : ''}</span>`;
                 }
             }, {
-                'className': 'action-center',
+                className: 'wrap-text w-15',
+                'data': 'owner',
                 'render': (data, type, row, meta) => {
-                    let urlUpdate = baseUrlUpdate.replace("__pk__", row?.['id']);
-                    return `<a data-bs-toggle="tooltip" data-bs-placement="top" title="${$.fn.transEle.attr('data-edit')}" href="${urlUpdate}">
-                        <button class="btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
-                    </a>`;
+                    return `<span class="text-blue">${row.owner.fullname ? row.owner.fullname : ''}</span>`
                 }
-            },
+            }
         ],
     })
 })

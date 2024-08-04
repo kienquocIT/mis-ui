@@ -97,14 +97,15 @@ $(document).ready(function () {
             init_edit_btn_w: fGanttCustom.load_detail_work,
             delete_row_func: fGanttCustom.delete_row,
             on_date_change: function (task, start, end) {
-                enqueueAjaxRequest({
+                let opt = {
                     id: task.id,
                     w_start_date: moment(start).format('YYYY-MM-DD'),
                     w_end_date: moment(end).format('YYYY-MM-DD'),
-                    project: $('#id').val(),
-                    group: task?.['child_of_group'] ? task['child_group_id'] : null
-                })
-            },
+                    project: $('#id').val()
+                }
+                if (task?.['child_of_group']) opt.group = task['child_group_id']
+                enqueueAjaxRequest(opt)
+            }
         }
     );
 
@@ -126,6 +127,7 @@ $(document).ready(function () {
                 $('#employeeInheritInput').attr('data-value', data['employee_inherit'].id).val(data['employee_inherit'].full_name);
                 $('#dateStart').val(moment(data.start_date).format('DD/MM/YYYY'))
                 $('#dateFinish').val(moment(data.finish_date).format('DD/MM/YYYY'))
+                $('.completion_rate_block .heading').text(`${data['completion_rate']}%`)
                 const afterData = fGanttCustom.convert_data(data.groups, data?.['works'])
                 new_gantt.load_more(afterData)
                 ProjectTeamsHandle.render(data.members)
@@ -138,6 +140,7 @@ $(document).ready(function () {
                 }
                 else $('#create_baseline').prop('disabled', true)
                 WFRTControl.setWFInitialData('projectbaseline', 'post');
+
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )

@@ -284,3 +284,59 @@ class PurchaseOrderReportListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.PO_REPORT_LIST).get(data)
         return resp.auto_return(key_success='po_report_list')
+
+
+# BUDGET REPORT
+
+# PO REPORT
+class BudgetReportList(View):
+
+    @mask_view(
+        auth_require=True,
+        template='sales/budget_report/budget_report.html',
+        menu_active='menu_budget_report',
+        breadcrumb='BUDGET_REPORT_LIST_PAGE',
+    )
+    def get(self, request, *args, **kwargs):
+        resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
+        if len(resp1.result) > 0:
+            return {
+                'data': {'current_period': resp1.result[0]},
+            }, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
+
+
+class BudgetReportCompanyListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.BUDGET_REPORT_COMPANY_LIST).get(data)
+        return resp.auto_return(key_success='budget_report_company_list')
+
+
+class BudgetReportGroupListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.BUDGET_REPORT_GROUP_LIST).get(data)
+        return resp.auto_return(key_success='budget_report_group_list')
+
+
+class PaymentListForBudgetReportAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.BUDGET_REPORT_PAYMENT_LIST).get(data)
+        return resp.auto_return(key_success='budget_report_payment_list')

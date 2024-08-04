@@ -295,6 +295,7 @@ function loadStockQuantityOtherDataTableBorrow() {
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    console.log(resp.data['goods_registration_borrow_list'])
                     return resp.data['goods_registration_borrow_list'] ? resp.data['goods_registration_borrow_list'] : [];
                 }
                 return [];
@@ -310,7 +311,7 @@ function loadStockQuantityOtherDataTableBorrow() {
             {
                 className: 'wrap-text w-10 text-center',
                 render: (data, type, row) => {
-                    return `<span>${row?.['uom']?.['title']}</span>`;
+                    return `<span>${row?.['borrow_uom']?.['title']}</span>`;
                 }
             },
             {
@@ -344,7 +345,7 @@ function loadStockQuantityOtherDataTableBorrow() {
                                 form="frm_borrow_from_other_row"
                                 class="btn btn-soft-primary btn-xs so-available-save"
                                 data-sale-order-destination-id="${row?.['sale_order']?.['id']}"
-                                data-uom="${row?.['uom']?.['id']}"
+                                data-uom="${row?.['borrow_uom']?.['id']}"
                         >
                             ${script_trans.attr('data-trans-save')}
                         </button>

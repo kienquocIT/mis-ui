@@ -454,7 +454,6 @@ $(document).ready(function () {
                     } else {
                         loadInterestList([]);
                     }
-                    WFRTControl.setWFRuntimeID(data?.['contact_detail']?.['workflow_runtime_id']);
                 }
             }
         )

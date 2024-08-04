@@ -35,7 +35,7 @@ function loadOpportunityMeetingList() {
                 },
                 {
                     data: 'subject',
-                    className: 'wrap-text',
+                    className: 'wrap-text w-75',
                     render: (data, type, row) => {
                         let status = ''
                         if (row?.['is_cancelled']) {
@@ -47,14 +47,14 @@ function loadOpportunityMeetingList() {
                 },
                 {
                     data: 'opportunity',
-                    className: 'wrap-text text-center',
+                    className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
                         return `<span class="text-secondary">${row.opportunity.code}</span>`
                     }
                 },
                 {
                     data: 'meeting_date',
-                    className: 'wrap-text text-center',
+                    className: 'wrap-text text-center w-10',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(data, {
                             'outputFormat': 'DD-MM-YYYY',

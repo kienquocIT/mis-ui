@@ -69,7 +69,7 @@ $(function () {
                 POLoadDataHandle.contactSelectEle.empty();
                 POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle);
             }
-            POLoadDataHandle.loadResetPQAndPriceList();
+            // POLoadDataHandle.loadResetPQAndPriceList();
             if (POLoadDataHandle.PRDataEle.val()) {
                 POLoadDataHandle.loadTableProductByPurchaseRequest();
             }

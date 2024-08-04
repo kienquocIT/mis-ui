@@ -23,45 +23,50 @@ $(document).ready(function () {
                     return ``;
                 }
             }, {
-                'data': 'code',
+                data: 'code',
+                className: 'wrap-text w-10',
                 render: (data, type, row) => {
                     const link = url_detail.replace(0, row.id);
-                    return `<a href="${link}" class="text-primary">${row?.['code']}</a> ${$x.fn.buttonLinkBlank(link)}`
+                    return `<a href="${link}"><span class="w-70 badge badge-primary">${row?.['code']}</span></a> ${$x.fn.buttonLinkBlank(link)}`
                 }
             }, {
-                'data': 'title',
+                data: 'title',
+                className: 'wrap-text w-20',
                 render: (data, type, row) => {
-                    return `<span><b>${row.title}</b></span>`
+                    const link = url_detail.replace(0, row.id);
+                    return `<a href="${link}" class="text-primary"><span><b>${row.title}</b></span></a>`
                 }
             }, {
-                'className': 'text-center',
-                'data': 'general_product_types_mapped',
+                data: 'general_product_types_mapped',
+                className: 'wrap-text w-20 text-center',
                 render: (data, type, row) => {
                     let html = ``;
                     for (let i = 0; i < row?.['general_product_types_mapped'].length; i++) {
-                        html += `<span class="badge badge-primary span-product-type ml-1 mb-1" style="min-width: max-content; width: 50%">${row?.['general_product_types_mapped'][i].title}</span>`
+                        html += `<span class="badge badge-outline badge-soft-blue span-product-type ml-1 mb-1" style="min-width: max-content; width: 50%">${row?.['general_product_types_mapped'][i].title}</span>`
                     }
                     return html;
                 }
             }, {
-                'data': 'general_product_category',
+                data: 'general_product_category',
+                className: 'wrap-text w-15',
                 render: (data, type, row) => {
                     return `<span class="badge-status"><span class="badge badge-secondary badge-indicator"></span>&nbsp;<span class="text-secondary span-product-category">${row.general_product_category.title}</span></span>`
                 }
             }, {
-                'data': 'general_price',
+                data: 'general_price',
+                className: 'wrap-text w-15 text-center',
                 render: (data, type, row) => {
                     return `<span class="mask-money text-primary" data-init-money="${row?.['general_price']}"></span>`
                 }
             }, {
-                'className': 'text-center',
+                className: 'wrap-text w-10 text-center',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-soft-primary w-80" data-bs-toggle="tooltip" data-bs-placement="left" title=""><b>${row?.['stock_amount'] ? row?.['stock_amount'] : 0}</b></span>`;
+                    return `<span class="text-secondary">${row?.['stock_amount'] ? row?.['stock_amount'] : 0}</span>`;
                 }
             }, {
-                'className': 'text-center',
+                className: 'wrap-text w-10 text-center',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-soft-success w-80" data-bs-toggle="tooltip" data-bs-placement="left" title=""><b>${row?.['available_amount'] ? row?.['available_amount']: 0}</b></span>`;
+                    return `<span class="text-primary">${row?.['available_amount'] ? row?.['available_amount']: 0}</span>`;
                 }
             }
         ],

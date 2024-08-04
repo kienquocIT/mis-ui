@@ -8316,3 +8316,11 @@ msgstr "Xem Báo giá"
 #
 msgid "View Sale Order"
 msgstr "Xem Đơn hàng"
+
+#
+msgid "Project config"
+msgstr "Cấu hình dự án"
+
+#
+msgid "Employee can complete project"
+msgstr "Nhân viên có quyền đóng dự án"

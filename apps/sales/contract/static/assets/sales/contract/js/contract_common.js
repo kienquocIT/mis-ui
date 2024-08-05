@@ -202,7 +202,7 @@ class ContractDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '20%',
+                    width: '25%',
                     render: (data, type, row) => {
                         if (row?.['order'] === 1) {
                             return `<span class="table-row-version">Current version</span>`;
@@ -212,7 +212,7 @@ class ContractDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '20%',
+                    width: '15%',
                     render: (data, type, row) => {
                         return `<span class="table-row-date">${row?.['date_created'] ? row?.['date_created'] : ''}</span>`;
                     }

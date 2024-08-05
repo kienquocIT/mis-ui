@@ -5962,7 +5962,7 @@ msgstr "Đã nhập một phần"
 
 #
 msgid "Received"
-msgstr "Đã nhập xong"
+msgstr "Đã nhập đủ"
 
 #
 msgid "From Price List in left side"

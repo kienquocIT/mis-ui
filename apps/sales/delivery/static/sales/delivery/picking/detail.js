@@ -336,8 +336,6 @@ $(async function () {
         ).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data.hasOwnProperty(keyResp) && Array.isArray(data?.[keyResp])) {
-                let stock = 0;
-                let picked = 0;
                 let available = 0;
                 let link = '';
                 let warehouseTitle = '';

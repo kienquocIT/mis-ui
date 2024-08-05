@@ -618,6 +618,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DIAGRAM_LIST = StringUrl('diagram/list')
 
     # Project
+    PROJECT_CONFIG = StringUrl('project/config')
     PROJECT_LIST = StringUrl('project/list')
     PROJECT_DETAIL = StringUrl('project/detail/{pk}')
     PROJECT_EDIT = StringUrl('project/edit/{pk}')

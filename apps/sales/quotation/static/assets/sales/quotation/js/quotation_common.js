@@ -3049,38 +3049,39 @@ class QuotationDataTableHandle {
             columns: [
                 {
                     targets: 0,
+                    width: '1%',
                     render: (data, type, row, meta) => {
                         return `<span class="table-row-order">${(meta.row + 1)}</span>`
                     }
                 },
                 {
                     targets: 1,
+                    width: '40%',
                     render: (data, type, row) => {
-                        return `<div class="form-check">
-                                    <input 
-                                        type="checkbox"
-                                        class="form-check-input table-row-check-product"
-                                        data-id="${row.product.id}"
-                                    >
-                                </div>`
+                        return `<div class="d-flex align-items-center">
+                                        <div class="form-check">
+                                            <input 
+                                                type="checkbox"
+                                                class="form-check-input table-row-check-product"
+                                                data-id="${row?.['product']?.['id']}"
+                                            >
+                                        </div>
+                                        <span class="table-row-title">${row?.['product_title']}</span>
+                                </div>`;
                     }
                 },
                 {
                     targets: 2,
+                    width: '15%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.product_title}</span>`
-                    }
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity">${row.product_quantity}</span>`
+                        return `<span class="table-row-quantity">${row?.['product_quantity']}</span>`
                     },
                 },
                 {
-                    targets: 4,
+                    targets: 3,
+                    width: '20%',
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-quantity-input" value="${row.product_quantity}">`
+                        return `<input type="text" class="form-control table-row-quantity-input" value="${row?.['product_quantity']}">`
                     },
                 }
             ],

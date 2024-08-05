@@ -478,3 +478,20 @@
     border: dashed 1px #ff0000;
     background-color: #f8f8f8ff;
 }
+.completion_rate_block{
+    display: inline-block;
+    margin-left: 40px;
+}
+.completion_rate_block span{
+    font-size: 1rem;
+    color: #84A9CD;
+    text-align: center;
+    display: block;
+}
+.completion_rate_block .heading{
+    font-size:4rem;
+    line-height: 4rem;
+    font-weight: 400;
+    font-family: "Segoe UI Emoji";
+    color: #FC9F66;
+}

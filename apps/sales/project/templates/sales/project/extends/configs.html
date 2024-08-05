@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Project' %} {% trans 'Config' %}
+{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="#">
+        <button class="btn btn-outline-primary" form="prj_config_form">
+            <span>
+                <span>{% trans 'Update' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <!-- from-->
+    <form class="container-fluid mt-4" id="prj_config_form" method="post" data-method="put" autocomplete="off"
+          data-url="{% url "ProjectConfigAPI" %}">
+        {% csrf_token %}
+        <input type="hidden" id="id">
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
+                <h5 class="h5 mb-5 font-weight-bold">{% trans 'Employee can complete project' %}</h5>
+                <div class="form-group">
+                    <select class="form-select" name="project_pm" id="select_project_pm"
+                            data-url="{% url 'EmployeeListAPI' %}"
+                            data-keyResp="employee_list" data-keyText="full_name" data-keyId="id" multiple
+                            data-allowClear="true" data-closeOnSelect="false">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory">
+    <input type="text" id="trans-factory">
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/project/js/extend/config.js' %}"></script>
+{% endblock %}

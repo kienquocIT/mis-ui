@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Project' %} {% trans 'list' %}
+{% endblock %}
+{% block cssHeader %}
+{#    <link href="{% static 'assets/css/eoffice/assettools/list.css' %}" rel="stylesheet" type="text/css"/>#}
+    <style>
+        .proj-badge {
+            font-size: .7rem;
+            border-radius: 5px;
+            font-weight: 400;
+            right: -25px;
+            top: -12px;
+        }
+
+        .proj-badge img {
+            margin-right: 4px;
+        }
+
+        .btn-sh-baseline i {
+            transition: all .15s ease-in;
+        }
+
+        .btn-sh-baseline:hover i {
+            transform: rotate(90deg)
+        }
+
+        .baseline_tr > td {
+            padding: 0;
+        }
+        .baseline_tr .wrap-baseline > table tr:last-child td {
+            border-bottom: 0;
+        }
+        .baseline_tr .wrap-baseline > table tr td {
+            background-color: rgb(0 0 0 / 5%);
+        }
+        div.dataTables_wrapper .dataTables_scrollBody table{
+            margin-bottom:0!important;
+        }
+        .apexcharts-tooltip-title{
+            max-width: 120px;
+            white-space: pre-line;
+        }
+        .r-0{right:0}
+        .percent_block{
+            position: absolute;
+            width: 50px;
+        }
+        .heading_cards {
+            font-size: 2rem;
+            line-height: 1.2;
+            font-weight: 400;
+            color: #324148;
+            font-family: "Segoe UI";
+        }
+    </style>
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+
+{% block pageContent %}
+    <div class="container">
+        <div class="row justify-content-end align-items-center">
+            <div class="btn-group btn-group-rounded col-xs-12 col-md-2 mr-3">
+                <button type="button" class="btn btn-outline-secondary">{% trans 'List' %}</button>
+	            <button type="button" class="btn btn-outline-secondary">{% trans 'My Project' %}</button>
+            </div>
+            <a href="{% url 'ProjectCreate' %}" class="col col-1">
+                <button class="btn btn-outline-primary" type="button">
+                    <span>
+                        <span>{% trans 'Create' %}</span>
+                        <span class="icon">
+                            <i class="fa-solid fa-plus"></i>
+                        </span>
+                    </span>
+                </button>
+            </a>
+        </div>
+        <div class="clearfix mb-4"></div>
+        <div class="row">
+            <div class="col-lg-3 col-sm-6">
+                <div class="card card-sm card_new_prj">
+                    <div class="card-body">
+                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'New project this month' %}</span>
+                        <div class="d-flex align-items-center justify-content-between position-relative">
+                            <div class="heading_cards"></div>
+                            <div class="percent_block r-0">
+                                <div id="pie_chart_1" class="d-flex easy-pie-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="card card-sm">
+                    <div class="card-body">
+                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project expense highest' %}</span>
+                        <div class="d-flex align-items-center justify-content-between position-relative">
+                            <div class="heading_cards">12 New</div>
+                            <div class="percent_block r-0">
+                                <div id="pie_chart_1" class="d-flex easy-pie-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="card card-sm">
+                    <div class="card-body">
+                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'New project this month' %}</span>
+                        <div class="d-flex align-items-center justify-content-between position-relative">
+                            <div class="heading_cards">12 New</div>
+                            <div class="percent_block r-0">
+                                <div id="pie_chart_1" class="d-flex easy-pie-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="card card-sm">
+                    <div class="card-body">
+                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'New project this month' %}</span>
+                        <div class="d-flex align-items-center justify-content-between position-relative">
+                            <div class="heading_cards">12 New</div>
+                            <div class="percent_block r-0">
+                                <div id="pie_chart_1" class="d-flex easy-pie-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
+                <label class="font-3">{% trans 'Project Owner' %}</label>
+                <div id="prj_chart_employee"></div>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <label class="font-3">{% trans 'Project per years' %}</label>
+                <div id="prj_chart_year"></div>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <label class="font-3">{% trans 'Project status' %}</label>
+                <div id="prj_chart_status"></div>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <label class="font-3">{% trans 'Project expense' %}</label>
+                <div id="prj_chart_expense"></div>
+            </div>
+        </div>
+        <input type="hidden" id="trigger_load">
+    </div>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <div class="table_btn"></div>
+    <input type="hidden" id="url-factory" aria-label="url-factory"
+    data-prj-list="{% url 'ProjectListAPI' %}">
+    <input type="hidden" id="trans-factory" aria-label="trans-factory">
+{% endblock %}
+{% block jsFooter %}
+    {# library #}
+    <script src="{% static 'vendors/chart/apexcharts.js' %}"></script>
+    {# init chart#}
+    <script src="{% static 'assets/project/js/extend/home.js' %}"></script>
+{% endblock %}

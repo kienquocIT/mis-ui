@@ -21,9 +21,9 @@
 {% block pageAction %}{% endblock %}
 {% block pageContent %}
     <script id="script-url"
-            data-url-project-product-available-quantity="{% url 'GoodsRegistrationItemAvailableQuantityAPI' %}"
+            data-url-gre-item-available-quantity="{% url 'GReItemAvailableQuantityAPI' %}"
             data-url-gre-item-sub-list="{% url 'GoodsRegistrationItemSubListAPI' %}"
-            data-url-gre-item-borrow-list="{% url 'GoodsRegistrationItemBorrowListAPI' %}"
+            data-url-gre-item-borrow-list="{% url 'GReItemBorrowListAPI' %}"
     ></script>
     <script id="script-trans"
             data-trans-change="{% trans 'Change' %}"
@@ -174,7 +174,7 @@
                             <form id="frm_borrow_from_other_row"
                                       data-method="POST"
                                       data-url-redirect="{% url 'GoodsRegistrationDetail' pk=pk %}"
-                                      data-url="{% url 'GoodsRegistrationItemBorrowListAPI' %}"
+                                      data-url="{% url 'GReItemBorrowListAPI' %}"
                                 >
                                 {% csrf_token %}
                                 <table id="tab_stock_quantity_other_datatable" class="table nowrap w-100">
@@ -249,7 +249,7 @@
                                 <form id="frm_borrow_from_other"
                                       data-method="POST"
                                       data-url-redirect="{% url 'GoodsRegistrationDetail' pk=pk %}"
-                                      data-url="{% url 'GoodsRegistrationItemBorrowListAPI' %}"
+                                      data-url="{% url 'GReItemBorrowListAPI' %}"
                                 >
                                 {% csrf_token %}
                                     <div class="row mb-2">

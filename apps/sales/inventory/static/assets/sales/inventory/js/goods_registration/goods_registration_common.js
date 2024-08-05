@@ -288,15 +288,15 @@ function loadStockQuantityOtherDataTableBorrow() {
         paging: false,
         ajax: {
             url: script_url.attr('data-url-gre-item-borrow-list') +
-                `?goods_registration_source_id=${$.fn.getPkDetail()}` +
+                `?gre_source_id=${$.fn.getPkDetail()}` +
                 `&gre_item_source_id=${current_gre_item_id}`
             ,
             type: "GET",
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    console.log(resp.data['goods_registration_borrow_list'])
-                    return resp.data['goods_registration_borrow_list'] ? resp.data['goods_registration_borrow_list'] : [];
+                    console.log(resp.data['gre_item_borrow_list'])
+                    return resp.data['gre_item_borrow_list'] ? resp.data['gre_item_borrow_list'] : [];
                 }
                 return [];
             },
@@ -397,14 +397,14 @@ function CallProjectProductGeneralBorrow(sale_order_id, product_id, so_uom, base
     dataParam['product_id'] = product_id
     dataParam['so_item__sale_order_id'] = sale_order_id
     let ajax = $.fn.callAjax2({
-        url: script_url.attr('data-url-project-product-available-quantity'),
+        url: script_url.attr('data-url-gre-item-available-quantity'),
         data: dataParam,
         method: 'GET'
     }).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
-            if (data && typeof data === 'object' && data.hasOwnProperty('goods_registration_item_available_quantity')) {
-                return data?.['goods_registration_item_available_quantity'];
+            if (data && typeof data === 'object' && data.hasOwnProperty('gre_item_available_quantity')) {
+                return data?.['gre_item_available_quantity'];
             }
             return {};
         },

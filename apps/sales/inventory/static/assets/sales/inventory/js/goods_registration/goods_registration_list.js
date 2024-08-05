@@ -69,14 +69,14 @@ $(document).ready(function () {
         dataParam11['gre_item__so_item__sale_order_id'] = sale_order_id
         dataParam11['warehouse_id'] = warehouse_id
         let ajax1 = $.fn.callAjax2({
-            url: $('#call-btn').attr('data-url-gre-general'),
+            url: $('#call-btn').attr('data-url-gre-item-prd-wh'),
             data: dataParam11,
             method: 'GET'
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('good_registration_general')) {
-                    return data?.['good_registration_general'];
+                if (data && typeof data === 'object' && data.hasOwnProperty('gre_item_prd_wh_list')) {
+                    return data?.['gre_item_prd_wh_list'];
                 }
                 return {};
             },
@@ -87,7 +87,7 @@ $(document).ready(function () {
 
         let dataParam2 = {}
         dataParam2['gre_item_source__product_id'] = product_id
-        dataParam2['goods_registration_source__sale_order_id'] = sale_order_id
+        dataParam2['gre_source__sale_order_id'] = sale_order_id
         let ajax2 = $.fn.callAjax2({
             url: $('#call-btn').attr('data-url-gre-borrow'),
             data: dataParam2,
@@ -95,8 +95,8 @@ $(document).ready(function () {
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('goods_registration_borrow_list')) {
-                    return data?.['goods_registration_borrow_list'];
+                if (data && typeof data === 'object' && data.hasOwnProperty('gre_item_borrow_list')) {
+                    return data?.['gre_item_borrow_list'];
                 }
                 return {};
             },
@@ -113,18 +113,18 @@ $(document).ready(function () {
 
     function CallProductWarehouseLot(sale_order_id, product_id, warehouse_id) {
         let dataParam1 = {}
-        dataParam1['gre_general__gre_item__product_id'] = product_id
-        dataParam1['gre_general__gre_item__so_item__sale_order_id'] = sale_order_id
-        dataParam1['gre_general__warehouse_id'] = warehouse_id
+        dataParam1['gre_item_prd_wh__gre_item__product_id'] = product_id
+        dataParam1['gre_item_prd_wh__gre_item__so_item__sale_order_id'] = sale_order_id
+        dataParam1['gre_item_prd_wh__warehouse_id'] = warehouse_id
         let ajax1 = $.fn.callAjax2({
-            url: $('#call-btn').attr('data-url-gre-general-lot'),
+            url: $('#call-btn').attr('data-url-gre-item-prd-wh-lot'),
             data: dataParam1,
             method: 'GET'
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('good_registration_lot')) {
-                    return data?.['good_registration_lot'];
+                if (data && typeof data === 'object' && data.hasOwnProperty('gre_item_prd_wh_lot_list')) {
+                    return data?.['gre_item_prd_wh_lot_list'];
                 }
                 return {};
             },
@@ -135,7 +135,7 @@ $(document).ready(function () {
 
         let dataParam2 = {}
         dataParam2['gre_item_source__product_id'] = product_id
-        dataParam2['goods_registration_source__sale_order_id'] = sale_order_id
+        dataParam2['gre_source__sale_order_id'] = sale_order_id
         let ajax2 = $.fn.callAjax2({
             url: $('#call-btn').attr('data-url-gre-borrow'),
             data: dataParam2,
@@ -143,8 +143,8 @@ $(document).ready(function () {
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('goods_registration_borrow_list')) {
-                    return data?.['goods_registration_borrow_list'];
+                if (data && typeof data === 'object' && data.hasOwnProperty('gre_item_borrow_list')) {
+                    return data?.['gre_item_borrow_list'];
                 }
                 return {};
             },
@@ -161,11 +161,11 @@ $(document).ready(function () {
 
     function CallProductWarehouseSerial(sale_order_id, product_id, warehouse_id) {
         let dataParam1 = {}
-        dataParam1['gre_general__gre_item__product_id'] = product_id
-        dataParam1['gre_general__gre_item__so_item__sale_order_id'] = sale_order_id
-        dataParam1['gre_general__warehouse_id'] = warehouse_id
+        dataParam1['gre_item_prd_wh__gre_item__product_id'] = product_id
+        dataParam1['gre_item_prd_wh__gre_item__so_item__sale_order_id'] = sale_order_id
+        dataParam1['gre_item_prd_wh__warehouse_id'] = warehouse_id
         let ajax1 = $.fn.callAjax2({
-            url: $('#call-btn').attr('data-url-gre-general-sn'),
+            url: $('#call-btn').attr('data-url-gre-item-prd-wh-sn'),
             data: dataParam1,
             method: 'GET'
         }).then(
@@ -183,7 +183,7 @@ $(document).ready(function () {
 
         let dataParam2 = {}
         dataParam2['gre_item_source__product_id'] = product_id
-        dataParam2['goods_registration_source__sale_order_id'] = sale_order_id
+        dataParam2['gre_source__sale_order_id'] = sale_order_id
         let ajax2 = $.fn.callAjax2({
             url: $('#call-btn').attr('data-url-gre-borrow'),
             data: dataParam2,
@@ -191,8 +191,8 @@ $(document).ready(function () {
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('goods_registration_borrow_list')) {
-                    return data?.['goods_registration_borrow_list'];
+                if (data && typeof data === 'object' && data.hasOwnProperty('gre_item_borrow_list')) {
+                    return data?.['gre_item_borrow_list'];
                 }
                 return {};
             },

@@ -4,6 +4,7 @@ $(function () {
 
         ContractDataTableHandle.dataTableDocument();
         ContractDataTableHandle.dataTableFile();
+        ContractTinymceHandle.initTinymce();
 
         ContractLoadDataHandle.$btnAddDoc.on('click', function () {
             ContractLoadDataHandle.loadAddDoc();

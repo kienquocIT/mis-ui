@@ -52,10 +52,14 @@
                     <tbody>
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-start">
+                <div class="d-flex justify-content-start mb-3">
                     <button type="button" class="btn btn-outline-primary" id="btn-add-doc">
                         <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
                     </button>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="inp-contents">{% trans 'Abstract' %}</label>
+                    <textarea class="form-control" id="inp-contents"></textarea>
                 </div>
             </div>
             <div class="col-12 col-md-5 col-lg-5 bg-light" id="file-area">
@@ -119,6 +123,7 @@
     <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script src="{% static 'assets/sales/contract/js/contract_common.js' %}"></script>
     <script src="{% static 'assets/sales/contract/js/contract_create.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
     <script>
         new $x.cls.file($('#attachment')).init({'name': 'attachment'});
 

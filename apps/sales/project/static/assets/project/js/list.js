@@ -44,7 +44,7 @@ $(document).ready(function(){
             },
             {
                 data: 'employee_inherit',
-                width: '10%',
+                width: '17%',
                 class: 'text-center',
                 render: (row, type, data) => {
                     return row ? row?.['full_name'] : '--'
@@ -52,7 +52,7 @@ $(document).ready(function(){
             },
             {
                 data: 'start_date',
-                width: '15%',
+                width: '10%',
                 class: 'text-center',
                 render: (row) => {
                     let txt = '--'
@@ -62,7 +62,7 @@ $(document).ready(function(){
             },
             {
                 data: 'finish_date',
-                width: '15%',
+                width: '10%',
                 class: 'text-center',
                 render: (row) => {
                     let txt = '--'
@@ -99,11 +99,16 @@ $(document).ready(function(){
                 }
             },
             {
-                data: 'id',
-                width: '5%',
-                render: (row, index, data) => {
-                    let txt = $('.table_btn').html();
-                    return txt
+                data: 'system_status',
+                width: '8%',
+                class: 'text-center',
+                render: (row, type, data) => {
+                    const status_data = [
+                        {txt: $.fn.gettext("Created"), cls: "soft-primary"},
+                        {txt: $.fn.gettext("Added"), cls: "soft-warning"},
+                        {txt: $.fn.gettext("Finish"), cls: "soft-success"},
+                    ]
+                    return `<span class="badge badge-${status_data[row]['cls']}">${status_data[row]['txt']}</span>`;
                 }
             },
         ],

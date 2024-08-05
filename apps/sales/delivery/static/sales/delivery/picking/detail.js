@@ -40,21 +40,26 @@ class pickupUtil {
         if (row) {
             let eleAvailable = row.querySelector('.pw-available');
             if (eleAvailable) {
+                let check = true;
                 let value = parseInt(ele.value);
                 let available = parseInt(eleAvailable.innerHTML);
                 let remain = parseInt(currentList[idx]['remaining_quantity']);
                 currentList[idx]['picked_quantity'] = value;
                 if (value > available) {
-                    $(ele).addClass('is-invalid cl-red');
+                    check = false;
                     $.fn.notifyB({description: $('#trans-factory').attr('data-exceed-available')}, 'failure');
-                    ele.value = 0;
-                    currentList[idx]['picked_quantity'] = 0;
                 }
                 if (value > remain) {
-                    $(ele).addClass('is-invalid cl-red');
+                    check = false;
                     $.fn.notifyB({description: $('#trans-factory').attr('data-exceed-remain')}, 'failure');
+                }
+                if (check === false) {
+                    $(ele).addClass('is-invalid cl-red');
                     ele.value = 0;
                     currentList[idx]['picked_quantity'] = 0;
+                    for (let eleSOPick of row.querySelectorAll('.so-quantity-pick')) {
+                        eleSOPick.value = 0;
+                    }
                 }
                 this.setProdList = currentList
             }
@@ -107,51 +112,6 @@ class pickupUtil {
         })
     }
 
-    async getWarehouseStock(dataProd) {
-        const _this = this
-        const warehouseID = $('#inputWareHouse').val();
-        let currentWHList = this.getWarehouseList
-        let checkResult = 0
-        if (dataProd && dataProd?.['product_data']?.['id'] && dataProd?.['uom_data']?.['id']){
-            let prodKey = `${dataProd?.['product_data']?.['id']}.${dataProd?.['uom_data']?.['id']}`
-            if (currentWHList?.[prodKey] && currentWHList?.[prodKey]?.[warehouseID])
-                checkResult = currentWHList[prodKey][warehouseID]
-            else {
-                let callData = await $.fn.callAjax2(
-                    {
-                        'url': $('#url-factory').attr('data-product-warehouse'),
-                        'method': 'GET',
-                        'data': {
-                            'product_id': dataProd?.['product_data']?.['id'],
-                            'warehouse_id': warehouseID,
-                        },
-                        'isDropdown': true,
-                    }
-                )
-                if(callData.status === 200) {
-                    let res = $.fn.switcherResp(callData);
-                    res = res?.['warehouse_products_list'];
-                    if (res.length){
-                        let dataFormatted = {}
-                        for (let productWarehouse of res){
-                            let finalRatio = 1;
-                            let uomSORatio = dataProd?.['uom_data']?.['ratio'];
-                            let uomWHRatio = productWarehouse?.['uom']?.['ratio'];
-                            if (uomSORatio && uomWHRatio) {
-                                finalRatio = uomWHRatio / uomSORatio;
-                            }
-                            let available_stock = (productWarehouse?.['stock_amount'] - productWarehouse?.['picked_ready']) * finalRatio;
-                            dataFormatted[productWarehouse?.['warehouse']?.['id']] = available_stock
-                            if (productWarehouse?.['warehouse']?.['id'] === warehouseID) checkResult = available_stock
-                        }
-                        currentWHList[prodKey] = dataFormatted;
-                        _this.setWarehouseList = currentWHList;
-                    }
-                }
-            }
-        }
-        return checkResult
-    }
 }
 
 function getWarehouse() {
@@ -181,6 +141,7 @@ $(async function () {
     let dataCompanyConfig = await DocumentControl.getCompanyConfig();
     let $urlFact = $('#url-factory');
     let $eleSO = $('#inputSaleOrder');
+    let $table = $('#dtbPickingProductList');
 
     // init date picker
     $('.date-picker').each(function () {
@@ -399,7 +360,7 @@ $(async function () {
                                         </div>`;
                             htmlPick += `<div class="d-flex mb-1 align-items-center">
                                         <div><span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-project')}: ${so?.['code']}</span></div>
-                                        <input class="form-control table-row-quantity-pick-detail" type="number" value="">
+                                        <input class="form-control so-quantity-pick" type="number" value="0">
                                     </div>`;
                         }
                     }
@@ -430,7 +391,6 @@ $(async function () {
     // init product list by DataTable
     function loadProductList(data) {
         pickupInit.setProdList = data
-        let $table = $('#dtbPickingProductList');
         $table.DataTableDefault({
             rowIdx: true,
             visibleSearchField: false,
@@ -512,17 +472,6 @@ $(async function () {
                     getStockByProdID(data, row);
                 }
 
-                $(`input.table-row-quantity-pick-detail`, row).on('change', function () {
-                    let total = 0;
-                    let elePick = row.querySelector('.table-row-quantity-pick');
-                    if (elePick) {
-                        for (let ele of row.querySelectorAll('.table-row-quantity-pick-detail')) {
-                            total += parseFloat(ele.value);
-                        }
-                        elePick.value = total;
-                    }
-                });
-
                 $(`#prod_row-${index}`, row).off().on('change', async function (e) {
                     if (this.value) {
                         // format số âm, nhiều số 0. Ex. 0001, số thập phân.
@@ -540,6 +489,38 @@ $(async function () {
             }
         });
     }
+
+    function setupSOPW() {
+        let data = [];
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            for (let ele of row.querySelectorAll('.so-quantity-pick')) {
+                if (ele.getAttribute('data-so')) {
+                    let dataSO = JSON.parse(ele.getAttribute('data-so'));
+                    data.push({
+                        'sale_order': dataSO?.['id'],
+                        'sale_order_data': dataSO,
+                        'done': parseFloat(ele.value),
+                    })
+                }
+            }
+        });
+        return data;
+    }
+
+    $table.on('change', '.so-quantity-pick', function () {
+        let row = this.closest('tr');
+        let total = 0;
+        let elePick = row.querySelector('.table-row-quantity-pick');
+        if (elePick) {
+            for (let ele of row.querySelectorAll('.so-quantity-pick')) {
+                total += parseFloat(ele.value);
+            }
+            elePick.value = total;
+            $(elePick).change();
+        }
+        return true;
+    });
 
     // form submit
     jQuery.validator.setDefaults({

@@ -34,6 +34,7 @@ function LoadLineDetailTable(data) {
         let this_registered_borrowed = row?.['this_registered_borrowed']
         let this_available = row?.['this_available']
         let out_registered = row?.['out_registered']
+        let out_delivered = row?.['out_delivered']
         let out_available = row?.['out_available']
         let row_html = $(`
             <tr>
@@ -95,6 +96,7 @@ function LoadDetailGoodsRegistration(option) {
                 dateEle.val(moment(data?.['date_created'].split(' ')[0]).format('DD/MM/YYYY'))
                 LoadSaleOrder(data?.['sale_order'])
                 LoadSalePerson(data?.['sale_order']?.['sale_person'])
+                console.log(data?.['data_line_detail'])
                 LoadLineDetailTable(data?.['data_line_detail'])
 
                 Disable(option);
@@ -681,7 +683,7 @@ frm_borrow_from_other.submit(function (event) {
 
 frm_borrow_row.submit(function (event) {
     event.preventDefault();
-    if (borrow_row.attr('data-sale-order-destination-id') === undefined) {
+    if (borrow_row.attr('data-warehouse') === undefined) {
         let combinesData = new GoodsRegistrationBorrowHandle().combinesDataStock($(this), borrow_row);
         if (combinesData) {
             WindowControl.showLoading();

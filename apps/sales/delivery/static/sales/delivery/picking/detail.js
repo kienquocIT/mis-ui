@@ -301,20 +301,21 @@ $(async function () {
                 let areaPick = row.querySelector('.area-pick');
                 if (menuDD && areaPick) {
                     let $menuDD = $(menuDD);
-                    let $areaPick = $(areaPick);
                     let link = '';
+                    let dataWH = {};
+                    let dataUOM = {};
                     let warehouseTitle = '';
                     let $eleWH = $('#inputWareHouse');
                     let whID = $eleWH.val();
                     let htmlStock = ``;
                     let htmlPick = ``;
                     if ($eleWH && $eleWH.length > 0) {
-                        let dataWHSelected = SelectDDControl.get_data_from_idx($eleWH, $eleWH.val());
-                        if (dataWHSelected?.['title']) {
-                            warehouseTitle = dataWHSelected?.['title'];
+                        dataWH = SelectDDControl.get_data_from_idx($eleWH, $eleWH.val());
+                        if (dataWH?.['title']) {
+                            warehouseTitle = dataWH?.['title'];
                         }
-                        if (dataWHSelected?.['text']) {
-                            warehouseTitle = dataWHSelected?.['text'];
+                        if (dataWH?.['text']) {
+                            warehouseTitle = dataWH?.['text'];
                         }
                     }
 
@@ -351,22 +352,23 @@ $(async function () {
                                         finalRate = data?.['uom']?.['ratio'] / prod?.['uom_data']?.['ratio'];
                                     }
                                 }
+                                dataUOM = prod?.['uom_data'];
                             }
                             let so = data?.['sale_order'];
                             let available = (data?.['available_stock'] - data?.['available_picked']) * finalRate;
                             htmlStock += `<div class="d-flex mb-1 align-items-center">
                                             <span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-project')}: ${so?.['code']}</span>
-                                            <span class="pw-available text-success" data-so="${JSON.stringify(so)}">${available}</span>
+                                            <span class="pw-available text-success" data-so="${JSON.stringify(so).replace(/"/g, "&quot;")}" data-so-id="${so?.['id']}">${available}</span>
                                         </div>`;
                             htmlPick += `<div class="d-flex mb-1 align-items-center">
                                         <div><span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-project')}: ${so?.['code']}</span></div>
-                                        <input class="form-control so-quantity-pick" type="number" value="0">
+                                        <input class="form-control so-quantity-pick" type="number" value="0" data-so="${JSON.stringify(so).replace(/"/g, "&quot;")}" data-so-id="${so?.['id']}">
                                     </div>`;
                         }
                     }
 
-                    let areaTitle = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-warehouse')}:</b><p>${warehouseTitle}</p></div>`;
-                    let areaUOM = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-uom')}:</b><p>${prod?.['uom_data']?.['title']}</p></div>`;
+                    let areaTitle = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-warehouse')}:</b><p class="picking-warehouse" data-warehouse="${JSON.stringify(dataWH).replace(/"/g, "&quot;")}">${warehouseTitle}</p></div>`;
+                    let areaUOM = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-uom')}:</b><p class="picking-uom" data-uom="${JSON.stringify(dataUOM).replace(/"/g, "&quot;")}">${prod?.['uom_data']?.['title']}</p></div>`;
                     let areaStock = `<b class="mr-2">${$elmTrans.attr('data-available')}:</b>${htmlStock}`;
                     let areaView = `<div class="dropdown-divider"></div><div class="text-right">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover">
@@ -420,7 +422,7 @@ $(async function () {
                                          </button>
                                         <div role="menu" class="dropdown-menu w-300p mt-2 dropdown-menu-stock"></div>
                                     </div>
-                                    <p class="mt-2">${row?.['product_data']?.['title']}</p>
+                                    <p class="mt-2 table-row-product" data-id="${row?.['product_data']?.['id']}">${row?.['product_data']?.['title']}</p>
                                 </div>`;
                     }
                 },
@@ -490,22 +492,35 @@ $(async function () {
         });
     }
 
-    function setupSOPW() {
-        let data = [];
-        $table.DataTable().rows().every(function () {
-            let row = this.node();
-            for (let ele of row.querySelectorAll('.so-quantity-pick')) {
-                if (ele.getAttribute('data-so')) {
-                    let dataSO = JSON.parse(ele.getAttribute('data-so'));
-                    data.push({
-                        'sale_order': dataSO?.['id'],
-                        'sale_order_data': dataSO,
-                        'done': parseFloat(ele.value),
-                    })
+    function setupPickingData(product_id) {
+        let picking_data = [];
+        let eleProduct = $table[0].querySelector(`.table-row-product[data-id="${product_id}"]`);
+        if (eleProduct) {
+            let row = eleProduct.closest('tr');
+            let eleWH = row.querySelector('.picking-warehouse');
+            let eleUOM = row.querySelector('.picking-uom');
+            if (eleWH && eleUOM) {
+                if (eleWH.getAttribute('data-warehouse') && eleUOM.getAttribute('data-uom')) {
+                    let dataWH = JSON.parse(eleWH.getAttribute('data-warehouse'));
+                    let dataUOM = JSON.parse(eleUOM.getAttribute('data-uom'));
+                    for (let ele of row.querySelectorAll('.so-quantity-pick')) {
+                        if (ele.getAttribute('data-so')) {
+                            let dataSO = JSON.parse(ele.getAttribute('data-so'));
+                            picking_data.push({
+                                'sale_order': dataSO?.['id'],
+                                'sale_order_data': dataSO,
+                                'warehouse': dataWH?.['id'],
+                                'warehouse_data': dataWH,
+                                'uom': dataUOM?.['id'],
+                                'uom_data': dataUOM,
+                                'done': parseFloat(ele.value),
+                            })
+                        }
+                    }
                 }
             }
-        });
-        return data;
+        }
+        return picking_data;
     }
 
     $table.on('change', '.so-quantity-pick', function () {
@@ -514,6 +529,15 @@ $(async function () {
         let elePick = row.querySelector('.table-row-quantity-pick');
         if (elePick) {
             for (let ele of row.querySelectorAll('.so-quantity-pick')) {
+                let soID = ele.getAttribute('data-so-id');
+                let soValid = row.querySelector(`.pw-available[data-so-id="${soID}"]`);
+                if (soValid) {
+                    if (parseFloat(ele.value) > parseFloat(soValid.innerHTML)) {
+                        $.fn.notifyB({description: $('#trans-factory').attr('data-exceed-available')}, 'failure');
+                        ele.value = 0;
+                        return false;
+                    }
+                }
                 total += parseFloat(ele.value);
             }
             elePick.value = total;
@@ -577,6 +601,9 @@ $(async function () {
                 })
         }
         pickingData.products = prodSub
+        for (let product of pickingData.products) {
+            product['picking_data'] = setupPickingData(product?.['product_id']);
+        }
 
         //call ajax to update picking
         $.fn.callAjax2({

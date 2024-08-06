@@ -20,7 +20,8 @@ from apps.sales.inventory.views import (
     GReItemProductWarehouseSerialListAPI, ProjectProductListAPI, NoneProjectProductListAPI,
     GReItemBorrowListAPI,
     GReItemBorrowDetailAPI,
-    GoodsRegistrationItemSubListAPI, GReItemAvailableQuantityAPI, GoodsRegisBorrowListAPI
+    GoodsRegistrationItemSubListAPI, GReItemAvailableQuantityAPI, GoodsRegisBorrowListAPI, NoneGReItemBorrowListAPI,
+    NoneGReItemBorrowDetailAPI, NoneGReItemAvailableQuantityAPI
 )
 
 urlpatterns = [
@@ -110,5 +111,11 @@ urlpatterns += [
          name='GReItemBorrowDetailAPI'),
     path('gre-item-available-quantity/list/api', GReItemAvailableQuantityAPI.as_view(),
          name='GReItemAvailableQuantityAPI'),
+    path('none-gre-item-borrow/list/api', NoneGReItemBorrowListAPI.as_view(),
+         name='NoneGReItemBorrowListAPI'),
+    path('none-gre-item-borrow/detail/api/<str:pk>', NoneGReItemBorrowDetailAPI.as_view(),
+         name='NoneGReItemBorrowDetailAPI'),
+    path('none-gre-item-available-quantity/list/api', NoneGReItemAvailableQuantityAPI.as_view(),
+         name='NoneGReItemAvailableQuantityAPI'),
     path('goods-regis-borrow/api/list', GoodsRegisBorrowListAPI.as_view(), name='GoodsRegisBorrowListAPI'),
 ]

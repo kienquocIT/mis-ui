@@ -21,13 +21,16 @@
 {% block pageAction %}{% endblock %}
 {% block pageContent %}
     <script id="script-url"
-            data-url-gre-item-available-quantity="{% url 'GReItemAvailableQuantityAPI' %}"
             data-url-gre-item-sub-list="{% url 'GoodsRegistrationItemSubListAPI' %}"
+            data-url-gre-item-available-quantity="{% url 'GReItemAvailableQuantityAPI' %}"
             data-url-gre-item-borrow-list="{% url 'GReItemBorrowListAPI' %}"
+            data-url-none-gre-item-available-quantity="{% url 'NoneGReItemAvailableQuantityAPI' %}"
+            data-url-none-gre-item-borrow-list="{% url 'NoneGReItemBorrowListAPI' %}"
     ></script>
     <script id="script-trans"
             data-trans-change="{% trans 'Change' %}"
             data-trans-save="{% trans 'Save' %}"
+            data-trans-general-stock="{% trans 'General stock' %}"
     ></script>
     <form id="frm_goods_registration_detail" data-url="{% url 'GoodsRegistrationDetailAPI' pk=pk %}">
         {% csrf_token %}
@@ -226,24 +229,37 @@
                                 </div>
                             </div>
                             <div id="for-general-stock" class="row mt-3">
-                                <div class="row mb-2">
-                                    <label for="available-amount" class="col-6 col-lg-2 col-form-label">{% trans 'Available' %}</label>
-                                    <div class="col-3 col-lg-5">
-                                        <input readonly class="form-control" id="available-amount">
+                                <form id="frm_borrow_from_stock"
+                                      data-method="POST"
+                                      data-url-redirect="{% url 'GoodsRegistrationDetail' pk=pk %}"
+                                      data-url="{% url 'NoneGReItemBorrowListAPI' %}"
+                                >
+                                {% csrf_token %}
+                                    <div class="row mb-2">
+                                        <label for="warehouse-borrow" class="required col-6 col-lg-2 col-form-label">{% trans 'Warehouse' %}</label>
+                                        <div class="col-6 col-lg-10">
+                                            <select class="form-select select2" id="warehouse-borrow" data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
+                                        </div>
                                     </div>
-                                    <div class="col-3 col-lg-5">
-                                        <select class="form-select select2" id="uom-stock"></select>
+                                    <div class="row mb-2">
+                                        <label for="available-amount" class="col-6 col-lg-2 col-form-label">{% trans 'Available' %}</label>
+                                        <div class="col-3 col-lg-5">
+                                            <input readonly class="form-control" id="available-amount">
+                                        </div>
+                                        <div class="col-3 col-lg-5">
+                                            <select class="form-select select2" id="uom-stock"></select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <label for="reserve-amount" class="col-6 col-lg-2 col-form-label">{% trans 'Reserve' %}</label>
-                                    <div class="col-3 col-lg-5">
-                                        <input type="number" min="0" class="form-control" id="reserve-amount">
+                                    <div class="row mb-2">
+                                        <label for="reserve-amount" class="col-6 col-lg-2 col-form-label">{% trans 'Reserve' %}</label>
+                                        <div class="col-3 col-lg-5">
+                                            <input type="number" min="0" class="form-control" id="reserve-amount">
+                                        </div>
+                                        <div class="col-3 col-lg-5">
+                                            <button type="submit" id="reserve-stock" form="frm_borrow_from_stock" class="btn btn-gradient-primary">{% trans 'Reserve' %}</button>
+                                        </div>
                                     </div>
-                                    <div class="col-3 col-lg-5">
-                                        <button type="button" id="reserve-stock" class="btn btn-gradient-primary">{% trans 'Reserve' %}</button>
-                                    </div>
-                                </div>
+                                </form>
                             </div>
                             <div hidden id="for-other-sale-order" class="row mt-3">
                                 <form id="frm_borrow_from_other"
@@ -255,7 +271,7 @@
                                     <div class="row mb-2">
                                         <label for="other-so" class="required col-6 col-lg-2 col-form-label">{% trans 'Project' %}</label>
                                         <div class="col-6 col-lg-10">
-                                            <select class="form-select" id="other-so" data-url="{% url 'SaleOrderListAPI' %}" data-method="GET"></select>
+                                            <select class="form-select select2" id="other-so" data-url="{% url 'SaleOrderListAPI' %}" data-method="GET"></select>
                                         </div>
                                     </div>
                                     <div class="row mb-2">
@@ -264,7 +280,7 @@
                                             <input readonly class="form-control" id="so-available-amount">
                                         </div>
                                         <div class="col-6 col-lg-5">
-                                            <select class="form-select" id="uom-so"></select>
+                                            <select class="form-select select2" id="uom-so"></select>
                                         </div>
                                     </div>
                                     <div class="row mb-2">

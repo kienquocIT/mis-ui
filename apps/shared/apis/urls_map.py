@@ -608,6 +608,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GRE_ITEM_BORROW_LIST = StringUrl('inventory/gre-item-borrow/list')
     GRE_ITEM_BORROW_DETAIL = StringUrl('inventory/gre-item-borrow/{pk}')
     GRE_ITEM_AVAILABLE_QUANTITY = StringUrl('inventory/gre-item-available-quantity')
+    NONE_GRE_ITEM_BORROW_LIST = StringUrl('inventory/none-gre-item-borrow/list')
+    NONE_GRE_ITEM_BORROW_DETAIL = StringUrl('inventory/none-gre-item-borrow/{pk}')
+    NONE_GRE_ITEM_AVAILABLE_QUANTITY = StringUrl('inventory/none-gre-item-available-quantity')
     GOODS_REGISTRATION_BORROW_LIST = StringUrl('inventory/goods-regis-borrow/list')
 
     INVOICE_SIGN_LIST = StringUrl('ar-invoice/sign/list')

@@ -238,7 +238,10 @@ $(document).on("click", '.this_registered_detail', function () {
 // general stock
 const available_amount = $('#available-amount')
 const uom_stock = $('#uom-stock')
-const reserve_amount = $('reserve-amount')
+const reserve_amount = $('#reserve-amount')
+const warehouse_borrow = $('#warehouse-borrow')
+const frm_borrow_from_stock = $('#frm_borrow_from_stock')
+const frm_borrow_from_stock_row = $('#frm_borrow_from_stock_row')
 // other project
 const other_so = $('#other-so')
 const so_available_amount = $('#so-available-amount')
@@ -251,20 +254,47 @@ let current_gre_item_id = null
 let borrow_row = null
 
 class GoodsRegistrationBorrowHandle {
-    combinesData(frmEle, row=null, for_update=false) {
+    combinesDataStock(frmEle, row=null, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle))
 
         if (row) {
             let row_save_btn = row.find('.so-available-save')
             frm.dataForm['sale_order_destination_id'] = row_save_btn.attr('data-sale-order-destination-id')
-            frm.dataForm['goods_registration_source'] = $.fn.getPkDetail();
+            frm.dataForm['gre_source'] = $.fn.getPkDetail();
+            frm.dataForm['gre_item_source'] = current_gre_item_id
+            frm.dataForm['quantity'] = parseFloat(row.find('.so-available-input').val()) - parseFloat(row.find('.so-available-input').attr('data-raw-value'))
+            frm.dataForm['uom'] = row_save_btn.attr('data-uom')
+        }
+        else {
+            frm.dataForm['gre_source'] = $.fn.getPkDetail();
+            frm.dataForm['gre_item_source'] = current_gre_item_id
+            frm.dataForm['quantity'] = reserve_amount.val()
+            frm.dataForm['uom'] = uom_stock.val()
+            frm.dataForm['warehouse_mapped'] = warehouse_borrow.val()
+        }
+
+        return {
+            url: frmEle.attr('data-url'),
+            method: 'POST',
+            data: frm.dataForm,
+            urlRedirect: frm.dataUrlRedirect,
+        };
+    }
+
+    combinesDataProject(frmEle, row=null, for_update=false) {
+        let frm = new SetupFormSubmit($(frmEle))
+
+        if (row) {
+            let row_save_btn = row.find('.so-available-save')
+            frm.dataForm['sale_order_destination_id'] = row_save_btn.attr('data-sale-order-destination-id')
+            frm.dataForm['gre_source'] = $.fn.getPkDetail();
             frm.dataForm['gre_item_source'] = current_gre_item_id
             frm.dataForm['quantity'] = parseFloat(row.find('.so-available-input').val()) - parseFloat(row.find('.so-available-input').attr('data-raw-value'))
             frm.dataForm['uom'] = row_save_btn.attr('data-uom')
         }
         else {
             frm.dataForm['sale_order_destination_id'] = other_so.val()
-            frm.dataForm['goods_registration_source'] = $.fn.getPkDetail();
+            frm.dataForm['gre_source'] = $.fn.getPkDetail();
             frm.dataForm['gre_item_source'] = current_gre_item_id
             frm.dataForm['quantity'] = so_reserve_amount.val()
             frm.dataForm['uom'] = uom_so.val()
@@ -280,92 +310,134 @@ class GoodsRegistrationBorrowHandle {
 }
 
 function loadStockQuantityOtherDataTableBorrow() {
-    let dtb = $('#tab_stock_quantity_other_datatable');
-    dtb.DataTable().clear().destroy()
-    dtb.DataTableDefault({
-        dom: '',
-        reloadCurrency: true,
-        paging: false,
-        ajax: {
-            url: script_url.attr('data-url-gre-item-borrow-list') +
-                `?gre_source_id=${$.fn.getPkDetail()}` +
-                `&gre_item_source_id=${current_gre_item_id}`
-            ,
-            type: "GET",
-            dataSrc: function (resp) {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    console.log(resp.data['gre_item_borrow_list'])
-                    return resp.data['gre_item_borrow_list'] ? resp.data['gre_item_borrow_list'] : [];
-                }
-                return [];
-            },
-        },
-        columns: [
-            {
-                className: 'wrap-text w-20 text-center',
-                render: (data, type, row) => {
-                    return `<span class="text-primary fw-bold"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order']?.['code']}</span>`
-                }
-            },
-            {
-                className: 'wrap-text w-10 text-center',
-                render: (data, type, row) => {
-                    return `<span>${row?.['borrow_uom']?.['title']}</span>`;
-                }
-            },
-            {
-                className: 'wrap-text w-20 text-center',
-                render: (data, type, row) => {
-                    return `<span>${row?.['quantity']}</span>`;
-                }
-            },
-            {
-                className: 'wrap-text w-20 text-center',
-                render: (data, type, row) => {
-                    return `<span>${row?.['quantity'] - row?.['available']}</span>`;
-                }
-            },
-            {
-                className: 'wrap-text w-20 text-center',
-                render: (data, type, row) => {
-                    return `<input type="number" min="0" readonly
-                                   class="form-control text-center so-available-input"
-                                   data-raw-value="${row?.['available']}"
-                                   value="${row?.['available']}">`;
-                }
-            },
-            {
-                className: 'wrap-text w-10 text-center',
-                render: (data, type, row) => {
-                    return `
-                        <button type="button" class="btn btn-soft-danger btn-xs so-available-change">${script_trans.attr('data-trans-change')}</button>
-                        <button hidden
-                                type="submit"
-                                form="frm_borrow_from_other_row"
-                                class="btn btn-soft-primary btn-xs so-available-save"
-                                data-sale-order-destination-id="${row?.['sale_order']?.['id']}"
-                                data-uom="${row?.['borrow_uom']?.['id']}"
-                        >
-                            ${script_trans.attr('data-trans-save')}
-                        </button>
-                    `;
-                }
+    let dataParam1 = {}
+    let for_stock_borrow = $.fn.callAjax2({
+        url: script_url.attr('data-url-none-gre-item-borrow-list') +
+            `?gre_source_id=${$.fn.getPkDetail()}` +
+            `&gre_item_source_id=${current_gre_item_id}`,
+        data: dataParam1,
+        method: 'GET'
+    }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && typeof data === 'object' && data.hasOwnProperty('none_gre_item_borrow_list')) {
+                return data?.['none_gre_item_borrow_list'];
             }
-        ]
-    });
+            return {};
+        },
+        (errs) => {
+            console.log(errs);
+        }
+    )
+
+    let dataParam2 = {}
+    let for_project_borrow = $.fn.callAjax2({
+        url: script_url.attr('data-url-gre-item-borrow-list') +
+            `?gre_source_id=${$.fn.getPkDetail()}` +
+            `&gre_item_source_id=${current_gre_item_id}`,
+        data: dataParam2,
+        method: 'GET'
+    }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && typeof data === 'object' && data.hasOwnProperty('gre_item_borrow_list')) {
+                return data?.['gre_item_borrow_list'];
+            }
+            return {};
+        },
+        (errs) => {
+            console.log(errs);
+        }
+    )
+
+    Promise.all([for_stock_borrow, for_project_borrow]).then(
+        (results) => {
+            let data_table = results[0].concat(results[1])
+            console.log(data_table)
+            let dtb = $('#tab_stock_quantity_other_datatable');
+            dtb.DataTable().clear().destroy()
+            dtb.DataTableDefault({
+                dom: '',
+                paging: false,
+                data: data_table,
+                columns: [
+                    {
+                        className: 'wrap-text w-20 text-center',
+                        render: (data, type, row) => {
+                            return row?.['sale_order']?.['code']? `<span class="text-primary fw-bold"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order']?.['code']}</span>` : `<span class="text-primary fw-bold">${script_trans.attr('data-trans-general-stock')}</span>`
+                        }
+                    },
+                    {
+                        className: 'wrap-text w-10 text-center',
+                        render: (data, type, row) => {
+                            return `<span>${row?.['borrow_uom']?.['title']}</span>`;
+                        }
+                    },
+                    {
+                        className: 'wrap-text w-20 text-center',
+                        render: (data, type, row) => {
+                            return `<span>${row?.['quantity']}</span>`;
+                        }
+                    },
+                    {
+                        className: 'wrap-text w-20 text-center',
+                        render: (data, type, row) => {
+                            return `<span>${row?.['quantity'] - row?.['available']}</span>`;
+                        }
+                    },
+                    {
+                        className: 'wrap-text w-20 text-center',
+                        render: (data, type, row) => {
+                            return `<input type="number" min="0" readonly
+                                           class="form-control text-center so-available-input"
+                                           data-raw-value="${row?.['available']}"
+                                           value="${row?.['available']}">`;
+                        }
+                    },
+                    {
+                        className: 'wrap-text w-10 text-center',
+                        render: (data, type, row) => {
+                            return `
+                                <button type="button" class="btn btn-soft-danger btn-xs so-available-change">${script_trans.attr('data-trans-change')}</button>
+                                <button hidden
+                                        type="submit"
+                                        form="frm_borrow_from_other_row"
+                                        class="btn btn-soft-primary btn-xs so-available-save"
+                                        data-sale-order-destination-id="${row?.['sale_order']?.['id']}"
+                                        data-uom="${row?.['borrow_uom']?.['id']}"
+                                >
+                                    ${script_trans.attr('data-trans-save')}
+                                </button>
+                            `;
+                        }
+                    }
+                ]
+            });
+        })
 }
 
 $(document).on("click", '.out_registered_detail', function () {
     current_gre_item_id = $(this).attr('data-gre-item-id')
+
+    warehouse_borrow.empty()
     available_amount.val('')
     uom_stock.empty()
     reserve_amount.val('')
+
     other_so.empty()
     so_available_amount.val('')
     uom_so.empty()
     so_reserve_amount.val('')
+
     loadStockQuantityOtherDataTableBorrow()
+
+    LoadWarehouseBorrow(
+        null,
+        $(this).attr('data-product-id'),
+        JSON.parse($(this).find('.string_uom').text()),
+        JSON.parse($(this).find('.string_base_uom').text())
+    )
+
     LoadProjectBorrow(
         null,
         $(this).attr('data-product-id'),
@@ -392,7 +464,42 @@ $('input[name="regis_from"]').on('change', function () {
     $('#for-other-sale-order').prop('hidden', is_general_stock)
 })
 
-function CallProjectProductGeneralBorrow(sale_order_id, product_id, so_uom, base_uom) {
+function CallWarehouseBorrowQuantity(warehouse_id, product_id, so_uom, base_uom) {
+    let dataParam = {}
+    dataParam['product_id'] = product_id
+    dataParam['warehouse_id'] = warehouse_id
+    let ajax = $.fn.callAjax2({
+        url: script_url.attr('data-url-none-gre-item-available-quantity'),
+        data: dataParam,
+        method: 'GET'
+    }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && typeof data === 'object' && data.hasOwnProperty('none_gre_item_available_quantity')) {
+                return data?.['none_gre_item_available_quantity'];
+            }
+            return {};
+        },
+        (errs) => {
+            console.log(errs);
+        }
+    )
+
+    Promise.all([ajax]).then(
+        (results) => {
+            let quantity_can_be_reserve = 0 // so_uom
+            let quantity_can_be_reserve_base = 0 // base_uom
+            for (const item of results[0]) {
+                quantity_can_be_reserve += item?.['this_available']
+                quantity_can_be_reserve_base += item?.['this_available_base']
+            }
+            available_amount.val(quantity_can_be_reserve)
+            available_amount.attr('data-base-quantity', quantity_can_be_reserve_base)
+            LoadUOMStockBorrow(so_uom[0], base_uom[0])
+        })
+}
+
+function CallProjectBorrowQuantity(sale_order_id, product_id, so_uom, base_uom) {
     let dataParam = {}
     dataParam['product_id'] = product_id
     dataParam['so_item__sale_order_id'] = sale_order_id
@@ -423,11 +530,19 @@ function CallProjectProductGeneralBorrow(sale_order_id, product_id, so_uom, base
             }
             so_available_amount.val(quantity_can_be_reserve)
             so_available_amount.attr('data-base-quantity', quantity_can_be_reserve_base)
-            LoadUOMStockBorrow(so_uom[0], base_uom[0])
+            LoadUOMProjectBorrow(so_uom[0], base_uom[0])
         })
 }
 
 function LoadUOMStockBorrow(so_uom, base_uom) {
+    uom_stock.html('')
+    uom_stock.append(`
+        <option selected data-ratio="${so_uom?.['ratio']}" value="${so_uom?.['id']}">${so_uom?.['title']}</option>
+        <option data-ratio="${base_uom?.['ratio']}" value="${base_uom?.['id']}">${base_uom?.['title']}</option>
+    `)
+}
+
+function LoadUOMProjectBorrow(so_uom, base_uom) {
     uom_so.html('')
     uom_so.append(`
         <option selected data-ratio="${so_uom?.['ratio']}" value="${so_uom?.['id']}">${so_uom?.['title']}</option>
@@ -442,6 +557,25 @@ uom_so.on('change', function () {
         so_available_amount.val(base_quantity / ratio)
     }
 })
+
+function LoadWarehouseBorrow(data, product_id, so_uom, base_uom) {
+    warehouse_borrow.initSelect2({
+        ajax: {
+            url: warehouse_borrow.attr('data-url') + `?interact=1`,
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            return resp.data[keyResp];
+        },
+        data: (data ? data : null),
+        keyResp: 'warehouse_list',
+        keyId: 'id',
+        keyText: 'title',
+    }).on('change', function () {
+        let warehouse_id = SelectDDControl.get_data_from_idx(warehouse_borrow, warehouse_borrow.val())
+        CallWarehouseBorrowQuantity(warehouse_id?.['id'], product_id, so_uom, base_uom)
+    })
+}
 
 function LoadProjectBorrow(data, product_id, so_uom, base_uom) {
     other_so.initSelect2({
@@ -470,7 +604,7 @@ function LoadProjectBorrow(data, product_id, so_uom, base_uom) {
         keyText: 'title',
     }).on('change', function () {
         let sale_order_id = SelectDDControl.get_data_from_idx(other_so, other_so.val())
-        CallProjectProductGeneralBorrow(sale_order_id?.['id'], product_id, so_uom, base_uom)
+        CallProjectBorrowQuantity(sale_order_id?.['id'], product_id, so_uom, base_uom)
     })
 }
 
@@ -478,9 +612,41 @@ $(document).on("click", '.so-available-change', function () {
     borrow_row = $(this).closest('tr')
 })
 
+frm_borrow_from_stock.submit(function (event) {
+    event.preventDefault();
+    let combinesData = new GoodsRegistrationBorrowHandle().combinesDataStock($(this));
+    console.log(combinesData)
+    if (combinesData) {
+        WindowControl.showLoading();
+        $.fn.callAjax2(combinesData)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        setTimeout(() => {
+                            window.location.replace($(this).attr('data-url-redirect'));
+                            location.reload.bind(location);
+                        }, 1000);
+                    }
+                },
+                (errs) => {
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+    }
+})
+
 frm_borrow_from_other.submit(function (event) {
     event.preventDefault();
-    let combinesData = new GoodsRegistrationBorrowHandle().combinesData($(this));
+    let combinesData = new GoodsRegistrationBorrowHandle().combinesDataProject($(this));
+    console.log(combinesData)
     if (combinesData) {
         WindowControl.showLoading();
         $.fn.callAjax2(combinesData)
@@ -510,7 +676,7 @@ frm_borrow_from_other.submit(function (event) {
 
 frm_borrow_from_other_row.submit(function (event) {
     event.preventDefault();
-    let combinesData = new GoodsRegistrationBorrowHandle().combinesData($(this), borrow_row);
+    let combinesData = new GoodsRegistrationBorrowHandle().combinesDataProject($(this), borrow_row);
     if (combinesData) {
         WindowControl.showLoading();
         $.fn.callAjax2(combinesData)

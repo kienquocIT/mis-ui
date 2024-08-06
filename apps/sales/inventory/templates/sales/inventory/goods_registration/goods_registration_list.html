@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div class="row mt-60">
+    <div class="row mt-60" hidden>
         <div class="col-4">
             <div class="form-group">
                 <label>{% trans 'Sale order' %}</label>
@@ -33,18 +33,11 @@
                 <label>{% trans 'Product' %}</label>
                 <select class="form-select mb-1" id="product_id_box" data-url="{% url 'ProductListAPI' %}"></select>
             </div>
-            <div class="form-group">
-                <label>{% trans 'Warehouse' %}</label>
-                <select class="form-select mb-1" id="warehouse_id_box" data-url="{% url 'WareHouseListAPI' %}"></select>
-            </div>
             <button type="button"
                     class="btn btn-light w-30"
                     id="call-btn"
-                    data-url-gre-item-prd-wh="{% url 'GReItemProductWarehouseListAPI' %}"
-                    data-url-gre-item-prd-wh-lot="{% url 'GReItemProductWarehouseLotListAPI' %}"
-                    data-url-gre-item-prd-wh-sn="{% url 'GReItemProductWarehouseSerialListAPI' %}"
-                    data-url-gre-borrow="{% url 'GReItemBorrowListAPI' %}"
-            >Call
+                    data-url="{% url 'GoodsRegisBorrowListAPI' %}"
+            >Call (in console)
             </button>
         </div>
     </div>

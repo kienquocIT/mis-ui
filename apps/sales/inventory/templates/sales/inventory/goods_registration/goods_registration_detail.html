@@ -30,7 +30,7 @@
     <script id="script-trans"
             data-trans-change="{% trans 'Change' %}"
             data-trans-save="{% trans 'Save' %}"
-            data-trans-general-stock="{% trans 'General stock' %}"
+            data-trans-from-warehouse="{% trans 'From warehouse' %}"
     ></script>
     <form id="frm_goods_registration_detail" data-url="{% url 'GoodsRegistrationDetailAPI' pk=pk %}">
         {% csrf_token %}
@@ -174,10 +174,11 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 60vh">
-                            <form id="frm_borrow_from_other_row"
-                                      data-method="POST"
-                                      data-url-redirect="{% url 'GoodsRegistrationDetail' pk=pk %}"
-                                      data-url="{% url 'GReItemBorrowListAPI' %}"
+                            <form id="frm_borrow_row"
+                                  data-method="POST"
+                                  data-url-redirect="{% url 'GoodsRegistrationDetail' pk=pk %}"
+                                  data-url-project="{% url 'GReItemBorrowListAPI' %}"
+                                  data-url-stock="{% url 'NoneGReItemBorrowListAPI' %}"
                                 >
                                 {% csrf_token %}
                                 <table id="tab_stock_quantity_other_datatable" class="table nowrap w-100">
@@ -232,7 +233,7 @@
                                 <form id="frm_borrow_from_stock"
                                       data-method="POST"
                                       data-url-redirect="{% url 'GoodsRegistrationDetail' pk=pk %}"
-                                      data-url="{% url 'NoneGReItemBorrowListAPI' %}"
+                                      data-url-stock="{% url 'NoneGReItemBorrowListAPI' %}"
                                 >
                                 {% csrf_token %}
                                     <div class="row mb-2">
@@ -265,7 +266,7 @@
                                 <form id="frm_borrow_from_other"
                                       data-method="POST"
                                       data-url-redirect="{% url 'GoodsRegistrationDetail' pk=pk %}"
-                                      data-url="{% url 'GReItemBorrowListAPI' %}"
+                                      data-url-project="{% url 'GReItemBorrowListAPI' %}"
                                 >
                                 {% csrf_token %}
                                     <div class="row mb-2">

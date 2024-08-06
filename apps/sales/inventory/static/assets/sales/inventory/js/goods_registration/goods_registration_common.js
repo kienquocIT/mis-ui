@@ -235,35 +235,34 @@ $(document).on("click", '.this_registered_detail', function () {
 
 // js cho mượn hàng (những hàm cho mượn hàng sẽ có hậu tố Borrow)
 
+const frm_borrow_row = $('#frm_borrow_row')
 // general stock
 const available_amount = $('#available-amount')
 const uom_stock = $('#uom-stock')
 const reserve_amount = $('#reserve-amount')
 const warehouse_borrow = $('#warehouse-borrow')
 const frm_borrow_from_stock = $('#frm_borrow_from_stock')
-const frm_borrow_from_stock_row = $('#frm_borrow_from_stock_row')
 // other project
 const other_so = $('#other-so')
 const so_available_amount = $('#so-available-amount')
 const uom_so = $('#uom-so')
 const so_reserve_amount = $('#so-reserve-amount')
 const frm_borrow_from_other = $('#frm_borrow_from_other')
-const frm_borrow_from_other_row = $('#frm_borrow_from_other_row')
 
 let current_gre_item_id = null
 let borrow_row = null
 
 class GoodsRegistrationBorrowHandle {
-    combinesDataStock(frmEle, row=null, for_update=false) {
+    combinesDataStock(frmEle, row=null) {
         let frm = new SetupFormSubmit($(frmEle))
 
         if (row) {
             let row_save_btn = row.find('.so-available-save')
-            frm.dataForm['sale_order_destination_id'] = row_save_btn.attr('data-sale-order-destination-id')
             frm.dataForm['gre_source'] = $.fn.getPkDetail();
             frm.dataForm['gre_item_source'] = current_gre_item_id
             frm.dataForm['quantity'] = parseFloat(row.find('.so-available-input').val()) - parseFloat(row.find('.so-available-input').attr('data-raw-value'))
             frm.dataForm['uom'] = row_save_btn.attr('data-uom')
+            frm.dataForm['warehouse_mapped'] = row_save_btn.attr('data-warehouse')
         }
         else {
             frm.dataForm['gre_source'] = $.fn.getPkDetail();
@@ -274,14 +273,14 @@ class GoodsRegistrationBorrowHandle {
         }
 
         return {
-            url: frmEle.attr('data-url'),
+            url: frmEle.attr('data-url-stock'),
             method: 'POST',
             data: frm.dataForm,
             urlRedirect: frm.dataUrlRedirect,
         };
     }
 
-    combinesDataProject(frmEle, row=null, for_update=false) {
+    combinesDataProject(frmEle, row=null) {
         let frm = new SetupFormSubmit($(frmEle))
 
         if (row) {
@@ -301,7 +300,7 @@ class GoodsRegistrationBorrowHandle {
         }
 
         return {
-            url: frmEle.attr('data-url'),
+            url: frmEle.attr('data-url-project'),
             method: 'POST',
             data: frm.dataForm,
             urlRedirect: frm.dataUrlRedirect,
@@ -364,7 +363,12 @@ function loadStockQuantityOtherDataTableBorrow() {
                     {
                         className: 'wrap-text w-20 text-center',
                         render: (data, type, row) => {
-                            return row?.['sale_order']?.['code']? `<span class="text-primary fw-bold"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order']?.['code']}</span>` : `<span class="text-primary fw-bold">${script_trans.attr('data-trans-general-stock')}</span>`
+                            return row?.['sale_order']?.['code']? `
+                                <span class="text-primary fw-bold"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order']?.['code']}</span>
+                            ` : `
+                                <span class="text-primary fw-bold">${script_trans.attr('data-trans-from-warehouse')}</span>&nbsp;
+                                <span class="badge badge-soft-primary">${row?.['warehouse_mapped']?.['code']}</span>
+                            `
                         }
                     },
                     {
@@ -401,10 +405,11 @@ function loadStockQuantityOtherDataTableBorrow() {
                                 <button type="button" class="btn btn-soft-danger btn-xs so-available-change">${script_trans.attr('data-trans-change')}</button>
                                 <button hidden
                                         type="submit"
-                                        form="frm_borrow_from_other_row"
+                                        form="frm_borrow_row"
                                         class="btn btn-soft-primary btn-xs so-available-save"
                                         data-sale-order-destination-id="${row?.['sale_order']?.['id']}"
                                         data-uom="${row?.['borrow_uom']?.['id']}"
+                                        data-warehouse="${row?.['warehouse_mapped']?.['id']}"
                                 >
                                     ${script_trans.attr('data-trans-save')}
                                 </button>
@@ -674,32 +679,62 @@ frm_borrow_from_other.submit(function (event) {
     }
 })
 
-frm_borrow_from_other_row.submit(function (event) {
+frm_borrow_row.submit(function (event) {
     event.preventDefault();
-    let combinesData = new GoodsRegistrationBorrowHandle().combinesDataProject($(this), borrow_row);
-    if (combinesData) {
-        WindowControl.showLoading();
-        $.fn.callAjax2(combinesData)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        setTimeout(() => {
-                            window.location.replace($(this).attr('data-url-redirect'));
-                            location.reload.bind(location);
-                        }, 1000);
+    if (borrow_row.attr('data-sale-order-destination-id') === undefined) {
+        let combinesData = new GoodsRegistrationBorrowHandle().combinesDataStock($(this), borrow_row);
+        if (combinesData) {
+            WindowControl.showLoading();
+            $.fn.callAjax2(combinesData)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            setTimeout(() => {
+                                window.location.replace($(this).attr('data-url-redirect'));
+                                location.reload.bind(location);
+                            }, 1000);
+                        }
+                    },
+                    (errs) => {
+                        setTimeout(
+                            () => {
+                                WindowControl.hideLoading();
+                            },
+                            1000
+                        )
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
-                },
-                (errs) => {
-                    setTimeout(
-                        () => {
-                            WindowControl.hideLoading();
-                        },
-                        1000
-                    )
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
-                }
-            )
+                )
+        }
+    }
+    else {
+        let combinesData = new GoodsRegistrationBorrowHandle().combinesDataProject($(this), borrow_row);
+        if (combinesData) {
+            WindowControl.showLoading();
+            $.fn.callAjax2(combinesData)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            setTimeout(() => {
+                                window.location.replace($(this).attr('data-url-redirect'));
+                                location.reload.bind(location);
+                            }, 1000);
+                        }
+                    },
+                    (errs) => {
+                        setTimeout(
+                            () => {
+                                WindowControl.hideLoading();
+                            },
+                            1000
+                        )
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+        }
     }
 })

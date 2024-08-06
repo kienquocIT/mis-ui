@@ -31,7 +31,7 @@ $(document).ready(function () {
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
@@ -43,15 +43,22 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'sale_person',
-                        className: 'wrap-text w-25',
+                        data: 'sale_order',
+                        className: 'wrap-text w-20',
                         render: (data, type, row) => {
-                            return `${row?.['sale_order']?.['sale_person']?.['fullname']}`
+                            return `<span class="badge badge-secondary">${row?.['sale_order']?.['code']}</span>&nbsp;</span><span>${row?.['sale_order']?.['title']}</span>`
+                        }
+                    },
+                    {
+                        data: 'sale_person',
+                        className: 'wrap-text w-15',
+                        render: (data, type, row) => {
+                            return `<span class="text-blue">${row?.['sale_order']?.['sale_person']?.['fullname']}</span>`
                         }
                     },
                     {
                         data: 'date_created',
-                        className: 'wrap-text w-25',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             return `${moment(row.date_created.split(' ')[0]).format('DD/MM/YYYY')}`
                         }

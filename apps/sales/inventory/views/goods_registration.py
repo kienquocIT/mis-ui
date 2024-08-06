@@ -83,36 +83,36 @@ class GoodsRegistrationItemSubListAPI(APIView):
 
 
 # lấy hàng đăng kí theo dự án
-class GoodsRegistrationGeneralListAPI(APIView):
+class GReItemProductWarehouseListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_PRD_WH).get(params)
-        return resp.auto_return(key_success='good_registration_general')
+        resp = ServerAPI(user=request.user, url=ApiURL.GRE_ITEM_PRD_WH).get(params)
+        return resp.auto_return(key_success='gre_item_prd_wh_list')
 
 
-class GoodsRegistrationLotListAPI(APIView):
+class GReItemProductWarehouseLotListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_PRD_WH_LOT).get(params)
-        return resp.auto_return(key_success='good_registration_lot')
+        resp = ServerAPI(user=request.user, url=ApiURL.GRE_ITEM_PRD_WH_LOT).get(params)
+        return resp.auto_return(key_success='gre_item_prd_wh_lot_list')
 
 
-class GoodsRegistrationSerialListAPI(APIView):
+class GReItemProductWarehouseSerialListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_PRD_WH_SN).get(params)
+        resp = ServerAPI(user=request.user, url=ApiURL.GRE_ITEM_PRD_WH_SN).get(params)
         return resp.auto_return(key_success='good_registration_serial')
 
 
@@ -140,36 +140,36 @@ class NoneProjectProductListAPI(APIView):
 
 
 # mượn hàng giữa các dự án
-class GoodsRegistrationItemBorrowListAPI(APIView):
+class GReItemBorrowListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_ITEM_BORROW_LIST).get(params)
-        return resp.auto_return(key_success='goods_registration_borrow_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.GRE_ITEM_BORROW_LIST).get(params)
+        return resp.auto_return(key_success='gre_item_borrow_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_ITEM_BORROW_LIST).post(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.GRE_ITEM_BORROW_LIST).post(request.data)
         if resp.state:
-            resp.result['message'] = SaleMsg.GOODS_REGISTRATION_BORROW_CREATE
+            resp.result['message'] = SaleMsg.GRE_ITEM_BORROW_CREATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
 
-class GoodsRegistrationItemBorrowDetailAPI(APIView):
+class GReItemBorrowDetailAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_ITEM_BORROW_DETAIL.fill_key(pk=pk)).get()
-        return resp.auto_return(key_success='good_registration_borrow_detail')
+        resp = ServerAPI(user=request.user, url=ApiURL.GRE_ITEM_BORROW_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='gre_item_borrow_detail')
 
     @mask_view(
         auth_require=True,
@@ -177,22 +177,78 @@ class GoodsRegistrationItemBorrowDetailAPI(APIView):
     )
     def put(self, request, pk, *arg, **kwargs):
         data = request.data
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_ITEM_BORROW_DETAIL.fill_key(pk=pk)).put(data)
+        resp = ServerAPI(user=request.user, url=ApiURL.GRE_ITEM_BORROW_DETAIL.fill_key(pk=pk)).put(data)
         if resp.state:
-            resp.result['message'] = SaleMsg.GOODS_REGISTRATION_BORROW_UPDATE
+            resp.result['message'] = SaleMsg.GRE_ITEM_BORROW_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
 
-class GoodsRegistrationItemAvailableQuantityAPI(APIView):
+class GReItemAvailableQuantityAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_REGISTRATION_ITEM_AVAILABLE_QUANTITY).get(params)
-        return resp.auto_return(key_success='goods_registration_item_available_quantity')
+        resp = ServerAPI(user=request.user, url=ApiURL.GRE_ITEM_AVAILABLE_QUANTITY).get(params)
+        return resp.auto_return(key_success='gre_item_available_quantity')
+
+
+# mượn hàng từ kho chung
+class NoneGReItemBorrowListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.NONE_GRE_ITEM_BORROW_LIST).get(params)
+        return resp.auto_return(key_success='none_gre_item_borrow_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.NONE_GRE_ITEM_BORROW_LIST).post(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.GRE_ITEM_BORROW_CREATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class NoneGReItemBorrowDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.NONE_GRE_ITEM_BORROW_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='none_gre_item_borrow_detail')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *arg, **kwargs):
+        data = request.data
+        resp = ServerAPI(user=request.user, url=ApiURL.NONE_GRE_ITEM_BORROW_DETAIL.fill_key(pk=pk)).put(data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.GRE_ITEM_BORROW_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class NoneGReItemAvailableQuantityAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.NONE_GRE_ITEM_AVAILABLE_QUANTITY).get(params)
+        return resp.auto_return(key_success='none_gre_item_available_quantity')
 
 
 class GoodsRegisBorrowListAPI(APIView):

@@ -67,7 +67,7 @@ function LoadLineDetailTable(data) {
                         <span class="icon"><i class="bi bi-three-dots"></i></span>
                     </button>
                 </td>
-                <td class="border-1 text-primary fw-bold">0</td>
+                <td class="border-1 text-primary fw-bold">${out_delivered}</td>
                 <td class="border-1 text-primary fw-bold">${out_available}</td>
             </tr>
         `)

@@ -49,6 +49,7 @@ $(document).ready(function () {
                 WFRTControl.setWFRuntimeID(data['workflow_runtime_id']);
                 $x.fn.renderCodeBreadcrumb(data);
                 let project = data
+                $('#data_form').data('form_data', data)
                 if ($form.hasClass('baseline_version')){
                     project = data.project_data
                     $form.data('baseline_data', data)
@@ -76,6 +77,12 @@ $(document).ready(function () {
                 Task_in_project.init(project)
                 ProjectWorkExpenseHandle.init(work)
                 $('.completion_rate_block .heading').text(`${project['completion_rate']}%`)
+                if (project.system_status <= 2)
+                    $('.btn-edit-page, #create_baseline').prop('hidden', false)
+                else{
+                    $('#open_project').prop('hidden', false)
+                    $('#complete_project').prop('hidden', true)
+                }
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )
@@ -83,4 +90,6 @@ $(document).ready(function () {
     // init open task list in work
     show_task_list()
 
+    // create baseline
+    createBaseline.init()
 });

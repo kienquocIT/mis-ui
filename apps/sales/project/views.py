@@ -74,10 +74,18 @@ class ProjectDetail(View):
         menu_active='menu_project',
     )
     def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_CONFIG).get()
+        can_close = False
+        if resp.state:
+            for item in resp.result.person_can_end:
+                if item.id == request.user.employee_current_data.id:
+                    can_close = True
+                    break
         return {
                    'dependencies_list': DEPENDENCIES_TYPE,
                    'system_status': SYSTEM_STATUS,
                    'pk': pk,
+                   'can_close': can_close
                }, status.HTTP_200_OK
 
 
@@ -100,12 +108,20 @@ class ProjectEdit(View):
         menu_active='menu_project',
     )
     def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_CONFIG).get()
+        can_close = False
+        if resp.state:
+            for item in resp.result.person_can_end:
+                if item.id == request.user.employee_current_data.id:
+                    can_close = True
+                    break
         return {
                    'pk': pk,
                    'system_status': SYSTEM_STATUS,
                    'dependencies_list': DEPENDENCIES_TYPE,
                    'list_from_app': 'project.project.edit',
-                   'employee_info': request.user.employee_current_data
+                   'employee_info': request.user.employee_current_data,
+                   'can_close': can_close
                }, status.HTTP_200_OK
 
 

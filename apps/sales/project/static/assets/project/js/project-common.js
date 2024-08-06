@@ -42,6 +42,7 @@ $(document).ready(function () {
                 $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
             }
         )
+
     }
 
     // form submit
@@ -57,6 +58,26 @@ $(document).ready(function () {
     $('.toggle-notes').on('click', function(){
         $('.content-notes').slideToggle()
     })
+
+    // complete project
+    $('#complete_project, #open_project').on('click', function(){
+        $(this).addClass('disabled');
+        let data = {'system_status': 3}
+        if ($(this)[0].getAttribute("id") === 'open_project')
+            data = {'system_status': 1}
+        $.fn.callAjax2({
+            'url': $FormElm.attr('data-url'),
+            'method': 'put',
+            'data': data,
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && (data['status'] === 201 || data['status'] === 200))
+                    $.fn.notifyB({description: data.message}, 'success');
+                window.location.href = $('#url-factory').attr('data-list');
+            })
+    });
+
 
 });
 function reGetDetail(gantt_obj){
@@ -1070,3 +1091,42 @@ class ProjectWorkExpenseHandle{
         $('a[data-bs-toggle="tab"][href="#tab_work_expense"]').on('shown.bs.tab', () => WExTbl.columns.adjust())
     }
 }
+
+class createBaseline {
+        static baselineSubmit() {
+            let $urlElm = $('#url-factory');
+            $('#create_baseline').on('click', function () {
+                Swal.fire({
+                    title: $.fn.gettext("Are you sure?"),
+                    text: $.fn.gettext("Create baseline at this moment?"),
+                    icon: "question",
+                    showCancelButton: true,
+                    // buttonsStyling: false,
+                    confirmButtonText: $.fn.gettext('Yes, I am'),
+                    cancelButtonText: $.fn.gettext("No, I'm not"),
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value && result.isConfirmed) {
+                        let form_data = $('#data_form').data('form_data'),
+                            frm = {
+                                dataUrl: $urlElm.attr('data-baseline'),
+                                dataMethod: 'post',
+                                dataForm: {
+                                    title: form_data.title,
+                                    code: form_data.code,
+                                    project_related: form_data.id,
+                                    project_data: form_data,
+                                    employee_inherit_id: $('#employeeInheritInput').attr('data-value'),
+                                },
+                                dataUrlRedirect: $urlElm.attr('data-list')
+                            };
+                        WFRTControl.callWFSubmitForm(frm);
+                    }
+                })
+            })
+        }
+
+        static init() {
+            createBaseline.baselineSubmit()
+        }
+    }

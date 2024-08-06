@@ -21,16 +21,16 @@ $(document).ready(function () {
                     {
                         data: 'code',
                         targets: 0,
-                        width: "10%",
+                        width: "15%",
                         render: (data, type, row) => {
                             let urlDetail = urlEle.data('url-detail').format_url_with_uuid(row.id);
-                            return `<a href="${urlDetail}"><span class="badge badge-soft-primary w-70">${data}</span></a>` + $x.fn.buttonLinkBlank(urlDetail);
+                            return `<a href="${urlDetail}"><span class="badge badge-primary w-70">${data}</span></a>` + $x.fn.buttonLinkBlank(urlDetail);
                         }
                     },
                     {
                         data: 'title',
                         targets: 1,
-                        width: "40%",
+                        width: "35%",
                         render: (data, type, row) => {
                             let urlDetail = urlEle.data('url-detail').format_url_with_uuid(row.id);
                             return `<a href="${urlDetail}"><span class="text-primary fw-bold">${data}</span></a>`

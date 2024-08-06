@@ -27,10 +27,10 @@ $(document).ready(function () {
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text w-10',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}" class="badge badge-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
@@ -43,7 +43,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'customer',
-                        className: 'wrap-text w-20',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             return `${row?.['sale_order']?.['customer']?.['name']}`
                         }

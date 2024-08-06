@@ -27,15 +27,15 @@ $(document).ready(function () {
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text w-10',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="badge badge-soft-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text w-45',
+                        className: 'wrap-text w-40',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
                             return `<a href="${link}"><span class="text-primary"><b>${row.title}</b></span></a>`

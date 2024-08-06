@@ -1,24 +1,24 @@
 {% load i18n %}
 
-<div class="border rounded">
-    <div class="row mx-2 my-2">
+<div class="">
+    <div class="row">
         <div class="col-6 text-left">
             <a href="#" id="btn-auto-update-stage" class="badge badge-primary">
                 <i class="fas fa-sync-alt"></i> {% trans "Auto Update Stage" %}
             </a>
         </div>
-        <div class="col-6 text-right">
-            <a href="#"><i class="bi bi-bar-chart-line-fill"></i></a>
+        <div class="col-6 text-right" hidden>
+            <a href="#" class="text-blue"><i class="bi bi-bar-chart-line-fill"></i></a>
         </div>
     </div>
-    <div class="row mx-2 mb-2" style="overflow: auto;">
+    <div class="row mt-2" style="overflow: auto;">
         <div class="d-flex" id="div-stage" data-method="GET" data-url="{% url "OpportunityConfigStageListAPI" %}"></div>
         <div id="stage-hidden" class="hidden">
-            <div class="mb-2 border rounded sub-stage w-100 text-center d-flex justify-content-center py-2 px-2" style="flex-direction: column; min-width: 150px">
+            <div class="mb-2 border rounded sub-stage w-100 text-center text-primary d-flex justify-content-center py-2 px-2" style="flex-direction: column; min-width: 150px">
                 <p class="stage-indicator"></p>
                 <div class="dropdown dropup pt-3">
                     <a href="#" data-bs-toggle="dropdown">
-                        <span class="text-right">
+                        <span class="text-right text-primary">
                             <i class="fas fa-chevron-circle-right"></i>
                         </span>
                     </a>

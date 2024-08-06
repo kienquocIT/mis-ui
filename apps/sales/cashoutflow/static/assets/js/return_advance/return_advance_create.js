@@ -22,6 +22,7 @@ $(document).ready(function () {
     }
 
     new ReturnAdvanceLoadPage().load();
+    WFRTControl.setWFInitialData('returnadvance', 'POST')
 
     const frmCreate = $('#frmCreate');
     new SetupFormSubmit(frmCreate).validate({

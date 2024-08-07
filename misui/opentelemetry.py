@@ -12,7 +12,7 @@ from django.conf import settings
 
 
 def request_span_callback(span, result):
-    if result.status_code == 401:
+    if result.status_code in [401, 403]:
         # keep UI 401 is normal, not errors!
         span.set_status(Status(StatusCode.OK))
 

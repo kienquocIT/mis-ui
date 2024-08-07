@@ -5958,11 +5958,11 @@ msgstr "Đã giao xong"
 
 #
 msgid "Partially received"
-msgstr "Đã nhập một phần"
+msgstr "Nhập một phần"
 
 #
 msgid "Received"
-msgstr "Đã nhập đủ"
+msgstr "Nhập đủ"
 
 #
 msgid "From Price List in left side"
@@ -8332,3 +8332,11 @@ msgstr "Hoàn thành dự án"
 #
 msgid "Re-Open Project"
 msgstr "Mở lại dự án"
+
+#
+msgid "Received before"
+msgstr "Đã nhập"
+
+#
+msgid "This time"
+msgstr "Nhập"

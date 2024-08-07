@@ -8324,3 +8324,11 @@ msgstr "Cấu hình dự án"
 #
 msgid "Employee can complete project"
 msgstr "Nhân viên có quyền đóng dự án"
+
+#
+msgid "GENERAL REGISTRATION"
+msgstr "ĐĂNG KÍ CHUNG"
+
+#
+msgid "Open to see Stock information of non-project products"
+msgstr "Mở để xem Thông tin tồn kho của các sản phẩm không thuộc dự án nào"

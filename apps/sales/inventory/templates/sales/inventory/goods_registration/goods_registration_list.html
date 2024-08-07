@@ -6,6 +6,10 @@
 {% block pageAction %}
 {% endblock %}
 {% block pageContent %}
+    <script id="script-trans"
+            data-trans-general-registration="{% trans 'GENERAL REGISTRATION' %}"
+            data-trans-general-registration-info="{% trans 'Open to see Stock information of non-project products' %}"
+    ></script>
     <div class="row">
         <div class="col-12">
             <table id="goods_registration_list" class="table nowrap w-100 mb-5" data-method="GET"

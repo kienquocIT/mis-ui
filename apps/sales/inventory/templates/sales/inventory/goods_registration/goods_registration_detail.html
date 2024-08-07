@@ -34,8 +34,7 @@
     ></script>
     <form id="frm_goods_registration_detail" data-url="{% url 'GoodsRegistrationDetailAPI' pk=pk %}">
         {% csrf_token %}
-        <div class="collapse multi-collapse show" id="collapse-area">
-            <div class="row">
+        <div class="row">
                 <div class="col-12 col-md-3 col-lg-3">
                     <div class="form-group">
                         <label for="title" class="form-label required">{% trans 'Name' %}</label>
@@ -61,57 +60,35 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="w-100 btn btn-animated btn-icon btn-xs">
-                <span class="icon">
-                    <i class="fas fa-angle-double-up text-primary"></i>
-                </span>
-            </button>
-        <div class="row">
-            <div class="col-12">
-                <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
-                    <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
-                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ol"></i></span></span>
-                            <span class="nav-link-text">{% trans 'Line Detail' %}</span>
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tab_line_detail">
-                        <div class="row">
-                            <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
-                                <table id="tab_line_detail_datatable" class="table nowrap w-100">
-                                    <thead>
-                                    <tr class="bg-gradient-primary">
-                                        <th class="w-20 border-1" rowspan="2">
-                                            {% trans 'Product' %}
-                                            <i class="fas fa-info-circle icon-info tit_visible_tb-head"
-                                               data-bs-toggle="tooltip"
-                                               data-bs-placement="right"
-                                               title="{% trans 'Hover to see product description' %}">
-                                            </i>
-                                        </th>
-                                        <th class="w-10 border-1" rowspan="2">{% trans 'UoM' %}</th>
-                                        <th class="w-10 border-1" rowspan="2">{% trans 'Total order' %}</th>
-                                        <th class="w-30 border-1" colspan="3">{% trans 'Register for this order' %}</th>
-                                        <th class="w-30 border-1" colspan="3">{% trans 'Register from other orders' %}</th>
-                                    </tr>
-                                    <tr class="bg-gradient-primary">
-                                        <th class="w-10 border-1">{% trans 'Stock quantity' %}</th>
-                                        <th class="w-10 border-1">{% trans 'Keep for other orders' %}</th>
-                                        <th class="w-10 border-1">{% trans 'Available' %}</th>
-                                        <th class="w-10 border-1">{% trans 'Reserved' %}</th>
-                                        <th class="w-10 border-1">{% trans 'Delivered' %}</th>
-                                        <th class="w-10 border-1">{% trans 'Remaining' %}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="row mt-5">
+            <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
+                <table id="tab_line_detail_datatable" class="table nowrap w-100">
+                    <thead>
+                    <tr class="bg-gradient-primary">
+                        <th class="w-20 border-1" rowspan="2">
+                            {% trans 'Product' %}
+                            <i class="fas fa-info-circle icon-info tit_visible_tb-head"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="right"
+                               title="{% trans 'Hover to see product description' %}">
+                            </i>
+                        </th>
+                        <th class="w-10 border-1" rowspan="2">{% trans 'UoM' %}</th>
+                        <th class="w-10 border-1" rowspan="2">{% trans 'Total order' %}</th>
+                        <th class="w-30 border-1" colspan="3">{% trans 'Register for this order' %}</th>
+                        <th class="w-30 border-1" colspan="3">{% trans 'Register from other orders' %} / {% trans 'General stock' %}</th>
+                    </tr>
+                    <tr class="bg-gradient-primary">
+                        <th class="w-10 border-1">{% trans 'Stock quantity' %}</th>
+                        <th class="w-10 border-1">{% trans 'Keep for other orders' %}</th>
+                        <th class="w-10 border-1">{% trans 'Available' %}</th>
+                        <th class="w-10 border-1">{% trans 'Reserved' %}</th>
+                        <th class="w-10 border-1">{% trans 'Delivered' %}</th>
+                        <th class="w-10 border-1">{% trans 'Remaining' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
     </form>

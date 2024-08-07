@@ -46,6 +46,7 @@ $(document).ready(function () {
                         }
                     }, {
                         data: 'title',
+                        className: 'w-55',
                         render: (data, type, row) => {
                             return `<a class="btn-detail" href="${urlEle.data('url-detail').format_url_with_uuid(row.id)}">
                                         <span><b>${data}</b></span>
@@ -54,7 +55,7 @@ $(document).ready(function () {
                         }
                     }, {
                         data: 'price_list_type',
-                        className: 'text-center',
+                        className: 'text-center w-20',
                         render: (data) => {
                             if (data.value === 0) {
                                 return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-danger badge-pill">${data.name}</span>`
@@ -68,6 +69,7 @@ $(document).ready(function () {
                         }
                     }, {
                         data: 'status',
+                        className: 'text-center w-20',
                         render: (data) => {
                             let badge_type;
                             if (data === 'Valid') {
@@ -83,7 +85,7 @@ $(document).ready(function () {
                             return `<span class="${badge_type}">${data}</span>`;
                         }
                     }, {
-                        className: 'action-center',
+                        className: 'action-center w-5',
                         render: (data, type, row) => {
                             if (row.is_default === false) {
                                 return `<a data-method="DELETE" data-id="${row.id}" class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded del-button delete-price-list-btn">

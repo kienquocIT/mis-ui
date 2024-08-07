@@ -118,7 +118,7 @@ function loadOpportunityEmailList() {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('email_list')) {
                         EMAIL_LIST = resp.data['email_list'];
-                        console.log(EMAIL_LIST)
+                        // console.log(EMAIL_LIST)
                         return resp.data['email_list'] ? resp.data['email_list'] : [];
                     }
                     throw Error('Call data raise errors.')
@@ -133,7 +133,7 @@ function loadOpportunityEmailList() {
                 },
                 {
                     data: 'subject',
-                    className: 'wrap-text',
+                    className: 'wrap-text w-75',
                     render: (data, type, row) => {
                         return `<a class="text-primary link-primary underline_hover detail-email-button" href="" data-bs-toggle="modal" data-id="` + row.id + `"
                                     data-bs-target="#detail-send-email"><span><b>` + row.subject + `</b></span></a>`
@@ -141,14 +141,14 @@ function loadOpportunityEmailList() {
                 },
                 {
                     data: 'opportunity',
-                    className: 'wrap-text text-center',
+                    className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
                         return `<span class="text-secondary">${row.opportunity.code}</span>`
                     }
                 },
                 {
                     data: 'date_created',
-                    className: 'wrap-text text-center',
+                    className: 'wrap-text text-center w-10',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(data);
                     }

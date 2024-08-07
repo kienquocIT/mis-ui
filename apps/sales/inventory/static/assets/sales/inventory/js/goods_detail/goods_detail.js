@@ -112,7 +112,7 @@ $(document).ready(function () {
                     data: 'product',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-primary w-25">${data?.['code']}</span>&nbsp;<span>${data?.['title']}</span>`;
+                        return `<span class="badge badge-primary badge-sm w-20">${data?.['code']}</span>&nbsp;<span class="text-primary">${data?.['title']}</span>`;
                     }
                 },
                 {
@@ -136,14 +136,14 @@ $(document).ready(function () {
                     data: 'person_in_charge',
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-secondary w-100">${data?.['full_name']}</span>`;
+                        return `<span class="text-blue">${data?.['full_name']}</span>`;
                     }
                 },
                 {
                     data: 'warehouse',
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-blue w-100">${data?.['code']}</span>`;
+                        return `<span class="badge badge-secondary badge-sm w-20">${data?.['code']}</span>&nbsp;<span class="text-muted">${data?.['title']}</span>`;
                     }
                 },
                 {

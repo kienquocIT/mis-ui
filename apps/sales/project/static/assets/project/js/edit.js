@@ -97,14 +97,15 @@ $(document).ready(function () {
             init_edit_btn_w: fGanttCustom.load_detail_work,
             delete_row_func: fGanttCustom.delete_row,
             on_date_change: function (task, start, end) {
-                enqueueAjaxRequest({
+                let opt = {
                     id: task.id,
                     w_start_date: moment(start).format('YYYY-MM-DD'),
                     w_end_date: moment(end).format('YYYY-MM-DD'),
-                    project: $('#id').val(),
-                    group: task?.['child_of_group'] ? task['child_group_id'] : null
-                })
-            },
+                    project: $('#id').val()
+                }
+                if (task?.['child_of_group']) opt.group = task['child_group_id']
+                enqueueAjaxRequest(opt)
+            }
         }
     );
 
@@ -117,6 +118,7 @@ $(document).ready(function () {
         .then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
+                if (data.system_status > 2) window.location.href = $('#url-factory').attr('data-list');
                 WFRTControl.setWFRuntimeID(data['workflow_runtime_id']);
                 $x.fn.renderCodeBreadcrumb(data);
                 $('#titleInput').val(data.title)
@@ -126,6 +128,7 @@ $(document).ready(function () {
                 $('#employeeInheritInput').attr('data-value', data['employee_inherit'].id).val(data['employee_inherit'].full_name);
                 $('#dateStart').val(moment(data.start_date).format('DD/MM/YYYY'))
                 $('#dateFinish').val(moment(data.finish_date).format('DD/MM/YYYY'))
+                $('.completion_rate_block .heading').text(`${data['completion_rate']}%`)
                 const afterData = fGanttCustom.convert_data(data.groups, data?.['works'])
                 new_gantt.load_more(afterData)
                 ProjectTeamsHandle.render(data.members)
@@ -149,6 +152,7 @@ $(document).ready(function () {
 
     // run load employee list
     ProjectTeamsHandle.init()
+
     // handle modal employee show
     $('#modal_employee_list').on('show.bs.modal', function () {
         let $tblUser = $('#dtbMember');
@@ -184,47 +188,8 @@ $(document).ready(function () {
         )
     })
 
-    class createBaseline {
-        static baselineSubmit() {
-            $('#create_baseline').on('click', function () {
-                Swal.fire({
-                    title: $.fn.gettext("Are you sure?"),
-                    text: $.fn.gettext("Create baseline at this moment?"),
-                    icon: "question",
-                    showCancelButton: true,
-                    // buttonsStyling: false,
-                    confirmButtonText: $.fn.gettext('Yes, I am'),
-                    cancelButtonText: $.fn.gettext("No, I'm not"),
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.value && result.isConfirmed) {
-                        let form_data = $('#data_form').data('form_data'),
-                            frm = {
-                                dataUrl: $('#url-factory').attr('data-baseline'),
-                                dataMethod: 'post',
-                                dataForm: {
-                                    title: form_data.title,
-                                    code: form_data.code,
-                                    project_related: form_data.id,
-                                    project_data: form_data,
-                                    employee_inherit_id: $('#employeeInheritInput').attr('data-value'),
-                                },
-                                dataUrlRedirect: $('#url-factory').attr('data-list')
-                            };
-                        WFRTControl.callWFSubmitForm(frm);
-                    }
-                })
-            })
-        }
-
-        static init() {
-            createBaseline.baselineSubmit()
-        }
-    }
-
     // run create btn
     createBaseline.init()
-
 
     // change gantt view mode
     $('#change_view_mode button').on('click', function(){
@@ -233,4 +198,5 @@ $(document).ready(function () {
         let mode = $(this).attr('data-value')
         new_gantt.change_view_mode(mode)
     })
+
 });

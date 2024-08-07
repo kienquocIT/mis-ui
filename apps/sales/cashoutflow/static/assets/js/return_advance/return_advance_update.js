@@ -4,6 +4,7 @@ $(function () {
         const frmDetail = $('#frmUpdate');
 
         new ReturnAdvanceLoadPage().load();
+        WFRTControl.setWFInitialData('returnadvance', 'PUT')
 
         loadDataTableCost([], false);
         loadDetail(id, frmDetail);

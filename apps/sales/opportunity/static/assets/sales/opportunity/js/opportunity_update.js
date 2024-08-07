@@ -71,7 +71,7 @@ $(document).ready(function () {
                     },
                     {
                         'render': (data, type, row) => {
-                            return `<span class="badge badge-sm badge-blue">${row?.['lead']?.['source']}</span>`;
+                            return `<span class="badge badge-sm badge-primary">${row?.['lead']?.['source']}</span>`;
                         }
                     },
                     {
@@ -125,7 +125,7 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data && typeof data === 'object' && data.hasOwnProperty('lead_list')) {
-                console.log(data?.['lead_list'])
+                // console.log(data?.['lead_list'])
                 return data?.['lead_list'];
             }
             return {};
@@ -610,12 +610,12 @@ $(document).ready(function () {
                 );
                 if (is_lost) {
                     $('.stage-lost').addClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
-                    // $('.stage-close').addClass('fw-bolder text-primary bg-primary-light-5 border-primary stage-selected');
+                    // $('.stage-close').addClass('fw-bolder text-blue bg-blue-light-5 border-blue stage-selected');
                     // $('#input-close-deal').prop('checked', true)
                 }
                 else {
                     $('.stage-lost').removeClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
-                    // $('.stage-close').removeClass('fw-bolder text-primary bg-primary-light-5 border-primary stage-selected');
+                    // $('.stage-close').removeClass('fw-bolder text-blue bg-blue-light-5 border-blue stage-selected');
                     // $('#input-close-deal').prop('checked', false)
                 }
                 $.fn.notifyB({description: "Stage has just updated!"}, 'success')
@@ -624,10 +624,10 @@ $(document).ready(function () {
 
             $(document).on('change', '#input-close-deal', function () {
                 if ($(this).is(':checked')) {
-                    $(this).closest('.sub-stage').addClass('bg-primary-light-5 border-primary  stage-selected');
+                    $(this).closest('.sub-stage').addClass('bg-blue-light-5 border-blue  stage-selected');
                     $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', true);
                 } else {
-                    $(this).closest('.sub-stage').removeClass('bg-primary-light-5 border-primary  stage-selected');
+                    $(this).closest('.sub-stage').removeClass('bg-blue-light-5 border-blue  stage-selected');
                     $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', false);
                     if ($('#check-agency-role').is(':checked')) {
                         $('#select-box-end-customer').prop('disabled', false);
@@ -1564,6 +1564,7 @@ $(document).ready(function () {
     // submit form edit
     new SetupFormSubmit(frmDetail).validate({
         submitHandler: function (form) {
+            WindowControl.showLoading();
             let frm = new SetupFormSubmit($(form));
             // autoLoadStage(
             //     true,
@@ -1585,11 +1586,20 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect.format_url_with_uuid($.fn.getPkDetail()), 1000);
+                        $.fn.notifyB({description: 'Successfully'}, 'success')
+                        setTimeout(() => {
+                            window.location.replace(frm.dataUrlRedirect.format_url_with_uuid($.fn.getPkDetail()));
+                            location.reload.bind(location);
+                        }, 1000);
                     }
                 },
                 (errs) => {
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
                     $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )

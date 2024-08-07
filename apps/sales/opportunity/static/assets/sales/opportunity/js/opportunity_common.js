@@ -1234,7 +1234,8 @@ function loadDtbOpportunityList() {
                     targets: 2,
                     className: 'wrap-text w-25',
                     render: (data, type, row) => {
-                        return `<span class="fw-bold text-primary">${row.title}</span>`
+                        const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
+                        return `<a href="${link}"><span class="fw-bold text-primary">${row.title}</span></a>`
                     }
                 },
                 {
@@ -2019,5 +2020,16 @@ $('#estimated-gross-profit-percent').on('input', function () {
         $(this).val(0)
         $('#estimated-gross-profit-value').attr('value', 0)
         $.fn.initMaskMoney2()
+    }
+})
+
+$('#general-information-collapse-btn').on('click', function () {
+    if ($(this).attr('class').includes('collapsed')) {
+        $('#group-general-info-opp').attr('class', 'col-12 col-md-12 col-lg-12 mb-3')
+        $('#group-relate-info-opp').attr('class', 'col-12 col-md-12 col-lg-12 mb-3')
+    }
+    else {
+        $('#group-general-info-opp').attr('class', 'col-12 col-md-12 col-lg-3 mb-3')
+        $('#group-relate-info-opp').attr('class', 'col-12 col-md-12 col-lg-9 mb-3')
     }
 })

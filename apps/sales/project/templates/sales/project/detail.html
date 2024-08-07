@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'assets/project/css/project.css' %}">
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'ProjectEdit' data.pk %}">
+    <a href="{% url 'ProjectEdit' data.pk %}" class="btn-edit-page" hidden>
         <button class="btn btn-outline-primary">
         <span>
             <span>{% trans 'Edit' %}</span>
@@ -31,6 +31,37 @@
                 <div class="col-xs-12 col-md-6 form-group">
                     <label for="titleInput" class="form-label required">{% trans 'Title' %}</label>
                     <input type="text" name="title" id="titleInput" class="form-control" required>
+                </div>
+                <div class="col-xs-12 col-md-6 d-flex align-items-center">
+                    <input type="hidden" id="data_form">
+                    <div class="completion_rate_block">
+                        <p class="heading">0%</p>
+                        <span class="title">{% trans 'Completion rate' %}</span>
+                    </div>
+                    <a href="#" class="btn btn-primary mr-5" id="create_baseline" hidden>
+                        <span>
+                            <span class="icon"><i class="bi bi-graph-up"></i></span>
+                            <span>{% trans 'Create Baseline' %}</span>
+                        </span>
+                    </a>
+                    {% if data.can_close %}
+                        <a href="#" class="btn btn-outline-primary mr-5" id="complete_project">
+                            <span>
+                                <span class="icon">
+                                    <i class="fa-solid fa-flag-checkered"></i>
+                                </span>
+                                <span>{% trans 'Complete Project' %}</span>
+                            </span>
+                        </a>
+                        <a href="#" class="btn btn-soft-primary" id="open_project" hidden>
+                            <span>
+                                <span class="icon">
+                                    <i class="fa-solid fa-arrows-spin"></i>
+                                </span>
+                                <span>{% trans 'Re-Open Project' %}</span>
+                            </span>
+                        </a>
+                    {% endif %}
                 </div>
                 <div class="clearfix"></div>
                 <div class="col-xs-12 col-md-6 form-group">
@@ -206,8 +237,7 @@
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"
            data-work-expense="{% url "ProjectWorkExpenseAPI" %}"
-    >
-    <input type="text" id="trans-factory"
+           data-list="{% url 'ProjectList' %}"
     >
 {% endblock %}
 {% block jsFooter %}

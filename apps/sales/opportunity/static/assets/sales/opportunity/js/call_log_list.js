@@ -100,7 +100,7 @@ function loadOpportunityCallLogList() {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('call_log_list')) {
                         CALL_LOG_LIST = resp.data['call_log_list'];
-                        console.log(CALL_LOG_LIST)
+                        // console.log(CALL_LOG_LIST)
                         return resp.data['call_log_list'] ? resp.data['call_log_list'] : [];
                     }
                     throw Error('Call data raise errors.')
@@ -115,14 +115,14 @@ function loadOpportunityCallLogList() {
                 },
                 {
                     data: 'contact',
-                    className: 'wrap-text',
+                    className: 'wrap-text w-15',
                     render: (data, type, row) => {
                         return `<a target="_blank" href="` + $('#table_opportunity_call_log_list').attr('data-url-contact-detail').replace('0', row.contact.id) + `"><span class="link-secondary underline_hover"><b>` + row.contact.fullname + `</b></span></a>`
                     }
                 },
                 {
                     data: 'subject',
-                    className: 'wrap-text',
+                    className: 'wrap-text w-55',
                     render: (data, type, row) => {
                         let status = ''
                         if (row?.['is_cancelled']) {
@@ -136,14 +136,14 @@ function loadOpportunityCallLogList() {
                 },
                 {
                     data: 'opportunity',
-                    className: 'wrap-text text-center',
+                    className: 'wrap-text text-center w-20',
                     render: (data, type, row) => {
                         return `<span class="text-secondary">` + row.opportunity.code + `</span>`
                     }
                 },
                 {
                     data: 'call_date',
-                    className: 'wrap-text text-center',
+                    className: 'wrap-text text-center w-10',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(data, {
                             'outputFormat': 'DD-MM-YYYY',

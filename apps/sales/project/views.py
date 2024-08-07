@@ -2,8 +2,8 @@ __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI',
            'ProjectEdit', 'ProjectEditAPI', 'ProjectCreateGroupAPI', 'ProjectGroupListAPI', 'ProjectWorkCreateAPI',
            'ProjectWorkListAPI', 'ProjectGroupDetailAPI', 'ProjectWorkDetailAPI', 'ProjectMemberAddAPI',
            'ProjectMemberDetailAPI', 'ProjectUpdateOrderAPI', 'ProjectTaskListAPI', 'ProjectGroupDDListAPI',
-           'ProjectTaskDetailAPI', 'ProjectWorkExpenseAPI', 'ProjectCreateBaselineAPI', 'ProjectBaselineDetail',
-           'ProjectBaselineDetailAPI', 'ProjectHome', 'ProjectConfig', 'ProjectConfigAPI'
+           'ProjectTaskDetailAPI', 'ProjectWorkExpenseAPI', 'ProjectListBaselineAPI', 'ProjectBaselineDetail',
+           'ProjectBaselineDetailAPI', 'ProjectHome', 'ProjectConfig', 'ProjectConfigAPI', 'ProjectExpenseListAPI'
            ]
 
 from django.views import View
@@ -74,10 +74,18 @@ class ProjectDetail(View):
         menu_active='menu_project',
     )
     def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_CONFIG).get()
+        can_close = False
+        if resp.state:
+            for item in resp.result['person_can_end']:
+                if item.id == request.user.employee_current_data.id:
+                    can_close = True
+                    break
         return {
                    'dependencies_list': DEPENDENCIES_TYPE,
                    'system_status': SYSTEM_STATUS,
                    'pk': pk,
+                   'can_close': can_close
                }, status.HTTP_200_OK
 
 
@@ -100,12 +108,20 @@ class ProjectEdit(View):
         menu_active='menu_project',
     )
     def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_CONFIG).get()
+        can_close = False
+        if resp.state:
+            for item in resp.result['person_can_end']:
+                if item.id == request.user.employee_current_data.id:
+                    can_close = True
+                    break
         return {
                    'pk': pk,
                    'system_status': SYSTEM_STATUS,
                    'dependencies_list': DEPENDENCIES_TYPE,
                    'list_from_app': 'project.project.edit',
-                   'employee_info': request.user.employee_current_data
+                   'employee_info': request.user.employee_current_data,
+                   'can_close': can_close
                }, status.HTTP_200_OK
 
 
@@ -380,7 +396,30 @@ class ProjectWorkExpenseAPI(APIView):
         return resp.auto_return(key_success='work_expense_list')
 
 
-class ProjectCreateBaselineAPI(APIView):
+class ProjectExpenseListAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_EXPENSE_LIST).get(params)
+        return resp.auto_return(key_success='project_expense_list')
+
+
+class ProjectListBaselineAPI(APIView):
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_BASELINE).get(params)
+        return resp.auto_return(key_success='baseline_list')
+
     @mask_view(
         login_require=True,
         auth_require=True,

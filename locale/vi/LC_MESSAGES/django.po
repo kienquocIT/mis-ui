@@ -8326,6 +8326,14 @@ msgid "Employee can complete project"
 msgstr "Nhân viên có quyền đóng dự án"
 
 #
+msgid "Complete Project"
+msgstr "Hoàn thành dự án"
+
+#
+msgid "Re-Open Project"
+msgstr "Mở lại dự án"
+
+#
 msgid "GENERAL REGISTRATION"
 msgstr "ĐĂNG KÍ CHUNG"
 

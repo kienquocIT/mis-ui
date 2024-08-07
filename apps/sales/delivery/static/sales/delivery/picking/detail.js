@@ -322,10 +322,15 @@ $(async function () {
                     // link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(dataPW?.['product']?.['id']);
 
                     if (data?.[keyResp].length > 0) {
-                        if ($eleSO.attr('data-so')) {
-                            let dataS0 = JSON.parse($eleSO.attr('data-so'));
-                        }
                         let dataPW = [data?.[keyResp][0]];
+                        if (keyResp === 'warehouse_products_list') {
+                            if ($eleSO.attr('data-so')) {
+                                let dataS0 = JSON.parse($eleSO.attr('data-so'));
+                                for (let data of dataPW) {
+                                    data['sale_order'] = dataS0;
+                                }
+                            }
+                        }
                         if (keyResp === 'regis_borrow_list') {
                             dataPW = [];
                             let dataRegis = setupDataPW(data?.[keyResp][0]?.['regis_data'], whID);

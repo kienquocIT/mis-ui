@@ -38,42 +38,6 @@ function resetInputValue() {
         })
 
         $.fn.formPageInit();
-
-        //
-        const emailGroup$ = $('#email-authenticate');
-        const formGetOtp$ = emailGroup$.find('form#form-email-get-otp');
-        const formVerifyOtp$ = emailGroup$.find('form#form-email-verify-otp');
-        const inpPublicIP$ = emailGroup$.find('input[name=public_ip]');
-
-        $.fn.formGetPublicIP().then(
-            ip => {
-                inpPublicIP$.val(ip);
-            }
-        );
-
-        formGetOtp$.on('submit', async function (event){
-            event.preventDefault();
-            const data = $.fn.formSerializerObject($(this));
-            $.fn.formCallAjax({
-                url: '',
-                method: 'POST',
-                data: {
-                    ...data,
-                    'public_ip': inpPublicIP$.val(),
-                }
-            }).then(
-                resp => {
-
-                },
-                errs => console.log(errs),
-            )
-            formVerifyOtp$.find('input[name=email]').val(data.email);
-        });
-
-        formVerifyOtp$.on('submit', function (event){
-            event.preventDefault();
-            const data = $.fn.formSerializerObject($(this));
-        });
     })
 
     if ($.validator) {
@@ -420,7 +384,7 @@ function resetInputValue() {
                 let csrf$ = $(formSelected).find('input[name=csrfmiddlewaretoken]');
                 if (csrf$.length > 0) obj['csrfmiddlewaretoken'] = csrf$.val();
 
-                return obj;
+                return Object.fromEntries(Object.entries(obj).filter(([k, _v]) => k));
             }
             return {};
         },

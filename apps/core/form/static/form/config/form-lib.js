@@ -399,7 +399,13 @@ class SortableField {
         const sortable$ = $(this.ele$.prop('outerHTML'));
         const page$ = $('#page-sortable');
 
-        const pageEnable = page$.data('forms').config?.['enabled'] || false;
+        let pageEnable = page$.data('forms').config?.['enabled'];
+        if (!pageEnable) {
+            console.log('pageEnable:', pageEnable);
+            const head$ = sortable$.find('div.sortable-item[data-code="page-break-head"]');
+            const foot$ = sortable$.find('div.sortable-item[data-code="page-break-foot"]');
+            pageEnable = !!(head$.length > 0 || foot$.length > 0);
+        }
         let pageData = [];
         if (pageEnable === true){
             const pageHead$ = sortable$.find('div[data-code=page-break-head]');
@@ -1566,6 +1572,7 @@ class FormTitleComponentType extends FormComponentAbstract {
             'label_placement': 'top',
             'instruction_placement': 'bottom',
             'authentication_required': false,
+            'authentication_type': 'system',
             'submit_only_one': false,
             'edit_submitted': false,
             'display_referrer_name': false,

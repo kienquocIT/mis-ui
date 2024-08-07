@@ -1,9 +1,8 @@
-import os
-
 from opentelemetry import trace
 from opentelemetry.exporter.jaeger.thrift import JaegerExporter
 from opentelemetry.instrumentation.django import DjangoInstrumentor
 from opentelemetry.instrumentation.logging import LoggingInstrumentor
+from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
@@ -23,6 +22,7 @@ def init():
 
         DjangoInstrumentor().instrument()
         LoggingInstrumentor().instrument()
+        RequestsInstrumentor().instrument()
 
         jaeger_exporter = JaegerExporter(
             agent_host_name=settings.JAEGER_TRACING_HOST,

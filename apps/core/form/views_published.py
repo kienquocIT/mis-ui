@@ -67,7 +67,7 @@ class FormPublishDetailViewIFrame(View):
                     'use_at': 'iframe',
                     'prevent_submit_form': True,
                     'code': 'iframe-editing',
-                    'user_current': get_ctx_user_current(request),
+                    'user_current': get_ctx_user_current(request, None),
                 }
             )
         except Exception as err:

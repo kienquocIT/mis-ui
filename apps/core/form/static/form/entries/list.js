@@ -136,20 +136,30 @@ $(document).ready(function () {
                 'r': 2,
                 'c': 1
             }
-            ], ...headTmp$, [
+            ],
+            ...headTmp$,
+            [
                 $.fn.gettext('Created time'), {
                     'r': 2,
                     'c': 1
                 }
-            ], [
+            ],
+            [
                 $.fn.gettext('Referrer Name'), {
                     'r': 2,
                     'c': 1
                 }
-            ], [
+            ],
+            [
                 $.fn.gettext('User created'), {
                     'r': 2,
                     'c': 1
+                }
+            ],
+            [
+                $.fn.gettext('Creator email'), {
+                    'r': 2,
+                    'c': 1,
                 }
             ]
         ];
@@ -202,6 +212,15 @@ $(document).ready(function () {
                         return userCreated['full_name'];
                     }
                     return '';
+                },
+            },
+            {
+                width: '150px',
+                className: 'min-w-150p wrap-text',
+                visible: !!hasOwnerRecord,
+                render: (data, type, row) => {
+                    let userCreated = row?.['creator_email'] || '';
+                    return userCreated ? userCreated : '-';
                 },
             },
         ]
@@ -318,6 +337,17 @@ $(document).ready(function () {
                 'c': currentCol + 3
             }
         });
+        dataHeading.push($.fn.gettext('Creator email'));
+        merges.push({
+            's': {
+                'r': 0,
+                'c': currentCol + 4
+            },
+            'e': {
+                'r': 1,
+                'c': currentCol + 4
+            }
+        })
         // -- push system cols
         data.push(dataHeading);
         data.push(dataHeadingSub);
@@ -346,6 +376,7 @@ $(document).ready(function () {
             itemDataReverted.push(item?.['date_created'] || '');
             itemDataReverted.push(item?.['ref_name'] || '');
             itemDataReverted.push(item?.['user_created']?.['full_name'] || '');
+            itemDataReverted.push(item?.['creator_email'] || '');
             // -- push system cols data
             data.push(itemDataReverted);
         });

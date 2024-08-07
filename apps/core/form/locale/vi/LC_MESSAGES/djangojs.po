@@ -208,3 +208,7 @@ msgstr "Trang sau"
 #
 msgid "Drag fields from left panel and drop here to add them to your form."
 msgstr "Kéo các trường từ bảng điều khiển bên trái và thả vào đây để thêm chúng vào biểu mẫu của bạn."
+
+#
+msgid "Creator email"
+msgstr "Email của người tạo"

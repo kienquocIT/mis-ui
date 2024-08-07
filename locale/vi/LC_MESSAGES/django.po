@@ -8332,3 +8332,11 @@ msgstr "Hoàn thành dự án"
 #
 msgid "Re-Open Project"
 msgstr "Mở lại dự án"
+
+#
+msgid "GENERAL REGISTRATION"
+msgstr "ĐĂNG KÍ CHUNG"
+
+#
+msgid "Open to see Stock information of non-project products"
+msgstr "Mở để xem Thông tin tồn kho của các sản phẩm không thuộc dự án nào"

@@ -96,7 +96,6 @@ function LoadDetailGoodsRegistration(option) {
                 dateEle.val(moment(data?.['date_created'].split(' ')[0]).format('DD/MM/YYYY'))
                 LoadSaleOrder(data?.['sale_order'])
                 LoadSalePerson(data?.['sale_order']?.['sale_person'])
-                console.log(data?.['data_line_detail'])
                 LoadLineDetailTable(data?.['data_line_detail'])
 
                 Disable(option);
@@ -242,7 +241,6 @@ const frm_borrow_row = $('#frm_borrow_row')
 const available_amount = $('#available-amount')
 const uom_stock = $('#uom-stock')
 const reserve_amount = $('#reserve-amount')
-const warehouse_borrow = $('#warehouse-borrow')
 const frm_borrow_from_stock = $('#frm_borrow_from_stock')
 // other project
 const other_so = $('#other-so')
@@ -271,7 +269,6 @@ class GoodsRegistrationBorrowHandle {
             frm.dataForm['gre_item_source'] = current_gre_item_id
             frm.dataForm['quantity'] = reserve_amount.val()
             frm.dataForm['uom'] = uom_stock.val()
-            frm.dataForm['warehouse_mapped'] = warehouse_borrow.val()
         }
 
         return {
@@ -354,7 +351,7 @@ function loadStockQuantityOtherDataTableBorrow() {
     Promise.all([for_stock_borrow, for_project_borrow]).then(
         (results) => {
             let data_table = results[0].concat(results[1])
-            console.log(data_table)
+            // console.log(data_table)
             let dtb = $('#tab_stock_quantity_other_datatable');
             dtb.DataTable().clear().destroy()
             dtb.DataTableDefault({
@@ -368,9 +365,7 @@ function loadStockQuantityOtherDataTableBorrow() {
                             return row?.['sale_order']?.['code']? `
                                 <span class="text-primary fw-bold"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order']?.['code']}</span>
                             ` : `
-                                <span class="text-primary fw-bold">${script_trans.attr('data-trans-from-warehouse')}</span>&nbsp;
-                                <span class="badge badge-soft-primary">${row?.['warehouse_mapped']?.['code']}</span>
-                            `
+                                <span class="text-primary fw-bold">${script_trans.attr('data-trans-general-warehouse')}</span>`
                         }
                     },
                     {
@@ -426,7 +421,6 @@ function loadStockQuantityOtherDataTableBorrow() {
 $(document).on("click", '.out_registered_detail', function () {
     current_gre_item_id = $(this).attr('data-gre-item-id')
 
-    warehouse_borrow.empty()
     available_amount.val('')
     uom_stock.empty()
     reserve_amount.val('')
@@ -438,8 +432,7 @@ $(document).on("click", '.out_registered_detail', function () {
 
     loadStockQuantityOtherDataTableBorrow()
 
-    LoadWarehouseBorrow(
-        null,
+    CallWarehouseBorrowQuantity(
         $(this).attr('data-product-id'),
         JSON.parse($(this).find('.string_uom').text()),
         JSON.parse($(this).find('.string_base_uom').text())
@@ -471,10 +464,9 @@ $('input[name="regis_from"]').on('change', function () {
     $('#for-other-sale-order').prop('hidden', is_general_stock)
 })
 
-function CallWarehouseBorrowQuantity(warehouse_id, product_id, so_uom, base_uom) {
+function CallWarehouseBorrowQuantity(product_id, so_uom, base_uom) {
     let dataParam = {}
     dataParam['product_id'] = product_id
-    dataParam['warehouse_id'] = warehouse_id
     let ajax = $.fn.callAjax2({
         url: script_url.attr('data-url-none-gre-item-available-quantity'),
         data: dataParam,
@@ -496,12 +488,15 @@ function CallWarehouseBorrowQuantity(warehouse_id, product_id, so_uom, base_uom)
         (results) => {
             let quantity_can_be_reserve = 0 // so_uom
             let quantity_can_be_reserve_base = 0 // base_uom
+            let regis_quantity = 0 // > 0 if has regis in general warehouse
             for (const item of results[0]) {
                 quantity_can_be_reserve += item?.['this_available']
                 quantity_can_be_reserve_base += item?.['this_available_base']
+                regis_quantity += item?.['regis_quantity'] ? item?.['regis_quantity'] : 0
             }
-            available_amount.val(quantity_can_be_reserve)
-            available_amount.attr('data-base-quantity', quantity_can_be_reserve_base)
+            regis_quantity = results[0].length > 0 ? regis_quantity / results[0].length : 0
+            available_amount.val(quantity_can_be_reserve - regis_quantity)
+            available_amount.attr('data-base-quantity', quantity_can_be_reserve_base - regis_quantity)
             LoadUOMStockBorrow(so_uom[0], base_uom[0])
         })
 }
@@ -541,11 +536,10 @@ function CallProjectBorrowQuantity(sale_order_id, product_id, so_uom, base_uom) 
         })
 }
 
-function LoadUOMStockBorrow(so_uom, base_uom) {
+function LoadUOMStockBorrow(base_uom) {
     uom_stock.html('')
     uom_stock.append(`
-        <option selected data-ratio="${so_uom?.['ratio']}" value="${so_uom?.['id']}">${so_uom?.['title']}</option>
-        <option data-ratio="${base_uom?.['ratio']}" value="${base_uom?.['id']}">${base_uom?.['title']}</option>
+        <option selected data-ratio="${base_uom?.['ratio']}" value="${base_uom?.['id']}">${base_uom?.['title']}</option>
     `)
 }
 
@@ -564,25 +558,6 @@ uom_so.on('change', function () {
         so_available_amount.val(base_quantity / ratio)
     }
 })
-
-function LoadWarehouseBorrow(data, product_id, so_uom, base_uom) {
-    warehouse_borrow.initSelect2({
-        ajax: {
-            url: warehouse_borrow.attr('data-url') + `?interact=1`,
-            method: 'GET',
-        },
-        callbackDataResp: function (resp, keyResp) {
-            return resp.data[keyResp];
-        },
-        data: (data ? data : null),
-        keyResp: 'warehouse_list',
-        keyId: 'id',
-        keyText: 'title',
-    }).on('change', function () {
-        let warehouse_id = SelectDDControl.get_data_from_idx(warehouse_borrow, warehouse_borrow.val())
-        CallWarehouseBorrowQuantity(warehouse_id?.['id'], product_id, so_uom, base_uom)
-    })
-}
 
 function LoadProjectBorrow(data, product_id, so_uom, base_uom) {
     other_so.initSelect2({

@@ -19,15 +19,15 @@ from apps.shared.http import HttpRequestControl
 from apps.core.form.utils import FormAuthController
 
 
-def form_publish_handle_401(request, resp):
-    detail = resp.errors.get('detail', None)
-    print('form 401 code:', detail)
-    if detail == 'system':
-        url_redirect = f"{reverse('AuthLogin')}?next={request.path}"
-        return redirect(url_redirect)
-    elif detail == 'email':
-        url = f"{reverse('FormAuthenticateBeforeViewForm')}?next={request.path}"
-        return redirect(url)
+def form_publish_handle_other_status(request, resp):
+    if resp.status == 400:
+        authenticate_fail_code = resp.errors.get('authenticate_fail_code', None)
+        if authenticate_fail_code == 'system':
+            url_redirect = f"{reverse('AuthLogin')}?next={request.path}"
+            return redirect(url_redirect)
+        elif authenticate_fail_code == 'email':
+            url = f"{reverse('FormAuthenticateBeforeViewForm')}?next={request.path}"
+            return redirect(url)
     return OutLayoutRender(request=request).render_404()
 
 
@@ -39,9 +39,7 @@ class FormPublishedRuntimeView(View):
             if resp.result.get('is_public', False) is True:
                 ctx = publish_data(resp=resp, code=form_code, request=request, use_at='view')
                 return render(request, 'form/runtime/new.html', ctx)
-        elif resp.status == 401:
-            return form_publish_handle_401(request, resp)
-        return OutLayoutRender(request=request).render_404()
+        return form_publish_handle_other_status(request, resp)
 
 
 class FormPublishedRuntimeIFrame(View):
@@ -53,7 +51,7 @@ class FormPublishedRuntimeIFrame(View):
                 ctx = publish_data(resp=resp, code=form_code, request=request, use_at='iframe')
                 return render(request, 'form/runtime/new.html', ctx)
         elif resp.status == 401:
-            return form_publish_handle_401(request, resp)
+            return form_publish_handle_other_status(request, resp)
         return OutLayoutRender(request=request).render_404()
 
 
@@ -98,8 +96,7 @@ class FormSubmittedViewEdit(View):
                                 }
                             )
                         return OutLayoutRender(request=request).render_404()
-            elif resp.status == 401:
-                return form_publish_handle_401(request, resp)
+            return form_publish_handle_other_status(request, resp)
         return OutLayoutRender(request=request).render_404()
 
 
@@ -121,8 +118,7 @@ class FormSubmittedOnlyView(View):
                             'pk': pk,
                         }
                     )
-            elif resp.status == 401:
-                return form_publish_handle_401(request, resp)
+            return form_publish_handle_other_status(request, resp)
         return OutLayoutRender(request=request).render_404()
 
 

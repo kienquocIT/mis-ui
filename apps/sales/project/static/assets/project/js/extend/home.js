@@ -14,9 +14,6 @@ $(document).ready(function(){
             bar: {
                 horizontal: true,
 			    distributed: true,
-                // dataLabels: {
-                //     position: 'bottom'
-                // },
             }
         },
         legend:{show: false},
@@ -261,7 +258,6 @@ $(document).ready(function(){
     chart44.render();
 
     // get data all list
-    let $loaded = $('#trigger_load')
     let proj_lst = []
     function getProjData(page=1){
         WindowControl.showLoading();
@@ -276,28 +272,54 @@ $(document).ready(function(){
                     let res = data['project_list']
                     proj_lst = [...res, ...proj_lst]
                     if (data.page_next > 0) getProjData(data.page_next)
-                    else $loaded.trigger('Trigger.Loaded')
+                    else $(document).trigger('Trigger.Loaded')
                 },
                 (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
             )
     };
     getProjData();
-    $loaded.on('Trigger.Loaded', function(){
+    $(document).on('Trigger.Loaded', function(){
         WindowControl.hideLoading();
-        HomeChart.runBlockNewThisMonth(proj_lst)
+        HomeChart.run4Block(proj_lst)
     });
+
+
 });
 
+
+
 class HomeChart {
-    static runBlockNewThisMonth(data){
-        let count = 0, count_all = data.length, crt_date = new Date(), $cardElm = $('.card_new_prj');
+    static run4Block(data){
+        let count = 0,
+            count_all = data.length,
+            crt_date = new Date(),
+            $cardElm = $('.card_new_prj'),
+            $cardBElm = $('.card_baseline'),
+            $cardTElm = $('.card_tasks'),
+            baseline_count = 0,
+            baseline_new = 0,
+            task_count = 0,
+            task_completed = 0;
 
         for (let item of data){
             const dateItem = new Date(item.date_created)
             if (crt_date.getFullYear() === dateItem.getFullYear() && crt_date.getMonth() === dateItem.getMonth())
                 count++
-        }
-        let configs = {
+            baseline_count += item.baseline.count
+            baseline_new += item.baseline['new_t_month']
+            task_count += item.tasks.all
+            task_completed += item.tasks.completed
+
+        };
+        // run new project this month block
+        $cardElm.find('.heading_cards').html(`${count_all} ${$.fn.gettext('Project')}`)
+        $cardElm.find('.percent_block span').text(`+${count}`)
+        // run project baseline block
+        $cardBElm.find('.heading_cards').text(`${baseline_count} ${$.fn.gettext('Baseline')}`)
+        $cardBElm.find('.percent_block span').text(`+${baseline_new}`)
+        // run project task count block
+        $cardTElm.find('.heading_cards').html(`${task_count} <span>${$.fn.gettext('all')}</span>`)
+        let configs_task = {
             series: [0],
             chart: {
                 height: 50,
@@ -337,18 +359,11 @@ class HomeChart {
             },
             colors: ['#00acf0'],
         };
-        if (count > 0 && count_all > 0)
-            configs.series = [(count/count_all * 100).toFixed(0)]
-        let chartNew = new ApexCharts(document.querySelector("#pie_chart_1"), configs);
-        chartNew.render();
-        $cardElm.find('.heading_cards').text(`${count} ${$.fn.gettext('Project new')}`)
-    }
-
-    static runBlockBaseline(data){
-        let count_project = 0, count_baseline = data.length;
-        for (let item of data){
-            count_project += item.baseline.count
-        }
-
+        if (task_count > 0 && task_completed > 0)
+            configs_task.series = [(task_completed/task_count * 100).toFixed(0)]
+        let chartTNew = new ApexCharts(document.querySelector("#pie_chart_2"), configs_task);
+        chartTNew.render();
+        // run task expense
+        $.fn.initMaskMoney2();
     }
 }

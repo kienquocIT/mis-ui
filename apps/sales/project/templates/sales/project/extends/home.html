@@ -4,55 +4,43 @@
     {% trans 'Project' %} {% trans 'list' %}
 {% endblock %}
 {% block cssHeader %}
-{#    <link href="{% static 'assets/css/eoffice/assettools/list.css' %}" rel="stylesheet" type="text/css"/>#}
     <style>
-        .proj-badge {
-            font-size: .7rem;
-            border-radius: 5px;
-            font-weight: 400;
-            right: -25px;
-            top: -12px;
-        }
-
-        .proj-badge img {
-            margin-right: 4px;
-        }
-
-        .btn-sh-baseline i {
-            transition: all .15s ease-in;
-        }
-
-        .btn-sh-baseline:hover i {
-            transform: rotate(90deg)
-        }
-
-        .baseline_tr > td {
-            padding: 0;
-        }
-        .baseline_tr .wrap-baseline > table tr:last-child td {
-            border-bottom: 0;
-        }
-        .baseline_tr .wrap-baseline > table tr td {
-            background-color: rgb(0 0 0 / 5%);
-        }
-        div.dataTables_wrapper .dataTables_scrollBody table{
-            margin-bottom:0!important;
-        }
-        .apexcharts-tooltip-title{
+        .apexcharts-tooltip-title {
             max-width: 120px;
             white-space: pre-line;
         }
-        .r-0{right:0}
-        .percent_block{
-            position: absolute;
-            width: 50px;
+
+        .r-0 {
+            right: 0
         }
+
+        .percent_block {
+            position: absolute;
+        }
+
         .heading_cards {
             font-size: 2rem;
             line-height: 1.2;
             font-weight: 400;
             color: #324148;
             font-family: "Segoe UI";
+        }
+
+        .card_new_prj .percent_block,
+        .card_baseline .percent_block {
+            line-height: 1;
+            padding-bottom: 3px;
+        }
+
+        .card_new_prj .percent_block span,
+        .card_baseline .percent_block span {
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .heading_cards span:not(.mask-money) {
+            font-size: 16px;
+            color: #5e7d8a;
         }
     </style>
 {% endblock %}
@@ -62,9 +50,9 @@
 {% block pageContent %}
     <div class="container">
         <div class="row justify-content-end align-items-center">
-            <div class="btn-group btn-group-rounded col-xs-12 col-md-2 mr-3">
-                <button type="button" class="btn btn-outline-secondary">{% trans 'List' %}</button>
-	            <button type="button" class="btn btn-outline-secondary">{% trans 'My Project' %}</button>
+            <div class="btn-group btn-group-rounded col-xs-12 col-md-3 mr-3">
+                <a href="{% url 'ProjectList' %}" class="btn btn-outline-secondary">{% trans 'List' %}</a>
+                <a href="{% url 'ProjectList' %}" class="btn btn-outline-secondary">{% trans 'Baseline request' %}</a>
             </div>
             <a href="{% url 'ProjectCreate' %}" class="col col-1">
                 <button class="btn btn-outline-primary" type="button">
@@ -83,10 +71,36 @@
                 <div class="card card-sm card_new_prj">
                     <div class="card-body">
                         <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'New project this month' %}</span>
+                        <div class="d-flex align-items-end justify-content-between position-relative">
+                            <div class="heading_cards"></div>
+                            <div class="percent_block r-0 w-auto">
+                                <span class="font-2 text-success"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="card card-sm card_baseline">
+                    <div class="card-body">
+                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project Baseline' %}</span>
+                        <div class="d-flex align-items-end justify-content-between position-relative">
+                            <div class="heading_cards"></div>
+                            <div class="percent_block r-0 w-auto">
+                                <span class="font-2 text-success"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="card card-sm card_tasks">
+                    <div class="card-body">
+                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project tasks' %}</span>
                         <div class="d-flex align-items-center justify-content-between position-relative">
                             <div class="heading_cards"></div>
-                            <div class="percent_block r-0">
-                                <div id="pie_chart_1" class="d-flex easy-pie-chart"></div>
+                            <div class="percent_block r-0 w-50p">
+                                <div id="pie_chart_2" class="d-flex pie-chart-task"></div>
                             </div>
                         </div>
                     </div>
@@ -95,37 +109,10 @@
             <div class="col-lg-3 col-sm-6">
                 <div class="card card-sm">
                     <div class="card-body">
-                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project expense highest' %}</span>
+                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project Expense' %}</span>
                         <div class="d-flex align-items-center justify-content-between position-relative">
-                            <div class="heading_cards">12 New</div>
-                            <div class="percent_block r-0">
-                                <div id="pie_chart_1" class="d-flex easy-pie-chart"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="card card-sm">
-                    <div class="card-body">
-                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'New project this month' %}</span>
-                        <div class="d-flex align-items-center justify-content-between position-relative">
-                            <div class="heading_cards">12 New</div>
-                            <div class="percent_block r-0">
-                                <div id="pie_chart_1" class="d-flex easy-pie-chart"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="card card-sm">
-                    <div class="card-body">
-                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'New project this month' %}</span>
-                        <div class="d-flex align-items-center justify-content-between position-relative">
-                            <div class="heading_cards">12 New</div>
-                            <div class="percent_block r-0">
-                                <div id="pie_chart_1" class="d-flex easy-pie-chart"></div>
+                            <div class="heading_cards">
+                                <span class="mask-money" data-init-money="0">VND 0</span>
                             </div>
                         </div>
                     </div>
@@ -151,14 +138,14 @@
                 <div id="prj_chart_expense"></div>
             </div>
         </div>
-        <input type="hidden" id="trigger_load">
     </div>
 {% endblock %}
 
 {% block dataHiddenGroup %}
     <div class="table_btn"></div>
     <input type="hidden" id="url-factory" aria-label="url-factory"
-    data-prj-list="{% url 'ProjectListAPI' %}">
+           data-prj-list="{% url 'ProjectListAPI' %}"
+           data-prj-expe-list="{% url 'ProjectExpenseListAPI' %}">
     <input type="hidden" id="trans-factory" aria-label="trans-factory">
 {% endblock %}
 {% block jsFooter %}

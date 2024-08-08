@@ -229,6 +229,17 @@ class TypeCheck:
             return False
         raise ValueError("Data isn't boolean format.")
 
+    @classmethod
+    def check_email(cls, data: str):
+        if data and '@' in data:
+            arr = data.split("@")
+            if len(arr) >= 2:
+                name = "@".join(arr[:len(arr) - 1])
+                domain = arr[-1]
+                if name and domain:
+                    return True
+        return False
+
 
 class FORMATTING:
     DATETIME = settings.REST_FRAMEWORK['DATETIME_FORMAT']

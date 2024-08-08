@@ -61,7 +61,7 @@
     color: #5e7d8a;
 }
 .step-item .icon-group {
-    width: 32px;
+    width: calc(32px + 2px);
     height: 32px;
     border: 0;
     border-radius: 100%;

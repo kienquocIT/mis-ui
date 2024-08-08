@@ -158,9 +158,6 @@
         {% block cssHeader %}{% endblock %}
     {% endcompress %}
 
-    {% if is_ga_enabled %}
-        <script async src="{{ ga_config.script }}"></script>
-    {% endif %}
     {% compress js %}
         <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
         <script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>
@@ -848,5 +845,9 @@
 <!-- // TinyMCE -->
 
 {% block jsFooterUnCompress %}{% endblock %}
+
+{% if is_ga_enabled %}
+    <script async src="{{ ga_config.script }}"></script>
+{% endif %}
 </body>
 </html>

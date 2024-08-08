@@ -154,6 +154,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FORM_SANITIZE_HTML = StringUrl('form/sanitize-html')
     FORM_ENTRIES_LIST = StringUrl('form/entries/{pk}/list')
     FORM_ENTRIES_REF_NAME_LIST = StringUrl('form/entries/{pk}/ref-name/list')
+    FORM_VALID_EMAIL_OTP = StringUrl('form/runtime/auth/{tenant_code}/{form_code}')
+    FORM_VALID_SESSION = StringUrl('form/runtime/auth')
+    FORM_VALID_SESSION_PK = StringUrl('form/runtime/auth/{pk_form_session}')
 
     # comment
     COMMENT_LIST = StringUrl('comment/doc/{pk_doc}/{pk_app}/list')
@@ -635,9 +638,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROJECT_UPDATE_ORDER = StringUrl('project/update-order/{pk}')
     PROJECT_TASK_LIST = StringUrl('project/assign-task-list')
     PROJECT_TASK_LINK = StringUrl('project/assign-task-link/{pk}')
+    PROJECT_EXPENSE_LIST = StringUrl('project/project-expense-home-list')
     PROJECT_WORK_EXPENSE_LIST = StringUrl('project/work-expense-list')
-    PROJECT_BASELINE = StringUrl('project/create-baseline/list')
-    PROJECT_BASELINE_DETAIL = StringUrl('project/create-baseline/detail')
+    PROJECT_BASELINE = StringUrl('project/baseline/list')
+    PROJECT_BASELINE_DETAIL = StringUrl('project/baseline/detail')
 
     # Folder
     FOLDER_LIST = StringUrl('attachment/folder/list')

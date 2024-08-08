@@ -639,6 +639,14 @@ class ServerAPI:
         else:
             self.query_params = {}
 
+        params = kwargs.get('params', {})
+        self.query_params = {
+            **self.query_params,
+            **(params if isinstance(params, dict) else {}),
+        }
+
+        self.headers_tmp = kwargs.get('headers', {})
+
         self.is_dropdown = kwargs.get('is_dropdown', False)
 
     @property
@@ -667,6 +675,7 @@ class ServerAPI:
             'content-type': 'application/json',
             'Accept-Language': get_language_client(),
             **self.setup_header_dropdown,
+            **self.headers_tmp,
         }
         if self.user and getattr(self.user, 'access_token', None):
             data.update(APIUtil.key_authenticated(access_token=self.user.access_token))

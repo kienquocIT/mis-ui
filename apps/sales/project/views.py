@@ -2,8 +2,8 @@ __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI',
            'ProjectEdit', 'ProjectEditAPI', 'ProjectCreateGroupAPI', 'ProjectGroupListAPI', 'ProjectWorkCreateAPI',
            'ProjectWorkListAPI', 'ProjectGroupDetailAPI', 'ProjectWorkDetailAPI', 'ProjectMemberAddAPI',
            'ProjectMemberDetailAPI', 'ProjectUpdateOrderAPI', 'ProjectTaskListAPI', 'ProjectGroupDDListAPI',
-           'ProjectTaskDetailAPI', 'ProjectWorkExpenseAPI', 'ProjectCreateBaselineAPI', 'ProjectBaselineDetail',
-           'ProjectBaselineDetailAPI', 'ProjectHome', 'ProjectConfig', 'ProjectConfigAPI'
+           'ProjectTaskDetailAPI', 'ProjectWorkExpenseAPI', 'ProjectListBaselineAPI', 'ProjectBaselineDetail',
+           'ProjectBaselineDetailAPI', 'ProjectHome', 'ProjectConfig', 'ProjectConfigAPI', 'ProjectExpenseListAPI'
            ]
 
 from django.views import View
@@ -77,8 +77,10 @@ class ProjectDetail(View):
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_CONFIG).get()
         can_close = False
         if resp.state:
-            for item in resp.result.person_can_end:
-                if item.id == request.user.employee_current_data.id:
+            for item in resp.result['person_can_end']:
+                item_id = item.get('id', None)
+                emp_id = request.user.employee_current_data.get('id', None)
+                if item_id and emp_id and (item_id == emp_id):
                     can_close = True
                     break
         return {
@@ -111,8 +113,10 @@ class ProjectEdit(View):
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_CONFIG).get()
         can_close = False
         if resp.state:
-            for item in resp.result.person_can_end:
-                if item.id == request.user.employee_current_data.id:
+            for item in resp.result['person_can_end']:
+                item_id = item.get('id', None)
+                emp_id = request.user.employee_current_data.get('id', None)
+                if item_id and emp_id and (item_id == emp_id):
                     can_close = True
                     break
         return {
@@ -396,7 +400,30 @@ class ProjectWorkExpenseAPI(APIView):
         return resp.auto_return(key_success='work_expense_list')
 
 
-class ProjectCreateBaselineAPI(APIView):
+class ProjectExpenseListAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_EXPENSE_LIST).get(params)
+        return resp.auto_return(key_success='project_expense_list')
+
+
+class ProjectListBaselineAPI(APIView):
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_BASELINE).get(params)
+        return resp.auto_return(key_success='baseline_list')
+
     @mask_view(
         login_require=True,
         auth_require=True,

@@ -114,6 +114,10 @@ INSTALLED_APPS = \
         'apps.web_builder',
     ]
 
+INSTALLED_APPS += [
+    'django_extensions',
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

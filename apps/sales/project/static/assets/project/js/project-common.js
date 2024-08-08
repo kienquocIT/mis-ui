@@ -1093,40 +1093,40 @@ class ProjectWorkExpenseHandle{
 }
 
 class createBaseline {
-        static baselineSubmit() {
-            let $urlElm = $('#url-factory');
-            $('#create_baseline').on('click', function () {
-                Swal.fire({
-                    title: $.fn.gettext("Are you sure?"),
-                    text: $.fn.gettext("Create baseline at this moment?"),
-                    icon: "question",
-                    showCancelButton: true,
-                    // buttonsStyling: false,
-                    confirmButtonText: $.fn.gettext('Yes, I am'),
-                    cancelButtonText: $.fn.gettext("No, I'm not"),
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.value && result.isConfirmed) {
-                        let form_data = $('#data_form').data('form_data'),
-                            frm = {
-                                dataUrl: $urlElm.attr('data-baseline'),
-                                dataMethod: 'post',
-                                dataForm: {
-                                    title: form_data.title,
-                                    code: form_data.code,
-                                    project_related: form_data.id,
-                                    project_data: form_data,
-                                    employee_inherit_id: $('#employeeInheritInput').attr('data-value'),
-                                },
-                                dataUrlRedirect: $urlElm.attr('data-list')
-                            };
-                        WFRTControl.callWFSubmitForm(frm);
-                    }
-                })
+    static baselineSubmit() {
+        let $urlElm = $('#url-factory');
+        $('#create_baseline').on('click', function () {
+            Swal.fire({
+                title: $.fn.gettext("Are you sure?"),
+                text: $.fn.gettext("Create baseline at this moment?"),
+                icon: "question",
+                showCancelButton: true,
+                // buttonsStyling: false,
+                confirmButtonText: $.fn.gettext('Yes, I am'),
+                cancelButtonText: $.fn.gettext("No, I'm not"),
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value && result.isConfirmed) {
+                    let form_data = $('#data_form').data('form_data'),
+                        frm = {
+                            dataUrl: $urlElm.attr('data-baseline'),
+                            dataMethod: 'post',
+                            dataForm: {
+                                title: form_data.title,
+                                code: form_data.code,
+                                project_related: form_data.id,
+                                project_data: form_data,
+                                employee_inherit_id: $('#employeeInheritInput').attr('data-value'),
+                            },
+                            dataUrlRedirect: $urlElm.attr('data-list')
+                        };
+                    WFRTControl.callWFSubmitForm(frm);
+                }
             })
-        }
-
-        static init() {
-            createBaseline.baselineSubmit()
-        }
+        })
     }
+
+    static init() {
+        createBaseline.baselineSubmit()
+    }
+}

@@ -164,10 +164,16 @@ class AuthLogin(APIView):
 
 
 class AuthLogout(APIView):
-    @classmethod
-    def get(cls, request):
-        logout(request)
-        request.user = AnonymousUser
+    permission_classes = [APIAllowAny]  # force skip check permit action when skip authenticated
+    authentication_classes = [CSRFCheckSessionAuthentication]  # force check csrf
+
+    @mask_view(login_require=False, is_api=True)
+    def get(self, request, *args, **kwargs):
+        try:
+            logout(request)
+            request.user = AnonymousUser
+        except Exception:
+            pass
         return redirect(reverse('AuthLogin') + '?next=' + request.query_params.get('next', ''))
 
 

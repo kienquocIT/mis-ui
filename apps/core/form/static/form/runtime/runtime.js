@@ -6,7 +6,7 @@ $(document).ready(function () {
             // btn switch
             let btnSwitch$ = content$.find('#btnSwitchAccount');
             if (btnSwitch$.length > 0) {
-                btnSwitch$.attr('href', btnSwitch$.attr('href').replaceAll('next=', `next=${window.location.pathname}`));
+                btnSwitch$.attr('href', btnSwitch$.attr('href').replaceAll('__pk__', frm$.attr('data-code')));
             }
 
             // current user data

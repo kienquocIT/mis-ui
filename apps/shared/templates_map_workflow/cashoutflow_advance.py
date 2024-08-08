@@ -19,4 +19,7 @@ ADVANCE_DATA_MAP = {
     'expense_valid_list': FieldMapCommon(
         name_mapping=['expense_valid_list'],
     ).data,
+    'money_gave': FieldMapCommon(
+        name_mapping=['money_gave'],
+    ).data,
 }

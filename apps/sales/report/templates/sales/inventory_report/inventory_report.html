@@ -69,6 +69,7 @@
             data-url-inventory-list="{% url 'ReportInventoryListAPI' %}"
             data-url-inventory-list-view="{% url 'ReportInventoryProductWarehouseViewAPI' %}"
             data-url-qr-code-sn-info="{% url 'GetQRCodeSerialInfoAPI' %}"
+            data-url-qr-code-lot-info="{% url 'GetQRCodeLotInfoAPI' %}"
     ></script>
 
     <div class="row">
@@ -247,11 +248,48 @@
         </div>
     </div>
 
+    <div class="modal fade" style="z-index: 3333" id="modal-QR-lot" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" style="width: 400px" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="lot-view"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-12 text-center">
+                            <div class="btn-group" role="group">
+                                <span id="print-qr-lot" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="{% trans 'Print' %}">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary btn-square" id="print-document"><i class="fas fa-print"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <span class="text-primary">{% trans 'SCAN ME' %}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <image class="w-80 img-fluid rounded QR-lot-img" src="" alt="img"></image>
+                        </div>
+                        <div hidden id="QR-lot-img-div">
+                            <image class="w-80 img-fluid rounded QR-lot-img" src="" alt="img" style="width: 20vh; height: 20vh"></image>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" style="z-index: 3333" id="modal-QR-sn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" style="width: 400px" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="sn-view">{% trans 'Product information' %}</h5>
+                    <h5 class="modal-title" id="sn-view"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

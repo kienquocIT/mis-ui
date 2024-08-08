@@ -576,7 +576,7 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'lot_row') {
                             let expire_date = row?.['expire_date'] ? `(${row?.['expire_date']})` : ''
-                            return `<span class="text-blue fw-bold qr-code-lot-info"
+                            return `<a href="#"><span class="text-blue fw-bold qr-code-lot-info"
                                           data-product-id="${row?.['product']?.['id']}"
                                           data-product-code="${row?.['product']?.['code']}"
                                           data-product-title="${row?.['product']?.['title']}"
@@ -585,7 +585,7 @@ $(document).ready(function () {
                                           data-goods-receipt-date="${row?.['goods_receipt_date']}"
                                     >
                                         <i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['lot_number']}
-                                    </span> (${row?.['quantity_import']}) ${expire_date}`
+                                    </span> (${row?.['quantity_import']}) ${expire_date}</a>`
                         }
                         return ``
                     }
@@ -594,7 +594,7 @@ $(document).ready(function () {
                     className: 'w-25',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'sn_row') {
-                            return `<span class="text-dark fw-bold qr-code-sn-info"
+                            return `<a href="#"><span class="text-dark fw-bold qr-code-sn-info"
                                           data-product-id="${row?.['product']?.['id']}"
                                           data-product-code="${row?.['product']?.['code']}"
                                           data-product-title="${row?.['product']?.['title']}"
@@ -604,7 +604,7 @@ $(document).ready(function () {
                                           data-goods-receipt-date="${row?.['goods_receipt_date']}"
                                     >
                                         <i class="bi bi-upc"></i>&nbsp;${row?.['serial_number']}
-                                    </span> (${row?.['vendor_serial_number']})`
+                                    </span> (${row?.['vendor_serial_number']})</a>`
                         }
                         return ``
                     }
@@ -1328,5 +1328,52 @@ $(document).ready(function () {
 
     $('#print-qr-sn').on('click', function () {
         printQRsn('QR-sn-img-div')
+    })
+
+    $(document).on('click', '.qr-code-lot-info', function () {
+        let dataParam = {}
+        dataParam['product_id'] = $(this).attr('data-product-id')
+        dataParam['product_code'] = $(this).attr('data-product-code')
+        dataParam['product_title'] = $(this).attr('data-product-title')
+        dataParam['product_des'] = $(this).attr('data-product-description')
+        dataParam['lot_number'] = $(this).attr('data-lot-number')
+        dataParam['goods_receipt_date'] = $(this).attr('data-goods-receipt-date').split('T')[0]
+        let warehouse_view_list_ajax = $.fn.callAjax2({
+            url: url_script.attr('data-url-qr-code-lot-info'),
+            data: dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('qr_path_lot')) {
+                    return data?.['qr_path_lot'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([warehouse_view_list_ajax]).then(
+            (results) => {
+                $('#modal-QR-lot #lot-view').text(dataParam['lot_number'])
+                $('#modal-QR-lot .QR-lot-img').attr('src', results[0][0]?.['path'])
+                $('#modal-QR-lot').modal('show')
+            })
+    })
+
+    function printQRLot(lot_qr_id) {
+        let divContents = document.getElementById(lot_qr_id).innerHTML;
+        let a = window.open('', '');
+        a.document.write('<html><body>');
+        a.document.write(divContents);
+        a.document.write('</body></html>');
+        a.document.close();
+        a.print();
+    }
+
+    $('#print-qr-lot').on('click', function () {
+        printQRLot('QR-lot-img-div')
     })
 })

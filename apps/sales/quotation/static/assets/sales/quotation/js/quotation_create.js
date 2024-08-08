@@ -412,13 +412,14 @@ $(function () {
 // Action on click price list's option
         tableCost.on('click', '.table-row-price-option', function () {
             let priceValRaw = $(this)[0].getAttribute('data-value');
-            let whIDValRaw = $(this)[0].getAttribute('data-wh-id');
             if (priceValRaw) {
                 let row = $(this)[0].closest('tr');
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
                     $(elePrice).attr('value', String(priceValRaw));
-                    $(elePrice).attr('data-wh-id', whIDValRaw);
+                    if ($(this)[0].getAttribute('data-wh')) {
+                        $(elePrice).attr('data-wh', $(this)[0].getAttribute('data-wh'));
+                    }
                     $.fn.initMaskMoney2();
                     QuotationCalculateCaseHandle.commonCalculate(tableCost, row);
                 }
@@ -595,13 +596,8 @@ $(function () {
 
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)
-        $('#btn-check-promotion').on('click', function() {
-            if (QuotationLoadDataHandle.customerSelectEle.val()) {
-                promotionHandle.callPromotion(QuotationLoadDataHandle.customerSelectEle.val(), 0);
-            } else {
-                $('#datable-quotation-create-promotion').DataTable().destroy();
-                QuotationDataTableHandle.dataTablePromotion();
-            }
+        $('#btn-check-promotion').on('click', function () {
+            promotionHandle.callPromotion(0);
         });
 
 // Action click Apply Promotion
@@ -611,23 +607,15 @@ $(function () {
             // ReCalculate Total
             QuotationCalculateCaseHandle.updateTotal(tableProduct[0]);
             // get promotion condition to apply
-            let promotionData = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
+            let promotionData = JSON.parse($(this)[0].getAttribute('data-promotion'));
             let promotionParse = promotionHandle.getPromotionResult(promotionData);
-            let is_promotion_on_row = false;
-            if (promotionParse?.['is_promotion_on_row'] === true) {
-                is_promotion_on_row = true;
-            }
             let TotalOrder = tableProduct[0].querySelectorAll('.table-row-order').length;
             let TotalGroup = tableProduct[0].querySelectorAll('.table-row-group').length;
             let order = (TotalOrder - TotalGroup) + 1;
             let dataAdd = {
                 "tax": {},
                 "order": order,
-                "product": {
-                    "id": promotionParse?.['product_id'],
-                    "title": promotionParse?.['product_title'],
-                    "code": promotionParse?.['product_code'],
-                },
+                "product": {},
                 "product_code": promotionParse?.['product_code'],
                 "product_title": promotionParse?.['product_title'],
                 "unit_of_measure": {},
@@ -643,8 +631,8 @@ $(function () {
                 "product_subtotal_price": 0,
                 "product_discount_amount": 0,
                 "is_promotion": true,
-                "is_promotion_on_row": is_promotion_on_row,
-                "promotion": {"id": promotionParse?.['id'], "title": promotionParse?.['title']},
+                "promotion_id": promotionParse?.['id'],
+                "promotion_data": promotionParse,
                 "is_shipping": false,
                 "shipping": {},
             };
@@ -865,7 +853,7 @@ $(function () {
         formSubmit.submit(function (e) {
             e.preventDefault();
             if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method') === "POST") { // HAS PROMOTION => Check condition again
-                promotionHandle.callPromotion(QuotationLoadDataHandle.customerSelectEle.val(), 1);
+                promotionHandle.callPromotion(1);
                 // Check promotion then Submit Form
                 submitCheckPromotion();
             } else { // NO PROMOTION => submit normal

@@ -662,25 +662,7 @@ class QuotationLoadDataHandle {
         let TotalGroup = tableProduct[0].querySelectorAll('.table-row-group').length;
         let order = (TotalOrder - TotalGroup) + 1;
         let dataAdd = {
-            "tax": {
-                "id": "",
-                "code": "",
-                "title": "",
-                "value": 0
-            },
             "order": order,
-            "product": {
-                "id": "",
-                "code": "",
-                "title": ""
-            },
-            "product_code": "",
-            "product_title": "",
-            "unit_of_measure": {
-                "id": "",
-                "code": "",
-                "title": ""
-            },
             "product_quantity": 0,
             "product_uom_code": "",
             "product_tax_title": "",
@@ -692,10 +674,6 @@ class QuotationLoadDataHandle {
             "product_discount_value": 0,
             "product_subtotal_price": 0,
             "product_discount_amount": 0,
-            "is_promotion": false,
-            "promotion": {},
-            "is_shipping": false,
-            "shipping": {},
         }
         let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
         // check disable
@@ -1055,7 +1033,7 @@ class QuotationLoadDataHandle {
                             if (dataDetail?.['cost_list']) {
                                 if (Array.isArray(dataDetail?.['cost_list']) && dataDetail?.['cost_list'].length > 0) {
                                     for (let costData of dataDetail?.['cost_list']) {
-                                        htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh-id="${costData?.['warehouse']?.['id']}">
+                                        htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}">
                                                 <div class="d-flex justify-content-between">
                                                     <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
                                                     <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
@@ -1636,10 +1614,8 @@ class QuotationLoadDataHandle {
     };
 
     static loadSetupCopy(ele) {
-        let formSubmit = $('#frm_quotation_create');
         let divCopyOption = $('#copy-quotation-option');
         let tableCopyQuotationProduct = $('#datable-copy-quotation-product');
-        let tableProduct = $('#datable-quotation-create-product');
         let eleDataCopy = $('#data-copy-quotation-detail');
         if (eleDataCopy && eleDataCopy.length > 0) {
             if (eleDataCopy.val()) {
@@ -1658,13 +1634,13 @@ class QuotationLoadDataHandle {
                             let quantyInput = row.querySelector('.table-row-quantity-input').value;
                             let prodID = check.getAttribute('data-id');
                             for (let data of dataCopy?.['quotation_products_data']) {
-                                if (data?.['product']?.['id'] === prodID) {
+                                if (data?.['product_data']?.['id'] === prodID) {
                                     data['product_quantity'] = parseFloat(quantyInput);
                                     order++
                                     data['order'] = order;
                                     result.push(data);
                                     productCopyTo.push({
-                                        'id': data?.['product']?.['id'],
+                                        'id': data?.['product_data']?.['id'],
                                         'quantity': parseFloat(quantyInput)
                                     })
                                     break
@@ -2030,24 +2006,24 @@ class QuotationLoadDataHandle {
                     if (table[0].id === "datable-quotation-create-product") {  // product
                         if (row.querySelector('.table-row-item')) {
                             QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')));
-                            $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id'] ? dataRow?.['product']?.['id'] : '');
+                            $(row.querySelector('.table-row-item')).val(dataRow?.['product_data']?.['id'] ? dataRow?.['product_data']?.['id'] : '');
                             let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
                             if (boxRender) {
-                                boxRender.innerHTML = dataRow?.['product']?.['title'] ? dataRow?.['product']?.['title'] : '';
-                                boxRender.setAttribute('title', dataRow?.['product']?.['title'] ? dataRow?.['product']?.['title'] : '');
+                                boxRender.innerHTML = dataRow?.['product_data']?.['title'] ? dataRow?.['product_data']?.['title'] : '';
+                                boxRender.setAttribute('title', dataRow?.['product_data']?.['title'] ? dataRow?.['product_data']?.['title'] : '');
                             }
                             QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
                         }
                     }
                     if (table[0].id === "datable-quotation-create-cost") {  // cost
-                        QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
+                        QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow?.['product_data']);
                         QuotationLoadDataHandle.loadCostProduct(row.querySelector('.table-row-item'));
                     }
 
                     $(row.querySelector('.table-row-uom')).empty();
-                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['unit_of_measure']]);
+                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
                     $(row.querySelector('.table-row-tax')).empty();
-                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax']]);
+                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax_data']]);
                 }
             });
         }
@@ -2056,15 +2032,15 @@ class QuotationLoadDataHandle {
                 let row = this.node();
                 let dataRow = JSON.parse(row.querySelector('.table-row-order')?.getAttribute('data-row'));
                 $(row.querySelector('.table-row-item')).empty();
-                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['expense_item']]);
+                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['expense_item_data']]);
                 if (row?.querySelector('.table-row-labor-item') && dataRow?.['is_labor'] === true) {
                     $(row.querySelector('.table-row-labor-item')).empty();
-                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-labor-item')), [dataRow?.['expense']]);
+                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-labor-item')), [dataRow?.['expense_data']]);
                 }
                 $(row.querySelector('.table-row-uom')).empty();
-                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['unit_of_measure']]);
+                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
                 $(row.querySelector('.table-row-tax')).empty();
-                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax']]);
+                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax_data']]);
             });
         }
         if (table[0].id === "datable-quotation-payment-stage") {  // PAYMENT
@@ -2160,13 +2136,13 @@ class QuotationLoadDataHandle {
         }
     };
 
-    static loadReApplyPromotion(data, table) {
+    static loadReApplyPromotion(data) {
         if (Object.keys(data?.['customer']).length > 0) {
             let dataProductList = data?.['quotation_products_data'];
             for (let dataProduct of dataProductList) {
-                if (Object.keys(dataProduct?.['promotion']).length > 0) {
-                    let check = promotionHandle.checkPromotionValid(dataProduct?.['promotion'], data?.['customer']?.['id']);
-                    let promotionParse = promotionHandle.getPromotionResult(check);
+                if (dataProduct?.['promotion_id']) {
+                    let checkData = promotionHandle.checkPromotionValid(dataProduct?.['promotion_data'], data?.['customer']?.['id']);
+                    let promotionParse = promotionHandle.getPromotionResult(checkData);
                     let tableProduct = $('#datable-quotation-create-product');
                     if (promotionParse?.['is_discount'] === true) { // DISCOUNT
                         if (promotionParse?.['row_apply_index'] === null) { // on Specific product
@@ -2252,13 +2228,11 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_products_data";
                         }
                         let itemType = 0  // product
-                        if (row.hasOwnProperty('product') && row.hasOwnProperty('promotion') && row.hasOwnProperty('shipping')) {
-                            if (Object.keys(row['promotion']).length > 0) {
-                                itemType = 1  // promotion
-                            }
-                            if (Object.keys(row['shipping']).length > 0) {
-                                itemType = 2  // shipping
-                            }
+                        if (row?.['promotion_id']) {
+                            itemType = 1  // promotion
+                        }
+                        if (row?.['shipping_id']) {
+                            itemType = 2  // shipping
                         }
                         if (itemType === 0) { // PRODUCT
                             return `<div class="row table-row-item-area">
@@ -2273,8 +2247,11 @@ class QuotationDataTableHandle {
                             if (linkDetail) {
                                 link = linkDetail.format_url_with_uuid(row?.['promotion']?.['id']);
                             }
-                            return `<a href="${link}" target="_blank"><span class="badge badge-primary badge-sm"><span><span class="icon"><i class="fas fa-gift"></i></span>${QuotationLoadDataHandle.transEle.attr('data-promotion')}</span></span></a>
-                                    <p class="table-row-promotion" data-id="${row?.['promotion']?.['id']}" data-is-promotion-on-row="${row?.['is_promotion_on_row']}" data-id-product="${row?.['product']?.['id']}">${row?.['promotion']?.['title']}</p>`;
+                            return `<div class="voucher table-row-promotion" data-promotion="${JSON.stringify(row?.['promotion_data']).replace(/"/g, "&quot;")}" data-id-product="${row?.['promotion_data']?.['product_data']?.['id']}">
+                                      <span class="mask-money" data-init-money="${row?.['promotion_data']?.['title']}"></span>
+                                    </div>`;
+                            // return `<a href="${link}" target="_blank"><span class="badge badge-danger badge-outline"><span><span class="icon"><i class="fas fa-tags"></i></span>${QuotationLoadDataHandle.transEle.attr('data-promotion')}</span></span></a>
+                            //         <span class="table-row-promotion" data-promotion="${JSON.stringify(row?.['promotion_data']).replace(/"/g, "&quot;")}" data-id-product="${row?.['promotion_data']?.['product_data']?.['id']}">${row?.['promotion_data']?.['title']}</span>`;
                         } else if (itemType === 2) { // SHIPPING
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
@@ -2300,8 +2277,21 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
+                        let itemType = 0  // product
+                        if (row?.['promotion_id']) {
+                            itemType = 1  // promotion
+                        }
+                        if (row?.['shipping_id']) {
+                            itemType = 2  // shipping
+                        }
+                        let description = "";
+                        if (itemType === 0) {  // PRODUCT
+                            description = row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : '';
+                        } else if (itemType === 1) {  // PROMOTION
+                            description = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '';
+                        }
                         return `<div class="row">
-                                    <p class="table-row-description" data-zone="${dataZone}">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</p>
+                                    <p class="table-row-description" data-zone="${dataZone}">${description}</p>
                                 </div>`;
                     }
                 },
@@ -2949,17 +2939,12 @@ class QuotationDataTableHandle {
     static dataTablePromotion(data) {
         // init dataTable
         let $tables = $('#datable-quotation-create-promotion');
-        $tables.DataTableDefault({
+        $tables.not('.dataTable').DataTableDefault({
             data: data ? data : [],
-            // searching: false,
             paging: false,
             ordering: false,
             info: false,
             columnDefs: [],
-            drawCallback: function () {
-            },
-            rowCallback: function (row, data) {
-            },
             columns: [
                 {
                     targets: 0,
@@ -2980,11 +2965,15 @@ class QuotationDataTableHandle {
                         if (row?.['is_pass'] === false) {
                             disabled = `disabled`;
                         }
-                        return `<button type="button" class="btn btn-primary btn-sm apply-promotion" data-promotion-condition="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-bs-dismiss="modal" ${disabled}>${QuotationLoadDataHandle.transEle.attr('data-apply')}</button>`;
+                        return `<button type="button" class="btn btn-primary btn-sm apply-promotion" data-promotion="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-bs-dismiss="modal" ${disabled}>${QuotationLoadDataHandle.transEle.attr('data-apply')}</button>`;
                     },
                 }
             ],
         });
+        if ($tables.hasClass('dataTable')) {
+            $tables.DataTable().clear().draw();
+            $tables.DataTable().rows.add(data ? data : []).draw();
+        }
     };
 
     static dataTableCopyQuotation(data) {
@@ -3063,7 +3052,7 @@ class QuotationDataTableHandle {
                                             <input 
                                                 type="checkbox"
                                                 class="form-check-input table-row-check-product"
-                                                data-id="${row?.['product']?.['id']}"
+                                                data-id="${row?.['product_data']?.['id']}"
                                             >
                                         </div>
                                         <span class="table-row-title">${row?.['product_title']}</span>
@@ -3467,8 +3456,11 @@ class QuotationCalculateCaseHandle {
                         if (is_promotion === false) { // not promotion
                             pretaxAmount += parseFloat(subtotalRaw.value)
                         } else { // promotion
-                            if (row.querySelector('.table-row-promotion').getAttribute('data-is-promotion-on-row') === "true") {
-                                pretaxAmount -= parseFloat(subtotalRaw.value)
+                            if (row.querySelector('.table-row-promotion').getAttribute('data-promotion')) {
+                                let dataPm = JSON.parse(row.querySelector('.table-row-promotion').getAttribute('data-promotion'));
+                                if (dataPm?.['is_on_row'] === true) {
+                                    pretaxAmount -= parseFloat(subtotalRaw.value);
+                                }
                             }
                         }
                         // get shipping fee to minus on discount total
@@ -3485,8 +3477,11 @@ class QuotationCalculateCaseHandle {
                         if (is_promotion === false) { // not promotion
                             taxAmount += parseFloat(subTaxAmountRaw.value)
                         } else { // promotion
-                            if (row.querySelector('.table-row-promotion').getAttribute('data-is-promotion-on-row') === "true") {
-                                taxAmount -= parseFloat(subTaxAmountRaw.value)
+                            if (row.querySelector('.table-row-promotion').getAttribute('data-promotion')) {
+                                let dataPm = JSON.parse(row.querySelector('.table-row-promotion').getAttribute('data-promotion'));
+                                if (dataPm?.['is_on_row'] === true) {
+                                    taxAmount -= parseFloat(subTaxAmountRaw.value);
+                                }
                             }
                         }
                     }
@@ -4197,25 +4192,28 @@ class indicatorHandle {
 
 // Promotion
 class promotionHandle {
-    static callPromotion(customer_id = null, type_check) {
+    static callPromotion(type_check) {
         let $ele = $('#data-init-quotation-create-promotion');
-        if (customer_id) {
-            $.fn.callAjax2({
-                    'url': $ele.attr('data-url'),
-                    'method': $ele.attr('data-method'),
-                    'data': {'customer_type': 0},
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('promotion_check_list') && Array.isArray(data.promotion_check_list)) {
-                            let dataAllCus = data.promotion_check_list;
+        let customer_id = QuotationLoadDataHandle.customerSelectEle.val();
+        let currentDate = getCurrentDate();
+        $.fn.callAjax2({  // promotion for all
+                'url': $ele.attr('data-url'),
+                'method': $ele.attr('data-method'),
+                // 'data': {'customer_type': 0, 'valid_date_start__lte': currentDate, 'valid_date_end__gte': currentDate},
+                'data': {'customer_type': 0},
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('promotion_check_list') && Array.isArray(data.promotion_check_list)) {
+                        let dataAllCus = data.promotion_check_list;
+                        if (customer_id) {  // promotion for customer
                             $.fn.callAjax2({
                                     'url': $ele.attr('data-url'),
                                     'method': $ele.attr('data-method'),
-                                    'data': {'customers_map_promotion__id': customer_id},
+                                    'data': {'customers_map_promotion__id': customer_id, 'valid_date_start__lte': currentDate, 'valid_date_end__gte': currentDate},
                                     'isDropdown': true,
                                 }
                             ).then(
@@ -4223,37 +4221,41 @@ class promotionHandle {
                                     let data2 = $.fn.switcherResp(resp);
                                     if (data2) {
                                         if (data2.hasOwnProperty('promotion_check_list') && Array.isArray(data2.promotion_check_list)) {
-                                            let dataFinal = dataAllCus.concat(data2.promotion_check_list)
+                                            let dataFinal = dataAllCus.concat(data2.promotion_check_list);
                                             if (type_check === 0) {
                                                 promotionHandle.checkOnWorking(dataFinal, customer_id);
                                             }
                                             if (type_check === 1) {
                                                 promotionHandle.checkOnSubmit(dataFinal, customer_id);
                                             }
-
-
-
                                         }
                                     }
                                 }
                             )
+                        } else {
+                            let dataFinal = dataAllCus;
+                            if (type_check === 0) {
+                                promotionHandle.checkOnWorking(dataFinal, customer_id);
+                            }
+                            if (type_check === 1) {
+                                promotionHandle.checkOnSubmit(dataFinal, customer_id);
+                            }
                         }
                     }
                 }
-            )
-        }
+            }
+        )
         return true
     };
 
     static checkOnWorking(dataPromotion, customer_id) {
         let passList = [];
         let failList = [];
-        $('#datable-quotation-create-promotion').DataTable().destroy();
         dataPromotion.map(function (item) {
-            let check = promotionHandle.checkPromotionValid(item, customer_id);
-            if (check?.['is_pass'] === true) {
+            let checkData = promotionHandle.checkPromotionValid(item, customer_id);
+            if (checkData?.['is_pass'] === true) {
                 item['is_pass'] = true;
-                item['condition'] = check?.['condition'];
+                item['condition'] = checkData?.['condition'];
                 passList.push(item);
             } else {
                 item['is_pass'] = false;
@@ -4290,7 +4292,6 @@ class promotionHandle {
     };
 
     static checkPromotionValid(data_promotion, customer_id = null) {
-        let result = {'is_pass': false};
         let pretaxRaw = null;
         let totalRaw = null;
         let discountRaw = null;
@@ -4305,6 +4306,7 @@ class promotionHandle {
             }
         }
         if (tableProd.DataTable().data().count() !== 0) {
+            data_promotion['is_pass'] = false;
             if (data_promotion?.['is_discount'] === true) { // DISCOUNT
                 let is_before_tax = false;
                 let is_after_tax = false;
@@ -4313,11 +4315,9 @@ class promotionHandle {
                 let fixDiscountAmount = 0;
                 let conditionCheck = data_promotion?.['discount_method'];
                 // check limit used on Sale Order
-                let check_limit = promotionHandle.checkLimit(data_promotion, conditionCheck, customer_id);
+                let check_limit = promotionHandle.checkLimit(data_promotion, customer_id);
                 if (check_limit === false) {
-                    return {
-                        'is_pass': false,
-                    }
+                    return data_promotion;
                 }
                 // end check limit
                 if (conditionCheck?.['before_after_tax'] === true) {
@@ -4325,13 +4325,11 @@ class promotionHandle {
                 } else {
                     is_after_tax = true;
                 }
-
-                if (conditionCheck.percent_fix_amount === true) {
+                if (conditionCheck?.['percent_fix_amount'] === true) {
                     percentDiscount = conditionCheck?.['percent_value'];
                     maxDiscountAmount = conditionCheck?.['max_percent_value'];
-
                 } else {
-                    fixDiscountAmount = parseFloat(conditionCheck.fix_value);
+                    fixDiscountAmount = parseFloat(conditionCheck?.['fix_value']);
                 }
                 if (conditionCheck.hasOwnProperty('is_on_product')) { // discount on specific product
                     let prodID = conditionCheck?.['product_selected']?.['id'];
@@ -4344,55 +4342,8 @@ class promotionHandle {
                                 if (conditionCheck.hasOwnProperty('is_min_quantity')) { // Check condition quantity of product
                                     if (parseFloat(quantity.value) >= conditionCheck?.['num_minimum']) {
                                         if (conditionCheck.percent_fix_amount === true) { // discount by percent
-                                            result = {
-                                                'is_pass': true,
-                                                'condition': {
-                                                    'row_apply_index': tableProd.DataTable().row($(row)).index(),
-                                                    'is_discount': true,
-                                                    'is_gift': false,
-                                                    'is_before_tax': is_before_tax,
-                                                    'is_after_tax': is_after_tax,
-                                                    'is_on_product': true,
-                                                    'is_on_order': false,
-                                                    'is_on_percent': true,
-                                                    'is_fix_amount': false,
-                                                    'percent_discount': percentDiscount,
-                                                    'max_amount': maxDiscountAmount,
-                                                    'product_id': "",
-                                                    'product_title': data_promotion?.['title'],
-                                                    'product_code': data_promotion?.['code'],
-                                                    'product_description': data_promotion?.['remark'],
-                                                    'product_quantity': 1,
-                                                }
-                                            }
-                                        } else { // discount by fix amount
-                                            result = {
-                                                'is_pass': true,
-                                                'condition': {
-                                                    'row_apply_index': tableProd.DataTable().row($(row)).index(),
-                                                    'is_discount': true,
-                                                    'is_gift': false,
-                                                    'is_before_tax': is_before_tax,
-                                                    'is_after_tax': is_after_tax,
-                                                    'is_on_product': true,
-                                                    'is_on_order': false,
-                                                    'is_on_percent': false,
-                                                    'is_fix_amount': true,
-                                                    'fix_value': fixDiscountAmount,
-                                                    'product_id': "",
-                                                    'product_title': data_promotion?.['title'],
-                                                    'product_code': data_promotion?.['code'],
-                                                    'product_description': data_promotion?.['remark'],
-                                                    'product_quantity': 1,
-                                                }
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    if (conditionCheck.percent_fix_amount === true) { // discount by percent
-                                        result = {
-                                            'is_pass': true,
-                                            'condition': {
+                                            data_promotion['is_pass'] = true;
+                                            data_promotion['condition'] = {
                                                 'row_apply_index': tableProd.DataTable().row($(row)).index(),
                                                 'is_discount': true,
                                                 'is_gift': false,
@@ -4404,17 +4355,18 @@ class promotionHandle {
                                                 'is_fix_amount': false,
                                                 'percent_discount': percentDiscount,
                                                 'max_amount': maxDiscountAmount,
-                                                'product_id': "",
-                                                'product_title': data_promotion?.['title'],
-                                                'product_code': data_promotion?.['code'],
-                                                'product_description': data_promotion?.['remark'],
+                                                'product_data': {
+                                                    'id': "",
+                                                    'title': data_promotion?.['title'],
+                                                    'code': data_promotion?.['code'],
+                                                    'description': data_promotion?.['remark'],
+                                                },
                                                 'product_quantity': 1,
-                                            }
-                                        }
-                                    } else { // discount by fix amount
-                                        result = {
-                                            'is_pass': true,
-                                            'condition': {
+                                            };
+                                            return data_promotion;
+                                        } else { // discount by fix amount
+                                            data_promotion['is_pass'] = true;
+                                            data_promotion['condition'] = {
                                                 'row_apply_index': tableProd.DataTable().row($(row)).index(),
                                                 'is_discount': true,
                                                 'is_gift': false,
@@ -4425,13 +4377,63 @@ class promotionHandle {
                                                 'is_on_percent': false,
                                                 'is_fix_amount': true,
                                                 'fix_value': fixDiscountAmount,
-                                                'product_id': "",
-                                                'product_title': data_promotion?.['title'],
-                                                'product_code': data_promotion?.['code'],
-                                                'product_description': data_promotion?.['remark'],
+                                                'product_data': {
+                                                    'id': "",
+                                                    'title': data_promotion?.['title'],
+                                                    'code': data_promotion?.['code'],
+                                                    'description': data_promotion?.['remark'],
+                                                },
                                                 'product_quantity': 1,
-                                            }
+                                            };
+                                            return data_promotion;
                                         }
+                                    }
+                                } else {
+                                    if (conditionCheck.percent_fix_amount === true) { // discount by percent
+                                        data_promotion['is_pass'] = true;
+                                        data_promotion['condition'] = {
+                                            'row_apply_index': tableProd.DataTable().row($(row)).index(),
+                                            'is_discount': true,
+                                            'is_gift': false,
+                                            'is_before_tax': is_before_tax,
+                                            'is_after_tax': is_after_tax,
+                                            'is_on_product': true,
+                                            'is_on_order': false,
+                                            'is_on_percent': true,
+                                            'is_fix_amount': false,
+                                            'percent_discount': percentDiscount,
+                                            'max_amount': maxDiscountAmount,
+                                            'product_data': {
+                                                'id': "",
+                                                'title': data_promotion?.['title'],
+                                                'code': data_promotion?.['code'],
+                                                'description': data_promotion?.['remark'],
+                                            },
+                                            'product_quantity': 1,
+                                        };
+                                        return data_promotion;
+                                    } else { // discount by fix amount
+                                        data_promotion['is_pass'] = true;
+                                        data_promotion['condition'] = {
+                                            'row_apply_index': tableProd.DataTable().row($(row)).index(),
+                                            'is_discount': true,
+                                            'is_gift': false,
+                                            'is_before_tax': is_before_tax,
+                                            'is_after_tax': is_after_tax,
+                                            'is_on_product': true,
+                                            'is_on_order': false,
+                                            'is_on_percent': false,
+                                            'is_fix_amount': true,
+                                            'fix_value': fixDiscountAmount,
+                                            'product_data': {
+                                                'id': "",
+                                                'title': data_promotion?.['title'],
+                                                'code': data_promotion?.['code'],
+                                                'description': data_promotion?.['remark'],
+                                            },
+                                            'product_quantity': 1,
+                                        };
+                                        return data_promotion;
                                     }
                                 }
                             }
@@ -4442,106 +4444,108 @@ class promotionHandle {
                         if (totalRaw) {
                             if (parseFloat(totalRaw.value) >= parseFloat(conditionCheck?.['minimum_value'])) {
                                 if (conditionCheck.percent_fix_amount === true) { // discount by percent
-                                    return {
-                                        'is_pass': true,
-                                        'condition': {
-                                            'row_apply_index': null,
-                                            'is_discount': true,
-                                            'is_gift': false,
-                                            'is_before_tax': is_before_tax,
-                                            'is_after_tax': is_after_tax,
-                                            'is_on_product': false,
-                                            'is_on_order': true,
-                                            'is_on_percent': true,
-                                            'is_fix_amount': false,
-                                            'percent_discount': percentDiscount,
-                                            'max_amount': maxDiscountAmount,
-                                            'product_id': "",
-                                            'product_title': data_promotion?.['title'],
-                                            'product_code': data_promotion?.['code'],
-                                            'product_description': data_promotion?.['remark'],
-                                            'product_quantity': 1,
-                                        }
-                                    }
+                                    data_promotion['is_pass'] = true;
+                                    data_promotion['condition'] = {
+                                        'row_apply_index': null,
+                                        'is_discount': true,
+                                        'is_gift': false,
+                                        'is_before_tax': is_before_tax,
+                                        'is_after_tax': is_after_tax,
+                                        'is_on_product': false,
+                                        'is_on_order': true,
+                                        'is_on_percent': true,
+                                        'is_fix_amount': false,
+                                        'percent_discount': percentDiscount,
+                                        'max_amount': maxDiscountAmount,
+                                        'product_data': {
+                                            'id': "",
+                                            'title': data_promotion?.['title'],
+                                            'code': data_promotion?.['code'],
+                                            'description': data_promotion?.['remark'],
+                                        },
+                                        'product_quantity': 1,
+                                    };
+                                    return data_promotion;
                                 } else { // discount by fix amount
-                                    return {
-                                        'is_pass': true,
-                                        'condition': {
-                                            'row_apply_index': null,
-                                            'is_discount': true,
-                                            'is_gift': false,
-                                            'is_before_tax': is_before_tax,
-                                            'is_after_tax': is_after_tax,
-                                            'is_on_product': false,
-                                            'is_on_order': true,
-                                            'is_on_percent': false,
-                                            'is_fix_amount': true,
-                                            'fix_value': fixDiscountAmount,
-                                            'product_id': "",
-                                            'product_title': data_promotion?.['title'],
-                                            'product_code': data_promotion?.['code'],
-                                            'product_description': data_promotion?.['remark'],
-                                            'product_quantity': 1,
-                                        }
-                                    }
+                                    data_promotion['is_pass'] = true;
+                                    data_promotion['condition'] = {
+                                        'row_apply_index': null,
+                                        'is_discount': true,
+                                        'is_gift': false,
+                                        'is_before_tax': is_before_tax,
+                                        'is_after_tax': is_after_tax,
+                                        'is_on_product': false,
+                                        'is_on_order': true,
+                                        'is_on_percent': false,
+                                        'is_fix_amount': true,
+                                        'fix_value': fixDiscountAmount,
+                                        'product_data': {
+                                            'id': "",
+                                            'title': data_promotion?.['title'],
+                                            'code': data_promotion?.['code'],
+                                            'description': data_promotion?.['remark'],
+                                        },
+                                        'product_quantity': 1,
+                                    };
+                                    return data_promotion;
                                 }
                             }
                         }
                     } else {
                         if (conditionCheck.percent_fix_amount === true) { // discount by percent
-                            return {
-                                'is_pass': true,
-                                'condition': {
-                                    'row_apply_index': null,
-                                    'is_discount': true,
-                                    'is_gift': false,
-                                    'is_before_tax': is_before_tax,
-                                    'is_after_tax': is_after_tax,
-                                    'is_on_product': false,
-                                    'is_on_order': true,
-                                    'is_on_percent': true,
-                                    'is_fix_amount': false,
-                                    'percent_discount': percentDiscount,
-                                    'max_amount': maxDiscountAmount,
-                                    'product_id': "",
-                                    'product_title': data_promotion?.['title'],
-                                    'product_code': data_promotion?.['code'],
-                                    'product_description': data_promotion?.['remark'],
-                                    'product_quantity': 1,
-                                }
-                            }
+                            data_promotion['is_pass'] = true;
+                            data_promotion['condition'] = {
+                                'row_apply_index': null,
+                                'is_discount': true,
+                                'is_gift': false,
+                                'is_before_tax': is_before_tax,
+                                'is_after_tax': is_after_tax,
+                                'is_on_product': false,
+                                'is_on_order': true,
+                                'is_on_percent': true,
+                                'is_fix_amount': false,
+                                'percent_discount': percentDiscount,
+                                'max_amount': maxDiscountAmount,
+                                'product_data': {
+                                    'id': "",
+                                    'title': data_promotion?.['title'],
+                                    'code': data_promotion?.['code'],
+                                    'description': data_promotion?.['remark'],
+                                },
+                                'product_quantity': 1,
+                            };
+                            return data_promotion;
                         } else { // discount by fix amount
-                            return {
-                                'is_pass': true,
-                                'condition': {
-                                    'row_apply_index': null,
-                                    'is_discount': true,
-                                    'is_gift': false,
-                                    'is_before_tax': is_before_tax,
-                                    'is_after_tax': is_after_tax,
-                                    'is_on_product': false,
-                                    'is_on_order': true,
-                                    'is_on_percent': false,
-                                    'is_fix_amount': true,
-                                    'fix_value': fixDiscountAmount,
-                                    'product_id': "",
-                                    'product_title': data_promotion?.['title'],
-                                    'product_code': data_promotion?.['code'],
-                                    'product_description': data_promotion?.['remark'],
-                                    'product_quantity': 1,
-                                }
-                            }
+                            data_promotion['is_pass'] = true;
+                            data_promotion['condition'] = {
+                                'row_apply_index': null,
+                                'is_discount': true,
+                                'is_gift': false,
+                                'is_before_tax': is_before_tax,
+                                'is_after_tax': is_after_tax,
+                                'is_on_product': false,
+                                'is_on_order': true,
+                                'is_on_percent': false,
+                                'is_fix_amount': true,
+                                'fix_value': fixDiscountAmount,
+                                'product_data': {
+                                    'id': "",
+                                    'title': data_promotion?.['title'],
+                                    'code': data_promotion?.['code'],
+                                    'description': data_promotion?.['remark'],
+                                },
+                                'product_quantity': 1,
+                            };
+                            return data_promotion;
                         }
                     }
                 }
             } else if (data_promotion?.['is_gift'] === true) { // GIFT
                 let conditionCheck = data_promotion?.['gift_method'];
                 // check limit used on Sale Order
-                let check_limit = promotionHandle.checkLimit(data_promotion, conditionCheck, customer_id);
+                let check_limit = promotionHandle.checkLimit(data_promotion, customer_id);
                 if (check_limit === false) {
-                    return {
-                        'is_pass': false,
-                    }
+                    return data_promotion;
                 }
                 // end check limit
                 if (conditionCheck?.['is_free_product'] === true) {
@@ -4549,37 +4553,39 @@ class promotionHandle {
                         if (conditionCheck?.['before_after_tax'] === true) {
                             if (pretaxRaw && discountRaw) {
                                 if ((parseFloat(pretaxRaw.value) - parseFloat(discountRaw.value)) >= parseFloat(conditionCheck?.['min_purchase_cost'])) {
-                                    return {
-                                        'is_pass': true,
-                                        'condition': {
-                                            'row_apply_index': null,
-                                            'is_discount': false,
-                                            'is_gift': true,
-                                            'product_id': conditionCheck?.['product_received']?.['id'],
-                                            'product_title': conditionCheck?.['product_received']?.['title'],
-                                            'product_code': conditionCheck?.['product_received']?.['code'],
-                                            'product_description': data_promotion?.['remark'],
-                                            'product_quantity': parseFloat(conditionCheck?.['num_product_received']),
-                                        }
-                                    }
+                                    data_promotion['is_pass'] = true;
+                                    data_promotion['condition'] = {
+                                        'row_apply_index': null,
+                                        'is_discount': false,
+                                        'is_gift': true,
+                                        'product_data': {
+                                            'id': conditionCheck?.['product_received']?.['id'],
+                                            'title': conditionCheck?.['product_received']?.['title'],
+                                            'code': conditionCheck?.['product_received']?.['code'],
+                                            'description': data_promotion?.['remark'],
+                                        },
+                                        'product_quantity': parseFloat(conditionCheck?.['num_product_received']),
+                                    };
+                                    return data_promotion
                                 }
                             }
                         } else {
                             if (totalRaw) {
                                 if (parseFloat(totalRaw.value) >= parseFloat(conditionCheck?.['min_purchase_cost'])) {
-                                    return {
-                                        'is_pass': true,
-                                        'condition': {
-                                            'row_apply_index': null,
-                                            'is_discount': false,
-                                            'is_gift': true,
-                                            'product_id': conditionCheck?.['product_received']?.['id'],
-                                            'product_title': conditionCheck?.['product_received']?.['title'],
-                                            'product_code': conditionCheck?.['product_received']?.['code'],
-                                            'product_description': data_promotion?.['remark'],
-                                            'product_quantity': parseFloat(conditionCheck?.['num_product_received']),
-                                        }
-                                    }
+                                    data_promotion['is_pass'] = true;
+                                    data_promotion['condition'] = {
+                                        'row_apply_index': null,
+                                        'is_discount': false,
+                                        'is_gift': true,
+                                        'product_data': {
+                                            'id': conditionCheck?.['product_received']?.['id'],
+                                            'title': conditionCheck?.['product_received']?.['title'],
+                                            'code': conditionCheck?.['product_received']?.['code'],
+                                            'description': data_promotion?.['remark'],
+                                        },
+                                        'product_quantity': parseFloat(conditionCheck?.['num_product_received']),
+                                    };
+                                    return data_promotion
                                 }
                             }
                         }
@@ -4595,19 +4601,20 @@ class promotionHandle {
                                     if (parseFloat(quantity.value) >= purchase_num) {
                                         let total_received_raw = ((parseFloat(quantity.value) / parseFloat(purchase_num)) * parseFloat(conditionCheck.num_product_received))
                                         let total_received = Math.floor(total_received_raw);
-                                        result = {
-                                            'is_pass': true,
-                                            'condition': {
-                                                'row_apply_index': tableProd.DataTable().row($(row)).index(),
-                                                'is_discount': false,
-                                                'is_gift': true,
-                                                'product_id': conditionCheck?.['product_received']?.['id'],
-                                                'product_title': conditionCheck?.['product_received']?.['title'],
-                                                'product_code': conditionCheck?.['product_received']?.['code'],
-                                                'product_description': data_promotion?.['remark'],
-                                                'product_quantity': total_received,
-                                            }
-                                        }
+                                        data_promotion['is_pass'] = true;
+                                        data_promotion['condition'] = {
+                                            'row_apply_index': tableProd.DataTable().row($(row)).index(),
+                                            'is_discount': false,
+                                            'is_gift': true,
+                                            'product_data': {
+                                                'id': conditionCheck?.['product_received']?.['id'],
+                                                'title': conditionCheck?.['product_received']?.['title'],
+                                                'code': conditionCheck?.['product_received']?.['code'],
+                                                'description': data_promotion?.['remark'],
+                                            },
+                                            'product_quantity': total_received,
+                                        };
+                                        return data_promotion;
                                     }
                                 }
                             }
@@ -4616,18 +4623,21 @@ class promotionHandle {
                 }
             }
         }
-        return result;
+        return data_promotion;
     };
 
-    static checkLimit(data_promotion, conditionCheck, customer_id) {
-        let self = this;
+    static checkLimit(data_promotion, customer_id) {
+        let conditionCheck = data_promotion?.['discount_method'];
+        if (data_promotion?.['is_gift'] === true) {
+            conditionCheck = data_promotion?.['gift_method'];
+        }
         // CHECK MAX USAGES
-        let max_usages = conditionCheck.max_usages;
+        let max_usages = conditionCheck?.['max_usages'];
         if (max_usages > 0) {
             let check_max_usages = 0;
             for (let idx = 0; idx < data_promotion?.['sale_order_used'].length; idx++) {
                 let order_used = data_promotion?.['sale_order_used'][idx];
-                if (order_used.customer_id === customer_id) {
+                if (order_used?.['customer_id'] === customer_id) {
                     check_max_usages++
                 }
             }
@@ -4635,15 +4645,15 @@ class promotionHandle {
                 return false
             }
         }
-        // CHECK USE COUNT
-        let use_count = conditionCheck.use_count;
+        // CHECK USE COUNT IN SPECIFIC TIME/ CURRENT WEEK/ CURRENT MONTH
+        let use_count = conditionCheck?.['use_count'];
         if (use_count > 0) {
-            let times_condition = conditionCheck.times_condition;
+            let times_condition = conditionCheck?.['times_condition'];
             let check_use_count = 0;
             for (let i = 0; i < data_promotion?.['sale_order_used'].length; i++) {
                 let order_used = data_promotion?.['sale_order_used'][i];
-                if (order_used.customer_id === customer_id) {
-                    if (times_condition === 1) { // IN VALID TIME
+                if (order_used?.['customer_id'] === customer_id) {
+                    if (times_condition === 1) { // IN SPECIFIC TIME
                         let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM-DD')).getTime();
                         let startDate = new Date(data_promotion.valid_date_start).getTime();
                         let endDate = new Date(data_promotion.valid_date_end).getTime();
@@ -4653,8 +4663,8 @@ class promotionHandle {
                     } else if (times_condition === 2) { // IN CURRENT WEEK
                         let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM'));
                         let dateCurrent = new Date(moment($('#quotation-create-date-created')[0].innerHTML).format('YYYY-MM'));
-                        const weekNumber1 = self.getWeekNumber(dateToCheck);
-                        const weekNumber2 = self.getWeekNumber(dateCurrent);
+                        const weekNumber1 = promotionHandle.getWeekNumber(dateToCheck);
+                        const weekNumber2 = promotionHandle.getWeekNumber(dateCurrent);
                         if (weekNumber1 === weekNumber2) {
                             check_use_count++
                         }
@@ -4695,11 +4705,13 @@ class promotionHandle {
                 shippingFee = parseFloat(shippingPrice.value)
             }
         }
+        promotionData['is_discount'] = false;
+        promotionData['is_gift'] = false;
         if (condition?.['is_discount'] === true) { // DISCOUNT
             let DiscountAmount = 0;
             let taxID = "";
             let discount_rate_on_order = null;
-            let is_promotion_on_row = false;
+            let is_on_row = false;
             let is_before_tax = true;
             if (condition?.['is_on_product'] === true) { // discount on specific product
                 let row = tableProd.DataTable().row(condition?.['row_apply_index']).node();
@@ -4720,7 +4732,7 @@ class promotionHandle {
                         is_before_tax = false;
                     }
                 }
-                is_promotion_on_row = true;
+                is_on_row = true;
             } else if (condition?.['is_on_order'] === true) { // discount on whole order
                 if (condition?.['is_on_percent'] === true) { // discount by percent
                     if (condition.is_before_tax === true) {
@@ -4803,37 +4815,26 @@ class promotionHandle {
                     }
                 }
             }
-            return {
-                'id': promotionData?.['id'],
-                'title': promotionData?.['title'],
-                'row_apply_index': condition?.['row_apply_index'],
-                'is_discount': true,
-                'is_gift': false,
-                'product_id': condition?.['product_id'],
-                'product_title': condition?.['product_title'],
-                'product_code': condition?.['product_code'],
-                'product_description': "(Voucher) " + condition?.['product_description'],
-                'product_quantity': condition?.['product_quantity'],
-                'product_price': DiscountAmount,
-                'value_tax': taxID,
-                'discount_rate_on_order': discount_rate_on_order,
-                'is_promotion_on_row': is_promotion_on_row,
-                'is_before_tax': is_before_tax
-            }
+            promotionData['is_discount'] = true;
+            promotionData['title'] = -DiscountAmount;
+            promotionData['row_apply_index'] = condition?.['row_apply_index'];
+            promotionData['product_data'] = condition?.['product_data'];
+            promotionData['product_data']['description'] = "(Voucher)";
+            promotionData['product_quantity'] = condition?.['product_quantity'];
+            promotionData['product_price'] = DiscountAmount;
+            promotionData['value_tax'] = taxID;
+            promotionData['discount_rate_on_order'] = discount_rate_on_order;
+            promotionData['is_on_row'] = is_on_row;
+            promotionData['is_before_tax'] = is_before_tax;
+            return promotionData;
         } else if (condition?.['is_gift'] === true) { // GIFT
-            return {
-                'id': promotionData?.['id'],
-                'title': promotionData?.['title'],
-                'row_apply_index': condition?.['row_apply_index'],
-                'is_discount': false,
-                'is_gift': true,
-                'product_id': condition?.['product_id'],
-                'product_title': condition?.['product_title'],
-                'product_code': condition?.['product_code'],
-                'product_description': "(Gift) " + condition?.['product_description'],
-                'product_quantity': condition?.['product_quantity'],
-                'product_price': 0,
-            }
+            promotionData['is_gift'] = true;
+            promotionData['row_apply_index'] = condition?.['row_apply_index'];
+            promotionData['product_data'] = condition?.['product_data'];
+            promotionData['product_data']['description'] = "(Gift)";
+            promotionData['product_quantity'] = condition?.['product_quantity'];
+            promotionData['product_price'] = 0;
+            return promotionData;
         }
         return result
     };
@@ -5010,8 +5011,8 @@ class shippingHandle {
         let formula_condition = data_shipping?.['formula_condition'];
         let margin = parseFloat(data_shipping?.['margin']);
         let isPass = false;
-        for (let i = 0; i < formula_condition.length; i++) {
-            let location_condition = formula_condition[i]?.['location_condition']
+        for (let condition of formula_condition) {
+            let location_condition = condition?.['location_condition'];
             for (let l = 0; l < location_condition.length; l++) {
                 let location = location_condition[l];
                 if (shippingAddress.includes(location?.['title'])) { // check location
@@ -5039,15 +5040,13 @@ class shippingHandle {
                                         result_to_check += parseFloat(quantity.value);
                                     }
                                 } else if (unit?.['title'] === "volume") { // if condition is volume
-                                    return {
-                                        'is_pass': isPass,
-                                        'final_shipping_price': final_shipping_price
-                                    }
+                                    data_shipping['is_pass'] = isPass;
+                                    data_shipping['final_shipping_price'] = final_shipping_price;
+                                    return data_shipping;
                                 } else if (unit?.['title'] === "weight") { // if condition is weight
-                                    return {
-                                        'is_pass': isPass,
-                                        'final_shipping_price': final_shipping_price
-                                    }
+                                    data_shipping['is_pass'] = isPass;
+                                    data_shipping['final_shipping_price'] = final_shipping_price;
+                                    return data_shipping;
                                 }
                             }
                         });
@@ -5078,25 +5077,21 @@ class shippingHandle {
                                 margin_shipping_price = ((final_shipping_price * margin) / 100);
                                 final_shipping_price = (final_shipping_price + margin_shipping_price)
                             }
-                            return {
-                                'is_pass': isPass,
-                                'final_shipping_price': final_shipping_price,
-                                'margin_shipping_price': margin_shipping_price,
-                                'data_shipping': {
-                                    'shipping_id': data_shipping?.['id'],
-                                    'shipping_title': data_shipping?.['title'],
-                                    'shipping_code': data_shipping?.['code'],
-                                },
-                            }
+                            data_shipping['is_pass'] = isPass;
+                            data_shipping['final_shipping_price'] = final_shipping_price;
+                            data_shipping['margin_shipping_price'] = margin_shipping_price;
+                            data_shipping['data_shipping'] = {
+                                'id': data_shipping?.['id'],
+                                'title': data_shipping?.['title'],
+                                'code': data_shipping?.['code'],
+                            };
+                            return data_shipping;
                         }
                     }
                 }
             }
         }
-        return {
-            'is_pass': isPass,
-            'final_shipping_price': final_shipping_price
-        }
+        return data_shipping;
     };
 
     static calculateShipping(shipping_price) {
@@ -5146,37 +5141,34 @@ class QuotationStoreDataHandle {
             if (eleGroupTitle) {
                 rowData['group_title'] = eleGroupTitle.value;
             }
-            rowData['product'] = {};
-            rowData['unit_of_measure'] = {};
-            rowData['is_promotion'] = false;
-            rowData['promotion'] = {};
-            rowData['is_shipping'] = false;
-            rowData['shipping'] = {};
         } else if (eleProduct) { // PRODUCT
             if ($(eleProduct).val()) {
                 let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                 if (dataProduct) {
-                    rowData['product'] = dataProduct;
+                    rowData['product_id'] = dataProduct?.['id'];
                     rowData['product_title'] = dataProduct?.['title'];
                     rowData['product_code'] = dataProduct?.['code'];
+                    rowData['product_data'] = dataProduct;
                 }
             }
             let eleUOM = row.querySelector('.table-row-uom');
             if ($(eleUOM).val()) {
                 let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
                 if (dataUOM) {
-                    rowData['unit_of_measure'] = dataUOM;
+                    rowData['unit_of_measure_id'] = dataUOM?.['id'];
                     rowData['product_uom_title'] = dataUOM?.['title'];
                     rowData['product_uom_code'] = dataUOM?.['code'];
+                    rowData['uom_data'] = dataUOM;
                 }
             }
             let eleTax = row.querySelector('.table-row-tax');
             if ($(eleTax).val()) {
                 let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
                 if (dataTax) {
-                    rowData['tax'] = dataTax;
+                    rowData['tax_id'] = dataTax?.['id'];
                     rowData['product_tax_title'] = dataTax?.['title'];
                     rowData['product_tax_value'] = dataTax?.['rate'];
+                    rowData['tax_data'] = dataTax;
                 } else {
                     rowData['product_tax_value'] = 0;
                 }
@@ -5220,25 +5212,18 @@ class QuotationStoreDataHandle {
                 rowData['order'] = parseInt(eleOrder.innerHTML);
             }
             rowData['is_group'] = false;
-            rowData['is_promotion'] = false;
-            rowData['promotion'] = {};
-            rowData['is_shipping'] = false;
-            rowData['shipping'] = {};
             let dataGroupRaw = row.getAttribute('data-group');
             if (dataGroupRaw) {
                 rowData['group_order'] = parseInt(dataGroupRaw);
             }
         } else if (elePromotion) { // PROMOTION
-            let check_none_blank_list = ['', "", null, "undefined"];
             rowData['is_group'] = false;
-            rowData['product'] = {};
-            if (elePromotion.getAttribute('data-id-product') && !check_none_blank_list.includes(elePromotion.getAttribute('data-id-product'))) {
-                rowData['product'] = elePromotion.getAttribute('data-id-product');
-            }
             rowData['is_promotion'] = true;
-            rowData['promotion'] = {'id': elePromotion.getAttribute('data-id')};
-            rowData['is_shipping'] = false;
-            rowData['shipping'] = {};
+            if (elePromotion.getAttribute('data-promotion')) {
+                let dataPm = JSON.parse(elePromotion.getAttribute('data-promotion'));
+                rowData['promotion_id'] = dataPm?.['id'];
+                rowData['promotion_data'] = dataPm;
+            }
             rowData['product_title'] = elePromotion.value;
             rowData['product_code'] = elePromotion.value;
             rowData['unit_of_measure'] = null;
@@ -5357,9 +5342,10 @@ class QuotationStoreDataHandle {
         if ($(eleExpenseItem).val()) {
             let dataExpenseItem = SelectDDControl.get_data_from_idx($(eleExpenseItem), $(eleExpenseItem).val());
             if (dataExpenseItem) {
-                rowData['expense_item'] = dataExpenseItem;
+                rowData['expense_item_id'] = dataExpenseItem?.['id'];
                 rowData['expense_code'] = dataExpenseItem?.['code'];
                 rowData['expense_type_title'] = dataExpenseItem?.['title'];
+                rowData['expense_item_data'] = dataExpenseItem;
             }
         }
         if (row?.querySelector('.table-row-expense-title')) {
@@ -5370,8 +5356,9 @@ class QuotationStoreDataHandle {
             if ($(eleLaborItem).val()) {
                 let dataLaborItem = SelectDDControl.get_data_from_idx($(eleLaborItem), $(eleLaborItem).val());
                 if (dataLaborItem) {
-                    rowData['expense'] = dataLaborItem;
+                    rowData['expense_id'] = dataLaborItem?.['id'];
                     rowData['expense_title'] = dataLaborItem?.['title'];
+                    rowData['expense_data'] = dataLaborItem;
                 }
             }
         }
@@ -5379,18 +5366,20 @@ class QuotationStoreDataHandle {
         if ($(eleUOM).val()) {
             let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
             if (dataUOM) {
-                rowData['unit_of_measure'] = dataUOM;
+                rowData['unit_of_measure_id'] = dataUOM?.['id'];
                 rowData['product_uom_title'] = dataUOM?.['title'];
                 rowData['product_uom_code'] = dataUOM?.['code'];
+                rowData['uom_data'] = dataUOM;
             }
         }
         let eleTax = row.querySelector('.table-row-tax');
         if ($(eleTax).val()) {
             let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
             if (dataTax) {
-                rowData['tax'] = dataTax;
+                rowData['tax_id'] = dataTax?.['id'];
                 rowData['product_tax_title'] = dataTax?.['title'];
                 rowData['product_tax_value'] = dataTax?.['rate'];
+                rowData['tax_data'] = dataTax;
             } else {
                 rowData['product_tax_value'] = 0;
             }
@@ -5449,38 +5438,35 @@ class QuotationSubmitHandle {
                 if (eleGroupTitle) {
                     rowData['group_title'] = eleGroupTitle.value;
                 }
-                rowData['product'] = null;
-                rowData['unit_of_measure'] = null;
-                rowData['is_promotion'] = false;
-                rowData['promotion'] = null;
-                rowData['is_shipping'] = false;
-                rowData['shipping'] = null;
                 result.push(rowData);
             } else if (eleProduct) { // PRODUCT
                 if ($(eleProduct).val()) {
                     let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                     if (dataProduct) {
-                        rowData['product'] = dataProduct?.['id'];
+                        rowData['product_id'] = dataProduct?.['id'];
                         rowData['product_title'] = dataProduct?.['title'];
                         rowData['product_code'] = dataProduct?.['code'];
+                        rowData['product_data'] = dataProduct;
                     }
                 }
                 let eleUOM = row.querySelector('.table-row-uom');
                 if ($(eleUOM).val()) {
                     let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
                     if (dataUOM) {
-                        rowData['unit_of_measure'] = dataUOM?.['id'];
+                        rowData['unit_of_measure_id'] = dataUOM?.['id'];
                         rowData['product_uom_title'] = dataUOM?.['title'];
                         rowData['product_uom_code'] = dataUOM?.['code'];
+                        rowData['uom_data'] = dataUOM;
                     }
                 }
                 let eleTax = row.querySelector('.table-row-tax');
                 if ($(eleTax).val()) {
                     let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
                     if (dataTax) {
-                        rowData['tax'] = dataTax?.['id'];
+                        rowData['tax_id'] = dataTax?.['id'];
                         rowData['product_tax_title'] = dataTax?.['title'];
                         rowData['product_tax_value'] = dataTax?.['rate'];
+                        rowData['tax_data'] = dataTax;
                     } else {
                         rowData['product_tax_value'] = 0;
                     }
@@ -5525,26 +5511,19 @@ class QuotationSubmitHandle {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
                 }
                 rowData['is_group'] = false;
-                rowData['is_promotion'] = false;
-                rowData['promotion'] = null;
-                rowData['is_shipping'] = false;
-                rowData['shipping'] = null;
                 let dataGroupRaw = row.getAttribute('data-group');
                 if (dataGroupRaw) {
                     rowData['group_order'] = parseInt(dataGroupRaw);
                 }
                 result.push(rowData);
             } else if (elePromotion) { // PROMOTION
-                let check_none_blank_list = ['', "", null, "undefined"];
                 rowData['is_group'] = false;
-                rowData['product'] = null;
-                if (elePromotion.getAttribute('data-id-product') && !check_none_blank_list.includes(elePromotion.getAttribute('data-id-product'))) {
-                    rowData['product'] = elePromotion.getAttribute('data-id-product');
-                }
                 rowData['is_promotion'] = true;
-                rowData['promotion'] = elePromotion.getAttribute('data-id');
-                rowData['is_shipping'] = false;
-                rowData['shipping'] = null;
+                if (elePromotion.getAttribute('data-promotion')) {
+                    let dataPm = JSON.parse(elePromotion.getAttribute('data-promotion'));
+                    rowData['promotion_id'] = dataPm?.['id'];
+                    rowData['promotion_data'] = dataPm;
+                }
                 rowData['product_title'] = elePromotion.value;
                 rowData['product_code'] = elePromotion.value;
                 rowData['unit_of_measure'] = null;
@@ -5671,26 +5650,29 @@ class QuotationSubmitHandle {
             if ($(eleProduct).val()) { // PRODUCT
                 let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                 if (dataProduct) {
-                    rowData['product'] = dataProduct?.['id'];
+                    rowData['product_id'] = dataProduct?.['id'];
                     rowData['product_title'] = dataProduct?.['title'];
                     rowData['product_code'] = dataProduct?.['code'];
+                    rowData['product_data'] = dataProduct;
                 }
                 let eleUOM = row.querySelector('.table-row-uom');
                 if ($(eleUOM).val()) {
                     let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
                     if (dataUOM) {
-                        rowData['unit_of_measure'] = dataUOM?.['id'];
+                        rowData['unit_of_measure_id'] = dataUOM?.['id'];
                         rowData['product_uom_title'] = dataUOM?.['title'];
                         rowData['product_uom_code'] = dataUOM?.['code'];
+                        rowData['uom_data'] = dataUOM;
                     }
                 }
                 let eleTax = row.querySelector('.table-row-tax');
                 if ($(eleTax).val()) {
                     let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
                     if (dataTax) {
-                        rowData['tax'] = dataTax?.['id'];
+                        rowData['tax_id'] = dataTax?.['id'];
                         rowData['product_tax_title'] = dataTax?.['title'];
                         rowData['product_tax_value'] = dataTax?.['rate'];
+                        rowData['tax_data'] = dataTax;
                     } else {
                         rowData['product_tax_value'] = 0;
                     }
@@ -5706,9 +5688,10 @@ class QuotationSubmitHandle {
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
                     rowData['product_cost_price'] = $(elePrice).valCurrency();
-                    rowData['warehouse'] = null;
-                    if ($(elePrice).attr('data-wh-id')) {
-                        rowData['warehouse'] = $(elePrice).attr('data-wh-id');
+                    if ($(elePrice).attr('data-wh')) {
+                        let dataWH = JSON.parse($(elePrice).attr('data-wh'));
+                        rowData['warehouse_id'] = dataWH?.['id'];
+                        rowData['warehouse_data'] = dataWH;
                     }
                 }
                 let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
@@ -5722,9 +5705,6 @@ class QuotationSubmitHandle {
                 if (eleOrder) {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
                 }
-                rowData['is_shipping'] = false;
-                rowData['shipping'] = null;
-
                 result.push(rowData);
             } else if (eleShipping) { // SHIPPING
                 rowData['product'] = null;
@@ -5798,9 +5778,10 @@ class QuotationSubmitHandle {
             if ($(eleExpenseItem).val()) {
                 let dataExpenseItem = SelectDDControl.get_data_from_idx($(eleExpenseItem), $(eleExpenseItem).val());
                 if (dataExpenseItem) {
-                    rowData['expense_item'] = dataExpenseItem?.['id'];
+                    rowData['expense_item_id'] = dataExpenseItem?.['id'];
                     rowData['expense_code'] = dataExpenseItem?.['code'];
                     rowData['expense_type_title'] = dataExpenseItem?.['title'];
+                    rowData['expense_item_data'] = dataExpenseItem;
                 }
             }
             if (row?.querySelector('.table-row-expense-title')) {
@@ -5811,8 +5792,9 @@ class QuotationSubmitHandle {
                 if ($(eleLaborItem).val()) {
                     let dataLaborItem = SelectDDControl.get_data_from_idx($(eleLaborItem), $(eleLaborItem).val());
                     if (dataLaborItem) {
-                        rowData['expense'] = dataLaborItem?.['id'];
+                        rowData['expense_id'] = dataLaborItem?.['id'];
                         rowData['expense_title'] = dataLaborItem?.['title'];
+                        rowData['expense_data'] = dataLaborItem;
                     }
                 }
             }
@@ -5820,18 +5802,20 @@ class QuotationSubmitHandle {
             if ($(eleUOM).val()) {
                 let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
                 if (dataUOM) {
-                    rowData['unit_of_measure'] = dataUOM?.['id'];
+                    rowData['unit_of_measure_id'] = dataUOM?.['id'];
                     rowData['product_uom_title'] = dataUOM?.['title'];
                     rowData['product_uom_code'] = dataUOM?.['code'];
+                    rowData['uom_data'] = dataUOM;
                 }
             }
             let eleTax = row.querySelector('.table-row-tax');
             if ($(eleTax).val()) {
                 let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
                 if (dataTax) {
-                    rowData['tax'] = dataTax?.['id'];
+                    rowData['tax_id'] = dataTax?.['id'];
                     rowData['product_tax_title'] = dataTax?.['title'];
                     rowData['product_tax_value'] = dataTax?.['rate'];
+                    rowData['tax_data'] = dataTax;
                 } else {
                     rowData['product_tax_value'] = 0;
                 }
@@ -6190,6 +6174,14 @@ function getDataByProductID(product_id) {
         }
     }
     return uom_data
+}
+
+function getCurrentDate() {
+    let currentDate = new Date();
+    let day = String(currentDate.getDate()).padStart(2, '0');
+    let month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    let year = currentDate.getFullYear();
+    return `${year}-${month}-${day}`;
 }
 
 // math functions

@@ -59,12 +59,12 @@
           data-url="{% url 'AdvancePaymentDetailAPI' pk=pk %}">
         {% csrf_token %}
         <div class="row">
-            <div class="col-12">
-                <button type="button" class="btn btn-sm btn-gradient-primary" id="print-document"
-                        data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Print' %}"
-                >
-                    <i class="bi bi-printer"></i>
-                </button>
+            <div class="col-12 text-right">
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="{% trans 'Print' %}">
+                        <button type="button" class="btn btn-outline-secondary btn-square" id="print-document"><i class="fas fa-print"></i></button>
+                    </span>
+                </div>
             </div>
         </div>
         {% include 'advancepayment/common/body_block.html' %}

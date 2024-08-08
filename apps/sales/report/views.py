@@ -1,3 +1,5 @@
+import qrcode
+from datetime import datetime
 from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
@@ -179,6 +181,39 @@ class ReportInventoryProductWarehouseViewAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.REPORT_INVENTORY_PRD_WH_VIEW_LIST).get(data)
         return resp.auto_return(key_success='report_inventory_prd_wh_list')
+
+
+class GetQRCodeSerialInfoAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        now_day = datetime.now()
+        receipt_day = datetime.strptime(data.get('goods_receipt_date'), '%Y-%m-%d')
+        day_in_stock = str(now_day - receipt_day).split(', ')
+        qr.add_data(
+            f"- Product: [{data.get('product_code')}] - {data.get('product_title')}\n"
+            f"  {(data.get('product_des')) if data.get('product_des') else ''}\n"
+            f"- Serial number: {data.get('serial_number')}\n"
+            f"- Vendor serial number: {data.get('vendor_serial_number')}\n"
+            
+            f"- Goods receipt date: {data.get('goods_receipt_date')}\n"
+            f"- Days in stock: {day_in_stock[0]}\n\n"
+            f"* Latest updated: {day_in_stock[1].split('.')[0]} {str(now_day).split(' ')[0]}"
+        )
+        qr.make(fit=True)
+        img = qr.make_image(back_color=(255, 255, 255), fill_color='#007D88')
+        path = f"apps/sales/report/static/assets/sales/inventory_report/QR_sn_info/{data.get('product_id')}_{data.get('serial_number')}.png"
+        img.save(path)
+        return {'qr_path_sn': [{'path': path.replace('apps/sales/report', '')}]}, status.HTTP_200_OK
 
 
 # REPORT PIPELINE

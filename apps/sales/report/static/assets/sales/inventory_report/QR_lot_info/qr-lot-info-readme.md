@@ -1,0 +1,1 @@
+chứa các mã QR của LOT nhập vào

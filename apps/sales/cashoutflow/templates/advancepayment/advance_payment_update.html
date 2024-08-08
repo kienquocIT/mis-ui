@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Advance Payment Update' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <style>
+        .dropdown-menu { !important;
+            width: max-content;
+            border: solid 1px #d8d8d8;
+        }
+        .table td, .table th {
+            padding: 0.5rem;
+        }
+        #tab_line_detail_datatable input[disabled] {
+            cursor: text;
+        }
+        #tab_line_detail_datatable tbody .dropdown-toggle::after {
+            content: none;
+        }
+        tfoot tr {
+            border-style: hidden;
+            font-weight: bold;
+        }
+        .mask-money {
+            text-align: right; !important;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button id="update-advance" class="btn btn-outline-primary" type="submit" form="form-detail-advance">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    {% include 'printer/print.html' %}
+    <script id="script-url"
+            data-trans-unplanned="{% trans 'Unplanned expenses' %}"
+            data-url-ap-cost-list="{% url "AdvancePaymentCostListAPI" %}"
+            data-url-ap-mapped="{% url "AdvancePaymentListAPI" %}"
+            data-url-expense-quotation="{% url 'QuotationExpenseListAPI' %}"
+            data-url-expense-sale-order="{% url 'SaleOrderExpenseListAPI' %}"
+            data-url-payment-cost-list="{% url 'PaymentCostListAPI' %}">
+    </script>
+    {{ data.data.employee_current | json_script:"employee_current" }}
+    <form id="form-detail-advance"
+          data-method="PUT"
+          data-url-redirect="{% url "AdvancePaymentDetail" pk=pk %}"
+          data-url="{% url 'AdvancePaymentDetailAPI' pk=pk %}">
+        {% csrf_token %}
+
+        {% include 'advancepayment/common/body_block.html' %}
+        <div class="row">
+            <div class="col-12">
+                {% include 'advancepayment/common/tab_list.html' %}
+                <div class="tab-content">
+                    {% include 'advancepayment/common/tab_line_detail.html' %}
+                    {% include 'advancepayment/common/tab_plan.html' %}
+                    {% include 'advancepayment/common/tab_bank_info.html' %}
+                    {% include 'advancepayment/common/tab_attachment.html' %}
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
+    <script src="{% static "assets/js/advancepayment/advance_payment_common.js" %}"></script>
+    <script src="{% static "assets/js/advancepayment/advance_payment_update.js" %}"></script>
+
+    <script src="{% static 'printer/print.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#print-document').on('click', function () {
+                PrintTinymceControl.open_modal();
+            });
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% load i18n %}
+
+<div class="tab-pane fade show active" id="tab_line_detail" style="position: relative; overflow: auto; width: 100%;">
+    <div class="row" data-zone="expense_valid_list">
+        <div class="col-12">
+            <table id="tab_line_detail_datatable"
+                   class="table nowrap w-100"
+                   data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
+                   data-url-tax-list="{% url 'TaxListAPI' %}">
+                <thead>
+                <tr>
+                    <th class="text-center" style="min-width: 50px"></th>
+                    <th class="required" style="min-width: 300px">{% trans 'Expense name' %}</th>
+                    <th class="required" style="min-width: 350px">{% trans 'Expense type' %}</th>
+                    <th class="required" style="min-width: 200px">{% trans 'UoM' %}</th>
+                    <th class="required" style="min-width: 200px">{% trans 'Quantity' %}</th>
+                    <th class="required" style="min-width: 300px">{% trans 'Unit price' %}</th>
+                    <th style="min-width: 200px">{% trans 'Tax' %}</th>
+                    <th class="required" style="min-width: 300px">{% trans 'Subtotal price' %}</th>
+                    <th class="required" style="min-width: 300px">{% trans 'After tax subtotal' %}</th>
+                    <th style="min-width: 50px"></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button type="button" id="btn-add-row-line-detail" class="w-100 btn btn-primary btn-sm">
+                                <i class="fas fa-plus-circle"></i>
+                                {% trans 'Add new row' %}
+                            </button>
+                        </td>
+                        <td colspan="4"></td>
+                        <td>
+                            <span>{% trans "Pretax price" %}</span>
+                        </td>
+                        <td>
+                            <input data-zone="expense_valid_list" disabled class="form-control mask-money zone-readonly" id="pretax-value" value="0">
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="6"></td>
+                        <td>
+                            <span>{% trans "Taxes" %}</span>
+                        </td>
+                        <td>
+                            <input data-zone="expense_valid_list" disabled class="form-control mask-money zone-readonly" id="taxes-value" value="0">
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="6"></td>
+                        <td>
+                            {% trans "Total" %}
+                        </td>
+                        <td>
+                            <input data-zone="expense_valid_list" disabled class="form-control mask-money zone-readonly" id="total-value" value="0">
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

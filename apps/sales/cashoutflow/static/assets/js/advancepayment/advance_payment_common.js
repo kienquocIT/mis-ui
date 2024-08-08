@@ -1293,7 +1293,7 @@ function LoadDetailAP(option) {
                 }
 
                 calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
-
+                $('#total-value-by-words').val(data?.['advance_value_by_words'])
                 money_gave.prop('disabled', data?.['money_gave']);
                 money_gave.prop('checked', data?.['money_gave']);
 

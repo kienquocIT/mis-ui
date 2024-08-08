@@ -8340,3 +8340,7 @@ msgstr "ĐĂNG KÍ CHUNG"
 #
 msgid "Open to see Stock information of non-project products"
 msgstr "Mở để xem Thông tin tồn kho của các sản phẩm không thuộc dự án nào"
+
+#
+msgid "By words"
+msgstr "Bằng chữ"

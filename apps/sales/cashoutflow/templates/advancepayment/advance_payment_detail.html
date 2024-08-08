@@ -58,7 +58,15 @@
           data-url-redirect="{% url "AdvancePaymentDetail" pk=pk %}"
           data-url="{% url 'AdvancePaymentDetailAPI' pk=pk %}">
         {% csrf_token %}
-
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btn btn-sm btn-gradient-primary" id="print-document"
+                        data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Print' %}"
+                >
+                    <i class="bi bi-printer"></i>
+                </button>
+            </div>
+        </div>
         {% include 'advancepayment/common/body_block.html' %}
         <div class="row">
             <div class="col-12">

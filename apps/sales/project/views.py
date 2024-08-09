@@ -78,7 +78,9 @@ class ProjectDetail(View):
         can_close = False
         if resp.state:
             for item in resp.result['person_can_end']:
-                if item.id == request.user.employee_current_data.id:
+                item_id = item.get('id', None)
+                emp_id = request.user.employee_current_data.get('id', None)
+                if item_id and emp_id and (item_id == emp_id):
                     can_close = True
                     break
         return {
@@ -112,7 +114,9 @@ class ProjectEdit(View):
         can_close = False
         if resp.state:
             for item in resp.result['person_can_end']:
-                if item.id == request.user.employee_current_data.id:
+                item_id = item.get('id', None)
+                emp_id = request.user.employee_current_data.get('id', None)
+                if item_id and emp_id and (item_id == emp_id):
                     can_close = True
                     break
         return {

@@ -1,0 +1,41 @@
+ol.matrix-list-config {
+    padding-left: 0;
+}
+
+.matrix-list-config li {
+    position: relative;
+    margin-bottom: 10px;
+    min-height: 30px;
+    padding: 10px;
+    border: 1px solid #3d9ca5;
+    border-radius: 5px;
+    display: flex;
+}
+
+.matrix-list-config li .matrix-value {
+    display: block;
+    max-width: calc(100% - 30px - 10px - 3px);
+    border: 0;
+}
+
+.matrix-list-config li:hover .matrix-delete {
+    display: block;
+}
+
+.matrix-list-config li .matrix-delete {
+    display: none;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+.matrix-list-config li .matrix-delete button {
+    border: 0;
+    border-radius: 15px;
+    height: 30px;
+    width: 30px;
+    line-height: 30px;
+    background-color: red;
+    color: #fff;
+}

@@ -266,6 +266,10 @@ msgid "login"
 msgstr "Đăng nhập"
 
 #
+msgid "Find your account"
+msgstr "Tìm tài khoản của bạn"
+
+#
 msgid "Get OTP"
 msgstr "Lấy OTP"
 

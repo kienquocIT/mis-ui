@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Distribution Plan Update' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-detail-distribution-plan">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+
+{% endblock %}
+{% block dataHiddenGroup %}
+{% endblock %}
+{% block jsFooter %}
+        <script src="{% static 'assets/sales/distribution_plan/js/distribution_plan_common.js' %}"></script>
+    <script src="{% static 'assets/sales/distribution_plan/js/distribution_plan_update.js' %}"></script>
+{% endblock %}

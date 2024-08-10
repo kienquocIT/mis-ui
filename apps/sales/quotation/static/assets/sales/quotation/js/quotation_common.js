@@ -4808,8 +4808,8 @@ class promotionHandle {
 
             let taxAmountTotal = 0;
             if (is_before_tax === true) {
-                for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-                    let row = table[0].tBodies[0].rows[i];
+                table.DataTable().rows().every(function () {
+                    let row = this.node();
                     if (!row.querySelector('.table-row-shipping')) {
                         if (row.querySelector('.table-row-price')) {
                             // setup data
@@ -4871,11 +4871,11 @@ class promotionHandle {
                             }
                         }
                     }
-                }
+                });
             } else if (is_before_tax === false) {
                 let totalTaxAmountMinus = 0;
-                for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-                    let row = table[0].tBodies[0].rows[i];
+                table.DataTable().rows().every(function () {
+                    let row = this.node();
                     if (!row.querySelector('.table-row-shipping')) {
                         if (row.querySelector('.table-row-price')) {
                             // setup data
@@ -4936,7 +4936,7 @@ class promotionHandle {
                             }
                         }
                     }
-                }
+                });
                 taxAmountTotal = parseFloat(eleTaxesRaw.value) - totalTaxAmountMinus;
             }
             // apply Final Tax

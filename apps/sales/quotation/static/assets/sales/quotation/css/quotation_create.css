@@ -98,8 +98,8 @@ a.dropdown-item.table-row-price-option:hover {
 .voucher {
   width: 180px; /* Smaller width */
   padding: 4px; /* Smaller padding */
-  background-color: #ffebeb; /* Light background color */
-  border: 2px dashed red; /* Dashed border */
+  background-color: #f7f7f7; /* Light background color */
+  border: 2px dashed black; /* Dashed border */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
   text-align: center;
   font-family: Arial, sans-serif;

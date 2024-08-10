@@ -9,6 +9,22 @@ from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingPrope
 from apps.shared.constant import SYSTEM_STATUS
 
 
+def create_contract(request, url, msg):
+    resp = ServerAPI(user=request.user, url=url).post(request.data)
+    if resp.state:
+        resp.result['message'] = msg
+        return resp.result, status.HTTP_201_CREATED
+    return resp.auto_return()
+
+
+def update_contract(request, url, pk, msg):
+    resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
+    if resp.state:
+        resp.result['message'] = msg
+        return resp.result, status.HTTP_201_CREATED
+    return resp.auto_return()
+
+
 class ContractCreate(View):
     @mask_view(
         auth_require=True,
@@ -23,3 +39,25 @@ class ContractCreate(View):
             'form_id': 'frm_quotation_create',
         }
         return {}, status.HTTP_200_OK
+
+
+class ContractListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.CONTRACT_LIST).get(data)
+        return resp.auto_return(key_success='contract_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_contract(
+            request=request,
+            url=ApiURL.CONTRACT_LIST,
+            msg=SaleMsg.CONTRACT_CREATE
+        )

@@ -1014,13 +1014,12 @@ class QuotationLoadDataHandle {
         let formSubmit = $('#frm_quotation_create');
         let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
         if (productData) {
-            let data = productData;
             let costList = eleProduct.closest('tr').querySelector('.table-row-cost-list');
             // load PRICE
-            if (costList) {
+            if (costList && productData?.['id']) {
                 $(costList).empty();
                 let htmlDD = ``;
-                let urlDetail = QuotationLoadDataHandle.urlEle.attr('data-url-product-detail').format_url_with_uuid(data?.['id']);
+                let urlDetail = QuotationLoadDataHandle.urlEle.attr('data-url-product-detail').format_url_with_uuid(productData?.['id']);
                 // call ajax get info product detail
                 $.fn.callAjax2({
                     url: urlDetail,
@@ -1487,7 +1486,7 @@ class QuotationLoadDataHandle {
                 let uom = row.querySelector('.table-row-uom');
                 let tax = row.querySelector('.table-row-tax');
                 let shipping = row.querySelector('.table-row-shipping');
-                if ($(product).val()) { // PRODUCT
+                if (product) { // PRODUCT
                     dataProduct = SelectDDControl.get_data_from_idx($(product), $(product).val());
                     if ($(uom).val()) {
                         dataUOM = SelectDDControl.get_data_from_idx($(uom), $(uom).val());
@@ -1501,25 +1500,7 @@ class QuotationLoadDataHandle {
                     }
                     valueOrder++
                     let dataAdd = {
-                        "tax": {
-                            "id": "",
-                            "code": "",
-                            "title": "",
-                            "value": 0
-                        },
                         "order": valueOrder,
-                        "product": {
-                            "id": "",
-                            "code": "",
-                            "title": ""
-                        },
-                        "product_code": "",
-                        "product_title": "",
-                        "unit_of_measure": {
-                            "id": "",
-                            "code": "",
-                            "title": ""
-                        },
                         "product_quantity": valueQuantity,
                         "product_uom_code": "",
                         "product_tax_title": "",
@@ -1528,60 +1509,42 @@ class QuotationLoadDataHandle {
                         "product_cost_price": 0,
                         "product_tax_amount": valueTaxAmount,
                         "product_subtotal_price": valueSubtotal,
-                        "is_shipping": false,
-                        "shipping": {},
                     }
                     let newRow = $table.DataTable().row.add(dataAdd).draw().node();
                     QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
-                } else if (shipping) { // SHIPPING
-                    let shippingID = shipping.getAttribute('data-id');
-                    let shippingTitle = shipping.value;
-                    valueQuantity = 1;
-                    valueSubtotal = parseFloat(row.querySelector('.table-row-subtotal-raw').value);
-                    // check if margin then minus
-                    let shippingPriceMargin = shipping.getAttribute('data-shipping-price-margin');
-                    if (shippingPriceMargin) {
-                        if (parseFloat(shippingPriceMargin) > 0) {
-                            valueSubtotal = valueSubtotal - parseFloat(shippingPriceMargin);
+                }
+                if (shipping) { // SHIPPING
+                    if (shipping.getAttribute('data-shipping')) {
+                        let dataShipping = JSON.parse(shipping.getAttribute('data-shipping'));
+                        valueQuantity = 1;
+                        valueSubtotal = parseFloat(row.querySelector('.table-row-subtotal-raw').value);
+                        // check if margin then minus
+                        if (dataShipping?.['shipping_margin']) {
+                            if (dataShipping?.['shipping_margin'] > 0) {
+                                valueSubtotal = valueSubtotal - dataShipping?.['shipping_margin'];
+                            }
                         }
+                        valueOrder++
+                        let dataAdd = {
+                            "order": valueOrder,
+                            "product_quantity": valueQuantity,
+                            "product_uom_code": "",
+                            "product_tax_title": "",
+                            "product_tax_value": 0,
+                            "product_uom_title": "",
+                            "product_cost_price": valueSubtotal,
+                            "product_tax_amount": valueTaxAmount,
+                            "product_subtotal_price": valueSubtotal,
+                            "is_shipping": true,
+                            "shipping_id": dataShipping?.['id'],
+                            "shipping_data": dataShipping,
+                        }
+                        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
+                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
+                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
                     }
-                    valueOrder++
-                    let dataAdd = {
-                        "tax": {
-                            "id": "",
-                            "code": "",
-                            "title": "",
-                            "value": 0
-                        },
-                        "order": valueOrder,
-                        "product": {
-                            "id": shippingID,
-                            "code": "",
-                            "title": shippingTitle
-                        },
-                        "product_code": "",
-                        "product_title": shippingTitle,
-                        "unit_of_measure": {
-                            "id": "",
-                            "code": "",
-                            "title": ""
-                        },
-                        "product_quantity": valueQuantity,
-                        "product_uom_code": "",
-                        "product_tax_title": "",
-                        "product_tax_value": 0,
-                        "product_uom_title": "",
-                        "product_cost_price": valueSubtotal,
-                        "product_tax_amount": valueTaxAmount,
-                        "product_subtotal_price": valueSubtotal,
-                        "is_shipping": true,
-                        "shipping": {"id": shippingID},
-                    }
-                    let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
                 }
             })
             // Re calculate
@@ -2245,22 +2208,22 @@ class QuotationDataTableHandle {
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-promotion').data('link-detail');
                             if (linkDetail) {
-                                link = linkDetail.format_url_with_uuid(row?.['promotion']?.['id']);
+                                link = linkDetail.format_url_with_uuid(row?.['promotion_id']);
                             }
-                            return `<div class="voucher table-row-promotion" data-promotion="${JSON.stringify(row?.['promotion_data']).replace(/"/g, "&quot;")}" data-id-product="${row?.['promotion_data']?.['product_data']?.['id']}">
-                                      <span class="mask-money" data-init-money="${row?.['promotion_data']?.['title']}"></span>
-                                    </div>`;
-                            // return `<a href="${link}" target="_blank"><span class="badge badge-danger badge-outline"><span><span class="icon"><i class="fas fa-tags"></i></span>${QuotationLoadDataHandle.transEle.attr('data-promotion')}</span></span></a>
-                            //         <span class="table-row-promotion" data-promotion="${JSON.stringify(row?.['promotion_data']).replace(/"/g, "&quot;")}" data-id-product="${row?.['promotion_data']?.['product_data']?.['id']}">${row?.['promotion_data']?.['title']}</span>`;
+                            // return `<div class="voucher table-row-promotion" data-promotion="${JSON.stringify(row?.['promotion_data']).replace(/"/g, "&quot;")}" data-id-product="${row?.['promotion_data']?.['product_data']?.['id']}">
+                            //           <span class="mask-money" data-init-money="${row?.['promotion_data']?.['title']}"></span>
+                            //         </div>`;
+                            return `<div class="table-row-promotion" data-promotion="${JSON.stringify(row?.['promotion_data']).replace(/"/g, "&quot;")}" data-id-product="${row?.['promotion_data']?.['product_data']?.['id']}"><i class="fas fa-tags mr-2"></i><span>${QuotationLoadDataHandle.transEle.attr('data-promotion')}</span></div>`;
                         } else if (itemType === 2) { // SHIPPING
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
                             if (linkDetail) {
-                                link = linkDetail.format_url_with_uuid(row?.['shipping']?.['id']);
+                                link = linkDetail.format_url_with_uuid(row?.['shipping_id']);
                             }
-                            let price_margin = row?.['shipping']?.['shipping_price_margin'] ? row?.['shipping']?.['shipping_price_margin'] : "0";
-                            return `<a href="${link}" target="_blank"><span class="badge badge-primary badge-sm"><span><span class="icon"><i class="fas fa-gift"></i></span>${QuotationLoadDataHandle.transEle.attr('data-shipping')}</span></span></a>
-                                    <p class="table-row-shipping" data-id="${row?.['shipping']?.['id']}" data-shipping-price-margin="${price_margin}">${row?.['product_title']}</p>`;
+                            // return `<div class="voucher table-row-shipping" data-shipping="${JSON.stringify(row?.['shipping_data']).replace(/"/g, "&quot;")}">
+                            //           <span class="mask-money" data-init-money="${row?.['shipping_data']?.['title']}"></span>
+                            //         </div>`;
+                            return `<div class="table-row-shipping" data-shipping="${JSON.stringify(row?.['shipping_data']).replace(/"/g, "&quot;")}"><i class="fas fa-shipping-fast mr-2"></i><span>${QuotationLoadDataHandle.transEle.attr('data-shipping')}</span></div>`;
                         }
                     }
                 },
@@ -2290,9 +2253,7 @@ class QuotationDataTableHandle {
                         } else if (itemType === 1) {  // PROMOTION
                             description = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '';
                         }
-                        return `<div class="row">
-                                    <p class="table-row-description" data-zone="${dataZone}">${description}</p>
-                                </div>`;
+                        return `<p class="table-row-description" data-zone="${dataZone}">${description}</p>`;
                     }
                 },
                 {
@@ -3082,7 +3043,6 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-quotation-create-shipping');
         $tables.not('.dataTable').DataTableDefault({
             data: data ? data : [],
-            // searching: false,
             paging: false,
             ordering: false,
             info: false,
@@ -3102,17 +3062,17 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.title}</span>`
+                        return `<span class="table-row-title">${row?.['title']}</span>`
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        if (row.is_pass === true) {
-                            return `<button type="button" class="btn btn-primary apply-shipping" data-shipping-price="${row.final_shipping_price}" data-shipping-price-margin="${row.margin_shipping_price}" data-shipping-id="${row.id}" data-shipping="${JSON.stringify(row.data_shipping).replace(/"/g, "&quot;")}" data-bs-dismiss="modal">Apply</button>`;
-                        } else {
-                            return `<button type="button" class="btn btn-primary apply-shipping" disabled>Apply</button>`;
+                        let disabled = '';
+                        if (row?.['is_pass'] === false) {
+                            disabled = 'disabled';
                         }
+                        return `<button type="button" class="btn btn-primary btn-sm apply-shipping" data-shipping="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-bs-dismiss="modal" ${disabled}>${QuotationLoadDataHandle.transEle.attr('data-apply')}</button>`;
                     },
                 }
             ],
@@ -3145,16 +3105,11 @@ class QuotationDataTableHandle {
                         if (shippingAddress) {
                             data.shipping_check_list.map(function (item) {
                                 if (!checkList.includes(item?.['id'])) {
-                                    let check = shippingHandle.checkShippingValid(item, shippingAddress);
-                                    if (check.is_pass === true) {
-                                        item['is_pass'] = true;
-                                        item['final_shipping_price'] = check.final_shipping_price;
-                                        item['margin_shipping_price'] = check.margin_shipping_price;
-                                        item['data_shipping'] = check?.['data_shipping'];
-                                        passList.push(item);
+                                    let checkData = shippingHandle.checkShippingValid(item, shippingAddress);
+                                    if (checkData?.['is_pass'] === true) {
+                                        passList.push(checkData);
                                     } else {
-                                        item['is_pass'] = false;
-                                        failList.push(item);
+                                        failList.push(checkData);
                                     }
                                     checkList.push(item?.['id']);
                                 }
@@ -5010,82 +4965,86 @@ class shippingHandle {
         let margin_shipping_price = 0;
         let formula_condition = data_shipping?.['formula_condition'];
         let margin = parseFloat(data_shipping?.['margin']);
-        let isPass = false;
-        for (let condition of formula_condition) {
-            let location_condition = condition?.['location_condition'];
-            for (let l = 0; l < location_condition.length; l++) {
-                let location = location_condition[l];
-                if (shippingAddress.includes(location?.['title'])) { // check location
-                    let $table = $('#datable-quotation-create-product');
-                    let formula_list = formula_condition[i].formula;
-                    for (let f = 0; f < formula_list.length; f++) {
-                        let formula = formula_list[f]; // check formula condition
-                        let unit = formula?.['unit'];
-                        let amount_condition = parseFloat(formula?.['threshold']);
-                        let operator = formula?.['comparison_operators'];
-                        let extra_amount = parseFloat(formula.extra_amount);
-                        let shipping_price = parseFloat(formula?.['amount_condition']);
-                        let result_to_check = 0;
-                        $table.DataTable().rows().every(function () {
-                            let row = this.node();
-                            if (row.querySelector('.table-row-item')) {
-                                let quantity = row.querySelector('.table-row-quantity');
-                                let elePrice = row.querySelector('.table-row-price');
-                                if (unit?.['title'] === "price") { // if condition is price
-                                    if (quantity && elePrice) {
-                                        result_to_check += (parseFloat(quantity.value) * $(elePrice).valCurrency());
+        data_shipping['is_pass'] = false;
+        if (data_shipping?.['cost_method'] === 0) {  // fixed price for all
+            data_shipping['is_pass'] = true;
+            data_shipping['title'] = data_shipping?.['fixed_price'];
+            data_shipping['shipping_price'] = data_shipping?.['fixed_price'];
+            data_shipping['shipping_margin'] = data_shipping?.['margin'];
+            return data_shipping;
+        }
+        if (data_shipping?.['cost_method'] === 1) {  // check price by formula
+            for (let condition of formula_condition) {
+                let location_condition = condition?.['location_condition'];
+                for (let location of location_condition) {
+                    if (shippingAddress.includes(location?.['title'])) { // check location
+                        let $table = $('#datable-quotation-create-product');
+                        let formula_list = condition?.['formula'];
+                        for (let formula of formula_list) {
+                            let unit = formula?.['unit'];
+                            let amount_condition = parseFloat(formula?.['threshold']);
+                            let operator = formula?.['comparison_operators'];
+                            let extra_amount = parseFloat(formula?.['extra_amount']);
+                            let shipping_price = parseFloat(formula?.['amount_condition']);
+                            let result_to_check = 0;
+                            $table.DataTable().rows().every(function () {
+                                let row = this.node();
+                                if (row.querySelector('.table-row-item')) {
+                                    let quantity = row.querySelector('.table-row-quantity');
+                                    let elePrice = row.querySelector('.table-row-price');
+                                    if (unit?.['title'] === "price") { // if condition is price
+                                        if (quantity && elePrice) {
+                                            result_to_check += (parseFloat(quantity.value) * $(elePrice).valCurrency());
+                                        }
+                                    } else if (unit?.['title'] === "quantity") { // if condition is quantity
+                                        if (quantity) {
+                                            result_to_check += parseFloat(quantity.value);
+                                        }
+                                    } else if (unit?.['title'] === "volume") { // if condition is volume
+                                        data_shipping['is_pass'] = true;
+                                        data_shipping['title'] = final_shipping_price;
+                                        data_shipping['shipping_price'] = final_shipping_price;
+                                        return data_shipping;
+                                    } else if (unit?.['title'] === "weight") { // if condition is weight
+                                        data_shipping['is_pass'] = true;
+                                        data_shipping['title'] = final_shipping_price;
+                                        data_shipping['shipping_price'] = final_shipping_price;
+                                        return data_shipping;
                                     }
-                                } else if (unit?.['title'] === "quantity") { // if condition is quantity
-                                    if (quantity) {
-                                        result_to_check += parseFloat(quantity.value);
-                                    }
-                                } else if (unit?.['title'] === "volume") { // if condition is volume
-                                    data_shipping['is_pass'] = isPass;
-                                    data_shipping['final_shipping_price'] = final_shipping_price;
-                                    return data_shipping;
-                                } else if (unit?.['title'] === "weight") { // if condition is weight
-                                    data_shipping['is_pass'] = isPass;
-                                    data_shipping['final_shipping_price'] = final_shipping_price;
-                                    return data_shipping;
+                                }
+                            });
+                            if (operator === 1) {
+                                if (result_to_check < amount_condition) {
+                                    data_shipping['is_pass'] = true;
+                                }
+                            } else if (operator === 2) {
+                                if (result_to_check > amount_condition) {
+                                    data_shipping['is_pass'] = true;
+                                }
+                            } else if (operator === 3) {
+                                if (result_to_check <= amount_condition) {
+                                    data_shipping['is_pass'] = true;
+                                }
+                            } else if (operator === 4) {
+                                if (result_to_check >= amount_condition) {
+                                    data_shipping['is_pass'] = true;
                                 }
                             }
-                        });
-                        if (operator === 1) {
-                            if (result_to_check < amount_condition) {
-                                isPass = true;
+                            if (data_shipping['is_pass'] === true) {
+                                if (data_shipping?.['cost_method'] === 0) {
+                                    final_shipping_price = parseFloat(data_shipping?.['fixed_price']);
+                                } else if (data_shipping?.['cost_method'] === 1) {
+                                    final_shipping_price = (shipping_price + (extra_amount * result_to_check));
+                                }
+                                if (margin > 0) {
+                                    margin_shipping_price = ((final_shipping_price * margin) / 100);
+                                    final_shipping_price = (final_shipping_price + margin_shipping_price)
+                                }
+                                data_shipping['title'] = final_shipping_price;
+                                data_shipping['shipping_price'] = final_shipping_price;
+                                data_shipping['shipping_margin'] = margin_shipping_price;
+                                return data_shipping;
                             }
-                        } else if (operator === 2) {
-                            if (result_to_check > amount_condition) {
-                                isPass = true;
-                            }
-                        } else if (operator === 3) {
-                            if (result_to_check <= amount_condition) {
-                                isPass = true;
-                            }
-                        } else if (operator === 4) {
-                            if (result_to_check >= amount_condition) {
-                                isPass = true;
-                            }
-                        }
-                        if (isPass === true) {
-                            if (data_shipping?.['cost_method'] === 0) {
-                                final_shipping_price = parseFloat(data_shipping?.['fixed_price']);
-                            } else if (data_shipping?.['cost_method'] === 1) {
-                                final_shipping_price = (shipping_price + (extra_amount * result_to_check));
-                            }
-                            if (margin > 0) {
-                                margin_shipping_price = ((final_shipping_price * margin) / 100);
-                                final_shipping_price = (final_shipping_price + margin_shipping_price)
-                            }
-                            data_shipping['is_pass'] = isPass;
-                            data_shipping['final_shipping_price'] = final_shipping_price;
-                            data_shipping['margin_shipping_price'] = margin_shipping_price;
-                            data_shipping['data_shipping'] = {
-                                'id': data_shipping?.['id'],
-                                'title': data_shipping?.['title'],
-                                'code': data_shipping?.['code'],
-                            };
-                            return data_shipping;
                         }
                     }
                 }

@@ -291,6 +291,36 @@ class ContractStoreHandle {
     };
 }
 
+// Submit Form
+class ContractSubmitHandle {
+    static setupDataDocument() {
+        let result = [];
+        ContractDataTableHandle.$tableDocument.DataTable().rows().every(function () {
+            let row = this.node();
+            let eleTitle = row.querySelector('.table-row-title');
+            let btnAttach = row.querySelector('.btn-attach');
+            if (eleTitle && btnAttach) {
+                let attachment = [];
+                if (btnAttach.getAttribute('data-store')) {
+                    attachment.push(JSON.parse(btnAttach.getAttribute('data-store')));
+                }
+                result.push({
+                    'title': eleTitle.value,
+                    'attachment': attachment,
+                })
+            }
+        });
+        return result
+    };
+
+    static setupDataSubmit(_form) {
+        let dataDocument = ContractSubmitHandle.setupDataDocument();
+        if (dataDocument.length > 0) {
+            _form.dataForm['contract_document'] = dataDocument;
+        }
+    };
+}
+
 // Common
 class ContractCommonHandle {
     static commonDeleteRow(currentRow, $table) {
@@ -333,6 +363,13 @@ class ContractCommonHandle {
         let month = String(currentDate.getMonth() + 1).padStart(2, '0');
         let year = currentDate.getFullYear();
         return `${day}/${month}/${year}`;
+    }
+
+    static filterFieldList(field_list, data_json) {
+        for (let key in data_json) {
+            if (!field_list.includes(key)) delete data_json[key]
+        }
+        return data_json;
     }
 
 }

@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block cssHeader %}
-    <link href="{% static 'assets/sales/quotation/css/quotation_create.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_quotation_create">
+    <button class="btn btn-outline-primary" type="submit" form="frm_contract_create">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -17,7 +16,7 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'QuotationListAPI' %}"
+            data-url="{% url 'ContractListAPI' %}"
             data-url-redirect="{% url 'QuotationList' %}"
             data-method="POST"
             id="frm_contract_create"
@@ -62,7 +61,7 @@
                     <textarea class="form-control" id="inp-contents"></textarea>
                 </div>
             </div>
-            <div class="col-12 col-md-5 col-lg-5 bg-light" id="file-area">
+            <div class="col-12 col-md-5 col-lg-5" id="file-area">
                 <div class="form-group">
                     <label class="form-label" for="contract-doc-remark">{% trans 'Description' %}</label>
                     <textarea class="form-control" rows="3" id="contract-doc-remark" name="remarks" disabled></textarea>

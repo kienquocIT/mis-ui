@@ -713,65 +713,46 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // ReCalculate Total
-            QuotationCalculateCaseHandle.updateTotal(tableProduct[0])
-            let shippingPrice = parseFloat($(this)[0].getAttribute('data-shipping-price'));
-            let shippingPriceMargin = parseFloat($(this)[0].getAttribute('data-shipping-price-margin'));
-            let dataShipping = JSON.parse($(this)[0].getAttribute('data-shipping'));
-            let TotalOrder = tableProduct[0].querySelectorAll('.table-row-order').length;
-            let TotalGroup = tableProduct[0].querySelectorAll('.table-row-group').length;
-            let order = (TotalOrder - TotalGroup) + 1;
-            let dataAdd = {
-                "tax": {
-                    "id": "",
-                    "code": "",
-                    "title": "",
-                    "value": 0
-                },
-                "order": order,
-                "product": {
-                    "id": dataShipping?.['id'],
-                    "title": dataShipping?.['shipping_title'],
-                    "code": "",
-                },
-                "product_code": "",
-                "product_title": dataShipping?.['shipping_title'],
-                "unit_of_measure": {
-                    "id": "",
-                    "code": "",
-                    "title": ""
-                },
-                "product_quantity": 1,
-                "product_uom_code": "",
-                "product_tax_title": "",
-                "product_tax_value": 0,
-                "product_uom_title": "",
-                "product_tax_amount": 0,
-                "product_unit_price": shippingPrice,
-                "product_description": dataShipping?.['shipping_title'],
-                "product_discount_value": 0,
-                "product_subtotal_price": shippingPrice,
-                "product_discount_amount": 0,
-                "is_promotion": false,
-                "is_shipping": true,
-                "shipping": {
-                    "id": $(this)[0].getAttribute('data-shipping-id'),
-                    "shipping_price_margin": shippingPriceMargin
-                }
-            };
-            let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-            QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-            QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-            // Re Calculate after add shipping (pretax, discount, total)
-            shippingHandle.calculateShipping(shippingPrice);
-            // Load disabled
-            QuotationLoadDataHandle.loadRowDisabled(newRow);
-            // ReOrder STT
-            reOrderSTT(tableProduct);
-            // load again table cost
-            QuotationLoadDataHandle.loadDataTableCost();
-            QuotationLoadDataHandle.loadSetWFRuntimeZone();
-            // store data
-            QuotationStoreDataHandle.storeProduct(newRow);
+            QuotationCalculateCaseHandle.updateTotal(tableProduct[0]);
+            if (this.getAttribute('data-shipping')) {
+                let dataShipping = JSON.parse(this.getAttribute('data-shipping'));
+                let shippingPrice = parseFloat(dataShipping?.['shipping_price']);
+                let TotalOrder = tableProduct[0].querySelectorAll('.table-row-order').length;
+                let TotalGroup = tableProduct[0].querySelectorAll('.table-row-group').length;
+                let order = (TotalOrder - TotalGroup) + 1;
+                let dataAdd = {
+                    "order": order,
+                    "product_quantity": 1,
+                    "product_uom_code": "",
+                    "product_tax_title": "",
+                    "product_tax_value": 0,
+                    "product_uom_title": "",
+                    "product_tax_amount": 0,
+                    "product_unit_price": shippingPrice,
+                    "product_description": dataShipping?.['title'],
+                    "product_discount_value": 0,
+                    "product_subtotal_price": shippingPrice,
+                    "product_discount_amount": 0,
+                    "is_promotion": false,
+                    "is_shipping": true,
+                    "shipping_id": dataShipping?.['id'],
+                    "shipping_data": dataShipping,
+                };
+                let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+                QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
+                QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+                // Re Calculate after add shipping (pretax, discount, total)
+                shippingHandle.calculateShipping(shippingPrice);
+                // Load disabled
+                QuotationLoadDataHandle.loadRowDisabled(newRow);
+                // ReOrder STT
+                reOrderSTT(tableProduct);
+                // load again table cost
+                QuotationLoadDataHandle.loadDataTableCost();
+                QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                // store data
+                QuotationStoreDataHandle.storeProduct(newRow);
+            }
         });
 
 // INDICATORS

@@ -171,60 +171,78 @@
                                         <p>{% trans 'Columns' %}</p>
                                         <ol class="matrix-list-config">
                                             <li>
+                                                <div class="matrix-drag">
+                                                    <i class="fa-solid fa-grip-vertical"></i>
+                                                </div>
                                                 <input class="matrix-value form-control" value="Hoàn toàn hài lòng" name="matrix_columns" />
                                                 <div class="matrix-delete">
-                                                    <button>
+                                                    <button type="button" class="matrix-btn-delete">
                                                         <i class="fa-solid fa-xmark"></i>
                                                     </button>
                                                 </div>
                                             </li>
                                             <li>
+                                                <div class="matrix-drag">
+                                                    <i class="fa-solid fa-grip-vertical"></i>
+                                                </div>
                                                 <input class="matrix-value form-control" value="Bình thường" name="matrix_columns" />
                                                 <div class="matrix-delete">
-                                                    <button>
+                                                    <button type="button" class="matrix-btn-delete">
                                                         <i class="fa-solid fa-xmark"></i>
                                                     </button>
                                                 </div>
                                             </li>
                                             <li>
+                                                <div class="matrix-drag">
+                                                    <i class="fa-solid fa-grip-vertical"></i>
+                                                </div>
                                                 <input class="matrix-value form-control" value="Hoàn toàn không hài lòng" name="matrix_columns"/>
                                                 <div class="matrix-delete">
-                                                    <button>
+                                                    <button type="button" class="matrix-btn-delete">
                                                         <i class="fa-solid fa-xmark"></i>
                                                     </button>
                                                 </div>
                                             </li>
-                                            <button id="matrix-add-new-column" class="btn btn-primary no-transform">{% trans 'Add new row' %}</button>
+                                            <button id="matrix-add-new-column" class="btn btn-primary no-transform" type="button">{% trans 'Add new row' %}</button>
                                         </ol>
                                     </div>
                                     <div style="flex-basis: calc(50% - 15px);margin-left: 15px;">
                                         <p>{% trans 'Rows' %}</p>
                                         <ol class="matrix-list-config">
                                             <li>
+                                                <div class="matrix-drag">
+                                                    <i class="fa-solid fa-grip-vertical"></i>
+                                                </div>
                                                 <input class="matrix-value form-control" value="Tiền gửi, tiết kiệm" name="matrix_rows" />
                                                 <div class="matrix-delete">
-                                                    <button>
+                                                    <button type="button" class="matrix-btn-delete">
                                                         <i class="fa-solid fa-xmark"></i>
                                                     </button>
                                                 </div>
                                             </li>
                                             <li>
+                                                <div class="matrix-drag">
+                                                    <i class="fa-solid fa-grip-vertical"></i>
+                                                </div>
                                                 <input class="matrix-value form-control" value="Dịch vụ thẻ" name="matrix_rows"/>
                                                 <div class="matrix-delete">
-                                                    <button>
+                                                    <button type="button" class="matrix-btn-delete">
                                                         <i class="fa-solid fa-xmark"></i>
                                                     </button>
                                                 </div>
                                             </li>
                                             <li>
+                                                <div class="matrix-drag">
+                                                    <i class="fa-solid fa-grip-vertical"></i>
+                                                </div>
                                                 <input class="matrix-value form-control" value="Dịch vụ du học" name="matrix_rows" />
                                                 <div class="matrix-delete">
-                                                    <button>
+                                                    <button type="button" class="matrix-btn-delete">
                                                         <i class="fa-solid fa-xmark"></i>
                                                     </button>
                                                 </div>
                                             </li>
-                                            <button id="matrix-add-new-row" class="btn btn-primary no-transform">{% trans 'Add new row' %}</button>
+                                            <button id="matrix-add-new-row" class="btn btn-primary no-transform" type="button">{% trans 'Add new row' %}</button>
                                         </ol>
                                     </div>
                                 </div>
@@ -396,7 +414,7 @@
                     trData.push(`
                         <tr>
                             <td>${item}</td>
-                            ${data['cols'].map(item2 => '<td></td>')}
+                            ${data['cols'].map(item2 => '<td><i class="fa-regular fa-square-check"></i></td>')}
                         </tr>
                     `);
                 }
@@ -406,6 +424,9 @@
 
         function newItemMatrix(ele$, rows_or_cols){
             $(`<li>
+                <div class="matrix-drag">
+                    <i class="fa-solid fa-grip-vertical"></i>
+                </div>
                 <input class="matrix-value form-control" value="${$.fn.gettext('Enter text')}" name="matrix_${rows_or_cols}" />
                 <div class="matrix-delete">
                     <button>
@@ -423,5 +444,20 @@
         btnAddMatrixRow$.on('click', function(){
             newItemMatrix($(this), 'rows');
         })
+
+        form$.find('.matrix-list-config')
+            .on('click', 'button.matrix-btn-delete', function (){
+               alert('Request delete.');
+            })
+            .each(function (){
+                $(this).sortable({
+                    items: "li",
+                    revert: true,
+                    placeholder: "item-dragging",
+                    update: function (event, ui) {
+                        tblMatrixShow$.trigger('data.load');
+                    }
+                })
+            });
     })
 </script>

@@ -12,9 +12,18 @@ ol.matrix-list-config {
     display: flex;
 }
 
+.matrix-list-config li .matrix-drag {
+    width: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #7c7c7c;
+    cursor: move;
+}
+
 .matrix-list-config li .matrix-value {
     display: block;
-    max-width: calc(100% - 30px - 10px - 3px);
+    max-width: calc(100% - 30px - 10px - 3px - 20px - 3px);
     border: 0;
 }
 

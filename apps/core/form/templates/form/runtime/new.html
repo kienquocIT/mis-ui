@@ -6,6 +6,7 @@
     <form
             data-url="{% url 'FormPostNewData' form_code=code use_at=use_at %}"
             id="{{ formIdx }}"
+            data-code="{{ code }}"
             data-user-current-name="{{ user_current.full_name }}"
             data-url-submitted-edit="{% url 'FormSubmittedViewEdit' form_code=code pk='__pk__' %}"
             data-url-submitted="{% url 'FormPublishedRuntimeSubmitted' form_code=code %}"

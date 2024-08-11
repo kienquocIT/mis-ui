@@ -154,6 +154,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FORM_SANITIZE_HTML = StringUrl('form/sanitize-html')
     FORM_ENTRIES_LIST = StringUrl('form/entries/{pk}/list')
     FORM_ENTRIES_REF_NAME_LIST = StringUrl('form/entries/{pk}/ref-name/list')
+    FORM_VALID_EMAIL_OTP = StringUrl('form/runtime/auth/{tenant_code}/{form_code}')
+    FORM_VALID_SESSION = StringUrl('form/runtime/auth')
+    FORM_VALID_SESSION_PK = StringUrl('form/runtime/auth/{pk_form_session}')
 
     # comment
     COMMENT_LIST = StringUrl('comment/doc/{pk_doc}/{pk_app}/list')
@@ -599,15 +602,18 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Goods Registration
     GOODS_REGISTRATION_LIST = StringUrl('inventory/goods-registration/list')
     GOODS_REGISTRATION_DETAIL = StringUrl('inventory/goods-registration/{pk}')
-    GOODS_REGISTRATION_ITEM_SUB_LIST = StringUrl('inventory/goods-registration-item-sub/list')
-    GOODS_REGISTRATION_PRD_WH = StringUrl('inventory/goods-registration-prd-wh-general')
-    GOODS_REGISTRATION_PRD_WH_LOT = StringUrl('inventory/goods-registration-prd-wh-lot')
-    GOODS_REGISTRATION_PRD_WH_SN = StringUrl('inventory/goods-registration-prd-wh-serial')
+    GOODS_REGISTRATION_ITEM_SUB_LIST = StringUrl('inventory/gre-item-sub/list')
+    GRE_ITEM_PRD_WH = StringUrl('inventory/gre-item-prd-wh')
+    GRE_ITEM_PRD_WH_LOT = StringUrl('inventory/gre-item-prd-wh-lot')
+    GRE_ITEM_PRD_WH_SN = StringUrl('inventory/gre-item-prd-wh-serial')
     PRODUCT_LIST_FOR_PROJECT = StringUrl('inventory/product-list-for-project')
     PRODUCT_LIST_FOR_NONE_PROJECT = StringUrl('inventory/product-list-for-none-project')
-    GOODS_REGISTRATION_ITEM_BORROW_LIST = StringUrl('inventory/goods-registration-item-borrow/list')
-    GOODS_REGISTRATION_ITEM_BORROW_DETAIL = StringUrl('inventory/goods-registration-item-borrow/{pk}')
-    GOODS_REGISTRATION_ITEM_AVAILABLE_QUANTITY = StringUrl('inventory/goods-registration-item-available-quantity')
+    GRE_ITEM_BORROW_LIST = StringUrl('inventory/gre-item-borrow/list')
+    GRE_ITEM_BORROW_DETAIL = StringUrl('inventory/gre-item-borrow/{pk}')
+    GRE_ITEM_AVAILABLE_QUANTITY = StringUrl('inventory/gre-item-available-quantity')
+    NONE_GRE_ITEM_BORROW_LIST = StringUrl('inventory/none-gre-item-borrow/list')
+    NONE_GRE_ITEM_BORROW_DETAIL = StringUrl('inventory/none-gre-item-borrow/{pk}')
+    NONE_GRE_ITEM_AVAILABLE_QUANTITY = StringUrl('inventory/none-gre-item-available-quantity')
     GOODS_REGISTRATION_BORROW_LIST = StringUrl('inventory/goods-regis-borrow/list')
 
     INVOICE_SIGN_LIST = StringUrl('ar-invoice/sign/list')
@@ -632,9 +638,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROJECT_UPDATE_ORDER = StringUrl('project/update-order/{pk}')
     PROJECT_TASK_LIST = StringUrl('project/assign-task-list')
     PROJECT_TASK_LINK = StringUrl('project/assign-task-link/{pk}')
+    PROJECT_EXPENSE_LIST = StringUrl('project/project-expense-home-list')
     PROJECT_WORK_EXPENSE_LIST = StringUrl('project/work-expense-list')
-    PROJECT_BASELINE = StringUrl('project/create-baseline/list')
-    PROJECT_BASELINE_DETAIL = StringUrl('project/create-baseline/detail')
+    PROJECT_BASELINE = StringUrl('project/baseline/list')
+    PROJECT_BASELINE_DETAIL = StringUrl('project/baseline/detail')
 
     # Folder
     FOLDER_LIST = StringUrl('attachment/folder/list')

@@ -83,6 +83,19 @@
             </ul>
         </div>
         <div class="form-group mb-3">
+            <label for="form-title-authentication-type">{% trans 'Authentication type' %}</label>
+            <select name="authentication_type" id="form-title-authentication-type" class="input-radio-select">
+                <option value="system">{% trans "Company's members" %}</option>
+                <option value="email">{% trans 'Email' %}</option>
+            </select>
+            <small class="form-text text-muted">
+                <ul style="list-style: circle">
+                    <li>{% trans "Company's members" %}: {% trans 'Must be logged in with system account before being manipulated' %}</li>
+                    <li>{% trans 'Email' %}: {% trans 'Authenticate users via email account before being manipulated' %}</li>
+                </ul>
+            </small>
+        </div>
+        <div class="form-group mb-3">
             <div class="form-check">
                 <input type="checkbox" class="form-check-input" id="form-title-submit-only-one" name="submit_only_one">
                 <label for="form-title-submit-only-one" class="form-check-label">
@@ -143,14 +156,17 @@
         const eleAuthRequired$ = frm$.find('[name="authentication_required"]');
         const eleSubmitOnlyOne$ = frm$.find('[name="submit_only_one"]');
         const eleEditSubmit$ = frm$.find('[name="edit_submitted"]');
+        const eleAuthType$ = frm$.find('[name="authentication_type"]');
 
         eleAuthRequired$.on('change', function (){
             if ($(this).prop('checked') === false){
                 eleSubmitOnlyOne$.prop('checked', false).trigger('change').closest('.form-group').slideUp();
                 eleEditSubmit$.prop('checked', false).trigger('change').closest('.form-group').slideUp();
+                eleAuthType$.closest('.form-group').slideUp();
             } else {
-                eleSubmitOnlyOne$.closest('.form-group').slideDown()
-                eleEditSubmit$.closest('.form-group').slideDown()
+                eleSubmitOnlyOne$.closest('.form-group').slideDown();
+                eleEditSubmit$.closest('.form-group').slideDown();
+                eleAuthType$.closest('.form-group').slideDown();
             }
         })
         eleSubmitOnlyOne$.on('change', function(){

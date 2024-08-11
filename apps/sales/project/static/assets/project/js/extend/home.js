@@ -1,207 +1,5 @@
 $(document).ready(function(){
     let colors = ['#FC9F66', '#FAC357', '#FAE39C', '#B8E0E3', '#97C5D8', '#84A9CD'];
-    // chart employee inherit of project
-    let $empChart = $('#prj_chart_employee')
-    var optionsemp = {
-        series: [{
-            data: [21, 22, 10, 28, 16, 21, 13, 30]
-        }],
-        chart: {
-            height: 380,
-            type: 'bar',
-        },
-        plotOptions: {
-            bar: {
-                horizontal: true,
-			    distributed: true,
-                // dataLabels: {
-                //     position: 'bottom'
-                // },
-            }
-        },
-        legend:{show: false},
-        colors: colors,
-        dataLabels: {
-            enabled: false
-        },
-        xaxis: {
-            categories: ['John Doe', 'Joe Smith', 'Jake Williams', 'Amber', 'Peter Brown', 'Mary Evans',
-                'David Wilson', 'Lily Roberts'],
-        }
-    };
-    var chartemp = new ApexCharts($empChart[0], optionsemp);
-    chartemp.render();
-
-    // chart project count
-    let $prjChart = $('#prj_chart_year')
-    // timestemp của năm
-    var ts1 = 1577811600000;
-    var ts2 = 1578416400000;
-    var ts3 = 1609606800000;
-
-    // prepare data
-    var dataSet = [
-        [],
-        [],
-        [],
-    ];
-    // danh sach value
-    var dataSeries = [
-        [
-            {"value": 1},
-            {"value": 2},
-            {"value": 3},
-            {"value": 4},
-            {"value": 5},
-            {"value": 10},
-            {"value": 20},
-            {"value": 30},
-            {"value": 45},
-            {"value": 55},
-            {"value": 66},
-            {"value": 77},
-        ],
-        [
-            {"value": 12},
-            {"value": 14},
-            {"value": 20},
-            {"value": 40},
-            {"value": 60},
-            {"value": 66},
-            {"value": 32},
-            {"value": 12},
-            {"value": 20},
-            {"value": 42},
-            {"value": 53},
-            {"value": 80}
-        ],
-        [
-            {"value": 31},
-            {"value": 41},
-            {"value": 12},
-            {"value": 21},
-            {"value": 35},
-            {"value": 15},
-            {"value": 18},
-            {"value": 21},
-            {"value": 39},
-            {"value": 65},
-            {"value": 41},
-            {"value": 79},
-        ]
-    ];
-
-    for (var i = 0; i < 12; i++) {
-        ts1 = ts1 + 5260032000;
-        var innerArr = [ts1, dataSeries[2][i].value];
-        dataSet[0].push(innerArr)
-    }
-    for (var i = 0; i < 12; i++) {
-        ts2 = ts2 + 5260032000;
-        var innerArr = [ts2, dataSeries[1][i].value];
-        dataSet[1].push(innerArr)
-    }
-    for (var i = 0; i < 12; i++) {
-        ts3 = ts3 + 5260032000;
-        var innerArr = [ts3, dataSeries[0][i].value];
-        dataSet[2].push(innerArr)
-    }
-
-    var optionscount = {
-        series: [{
-            name: 'PRODUCT A',
-            data: dataSet[0]
-        },
-        {
-            name: 'PRODUCT B',
-            data: dataSet[1]
-        },
-        {
-            name: 'PRODUCT C',
-            data: dataSet[2]
-        }
-        ],
-        chart: {
-            height: 380,
-            type: 'area',
-            stacked: false,
-            zoom: {
-                enabled: false
-            },
-        },
-        dataLabels: {
-            enabled: false
-        },
-        markers: {
-            size: 0,
-        },
-        fill: {
-            type: 'gradient',
-            gradient: {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.65,
-                opacityTo: 0.05,
-                stops: [20, 100, 100, 100]
-            },
-        },
-        xaxis: {
-            type: 'datetime',
-            tickAmount: 12,
-            min: new Date("01/01/2020").getTime(),
-            max: new Date("01/01/2024").getTime(),
-            labels: {
-                rotate: -15,
-                rotateAlways: true,
-                formatter: function (val, timestamp) {
-                    return moment(new Date(timestamp)).format("DD MMM")
-                }
-            }
-        },
-        tooltip: {
-            shared: true
-        },
-        stroke: {
-            curve: 'smooth',
-            width: 2
-        },
-        legend: {
-            position: 'top',
-            horizontalAlign: 'right',
-            offsetX: -10
-        }
-    };
-
-    var chartcount = new ApexCharts($prjChart[0], optionscount);
-    chartcount.render();
-
-
-    /************************************/
-    /*Donut Chart*/
-    let $prjStatus = $('#prj_chart_status')
-    var optionsstt = {
-        series: [44, 55, 41, 17],
-        labels: ['Created', 'Pending', 'Completed', 'In Progress'],
-        chart: {
-            type: 'pie',
-            width: 380,
-        },
-        colors: colors,
-        responsive: [{
-            breakpoint: 480,
-            options: {
-                chart: {
-                    width: 200
-                },
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        }]
-    };
-
-    var chartstt = new ApexCharts($prjStatus[0], optionsstt);
-    chartstt.render();
 
     /*******************/
     // project expense
@@ -247,7 +45,6 @@ $(document).ready(function(){
         },
         tooltip: {
             enabled: true,
-            fillSeriesColor: true,
             custom: function ({series, seriesIndex, dataPointIndex, w}) {
                 let color = w.globals.colors[dataPointIndex];
                 return (`<div class="apexcharts-tooltip-title">${w.globals.labels[dataPointIndex]}</div>` +
@@ -260,44 +57,121 @@ $(document).ready(function(){
     var chart44 = new ApexCharts($expChart[0], options44);
     chart44.render();
 
+    const _urlElm = $('#url-factory')
+
     // get data all list
-    let $loaded = $('#trigger_load')
-    let proj_lst = []
-    function getProjData(page=1){
+    getProjData({
+        'url': _urlElm.attr('data-prj-list'),
+        'method': 'get',
+        'data': {page: 1, pageSize: 100}
+    }, 'Trigger_Loaded');
+    $(document).on('Trigger_Loaded', function(){
+        WindowControl.hideLoading();
+        const $elm = $('#Trigger_Loaded')
+        const project_list = $elm.data('Trigger_Loaded')
+        $elm.remove()
+        HomeChart.runBlock(project_list)
+        HomeChart.runChartPOwner(project_list)
+        HomeChart.runChartPPYear(project_list)
+        HomeChart.runChartPStatus(project_list)
+    });
+
+    // get data expense
+    getProjData({
+        'url': _urlElm.attr('data-prj-expense-list'),
+        'method': 'get',
+        'data': {page: 1, pageSize: 100}
+    }, 'Trigger_expense');
+    $(document).on('Trigger_expense', function(){
+        WindowControl.hideLoading();
+        const $elm = $('#Trigger_expense')
+        const project_list = $elm.data('Trigger_expense')
+        $elm.remove()
+        HomeChart.runExpense(project_list)
+    });
+
+});
+
+// func get data via ajax
+function getProjData(opts, strTrigger, page=1, prj = []){
         WindowControl.showLoading();
-        $.fn.callAjax2({
-            'url': $('#url-factory').attr('data-prj-list'),
-            'method': 'get',
-            'data': {page: page, pageSize: 100}
-        })
+        if (page)
+            opts.data.page = page
+        $.fn.callAjax2(opts)
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
-                    let res = data['project_list']
-                    proj_lst = [...res, ...proj_lst]
-                    if (data.page_next > 0) getProjData(data.page_next)
-                    else $loaded.trigger('Trigger.Loaded')
+                    let res = []
+                    if(data?.['project_list']) res = data['project_list']
+                    else if (data?.['project_expense_list']) res = data['project_expense_list']
+                    prj = [...res, ...prj]
+                    if (data.page_next > 0) getProjData(opts, strTrigger, data.page_next, prj)
+                    else{
+                        $('body').append(`<input id="${strTrigger}"/>`)
+                        $(`#${strTrigger}`).data(strTrigger, prj)
+                        $(document).trigger(strTrigger)
+                    }
                 },
                 (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
             )
     };
-    getProjData();
-    $loaded.on('Trigger.Loaded', function(){
-        WindowControl.hideLoading();
-        HomeChart.runBlockNewThisMonth(proj_lst)
-    });
-});
+
+function formatSuffixNumber(number){
+     // Remove commas and convert to number
+    var num = parseInt(number.replace(/,/g, ''));
+
+    // Define intervals and suffixes
+    var intervals = [0, 1e3, 1e6, 1e9, 1e12];
+    var suffixes = ["", "K", "M", "B", "T"];
+
+    // Find the appropriate interval
+    var div = intervals.findIndex(function(interval) {
+        return num < interval;
+    }) - 1;
+
+    // Handle edge case where number is larger than the largest interval
+    if (div < 0) div = intervals.length - 1;
+
+    // Calculate the compressed value
+    var compressedValue = (num / Math.pow(10, 3 * div)).toFixed(1);
+
+    // Return the compressed value with the appropriate suffix
+    return compressedValue + suffixes[div];
+}
 
 class HomeChart {
-    static runBlockNewThisMonth(data){
-        let count = 0, count_all = data.length, crt_date = new Date(), $cardElm = $('.card_new_prj');
+
+    static runBlock(data){
+        let count = 0,
+            count_all = data.length,
+            crt_date = new Date(),
+            $cardElm = $('.card_new_prj'),
+            $cardBElm = $('.card_baseline'),
+            $cardTElm = $('.card_tasks'),
+            baseline_count = 0,
+            baseline_new = 0,
+            task_count = 0,
+            task_completed = 0;
 
         for (let item of data){
             const dateItem = new Date(item.date_created)
             if (crt_date.getFullYear() === dateItem.getFullYear() && crt_date.getMonth() === dateItem.getMonth())
                 count++
-        }
-        let configs = {
+            baseline_count += item.baseline.count
+            baseline_new += item.baseline['new_t_month']
+            task_count += item.tasks.all
+            task_completed += item.tasks.completed
+
+        };
+        // run new project this month block
+        $cardElm.find('.heading_cards').html(`${count_all} ${$.fn.gettext('Project')}`)
+        $cardElm.find('.percent_block span').text(`+${count}`)
+        // run project baseline block
+        $cardBElm.find('.heading_cards').text(`${baseline_count} ${$.fn.gettext('Baseline')}`)
+        $cardBElm.find('.percent_block span').text(`+${baseline_new}`)
+        // run project task count block
+        $cardTElm.find('.heading_cards').html(`${task_count} <span>${$.fn.gettext('all')}</span>`)
+        let configs_task = {
             series: [0],
             chart: {
                 height: 50,
@@ -337,18 +211,190 @@ class HomeChart {
             },
             colors: ['#00acf0'],
         };
-        if (count > 0 && count_all > 0)
-            configs.series = [(count/count_all * 100).toFixed(0)]
-        let chartNew = new ApexCharts(document.querySelector("#pie_chart_1"), configs);
-        chartNew.render();
-        $cardElm.find('.heading_cards').text(`${count} ${$.fn.gettext('Project new')}`)
+        if (task_count > 0 && task_completed > 0)
+            configs_task.series = [(task_completed/task_count * 100).toFixed(0)]
+        let chartTNew = new ApexCharts(document.querySelector("#pie_chart_2"), configs_task);
+        chartTNew.render();
+
     }
 
-    static runBlockBaseline(data){
-        let count_project = 0, count_baseline = data.length;
+    static runExpense(data){
+        let all_sub = 0
         for (let item of data){
-            count_project += item.baseline.count
+            if (item.sub_total)
+                all_sub += item.sub_total
+        }
+        DocumentControl.getCompanyCurrencyConfig().then((configData) => {
+            let prefix = configData?.['prefix'], suffix = configData?.['suffix'];
+            let IsTotal = formatSuffixNumber(all_sub.toString())
+            if (prefix) IsTotal = prefix + IsTotal
+            else IsTotal = IsTotal + suffix
+            $('.card_expense .heading_cards .span-money').text(IsTotal)
+        });
+    }
+
+    static runChartPOwner(data){
+        // chart employee inherit of project
+        let $empChart = $('#prj_chart_employee');
+        let colors = ['#FC9F66', '#FAC357', '#FAE39C', '#B8E0E3', '#97C5D8', '#84A9CD'];
+        var optionsEmp = {
+            series: [],
+            chart: {
+                height: 380,
+                type: 'bar',
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    distributed: true,
+                }
+            },
+            legend:{show: false},
+            colors: colors,
+            dataLabels: {
+                enabled: false
+            },
+            xaxis: {
+                categories: [],
+            },
+            tooltip: {
+                enabled: true,
+                custom: function ({series, seriesIndex, dataPointIndex, w}) {
+                    let color = w.globals.colors[dataPointIndex];
+                    return (`<div class="apexcharts-tooltip-title">${w.globals.labels[dataPointIndex]}</div>` +
+                            `<div class="apexcharts-tooltip-series-group d-flex"><span class="apexcharts-tooltip-marker" style="background: ${color}"></span>` +
+                                `<div class="apexcharts-tooltip-text">${series[seriesIndex][dataPointIndex]}</div></div>`
+                    );
+                }
+            }
+        };
+        let _EmpLst = {}
+        for (let item of data){
+            if (item.employee_inherit.id in _EmpLst)
+                _EmpLst[item.employee_inherit.id].count++
+            else{
+                _EmpLst[item.employee_inherit.id] = {
+                    name: item.employee_inherit.full_name,
+                    count: 1
+                }
+            }
+        }
+        optionsEmp.series = [{data: $.map(_EmpLst,(item)=>{return item.count})}]
+        optionsEmp.xaxis.categories = $.map(_EmpLst,(item)=>{return item.name})
+        var chartEmp = new ApexCharts($empChart[0], optionsEmp);
+        chartEmp.render();
+    }
+
+    static runChartPPYear(data){
+        // chart project count
+        let $prjChart = $('#prj_chart_year')
+        var pieOpt = {
+            series: [],
+            chart: {
+                height: 380,
+                type: 'line',
+                toolbar: {
+                    show: false,
+                },
+                zoom: {
+                    enabled: false
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'oct', 'Nov', 'Dec'],
+                axisBorder: {
+                    show: false,
+                },
+            },
+            yaxis: {
+                tickAmount: 5,
+                labels: {
+                    formatter: function (val) {
+                        return val.toFixed(0);
+                    }
+                },
+            },
+            stroke: {
+                curve: 'smooth',
+                width: 2
+            }
+        };
+        let prj_dict = {}, minDate = new Date(), MaxDate = new Date();
+        // convert project list migrate
+        for (let item of data){
+            const dateCreated = new Date(item.date_created);
+            if (dateCreated < minDate) minDate = dateCreated
+            if(dateCreated.getFullYear() in prj_dict)
+                prj_dict[dateCreated.getFullYear()].push(item)
+            else
+                prj_dict[dateCreated.getFullYear()] = [item]
         }
 
+        for (let val in prj_dict){
+            let item = prj_dict[val];
+            let temp = {
+                name: val,
+                data: []
+            };
+            for (let i = 1; i < 12; i++){
+                let child = 0
+                for (let grandChild of item){
+                    const dateCreated = new Date(grandChild.date_created)
+                    if (dateCreated.getMonth() === i) child += 1
+                }
+                temp.data[i-1] = child
+                // if (child === 0 && i > 1) temp.data[i-1] = temp.data[i-2]
+            }
+            pieOpt.series.push(temp)
+        }
+
+        var chartArea = new ApexCharts($prjChart[0], pieOpt);
+        chartArea.render();
     }
+
+    static runChartPStatus(data){
+        /*Donut Chart*/
+        let $prjStatus = $('#prj_chart_status'),
+            colors = ['#FC9F66', '#FAC357', '#FAE39C', '#B8E0E3', '#97C5D8', '#84A9CD'];
+
+        const _prjStatus = {
+            1: $.fn.gettext('Created'),
+            2: $.fn.gettext('Added'),
+            3: $.fn.gettext('Finish'),
+            4: $.fn.gettext('Cancel'),
+        }
+        var optionsStt = {
+            series: [0, 0, 0, 0],
+            labels: [_prjStatus[1], _prjStatus[2], _prjStatus[3], _prjStatus[4]],
+            chart: {
+                type: 'pie',
+                width: 380,
+            },
+            colors: colors,
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 200
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }]
+        };
+        for (let item of data){
+            const stt = item.system_status
+            if (stt === 1) optionsStt.series[0] += 1
+            else if (stt === 2) optionsStt.series[1] += 1
+            else if (stt === 3) optionsStt.series[2] += 1
+            else optionsStt.series[3] += 1
+        }
+        var chartStt = new ApexCharts($prjStatus[0], optionsStt);
+        chartStt.render();
+    }
+
 }

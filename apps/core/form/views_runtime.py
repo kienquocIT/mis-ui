@@ -1,12 +1,13 @@
 from django.contrib.auth.models import AnonymousUser
 from django.http.request import HttpHeaders
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
 from rest_framework.views import APIView
 
 from apps.core.form.views import (
-    get_publish_data, publish_data, auto_return_view, get_submitted_data,
+    get_publish_data, publish_data, get_submitted_data,
     get_publish_with_submitted_data,
 )
 from apps.shared import ApiURL, ServerAPI, mask_view, TypeCheck
@@ -15,15 +16,30 @@ from apps.shared.csrf import APIAllowAny, CSRFCheckSessionAuthentication
 from apps.shared.decorators import OutLayoutRender
 from apps.shared.http import HttpRequestControl
 
+from apps.core.form.utils import FormAuthController
+
+
+def form_publish_handle_other_status(request, resp):
+    if resp.status == 400:
+        authenticate_fail_code = resp.errors.get('authenticate_fail_code', None)
+        if authenticate_fail_code == 'system':
+            url_redirect = f"{reverse('AuthLogin')}?next={request.path}"
+            return redirect(url_redirect)
+        elif authenticate_fail_code == 'email':
+            url = f"{reverse('FormAuthenticateBeforeViewForm')}?next={request.path}"
+            return redirect(url)
+    return OutLayoutRender(request=request).render_404()
+
 
 class FormPublishedRuntimeView(View):
+    @mask_view(login_require=False)
     def get(self, request, *args, form_code, **kwargs):
         resp = get_publish_data(request, form_code, 'view')
         if resp.state:
             if resp.result.get('is_public', False) is True:
                 ctx = publish_data(resp=resp, code=form_code, request=request, use_at='view')
                 return render(request, 'form/runtime/new.html', ctx)
-        return auto_return_view(resp, request)
+        return form_publish_handle_other_status(request, resp)
 
 
 class FormPublishedRuntimeIFrame(View):
@@ -34,14 +50,16 @@ class FormPublishedRuntimeIFrame(View):
             if resp.result.get('is_iframe', False) is True:
                 ctx = publish_data(resp=resp, code=form_code, request=request, use_at='iframe')
                 return render(request, 'form/runtime/new.html', ctx)
-        return auto_return_view(resp, request)
+        elif resp.status == 401:
+            return form_publish_handle_other_status(request, resp)
+        return OutLayoutRender(request=request).render_404()
 
 
 FORM_CODE_LENGTH = 32
 
 
 class FormSubmittedViewEdit(View):
-    @mask_view(login_require=True, is_api=True)
+    @mask_view(login_require=False, is_api=False)
     def get(self, request, *args, form_code, pk, **kwargs):
         if len(form_code) == FORM_CODE_LENGTH and TypeCheck.check_uuid(pk):
             resp = get_publish_with_submitted_data(request, form_code, 'view', pk)
@@ -78,12 +96,12 @@ class FormSubmittedViewEdit(View):
                                 }
                             )
                         return OutLayoutRender(request=request).render_404()
-            return auto_return_view(resp, request)
+            return form_publish_handle_other_status(request, resp)
         return OutLayoutRender(request=request).render_404()
 
 
 class FormSubmittedOnlyView(View):
-    @mask_view(login_require=True, is_api=True)
+    @mask_view(login_require=False, is_api=False)
     def get(self, request, *args, form_code, pk, **kwargs):
         if len(form_code) == FORM_CODE_LENGTH and TypeCheck.check_uuid(pk):
             resp = get_publish_with_submitted_data(request, form_code, 'view', pk)
@@ -100,7 +118,7 @@ class FormSubmittedOnlyView(View):
                             'pk': pk,
                         }
                     )
-            return auto_return_view(resp, request)
+            return form_publish_handle_other_status(request, resp)
         return OutLayoutRender(request=request).render_404()
 
 
@@ -199,7 +217,8 @@ class FormPostNewData(PostDataAbstract):
             use_at=self.kwargs['use_at'],
             tenant_code=domain_code
         )
-        resp = ServerAPI(request=self.request, user=self.request.user, url=url).post(data=body_data)
+        headers = FormAuthController(request=self.request).headers
+        resp = ServerAPI(request=self.request, user=self.request.user, url=url, headers=headers).post(data=body_data)
         return resp.auto_return(key_success='form_post')
 
     @mask_view(login_require=False, is_api=True)
@@ -263,21 +282,74 @@ class FormRuntimeReverseUrl(View):
             if form_code:
                 if form_record:
                     if TypeCheck.check_uuid(form_record):
-                        return redirect('FormSubmittedViewEdit', form_code=form_code, pk=form_record)
+                        if form_action == 'view':
+                            return redirect('FormSubmittedOnlyView', form_code=form_code, pk=form_record)
+                        elif form_action == 'edit':
+                            return redirect('FormSubmittedViewEdit', form_code=form_code, pk=form_record)
                     return OutLayoutRender(request=request).render_404()
                 else:
                     return redirect('FormPublishedRuntimeView', form_code=form_code)
         return OutLayoutRender(request=request).render_404()
 
 
-class FormValidEmailOTP(APIView):
-    @mask_view()
+class FormViewLogout(APIView):
+    permission_classes = [APIAllowAny]  # force skip check permit action when skip authenticated
+    authentication_classes = [CSRFCheckSessionAuthentication]  # force check csrf
+
+    @mask_view(login_require=False, is_api=True)
+    def get(self, request, *args, form_code, **kwargs):
+        cls = FormAuthController(request=request)
+        cls.session_flush()
+        return redirect(reverse('FormPublishedRuntimeView', kwargs={'form_code': form_code}))
+
+
+class FormAuthenticateBeforeViewForm(View):
+    @mask_view(login_require=False, is_api=False)
+    def get(self, request, *args, **kwargs):
+        # keep destroy session
+        FormAuthController(request=request).session_flush()
+        # render authenticate valid
+        ctx = {
+            'title': 'BFlow - Email Validation',
+            'jsi18n': 'form_runtime',
+        }
+        return render(request, 'form/runtime/authenticate_before_view.html', ctx)
+
+
+class FormAuthenticateFormAPI(APIView):
+    permission_classes = [APIAllowAny]  # force skip check permit action when skip authenticated
+    authentication_classes = [CSRFCheckSessionAuthentication]  # force check csrf
+
+    @mask_view(login_require=False, auth_require=False, is_api=True)
     def post(self, request, *args, **kwargs):
-        ...
+        email = request.data.get('email', None)
+        if email:
+            return FormAuthController(request=request).generate_otp(email=email)
+        return RespData.resp_400(
+            errors_data={
+                'email': 'This field is required',
+            }
+        )
 
+    @mask_view(login_require=False, is_api=True)
+    def put(self, request, *args, **kwargs):
+        cls = FormAuthController(request=request)
+        idx = request.data.get('id', None)
+        otp = request.data.get('otp', None)
 
-class FormValidEmailOTPDetail(APIView):
+        errors = {}
+        if not (idx and TypeCheck.check_uuid(idx)):
+            errors['detail'] = 'Valid form is not support'
+        if not otp:
+            errors['otp'] = 'The OTP is incorrect form'
+        if cls.valid_id != idx:
+            errors['detail'] = 'Valid form is not support'
+        if not errors:
+            return FormAuthController(request=self.request).valid_otp(idx=idx, otp=otp)
+        return RespData.resp_400(errors_data=errors)
 
-    @mask_view()
-    def put(self, request, *args, pk, **kwargs):
-        ...
+    @mask_view(login_require=False, is_api=True)
+    def delete(self, request, *args, **kwargs):
+        cls = FormAuthController(request=request)
+        cls.session_flush()
+        return RespData.resp_200(data={'detail': 'Successful'})

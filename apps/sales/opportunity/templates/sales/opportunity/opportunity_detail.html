@@ -66,7 +66,7 @@
               data-url-redirect="{% url "OpportunityList" %}">
             {% csrf_token %}
             <div class="row">
-                <div class="col-12 col-md-12 col-lg-12 text-center mb-3">
+                <div class="col-12 col-md-12 col-lg-12 text-center mt-3">
                     <span id="header-title" class="text-primary" style="font-weight: bolder; font-size: x-large"></span>
                 </div>
             </div>
@@ -76,10 +76,10 @@
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="col-12 col-md-12 col-lg-3" id="group-general-info-opp" style="overflow-y: auto; height: 65vh">
+                <div class="col-12 col-md-12 col-lg-3 mb-3" id="group-general-info-opp" style="overflow-y: auto; max-height: 70vh">
                     {% include 'sales/opportunity/extends/general-info.html' %}
                 </div>
-                <div class="col-12 col-md-12 col-lg-9" style="overflow-y: auto; height: 65vh">
+                <div class="col-12 col-md-12 col-lg-9 mb-3" id="group-relate-info-opp" style="overflow-y: auto; max-height: 70vh">
                     {% include 'sales/opportunity/extends/relate-info.html' %}
                 </div>
             </div>

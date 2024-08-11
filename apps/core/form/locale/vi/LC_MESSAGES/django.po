@@ -892,3 +892,51 @@ msgstr "Trường hợp không lấy được thông tin, một lưu ý sẽ đ�
 #
 msgid "Select field"
 msgstr "Chọn trường dữ liệu"
+
+#
+msgid "Expired in"
+msgstr "Hết hạn trong"
+
+#
+msgid "seconds"
+msgstr "giây"
+
+#
+msgid "Fast authentication"
+msgstr "Xác thực nhanh"
+
+#
+msgid "OTP validation"
+msgstr "Xác thực mã OTP"
+
+#
+msgid "Some fast authenticate service isn't available. It will come back soon."
+msgstr "Một số dịch vụ xác thực nhanh không khả dụng. Chúng sẽ sớm quay trở lại."
+
+#
+msgid "You will receive an OTP via email from Bflow (*@bflow.vn) to verify your account."
+msgstr "Bạn sẽ nhận được OTP qua email từ Bflow (*@bflow.vn) để xác minh tài khoản."
+
+#
+msgid "If the form requires authentication, your current session may be terminated when open above link."
+msgstr "Nếu biểu mẫu yêu cầu xác thực, phiên làm việc hiện tại của bạn có thể bị kết thúc khi mở liên kết ở trên."
+
+#
+msgid "To prevent session conflicts, we recommend opening the form link in a other browser window or incognito mode."
+msgstr "Để tránh xung đột phiên, chúng tôi khuyên bạn nên mở liên kết đến biểu mẫu trong một trình duyệt khác hoặc ở chế độ ẩn danh."
+
+#
+msgid "Authentication type"
+msgstr "Loại xác thực"
+
+#
+msgid "Company's members"
+msgstr "Thành viên công ty"
+
+#
+msgid "Must be logged in with system account before being manipulated"
+msgstr "Phải đăng nhập bằng tài khoản hệ thống trước khi thao tác với biểu mẫu"
+
+#
+msgid "Authenticate users via email account before being manipulated"
+msgstr "Xác thực người dùng qua tài khoản email trước khi thao tác với biểu mẫu"

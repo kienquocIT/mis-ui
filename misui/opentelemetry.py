@@ -1,14 +1,20 @@
-import os
-
 from opentelemetry import trace
 from opentelemetry.exporter.jaeger.thrift import JaegerExporter
+from opentelemetry.trace.status import Status, StatusCode
 from opentelemetry.instrumentation.django import DjangoInstrumentor
 from opentelemetry.instrumentation.logging import LoggingInstrumentor
+from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 
 from django.conf import settings
+
+
+def request_span_callback(span, result):
+    if result.status_code in [401, 403]:
+        # keep UI 401 is normal, not errors!
+        span.set_status(Status(StatusCode.OK))
 
 
 def init():
@@ -23,6 +29,7 @@ def init():
 
         DjangoInstrumentor().instrument()
         LoggingInstrumentor().instrument()
+        RequestsInstrumentor().instrument(span_callback=request_span_callback)
 
         jaeger_exporter = JaegerExporter(
             agent_host_name=settings.JAEGER_TRACING_HOST,

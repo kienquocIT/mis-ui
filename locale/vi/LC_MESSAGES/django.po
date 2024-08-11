@@ -266,6 +266,10 @@ msgid "login"
 msgstr "Đăng nhập"
 
 #
+msgid "Find your account"
+msgstr "Tìm tài khoản của bạn"
+
+#
 msgid "Get OTP"
 msgstr "Lấy OTP"
 
@@ -8324,3 +8328,23 @@ msgstr "Cấu hình dự án"
 #
 msgid "Employee can complete project"
 msgstr "Nhân viên có quyền đóng dự án"
+
+#
+msgid "Complete Project"
+msgstr "Hoàn thành dự án"
+
+#
+msgid "Re-Open Project"
+msgstr "Mở lại dự án"
+
+#
+msgid "GENERAL REGISTRATION"
+msgstr "ĐĂNG KÍ CHUNG"
+
+#
+msgid "Open to see Stock information of non-project products"
+msgstr "Mở để xem Thông tin tồn kho của các sản phẩm không thuộc dự án nào"
+
+#
+msgid "Forgot password"
+msgstr "Quên mật khẩu"

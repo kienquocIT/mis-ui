@@ -13,8 +13,14 @@ $(document).ready(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            // console.log(resp.data['goods_registration_list'])
-                            return resp.data['goods_registration_list'] ? resp.data['goods_registration_list'] : [];
+                            let res = [{
+                                "id": null,
+                                "title": $('#script-trans').attr('data-trans-general-registration'),
+                                "code": null,
+                                "sale_order": null,
+                                "date_created": null
+                            }]
+                            return resp.data['goods_registration_list'] ? res.concat(resp.data['goods_registration_list']) : res;
                         }
                         return [];
                     },
@@ -30,30 +36,61 @@ $(document).ready(function () {
                         data: 'code',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                            if (row.id) {
+                                const link = dtb.attr('data-url-detail').replace('0', row.id);
+                                return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                            }
+                            return `--`
                         }
                     },
                     {
                         data: 'title',
                         className: 'wrap-text w-30',
                         render: (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}" class="text-primary"><b>${row.title}</b></a>`;
+                            if (row.id) {
+                                const link = dtb.attr('data-url-detail').replace('0', row.id);
+                                return `<a href="${link}" class="text-primary"><b>${row.title}</b></a>`;
+                            }
+                            else {
+                                return `
+                                    <a href="#" class="text-primary"><b>${row.title}</b></a>&nbsp;
+                                    <i class="fas fa-info-circle icon-info tit_visible_tb-head text-primary"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="right"
+                                       title="${$('#script-trans').attr('data-trans-general-registration-info')}">
+                                    </i>
+                                `
+                            }
+                        }
+                    },
+                    {
+                        data: 'sale_order',
+                        className: 'wrap-text w-20',
+                        render: (data, type, row) => {
+                            if (row?.['sale_order']) {
+                                return `<span class="badge badge-secondary">${row?.['sale_order']?.['code']}</span>&nbsp;</span><span>${row?.['sale_order']?.['title']}</span>`
+                            }
+                            return `--`
                         }
                     },
                     {
                         data: 'sale_person',
-                        className: 'wrap-text w-25',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `${row?.['sale_order']?.['sale_person']?.['fullname']}`
+                            if (row?.['sale_order']) {
+                                return `<span class="text-blue">${row?.['sale_order']?.['sale_person']?.['fullname']}</span>`
+                            }
+                            return `--`
                         }
                     },
                     {
                         data: 'date_created',
-                        className: 'wrap-text w-25',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `${moment(row.date_created.split(' ')[0]).format('DD/MM/YYYY')}`
+                            if (row.date_created) {
+                                return `${moment(row.date_created.split(' ')[0]).format('DD/MM/YYYY')}`
+                            }
+                            return `--`
                         }
                     },
                 ],
@@ -63,20 +100,19 @@ $(document).ready(function () {
 
     loadGoodsRegistrationList();
 
-    function CallProductWarehouse(sale_order_id, product_id, warehouse_id) {
+    function Call(sale_order_id, product_id) {
         let dataParam11 = {}
-        dataParam11['gre_item__product_id'] = product_id
-        dataParam11['gre_item__so_item__sale_order_id'] = sale_order_id
-        dataParam11['warehouse_id'] = warehouse_id
+        dataParam11['product_id'] = product_id
+        dataParam11['so_item__sale_order_id'] = sale_order_id
         let ajax1 = $.fn.callAjax2({
-            url: $('#call-btn').attr('data-url-gre-general'),
+            url: $('#call-btn').attr('data-url'),
             data: dataParam11,
             method: 'GET'
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('good_registration_general')) {
-                    return data?.['good_registration_general'];
+                if (data && typeof data === 'object' && data.hasOwnProperty('regis_borrow_list')) {
+                    return data?.['regis_borrow_list'];
                 }
                 return {};
             },
@@ -85,125 +121,9 @@ $(document).ready(function () {
             }
         )
 
-        let dataParam2 = {}
-        dataParam2['gre_item_source__product_id'] = product_id
-        dataParam2['goods_registration_source__sale_order_id'] = sale_order_id
-        let ajax2 = $.fn.callAjax2({
-            url: $('#call-btn').attr('data-url-gre-borrow'),
-            data: dataParam2,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('goods_registration_borrow_list')) {
-                    return data?.['goods_registration_borrow_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
-
-        Promise.all([ajax1, ajax2]).then(
+        Promise.all([ajax1]).then(
             (results) => {
-                console.log(results[0], results[1])
-            })
-    }
-
-    function CallProductWarehouseLot(sale_order_id, product_id, warehouse_id) {
-        let dataParam1 = {}
-        dataParam1['gre_general__gre_item__product_id'] = product_id
-        dataParam1['gre_general__gre_item__so_item__sale_order_id'] = sale_order_id
-        dataParam1['gre_general__warehouse_id'] = warehouse_id
-        let ajax1 = $.fn.callAjax2({
-            url: $('#call-btn').attr('data-url-gre-general-lot'),
-            data: dataParam1,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('good_registration_lot')) {
-                    return data?.['good_registration_lot'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
-
-        let dataParam2 = {}
-        dataParam2['gre_item_source__product_id'] = product_id
-        dataParam2['goods_registration_source__sale_order_id'] = sale_order_id
-        let ajax2 = $.fn.callAjax2({
-            url: $('#call-btn').attr('data-url-gre-borrow'),
-            data: dataParam2,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('goods_registration_borrow_list')) {
-                    return data?.['goods_registration_borrow_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
-
-        Promise.all([ajax1, ajax2]).then(
-            (results) => {
-                console.log(results[0], results[1])
-            })
-    }
-
-    function CallProductWarehouseSerial(sale_order_id, product_id, warehouse_id) {
-        let dataParam1 = {}
-        dataParam1['gre_general__gre_item__product_id'] = product_id
-        dataParam1['gre_general__gre_item__so_item__sale_order_id'] = sale_order_id
-        dataParam1['gre_general__warehouse_id'] = warehouse_id
-        let ajax1 = $.fn.callAjax2({
-            url: $('#call-btn').attr('data-url-gre-general-sn'),
-            data: dataParam1,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('good_registration_serial')) {
-                    return data?.['good_registration_serial'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
-
-        let dataParam2 = {}
-        dataParam2['gre_item_source__product_id'] = product_id
-        dataParam2['goods_registration_source__sale_order_id'] = sale_order_id
-        let ajax2 = $.fn.callAjax2({
-            url: $('#call-btn').attr('data-url-gre-borrow'),
-            data: dataParam2,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('goods_registration_borrow_list')) {
-                    return data?.['goods_registration_borrow_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
-
-        Promise.all([ajax1, ajax2]).then(
-            (results) => {
-                console.log(results[0], results[1])
+                console.log(results[0])
             })
     }
 
@@ -237,33 +157,7 @@ $(document).ready(function () {
     }
     loadBoxProduct()
 
-    function loadBoxWarehouse(data) {
-        $('#warehouse_id_box').initSelect2({
-            allowClear: true,
-            ajax: {
-                url: $('#warehouse_id_box').attr('data-url'),
-                method: 'GET',
-            },
-            data: (data ? data : null),
-            keyResp: 'warehouse_list',
-            keyId: 'id',
-            keyText: 'title',
-        })
-    }
-    loadBoxWarehouse()
-
     $(document).on("click", '#call-btn', function () {
-        let sale_order_obj = SelectDDControl.get_data_from_idx($('#sale_order_id_box'), $('#sale_order_id_box').val())
-        let product_obj = SelectDDControl.get_data_from_idx($('#product_id_box'), $('#product_id_box').val())
-        let warehouse_obj = SelectDDControl.get_data_from_idx($('#warehouse_id_box'), $('#warehouse_id_box').val())
-        if (product_obj?.['general_traceability_method'] === 0) {
-            CallProductWarehouse(sale_order_obj?.['id'], product_obj?.['id'], warehouse_obj?.['id'])
-        }
-        else if (product_obj?.['general_traceability_method'] === 1) {
-            CallProductWarehouseLot(sale_order_obj?.['id'], product_obj?.['id'], warehouse_obj?.['id'])
-        }
-        else if (product_obj?.['general_traceability_method'] === 2) {
-            CallProductWarehouseSerial(sale_order_obj?.['id'], product_obj?.['id'], warehouse_obj?.['id'])
-        }
+        Call($('#sale_order_id_box').val(), $('#product_id_box').val())
     })
 })

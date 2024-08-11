@@ -1099,10 +1099,9 @@ function LoadDetailAP(option) {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                WFRTControl.setWFRuntimeID(data['advance_payment_detail']?.['workflow_runtime_id']);
                 data = data['advance_payment_detail'];
+                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 new PrintTinymceControl().render('57725469-8b04-428a-a4b0-578091d0e4f5', data, false);
-                console.log(data)
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 
@@ -1410,23 +1409,7 @@ class AdvancePaymentHandle {
 
         frm.dataForm['money_gave'] = money_gave.prop('checked');
         frm.dataForm['status'] = frm.dataForm['money_gave'];
-        frm.dataForm['system_status'] = 1;
 
-        console.log(frm.dataForm)
-        if (for_update) {
-            let pk = $.fn.getPkDetail();
-            return {
-                url: frmEle.attr('data-url-detail').format_url_with_uuid(pk),
-                method: frm.dataMethod,
-                data: frm.dataForm,
-                urlRedirect: frm.dataUrlRedirect,
-            };
-        }
-        return {
-            url: frm.dataUrl,
-            method: frm.dataMethod,
-            data: frm.dataForm,
-            urlRedirect: frm.dataUrlRedirect,
-        };
+        return frm
     }
 }

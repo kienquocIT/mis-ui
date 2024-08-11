@@ -73699,6 +73699,7 @@ div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-n
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
 }
+.card.card-wth-line .card-header,
 .card.card-wth-line .card-body {
   position: relative;
   z-index: 1;

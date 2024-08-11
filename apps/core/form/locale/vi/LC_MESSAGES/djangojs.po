@@ -208,3 +208,23 @@ msgstr "Trang sau"
 #
 msgid "Drag fields from left panel and drop here to add them to your form."
 msgstr "Kéo các trường từ bảng điều khiển bên trái và thả vào đây để thêm chúng vào biểu mẫu của bạn."
+
+#
+msgid "Creator email"
+msgstr "Email của người tạo"
+
+#
+msgid "Start building!"
+msgstr "Bắt đầu xây dựng"
+
+#
+msgid "Design your own way"
+msgstr "Thiết kế theo cách riêng của bạn"
+
+#
+msgid "Build your layout here to customize the appearance of your content with a wide range of formatting options."
+msgstr "Xây dựng bố cục của bạn tại đây để tùy chỉnh giao diện của nội dung của bạn với nhiều tùy chọn định dạng."
+
+#
+msgid "Make your information come alive with different styles and layouts."
+msgstr "Làm cho thông tin của bạn trở nên sống động hơn với các phong cách và bố cục khác nhau."

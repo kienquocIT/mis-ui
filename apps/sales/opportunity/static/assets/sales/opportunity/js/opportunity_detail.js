@@ -111,7 +111,7 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data && typeof data === 'object' && data.hasOwnProperty('lead_list')) {
-                console.log(data?.['lead_list'])
+                // console.log(data?.['lead_list'])
                 return data?.['lead_list'];
             }
             return {};

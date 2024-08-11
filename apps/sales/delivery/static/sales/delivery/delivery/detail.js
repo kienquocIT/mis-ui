@@ -620,11 +620,11 @@ $(async function () {
                 url = tableLot.attr('data-url-regis');
                 let dataRow = JSON.parse(eleChecked.getAttribute('data-row'));
                 dataParam = {
-                    'gre_general__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
-                    'gre_general__gre_item__product_id': data?.['product']?.['id'],
-                    'gre_general__warehouse_id': data?.['warehouse']?.['id'],
+                    'gre_item_prd_wh__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
+                    'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
+                    'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
                 };
-                keyResp = 'good_registration_lot';
+                keyResp = 'gre_item_prd_wh_lot_list';
             }
             $.fn.callAjax2({
                     'url': url,
@@ -775,9 +775,9 @@ $(async function () {
                 let dataRow = JSON.parse(eleChecked.getAttribute('data-row'));
                 url = tableSerial.attr('data-url-regis');
                 dataParam = {
-                    'gre_general__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
-                    'gre_general__gre_item__product_id': data?.['product']?.['id'],
-                    'gre_general__warehouse_id': data?.['warehouse']?.['id'],
+                    'gre_item_prd_wh__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
+                    'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
+                    'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
                     'sn_registered__is_delete': false,
                 };
                 keyResp = 'good_registration_serial';

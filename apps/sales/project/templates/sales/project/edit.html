@@ -35,7 +35,11 @@
                 <div class="col-xs-12 col-md-6 d-flex align-items-center">
                     {{ data.employee_info|json_script:'current_info'}}
                     <input type="hidden" id="data_form">
-                    <a href="#" class="btn btn-primary" id="create_baseline" disabled>
+                    <div class="completion_rate_block">
+                        <p class="heading">0%</p>
+                        <span class="title">{% trans 'Completion rate' %}</span>
+                    </div>
+                    <a href="#" class="btn btn-primary mr-5" id="create_baseline">
                         <span>
                             <span class="icon">
                                 <i class="bi bi-graph-up"></i>
@@ -43,22 +47,21 @@
                             <span>{% trans 'Create Baseline' %}</span>
                         </span>
                     </a>
-                    <div class="completion_rate_block">
-                        <p class="heading">0%</p>
-                        <span class="title">{% trans 'Completion rate' %}</span>
-                    </div>
+                    {% if data.can_close %}
+                        <a href="#" class="btn btn-outline-primary" id="complete_project">
+                            <span>
+                                <span class="icon">
+                                    <i class="fa-solid fa-flag-checkered"></i>
+                                </span>
+                                <span>{% trans 'Complete Project' %}</span>
+                            </span>
+                        </a>
+                    {% endif %}
                 </div>
                 <div class="clearfix"></div>
                 <div class="col-xs-12 col-md-6 form-group">
                     <label for="select_project_pm" class="form-label required">{% trans 'Project owner' %}</label>
                     <input type="input" name="employee_inherit" id="employeeInheritInput" class="form-control" readonly>
-                    {% comment %}
-                    <select class="form-select" name="project_pm" id="select_project_pm"
-                            data-url="{% url "EmployeeListAPI" %}"
-                            data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
-                            data-params="{'list_from_app':'{{ data.list_from_app|escape }}'}"
-                    >
-                    </select>{% endcomment %}
                 </div>
                 <div class="col-xs-12 col-md-6 form-group">
                     <label for="selectEmployeeInherit" class="form-label required">{% trans 'Project PM' %}</label>
@@ -280,7 +283,7 @@
            data-uom="{% url "UnitOfMeasureListAPI" %}"
            data-tax="{% url "TaxListAPI" %}"
            data-work-expense="{% url "ProjectWorkExpenseAPI" %}"
-           data-baseline="{% url "ProjectCreateBaselineAPI" %}"
+           data-baseline="{% url "ProjectListBaselineAPI" %}"
     >
 
 {% endblock %}

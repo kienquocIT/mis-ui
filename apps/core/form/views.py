@@ -6,6 +6,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from rest_framework import status
 from rest_framework.views import APIView
 
+from apps.core.form.utils import FormAuthController
 from apps.shared import mask_view, ServerAPI, ApiURL, TypeCheck
 from apps.shared.apis import RespData
 from apps.shared.decorators import OutLayoutRender
@@ -135,46 +136,75 @@ class FormUpdateTurnOnOffAPI(APIView):
         return RespData.resp_404()
 
 
-def get_publish_data(request, form_code, use_at):
+def get_publish_data(request, form_code, use_at, params=None, headers=None):
+    if not params:
+        params = {}
+    if not headers:
+        headers = {}
+
+    cls = FormAuthController(request=request)
+    headers = {
+        **headers,
+        **cls.headers
+    }
     domain_code = HttpRequestControl(request).get_sub_domain()
     url = ApiURL.FORM_PUBLISHED_RUNTIME_DETAIL.fill_key(form_code=form_code, tenant_code=domain_code, use_at=use_at)
-    resp = ServerAPI(request=request, user=request.user, url=url).get()
+    resp = ServerAPI(request=request, user=request.user, url=url, params=params, headers=headers).get()
     return resp
 
 
-def get_publish_with_submitted_data(request, form_code, use_at, pk):
+def get_publish_with_submitted_data(request, form_code, use_at, pk, params=None, headers=None):
+    if not params:
+        params = {}
+    if not headers:
+        headers = {}
+
     domain_code = HttpRequestControl(request).get_sub_domain()
     url = ApiURL.FORM_PUBLISHED_RUNTIME_DETAIL_WITH_SUBMITTED.fill_key(
         form_code=form_code, tenant_code=domain_code, use_at=use_at, pk=pk
     )
-    resp = ServerAPI(request=request, user=request.user, url=url).get()
+    cls = FormAuthController(request=request)
+    headers = {
+        **headers,
+        **cls.headers
+    }
+    resp = ServerAPI(request=request, user=request.user, url=url, params=params, headers=headers).get()
     return resp
 
 
-def get_submitted_data(request, form_code):
+def get_submitted_data(request, form_code, params=None, headers=None):
+    if not params:
+        params = {}
+    if not headers:
+        headers = {}
+
     domain_code = HttpRequestControl(request).get_sub_domain()
     url = ApiURL.FORM_PUBLISHED_RUNTIME_CHECK_SUBMITTED.fill_key(form_code=form_code, tenant_code=domain_code)
-    resp = ServerAPI(request=request, user=request.user, url=url).get()
+    cls = FormAuthController(request=request)
+    headers = {
+        **headers,
+        **cls.headers
+    }
+    resp = ServerAPI(request=request, user=request.user, url=url, params=params, headers=headers).get()
     return resp
 
 
-def auto_return_view(resp, request):
-    if resp.status == status.HTTP_401_UNAUTHORIZED:
-        request.session.flush()
-        request.user = AnonymousUser
-        url_redirect = f"{reverse('AuthLogin')}?next={request.path}"
-        return redirect(url_redirect)
-    return OutLayoutRender(request=request).render_404()
-
-
-def get_ctx_user_current(request):
+def get_ctx_user_current(request, authentication_type):
     user_current = {}
-    if hasattr(request, 'user') and request.user.is_authenticated is True:
-        user_obj = request.user
-        if hasattr(user_obj, 'employee_current_data') and isinstance(user_obj.employee_current_data, dict):
-            emp_data = user_obj.employee_current_data
+
+    if authentication_type == 'system':
+        if hasattr(request, 'user') and request.user.is_authenticated is True:
+            user_obj = request.user
+            if hasattr(user_obj, 'employee_current_data') and isinstance(user_obj.employee_current_data, dict):
+                emp_data = user_obj.employee_current_data
+                user_current = {
+                    'full_name': emp_data.get('full_name', ''),
+                }
+    elif authentication_type == 'email':
+        email = FormAuthController(request=request).email
+        if email:
             user_current = {
-                'full_name': emp_data.get('full_name', ''),
+                'full_name': email,
             }
     return user_current
 
@@ -193,6 +223,8 @@ def publish_data(resp, code, request, use_at, submitted_data=None):
 
         company_logo = result.get('company_logo', '')
 
+        authentication_type = result.get('authentication_type', None)
+
         ctx = {
             'use_at': use_at,
             'code': code,
@@ -203,7 +235,7 @@ def publish_data(resp, code, request, use_at, submitted_data=None):
             'html_text': html_text,
             'css': theme_assets.get('css', []),
             'language': 'vi',
-            'user_current': get_ctx_user_current(request),
+            'user_current': get_ctx_user_current(request, authentication_type),
             'prevent_submit_form': False,
             'jsi18n': 'form_runtime',
             'submitted_id': submitted_data.get('id', None) if submitted_data else None,

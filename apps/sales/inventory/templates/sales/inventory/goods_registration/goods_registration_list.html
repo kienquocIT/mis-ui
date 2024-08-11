@@ -6,6 +6,10 @@
 {% block pageAction %}
 {% endblock %}
 {% block pageContent %}
+    <script id="script-trans"
+            data-trans-general-registration="{% trans 'GENERAL REGISTRATION' %}"
+            data-trans-general-registration-info="{% trans 'Open to see Stock information of non-project products' %}"
+    ></script>
     <div class="row">
         <div class="col-12">
             <table id="goods_registration_list" class="table nowrap w-100 mb-5" data-method="GET"
@@ -16,6 +20,7 @@
                 <th></th>
                 <th>{% trans "Code" %}</th>
                 <th>{% trans "Title" %}</th>
+                <th>{% trans "Sale order" %}</th>
                 <th>{% trans "Sale person" %}</th>
                 <th>{% trans "Date created" %}</th>
                 </thead>
@@ -23,7 +28,7 @@
         </div>
     </div>
 
-    <div class="row mt-60">
+    <div class="row mt-20" hidden>
         <div class="col-4">
             <div class="form-group">
                 <label>{% trans 'Sale order' %}</label>
@@ -33,18 +38,11 @@
                 <label>{% trans 'Product' %}</label>
                 <select class="form-select mb-1" id="product_id_box" data-url="{% url 'ProductListAPI' %}"></select>
             </div>
-            <div class="form-group">
-                <label>{% trans 'Warehouse' %}</label>
-                <select class="form-select mb-1" id="warehouse_id_box" data-url="{% url 'WareHouseListAPI' %}"></select>
-            </div>
             <button type="button"
                     class="btn btn-light w-30"
                     id="call-btn"
-                    data-url-gre-general="{% url 'GoodsRegistrationGeneralListAPI' %}"
-                    data-url-gre-general-lot="{% url 'GoodsRegistrationLotListAPI' %}"
-                    data-url-gre-general-sn="{% url 'GoodsRegistrationSerialListAPI' %}"
-                    data-url-gre-borrow="{% url 'GoodsRegistrationItemBorrowListAPI' %}"
-            >Call
+                    data-url="{% url 'GoodsRegisBorrowListAPI' %}"
+            >Call (in console)
             </button>
         </div>
     </div>

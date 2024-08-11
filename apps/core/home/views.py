@@ -9,16 +9,6 @@ from apps.core.home.utils import ReverseUrlCommon
 from apps.shared.apps_code_to_txt import AppsCodeToList
 
 
-class LandingPageView(View):
-    @mask_view(
-        login_require=False,
-        auth_require=False,
-        template='core/home/landing-page.html',
-    )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
-
-
 class HomeView(View):
     @mask_view(
         login_require=False,

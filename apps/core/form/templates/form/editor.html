@@ -90,7 +90,7 @@
         <div id="sortable-content" class="form-full">
             <div
                     id="head-sortable"
-                    class="sortable-item form-item form-title"
+                    class="sortable-item sortable-item-fixed form-item form-title"
                     data-code="form-title"
             >
                 <h1 id="form-title" class="form-title-text"></h1>
@@ -106,19 +106,19 @@
                     <div>
                         <span id="form-head--current-user-name">{{ request.user }}</span>
                         <a
-                                href="{% url 'AuthLogout' %}?next="
+                                href="{% url 'FormViewLogout' form_code='__pk__' %}"
                                 id="btnSwitchAccount"
                                 style="margin-left: 10px;text-decoration: none;"
                         >
                             {% trans 'Switch account' %}
                         </a>
                     </div>
-                    <div id="data-submitted">
-                        <p style="font-size: large;color: #00646d;">
-                            {% trans 'You has submitted data.' %}
-                            <button type="button" class="btn-more-submitted">Xem danh sách</button>
-                        </p>
-                    </div>
+{#                    <div id="data-submitted">#}
+{#                        <p style="font-size: large;color: #00646d;">#}
+{#                            {% trans 'You has submitted data.' %}#}
+{#                            <button type="button" class="btn-more-submitted">Xem danh sách</button>#}
+{#                        </p>#}
+{#                    </div>#}
                 </div>
                 <div class="group-masker"></div>
             </div>

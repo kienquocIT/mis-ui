@@ -1,28 +1,28 @@
 {% load i18n %}
 
-<div class="tab-pane fade show active" id="tab_line_detail" style="position: relative; overflow: auto; width: 100%;">
-    <div class="row" data-zone="expense_valid_list">
-        <div class="col-12">
+<div class="tab-pane fade show active" id="tab_line_detail" data-zone="expense_valid_list">
+    <div class="row" style="position: relative; overflow: auto; width: 100%;">
+        <div class="col-12" style="max-height: 50vh">
             <table id="tab_line_detail_datatable"
                    class="table nowrap w-100"
                    data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
                    data-url-tax-list="{% url 'TaxListAPI' %}">
                 <thead>
                 <tr>
-                    <th class="text-center" style="min-width: 50px"></th>
-                    <th class="required" style="min-width: 300px">{% trans 'Expense name' %}</th>
-                    <th class="required" style="min-width: 350px">{% trans 'Expense type' %}</th>
-                    <th class="required" style="min-width: 200px">{% trans 'UoM' %}</th>
-                    <th class="required" style="min-width: 200px">{% trans 'Quantity' %}</th>
-                    <th class="required" style="min-width: 300px">{% trans 'Unit price' %}</th>
-                    <th style="min-width: 200px">{% trans 'Tax' %}</th>
-                    <th class="required" style="min-width: 300px">{% trans 'Subtotal price' %}</th>
-                    <th class="required" style="min-width: 300px">{% trans 'After tax subtotal' %}</th>
-                    <th style="min-width: 50px"></th>
+                    <th></th>
+                    <th class="required" style="min-width: 250px">{% trans 'Expense name' %}</th>
+                    <th class="required" style="min-width: 300px">{% trans 'Expense type' %}</th>
+                    <th class="required" style="min-width: 150px">{% trans 'UoM' %}</th>
+                    <th class="required" style="min-width: 150px">{% trans 'Quantity' %}</th>
+                    <th class="required" style="min-width: 200px">{% trans 'Unit price' %}</th>
+                    <th style="min-width: 150px">{% trans 'Tax' %}</th>
+                    <th class="required" style="min-width: 200px">{% trans 'Subtotal price' %}</th>
+                    <th class="required" style="min-width: 200px">{% trans 'After tax subtotal' %}</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody></tbody>
-                <tfoot class="text-primary">
+                <tfoot>
                     <tr>
                         <td></td>
                         <td>
@@ -33,41 +33,53 @@
                         </td>
                         <td colspan="4"></td>
                         <td>
-                            <span>{% trans "Pretax price" %}</span>
+                            <input disabled
+                                   class="text-primary form-control mb-1"
+                                   value="{% trans "Pretax price" %}"
+                                   style="border: none; background: none;"
+                            >
+                            <input disabled
+                                   class="text-primary form-control mb-1"
+                                   value="{% trans "Taxes" %}"
+                                   style="border: none; background: none;"
+                            >
+                            <input disabled
+                                   class="text-primary form-control mb-1"
+                                   value="{% trans "Total" %}"
+                                   style="border: none; background: none;"
+                            >
+                            <input disabled
+                                   class="text-muted form-control fst-italic mb-1"
+                                   value="({% trans "By words" %})"
+                                   style="border: none; background: none;"
+                            >
                         </td>
-                        <td>
-                            <input style="border: none; background: none" data-zone="expense_valid_list" disabled class="text-primary form-control mask-money zone-readonly" id="pretax-value" value="0">
+                        <td colspan="2">
+                            <input disabled
+                                   class="text-primary form-control mask-money zone-readonly mb-1"
+                                   id="pretax-value"
+                                   value="0"
+                                   style="border: none; background: none;"
+                            >
+                            <input disabled
+                                   class="text-primary form-control mask-money zone-readonly mb-1"
+                                   id="taxes-value"
+                                   value="0"
+                                   style="border: none; background: none;"
+                            >
+                            <input disabled
+                                   class="text-primary form-control mask-money zone-readonly mb-1"
+                                   id="total-value"
+                                   value="0"
+                                   style="border: none; background: none;"
+                            >
+                            <input disabled
+                                   class="text-muted form-control fst-italic zone-readonly mb-1"
+                                   id="total-value-by-words"
+                                   style="border: none; background: none; text-align: right"
+                            >
                         </td>
-                        <td colspan="2"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="6"></td>
-                        <td>
-                            <span>{% trans "Taxes" %}</span>
-                        </td>
-                        <td>
-                            <input style="border: none; background: none" data-zone="expense_valid_list" disabled class="text-primary form-control mask-money zone-readonly" id="taxes-value" value="0">
-                        </td>
-                        <td colspan="2"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="6"></td>
-                        <td>
-                            {% trans "Total" %}
-                        </td>
-                        <td>
-                            <input style="border: none; background: none" data-zone="expense_valid_list" disabled class="text-primary form-control mask-money zone-readonly" id="total-value" value="0">
-                        </td>
-                        <td colspan="2"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="6"></td>
-                        <td class="fst-italic" style="font-weight: normal !important;">
-                            {% trans "By words" %}
-                        </td>
-                        <td colspan="3">
-                            <input style="border: none; background: none" data-zone="advance_value" disabled class="text-primary fst-italic form-control zone-readonly" id="total-value-by-words">
-                        </td>
+                        <td></td>
                     </tr>
                 </tfoot>
             </table>

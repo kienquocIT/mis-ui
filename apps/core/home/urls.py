@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.urls import path
 from apps.core.home.views import (
-    HomeView, NotFoundView, ServerMaintainView, LandingPageView,
+    HomeView, NotFoundView, ServerMaintainView,
     ComponentCollections, TermsAndConditionsView, HelpAndSupportView, UtilitiesView,
     BookMarkListAPI, BookMarkDetailAPI,
     DocPinedListAPI, DocPinedDetailAPI,
@@ -15,7 +15,6 @@ urlpatterns = [
     path('p-503', OutLayoutServerOff.as_view(), name='OutLayoutServerOff'),
     path('404', NotFoundView.as_view(), name='NotFoundView'),
     path('503', ServerMaintainView.as_view(), name='ServerMaintainView'),
-    # path('introduce', LandingPageView.as_view(), name='LandingPageView'),
     path('terms', TermsAndConditionsView.as_view(), name='TermsAndConditionsView'),
     path('help-and-support', HelpAndSupportView.as_view(), name='HelpAndSupportView'),
 

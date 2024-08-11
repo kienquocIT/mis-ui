@@ -266,6 +266,10 @@ msgid "login"
 msgstr "Đăng nhập"
 
 #
+msgid "Find your account"
+msgstr "Tìm tài khoản của bạn"
+
+#
 msgid "Get OTP"
 msgstr "Lấy OTP"
 
@@ -8340,6 +8344,10 @@ msgstr "ĐĂNG KÍ CHUNG"
 #
 msgid "Open to see Stock information of non-project products"
 msgstr "Mở để xem Thông tin tồn kho của các sản phẩm không thuộc dự án nào"
+
+#
+msgid "Forgot password"
+msgstr "Quên mật khẩu"
 
 #
 msgid "By words"

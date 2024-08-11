@@ -6,7 +6,7 @@
 {% block cssHeader %}
     <style>
         .apexcharts-tooltip-title {
-            max-width: 120px;
+            max-width: 160px;
             white-space: pre-line;
         }
 
@@ -38,7 +38,7 @@
             font-weight: 600;
         }
 
-        .heading_cards span:not(.mask-money) {
+        .heading_cards span:not(.span-money) {
             font-size: 16px;
             color: #5e7d8a;
         }
@@ -66,9 +66,10 @@
             </a>
         </div>
         <div class="clearfix mb-4"></div>
-        <div class="row">
+        <!-- 4 block card -->
+        <div class="row mb-8">
             <div class="col-lg-3 col-sm-6">
-                <div class="card card-sm card_new_prj">
+                <div class="card card-sm card_new_prj border-primary">
                     <div class="card-body">
                         <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'New project this month' %}</span>
                         <div class="d-flex align-items-end justify-content-between position-relative">
@@ -81,7 +82,7 @@
                 </div>
             </div>
             <div class="col-lg-3 col-sm-6">
-                <div class="card card-sm card_baseline">
+                <div class="card card-sm card_baseline border-secondary">
                     <div class="card-body">
                         <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project Baseline' %}</span>
                         <div class="d-flex align-items-end justify-content-between position-relative">
@@ -94,7 +95,7 @@
                 </div>
             </div>
             <div class="col-lg-3 col-sm-6">
-                <div class="card card-sm card_tasks">
+                <div class="card card-sm card_tasks border-success">
                     <div class="card-body">
                         <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project tasks' %}</span>
                         <div class="d-flex align-items-center justify-content-between position-relative">
@@ -107,35 +108,47 @@
                 </div>
             </div>
             <div class="col-lg-3 col-sm-6">
-                <div class="card card-sm">
+                <div class="card card-sm card_expense border-warning">
                     <div class="card-body">
                         <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project Expense' %}</span>
                         <div class="d-flex align-items-center justify-content-between position-relative">
                             <div class="heading_cards">
-                                <span class="mask-money" data-init-money="0">VND 0</span>
+                                ~ <span class="span-money"></span>
+                                <span>{% trans 'excl tax' %}</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- end 4 block card -->
 
         <div class="row">
-            <div class="col-xs-12 col-md-6">
-                <label class="font-3">{% trans 'Project Owner' %}</label>
+            <!-- project owner card block -->
+            <div class="col-xs-12 col-md-6 mb-8">
+                <label class="font-3 font-weight-bold">{% trans 'Project Owner' %}</label>
                 <div id="prj_chart_employee"></div>
             </div>
-            <div class="col-xs-12 col-md-6">
-                <label class="font-3">{% trans 'Project per years' %}</label>
+            <!-- project per year card block -->
+            <div class="col-xs-12 col-md-6 mb-8">
+                <label class="font-3 font-weight-bold">{% trans 'Project per years' %}</label>
                 <div id="prj_chart_year"></div>
             </div>
+            <!-- project status card block -->
             <div class="col-xs-12 col-md-6">
                 <label class="font-3">{% trans 'Project status' %}</label>
                 <div id="prj_chart_status"></div>
             </div>
+            <!-- project expense card block -->
             <div class="col-xs-12 col-md-6">
-                <label class="font-3">{% trans 'Project expense' %}</label>
-                <div id="prj_chart_expense"></div>
+                <div class="card">
+                    <div class="card-header">
+                        <label class="font-3">{% trans 'Project expense' %}</label>
+                    </div>
+                    <div class="card-body">
+                        <div id="prj_chart_expense"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -145,7 +158,7 @@
     <div class="table_btn"></div>
     <input type="hidden" id="url-factory" aria-label="url-factory"
            data-prj-list="{% url 'ProjectListAPI' %}"
-           data-prj-expe-list="{% url 'ProjectExpenseListAPI' %}">
+           data-prj-expense-list="{% url 'ProjectExpenseListAPI' %}">
     <input type="hidden" id="trans-factory" aria-label="trans-factory">
 {% endblock %}
 {% block jsFooter %}

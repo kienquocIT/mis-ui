@@ -3,6 +3,7 @@
 {% load static %}
 {% block title %}{% trans 'Distribution Plan Create' %}{% endblock %}
 {% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -24,6 +25,8 @@
     {% include 'sales/distribution_plan/common/costs_area.html' %}
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
     <script src="{% static 'assets/sales/distribution_plan/js/distribution_plan_common.js' %}"></script>
     <script src="{% static 'assets/sales/distribution_plan/js/distribution_plan_create.js' %}"></script>
 {% endblock %}

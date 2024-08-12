@@ -6,11 +6,11 @@
             <div class="accordion-item">
                 <h2 class="accordion-header">
                     <span class="accordion-button">
-                        <i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;{% trans 'Fixed costs' %}
+                        <i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;{% trans 'Fixed costs' %} (1 {% trans 'Month' %})
                     </span>
                 </h2>
                 <div class="accordion-collapse collapse show">
-                    <div class="accordion-body" style="min-height: 40vh">
+                    <div class="accordion-body" style="height: 50vh">
                         <button class="btn btn-outline-primary btn-sm" id="add-new-fixed-expense">
                             <span>
                                 <span class="icon">
@@ -27,7 +27,7 @@
                                 <th></th>
                                 <th>{% trans 'Cost item' %}</th>
                                 <th>{% trans 'Value' %}</th>
-                                <th>{% trans 'Action' %}</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody></tbody>
@@ -42,11 +42,11 @@
             <div class="accordion-item">
                 <h2 class="accordion-header">
                     <span class="accordion-button">
-                        <i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;{% trans 'Variable costs' %}
+                        <i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;{% trans 'Variable costs' %} (1 {% trans 'Month' %})
                     </span>
                 </h2>
                 <div class="accordion-collapse collapse show">
-                    <div class="accordion-body" style="min-height: 40vh">
+                    <div class="accordion-body" style="height: 50vh">
                         <button class="btn btn-outline-primary btn-sm" id="add-new-variable-expense">
                             <span>
                                 <span class="icon">
@@ -58,16 +58,16 @@
                             </span>
                         </button>
                         <table class="w-100 table-hover table nowrap" id="variable-costs-table">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>{% trans 'Cost item' %}</th>
-                    <th>{% trans 'Value' %}</th>
-                    <th>{% trans 'Action' %}</th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>{% trans 'Cost item' %}</th>
+                                <th>{% trans 'Value' %}</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -79,15 +79,15 @@
     <div class="col-12 col-md-6 col-lg-6">
         <div class="row">
             <div class="col-12 col-md-12 col-lg-12">
-        <div class="form-group">
-            <label for="product-price" class="form-label required">{% trans 'Product price' %}</label>
-            <input class="form-control mask-money" id="product-price" value="0">
-        </div>
-    </div>
+                <div class="form-group">
+                    <label for="product-price" class="form-label required">{% trans 'Product price' %}</label>
+                    <input class="form-control mask-money" id="product-price" value="0">
+                </div>
+            </div>
             <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
                     <label for="break-event-point" class="form-label">{% trans 'Break event point' %}</label>
-                    <input class="form-control" id="break-event-point" disabled readonly>
+                    <input class="form-control" id="break-event-point" value="0" disabled readonly>
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-3">
@@ -110,10 +110,10 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-md-6 col-lg-6">
+    <div class="col-12 col-md-12 col-lg-12">
         <div class="form-group">
             <label for="plan-des" class="form-label">{% trans 'Plan description' %}</label>
-            <textarea placeholder="Thị trường&#10Thị phần&#10Đối thủ cạnh tranh&#10Yêu cầu về vốn&#10Yêc cầu khác" list="plan-des-list" class="form-control" id="plan-des" style="height: 17vh"></textarea>
+            <textarea list="plan-des-list" class="form-control" id="plan-des"></textarea>
         </div>
     </div>
 </div>

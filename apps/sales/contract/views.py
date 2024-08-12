@@ -25,6 +25,19 @@ def update_contract(request, url, pk, msg):
     return resp.auto_return()
 
 
+class ContractList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/contract/contract_list.html',
+        menu_active='',
+        breadcrumb='',
+    )
+    def get(self, request, *args, **kwargs):
+        return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
+
+
 class ContractCreate(View):
     @mask_view(
         auth_require=True,

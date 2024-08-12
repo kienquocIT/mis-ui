@@ -2393,6 +2393,11 @@ class WFRTControl {
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
                             if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
                                 WFRTControl.setBtnWFAfterFinishDetail();
+                                // show print button
+                                let $btnPrint = $('#print-document');
+                                if ($btnPrint && $btnPrint.length > 0) {
+                                    $btnPrint.removeAttr('hidden');
+                                }
                             }
                         }
                         // collab out form handler

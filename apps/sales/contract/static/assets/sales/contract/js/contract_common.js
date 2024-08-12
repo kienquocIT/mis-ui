@@ -1,7 +1,6 @@
 // Load data
 class ContractLoadDataHandle {
     static $btnAddDoc = $('#btn-add-doc');
-    static $tinymce = $('#inp-contents');
     static $fileArea = $('#file-area');
     static $remark = $('#contract-doc-remark');
     static $attachment = $('#attachment');
@@ -46,9 +45,9 @@ class ContractLoadDataHandle {
             if (ele.getAttribute('data-store') && uploaderResult && fileIds) {
                 let dataStore = JSON.parse(ele.getAttribute('data-store'));
                 ContractLoadDataHandle.$remark.val(dataStore?.['remark']);
-                ContractLoadDataHandle.loadAddFile(dataStore?.['file_data']);
+                ContractLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
                 let ids = [];
-                for (let fileData of dataStore?.['file_data']) {
+                for (let fileData of dataStore?.['attachment_data']) {
                     ids.push(fileData?.['attachment']?.['id']);
                 }
                 let fileIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
@@ -271,7 +270,7 @@ class ContractStoreHandle {
                 })
             }
         }
-        dataStore['file_data'] = fileData;
+        dataStore['attachment_data'] = fileData;
         let doc = ContractLoadDataHandle.$fileArea.attr('data-doc');
         if (doc) {
             let btnStore = ContractDataTableHandle.$tableDocument[0].querySelector(`.attach-file[data-order="${doc}"]`);
@@ -297,16 +296,22 @@ class ContractSubmitHandle {
         let result = [];
         ContractDataTableHandle.$tableDocument.DataTable().rows().every(function () {
             let row = this.node();
+            let eleOrd = row.querySelector('.table-row-order');
             let eleTitle = row.querySelector('.table-row-title');
-            let btnAttach = row.querySelector('.btn-attach');
-            if (eleTitle && btnAttach) {
-                let attachment = [];
+            let btnAttach = row.querySelector('.attach-file');
+            if (eleOrd && eleTitle && btnAttach) {
+                let remark = '';
+                let attachment_data = [];
                 if (btnAttach.getAttribute('data-store')) {
-                    attachment.push(JSON.parse(btnAttach.getAttribute('data-store')));
+                    let dataStore = JSON.parse(btnAttach.getAttribute('data-store'));
+                    remark = dataStore?.['remark'];
+                    attachment_data = dataStore?.['attachment_data'];
                 }
                 result.push({
                     'title': eleTitle.value,
-                    'attachment': attachment,
+                    'remark': ContractLoadDataHandle.$remark.val(),
+                    'attachment_data': attachment_data,
+                    'order': parseInt(eleOrd.innerHTML),
                 })
             }
         });
@@ -316,7 +321,7 @@ class ContractSubmitHandle {
     static setupDataSubmit(_form) {
         let dataDocument = ContractSubmitHandle.setupDataDocument();
         if (dataDocument.length > 0) {
-            _form.dataForm['contract_document'] = dataDocument;
+            _form.dataForm['document_data'] = dataDocument;
         }
     };
 }

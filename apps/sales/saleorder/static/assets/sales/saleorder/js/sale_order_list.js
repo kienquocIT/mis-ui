@@ -68,7 +68,7 @@ $(function () {
                                 }
                                 return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']}</span></a></div>`;
                             }
-                            return `<a href="${link}" class="link-primary underline_hover">--</a>`;
+                            return `<a href="${link}" class="link-primary underline_hover">__</a>`;
                         }
                     },
                     {

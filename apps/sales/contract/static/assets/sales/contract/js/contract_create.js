@@ -35,8 +35,10 @@ $(function () {
         formSubmit.submit(function (e) {
             e.preventDefault();
             let _form = new SetupFormSubmit(formSubmit);
+            ContractSubmitHandle.setupDataSubmit(_form);
             let submitFields = [
                 'title',
+                'document_data',
             ]
             if (_form.dataForm) {
                 ContractCommonHandle.filterFieldList(submitFields, _form.dataForm);

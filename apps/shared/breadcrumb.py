@@ -355,6 +355,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     LEAD_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     LEAD_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    DISTRIBUTION_PLAN_LIST_PAGE = BreadcrumbChildren(_('Distribution plan list'), 'DistributionPlanList')
+    DISTRIBUTION_PLAN_CREATE_PAGE = BreadcrumbChildren(_('Distribution plan create'), 'DistributionPlanCreate')
+    DISTRIBUTION_PLAN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    DISTRIBUTION_PLAN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
     MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
     IMPORT_LIST_PAGE = BreadcrumbChildren(_('Import List'), 'FImportListView')
@@ -913,6 +918,11 @@ class BreadcrumbView:
     LEAD_CREATE_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     LEAD_DETAIL_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     LEAD_UPDATE_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    DISTRIBUTION_PLAN_LIST_PAGE = [BreadcrumbItem.DISTRIBUTION_PLAN_LIST_PAGE]
+    DISTRIBUTION_PLAN_CREATE_PAGE = DISTRIBUTION_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    DISTRIBUTION_PLAN_DETAIL_PAGE = DISTRIBUTION_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    DISTRIBUTION_PLAN_UPDATE_PAGE = DISTRIBUTION_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     PRINTER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PRINTER_CONFIG_LIST_PAGE]
     PRINTER_CONFIG_LIST_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]

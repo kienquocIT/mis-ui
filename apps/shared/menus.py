@@ -284,6 +284,10 @@ class MenusCRM:
         name='Opportunity', code='menu_opportunity_list', view_name='OpportunityList',
         icon='<i class="far fa-lightbulb"></i>',
     )
+    DISTRIBUTION_PLAN = MenuCommon(
+        name='Distribution plan', code='menu_distribution_plan_list', view_name='DistributionPlanList',
+        icon='<i class="fas fa-expand-arrows-alt"></i>',
+    )
     QUOTATION = MenuCommon(
         name='Quotation', code='menu_quotation_list', view_name='QuotationList',
         icon='<i class="fas fa-file-invoice-dollar"></i>',
@@ -689,6 +693,7 @@ class SpaceItem:
                 MenusCRM.CONTACT,
                 MenusCRM.ACCOUNT,
                 MenusCRM.OPPORTUNITY,
+                MenusCRM.DISTRIBUTION_PLAN,
                 MenusCRM.QUOTATION,
                 MenusCRM.AR_INVOICE,
                 MenusCRM.SALE_ORDER,

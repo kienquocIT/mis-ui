@@ -150,6 +150,13 @@ $(document).ready(function () {
     saveWork(new_gantt)
     show_task_list()
 
+    // validate form
+    let $TaskFrom = $('#formOpportunityTask');
+    SetupFormSubmit.validate($TaskFrom, {
+        errorClass: 'is-invalid cl-red',
+        submitHandler: TaskSubmitFunc
+    })
+
     // run load employee list
     ProjectTeamsHandle.init()
 

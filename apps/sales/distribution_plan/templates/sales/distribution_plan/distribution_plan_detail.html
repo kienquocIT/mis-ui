@@ -3,6 +3,7 @@
 {% load static %}
 {% block title %}{% trans 'Distribution Plan Detail' %}{% endblock %}
 {% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -19,11 +20,23 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-
+    <script id="script-url"
+            data-url-expense-item="{% url 'ExpenseItemListAPI' %}"
+    ></script>
+    <form id="form-detail-dp"
+          data-url="{% url 'DistributionPlanDetailAPI' pk='0' %}"
+          data-method="GET"
+    >
+        {% csrf_token %}
+        {% include 'sales/distribution_plan/common/general_information.html' %}
+        {% include 'sales/distribution_plan/common/costs_area.html' %}
+    </form>
 {% endblock %}
 {% block dataHiddenGroup %}
 {% endblock %}
 {% block jsFooter %}
-        <script src="{% static 'assets/sales/distribution_plan/js/distribution_plan_common.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
+    <script src="{% static 'assets/sales/distribution_plan/js/distribution_plan_common.js' %}"></script>
     <script src="{% static 'assets/sales/distribution_plan/js/distribution_plan_detail.js' %}"></script>
 {% endblock %}

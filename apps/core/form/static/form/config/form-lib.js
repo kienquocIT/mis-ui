@@ -3564,6 +3564,9 @@ class FormSelectComponentType extends FormComponentAbstract {
             'visibility': 'unset',
             'is_multiple': false,
             'style': 'default',
+            'matrix_cols': [],
+            'matrix_rows': [],
+            'matrix_group_by': '',
             'options': [
                 {
                     'title': $.fn.gettext('First Choice'),
@@ -3617,16 +3620,21 @@ class FormSelectComponentType extends FormComponentAbstract {
             inp$.val(this.inputs_data[0].name);
         }
 
-        let config = {...this.config, ...temp_config};
+        const config = {...this.config, ...temp_config};
         const optionBase$ = this.configGroupEle$.find('#select-option-base');
         optionBase$.trigger('data.clean');
         optionBase$.trigger('data.load', config);
         optionBase$.trigger('data.multiple.set');
+
+        const optionMatrix$ = this.configGroupEle$.find('#select-group-option-matrix');
+        optionMatrix$.trigger('data.clean');
+        optionMatrix$.trigger('data.load', config);
     }
 
     trigger_configSave(new_config) {
         let frm$ = this.configGroupEle$.find('form');
         let config = SetupFormSubmit.serializerObject(frm$);
+        const is_multiple = frm$.find('input[type=checkbox][name="is_multiple"]').prop('checked');
         const configSum = {...this.config, ...config, ...new_config};
 
         function showErrorOfField(errs) {
@@ -3636,62 +3644,105 @@ class FormSelectComponentType extends FormComponentAbstract {
             }, 'failure');
         }
 
-        let arrTitleName = [];
-        let arrTitle = [];
-        let arrDefaultValueMultiple = [];
+        let configResult = [];
+        if (configSum['style'] === 'default' || configSum['style'] === 'xbox') {
+            let arrTitleName = [];
+            let arrTitle = [];
+            let arrDefaultValueMultiple = [];
 
-        Object.keys(configSum).map(
-            key => {
-                if (key.startsWith('select_option_title_')) {
-                    arrTitleName.push(key);
-                    arrTitle.push(configSum[key]);
-                }
-            }
-        )
-
-        this.configGroupEle$.find('input[name^="select_option_default_multiple_"]').each(function () {
-            if ($(this).prop('checked') === true) {
-                const valueTitleTmp = $(this).closest('.select-box-item-data').find('input[name^="select_option_title"]').val();
-                if (valueTitleTmp) {
-                    arrDefaultValueMultiple.push(valueTitleTmp);
-                }
-            }
-        })
-
-        const defaultValue = configSum['select_option_default'];
-        if (defaultValue && arrTitle.indexOf(defaultValue) === -1) {
-            showErrorOfField({
-                'select-option-error-general': $.validator.messages?.['required'] || 'This field is required',
-                'select_option_default': ''
-            })
-            return false;
-        }
-
-        if (arrTitle.length) {
-            if ((new Set(arrTitle)).size !== arrTitle.length) {
-                let errors = {
-                    'select-option-error-general': $.fn.gettext('Ensure that titles are unique in the list'),
-                };
-                arrTitleName.map(
-                    key => {
-                        errors[key] = ''
+            Object.keys(configSum).map(
+                key => {
+                    if (key.startsWith('select_option_title_')) {
+                        arrTitleName.push(key);
+                        arrTitle.push(configSum[key]);
                     }
-                )
-                showErrorOfField(errors);
+                }
+            )
+
+            this.configGroupEle$.find('input[name^="select_option_default_multiple_"]').each(function () {
+                if ($(this).prop('checked') === true) {
+                    const valueTitleTmp = $(this).closest('.select-box-item-data').find('input[name^="select_option_title"]').val();
+                    if (valueTitleTmp) {
+                        arrDefaultValueMultiple.push(valueTitleTmp);
+                    }
+                }
+            })
+
+            const defaultValue = configSum['select_option_default'];
+            if (defaultValue && arrTitle.indexOf(defaultValue) === -1) {
+                showErrorOfField({
+                    'select-option-error-general': $.validator.messages?.['required'] || 'This field is required',
+                    'select_option_default': ''
+                })
                 return false;
             }
-            let configResult = [];
-            for (let i = 0; i < arrTitle.length; i++) {
-                configResult.push({
-                    'title': arrTitle[i].trim(),
-                    'is_default': arrTitle[i] === defaultValue,
-                    'is_default_multiple': arrDefaultValueMultiple.indexOf(arrTitle[i]) !== -1,
-                })
+
+            if (arrTitle.length) {
+                if ((new Set(arrTitle)).size !== arrTitle.length) {
+                    let errors = {
+                        'select-option-error-general': $.fn.gettext('Ensure that titles are unique in the list'),
+                    };
+                    arrTitleName.map(
+                        key => {
+                            errors[key] = ''
+                        }
+                    )
+                    showErrorOfField(errors);
+                    return false;
+                }
+                for (let i = 0; i < arrTitle.length; i++) {
+                    configResult.push({
+                        'title': arrTitle[i].trim(),
+                        'value': arrTitle[i].trim(),
+                        'is_default': arrTitle[i] === defaultValue,
+                        'is_default_multiple': arrDefaultValueMultiple.indexOf(arrTitle[i]) !== -1,
+                        'col': '',
+                        'row': '',
+                    })
+                }
             }
-            this.config = {'options': configResult};
-            this.trigger('obj.reinit_ele', {'config': this.config});
-            super.trigger_configSave(new_config);
         }
+        else if (configSum['style'] === 'matrix') {
+            let matrix_values = new Set([]);
+            configSum['matrix_cols'].map(
+                (col_name, col_index) => {
+                    configSum['matrix_rows'].map(
+                        (row_name, row_index) => {
+                            let group;
+                            if (configSum['matrix_group_by'] === 'row'){
+                                group = row_index;
+                            }
+                            else if (configSum['matrix_group_by'] === 'col') {
+                                group = col_index;
+                            }
+                            else {
+                                group = '';
+                            }
+                            let counter = 1;
+                            const valueInit = `${col_name} & ${row_name}`;
+                            let value = valueInit;
+                            while (matrix_values.has(value)) {
+                                value = `${valueInit} ${counter}`;
+                                counter += 1;
+                            }
+                            configResult.push({
+                                'title': `${col_name} & ${row_name}`,
+                                'value': value,
+                                'is_default': false,
+                                'is_default_multiple': false,
+                                'col': col_name,
+                                'row': row_name,
+                                'group': group,
+                            });
+                        }
+                    )
+                }
+            )
+        }
+
+        this.config = {'options': configResult, 'is_multiple': is_multiple};
+        super.trigger_configSave(new_config);
+        this.trigger('obj.reinit_ele', {'config': this.config});
     }
 
     generateField(temp_config) {
@@ -3730,20 +3781,21 @@ class FormSelectComponentType extends FormComponentAbstract {
             inp$.attr('multiple', true);
             inputs_data['args'].add('multiple');
         }
+
+        inp$.attr('data-select-style', config['style']);
+        inp$.attr('data-select-matrix-group', config['matrix_group_by']);
         config['options'].map(
             item => {
-                let selectedTmp = false;
-                if (config.is_multiple === true) {
-                    selectedTmp = !!(item.is_default_multiple);
-                } else {
-                    selectedTmp = !!(item.is_default);
-                }
-                inp$.append(
-                    `<option 
-                        value="${item.title}"
+                let selectedTmp = config.is_multiple === true ? !!(item.is_default_multiple) : !!(item.is_default);
+                inp$.append(`
+                    <option 
+                        value="${item.value}"
+                        data-col="${item.col}"
+                        data-row="${item.row}" 
+                        data-group="${item.group}"
                         ${selectedTmp ? "selected" : ""}
-                    >${item.title}</option>`
-                );
+                    >${item.title}</option>
+                `);
             }
         )
         if (config.place_holder) inputs_data['kwargs']['placeholder'] = config.place_holder;

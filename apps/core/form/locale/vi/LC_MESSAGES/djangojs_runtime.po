@@ -84,3 +84,15 @@ msgstr "Xác thực thành công!"
 #
 msgid "You'll be taken to the form shortly."
 msgstr "Bạn sẽ được đưa đến biểu mẫu ngay thôi."
+
+#
+msgid "Contents"
+msgstr "Nội dung"
+
+#
+msgid "Each row can have only one tick, and if the data field is mandatory, it must be completed for all rows."
+msgstr "Mỗi dòng chỉ có một đánh dấu, nếu trường dữ liệu là bắt buộc thì bắt buộc hoàn thành tất cả các dòng."
+
+#
+msgid "Each column can have only one tick, and if the data field is mandatory, it must be completed for all columns."
+msgstr "Mỗi cột chỉ có một đánh dấu, nếu trường dữ liệu là bắt buộc thì bắt buộc hoàn thành tất cả các cột."

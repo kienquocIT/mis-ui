@@ -118,6 +118,13 @@ textarea {
     font-size: 14px;
 }
 
+.form-full input[type=radio] {
+    margin-top: 10px;
+    margin-right: 10px;
+    width: 1rem;
+    height: 1rem;
+}
+
 .form-full input.form-item-input.text-upper,
 .form-full textarea.text-upper {
     text-transform: uppercase;
@@ -382,3 +389,39 @@ div.is-invalid {
     color: #4b646e;
 }
 /* -- page */
+
+/* Matrix */
+table.matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.matrix-table.matrix-table-default td {
+    padding: 5px;
+    border: 1px solid #dce2e5;
+}
+
+table.matrix-table.matrix-table-horizontal td {
+    padding: 5px;
+    border-bottom: 1px solid #dce2e5;
+}
+
+table.matrix-table .matrix-cell-check {
+    text-align: center;
+}
+
+table.matrix-table .matrix-cell-check input[type=checkbox] {
+    margin-top: 5px;
+    margin-right: 0;
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.matrix-text {
+    font-size: 0.8rem;
+    font-style: italic;
+    display: block;
+    margin-top: 10px;
+}
+
+/* -- Matrix */

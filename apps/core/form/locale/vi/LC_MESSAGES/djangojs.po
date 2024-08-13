@@ -228,3 +228,11 @@ msgstr "Xây dựng bố cục của bạn tại đây để tùy chỉnh giao d
 #
 msgid "Make your information come alive with different styles and layouts."
 msgstr "Làm cho thông tin của bạn trở nên sống động hơn với các phong cách và bố cục khác nhau."
+
+#
+msgid "All rows cannot be duplicated."
+msgstr "Tất cả tên dòng không được trùng nhau."
+
+#
+msgid "All columns cannot be duplicated."
+msgstr "Tất cả tên cột không được trùng nhau."

@@ -502,7 +502,7 @@ function resetInputValue() {
         },
 
         formInitSelect2All: function (opts) {
-            $('select').each(function () {
+            $('select:not([data-select-style]), select[data-select-style="default"]').each(function () {
                 const placeholder = $(this).attr('placeholder') || '';
                 const optionEmpty = $(this).find('option[value=""]');
                 if (optionEmpty.length === 0) $(this).prepend(`<option value=""></option>`)
@@ -512,6 +512,137 @@ function resetInputValue() {
                     placeholder: placeholder.toString(),
                     width: '100%',
                     ...opts,
+                })
+            });
+            $('select[data-select-style="xbox"]').each(function (){
+                const selectCurrent$ = $(this);
+                const parent$ = $(this).closest('.form-item-input-parent');
+                const isMultiple = !!$(this).prop('multiple');
+                const fakeName = `fakeName_select_` + $.fn.formGenerateRandomString(16);
+
+                $(selectCurrent$).hide(0);
+                $(selectCurrent$).find('option').each(function (){
+                    const option$ = $(this);
+                    const txt = option$.text();
+                    const value = option$.val();
+                    if (value){
+                        const rdIdx = `select_` + $.fn.formGenerateRandomString(32);
+                        let htmlTmp = ``;
+                        if (isMultiple === true){
+                            htmlTmp = `
+                            <div class="form-checkbox-group mb-1">
+                                <input data-value="${value}" type="checkbox" id="${rdIdx}" class="form-checkbox-input form-checkbox-md" />
+                                <label for="${rdIdx}" class="form-checkbox-label">${txt}</label>
+                            </div>
+                        `
+                        } else {
+                            htmlTmp = `
+                            <div class="form-checkbox-group mb-1">
+                                <input data-value="${value}" name="${fakeName}" type="radio" id="${rdIdx}" class="form-checkbox-input form-checkbox-md" />
+                                <label for="${rdIdx}" class="form-checkbox-label">${txt}</label>
+                            </div>
+                        `
+                        }
+                        parent$.append(htmlTmp)
+                    }
+                })
+                if (isMultiple) {
+                    parent$.find('input[type=checkbox]').on('change', function (){
+                        const value = $(this).attr('data-value');
+                        selectCurrent$.find(`option[value="${value}"]`).prop('selected', $(this).prop('checked'));
+                    })
+                } else {
+                    parent$.find(`input[type=radio][name=${fakeName}]`).on('change', function (){
+                        const value = $(this).attr('data-value');
+                        selectCurrent$.val(value);
+                    })
+                }
+            });
+            $('select[data-select-style="matrix"]').each(function (){
+                const selectCurrent$ = $(this);
+                const parent$ = $(this).closest('.form-item-input-parent');
+                const groupBy = selectCurrent$.attr('data-select-matrix-group');
+
+                $(selectCurrent$).hide(0);
+                let rows = new Set([]);
+                let cols = new Set([]);
+                $(selectCurrent$).find('option').each(function (){
+                    const option$ = $(this);
+                    const value = option$.val();
+                    let dataRow = option$.attr('data-row');
+                    let dataCol = option$.attr('data-col');
+                    if (value && dataRow && dataCol){
+                        rows.add(dataRow);
+                        cols.add(dataCol);
+                    }
+                });
+
+                rows = Array.from(rows);
+                cols = Array.from(cols);
+
+                const tbl$ = $(`<table class="matrix-table matrix-table-default"></table>`);
+                const colFirst = cols.map(item => {
+                    return `<td style="text-align: center;">${item}</td>`
+                })
+                const firstRow$ = `
+                    <tr>
+                        <td><i>${$.fn.formGettext("Contents")}</i></td>
+                        ${colFirst}
+                    </tr>
+                `;
+                const anotherRows = rows.map(
+                    row_name => {
+                        const arr = cols.map(
+                            col_name => {
+                                const option$ = selectCurrent$.find(`option[data-row="${row_name}"][data-col="${col_name}"]`);
+                                if (option$.length > 0){
+                                    const value = option$.attr('value');
+                                    const dataGroup = option$.attr('data-group');
+                                    return `
+                                        <td class="matrix-cell-check">
+                                            <input data-value="${value}" data-group="${dataGroup}" type="checkbox" class="form-checkbox-input form-checkbox-md" />
+                                        </td>
+                                    `
+                                }
+                        })
+                        return `<tr><td>${row_name}</td>${arr.join("")}</tr>`;
+                    }
+                );
+
+                tbl$.append([firstRow$, ...anotherRows]);
+                parent$.append(tbl$);
+                switch (groupBy) {
+                    case 'row':
+                        $(`<small class="matrix-text">${$.fn.formGettext("Each row can have only one tick, and if the data field is mandatory, it must be completed for all rows.")}</small>`).insertAfter(tbl$);
+                        break
+                    case 'col':
+                        $(`<small class="matrix-text">${$.fn.formGettext("Each column can have only one tick, and if the data field is mandatory, it must be completed for all columns.")}</small>`).insertAfter(tbl$);
+                        break
+                }
+
+                let newRule = {};
+                newRule['matrixGroupBy'.toLowerCase()] = groupBy;
+                selectCurrent$.rules('add', newRule);
+
+                tbl$.find('input[type=checkbox]').on('change', function (event, data){
+                    let inp$ = $(this);
+                    const value = $(inp$).attr('data-value');
+                    const dataGroup = $(inp$).attr('data-group');
+                    if (value){
+                        const option$ = selectCurrent$.find(`option[value="${value}"]`);
+                        if (option$.length > 0){
+                            option$.prop('selected', $(inp$).prop('checked'));
+                            selectCurrent$.trigger('change');
+                        }
+                        if (data && data?.['skip'] === true) return;
+                        if (dataGroup){
+                            tbl$.find(`input[data-group="${dataGroup}"]`).each(function (){
+                                if (!$(this).is(inp$)){
+                                    $(this).prop('checked', false).trigger('change', {'skip': true});
+                                }
+                            })
+                        }
+                    }
                 })
             });
         },

@@ -487,7 +487,7 @@ class SortableField {
         this.itemEmptyHTML = `
             <div id="sortable-item-empty" class="form-item form-item-md sortable-drop-here sortable-item-disabled">
                 <div>
-                    <h3>${$.fn.gettext('Start building!')}</h3>
+                    <h3 style="margin-bottom: 10px;">${$.fn.gettext('Start building!')}</h3>
                     <p>${$.fn.gettext('Drag fields from left panel and drop here to add them to your form.')}</p>
                 </div>
             </div>
@@ -3563,6 +3563,7 @@ class FormSelectComponentType extends FormComponentAbstract {
             'required': false,
             'visibility': 'unset',
             'is_multiple': false,
+            'style': 'default',
             'options': [
                 {
                     'title': $.fn.gettext('First Choice'),
@@ -4924,7 +4925,13 @@ class FormCardTextComponentType extends FormComponentAbstract {
     get defaultConfig() {
         return {
             'label': 'Description',
-            'content': '',
+            'content': `
+                <p style="font-size: 1.1rem;color: #007d88;">${$.fn.gettext("Design your own way")}</p>
+                <div style="margin-top: 10px;padding: 10px;background-color: rgba(61,156,165,0.1);border-radius: 5px;font-style: italic;">
+                    <p>${$.fn.gettext("Build your layout here to customize the appearance of your content with a wide range of formatting options.")}</p> 
+                    <p>${$.fn.gettext("Make your information come alive with different styles and layouts.")}</p> 
+                </div>
+            `,
         }
     }
 

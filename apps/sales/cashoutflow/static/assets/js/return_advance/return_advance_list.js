@@ -80,7 +80,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'status',
-                        className: 'wrap-text w-10',
+                        className: 'wrap-text text-center w-10',
                         render: (data, type, row) => {
                             let approved_trans = ``
                             let text_color = ``
@@ -104,7 +104,7 @@ $(document).ready(function () {
                                 approved_trans = 'Cancel'
                                 text_color = 'badge-soft-danger'
                             }
-                            return `<span class="badge ${text_color}">` + approved_trans + `</span>`
+                            return `<span class="w-100 badge ${text_color}">` + approved_trans + `</span>`
                         }
                     },
                 ],

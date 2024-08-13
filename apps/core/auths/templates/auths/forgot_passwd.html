@@ -6,12 +6,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans 'Login' %} &#8901; Minh Tâm Solution</title>
-    <meta name="description" content="Minh Tam Solution"/>
+    <title>{% trans 'Forgot password' %} &#8901; Bflow</title>
+    <meta name="description" content="Bflow"/>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{% static 'assets/images/bflow/icon/icon_36x36.png' %}">
-    <link rel="icon" href="{% static 'assets/images/bflow/icon/icon_36x36.png' %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'assets/images/brand/bflow/favicon.ico' %}">
+    <link rel="icon" href="{% static 'assets/images/brand/bflow/favicon.ico' %}" type="image/x-icon">
+
+    <meta property="og:url" content="www.bflow.vn"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="{% trans 'Forgot password' %} &#8901; Bflow"/>
+    <meta property="og:description" content="Bflow - Giải pháp toàn diện cho doanh nghiệp"/>
+    <meta property="og:image" content="{% static 'assets/images/brand/bflow/favicon.ico' %}"/>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,7 +59,17 @@
                 <div class="row mx-auto" style="max-width: 450px;">
                     <div class="col-12 position-relative ">
                         <div class="card card-lg card-border box-vertical-blur">
+                            <div class="card-header d-flex justify-content-center" style="border-bottom: 0;">
+                                <img
+                                        src="{% static 'assets/images/brand/bflow-by-mts/png/bflow-by-mts-original.png' %}"
+                                    alt="Bflow by MTS"
+                                    style="width: 80%;object-fit: cover;padding: 20px;"
+                                >
+                            </div>
                             <div class="card-body">
+                                <div class="w-100 mb-6">
+                                        <h4 class="text-center">{% trans 'Find your account' %}</h4>
+                                    </div>
                                 <div class="w-100 mb-3" id="username-call-get">
                                     <form data-url="{% url 'ForgotPasswordAPI' %}" data-method="POST" id="frmGetOTP">
                                         {% csrf_token %}

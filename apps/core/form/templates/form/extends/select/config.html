@@ -31,94 +31,225 @@
         <hr style="background-color: #2a3746"/>
 
         <div class="form-group mb-3" id="group-select-box-option-config">
-            <label class="form-label">{% trans 'Options' %}</label>
-
-            <div class="w-100">
+            <div class="w-100 mb-3">
+                <label class="form-label">{% trans 'Options' %}</label>
                 <div class="form-check">
                     <input type="checkbox" name="is_multiple" class="form-check-input" id="{{ rIdxIsMultiple }}"/>
                     <label for="{{ rIdxIsMultiple }}" class="form-check-label">{% trans 'Multiple' %}</label>
                 </div>
             </div>
+            <div class="form-group mb-3">
+                {% assign_out_random selectStyleIdx as rSelectStyleIdx %}
+                <label for="{{ rSelectStyleIdx }}" class="form-label">{% trans 'Select style' %}</label>
+                <select name="style" id="{{ rSelectStyleIdx }}" class="form-select">
+                    <option value="default">{% trans 'Default' %}</option>
+                    <option value="xbox">{% trans 'Checkbox / Radio box' %}</option>
+                    <option value="matrix">{% trans 'Matrix' %}</option>
+                </select>
+                <small class="form-text text-muted">
+                    <ul style="list-style: circle;">
+                        <li>{% trans "Styles are different ways of presenting select tags that improve the user's data selection experience in a more flexible and understandable way." %}</li>
+                        <li>{% trans "The end result is always the underlying choices, which are reflected in the report data." %}</li>
+                    </ul>
+                </small>
+            </div>
 
-            <div class="w-100 mb-1 select-box-item select-box-item-data d-none" id="select-option-base">
-                <div class="d-flex">
-                    <div class="select-box-icon-dnd">
-                        <i class="fa-solid fa-grip-vertical"></i>
-                    </div>
-                    <div class="select-box-item-default">
-                        <div class="form-check form-check-lg">
-                            <input type="radio" class="form-check-input" name="select_option_default" disabled/>
+            <div class="mb-3">
+                <div class="w-100 mb-1 select-box-item select-box-item-data d-none" id="select-option-base">
+                    <div class="d-flex">
+                        <div class="select-box-icon-dnd">
+                            <i class="fa-solid fa-grip-vertical"></i>
                         </div>
-                    </div>
-                    <div class="select-box-item-default-multiple" style="display: none;">
-                        <div class="form-check form-check-lg">
-                            <input type="checkbox" class="form-check-input" name="select_option_default_multiple" disabled/>
+                        <div class="select-box-item-default">
+                            <div class="form-check form-check-lg">
+                                <input type="radio" class="form-check-input" name="select_option_default" disabled/>
+                            </div>
                         </div>
-                    </div>
-                    <div class="select-box-item-title">
-                        <div class="form-group m-0 p-0 w-100">
-                            <input type="text" class="form-control" name="select_option_title" required disabled/>
+                        <div class="select-box-item-default-multiple" style="display: none;">
+                            <div class="form-check form-check-lg">
+                                <input
+                                        type="checkbox" class="form-check-input" name="select_option_default_multiple"
+                                        disabled
+                                />
+                            </div>
                         </div>
-                    </div>
-                    <div class="select-box-item-action">
-                        <button
-                                type="button" class="btnAddRowAfter btn btn-icon btn-xs btn-outline-primary btn-rounded"
-                        >
-                            <span class="icon"><i class="fa-solid fa-plus"></i></span>
-                        </button>
-                        <button
-                                type="button"
-                                class="btnRemoveRow btn btn-icon btn-xs btn-outline-danger btn-rounded ml-3"
-                        >
-                            <span class="icon"><i class="fa-solid fa-minus"></i></span>
-                        </button>
+                        <div class="select-box-item-title">
+                            <div class="form-group m-0 p-0 w-100">
+                                <input type="text" class="form-control" name="select_option_title" required disabled/>
+                            </div>
+                        </div>
+                        <div class="select-box-item-action">
+                            <button
+                                    type="button"
+                                    class="btnAddRowAfter btn btn-icon btn-xs btn-outline-primary btn-rounded"
+                            >
+                                <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                            </button>
+                            <button
+                                    type="button"
+                                    class="btnRemoveRow btn btn-icon btn-xs btn-outline-danger btn-rounded ml-3"
+                            >
+                                <span class="icon"><i class="fa-solid fa-minus"></i></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
+                <div class="w-100" id="select-option-dynamic"></div>
+                <div class="w-100">
+                    <input type="text" class="d-none" hidden disabled name="select-option-error-general">
+                </div>
+                <div class="w-100 d-flex">
+                    <button
+                            style="margin: 5px;flex: auto;"
+                            class="btn btn-xs btn-icon btn-soft-primary"
+                            type="button"
+                            id="idx-btn-option-new-row"
+                    >
+                        <span>
+                            <span class="icon">
+                                <i class="fa-solid fa-plus"></i>
+                            </span>
+                            <span>{% trans 'Add new row' %}</span>
+                        </span>
+                    </button>
+                    <button
+                            style="margin: 5px;flex: auto;"
+                            class="btn btn-xs btn-icon btn-soft-secondary"
+                            type="button"
+                            id="idx-btn-option-un-select-default"
+                    >
+                        <span>
+                            <span class="icon">
+                                <i class="fa-regular fa-circle-xmark"></i>
+                            </span>
+                            <span>{% trans 'Unselect default' %}</span>
+                        </span>
+                    </button>
+                    <button
+                            style="margin: 5px;flex: auto;"
+                            class="btn btn-xs btn-icon btn-soft-danger"
+                            type="button"
+                            id="idx-btn-option-clean"
+                    >
+                        <span>
+                            <span class="icon">
+                                <i class="fa-solid fa-xmark"></i>
+                            </span>
+                            <span>{% trans 'Clean' %}</span>
+                        </span>
+                    </button>
+                </div>
             </div>
-            <div class="w-100" id="select-option-dynamic"></div>
-            <div class="w-100">
-                <input type="text" class="d-none" hidden disabled name="select-option-error-general">
-            </div>
-            <div class="w-100 d-flex">
+
+            <div>
                 <button
-                        style="margin: 5px;flex: auto;"
-                        class="btn btn-xs btn-icon btn-soft-primary"
-                        type="button"
-                        id="idx-btn-option-new-row"
+                        class="btn btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#setupMatrixModal"
+                >{% trans 'Setup matrix' %}</button>
+                <div class="w-100 overflow-x-auto">
+                    <table class="table table-bordered" id="matrix-table-show">
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div
+                        class="modal fade" id="setupMatrixModal" tabindex="-1" role="dialog"
+                        aria-labelledby="setupMatrixModal" aria-hidden="true"
                 >
-                    <span>
-                        <span class="icon">
-                            <i class="fa-solid fa-plus"></i>
-                        </span>
-                        <span>{% trans 'Add new row' %}</span>
-                    </span>
-                </button>
-                <button
-                        style="margin: 5px;flex: auto;"
-                        class="btn btn-xs btn-icon btn-soft-secondary"
-                        type="button"
-                        id="idx-btn-option-un-select-default"
-                >
-                    <span>
-                        <span class="icon">
-                            <i class="fa-regular fa-circle-xmark"></i>
-                        </span>
-                        <span>{% trans 'Unselect default' %}</span>
-                    </span>
-                </button>
-                <button
-                        style="margin: 5px;flex: auto;"
-                        class="btn btn-xs btn-icon btn-soft-danger"
-                        type="button"
-                        id="idx-btn-option-clean"
-                >
-                    <span>
-                        <span class="icon">
-                            <i class="fa-solid fa-xmark"></i>
-                        </span>
-                        <span>{% trans 'Clean' %}</span>
-                    </span>
-                </button>
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div>
+                                    <p style="font-size: 1.1rem;" class="modal-title">{% trans 'Setup matrix' %}</p>
+                                    <small class="text-muted">{% trans 'Click button close or outside for close.' %}</small>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="w-100 d-flex">
+                                    <div style="flex-basis: calc(50% - 15px);margin-right: 15px;">
+                                        <p>{% trans 'Columns' %}</p>
+                                        <ol class="matrix-list-config">
+                                            <li>
+                                                <div class="matrix-drag">
+                                                    <i class="fa-solid fa-grip-vertical"></i>
+                                                </div>
+                                                <input class="matrix-value form-control" value="Hoàn toàn hài lòng" name="matrix_columns" />
+                                                <div class="matrix-delete">
+                                                    <button type="button" class="matrix-btn-delete">
+                                                        <i class="fa-solid fa-xmark"></i>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="matrix-drag">
+                                                    <i class="fa-solid fa-grip-vertical"></i>
+                                                </div>
+                                                <input class="matrix-value form-control" value="Bình thường" name="matrix_columns" />
+                                                <div class="matrix-delete">
+                                                    <button type="button" class="matrix-btn-delete">
+                                                        <i class="fa-solid fa-xmark"></i>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="matrix-drag">
+                                                    <i class="fa-solid fa-grip-vertical"></i>
+                                                </div>
+                                                <input class="matrix-value form-control" value="Hoàn toàn không hài lòng" name="matrix_columns"/>
+                                                <div class="matrix-delete">
+                                                    <button type="button" class="matrix-btn-delete">
+                                                        <i class="fa-solid fa-xmark"></i>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                            <button id="matrix-add-new-column" class="btn btn-primary no-transform" type="button">{% trans 'Add new row' %}</button>
+                                        </ol>
+                                    </div>
+                                    <div style="flex-basis: calc(50% - 15px);margin-left: 15px;">
+                                        <p>{% trans 'Rows' %}</p>
+                                        <ol class="matrix-list-config">
+                                            <li>
+                                                <div class="matrix-drag">
+                                                    <i class="fa-solid fa-grip-vertical"></i>
+                                                </div>
+                                                <input class="matrix-value form-control" value="Tiền gửi, tiết kiệm" name="matrix_rows" />
+                                                <div class="matrix-delete">
+                                                    <button type="button" class="matrix-btn-delete">
+                                                        <i class="fa-solid fa-xmark"></i>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="matrix-drag">
+                                                    <i class="fa-solid fa-grip-vertical"></i>
+                                                </div>
+                                                <input class="matrix-value form-control" value="Dịch vụ thẻ" name="matrix_rows"/>
+                                                <div class="matrix-delete">
+                                                    <button type="button" class="matrix-btn-delete">
+                                                        <i class="fa-solid fa-xmark"></i>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="matrix-drag">
+                                                    <i class="fa-solid fa-grip-vertical"></i>
+                                                </div>
+                                                <input class="matrix-value form-control" value="Dịch vụ du học" name="matrix_rows" />
+                                                <div class="matrix-delete">
+                                                    <button type="button" class="matrix-btn-delete">
+                                                        <i class="fa-solid fa-xmark"></i>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                            <button id="matrix-add-new-row" class="btn btn-primary no-transform" type="button">{% trans 'Add new row' %}</button>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -188,7 +319,7 @@
             eleTitle$.rules('add', rules);
         }
 
-        function setStateChanged(){
+        function setStateChanged() {
             const configCls = new ConfigField();
             configCls.state = true;
         }
@@ -217,11 +348,11 @@
             config['options'].map(item => insertNewOption(item, 'last'));
         });
 
-        optionBase$.on('data.multiple.set', function (event, data){
-            if (data === null || data === undefined){
+        optionBase$.on('data.multiple.set', function (event, data) {
+            if (data === null || data === undefined) {
                 data = $(isMultiple$).prop('checked');
             }
-            if (data === true){
+            if (data === true) {
                 selectDynamic$.find('.select-box-item-default').hide();
                 selectDynamic$.find('.select-box-item-default-multiple').show();
             } else {
@@ -240,17 +371,93 @@
             setStateChanged();
         });
 
-        form$.find('button#idx-btn-option-clean').on('click', function(){
+        form$.find('button#idx-btn-option-clean').on('click', function () {
             optionBase$.trigger('data.clean');
             setStateChanged();
         });
 
-        form$.find('input#{{ rIdxIsMultiple }}').on('change', function (){
+        form$.find('input#{{ rIdxIsMultiple }}').on('change', function () {
             optionBase$.trigger('data.multiple.set', $(this).prop('checked'));
             setStateChanged();
         })
 
         selectDynamic$.sortable({});
         selectDynamic$.disableSelection();
+
+        const matrixModal$ = form$.find('#setupMatrixModal');
+        const btnAddMatrixColumn$ = form$.find('#matrix-add-new-column');
+        const btnAddMatrixRow$ = form$.find('#matrix-add-new-row');
+        const tblMatrixShow$ = form$.find('#matrix-table-show');
+
+        matrixModal$.on('shown.bs.modal', function (){
+            $(tblMatrixShow$).trigger('data.load');
+        })
+
+        matrixModal$.on('change', 'input[name]', function (){
+            $(tblMatrixShow$).trigger('data.load');
+        })
+
+        tblMatrixShow$.on('data.load', function (event){
+            const dataForm = SetupFormSubmit.serializerObject($(form$));
+            const data = {
+                'rows': dataForm['matrix_rows'],
+                'cols': dataForm['matrix_columns'],
+            }
+            let trData = [];
+            let firstRow = data['cols'].map(
+                item => `<td>${item}</td>`
+            ).join("")
+            trData.push(`<tr><td></td>${firstRow}</tr>`)
+
+            data['rows'].map(
+                item => {
+                    trData.push(`
+                        <tr>
+                            <td>${item}</td>
+                            ${data['cols'].map(item2 => '<td><i class="fa-regular fa-square-check"></i></td>')}
+                        </tr>
+                    `);
+                }
+            )
+            tblMatrixShow$.find('tbody').empty().append(trData.join(""));
+        })
+
+        function newItemMatrix(ele$, rows_or_cols){
+            $(`<li>
+                <div class="matrix-drag">
+                    <i class="fa-solid fa-grip-vertical"></i>
+                </div>
+                <input class="matrix-value form-control" value="${$.fn.gettext('Enter text')}" name="matrix_${rows_or_cols}" />
+                <div class="matrix-delete">
+                    <button>
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </li>`).insertBefore($(ele$));
+
+            tblMatrixShow$.trigger('data.load');
+        }
+
+        btnAddMatrixColumn$.on('click', function(){
+            newItemMatrix($(this), 'columns');
+        })
+        btnAddMatrixRow$.on('click', function(){
+            newItemMatrix($(this), 'rows');
+        })
+
+        form$.find('.matrix-list-config')
+            .on('click', 'button.matrix-btn-delete', function (){
+               alert('Request delete.');
+            })
+            .each(function (){
+                $(this).sortable({
+                    items: "li",
+                    revert: true,
+                    placeholder: "item-dragging",
+                    update: function (event, ui) {
+                        tblMatrixShow$.trigger('data.load');
+                    }
+                })
+            });
     })
 </script>

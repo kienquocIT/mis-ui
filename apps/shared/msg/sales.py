@@ -68,5 +68,7 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     GRE_ITEM_BORROW_CREATE = _('Gre item borrow create successfully')
     GRE_ITEM_BORROW_UPDATE = _('Gre item borrow update successfully')
     DELIVERY_UPDATE = _('Delivery update successfully')
+    DISTRIBUTION_PLAN_CREATE = _('Distribution plan create successfully')
+    DISTRIBUTION_PLAN_UPDATE = _('Distribution plan update successfully')
     CONTRACT_CREATE = _('Contract create successfully')
     CONTRACT_UPDATE = _('Contract update successfully')

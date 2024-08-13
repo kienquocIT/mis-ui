@@ -1,0 +1,34 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="title" class="form-label required">{% trans 'Title' %}</label>
+            <input type="text" class="form-control" id="title">
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="product" class="form-label required">{% trans 'Product' %}</label>
+            <select class="form-select select2" id="product" data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="suppliers" class="form-label required">{% trans 'Suppliers' %}</label>
+            <select class="form-select select2" multiple id="suppliers" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="start-date" class="form-label required">{% trans 'Start date' %}</label>
+            <input type="text" class="form-control" id="start-date">
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="no-of-months" class="form-label required">{% trans 'No of months' %}</label>
+            <select class="form-select select2" id="no-of-months"></select>
+        </div>
+    </div>
+</div>

@@ -51,14 +51,17 @@ class AdvancePaymentCreate(View):
         menu_active='menu_advance_payment_list',
     )
     def get(self, request, *args, **kwargs):
+        input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE
         resp1 = ServerAPI(
             user=request.user,
             url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
         ).get()
         return {
-                   'data': {'employee_current': resp1.result},
-                   'list_from_app': 'cashoutflow.advancepayment.create',
-               }, status.HTTP_200_OK
+            'data': {'employee_current': resp1.result},
+            'list_from_app': 'cashoutflow.advancepayment.create',
+            'input_mapping_properties': input_mapping_properties,
+            'form_id': 'form-create-advance'
+        }, status.HTTP_200_OK
 
 
 class AdvancePaymentDetail(View):
@@ -71,13 +74,16 @@ class AdvancePaymentDetail(View):
         menu_active='menu_advance_payment_detail',
     )
     def get(self, request, *args, **kwargs):
+        input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE
         resp1 = ServerAPI(
             user=request.user,
             url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
         ).get()
         return {
-                   'data': {'employee_current': resp1.result}
-               }, status.HTTP_200_OK
+            'data': {'employee_current': resp1.result},
+            'input_mapping_properties': input_mapping_properties,
+            'form_id': 'form-detail-advance'
+        }, status.HTTP_200_OK
 
 
 class AdvancePaymentUpdate(View):

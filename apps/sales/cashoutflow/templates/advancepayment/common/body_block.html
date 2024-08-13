@@ -1,0 +1,180 @@
+{% load i18n %}
+
+{% trans 'Select Sale Person' as inherit_title %}
+{% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+
+<div class="accordion accordion-card accordion-soft accordion-icon" id="accordionPanelsStayOpenExampleOne">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                <span class="d-flex align-items-center">
+                    <i class="fas fa-info-circle mr-2 text-primary"></i>
+                    <span>
+                        <span>{% trans 'Information' %}</span>
+                    </span>
+                </span>
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+            <div class="accordion-body">
+                <div class="row">
+                {#        title#}
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label required" for="title">{% trans "Name" %}</label>
+                            <input name="title" class="form-control" id="title">
+                        </div>
+                    </div>
+                {#        create date#}
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label required" for="created_date_id">{% trans "Created date" %}</label>
+                            <input class="form-control" id="created_date_id" style="color: #6f6f6f">
+                        </div>
+                    </div>
+                {#        creator#}
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label required" for="creator-select-box">{% trans "Creator" %}</label>
+                            <span class="input-affix-wrapper">
+                                <span class="input-prefix" id="creator-detail-span">
+                                    <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
+                                        <span class="row">
+                                            <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
+                                            <a id="btn-detail-creator-tab" class="col-5 text-right" href="{% url 'EmployeeDetail' '0' %}" data-url="{% url 'EmployeeDetail' '0' %}" target="_blank">
+                                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                            </a>
+                                        </span>
+                                        <span class="dropdown-divider"></span>
+                                        <span class="row">
+                                            <span class="col-5" style="font-style: italic">{% trans "Employee" %}</span>
+                                            <span class="col-7 text-primary" id="creator-name"></span>
+                                        </span>
+                                        <span class="row">
+                                            <span class="col-5" style="font-style: italic">{% trans "Code" %}</span>
+                                            <span class="col-7 text-primary" id="creator-code"></span>
+                                        </span>
+                                        <span class="row">
+                                            <span class="col-5" style="font-style: italic">{% trans "Department" %}</span>
+                                            <span class="col-7 text-primary" id="creator-department"></span>
+                                        </span>
+                                    </span>
+                                </span>
+                                <select class="form-select"
+                                        style="color: black"
+                                        id="creator-select-box"
+                                        data-method="GET"
+                                        data-url="{% url 'EmployeeListAPI' %}"></select>
+                            </span>
+                        </div>
+                    </div>
+                {#        quotation#}
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label" for="quotation_mapped_select">{% trans "Quotation" %}</label>
+                            <select class="select2 form-select"
+                                    data-url="{% url 'QuotationListAPI' %}"
+                                    data-url-opp-detail="{% url 'OpportunityDetailAPI' pk=0 %}"
+                                    data-url-quo-detail="{% url 'QuotationDetailAPI' pk=0 %}"
+                                    data-url-so-detail="{% url 'SaleOrderDetailAPI' pk=0 %}"
+                                    id="quotation_mapped_select">
+                            </select>
+                        </div>
+                    </div>
+                {#        sale order#}
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label" for="sale_order_mapped_select">{% trans "Sale Order" %}</label>
+                            <select class="select2 form-select"
+                                    data-url="{% url 'SaleOrderListAPI' %}"
+                                    id="sale_order_mapped_select"
+                            ></select>
+                        </div>
+                    </div>
+                {#        ap type#}
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label required" for="type-select-box">{% trans "Type" %}</label>
+                            <select data-trans-to-emp="{% trans "To employee" %}"
+                                    data-trans-to-sup="{% trans "To supplier" %}"
+                                    class="form-select select2"
+                                    id="type-select-box"
+                                    name="advance_payment_type"
+                            >
+                            </select>
+                        </div>
+                    </div>
+                {#        supplier name#}
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label" id="supplier-label" for="supplier-select-box">{% trans "Supplier name" %}</label>
+                            <span class="input-affix-wrapper">
+                                <span class="input-prefix" id="supplier-detail-span" hidden>
+                                    <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 35rem">
+                                        <span class="row">
+                                            <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
+                                            <a id="btn-detail-supplier-tab" class="col-5 text-right" href="{% url 'AccountDetail' '0' %}" data-url="{% url 'AccountDetail' '0' %}" target="_blank">
+                                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                            </a>
+                                        </span>
+                                        <span class="dropdown-divider"></span>
+                                        <span class="row">
+                                            <span class="col-3" style="font-style: italic">{% trans "Supplier" %}</span>
+                                            <span class="col-9 text-primary" id="supplier-name"></span>
+                                        </span>
+                                        <span class="row">
+                                            <span class="col-3" style="font-style: italic">{% trans "Code" %}</span>
+                                            <span class="col-9 text-primary" id="supplier-code"></span>
+                                        </span>
+                                        <span class="row">
+                                            <span class="col-3" style="font-style: italic">{% trans "Owner" %}</span>
+                                            <span class="col-9 text-primary" id="supplier-owner"></span>
+                                        </span>
+                                        <span class="row">
+                                            <span class="col-3" style="font-style: italic">{% trans "Industry" %}</span>
+                                            <span class="col-9 text-primary" id="supplier-industry"></span>
+                                        </span>
+                                    </span>
+                                </span>
+                                <select name="supplier" class="form-select" data-method="GET" id="supplier-select-box" disabled
+                                        data-url="{% url 'AccountListAPI' %}"></select>
+                            </span>
+                        </div>
+                    </div>
+                {#        ap method#}
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label required" for="ap-method">{% trans "Method" %}</label>
+                            <select data-trans-cash="{% trans "Cash" %}"
+                                    data-trans-bank-transfer="{% trans "Bank transfer" %}"
+                                    class="form-select select2"
+                                    id="ap-method"
+                                    name="method"
+                            >
+                            </select>
+                        </div>
+                    </div>
+                {#        return date#}
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label required" for="return_date_id">{% trans "Return date" %}</label>
+                            <input class="form-control" id="return_date_id" name="return_date">
+                        </div>
+                    </div>
+                {#        money gave#}
+                    <div class="col-12 col-md-6 col-lg-6 py-5">
+                        <div class="border rounded-5 bg-green-light-5 py-1 w-100 text-center">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="money_gave" id="money-gave">
+                                <label class="text-primary fw-bold" for="money-gave">{% trans "Money gave/transferred" %}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

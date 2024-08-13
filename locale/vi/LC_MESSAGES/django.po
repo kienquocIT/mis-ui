@@ -8348,3 +8348,47 @@ msgstr "Mở để xem Thông tin tồn kho của các sản phẩm không 
 #
 msgid "Forgot password"
 msgstr "Quên mật khẩu"
+
+#
+msgid "By words"
+msgstr "Bằng chữ"
+
+#
+msgid "Distribution plan"
+msgstr "Kế hoạch phân phối"
+
+#
+msgid "Suppliers"
+msgstr "Nhà cung cấp"
+
+#
+msgid "Fixed costs"
+msgstr "Chi phí cố định"
+
+#
+msgid "Variable costs"
+msgstr "Chi phí biến đổi"
+
+#
+msgid "Cost item"
+msgstr "Chi phí"
+
+#
+msgid "No of months"
+msgstr "Số tháng"
+
+#
+msgid "Product price"
+msgstr "Giá sản phẩm"
+
+#
+msgid "Break event point"
+msgstr "Điểm hoà vốn"
+
+#
+msgid "Expected number"
+msgstr "Doanh số kì vọng"
+
+#
+msgid "Plan description"
+msgstr "Mô tả kế hoạch"

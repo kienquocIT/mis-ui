@@ -205,7 +205,7 @@ function TaskSubmitFunc(platform) {
     )
 }
 
-function logworkSubmit() {
+function logWorkSubmit() {
     $('#save-logtime').off().on('click', function () {
         const startDate = $('#startDateLogTime').val()
         const endDate = $('#endDateLogTime').val()
@@ -479,15 +479,6 @@ class Task_in_project {
 
         // init attachment
         new $x.cls.file($('#attachment')).init({'name': 'attach'});
-
-        // validate form
-        $form.on('submit', function(e){
-            e.preventDefault();
-            SetupFormSubmit.validate($form, {
-                errorClass: 'is-invalid cl-red',
-                submitHandler: TaskSubmitFunc($form)
-            })
-        });
 
         // init more employee
         Task_in_project.initExpenseLabor()

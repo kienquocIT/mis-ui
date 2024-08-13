@@ -303,7 +303,7 @@ $(document).ready(function () {
             ordering: false,
             rowIdx: true,
             paging: false,
-            scrollY: '35vh',
+            scrollY: '70vh',
             scrollX: '100vh',
             scrollCollapse: true,
             reloadCurrency: true,

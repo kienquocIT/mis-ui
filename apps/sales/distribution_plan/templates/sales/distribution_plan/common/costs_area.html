@@ -10,7 +10,7 @@
                     </span>
                 </h2>
                 <div class="accordion-collapse collapse show">
-                    <div class="accordion-body" style="height: 50vh">
+                    <div class="accordion-body" style="max-height: 50vh">
                         <button type="button" class="btn btn-outline-primary btn-sm" id="add-new-fixed-expense">
                             <span>
                                 <span class="icon">
@@ -46,7 +46,7 @@
                     </span>
                 </h2>
                 <div class="accordion-collapse collapse show">
-                    <div class="accordion-body" style="height: 50vh">
+                    <div class="accordion-body" style="max-height: 50vh">
                         <button type="button" class="btn btn-outline-primary btn-sm" id="add-new-variable-expense">
                             <span>
                                 <span class="icon">
@@ -78,34 +78,57 @@
 <div class="row mt-5 mb-10">
     <div class="col-12 col-md-6 col-lg-6">
         <div class="row">
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12 col-md-5 col-lg-5">
                 <div class="form-group">
                     <label for="product-price" class="form-label required">{% trans 'Product price' %}</label>
                     <input class="form-control mask-money" id="product-price" value="0">
                 </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
-                    <label for="break-event-point" class="form-label">{% trans 'Break event point' %}</label>
-                    <input class="form-control" id="break-event-point" value="0" disabled readonly>
+                    <label for="break-event-point" class="form-label">
+                        {% trans 'Break event point' %}
+                        <i class="fas fa-info-circle icon-info"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="bottom"
+                           title="{% trans 'Break event point' %} = {% trans 'Fixed costs' %} / ({% trans 'Product price' %} - {% trans 'Variable costs' %})"
+                        ></i>
+                    </label>
+                    <input class="form-control form-control-line text-primary fw-bold" id="break-event-point" value="0" disabled readonly>
                 </div>
             </div>
-            <div class="col-12 col-md-4 col-lg-4">
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-5 col-lg-5">
                 <div class="form-group">
                     <label for="expected-number" class="form-label required">{% trans 'Expected number' %}</label>
                     <input type="number" min="0" class="form-control" id="expected-number" value="0">
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
-                    <label for="net-income" class="form-label">{% trans 'Net income' %}</label>
-                    <input class="form-control mask-money" id="net-income" value="0" disabled readonly>
+                    <label for="net-income" class="form-label">
+                        {% trans 'Net income' %}
+                        <i class="fas fa-info-circle icon-info"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="bottom"
+                           title="{% trans 'Net income' %} = {% trans 'Expected number' %} * ({% trans 'Product price' %} - {% trans 'Variable costs' %}) - {% trans 'Fixed costs' %}"
+                        ></i>
+                    </label>
+                    <input class="form-control form-control-line text-primary fw-bold mask-money" id="net-income" value="0" disabled readonly>
                 </div>
             </div>
-            <div class="col-12 col-md-2 col-lg-2">
+            <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
-                    <label for="rate" class="form-label">{% trans 'Rate' %} (%)</label>
-                    <input type="number" min="0" class="form-control" id="rate" value="0" disabled readonly>
+                    <label for="rate" class="form-label">
+                        {% trans 'Rate' %} (%)
+                        <i class="fas fa-info-circle icon-info"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="bottom"
+                           title="{% trans 'Rate' %} = {% trans 'Net income' %} / ({% trans 'Expected number' %} * {% trans 'Product price' %})"
+                        ></i>
+                    </label>
+                    <input type="number" min="0" class="form-control form-control-line text-primary fw-bold" id="rate" value="0" disabled readonly>
                 </div>
             </div>
         </div>

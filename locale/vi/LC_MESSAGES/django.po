@@ -8392,3 +8392,7 @@ msgstr "Doanh số kì vọng"
 #
 msgid "Plan description"
 msgstr "Mô tả kế hoạch"
+
+#
+msgid "Goods stock plan"
+msgstr "Kế hoạch nhập hàng"

@@ -1,83 +1,64 @@
 {% load i18n %}
 
-<div class="row">
-    <div class="col-12 col-md-6 col-lg-6 mt-5">
-        <div class="accordion accordion-soft">
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <span class="accordion-button">
-                        <i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;{% trans 'Fixed costs' %} (1 {% trans 'Month' %})
+<div class="row mt-5">
+    <div class="col-12 col-md-6 col-lg-6">
+        <h5 class="text-primary fw-bold mb-3 bg-primary-light-5 rounded p-2"><i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;{% trans 'Fixed costs' %}</h5>
+        <div class="border rounded p-3">
+            <button type="button" class="btn btn-outline-primary btn-sm" id="add-new-fixed-expense">
+                <span>
+                    <span class="icon">
+                        <span class="feather-icon">
+                            <i class="far fa-plus-square"></i>
+                        </span>
                     </span>
-                </h2>
-                <div class="accordion-collapse collapse show">
-                    <div class="accordion-body" style="max-height: 50vh">
-                        <button type="button" class="btn btn-outline-primary btn-sm" id="add-new-fixed-expense">
-                            <span>
-                                <span class="icon">
-                                    <span class="feather-icon">
-                                        <i class="far fa-plus-square"></i>
-                                    </span>
-                                </span>
-                                <span>{% trans 'Add Expense' %}</span>
-                            </span>
-                        </button>
-                        <table class="w-100 table-hover table nowrap" id="fixed-costs-table">
-                            <thead>
-                            <tr>
-                                <th></th>
-                                <th style="min-width: 250px">{% trans 'Cost item' %}</th>
-                                <th style="min-width: 250px">{% trans 'Value' %}</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                    <span>{% trans 'Add Expense' %}</span>
+                </span>
+            </button>
+            <table class="w-100 table-hover table nowrap" id="fixed-costs-table">
+    <thead>
+    <tr>
+        <th></th>
+        <th style="min-width: 250px">{% trans 'Cost item' %}</th>
+        <th style="min-width: 250px">{% trans 'Value' %}</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
         </div>
     </div>
-    <div class="col-12 col-md-6 col-lg-6 mt-5">
-        <div class="accordion accordion-soft">
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <span class="accordion-button">
-                        <i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;{% trans 'Variable costs' %} (1 {% trans 'Month' %})
+    <div class="col-12 col-md-6 col-lg-6">
+        <h5 class="text-primary fw-bold mb-3 bg-primary-light-5 rounded p-2"><i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;{% trans 'Variable costs' %}</h5>
+        <div class="border rounded p-3">
+            <button type="button" class="btn btn-outline-primary btn-sm" id="add-new-variable-expense">
+                <span>
+                    <span class="icon">
+                        <span class="feather-icon">
+                            <i class="far fa-plus-square"></i>
+                        </span>
                     </span>
-                </h2>
-                <div class="accordion-collapse collapse show">
-                    <div class="accordion-body" style="max-height: 50vh">
-                        <button type="button" class="btn btn-outline-primary btn-sm" id="add-new-variable-expense">
-                            <span>
-                                <span class="icon">
-                                    <span class="feather-icon">
-                                        <i class="far fa-plus-square"></i>
-                                    </span>
-                                </span>
-                                <span>{% trans 'Add Expense' %}</span>
-                            </span>
-                        </button>
-                        <table class="w-100 table-hover table nowrap" id="variable-costs-table">
-                            <thead>
-                            <tr>
-                                <th></th>
-                                <th style="min-width: 250px">{% trans 'Cost item' %}</th>
-                                <th style="min-width: 250px">{% trans 'Value' %}</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                    <span>{% trans 'Add Expense' %}</span>
+                </span>
+            </button>
+            <table class="w-100 table-hover table nowrap" id="variable-costs-table">
+    <thead>
+    <tr>
+        <th></th>
+        <th style="min-width: 250px">{% trans 'Cost item' %}</th>
+        <th style="min-width: 250px">{% trans 'Value' %}</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
         </div>
     </div>
 </div>
 
-<div class="row mt-5 mb-10">
+<div class="row mt-5">
     <div class="col-12 col-md-6 col-lg-6">
-        <div class="row">
+        <div class="border rounded p-3">
+            <div class="row">
             <div class="col-12 col-md-5 col-lg-5">
                 <div class="form-group">
                     <label for="product-price" class="form-label required">{% trans 'Product price' %}</label>
@@ -98,41 +79,45 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12 col-md-5 col-lg-5">
-                <div class="form-group">
-                    <label for="expected-number" class="form-label required">{% trans 'Expected number' %}</label>
-                    <input type="number" min="0" class="form-control" id="expected-number" value="0">
+            <div class="row">
+                <div class="col-12 col-md-5 col-lg-5">
+                    <div class="form-group">
+                        <label for="expected-number" class="form-label required">{% trans 'Expected number' %}</label>
+                        <input type="number" min="0" class="form-control" id="expected-number" value="0">
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
-                    <label for="net-income" class="form-label">
-                        {% trans 'Net income' %}
-                        <i class="fas fa-info-circle icon-info"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="bottom"
-                           title="{% trans 'Net income' %} = {% trans 'Expected number' %} * ({% trans 'Product price' %} - {% trans 'Variable costs' %}) - {% trans 'Fixed costs' %}"
-                        ></i>
-                    </label>
-                    <input class="form-control form-control-line text-primary fw-bold mask-money" id="net-income" value="0" disabled readonly>
+                <div class="col-12 col-md-4 col-lg-4">
+                    <div class="form-group">
+                        <label for="net-income" class="form-label">
+                            {% trans 'Net income' %}
+                            <i class="fas fa-info-circle icon-info"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="bottom"
+                               title="{% trans 'Net income' %} = {% trans 'Expected number' %} * ({% trans 'Product price' %} - {% trans 'Variable costs' %}) - {% trans 'Fixed costs' %}"
+                            ></i>
+                        </label>
+                        <input class="form-control form-control-line text-primary fw-bold mask-money" id="net-income" value="0" disabled readonly>
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="form-group">
-                    <label for="rate" class="form-label">
-                        {% trans 'Rate' %} (%)
-                        <i class="fas fa-info-circle icon-info"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="bottom"
-                           title="{% trans 'Rate' %} = {% trans 'Net income' %} / ({% trans 'Expected number' %} * {% trans 'Product price' %})"
-                        ></i>
-                    </label>
-                    <input type="number" min="0" class="form-control form-control-line text-primary fw-bold" id="rate" value="0" disabled readonly>
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="form-group">
+                        <label for="rate" class="form-label">
+                            {% trans 'Rate' %} (%)
+                            <i class="fas fa-info-circle icon-info"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="bottom"
+                               title="{% trans 'Rate' %} = {% trans 'Net income' %} / ({% trans 'Expected number' %} * {% trans 'Product price' %})"
+                            ></i>
+                        </label>
+                        <input type="number" min="0" class="form-control form-control-line text-primary fw-bold" id="rate" value="0" disabled readonly>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<div class="row mt-5 mb-10">
     <div class="col-12 col-md-12 col-lg-12">
         <div class="form-group">
             <label for="plan-des" class="form-label">{% trans 'Plan description' %}</label>

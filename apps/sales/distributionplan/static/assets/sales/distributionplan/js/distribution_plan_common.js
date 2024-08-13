@@ -329,8 +329,7 @@ function Disable(option) {
 }
 
 function LoadDetailDP(option) {
-    let pk = $.fn.getPkDetail()
-    let url_loaded = $('#form-detail-dp').attr('data-url').replace('/0', `/${pk}`);
+    let url_loaded = $('#form-detail-dp').attr('data-url');
     $.fn.callAjax(url_loaded, 'GET').then(
         (resp) => {
             let data = $.fn.switcherResp(resp);

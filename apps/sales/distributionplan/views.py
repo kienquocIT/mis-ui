@@ -8,7 +8,7 @@ from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg, InputMappingPrope
 class DistributionPlanList(View):
     @mask_view(
         auth_require=True,
-        template='sales/distribution_plan/distribution_plan_list.html',
+        template='sales/distributionplan/distribution_plan_list.html',
         breadcrumb='DISTRIBUTION_PLAN_LIST_PAGE',
         menu_active='menu_distribution_plan_list',
     )
@@ -19,7 +19,7 @@ class DistributionPlanList(View):
 class DistributionPlanCreate(View):
     @mask_view(
         auth_require=True,
-        template='sales/distribution_plan/distribution_plan_create.html',
+        template='sales/distributionplan/distribution_plan_create.html',
         breadcrumb='DISTRIBUTION_PLAN_CREATE_PAGE',
         menu_active='',
     )
@@ -27,7 +27,7 @@ class DistributionPlanCreate(View):
         input_mapping_properties = InputMappingProperties.DISTRIBUTION_PLAN_DB
         return {
             'input_mapping_properties': input_mapping_properties,
-            'list_from_app': 'distribution_plan.distributionplan.create',
+            'list_from_app': 'distributionplan.distributionplan.create',
             'form_id': 'form-create-dp'
         }, status.HTTP_200_OK
 
@@ -35,7 +35,7 @@ class DistributionPlanCreate(View):
 class DistributionPlanDetail(View):
     @mask_view(
         auth_require=True,
-        template='sales/distribution_plan/distribution_plan_detail.html',
+        template='sales/distributionplan/distribution_plan_detail.html',
         breadcrumb='DISTRIBUTION_PLAN_DETAIL_PAGE',
         menu_active='',
     )
@@ -43,7 +43,7 @@ class DistributionPlanDetail(View):
         input_mapping_properties = InputMappingProperties.DISTRIBUTION_PLAN_DB
         return {
             'input_mapping_properties': input_mapping_properties,
-            'list_from_app': 'distribution_plan.distributionplan.create',
+            'list_from_app': 'distributionplan.distributionplan.create',
             'form_id': 'form-detail-dp'
         }, status.HTTP_200_OK
 
@@ -51,7 +51,7 @@ class DistributionPlanDetail(View):
 class DistributionPlanUpdate(View):
     @mask_view(
         auth_require=True,
-        template='sales/distribution_plan/distribution_plan_update.html',
+        template='sales/distributionplan/distribution_plan_update.html',
         breadcrumb='DISTRIBUTION_PLAN_UPDATE_PAGE',
         menu_active='',
     )
@@ -59,7 +59,7 @@ class DistributionPlanUpdate(View):
         input_mapping_properties = InputMappingProperties.DISTRIBUTION_PLAN_DB
         return {
             'input_mapping_properties': input_mapping_properties,
-            'list_from_app': 'distribution_plan.distributionplan.edit',
+            'list_from_app': 'distributionplan.distributionplan.edit',
             'form_id': 'form-detail-dp'
         }, status.HTTP_200_OK
 

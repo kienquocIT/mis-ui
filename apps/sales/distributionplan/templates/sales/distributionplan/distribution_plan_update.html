@@ -1,23 +1,21 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Distribution Plan Detail' %}{% endblock %}
+{% block title %}{% trans 'Distribution Plan Update' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'DistributionPlanUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary">
-            <span>
-                <span>{% trans 'Edit' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                </span>
+    <button class="btn btn-outline-primary" type="submit" form="form-detail-dp">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
-        </button>
-    </a>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
@@ -25,11 +23,12 @@
     ></script>
     <form id="form-detail-dp"
           data-url="{% url 'DistributionPlanDetailAPI' pk=pk %}"
-          data-method="GET"
+          data-url-redirect="{% url 'DistributionPlanDetail' pk=pk %}"
+          data-method="PUT"
     >
         {% csrf_token %}
-        {% include 'sales/distribution_plan/common/general_information.html' %}
-        {% include 'sales/distribution_plan/common/costs_area.html' %}
+        {% include 'sales/distributionplan/common/general_information.html' %}
+        {% include 'sales/distributionplan/common/costs_area.html' %}
     </form>
 {% endblock %}
 {% block dataHiddenGroup %}
@@ -37,6 +36,6 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
-    <script src="{% static 'assets/sales/distribution_plan/js/distribution_plan_common.js' %}"></script>
-    <script src="{% static 'assets/sales/distribution_plan/js/distribution_plan_detail.js' %}"></script>
+    <script src="{% static 'assets/sales/distributionplan/js/distribution_plan_common.js' %}"></script>
+    <script src="{% static 'assets/sales/distributionplan/js/distribution_plan_update.js' %}"></script>
 {% endblock %}

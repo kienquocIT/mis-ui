@@ -104,6 +104,7 @@ class AdvancePaymentUpdate(View):
         return {
             'data': {'employee_current': resp1.result},
             'input_mapping_properties': input_mapping_properties,
+            'list_from_app': 'cashoutflow.advancepayment.edit',
             'form_id': 'form-detail-advance'
         }, status.HTTP_200_OK
 

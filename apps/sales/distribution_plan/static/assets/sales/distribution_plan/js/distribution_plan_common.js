@@ -337,8 +337,7 @@ function LoadDetailDP(option) {
             if (data) {
                 data = data['distribution_plan_detail'];
                 // console.log(data)
-                // WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
-                // new PrintTinymceControl().render('57725469-8b04-428a-a4b0-578091d0e4f5', data, false);
+                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 

@@ -24,7 +24,12 @@ class DistributionPlanCreate(View):
         menu_active='',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.DISTRIBUTION_PLAN_DB
+        return {
+            'input_mapping_properties': input_mapping_properties,
+            'list_from_app': 'distribution_plan.distributionplan.create',
+            'form_id': 'form-create-dp'
+        }, status.HTTP_200_OK
 
 
 class DistributionPlanDetail(View):
@@ -35,7 +40,12 @@ class DistributionPlanDetail(View):
         menu_active='',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.DISTRIBUTION_PLAN_DB
+        return {
+            'input_mapping_properties': input_mapping_properties,
+            'list_from_app': 'distribution_plan.distributionplan.create',
+            'form_id': 'form-detail-dp'
+        }, status.HTTP_200_OK
 
 
 class DistributionPlanUpdate(View):
@@ -46,7 +56,12 @@ class DistributionPlanUpdate(View):
         menu_active='',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.DISTRIBUTION_PLAN_DB
+        return {
+            'input_mapping_properties': input_mapping_properties,
+            'list_from_app': 'distribution_plan.distributionplan.edit',
+            'form_id': 'form-detail-dp'
+        }, status.HTTP_200_OK
 
 
 class DistributionPlanListAPI(APIView):

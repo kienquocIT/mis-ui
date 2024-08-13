@@ -59,7 +59,7 @@ function loadFixedCostsTable(data_list=[], option='create') {
             {
                 className: 'wrap-text w-10 text-center',
                 'render': (data, type, row) => {
-                    return `<a href="#" class="${option === 'detail' ? 'disabled' : ''}" class="del-expense-row"><i class="fas fa-trash-alt text-secondary"></i></a>`;
+                    return `<a href="#" class="${option === 'detail' ? 'disabled' : ''} del-expense-row"><i class="fas fa-trash-alt text-secondary"></i></a>`;
                 }
             },
         ],
@@ -105,7 +105,7 @@ function loadVariableCostsTable(data_list=[], option='create') {
             {
                 className: 'wrap-text w-10 text-center',
                 'render': (data, type, row) => {
-                    return `<a class="${option === 'detail' ? 'disabled' : ''}" href="#" class="del-expense-row"><i class="fas fa-trash-alt text-secondary"></i></a>`;
+                    return `<a href="#" class="${option === 'detail' ? 'disabled' : ''} del-expense-row"><i class="fas fa-trash-alt text-secondary"></i></a>`;
                 }
             },
         ],

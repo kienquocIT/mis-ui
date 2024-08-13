@@ -302,14 +302,18 @@ class ContractSubmitHandle {
             if (eleOrd && eleTitle && btnAttach) {
                 let remark = '';
                 let attachment_data = [];
+                let attachment = [];
                 if (btnAttach.getAttribute('data-store')) {
                     let dataStore = JSON.parse(btnAttach.getAttribute('data-store'));
-                    remark = dataStore?.['remark'];
                     attachment_data = dataStore?.['attachment_data'];
+                    for (let attach of dataStore?.['attachment_data']) {
+                        attachment.push(attach?.['attachment']?.['id']);
+                    }
                 }
                 result.push({
                     'title': eleTitle.value,
                     'remark': ContractLoadDataHandle.$remark.val(),
+                    'attachment': attachment,
                     'attachment_data': attachment_data,
                     'order': parseInt(eleOrd.innerHTML),
                 })

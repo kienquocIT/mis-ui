@@ -8396,3 +8396,12 @@ msgstr "Mô tả kế hoạch"
 #
 msgid "Goods stock plan"
 msgstr "Kế hoạch nhập hàng"
+
+#
+msgid "Periodic result"
+msgstr "Kết quả định kỳ"
+
+#
+msgid "Cumulative result"
+msgstr "Kết quả tích luỹ"
+

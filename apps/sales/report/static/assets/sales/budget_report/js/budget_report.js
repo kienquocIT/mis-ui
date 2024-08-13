@@ -303,6 +303,9 @@ $(document).ready(function () {
             ordering: false,
             rowIdx: true,
             paging: false,
+            scrollY: '35vh',
+            scrollX: '100vh',
+            scrollCollapse: true,
             reloadCurrency: true,
             data: data_list,
             columns: [

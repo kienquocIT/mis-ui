@@ -4,12 +4,6 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
-    <style>
-        .sticky {
-            position: sticky;
-            top: 0;
-        }
-    </style>
 {% endblock %}
 {% block pageAction %}{% endblock %}
 {% block pageContent %}
@@ -53,19 +47,19 @@
     ></script>
 
     <div class="row">
-        <div class="col-12 col-lg-5 col-md-5">
+        <div class="col-12 col-lg-4 col-md-8">
             <div class="form-group">
                 <label for="group-select" class="form-label required">{% trans 'Group' %}</label>
                 <select class="form-select select2" id="group-select" data-method="GET" data-url="{% url 'BudgetPlanConfigListAPI' %}"></select>
             </div>
         </div>
-        <div class="col-12 col-lg-3 col-md-3">
+        <div class="col-12 col-lg-2 col-md-4">
             <div class="form-group">
                 <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
                 <select class="form-select select2" id="period-select" data-method="GET" data-url="{% url 'PeriodsConfigListAPI' %}"></select>
             </div>
         </div>
-        <div class="col-12 col-lg-2 col-md-2">
+        <div class="col-12 col-lg-2 col-md-4">
             <div class="form-group">
                 <div class="row">
                     <div class='col-12'>
@@ -81,7 +75,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-12 col-lg-2 col-md-2">
+        <div class="col-12 col-lg-2 col-md-4">
             <div class="form-group">
                 <div class="row">
                     <div class='col-12'>
@@ -92,23 +86,16 @@
                 <select class="form-select select2" id="month-select"></select>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-12 col-lg-2 col-md-2">
-            <div class="form-check form-check-sm">
-                <input disabled type="radio" id="cumulative" name="res-view" class="form-check-input">
-                <label class="form-check-label" for="cumulative">{% trans 'Cumulative result' %}</label>
+        <div class="col-12 col-lg-2 col-md-4">
+            <div class="form-group">
+                <label for="view-mode-select" class="form-label">{% trans 'View mode' %}</label>
+                <select class="form-select select2" id="view-mode-select">
+                    <option value="0" selected>{% trans 'Periodic result' %}</option>
+                    <option value="1">{% trans 'Cumulative result' %}</option>
+                </select>
             </div>
         </div>
-        <div class="col-12 col-lg-2 col-md-2">
-            <div class="form-check form-check-sm">
-                <input disabled type="radio" id="periodic" name="res-view" class="form-check-input">
-                <label class="form-check-label" for="periodic">{% trans 'Periodic result' %}</label>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12 col-lg-12 col-md-12 mt-2">
+        <div class="col-12 col-lg-12 col-md-12">
             <button type="button" class="btn btn-primary" id="btn-view">
                 <span>
                     <span>{% trans 'View' %}</span>
@@ -122,14 +109,14 @@
         </div>
     </div>
 
-    <div class="row mt-3">
-        <div class="col-12" style="position: relative; overflow: auto; max-height: 60vh">
-            <table id="main-table" class="table nowrap w-100">
-                <thead class="sticky bg-gradient-primary">
+    <div class="row">
+        <div class="col-12">
+            <table id="main-table" class="w-100 table-hover table nowrap">
+                <thead class="bg-gradient-primary">
                 <tr>
-                    <td></td>
-                    <td class="text-white">{% trans 'Expense item' %}</td>
-                    <td class="text-white">
+                    <th style="min-width: 50px"></th>
+                    <th class="text-white" style="min-width: 300px">{% trans 'Expense item' %}</th>
+                    <th class="text-white" style="min-width: 250px">
                         {% trans 'Plan' %}
                         <i class="fas fa-info-circle icon-info"
                            data-bs-toggle="tooltip"
@@ -137,10 +124,10 @@
                            title=""
                            data-bs-original-title="{% trans 'Red lines are the expenses out of plan.' %}">
                         </i>
-                    </td>
-                    <td class="text-white">{% trans 'Actual' %}</td>
-                    <td class="text-white">{% trans 'Difference' %}</td>
-                    <td class="text-white">{% trans 'Rate' %}</td>
+                    </th>
+                    <th class="text-white" style="min-width: 250px">{% trans 'Actual' %}</th>
+                    <th class="text-white" style="min-width: 250px">{% trans 'Difference' %}</th>
+                    <th class="text-white" style="min-width: 150px">{% trans 'Rate' %}</th>
                 </tr>
                 </thead>
                 <tbody></tbody>

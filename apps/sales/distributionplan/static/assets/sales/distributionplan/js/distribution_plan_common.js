@@ -34,7 +34,7 @@ function loadFixedCostsTable(data_list=[], option='create') {
         rowIdx: true,
         reloadCurrency: true,
         paging: false,
-        scrollY: '35vh',
+        scrollY: '70vh',
         scrollX: '100vh',
         scrollCollapse: true,
         data: data_list,

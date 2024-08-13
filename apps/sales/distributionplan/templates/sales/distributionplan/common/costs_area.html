@@ -2,7 +2,7 @@
 
 <div class="row mt-5">
     <div class="col-12 col-md-6 col-lg-6">
-        <h5 class="text-primary fw-bold mb-3 bg-primary-light-5 rounded p-2"><i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;{% trans 'Fixed costs' %}</h5>
+        <h5 class="text-primary fw-bold mb-3 bg-primary-light-5 rounded px-3 py-2"><i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;{% trans 'Fixed costs' %} <span class="fst-italic small">(1 {% trans 'Month' %})</span></h5>
         <div class="border rounded p-3">
             <button type="button" class="btn btn-outline-primary btn-sm" id="add-new-fixed-expense">
                 <span>
@@ -28,7 +28,7 @@
         </div>
     </div>
     <div class="col-12 col-md-6 col-lg-6">
-        <h5 class="text-primary fw-bold mb-3 bg-primary-light-5 rounded p-2"><i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;{% trans 'Variable costs' %}</h5>
+        <h5 class="text-primary fw-bold mb-3 bg-primary-light-5 rounded px-3 py-2"><i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;{% trans 'Variable costs' %} <span class="fst-italic small">(1 {% trans 'Month' %})</span></h5>
         <div class="border rounded p-3">
             <button type="button" class="btn btn-outline-primary btn-sm" id="add-new-variable-expense">
                 <span>
@@ -71,7 +71,7 @@
                         {% trans 'Break event point' %}
                         <i class="fas fa-info-circle icon-info"
                            data-bs-toggle="tooltip"
-                           data-bs-placement="bottom"
+                           data-bs-placement="right"
                            title="{% trans 'Break event point' %} = {% trans 'Fixed costs' %} / ({% trans 'Product price' %} - {% trans 'Variable costs' %})"
                         ></i>
                     </label>
@@ -92,7 +92,7 @@
                             {% trans 'Net income' %}
                             <i class="fas fa-info-circle icon-info"
                                data-bs-toggle="tooltip"
-                               data-bs-placement="bottom"
+                               data-bs-placement="right"
                                title="{% trans 'Net income' %} = {% trans 'Expected number' %} * ({% trans 'Product price' %} - {% trans 'Variable costs' %}) - {% trans 'Fixed costs' %}"
                             ></i>
                         </label>
@@ -105,7 +105,7 @@
                             {% trans 'Rate' %} (%)
                             <i class="fas fa-info-circle icon-info"
                                data-bs-toggle="tooltip"
-                               data-bs-placement="bottom"
+                               data-bs-placement="right"
                                title="{% trans 'Rate' %} = {% trans 'Net income' %} / ({% trans 'Expected number' %} * {% trans 'Product price' %})"
                             ></i>
                         </label>

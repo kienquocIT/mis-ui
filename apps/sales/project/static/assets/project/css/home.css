@@ -1,0 +1,200 @@
+.apexcharts-tooltip-title {
+    max-width: 160px;
+    white-space: pre-line;
+}
+
+.r-0 {
+    right: 0
+}
+
+.percent_block {
+    position: absolute;
+}
+
+.heading_cards {
+    font-size: 1.7rem;
+    line-height: 1.2;
+    font-weight: 400;
+    color: rgb(101, 110, 117);
+    font-family: "Segoe UI";
+}
+
+.card_new_prj .percent_block,
+.card_baseline .percent_block {
+    line-height: 1;
+    padding-bottom: 3px;
+}
+
+.card_new_prj .percent_block span,
+.card_baseline .percent_block span {
+    letter-spacing: 2px;
+    font-weight: 600;
+}
+
+.heading_cards span:not(.span-money) {
+    font-size: 16px;
+    color: #6756fb;
+}
+.bg-main {
+    background-color: rgb(236, 243, 253);
+    border-radius: 18px;
+}
+.b-radius{
+border-radius: .5rem;
+}
+.card_new_prj,
+.card_baseline,
+.card_tasks,
+.card_expense,
+.style-box{
+    color: rgb(101, 110, 117);
+    box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.1);
+}
+.txt-bubble{
+    color: rgb(255, 67, 205);
+}
+.txt-gray{
+    color: rgb(101, 110, 117);
+}
+.chart_heading{
+    min-height: .75rem;
+}
+/*css loading before data*/
+@keyframes shine {
+  to {
+    background-position-x: -200%;
+  }
+}
+.css-skeleton > label{
+    height:24px;
+    width: 100%;
+    color:transparent;
+    border-radius:10px;
+    background: #d3d3d3;
+    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+    background-size: 200% 100%;
+    animation: 1.5s shine linear infinite;
+}
+.css-skeleton > h6{
+    height:14px;
+    width: 100px;
+    color:transparent;
+    border-radius:10px;
+    background: #d3d3d3;
+    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+    background-size: 200% 100%;
+    animation: 1.5s shine linear infinite;
+}
+.css-skeleton > div[id*="prj_chart_"]{
+    height:380px;
+    width: 100%;
+    position: relative;
+}
+
+.css-skeleton > div[id*="prj_chart_"] span:nth-child(1){
+    content: "";
+    display: block;
+    position: absolute;
+    height: 240px;
+    width: 20px;
+    background: linear-gradient(to right, #ececec 8%, #f5f5f5 28%, #ececec 50%);
+    background-size: 200% 100%;
+    animation: .8s shine linear infinite;
+    top: 100px;
+    left: 30px;
+}
+
+.css-skeleton > div[id*="prj_chart_"] span:nth-child(1):before{
+    content: "";
+    display: block;
+    position: absolute;
+    height: 340px;
+    width: 20px;
+    background: linear-gradient(to right, #ececec 8%, #f5f5f5 28%, #ececec 50%);
+    background-size: 200% 100%;
+    animation: .8s shine linear infinite;
+    top: -100px;
+    left: -30px;
+}
+
+.css-skeleton > div[id*="prj_chart_"] span:nth-child(1):after{
+    content: "";
+    display: block;
+    position: absolute;
+    height: 140px;
+    width: 20px;
+    background: linear-gradient(to right, #ececec 8%, #f5f5f5 28%, #ececec 50%);
+    background-size: 200% 100%;
+    animation: .8s shine linear infinite;
+    top: 100px;
+    left: 30px;
+}
+
+.css-skeleton > div[id*="prj_chart_"] span:nth-child(2){
+    content: "";
+    display: block;
+    position: absolute;
+    height: 260px;
+    width: 20px;
+    background: linear-gradient(to right, #ececec 8%, #f5f5f5 28%, #ececec 50%);
+    background-size: 200% 100%;
+    animation: .8s shine linear infinite;
+    top: 80px;
+    left: 120px;
+}
+
+.css-skeleton > div[id*="prj_chart_"] span:nth-child(2):before{
+    content: "";
+    display: block;
+    position: absolute;
+    height: 300px;
+    width: 20px;
+    background: linear-gradient(to right, #ececec 8%, #f5f5f5 28%, #ececec 50%);
+    background-size: 200% 100%;
+    animation: .8s shine linear infinite;
+    top: -40px;
+    left: -30px;
+}
+
+.css-skeleton > div[id*="prj_chart_"] span:nth-child(2):after{
+    content: "";
+    display: block;
+    position: absolute;
+    height: 180px;
+    width: 20px;
+    background: linear-gradient(to right, #ececec 8%, #f5f5f5 28%, #ececec 50%);
+    background-size: 200% 100%;
+    animation: .8s shine linear infinite;
+    top: 80px;
+    left: 30px;
+}
+
+.css-skeleton > div[id*="prj_chart_"]:after{
+    content: "";
+    display: block;
+    position: absolute;
+    height: 10px;
+    width: 100%;
+    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 28%, #ececec 33%);
+    background-size: 200% 100%;
+    animation: 1.5s shine linear infinite;
+    top: calc(100% - 10px);
+    left: 0;
+}
+
+.home-action{
+    display: flex;
+    justify-content: end
+}
+
+.home-action .btn-group{
+    margin-right: 15px;
+}
+@media screen and (max-width: 767px){
+    .home-action {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        gap: 15px;
+    }
+}

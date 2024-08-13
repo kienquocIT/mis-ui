@@ -41,6 +41,7 @@ $(function () {
                         width: '10%',
                         render: (data, type, row) => {
                             let faAffectBy = row?.['acceptance_affect_by'];
+                            let app = '';
                             let title = '';
                             let code = '';
                             if (row?.['is_sale_order'] === true) {
@@ -48,14 +49,17 @@ $(function () {
                                 code = row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : '';
                             }
                             if (faAffectBy === 4) {
+                                app = eleTrans.attr('data-payment');
                                 title = row?.['payment']?.['title'] ? row?.['payment']?.['title'] : '';
                                 code = row?.['payment']?.['code'] ? row?.['payment']?.['code'] : '';
                             }
                             if (faAffectBy === 3) {
+                                app = eleTrans.attr('data-delivery');
                                 title = row?.['delivery_sub']?.['title'] ? row?.['delivery_sub']?.['title'] : '';
                                 code = row?.['delivery_sub']?.['code'] ? row?.['delivery_sub']?.['code'] : '';
                             }
-                            return `<span class="badge badge-soft-success">${code}</span>
+                            return `<span class="badge badge-success badge-outline">${app}</span>
+                                    <span class="badge badge-soft-success">${code}</span>
                                     <span class="table-row-title">${title}</span>`;
                         }
                     },

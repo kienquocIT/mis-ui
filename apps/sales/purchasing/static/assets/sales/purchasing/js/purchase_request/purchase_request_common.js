@@ -110,7 +110,7 @@ class PurchaseRequestLoadPage {
                 let list_result = [];
                 resp.data[keyResp].map(function (item) {
                     if (item.hasOwnProperty('product_choice') && Array.isArray(item?.['product_choice'])) {
-                        if (item?.['product_choice'].includes(2)) {  // has choice allow purchase
+                        if (item?.['product_choice'].includes(2)) {  // product allow purchase
                             if (!list_product_selected.includes(item.id)) {
                                 list_result.push(item)
                             }
@@ -573,7 +573,7 @@ class PurchaseRequestAction {
             let so_product_datas = dict_so[id]?.['product_data'];
             so_product_datas.map(function (item) {
                 if (item?.['product'].hasOwnProperty('product_choice') && Array.isArray(item?.['product']?.['product_choice'])) {
-                    if (item?.['product']?.['product_choice'].includes(2)) {  // has choice allow purchase
+                    if (item?.['product']?.['product_choice'].includes(2)) {  // product allow purchase
                         let self_product = dict_self_product[item.id];
                         let remain = self_product ? item?.['remain_for_purchase_request'] + self_product.quantity : item?.['remain_for_purchase_request']
                         let data_temp = {
@@ -602,7 +602,7 @@ class PurchaseRequestAction {
                             let so_product_datas = data?.['so_product_list']?.['product_data'];
                             so_product_datas.map(function (item) {
                                 if (item?.['product'].hasOwnProperty('product_choice') && Array.isArray(item?.['product']?.['product_choice'])) {
-                                    if (item?.['product']?.['product_choice'].includes(2)) {  // has choice allow purchase
+                                    if (item?.['product']?.['product_choice'].includes(2)) {  // product allow purchase
                                         dict_so_product[item.id] = item;
                                         $('#data-sale-order-product').text(JSON.stringify(dict_so_product));
                                         let self_product = dict_self_product[item.id];

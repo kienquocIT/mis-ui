@@ -5401,6 +5401,7 @@ class QuotationSubmitHandle {
                 }
                 result.push(rowData);
             } else if (eleProduct) { // PRODUCT
+                let is_allow_po = false;
                 if ($(eleProduct).val()) {
                     let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                     if (dataProduct) {
@@ -5408,6 +5409,11 @@ class QuotationSubmitHandle {
                         rowData['product_title'] = dataProduct?.['title'];
                         rowData['product_code'] = dataProduct?.['code'];
                         rowData['product_data'] = dataProduct;
+                        if (dataProduct.hasOwnProperty('product_choice') && Array.isArray(dataProduct?.['product_choice'])) {
+                            if (dataProduct?.['product_choice'].includes(2)) {  // product allow purchase
+                                is_allow_po = true;
+                            }
+                        }
                     }
                 }
                 let eleUOM = row.querySelector('.table-row-uom');
@@ -5443,6 +5449,10 @@ class QuotationSubmitHandle {
                 let eleQuantity = row.querySelector('.table-row-quantity');
                 if (eleQuantity) {
                     rowData['product_quantity'] = parseFloat(eleQuantity.value);
+                    if (is_allow_po === true) {
+                        rowData['remain_for_purchase_request'] = parseFloat(eleQuantity.value);
+                        rowData['remain_for_purchase_order'] = parseFloat(eleQuantity.value);
+                    }
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {

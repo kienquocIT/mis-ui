@@ -22,7 +22,6 @@ $(document).ready(function () {
                         }).then(resp => {
                             $.fn.formHideLoaders();
                             if (resp?.status === 201 || resp?.status === 200) {
-                                console.log('resp:', resp);
                                 const formPostId = resp?.['data']?.['form_post']?.['id'] || null;
                                 const formAction$ = $('.form-action');
                                 if (formPostId && formAction$.length > 0){

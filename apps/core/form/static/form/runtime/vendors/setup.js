@@ -234,12 +234,12 @@ function resetInputValue() {
             Object.keys(errors).map(
                 key => {
                     result[key] = errors[key];
-                    if (key.startsWith('rate_')) {
+                    if (key.startsWith('rate_') || key.startsWith('select_')) {
                         const eleTmp$ = $(`[name=${key}]`);
                         if (eleTmp$.length > 0) {
                             const ratingGroup$ = eleTmp$.closest('.rating-group');
                             if (ratingGroup$.length > 0) {
-                                let inputName = `rate_${$x.fn.formGenerateRandomString(32)}`;
+                                let inputName = `${key.split("_")[0]}_${$x.fn.formGenerateRandomString(32)}`;
                                 const eleInputErrs$ = ratingGroup$.next('input.fake-input');
                                 if (eleInputErrs$.length === 0) {
                                     $(`<input class="fake-input" name="${inputName}" type="hidden" disabled readonly/>`).insertAfter(ratingGroup$);

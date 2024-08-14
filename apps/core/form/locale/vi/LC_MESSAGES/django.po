@@ -992,3 +992,15 @@ msgstr "Tất cả tên dòng không được trùng nhau."
 #
 msgid "All columns cannot be duplicated."
 msgstr "Tất cả tên cột không được trùng nhau."
+
+#
+msgid "Setup matrix"
+msgstr "Cấu hình ma trận"
+
+#
+msgid "Columns"
+msgstr "Cột"
+
+#
+msgid "Rows"
+msgstr "Hàng"

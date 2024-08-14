@@ -1788,6 +1788,7 @@ class FormPageListComponentType extends FormComponentAbstract {
 
     get defaultConfig() {
         return {
+            'label': 'Page', // fake label in client, don't save in API
             'enabled': false,
             'items': [],
             'show_progress_page': true,
@@ -2228,7 +2229,7 @@ class FormPageListComponentType extends FormComponentAbstract {
     }
 
     trigger_objRemove() {
-        this.config = {'items': []};
+        this.config = {'enabled': false, 'items': []};
         this.trigger_objReinitEle();
         this.sortableItem$.hide();
     }

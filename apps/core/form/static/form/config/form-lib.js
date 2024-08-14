@@ -395,7 +395,7 @@ class SortableField {
         return arrResult;
     }
 
-    html_all() {
+    html_all(keep_footer) {
         const sortable$ = $(this.ele$.prop('outerHTML'));
         const page$ = $('#page-sortable');
 
@@ -468,6 +468,9 @@ class SortableField {
         // remove class
         html$.find('.ui-sortable').removeClass('ui-sortable');
         html$.find('.sortable-item').removeClass('sortable-item').alterClass('sortable-item-*');
+
+        // empty footer sub
+        if (keep_footer === false) html$.find('.form-foot-sub').empty().text('${footerSub}');
 
         return html$.children().prop('outerHTML');
     }
@@ -634,7 +637,7 @@ class ToolboxField {
                 'done': function () {
                     let body$ = clsThis.iframePreview$.contents().find("body");
                     let content$ = body$.find("#contents");
-                    let html = clsThis.formTitleCls.return_html_all();
+                    let html = clsThis.formTitleCls.return_html_all(true);
 
                     $.fn.callAjax2({
                         url: clsThis.iframePreview$.attr('data-format-url'),
@@ -1682,8 +1685,8 @@ class FormTitleComponentType extends FormComponentAbstract {
 
     // Export for all
 
-    return_html_all() {
-        return this.sortableCls.html_all();
+    return_html_all(keep_footer=false) {
+        return this.sortableCls.html_all(keep_footer);
     }
 
     return_config_all() {

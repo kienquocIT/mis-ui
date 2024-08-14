@@ -91,7 +91,6 @@ $(document).ready(function () {
                         data: 'purchase_status',
                         className: 'wrap-text text-center w-10',
                         render: (data, type, row) => {
-                            console.log(data)
                             let status_data = {
                                 0: "badge-outline badge badge-light",
                                 1: "badge-outline badge badge-warning",
@@ -118,9 +117,16 @@ $(document).ready(function () {
         changeHrefCreate(url_create, paramString);
     })
 
-    $(document).on('click', '#btn-create-for-stock', function () {
+    $(document).on('click', '#btn-create-for-stock-free', function () {
         let paramString = $.param({
             'type': 'stock',
+        })
+        changeHrefCreate(url_create, paramString);
+    })
+
+    $(document).on('click', '#btn-create-for-stock-plan', function () {
+        let paramString = $.param({
+            'type': 'stock-plan',
         })
         changeHrefCreate(url_create, paramString);
     })

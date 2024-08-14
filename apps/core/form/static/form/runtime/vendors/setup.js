@@ -515,6 +515,7 @@ function resetInputValue() {
                 })
             });
             $('select[data-select-style="xbox"]').each(function (){
+                const disabled = $(this).prop('disabled');
                 const selectCurrent$ = $(this);
                 const parent$ = $(this).closest('.form-item-input-parent');
                 const isMultiple = !!$(this).prop('multiple');
@@ -531,14 +532,14 @@ function resetInputValue() {
                         if (isMultiple === true){
                             htmlTmp = `
                             <div class="form-checkbox-group mb-1">
-                                <input data-value="${value}" type="checkbox" id="${rdIdx}" class="form-checkbox-input form-checkbox-md" />
+                                <input data-value="${value}" type="checkbox" id="${rdIdx}" class="form-checkbox-input form-checkbox-md" ${disabled ? "disabled": ""} />
                                 <label for="${rdIdx}" class="form-checkbox-label">${txt}</label>
                             </div>
                         `
                         } else {
                             htmlTmp = `
                             <div class="form-checkbox-group mb-1">
-                                <input data-value="${value}" name="${fakeName}" type="radio" id="${rdIdx}" class="form-checkbox-input form-checkbox-md" />
+                                <input data-value="${value}" name="${fakeName}" type="radio" id="${rdIdx}" class="form-checkbox-input form-checkbox-md" ${disabled ? "disabled": ""} />
                                 <label for="${rdIdx}" class="form-checkbox-label">${txt}</label>
                             </div>
                         `
@@ -559,6 +560,7 @@ function resetInputValue() {
                 }
             });
             $('select[data-select-style="matrix"]').each(function (){
+                const disabled = $(this).prop('disabled');
                 const selectCurrent$ = $(this);
                 const parent$ = $(this).closest('.form-item-input-parent');
                 const groupBy = selectCurrent$.attr('data-select-matrix-group');
@@ -600,7 +602,7 @@ function resetInputValue() {
                                     const dataGroup = option$.attr('data-group');
                                     return `
                                         <td class="matrix-cell-check">
-                                            <input data-value="${value}" data-group="${dataGroup}" type="checkbox" class="form-checkbox-input form-checkbox-md" />
+                                            <input data-value="${value}" data-group="${dataGroup}" type="checkbox" class="form-checkbox-input form-checkbox-md" ${disabled ? "disabled": ""} />
                                         </td>
                                     `
                                 }
@@ -620,9 +622,11 @@ function resetInputValue() {
                         break
                 }
 
-                let newRule = {};
-                newRule['matrixGroupBy'.toLowerCase()] = groupBy;
-                selectCurrent$.rules('add', newRule);
+                try {
+                    let newRule = {};
+                    newRule['matrixGroupBy'.toLowerCase()] = groupBy;
+                    selectCurrent$.rules('add', newRule);
+                } catch (e) {}
 
                 tbl$.find('input[type=checkbox]').on('change', function (event, data){
                     let inp$ = $(this);

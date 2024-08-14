@@ -12,5 +12,7 @@ $(document).ready(function () {
     $.fn.formInitTimePickerAll();
     $.fn.formRangeSlider();
 
-    $.fn.formShowContentAndHideLoader()
+    $.fn.formShowContentAndHideLoader();
+
+    $.fn.formPageInit();
 })

@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    let frm$ = $('form');
+    let frm$ = $('form[data-url]');
     if (frm$.length > 0) {
         const dataUrl = frm$.data('url');
         const urlSubmitted = frm$.attr('data-url-submitted');

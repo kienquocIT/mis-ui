@@ -653,8 +653,7 @@ class ToolboxField {
                             let sanitize_html = data['sanitize_html'];
                             if (content$.find('form').length > 0) content$.find('form').empty().append(sanitize_html); else content$.empty().append(sanitize_html);
                             // add JS
-                            body$.append(`<script src="${window.location.origin}/static/form/runtime/runtime.js"></script>`)
-                            body$.append(`<script src="${window.location.origin}/static/form/runtime/js/new.js"></script>`)
+                            body$.append(`<script src="/static/form/runtime/js/preview.js"></script>`)
                             // active theme
                             const theme_selected = clsThis.formConfig('theme_selected');
                             if (theme_selected) {

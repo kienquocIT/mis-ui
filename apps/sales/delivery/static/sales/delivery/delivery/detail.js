@@ -335,7 +335,7 @@ $(async function () {
             let soDataJson = {};
             for (let pwh of dataSrc) {
                 pwh['picked'] = 0;
-                pwh['is_so'] = false;
+                pwh['is_regis_so'] = false;
                 if (!pwh.hasOwnProperty('sale_order')) {
                     if ($eleSO.attr('data-so')) {
                         pwh['sale_order'] = JSON.parse($eleSO.attr('data-so'));
@@ -383,9 +383,10 @@ $(async function () {
                 baseData.push(pwh);
                 if (pwh?.['sale_order']?.['id']) {
                     if (!soDataJson.hasOwnProperty(String(pwh?.['sale_order']?.['id']))) {
-                        soDataJson[String(pwh?.['sale_order']?.['id'])] = {'sale_order': pwh?.['sale_order'], 'is_so': true, 'pw_data': [pwh]};
+                        soDataJson[String(pwh?.['sale_order']?.['id'])] = {'sale_order': pwh?.['sale_order'], 'available_stock': pwh?.['available_stock'], 'is_regis_so': true, 'pw_data': [pwh]};
                     } else {
                         soDataJson[String(pwh?.['sale_order']?.['id'])]['pw_data'].push(pwh);
+                        soDataJson[String(pwh?.['sale_order']?.['id'])]['available_stock'] += pwh?.['available_stock'];
                     }
                 }
             }
@@ -413,7 +414,7 @@ $(async function () {
                         class: 'w-15',
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                            if (row?.['is_so'] === true) {
+                            if (row?.['is_regis_so'] === true) {
                                 let target = ".cl-" + row?.['sale_order']?.['id'].replace(/-/g, "");
                                 return `<div class="d-flex align-items-center">
                                             <button 
@@ -459,7 +460,7 @@ $(async function () {
                         targets: 1,
                         class: 'w-25',
                         render: (data, type, row) => {
-                            if (row?.['is_so'] === true) {
+                            if (row?.['is_regis_so'] === true) {
                                 return ``;
                             }
                             return `<p>${row?.['warehouse']?.['title']}</p>`;
@@ -469,7 +470,7 @@ $(async function () {
                         targets: 2,
                         class: 'w-15',
                         render: (data, type, row) => {
-                            if (row?.['is_so'] === true) {
+                            if (row?.['is_regis_so'] === true) {
                                 return ``;
                             }
                             return `<span class="table-row-uom-delivery">${row?.['uom_delivery']?.['title'] ? row?.['uom_delivery']?.['title'] : ''}</span>`;
@@ -479,17 +480,17 @@ $(async function () {
                         targets: 3,
                         class: 'w-20',
                         render: (data, type, row) => {
-                            if (row?.['is_so'] === true) {
-                                return ``;
+                            if (row?.['is_regis_so'] === true) {
+                                return `<p class="table-row-available text-success">${row?.['available_stock']}</p>`;
                             }
-                            return `<p class="table-row-available text-success">${row?.['available_stock']}</p>`;
+                            return `<p class="table-row-available">${row?.['available_stock']}</p>`;
                         }
                     },
                     {
                         targets: 4,
                         class: 'w-25',
                         render: (data, type, row, meta) => {
-                            if (row?.['is_so'] === true) {
+                            if (row?.['is_regis_so'] === true) {
                                 return ``;
                             }
                             let disabled = row?.['product_amount'] <= 0 ? 'disabled' : '';
@@ -579,9 +580,10 @@ $(async function () {
             if (eleTotalAvailable && eleTotalPicked) {
                 $table.DataTable().rows().every(function () {
                     let row = this.node();
+                    let eleCl = row.querySelector('.cl-parent');
                     let eleAvailable = row.querySelector('.table-row-available');
                     let elePicked = row.querySelector('.table-row-picked');
-                    if (eleAvailable) {
+                    if (eleCl && eleAvailable) {
                         totalAvailable += parseFloat(eleAvailable.innerHTML);
                     }
                     if (elePicked) {

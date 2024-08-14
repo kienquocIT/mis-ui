@@ -323,7 +323,7 @@ $(async function () {
 
                     if (data?.[keyResp].length > 0) {
                         let dataPW = [data?.[keyResp][0]];
-                        if (keyResp === 'warehouse_products_list') {
+                        if (keyResp === 'warehouse_products_list') {  // no regis
                             if ($eleSO.attr('data-so')) {
                                 let dataS0 = JSON.parse($eleSO.attr('data-so'));
                                 for (let data of dataPW) {
@@ -331,13 +331,29 @@ $(async function () {
                                 }
                             }
                         }
-                        if (keyResp === 'regis_borrow_list') {
+                        if (keyResp === 'regis_borrow_list') {  // has regis
                             dataPW = [];
                             let dataRegis = setupDataPW(data?.[keyResp][0]?.['regis_data'], whID);
                             if (dataRegis.hasOwnProperty('available_stock') && dataRegis.hasOwnProperty('available_picked')) {
                                 dataPW.push(dataRegis);
                             }
                             for (let borrow_data of data?.[keyResp][0]?.['borrow_data']) {
+                                let dataBorrow = setupDataPW(borrow_data?.['regis_data'], whID);
+                                if (dataBorrow.hasOwnProperty('available_stock') && dataBorrow.hasOwnProperty('available_picked')) {
+                                    if (dataPW.length > 0) {
+                                        dataPW.push(dataBorrow);
+                                    } else {
+                                        dataPW = [dataBorrow];
+                                    }
+                                }
+                            }
+                            for (let borrow_data of data?.[keyResp][0]?.['borrow_data_general_stock']) {
+                                if ($eleSO.attr('data-so')) {
+                                    let dataS0 = JSON.parse($eleSO.attr('data-so'));
+                                    for (let data of borrow_data?.['regis_data']) {
+                                        data['sale_order'] = dataS0;
+                                    }
+                                }
                                 let dataBorrow = setupDataPW(borrow_data?.['regis_data'], whID);
                                 if (dataBorrow.hasOwnProperty('available_stock') && dataBorrow.hasOwnProperty('available_picked')) {
                                     if (dataPW.length > 0) {
@@ -361,12 +377,16 @@ $(async function () {
                             }
                             let so = data?.['sale_order'];
                             let available = (data?.['available_stock'] - data?.['available_picked']) * finalRate;
+                            let badgeStock = `<span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-project')}: ${so?.['code']}</span>`;
+                            if (data?.['is_pw']) {
+                                badgeStock = `<span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-common-wh')}</span>`;
+                            }
                             htmlStock += `<div class="d-flex mb-1 align-items-center">
-                                            <span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-project')}: ${so?.['code']}</span>
+                                            ${badgeStock}
                                             <span class="pw-available text-success" data-so="${JSON.stringify(so).replace(/"/g, "&quot;")}" data-so-id="${so?.['id']}">${available}</span>
                                         </div>`;
                             htmlPick += `<div class="d-flex mb-1 align-items-center">
-                                        <div><span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-project')}: ${so?.['code']}</span></div>
+                                        <div>${badgeStock}</div>
                                         <input class="form-control so-quantity-pick" type="number" value="0" data-so="${JSON.stringify(so).replace(/"/g, "&quot;")}" data-so-id="${so?.['id']}">
                                     </div>`;
                         }

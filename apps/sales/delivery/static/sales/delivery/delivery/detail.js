@@ -80,15 +80,19 @@ $(async function () {
                         temp[isKey] = isData?.['regis_data'];
                         _this.setWarehouseList = temp;
 
-                        let dataRegis = prodTable.setupDataPW(isData?.['regis_data'], prod_data, config);
+                        let dataRegis = prodTable.setupDataPW(isData?.['regis_data'], prod_data, config, 0);
                         for (let borrow_data of isData?.['borrow_data']) {
-                            let dataBorrow = prodTable.setupDataPW(borrow_data?.['regis_data'], prod_data, config);
+                            let dataBorrow = prodTable.setupDataPW(borrow_data?.['regis_data'], prod_data, config, 0);
+                            dataRegis = dataRegis.concat(dataBorrow);
+                        }
+                        for (let borrow_data of isData?.['borrow_data_general_stock']) {
+                            let dataBorrow = prodTable.setupDataPW(borrow_data?.['regis_data'], prod_data, config, 1);
                             dataRegis = dataRegis.concat(dataBorrow);
                         }
                         prodTable.dataTablePW(dataRegis, config);
                     }
                 } else {
-                    let dataPW = prodTable.setupDataPW(isData, prod_data, config);
+                    let dataPW = prodTable.setupDataPW(isData, prod_data, config, 0);
                     prodTable.dataTablePW(dataPW, config);
                 }
 
@@ -329,10 +333,11 @@ $(async function () {
             return true;
         };
 
-        setupDataPW(dataSrc, prod_data, config) {
+        setupDataPW(dataSrc, prod_data, config, type) {
             let finalData = [];
             let baseData = [];
             let soDataJson = {};
+            let commonDataJson = {};
             for (let pwh of dataSrc) {
                 pwh['picked'] = 0;
                 pwh['is_regis_so'] = false;
@@ -382,17 +387,43 @@ $(async function () {
 
                 baseData.push(pwh);
                 if (pwh?.['sale_order']?.['id']) {
-                    if (!soDataJson.hasOwnProperty(String(pwh?.['sale_order']?.['id']))) {
-                        soDataJson[String(pwh?.['sale_order']?.['id'])] = {'sale_order': pwh?.['sale_order'], 'available_stock': pwh?.['available_stock'], 'is_regis_so': true, 'pw_data': [pwh]};
-                    } else {
-                        soDataJson[String(pwh?.['sale_order']?.['id'])]['pw_data'].push(pwh);
-                        soDataJson[String(pwh?.['sale_order']?.['id'])]['available_stock'] += pwh?.['available_stock'];
+                    if (type === 0) {
+                        if (!soDataJson.hasOwnProperty(String(pwh?.['sale_order']?.['id']))) {
+                            soDataJson[String(pwh?.['sale_order']?.['id'])] = {
+                                'sale_order': pwh?.['sale_order'],
+                                'available_stock': pwh?.['available_stock'],
+                                'is_regis_so': true,
+                                'pw_data': [pwh]
+                            };
+                        } else {
+                            soDataJson[String(pwh?.['sale_order']?.['id'])]['pw_data'].push(pwh);
+                            soDataJson[String(pwh?.['sale_order']?.['id'])]['available_stock'] += pwh?.['available_stock'];
+                        }
                     }
+                    if (type === 1) {
+                        if (!commonDataJson.hasOwnProperty(String(pwh?.['sale_order']?.['id']))) {
+                            commonDataJson[String(pwh?.['sale_order']?.['id'])] = {
+                                'sale_order': pwh?.['sale_order'],
+                                'available_stock': pwh?.['common_stock'],
+                                'is_regis_common': true,
+                                'pw_data': [pwh]
+                            };
+                        } else {
+                            commonDataJson[String(pwh?.['sale_order']?.['id'])]['pw_data'].push(pwh);
+                        }
+                    }
+
                 }
             }
             for (let key in soDataJson) {
                 finalData.push(soDataJson[key]);
                 for (let pwData of soDataJson[key]?.['pw_data']) {
+                    finalData.push(pwData);
+                }
+            }
+            for (let key in commonDataJson) {
+                finalData.push(commonDataJson[key]);
+                for (let pwData of commonDataJson[key]?.['pw_data']) {
                     finalData.push(pwData);
                 }
             }
@@ -411,7 +442,7 @@ $(async function () {
                 columns: [
                     {
                         targets: 0,
-                        class: 'w-15',
+                        class: 'w-30',
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['is_regis_so'] === true) {
@@ -430,7 +461,26 @@ $(async function () {
                                             >
                                                 <span class="icon"><i class="fas fa-chevron-down"></i></span>
                                             </button>
-                                            <span class="badge badge-primary badge-outline">${$trans.attr('data-project')}: ${row?.['sale_order']?.['code']}</span>
+                                            <span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-project')}: ${row?.['sale_order']?.['code']}</span><span class="badge badge-warning badge-outline">${$trans.attr('data-available')}: ${row?.['available_stock']}</span>
+                                        </div>`;
+                            }
+                            if (row?.['is_regis_common'] === true) {
+                                let target = ".cl-" + row?.['sale_order']?.['id'].replace(/-/g, "");
+                                return `<div class="d-flex align-items-center">
+                                            <button 
+                                                type="button" 
+                                                class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-xs cl-parent mr-1" 
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="${target}"
+                                                data-bs-placement="top"
+                                                aria-expanded="true"
+                                                aria-controls="newGroup"
+                                                data-group-order="${row?.['group_order']}"
+                                                data-row="${dataRow}"
+                                            >
+                                                <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                                            </button>
+                                            <span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-common-wh')}</span><span class="badge badge-warning badge-outline">${$trans.attr('data-available')}: ${row?.['available_stock']}</span>
                                         </div>`;
                             }
                             let checked = '';
@@ -452,45 +502,35 @@ $(async function () {
                                                 ${disabled}
                                             >
                                         </div>
-                                        <p>${row?.['warehouse']?.['code']}</p>
+                                        <span class="badge badge-soft-success">${row?.['warehouse']?.['code']}</span><span>${row?.['warehouse']?.['title']}</span>
                                     </div>`;
                         }
                     },
                     {
                         targets: 1,
-                        class: 'w-25',
-                        render: (data, type, row) => {
-                            if (row?.['is_regis_so'] === true) {
-                                return ``;
-                            }
-                            return `<p>${row?.['warehouse']?.['title']}</p>`;
-                        }
-                    },
-                    {
-                        targets: 2,
                         class: 'w-15',
                         render: (data, type, row) => {
-                            if (row?.['is_regis_so'] === true) {
+                            if (row?.['is_regis_so'] === true || row?.['is_regis_common'] === true) {
                                 return ``;
                             }
                             return `<span class="table-row-uom-delivery">${row?.['uom_delivery']?.['title'] ? row?.['uom_delivery']?.['title'] : ''}</span>`;
                         }
                     },
                     {
-                        targets: 3,
+                        targets: 2,
                         class: 'w-20',
                         render: (data, type, row) => {
-                            if (row?.['is_regis_so'] === true) {
-                                return `<p class="table-row-available text-success">${row?.['available_stock']}</p>`;
+                            if (row?.['is_regis_so'] === true || row?.['is_regis_common'] === true) {
+                                return ``;
                             }
                             return `<p class="table-row-available">${row?.['available_stock']}</p>`;
                         }
                     },
                     {
-                        targets: 4,
+                        targets: 3,
                         class: 'w-25',
                         render: (data, type, row, meta) => {
-                            if (row?.['is_regis_so'] === true) {
+                            if (row?.['is_regis_so'] === true || row?.['is_regis_common'] === true) {
                                 return ``;
                             }
                             let disabled = row?.['product_amount'] <= 0 ? 'disabled' : '';
@@ -573,11 +613,10 @@ $(async function () {
         };
 
         setupTotal() {
-            let eleTotalAvailable = $table[0].querySelector('.total-available');
             let eleTotalPicked = $table[0].querySelector('.total-picked');
             let totalAvailable = 0;
             let totalPicked = 0;
-            if (eleTotalAvailable && eleTotalPicked) {
+            if (eleTotalPicked) {
                 $table.DataTable().rows().every(function () {
                     let row = this.node();
                     let eleCl = row.querySelector('.cl-parent');
@@ -590,7 +629,6 @@ $(async function () {
                         totalPicked += parseFloat(elePicked.value);
                     }
                 });
-                eleTotalAvailable.innerHTML = String(totalAvailable);
                 eleTotalPicked.innerHTML = String(totalPicked);
             }
             return true;
@@ -619,14 +657,18 @@ $(async function () {
             let dataParam = {'product_warehouse_id': productWHID};
             let keyResp = 'warehouse_lot_list';
             if (isRegis === true && dataSO && eleChecked.getAttribute('data-row')) {
-                url = tableLot.attr('data-url-regis');
                 let dataRow = JSON.parse(eleChecked.getAttribute('data-row'));
-                dataParam = {
-                    'gre_item_prd_wh__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
-                    'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
-                    'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
-                };
-                keyResp = 'gre_item_prd_wh_lot_list';
+                if (!dataRow?.['is_pw']) {
+                    url = tableLot.attr('data-url-regis');
+                    dataParam = {
+                        'gre_item_prd_wh__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
+                        'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
+                        'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
+                    };
+                    keyResp = 'gre_item_prd_wh_lot_list';
+                } else {
+                    isRegis = false;
+                }
             }
             $.fn.callAjax2({
                     'url': url,
@@ -775,14 +817,18 @@ $(async function () {
             }
             if (isRegis === true && dataSO && eleChecked.getAttribute('data-row')) {
                 let dataRow = JSON.parse(eleChecked.getAttribute('data-row'));
-                url = tableSerial.attr('data-url-regis');
-                dataParam = {
-                    'gre_item_prd_wh__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
-                    'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
-                    'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
-                    'sn_registered__is_delete': false,
-                };
-                keyResp = 'good_registration_serial';
+                if (!dataRow?.['is_pw']) {
+                    url = tableSerial.attr('data-url-regis');
+                    dataParam = {
+                        'gre_item_prd_wh__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
+                        'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
+                        'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
+                        'sn_registered__is_delete': false,
+                    };
+                    keyResp = 'good_registration_serial';
+                } else {
+                    isRegis = false;
+                }
             }
             let detailData = [];
             $.fn.callAjax2({

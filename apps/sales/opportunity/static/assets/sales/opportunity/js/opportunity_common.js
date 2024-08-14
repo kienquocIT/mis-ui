@@ -2003,7 +2003,7 @@ function autoLoadStage(
             $('#rangeInput').val(obj_stage?.win_rate);
         }
     }
-    
+
     return id_stage_current, is_lost
 }
 

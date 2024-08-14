@@ -1,60 +1,22 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block title %}
-    {% trans 'Project' %} {% trans 'list' %}
+    {% trans 'Project home' %}
 {% endblock %}
 {% block cssHeader %}
-    <style>
-        .apexcharts-tooltip-title {
-            max-width: 160px;
-            white-space: pre-line;
-        }
-
-        .r-0 {
-            right: 0
-        }
-
-        .percent_block {
-            position: absolute;
-        }
-
-        .heading_cards {
-            font-size: 2rem;
-            line-height: 1.2;
-            font-weight: 400;
-            color: #324148;
-            font-family: "Segoe UI";
-        }
-
-        .card_new_prj .percent_block,
-        .card_baseline .percent_block {
-            line-height: 1;
-            padding-bottom: 3px;
-        }
-
-        .card_new_prj .percent_block span,
-        .card_baseline .percent_block span {
-            letter-spacing: 2px;
-            font-weight: 600;
-        }
-
-        .heading_cards span:not(.span-money) {
-            font-size: 16px;
-            color: #5e7d8a;
-        }
-    </style>
+    <link href="{% static 'assets/project/css/home.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
 {% endblock %}
 
 {% block pageContent %}
     <div class="container">
-        <div class="row justify-content-end align-items-center">
-            <div class="btn-group btn-group-rounded col-xs-12 col-md-3 mr-3">
+        <div class="home-action">
+            <div class="btn-group btn-group-rounded">
                 <a href="{% url 'ProjectList' %}" class="btn btn-outline-secondary">{% trans 'List' %}</a>
-                <a href="{% url 'ProjectList' %}" class="btn btn-outline-secondary">{% trans 'Baseline request' %}</a>
+{#                <a href="{% url 'ProjectList' %}" class="btn btn-outline-secondary">{% trans 'Baseline request' %}</a>#}
             </div>
-            <a href="{% url 'ProjectCreate' %}" class="col col-1">
+            <a href="{% url 'ProjectCreate' %}">
                 <button class="btn btn-outline-primary" type="button">
                     <span>
                         <span>{% trans 'Create' %}</span>
@@ -68,38 +30,38 @@
         <div class="clearfix mb-4"></div>
         <!-- 4 block card -->
         <div class="row mb-8">
-            <div class="col-lg-3 col-sm-6">
-                <div class="card card-sm card_new_prj border-primary">
-                    <div class="card-body">
+            <div class="col-lg-4 col-sm-6 col-xl-3">
+                <div class="card card-sm card_new_prj">
+                    <div class="card-body bg-main b-radius">
                         <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'New project this month' %}</span>
                         <div class="d-flex align-items-end justify-content-between position-relative">
-                            <div class="heading_cards"></div>
+                            <div class="heading_cards"><p class="d-inline-block mr-1">0</p>{% trans 'Project' %}</div>
                             <div class="percent_block r-0 w-auto">
-                                <span class="font-2 text-success"></span>
+                                <span class="font-2 txt-bubble"></span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="card card-sm card_baseline border-secondary">
-                    <div class="card-body">
+            <div class="col-lg-4 col-sm-6 col-xl-3">
+                <div class="card card-sm card_baseline">
+                    <div class="card-body bg-main b-radius">
                         <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project Baseline' %}</span>
                         <div class="d-flex align-items-end justify-content-between position-relative">
-                            <div class="heading_cards"></div>
+                            <div class="heading_cards"><p class="d-inline-block mr-1">0</p>{% trans 'Baseline' %}</div>
                             <div class="percent_block r-0 w-auto">
-                                <span class="font-2 text-success"></span>
+                                <span class="font-2 txt-bubble"></span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="card card-sm card_tasks border-success">
-                    <div class="card-body">
+            <div class="col-lg-4 col-sm-6 col-xl-3">
+                <div class="card card-sm card_tasks">
+                    <div class="card-body bg-main b-radius">
                         <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project tasks' %}</span>
                         <div class="d-flex align-items-center justify-content-between position-relative">
-                            <div class="heading_cards"></div>
+                            <div class="heading_cards"><p class="d-inline-block mr-1">0</p>{% trans 'all' %}</div>
                             <div class="percent_block r-0 w-50p">
                                 <div id="pie_chart_2" class="d-flex pie-chart-task"></div>
                             </div>
@@ -107,9 +69,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="card card-sm card_expense border-warning">
-                    <div class="card-body">
+            <div class="col-lg-4 col-sm-6 col-xl-3">
+                <div class="card card-sm card_expense">
+                    <div class="card-body bg-main b-radius">
                         <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project Expense' %}</span>
                         <div class="d-flex align-items-center justify-content-between position-relative">
                             <div class="heading_cards">
@@ -125,28 +87,46 @@
 
         <div class="row">
             <!-- project owner card block -->
-            <div class="col-xs-12 col-md-6 mb-8">
-                <label class="font-3 font-weight-bold">{% trans 'Project Owner' %}</label>
-                <div id="prj_chart_employee"></div>
+            <div class="col-xs-12 col-md-6 mb-5">
+                <div class="bg-main p-4 style-box css-skeleton">
+                    <label class="font-3 font-weight-bold mb-2 txt-gray">{% trans 'Project Owner' %}</label>
+                    <h6 class="font-2 chart_heading txt-gray"></h6>
+                    <div id="prj_chart_employee">
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
             </div>
             <!-- project per year card block -->
-            <div class="col-xs-12 col-md-6 mb-8">
-                <label class="font-3 font-weight-bold">{% trans 'Project per years' %}</label>
-                <div id="prj_chart_year"></div>
+            <div class="col-xs-12 col-md-6 mb-5">
+                <div class="bg-main p-4 style-box css-skeleton">
+                    <label class="font-3 font-weight-bold mb-2 txt-gray">{% trans 'Project per years' %}</label>
+                    <h6 class="font-2 chart_heading txt-gray">{% trans 'Unit' %}: {% trans 'Month' %}</h6>
+                    <div id="prj_chart_year">
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
             </div>
             <!-- project status card block -->
             <div class="col-xs-12 col-md-6">
-                <label class="font-3">{% trans 'Project status' %}</label>
-                <div id="prj_chart_status"></div>
+                <div class="bg-main p-4 style-box css-skeleton">
+                    <label class="font-3 font-weight-bold mb-2 txt-gray">{% trans 'Project status' %}</label>
+                    <h6 class="font-2 chart_heading txt-gray"></h6>
+                    <div id="prj_chart_status">
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
             </div>
             <!-- project expense card block -->
             <div class="col-xs-12 col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <label class="font-3">{% trans 'Project expense' %}</label>
-                    </div>
-                    <div class="card-body">
-                        <div id="prj_chart_expense"></div>
+                <div class="bg-main p-4 style-box css-skeleton">
+                    <label class="font-3 font-weight-bold mb-2 txt-gray">{% trans 'Project Expense' %}</label>
+                    <h6 class="font-2 chart_heading pro_expense txt-gray">{% trans 'Unit' %}: <span></span></h6>
+                    <div id="prj_chart_expense">
+                        <span></span>
+                        <span></span>
                     </div>
                 </div>
             </div>
@@ -162,8 +142,8 @@
     <input type="hidden" id="trans-factory" aria-label="trans-factory">
 {% endblock %}
 {% block jsFooter %}
-    {# library #}
+    <!-- library -->
     <script src="{% static 'vendors/chart/apexcharts.js' %}"></script>
-    {# init chart#}
+    <!-- init chart -->
     <script src="{% static 'assets/project/js/extend/home.js' %}"></script>
 {% endblock %}

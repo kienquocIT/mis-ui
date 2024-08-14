@@ -1,62 +1,4 @@
 $(document).ready(function(){
-    let colors = ['#FC9F66', '#FAC357', '#FAE39C', '#B8E0E3', '#97C5D8', '#84A9CD'];
-
-    /*******************/
-    // project expense
-    let $expChart = $('#prj_chart_expense')
-    var options44 = {
-        series: [{
-            data: [21000000, 22000000, 1000000, 2800000, 1650000, 2100000, 13000000, 3000000, 4100000, 5200000, 8000000,
-            6500000, 1200000]
-        }],
-        chart: {
-            height: 380,
-            type: 'bar',
-        },
-        plotOptions: {
-            bar: {
-			    distributed: true,
-            }
-        },
-        colors: colors,
-        dataLabels: {
-            enabled: false
-        },
-        legend:{show: false},
-        yaxis: {
-            labels: {
-                formatter: function (value) {
-                    return value + "$";
-                }
-            },
-        },
-        dataLabels: {
-            enabled: false
-        },
-        xaxis: {
-            categories: ['John Doe John Doe', 'Joe Smith', 'Jake Williams', 'Amber', 'Peter Brown', 'Mary Evans',
-                'David Wilson', 'Lily Roberts', 'Lily Roberts 2', 'Lily Roberts 3', 'Lily Roberts 4', 'Lily Roberts 5',
-                'Lily Roberts 6'],
-            labels: {
-                formatter: function (value) {
-                    return value.length < 20 ? value : value.slice(0, 15);
-                }
-            }
-        },
-        tooltip: {
-            enabled: true,
-            custom: function ({series, seriesIndex, dataPointIndex, w}) {
-                let color = w.globals.colors[dataPointIndex];
-                return (`<div class="apexcharts-tooltip-title">${w.globals.labels[dataPointIndex]}</div>` +
-                        `<div class="apexcharts-tooltip-series-group d-flex"><span class="apexcharts-tooltip-marker" style="background: ${color}"></span>` +
-                            `<div class="apexcharts-tooltip-text">${series[seriesIndex][dataPointIndex]}</div></div>`
-                );
-            }
-        }
-    };
-    var chart44 = new ApexCharts($expChart[0], options44);
-    chart44.render();
-
     const _urlElm = $('#url-factory')
 
     // get data all list
@@ -66,7 +8,6 @@ $(document).ready(function(){
         'data': {page: 1, pageSize: 100}
     }, 'Trigger_Loaded');
     $(document).on('Trigger_Loaded', function(){
-        WindowControl.hideLoading();
         const $elm = $('#Trigger_Loaded')
         const project_list = $elm.data('Trigger_Loaded')
         $elm.remove()
@@ -83,18 +24,17 @@ $(document).ready(function(){
         'data': {page: 1, pageSize: 100}
     }, 'Trigger_expense');
     $(document).on('Trigger_expense', function(){
-        WindowControl.hideLoading();
         const $elm = $('#Trigger_expense')
         const project_list = $elm.data('Trigger_expense')
         $elm.remove()
         HomeChart.runExpense(project_list)
+        HomeChart.runChartPExpense(project_list)
     });
 
 });
 
 // func get data via ajax
 function getProjData(opts, strTrigger, page=1, prj = []){
-        WindowControl.showLoading();
         if (page)
             opts.data.page = page
         $.fn.callAjax2(opts)
@@ -139,8 +79,18 @@ function formatSuffixNumber(number){
     return compressedValue + suffixes[div];
 }
 
-class HomeChart {
+function animatingNumber(elm, num){
+    let numInc = 0
+    let intervalId = setInterval(() => {
+        if (numInc <= num) {
+            elm.text(numInc++);
+        } else {
+            clearInterval(intervalId);
+        }
+    }, 50);
+}
 
+class HomeChart {
     static runBlock(data){
         let count = 0,
             count_all = data.length,
@@ -164,13 +114,13 @@ class HomeChart {
 
         };
         // run new project this month block
-        $cardElm.find('.heading_cards').html(`${count_all} ${$.fn.gettext('Project')}`)
+        animatingNumber($cardElm.find('.heading_cards p'), count_all)
         $cardElm.find('.percent_block span').text(`+${count}`)
         // run project baseline block
-        $cardBElm.find('.heading_cards').text(`${baseline_count} ${$.fn.gettext('Baseline')}`)
+        animatingNumber($cardBElm.find('.heading_cards p'), baseline_count)
         $cardBElm.find('.percent_block span').text(`+${baseline_new}`)
         // run project task count block
-        $cardTElm.find('.heading_cards').html(`${task_count} <span>${$.fn.gettext('all')}</span>`)
+        animatingNumber($cardTElm.find('.heading_cards p'), task_count)
         let configs_task = {
             series: [0],
             chart: {
@@ -190,7 +140,8 @@ class HomeChart {
                         size: '75%',
                     },
                     track: {
-                        margin: 0
+                        margin: 0,
+                        background: '#6756fb',
                     },
                     dataLabels: {
                         value:{
@@ -209,7 +160,7 @@ class HomeChart {
                     },
                 },
             },
-            colors: ['#00acf0'],
+            colors: ['#ff43cd'],
         };
         if (task_count > 0 && task_completed > 0)
             configs_task.series = [(task_completed/task_count * 100).toFixed(0)]
@@ -227,16 +178,18 @@ class HomeChart {
         DocumentControl.getCompanyCurrencyConfig().then((configData) => {
             let prefix = configData?.['prefix'], suffix = configData?.['suffix'];
             let IsTotal = formatSuffixNumber(all_sub.toString())
-            if (prefix) IsTotal = prefix + IsTotal
-            else IsTotal = IsTotal + suffix
+            IsTotal = prefix ? prefix + IsTotal : IsTotal + suffix
             $('.card_expense .heading_cards .span-money').text(IsTotal)
+            $('.pro_expense span').text(prefix ? prefix : suffix).data('currency-data', configData)
+            $(document).trigger('load_Currency')
         });
     }
 
     static runChartPOwner(data){
         // chart employee inherit of project
         let $empChart = $('#prj_chart_employee');
-        let colors = ['#FC9F66', '#FAC357', '#FAE39C', '#B8E0E3', '#97C5D8', '#84A9CD'];
+        let colors = ['#0663D1', '#FB7308', '#14245C', '#F3F3F3', '#DDAE8A', '#A3817C', '#99AFD0', '#FCBB48', '#F0D1BB',
+                '#B4B4B9'];
         var optionsEmp = {
             series: [],
             chart: {
@@ -282,6 +235,7 @@ class HomeChart {
         optionsEmp.series = [{data: $.map(_EmpLst,(item)=>{return item.count})}]
         optionsEmp.xaxis.categories = $.map(_EmpLst,(item)=>{return item.name})
         var chartEmp = new ApexCharts($empChart[0], optionsEmp);
+        $empChart.html('').closest('.css-skeleton').removeClass('css-skeleton')
         chartEmp.render();
     }
 
@@ -290,6 +244,8 @@ class HomeChart {
         let $prjChart = $('#prj_chart_year')
         var pieOpt = {
             series: [],
+            colors: ['#0663D1', '#FB7308', '#14245C', '#F3F3F3', '#DDAE8A', '#A3817C', '#99AFD0', '#FCBB48', '#F0D1BB',
+                '#B4B4B9'],
             chart: {
                 height: 380,
                 type: 'line',
@@ -304,7 +260,11 @@ class HomeChart {
                 enabled: false
             },
             xaxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'oct', 'Nov', 'Dec'],
+                categories: [
+                    $.fn.gettext('Jan'), $.fn.gettext('Feb'), $.fn.gettext('Mar'),
+                    $.fn.gettext('Apr'), $.fn.gettext('May'), $.fn.gettext('Jun'),
+                    $.fn.gettext('Jul'), $.fn.gettext('Aug'), $.fn.gettext('Sep'),
+                    $.fn.gettext('Oct'), $.fn.gettext('Nov'), $.fn.gettext('Dec')],
                 axisBorder: {
                     show: false,
                 },
@@ -313,7 +273,7 @@ class HomeChart {
                 tickAmount: 5,
                 labels: {
                     formatter: function (val) {
-                        return val.toFixed(0);
+                        return val ? val.toFixed(0) : '';
                     }
                 },
             },
@@ -352,13 +312,14 @@ class HomeChart {
         }
 
         var chartArea = new ApexCharts($prjChart[0], pieOpt);
+        $prjChart.html('').closest('.css-skeleton').removeClass('css-skeleton')
         chartArea.render();
     }
 
     static runChartPStatus(data){
         /*Donut Chart*/
         let $prjStatus = $('#prj_chart_status'),
-            colors = ['#FC9F66', '#FAC357', '#FAE39C', '#B8E0E3', '#97C5D8', '#84A9CD'];
+            colors = ['#0663D1', '#FB7308', '#14245C', '#F3F3F3'];
 
         const _prjStatus = {
             1: $.fn.gettext('Created'),
@@ -371,7 +332,7 @@ class HomeChart {
             labels: [_prjStatus[1], _prjStatus[2], _prjStatus[3], _prjStatus[4]],
             chart: {
                 type: 'pie',
-                width: 380,
+                height: 380,
             },
             colors: colors,
             responsive: [{
@@ -394,7 +355,93 @@ class HomeChart {
             else optionsStt.series[3] += 1
         }
         var chartStt = new ApexCharts($prjStatus[0], optionsStt);
+        $prjStatus.html('').closest('.css-skeleton').removeClass('css-skeleton')
         chartStt.render();
     }
 
+    static runChartPExpense(data){
+        let colors = ['#0663D1', '#FB7308', '#14245C', '#F3F3F3', '#DDAE8A', '#A3817C', '#99AFD0', '#FCBB48', '#F0D1BB',
+                '#B4B4B9'],
+            $expChart = $('#prj_chart_expense');
+        /*******************/
+        // cách tính columnwith
+        // f(x) = c / (1 + a*exp(-x*b)) -> LOGISTIC GROWTH MODEL
+        // 20 + (60 / (1 + 30*Math.exp(-data.length /3)));
+        // link: https://stackoverflow.com/questions/63395784/apexcharts-max-width-on-item-bars
+        // 20: minimum width (when only one item)
+        // 20+60: maximum width should be close 80
+        // 30 and 3: the a and b from the function, I've selected after testing some cenarios from seriesLength from 1 to 12 and finding which worked for me
+        $(document).on('load_Currency', function(){
+            let dataconfig = $('.pro_expense span').data('currency-data')
+            let newMoney = new MaskMoney2(dataconfig)
+            // project expense
+            let optChart = {
+                series: [{
+                    data: []
+                }],
+                chart: {
+                    height: 380,
+                    type: 'bar',
+                },
+                plotOptions: {
+                    bar: {
+                        distributed: true,
+                        columnWidth: 20 + (60 / (1 + 30*Math.exp(-data.length /3))) + "%"
+                    }
+                },
+                colors: colors,
+                dataLabels: {
+                    enabled: false
+                },
+                legend: {show: false},
+                yaxis: {
+                    labels: {
+                        formatter: function (value) {
+                            let txt = value
+                            if (value) {
+                                txt = newMoney.applyConfig(value)
+                                if (dataconfig?.['suffix']) txt = txt.replace(dataconfig?.['suffix'],'')
+                                else txt = txt.replace(dataconfig?.['prefix'], '')
+                            }
+                            return txt;
+                        }
+                    },
+                },
+                xaxis: {
+                    categories: [],
+                    labels: {
+                        formatter: function (value) {
+                            return value.length < 20 ? value : value.slice(0, 15);
+                        }
+                    }
+                },
+                tooltip: {
+                    enabled: true,
+                    custom: function ({series, seriesIndex, dataPointIndex, w}) {
+                        let color = w.globals.colors[dataPointIndex];
+                        return (`<div class="apexcharts-tooltip-title">${w.globals.labels[dataPointIndex]}</div>` +
+                            `<div class="apexcharts-tooltip-series-group d-flex"><span class="apexcharts-tooltip-marker" style="background: ${color}"></span>` +
+                            `<div class="apexcharts-tooltip-text">${series[seriesIndex][dataPointIndex]}</div></div>`
+                        );
+                    }
+                }
+            }, prj_lst = {};
+            for (let item of data) {
+                let proj = item.project
+                if (proj.id in prj_lst) prj_lst[proj.id].sub_total += item.sub_total
+                else prj_lst[proj.id] = {
+                    'title': proj.title,
+                    'sub_total': item.sub_total,
+                }
+            }
+            for (let item in prj_lst) {
+                let obj = prj_lst[item]
+                optChart.series[0].data.push(obj.sub_total)
+                optChart.xaxis.categories.push(obj.title)
+            }
+            let chartExp = new ApexCharts($expChart[0], optChart);
+            $expChart.html('').closest('.css-skeleton').removeClass('css-skeleton')
+            chartExp.render();
+        });
+    }
 }

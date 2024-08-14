@@ -236,3 +236,7 @@ msgstr "Tất cả tên dòng không được trùng nhau."
 #
 msgid "All columns cannot be duplicated."
 msgstr "Tất cả tên cột không được trùng nhau."
+
+#
+msgid "The field duplication failed"
+msgstr "Nhân bản trường thất bại"

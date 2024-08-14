@@ -1487,20 +1487,25 @@ class FormComponentAbstract {
     }
 
     trigger_objClone() {
-        let config = {
-            ...this,
-            'inputs_data': this.inputs_data.map(data => {
-                return {
-                    ...data,
-                    ...this.defaultInputsDataItem,
-                    'name': this.generateName(),
-                }
-            })
+        let clsConstructor = this.sortableCls.getForm(this.code);
+        if (clsConstructor && clsConstructor.prototype instanceof FormComponentAbstract){
+            let config = {
+                ...this,
+                'inputs_data': this.inputs_data.map(data => {
+                    return {
+                        ...data,
+                        ...this.defaultInputsDataItem,
+                        'name': this.generateName(),
+                    }
+                })
+            }
+            let cls = new clsConstructor(config)
+            cls.trigger('obj.reinit_ele');
+            cls.trigger('sortable.add', this.sortableItem$);
+            cls.sortableCls.highlight(cls.sortableItem$);
+        } else {
+            $.fn.notifyB({'description': $.fn.gettext('The field duplication failed')})
         }
-        let cls = new this.sortableCls.getForm(this.code)(config);
-        cls.trigger('obj.reinit_ele');
-        cls.trigger('sortable.add', this.sortableItem$);
-        // throw Error('The clone field method is not implement')
     }
 
     trigger_objRemove() {

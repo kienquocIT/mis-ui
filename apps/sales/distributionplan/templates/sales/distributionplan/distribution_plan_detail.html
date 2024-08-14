@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Goods stock plan detail' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'DistributionPlanUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+            data-url-expense-item="{% url 'ExpenseItemListAPI' %}"
+    ></script>
+    <form id="form-detail-dp"
+          data-url="{% url 'DistributionPlanDetailAPI' pk=pk %}"
+          data-method="GET"
+    >
+        {% csrf_token %}
+        {% include 'sales/distributionplan/common/general_information.html' %}
+        {% include 'sales/distributionplan/common/costs_area.html' %}
+    </form>
+{% endblock %}
+{% block dataHiddenGroup %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
+    <script src="{% static 'assets/sales/distributionplan/js/distribution_plan_common.js' %}"></script>
+    <script src="{% static 'assets/sales/distributionplan/js/distribution_plan_detail.js' %}"></script>
+{% endblock %}

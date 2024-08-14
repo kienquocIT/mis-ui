@@ -73,8 +73,18 @@
                             <td><span>{% trans 'Start date' %}</span></td>
                             <td><span>{% trans 'Finish date' %}</span></td>
                             <td><span>{% trans 'Completion rate' %}</span></td>
-                            <td><span>{% trans 'Project works' %}</span></td>
-                            <td><span>{% trans 'Tasks' %}</span></td>
+                            <td><span>{% trans 'Project works' %}</span>
+                                <p class="text-blue cursor-pointer">
+                                    <i class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top"
+                                       title="{% trans 'All (Completed)' %}"></i>
+                                </p>
+                            </td>
+                            <td><span>{% trans 'Tasks' %}</span>
+                                <p class="text-blue cursor-pointer">
+                                    <i class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top"
+                                       title="{% trans 'All (Completed)' %}"></i>
+                                </p>
+                            </td>
                             <td><span>{% trans 'Status' %}</span></td>
                         </tr>
                     </thead>

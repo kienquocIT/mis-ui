@@ -284,10 +284,6 @@ class MenusCRM:
         name='Opportunity', code='menu_opportunity_list', view_name='OpportunityList',
         icon='<i class="far fa-lightbulb"></i>',
     )
-    DISTRIBUTION_PLAN = MenuCommon(
-        name='Distribution plan', code='menu_distribution_plan_list', view_name='DistributionPlanList',
-        icon='<i class="fas fa-expand-arrows-alt"></i>',
-    )
     QUOTATION = MenuCommon(
         name='Quotation', code='menu_quotation_list', view_name='QuotationList',
         icon='<i class="fas fa-file-invoice-dollar"></i>',
@@ -379,10 +375,13 @@ class MenusPurchase:
     HOME = MenuCommon(
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
-
     PURCHASE = MenuCommon(
         name='Purchasing', code='menu_purchase_activities', view_name='', icon='<i class="fas fa-cart-arrow-down"></i>',
         child=[
+            MenuCommon(
+                name='Goods stock plan', code='menu_distribution_plan_list', view_name='DistributionPlanList',
+                icon='<i class="fas fa-expand-arrows-alt"></i>',
+            ),
             MenuCommon(
                 name='Purchase request',
                 code='menu_purchase_request_list',
@@ -692,7 +691,6 @@ class SpaceItem:
                 MenusCRM.CONTACT,
                 MenusCRM.ACCOUNT,
                 MenusCRM.OPPORTUNITY,
-                MenusCRM.DISTRIBUTION_PLAN,
                 MenusCRM.QUOTATION,
                 MenusCRM.AR_INVOICE,
                 MenusCRM.SALE_ORDER,

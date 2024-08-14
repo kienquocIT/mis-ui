@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Goods stock plan create' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-create-dp">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+            data-url-expense-item="{% url 'ExpenseItemListAPI' %}"
+    ></script>
+    <form id="form-create-dp"
+          data-method="POST"
+          data-url="{% url 'DistributionPlanListAPI' %}"
+          data-url-redirect="{% url 'DistributionPlanList' %}"
+    >
+        {% csrf_token %}
+        {% include 'sales/distributionplan/common/general_information.html' %}
+        {% include 'sales/distributionplan/common/costs_area.html' %}
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
+    <script src="{% static 'assets/sales/distributionplan/js/distribution_plan_common.js' %}"></script>
+    <script src="{% static 'assets/sales/distributionplan/js/distribution_plan_create.js' %}"></script>
+{% endblock %}

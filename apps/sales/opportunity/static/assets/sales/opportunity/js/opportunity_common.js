@@ -453,7 +453,12 @@ class OpportunityLoadDetail {
                                 <label for="input-close-deal" class="form-label">Close Deal</label>
                             </div>`
                         )
-                        ele_first_stage.find('.dropdown-menu').closest('.sub-stage').addClass('fw-bolder text-primary bg-primary-light-5 border-primary  stage-selected');
+                        let ele_stage = ele_first_stage.find('.dropdown-menu').closest('.sub-stage')
+                        ele_stage.addClass('stage-selected')
+                        ele_stage.css('background-color', '#5a82b7')
+                        ele_stage.css('color', 'white')
+                        ele_stage.find('.dropdown span').css('color', 'white')
+                        ele_stage.next().css('border-left', '30px solid #5a82b7')
                     } else {
                         ele_first_stage.find('.dropdown-menu').append(
                             `<div class="form-check form-switch">
@@ -477,15 +482,27 @@ class OpportunityLoadDetail {
                 let ele_stage = $(`.sub-stage[data-id="${item.id}"]`);
                 if (ele_stage.hasClass('stage-lost')) {
                     if (!is_delivery) {
-                        ele_stage.addClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
+                        ele_stage.addClass('stage-selected')
+                        ele_stage.css('background-color', 'rgb(236, 171, 171)')
+                        ele_stage.css('color', 'white')
+                        ele_stage.next().css('border-left', '30px solid rgb(236, 171, 171)')
                     }
                 } else if (ele_stage.hasClass('stage-close')) {
                     let el_close_deal = $('#input-close-deal');
                     $('.page-content input, .page-content select, .page-content .btn').not(el_close_deal).not($('#rangeInput')).prop('disabled', true);
-                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 border-primary stage-selected');
                     el_close_deal.prop('checked', true);
+
+                    ele_stage.addClass('stage-selected')
+                    ele_stage.css('background-color', '#5a82b7')
+                    ele_stage.css('color', 'white')
+                    ele_stage.find('.dropdown span').css('color', 'white')
+                    ele_stage.next().css('border-left', '30px solid #5a82b7')
                 } else {
-                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 border-primary stage-selected');
+                    ele_stage.addClass('stage-selected')
+                    ele_stage.css('background-color', '#5a82b7')
+                    ele_stage.css('color', 'white')
+                    ele_stage.find('.dropdown span').css('color', 'white')
+                    ele_stage.next().css('border-left', '30px solid #5a82b7')
                 }
             })
         }
@@ -1907,26 +1924,48 @@ function autoLoadStage(
         let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
         let index = ele_stage_current.index();
         if (ele_stage_current.hasClass('stage-lost')) {
-            ele_stage_current.addClass('bg-red-light-5 border-red stage-selected');
-            ele_stage.removeClass('bg-primary-light-5 border-primary  stage-selected');
+            ele_stage_current.addClass('stage-selected');
+
+            ele_stage.removeClass('stage-selected');
+            ele_stage.css('background-color', '#e7e7e7')
+            ele_stage.css('color', '#6f6f6f')
+            ele_stage.find('.dropdown span').css('color', '#6f6f6f')
+            ele_stage.next().css('border-left', '30px solid #e7e7e7')
         }
         else {
             for (let i = 0; i <= ele_stage.length; i++) {
                 if (i <= index) {
-                    if (!ele_stage.eq(i).hasClass('stage-lost'))
-                        ele_stage.eq(i).addClass('bg-primary-light-5 border-primary  stage-selected');
+                    if (!ele_stage.eq(i).hasClass('stage-lost')) {
+                        ele_stage.eq(i).addClass('stage-selected');
+                        ele_stage.eq(i).css('background-color', '#5a82b7')
+                        ele_stage.eq(i).css('color', 'white')
+                        ele_stage.eq(i).find('.dropdown span').css('color', 'white')
+                        ele_stage.eq(i).next().css('border-left', '30px solid #5a82b7')
+                    }
                     else {
-                        ele_stage.eq(i).removeClass('bg-red-light-5 border-red stage-selected');
+                        ele_stage.eq(i).removeClass('stage-selected');
+                        ele_stage.eq(i).css('background-color', '#e7e7e7')
+                        ele_stage.eq(i).css('color', '#6f6f6f')
+                        ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
+                        ele_stage.eq(i).next().css('border-left', '30px solid #e7e7e7')
                     }
                 } else {
-                    ele_stage.eq(i).removeClass('bg-primary-light-5 border-primary  bg-red-light-5 border-red stage-selected');
+                    ele_stage.eq(i).removeClass('stage-selected');
+                    ele_stage.eq(i).css('background-color', '#e7e7e7')
+                    ele_stage.eq(i).css('color', '#6f6f6f')
+                    ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
+                    ele_stage.eq(i).next().css('border-left', '30px solid #e7e7e7')
                 }
             }
         }
 
         if (ele_close_deal.is(':checked')) {
             ele_stage_current = ele_close_deal.closest('.sub-stage');
-            ele_close_deal.closest('.sub-stage').addClass('bg-primary-light-5 border-primary  stage-selected');
+            ele_close_deal.closest('.sub-stage').addClass('stage-selected');
+            ele_close_deal.closest('.sub-stage').css('background-color', '#5a82b7')
+            ele_close_deal.closest('.sub-stage').css('color', 'white')
+            ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', 'white')
+            ele_close_deal.closest('.sub-stage').next().css('border-left', '30px solid #5a82b7')
             $('.page-content input, .page-content select, .page-content .btn').not(ele_close_deal).not($('#rangeInput')).prop('disabled', true);
             if (!config_is_input_rate) {
                 input_rate_ele.prop('disabled', true);
@@ -1935,7 +1974,11 @@ function autoLoadStage(
         }
         else {
             $('.page-content input, .page-content select, .page-content .btn').prop('disabled', false);
-            ele_close_deal.closest('.sub-stage').removeClass('bg-primary-light-5 border-primary  stage-selected');
+            ele_close_deal.closest('.sub-stage').removeClass('stage-selected');
+            ele_close_deal.closest('.sub-stage').css('background-color', '#e7e7e7')
+            ele_close_deal.closest('.sub-stage').css('color', '#6f6f6f')
+            ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', '#6f6f6f')
+            ele_close_deal.closest('.sub-stage').next().css('border-left', '30px solid #e7e7e7')
             if (!config_is_input_rate) {
                 input_rate_ele.prop('disabled', true);
                 $('#input-rate').prop('disabled', true);

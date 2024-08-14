@@ -355,8 +355,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     LEAD_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     LEAD_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
-    DISTRIBUTION_PLAN_LIST_PAGE = BreadcrumbChildren(_('Distribution plan list'), 'DistributionPlanList')
-    DISTRIBUTION_PLAN_CREATE_PAGE = BreadcrumbChildren(_('Distribution plan create'), 'DistributionPlanCreate')
+    DISTRIBUTION_PLAN_LIST_PAGE = BreadcrumbChildren(_('Goods stock plan list'), 'DistributionPlanList')
+    DISTRIBUTION_PLAN_CREATE_PAGE = BreadcrumbChildren(_('Goods stock plan create'), 'DistributionPlanCreate')
     DISTRIBUTION_PLAN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     DISTRIBUTION_PLAN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 

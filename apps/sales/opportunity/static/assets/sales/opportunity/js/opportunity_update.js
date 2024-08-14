@@ -623,9 +623,9 @@ $(document).ready(function () {
                 if (is_lost) {
                     let ele_stage = $('.stage-lost')
                     ele_stage.addClass('stage-selected');
-                    ele_stage.css('background-color', 'rgb(236, 171, 171)')
+                    ele_stage.css('background-color', 'rgb(255,94,94)')
                     ele_stage.css('color', 'white')
-                    ele_stage.next().css('border-left', '30px solid rgb(236, 171, 171)')
+                    ele_stage.next().css('border-left', '30px solid rgb(255,94,94)')
                     // $('.stage-close').addClass('fw-bolder text-blue bg-blue-light-5 border-blue stage-selected');
                     // $('#input-close-deal').prop('checked', true)
                 }

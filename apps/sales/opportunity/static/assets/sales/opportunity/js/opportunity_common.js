@@ -483,9 +483,9 @@ class OpportunityLoadDetail {
                 if (ele_stage.hasClass('stage-lost')) {
                     if (!is_delivery) {
                         ele_stage.addClass('stage-selected')
-                        ele_stage.css('background-color', 'rgb(236, 171, 171)')
+                        ele_stage.css('background-color', 'rgb(255,94,94)')
                         ele_stage.css('color', 'white')
-                        ele_stage.next().css('border-left', '30px solid rgb(236, 171, 171)')
+                        ele_stage.next().css('border-left', '30px solid rgb(255,94,94)')
                     }
                 } else if (ele_stage.hasClass('stage-close')) {
                     let el_close_deal = $('#input-close-deal');
@@ -2003,7 +2003,7 @@ function autoLoadStage(
             $('#rangeInput').val(obj_stage?.win_rate);
         }
     }
-
+    
     return id_stage_current, is_lost
 }
 

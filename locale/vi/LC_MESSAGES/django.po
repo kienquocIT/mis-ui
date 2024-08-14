@@ -8428,3 +8428,7 @@ msgstr "Tình trạng dự án"
 #
 msgid "excl tax"
 msgstr "chưa thuế"
+
+#
+msgid "All (Completed)"
+msgstr "Tất cả (Hoàn thành)"

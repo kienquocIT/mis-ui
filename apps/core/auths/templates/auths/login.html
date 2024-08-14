@@ -163,29 +163,26 @@
     <!-- /spinner loading -->
     <div class="hidden">
         <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
-        <span
-                id="errLoginIncorrect" data-value="{% trans 'The username or password is incorrect' %}"
-                data-captcha-require="{% trans 'Please solve the captcha.' %}"
-        ></span>
     </div>
 </div>
 <!-- /Wrapper -->
 
-<script type="text/javascript">
-    let ggCaptChaEnabled = "{{ captcha_enabled }}";
-    var onloadCallback = function () {
-        if (ggCaptChaEnabled === 'True') {
+<script src="{% url 'javascript-catalog' packages='auth' %}"></script>
+{% if captcha_enabled == True %}
+    <script type="text/javascript">
+        window.ggCaptChaEnabled = "True";
+        function onloadCallback() {
             grecaptcha.render('recapcha', {
                 'sitekey': '{{ secret_key_gg }}'
             });
         }
-    };
-</script>
-<script
-        src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
-        async defer
->
-</script>
+    </script>
+    <script
+            src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+            async defer
+    >
+    </script>
+{% endif %}
 
 {% compress js %}
     <!-- jQuery -->
@@ -386,6 +383,13 @@
 
     <!-- Custom JS -->
     <script>
+        function authGettext(txt){
+            try {
+                return gettext(txt)
+            } catch (e) {
+                return txt
+            }
+        }
         $(document).ready(function () {
             let hasAppendSubCode = false;
             let allowAutoTenant = '{{allow_auto_tenant}}';
@@ -399,11 +403,11 @@
                 event.preventDefault();
 
                 let state = false;
-                if (ggCaptChaEnabled === 'True') {
+                if (window.ggCaptChaEnabled === 'True') {
                     let response = grecaptcha.getResponse();
                     if (!response) {
                         $.fn.notifyBLogin({
-                            'description': $('#errLoginIncorrect').attr('data-captcha-require')
+                            'description': authGettext('Please solve the captcha.'),
                         }, 'failure');
                         return false;
                     } else {
@@ -417,9 +421,9 @@
                     $.fn.showLoadingLogin();
                     let frm = new SetupFormSubmitLogin($(this));
                     if (frm.dataUrl && frm.dataMethod) {
-                        if (ggCaptChaEnabled === 'True' && !frm.dataForm['g-recaptcha-response']) {
+                        if (window.ggCaptChaEnabled === 'True' && !frm.dataForm['g-recaptcha-response']) {
                             $.fn.notifyBLogin({
-                                'description': $('#errLoginIncorrect').attr('data-captcha-require')
+                                'description': authGettext('Please solve the captcha.'),
                             }, 'failure');
                             setTimeout(
                                 () => {
@@ -458,7 +462,7 @@
                             },
                             (err) => {
                                 $.fn.notifyBLogin({
-                                    'description': $('#errLoginIncorrect').attr('data-value')
+                                    'description': authGettext('The username or password is incorrect'),
                                 }, 'failure')
                                 $.fn.hideLoadingLogin();
                             }

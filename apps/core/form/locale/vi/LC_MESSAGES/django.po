@@ -631,7 +631,7 @@ msgstr "Đánh dấu"
 
 #
 msgid "Switch"
-msgstr "Công tấc"
+msgstr "Công tắc"
 
 #
 msgid "Unchecked"

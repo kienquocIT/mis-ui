@@ -1922,10 +1922,9 @@ function autoLoadStage(
             id_stage_current = $('#div-stage').find('div:first-child').attr('data-id');
         }
         let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
-        let index = ele_stage_current.index();
+        let index = ele_stage_current.index() - (ele_stage_current.index()/2);
         if (ele_stage_current.hasClass('stage-lost')) {
             ele_stage_current.addClass('stage-selected');
-
             ele_stage.removeClass('stage-selected');
             ele_stage.css('background-color', '#e7e7e7')
             ele_stage.css('color', '#6f6f6f')
@@ -2004,7 +2003,7 @@ function autoLoadStage(
             $('#rangeInput').val(obj_stage?.win_rate);
         }
     }
-
+    
     return id_stage_current, is_lost
 }
 

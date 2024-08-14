@@ -637,7 +637,7 @@
 
 /* highlight */
 .sortable-item-highlight {
-    z-index: 99999;
+    z-index: 1054;
     animation: sortableHighlight 1s;
 }
 

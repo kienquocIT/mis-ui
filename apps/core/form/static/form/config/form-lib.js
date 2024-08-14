@@ -230,7 +230,7 @@ class SortableField {
         ele$.addClass('sortable-item-highlight');
         setTimeout(
             () => ele$.removeClass('sortable-item-highlight'),
-            2000
+            1010
         )
     }
 

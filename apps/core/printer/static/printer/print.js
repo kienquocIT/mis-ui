@@ -552,8 +552,20 @@ class PrintTinymceControl {
                             if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
                                 e.stopImmediatePropagation();
                             }
-                        })
+                        });
                     })
+
+                    editor.on('BeforeExecCommand ', function (e) {
+                        if (e.command === 'mcePrint' && e.target.hasVisual) {
+                            document.activeElement.blur();
+                            editor.execCommand('mceToggleVisualAid');
+                        }
+                    });
+                    editor.on('ExecCommand', function (e) {
+                        if (e.command === 'mcePrint' && e.target.hasVisual) {
+                        }
+                    });
+
                 },
                 // config of: link
                 default_link_target: '_blank',

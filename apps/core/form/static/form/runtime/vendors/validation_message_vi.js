@@ -42,4 +42,6 @@ $.extend($.validator.messages, {
     numberTypeInt: `Dữ liệu yêu cầu kiểu số nguyên.`,
     numberTypeFloat: `Dữ liệu yêu cầu kiểu số thực.`,
     datePicker: 'Vui lòng nhập ngày hợp lệ.',
+    matrixGroupByRow: 'Vui lòng hoàn thành tất cả các hàng với mỗi hàng một lựa chọn.',
+    matrixGroupByCol: 'Vui lòng hoàn thành tất cả các cột với mỗi cột một lựa chọn.',
 });

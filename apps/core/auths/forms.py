@@ -36,3 +36,83 @@ class AuthLoginForm(forms.Form):
             else:
                 return True
         return False
+
+
+class ForgotPasswordForm(forms.Form):
+    tenant_code = forms.CharField()
+    username = forms.CharField()
+    g_recaptcha_response = forms.CharField(empty_value=None)
+
+    def clean_g_recaptcha_response(self):
+        if 'g_recaptcha_response' in self.cleaned_data:
+            data = self.cleaned_data['g_recaptcha_response']
+            if settings.GG_RECAPTCHA_ENABLED:
+                if not data:
+                    return False
+
+                response = requests.post(
+                    'https://www.google.com/recaptcha/api/siteverify', data={
+                        'secret': settings.GG_RECAPTCHA_SERVER_KEY,
+                        'response': data
+                    }
+                )
+                if response.status_code == 200:
+                    response_data = response.json()
+                    if response_data['success']:
+                        return True
+            else:
+                return True
+        return False
+
+
+class ForgotPasswordValidOTPForm(forms.Form):
+    pk = forms.UUIDField()
+    otp = forms.CharField()
+    g_recaptcha_response = forms.CharField(empty_value=None)
+
+    def clean_g_recaptcha_response(self):
+        if 'g_recaptcha_response' in self.cleaned_data:
+            data = self.cleaned_data['g_recaptcha_response']
+            if settings.GG_RECAPTCHA_ENABLED:
+                if not data:
+                    return False
+
+                response = requests.post(
+                    'https://www.google.com/recaptcha/api/siteverify', data={
+                        'secret': settings.GG_RECAPTCHA_SERVER_KEY,
+                        'response': data
+                    }
+                )
+                if response.status_code == 200:
+                    response_data = response.json()
+                    if response_data['success']:
+                        return True
+            else:
+                return True
+        return False
+
+
+class ForgotPasswordResendOTP(forms.Form):
+    pk = forms.UUIDField()
+    g_recaptcha_response = forms.CharField(empty_value=None)
+
+    def clean_g_recaptcha_response(self):
+        if 'g_recaptcha_response' in self.cleaned_data:
+            data = self.cleaned_data['g_recaptcha_response']
+            if settings.GG_RECAPTCHA_ENABLED:
+                if not data:
+                    return False
+
+                response = requests.post(
+                    'https://www.google.com/recaptcha/api/siteverify', data={
+                        'secret': settings.GG_RECAPTCHA_SERVER_KEY,
+                        'response': data
+                    }
+                )
+                if response.status_code == 200:
+                    response_data = response.json()
+                    if response_data['success']:
+                        return True
+            else:
+                return True
+        return False

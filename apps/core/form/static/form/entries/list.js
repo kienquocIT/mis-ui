@@ -8,6 +8,13 @@ $(document).ready(function () {
             const obj = moment(_cellData, 'YYYY-MM-DD HH:mm:ss');
             return obj.isValid() ? obj.format("lll") : '-';
         }
+        if (_fieldConfig['type'] === 'select' && _fieldConfig['config']['is_multiple'] === true) {
+            if (Array.isArray(_cellData)){
+                return _cellData.map(
+                    item => `<span class="badge badge-primary mr-1">${item}</span>`
+                ).join("");
+            }
+        }
         switch (typeof _cellData) {
             case "boolean":
                 if (_cellData === true) return `<i class="fa-solid fa-check entries-cell-check"></i>`;

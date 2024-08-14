@@ -62,14 +62,14 @@
                             <div class="card-header d-flex justify-content-center" style="border-bottom: 0;">
                                 <img
                                         src="{% static 'assets/images/brand/bflow-by-mts/png/bflow-by-mts-original.png' %}"
-                                    alt="Bflow by MTS"
-                                    style="width: 80%;object-fit: cover;padding: 20px;"
+                                        alt="Bflow by MTS"
+                                        style="width: 80%;object-fit: cover;padding: 20px;"
                                 >
                             </div>
                             <div class="card-body">
                                 <div class="w-100 mb-6">
-                                        <h4 class="text-center">{% trans 'Find your account' %}</h4>
-                                    </div>
+                                    <h4 class="text-center">{% trans 'Find your account' %}</h4>
+                                </div>
                                 <div class="w-100 mb-3" id="username-call-get">
                                     <form data-url="{% url 'ForgotPasswordAPI' %}" data-method="POST" id="frmGetOTP">
                                         {% csrf_token %}
@@ -121,7 +121,7 @@
                                             <label for="inp-idx-validate"></label>
                                             <input type="text" name="id" id="inp-idx-validate" required/>
                                         </div>
-                                        <div class="w-100 d-flex justify-content-between align-items-center">
+                                        <div class="w-100 d-flex justify-content-between align-items-center mb-3">
                                             <button
                                                     class="flex-item btn btn-xs btn-primary"
                                                     id="btnResendOTP"
@@ -136,11 +136,12 @@
                                             ></p>
                                         </div>
                                         <div class="form-group">
-                                            <label for="inp-otp" class="form-label"></label>
+                                            <label for="inp-otp" class="form-label d-none"></label>
                                             <div class="input-group mb-3">
                                                 <input
                                                         type="text" name="otp" id="inp-otp"
-                                                        class="form-control" placeholder="{% trans 'Enter One-time password - OTP' %}"
+                                                        class="form-control"
+                                                        placeholder="{% trans 'Enter One-time password - OTP' %}"
                                                         required
                                                 >
                                                 <button
@@ -154,9 +155,12 @@
                                         </div>
                                     </form>
                                 </div>
+                                <div id="recapcha" class="mt-3 mb-3"></div>
                                 <div class="w-100 mb-3" id="show-new-password" style="display: none;">
                                     <div class="form-group">
-                                        <label for="inp-gen-pass" class="form-label">{% trans 'Reissued Password' %}</label>
+                                        <label
+                                                for="inp-gen-pass" class="form-label"
+                                        >{% trans 'Reissued Password' %}</label>
                                         <div class="input-group mb-3">
                                             <input
                                                     type="text" id="inp-gen-pass"
@@ -169,7 +173,9 @@
                                                     id="btnCopyPass"
                                             >
                                                 <span id="msg-copy">{% trans 'Copy' %}</span>
-                                                <span id="msg-copy-not-support" style="display: none;">{% trans 'Copy not support' %}</span>
+                                                <span
+                                                        id="msg-copy-not-support" style="display: none;"
+                                                >{% trans 'Copy not support' %}</span>
                                                 <span id="msg-copied" style="display: none;">{% trans 'Copied' %}</span>
                                             </button>
                                         </div>
@@ -180,27 +186,17 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-12 position-relative text-center">
+                        <p class="footer-text pb-0 copyrighttext">
+                            <span class="copy-text">BFlow © 2023 All rights reserved.</span>
+                        </p>
+                    </div>
                 </div>
                 <!-- /Row -->
             </div>
             <!-- /Container -->
         </div>
         <!-- /Page Body -->
-
-        <!-- Page Footer -->
-        <div class="hk-footer border-0 copyrightbox">
-            <footer class="container-xxl footer">
-                <div class="row">
-                    <div class="col-xl-8 text-center">
-                        <p class="footer-text pb-0 copyrighttext">
-                            <span class="copy-text">BFlow © 2023 All rights reserved.</span>
-                        </p>
-                    </div>
-                </div>
-            </footer>
-        </div>
-        <!-- / Page Footer -->
-
     </div>
     <!-- /Main Content -->
     <div class="hidden">
@@ -213,22 +209,25 @@
 </div>
 <!-- /Wrapper -->
 
-<script type="text/javascript">
-    let ggCaptChaEnabled = "{{ captcha_enabled }}";
-    let onloadCallback = function () {
-        if (ggCaptChaEnabled === 'True') {
+{% if captcha_enabled == True %}
+    <script type="text/javascript">
+        window.ggCaptChaEnabled = "True";
+
+        function onloadCallback() {
             grecaptcha.render('recapcha', {
                 'sitekey': '{{ secret_key_gg }}'
             });
         }
-    };
-</script>
-<script
-        src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
-        async defer
->
-</script>
+    </script>
+    <script
+            src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+            async defer
+            type="text/javascript"
+    >
+    </script>
+{% endif %}
 
+<script src="{% url 'javascript-catalog' packages='auth' %}"></script>
 {% compress js %}
     <!-- jQuery -->
     <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
@@ -256,6 +255,68 @@
     <script src="{% static 'assets/js/init.js' %}"></script>
     <script src="{% static 'login/backdrop-animated.js' %}"></script>
     <script>
+        function authGettext(txt) {
+            try {
+                return gettext(txt)
+            } catch (e) {
+                return txt
+            }
+        }
+
+        function authNotifyB(option, typeAlert = null) {
+            setTimeout(function () {
+                $('.alert.alert-dismissible .close').addClass('btn-close').removeClass('close');
+            }, 100);
+            let msg = "";
+            if (option.title) {
+                msg += option.title;
+            }
+            if (option.description) {
+                let des_tmp = '';
+                if (typeof option.description === 'string') {
+                    des_tmp = option.description;
+                } else if (Array.isArray(option.description)) {
+                    des_tmp = option.description.join(", ");
+                } else if (typeof option.description === 'object') {
+                    let des_tmp_arr = [];
+                    for (const [_key, value] of Object.entries(option.description)) {
+                        des_tmp_arr.push(value);
+                    }
+                    des_tmp = des_tmp_arr.join(", ");
+                } else {
+                    des_tmp = option.description.toString();
+                }
+                if (msg) {
+                    msg += ": " + des_tmp;
+                } else {
+                    msg = des_tmp;
+                }
+            }
+            let alert_config = {
+                animate: {
+                    enter: 'animated bounceInDown',
+                    exit: 'animated bounceOutUp'
+                },
+                type: "dismissible alert-primary",
+                z_index: 2147483647, /* Maximum index */
+            }
+            switch (typeAlert) {
+                case 'success':
+                    alert_config['type'] = "dismissible alert-success";
+                    break
+                case 'failure':
+                    alert_config['type'] = "dismissible alert-danger";
+                    break
+                case 'warning':
+                    alert_config['type'] = "dismissible alert-warning";
+                    break
+                case 'info':
+                    alert_config['type'] = "dismissible alert-info";
+                    break
+            }
+            $.notify(msg, alert_config);
+        }
+
         function listenImageLoad(imgEle = null, opts = {}) {
             function resolve_title_tooltip(_ele) {
                 let parentTxt = '';
@@ -285,22 +346,23 @@
                 });
             })
         }
+
         listenImageLoad();
 
-        function showErrors(errs){
+        function showErrors(errs) {
             let errors = errs?.['data']?.['errors'] || null;
-                if (errors && typeof errors === 'object'){
-                    Object.keys(errors).map(
-                        (key) => {
-                            $.fn.notifyB({
-                                'description': errors[key],
-                            }, 'failure');
-                        }
-                    )
-                }
+            if (errors && typeof errors === 'object') {
+                Object.keys(errors).map(
+                    (key) => {
+                        $.fn.notifyB({
+                            'description': errors[key],
+                        }, 'failure');
+                    }
+                )
+            }
         }
 
-        function activeRemaining(){
+        function activeRemaining() {
             let ele = $('#show-time-remaining');
             let count = 120;
             let txtSample = ele.attr('data-txt');
@@ -313,7 +375,7 @@
                 () => {
                     ele.text(txtSample.replaceAll('__data__', count));
                     ele.attr('data-counter', count);
-                    if (count <= 0){
+                    if (count <= 0) {
                         clearInterval(intervalCountdown);
                         $('#btnResendOTP').prop('disabled', false);
                         ele.text('');
@@ -331,6 +393,7 @@
                 let boxHeight = $('.hk-pg-body').height();
                 $(':root').css('--box-height', `(50vh + ${boxHeight / 2}px + 20px)`);
             }
+
             centerBox();
 
             let mainDomain = "{{ ui_domain }}";
@@ -367,64 +430,109 @@
                     ...validateFormOpts,
                     submitHandler: function (form, event) {
                         event.preventDefault();
-                        $.fn.forgotCallAjax(
-                            $(form).attr('data-url'),
-                            $(form).attr('data-method'),
-                            {
+
+                        let stateCaptcha = false;
+                        if (window.ggCaptChaEnabled === 'True') {
+                            let response = grecaptcha.getResponse();
+                            if (!response) {
+                                authNotifyB({
+                                    'description': authGettext('Please solve the captcha.'),
+                                }, 'failure');
+                                return false;
+                            } else {
+                                stateCaptcha = true;
+                            }
+                        } else {
+                            stateCaptcha = true;
+                        }
+
+                        if (stateCaptcha === true) {
+                            const bodyData = {
                                 'tenant_code': $(form).find('input[name=tenant_code]').val(),
                                 'username': $(form).find('input[name=username]').val(),
-                            },
-                            true,
-                        ).then(
-                            resp => {
-                                let data = resp?.['data'] || null;
-                                if (data) {
-                                    frmOTPValidate.attr(
-                                        'data-url',
-                                        frmOTPValidate.attr('data-url').replaceAll('__pk__', data.id)
-                                    )
+                                'g_recaptcha_response': $(document).find('input[name="g-recaptcha-response"]').val(),
+                            };
 
-                                    let user_data = data?.['user_data'] || null;
-                                    if (user_data) {
-                                        if (user_data.avatar) $('#img-avatar-person').attr('src', user_data.avatar);
-                                        $('#full-name-person').text(user_data.full_name);
-                                        groupCallGet.fadeOut('fast', function () {
-                                            groupValidPerson.fadeIn('fast', function () {
-                                                centerBox();
+                            if (window.ggCaptChaEnabled === 'True' && !bodyData.dataForm['g_recaptcha_response']) {
+                                authNotifyB({
+                                    'description': authGettext('Please solve the captcha.'),
+                                }, 'failure');
+                                return false;
+                            }
+
+                            $.fn.forgotCallAjax(
+                                $(form).attr('data-url'),
+                                $(form).attr('data-method'),
+                                bodyData,
+                                true,
+                            ).then(
+                                resp => {
+                                    let data = resp?.['data'] || null;
+                                    if (data) {
+                                        frmOTPValidate.attr(
+                                            'data-url',
+                                            frmOTPValidate.attr('data-url').replaceAll('__pk__', data.id)
+                                        )
+
+                                        let user_data = data?.['user_data'] || null;
+                                        if (user_data) {
+                                            if (user_data.avatar) $('#img-avatar-person').attr('src', user_data.avatar);
+                                            $('#full-name-person').text(user_data.full_name);
+                                            groupCallGet.fadeOut('fast', function () {
+                                                groupValidPerson.fadeIn('fast', function () {
+                                                    centerBox();
+                                                });
+                                                groupValidOtp.fadeIn('fast', function () {
+                                                    centerBox();
+                                                    $('#inp-otp').focus();
+                                                    activeRemaining();
+                                                });
                                             });
-                                            groupValidOtp.fadeIn('fast', function () {
-                                                centerBox();
-                                                $('#inp-otp').focus();
-                                                activeRemaining();
-                                            });
-                                        });
-                                    }
-                                    let notifyData = data?.['push_notify_data'] || null;
-                                    if (notifyData && typeof notifyData === 'object'){
-                                        if (notifyData.hasOwnProperty('name_service') && notifyData.hasOwnProperty('destination')){
-                                            $('#push-notify-data').text(
-                                                `${notifyData.name_service || ''} : ${notifyData.destination || ''}`
-                                            )
+                                        }
+                                        let notifyData = data?.['push_notify_data'] || null;
+                                        if (notifyData && typeof notifyData === 'object') {
+                                            if (notifyData.hasOwnProperty('name_service') && notifyData.hasOwnProperty('destination')) {
+                                                $('#push-notify-data').text(
+                                                    `${notifyData.name_service || ''} : ${notifyData.destination || ''}`
+                                                )
+                                            }
                                         }
                                     }
-                                }
-                            },
-                            errs => {
-                                showErrors(errs);
-                            },
-                        )
+                                },
+                                errs => {
+                                    showErrors(errs);
+                                },
+                            )
+                        }
                     },
                 });
 
-                $('#btnResendOTP').on('click', function (){
+                $('#btnResendOTP').on('click', function () {
                     let clsThis = this;
-                    if ($('#show-time-remaining').attr('data-counter') === '0'){
+                    if ($('#show-time-remaining').attr('data-counter') === '0') {
+                        let stateCaptcha = false;
+                        if (window.ggCaptChaEnabled === 'True') {
+                            let response = grecaptcha.getResponse();
+                            if (!response) {
+                                authNotifyB({
+                                    'description': authGettext('Please solve the captcha.'),
+                                }, 'failure');
+                                return false;
+                            } else {
+                                stateCaptcha = true;
+                            }
+                        } else {
+                            stateCaptcha = true;
+                        }
+
                         $.fn.forgotCallAjax(
-                            frmOTPValidate.attr('data-url'),
+                            frmOTPValidate.attr('data-url') + '?' + $.params({
+                                'captcha': $(document).find('input[name="g-recaptcha-response"]').val()
+                            }),
                             'GET',
                         ).then(
                             resp => {
-                                if (resp?.['status'] === 200){
+                                if (resp?.['status'] === 200) {
                                     activeRemaining();
                                     $(clsThis).prop('disabled', true);
                                 }
@@ -438,43 +546,72 @@
                     ...validateFormOpts,
                     submitHandler: function (form, event) {
                         event.preventDefault();
-                        $.fn.forgotCallAjax(
-                            $(form).attr('data-url'),
-                            $(form).attr('data-method'),
-                            {
-                                'otp': $(form).find('input[name=otp]').val(),
-                            },
-                            true,
-                        ).then(
-                            resp => {
-                                let data = resp?.['data'] || null;
-                                if (data) {
-                                    $('#inp-gen-pass').val(data?.['new_password'] || '');
 
-                                    if (!navigator.clipboard){
-                                        btnCopyNotSupport.parent('button').remove();
-                                    }
-                                    groupValidOtp.fadeOut('fast', function () {
-                                        groupNewPasswd.fadeIn('fast', function () {
-                                            centerBox();
+                        let stateCaptcha = false;
+                        if (window.ggCaptChaEnabled === 'True') {
+                            let response = grecaptcha.getResponse();
+                            if (!response) {
+                                authNotifyB({
+                                    'description': authGettext('Please solve the captcha.'),
+                                }, 'failure');
+                                return false;
+                            } else {
+                                stateCaptcha = true;
+                            }
+                        } else {
+                            stateCaptcha = true;
+                        }
+
+                        if (stateCaptcha) {
+                            const bodyData = {
+                                'otp': $(form).find('input[name=otp]').val(),
+                                'g_recaptcha_response': $(document).find('input[name="g-recaptcha-response"]').val(),
+                            };
+
+                            if (window.ggCaptChaEnabled === 'True' && !bodyData.dataForm['g_recaptcha_response']) {
+                                authNotifyB({
+                                    'description': authGettext('Please solve the captcha.'),
+                                }, 'failure');
+                                return false;
+                            }
+
+                            $.fn.forgotCallAjax(
+                                $(form).attr('data-url'),
+                                $(form).attr('data-method'),
+                                bodyData,
+                                true,
+                            ).then(
+                                resp => {
+                                    let data = resp?.['data'] || null;
+                                    if (data) {
+                                        $('#inp-gen-pass').val(data?.['new_password'] || '');
+
+                                        if (!navigator.clipboard) {
+                                            btnCopyNotSupport.parent('button').remove();
+                                        }
+                                        groupValidOtp.fadeOut('fast', function () {
+                                            groupNewPasswd.fadeIn('fast', function () {
+                                                centerBox();
+                                            });
                                         });
-                                    });
-                                }
-                            },
-                            errs => {
-                                showErrors(errs);
-                            },
-                        )
+                                    }
+                                },
+                                errs => {
+                                    showErrors(errs);
+                                },
+                            )
+                        }
                     },
                 })
 
                 btnCopy.on('click', function () {
                     let clsThis = this;
                     let timeOutAnimation = null;
-                    function showCopied(){
+
+                    function showCopied() {
                         if (timeOutAnimation) clearTimeout(timeOutAnimation);
                         $(clsThis).prop('disabled', true);
-                        $(clsThis).find('#msg-copy').fadeOut('fast', function (){
+                        $(clsThis).find('#msg-copy').fadeOut('fast', function () {
                             $(clsThis).find('#msg-copied').fadeIn('fast');
                             timeOutAnimation = setTimeout(
                                 () => {
@@ -485,15 +622,15 @@
                         })
                     }
 
-                    function resetCopy(){
+                    function resetCopy() {
                         if (timeOutAnimation) clearTimeout(timeOutAnimation);
                         $(clsThis).prop('disabled', false);
-                        $(clsThis).find('#msg-copied').fadeOut('fast', function (){
+                        $(clsThis).find('#msg-copied').fadeOut('fast', function () {
                             $(clsThis).find('#msg-copy').fadeIn('fast');
                         })
                     }
 
-                    if (navigator.clipboard){
+                    if (navigator.clipboard) {
                         navigator.clipboard.writeText(inputReissuedPassword.val()).then(
                             showCopied,
                             resetCopy,
@@ -961,7 +1098,7 @@
                     [kv.name]: kv.value
                 }), {});
             },
-            cusShowLoading: function (){
+            cusShowLoading: function () {
                 Swal.fire({
                     icon: 'info',
                     title: '',
@@ -977,7 +1114,7 @@
                     },
                 });
             },
-            cusHideLoading: function (){
+            cusHideLoading: function () {
                 let checkIsLoading = true;
                 try {
                     if (Swal.isLoading()) {

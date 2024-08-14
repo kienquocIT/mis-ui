@@ -631,7 +631,7 @@ msgstr "Đánh dấu"
 
 #
 msgid "Switch"
-msgstr "Công tấc"
+msgstr "Công tắc"
 
 #
 msgid "Unchecked"
@@ -640,6 +640,10 @@ msgstr "Không chọn"
 #
 msgid "Checked"
 msgstr "Chọn"
+
+#
+msgid "Single"
+msgstr "Một lựa chọn"
 
 #
 msgid "Multiple"
@@ -940,3 +944,51 @@ msgstr "Phải đăng nhập bằng tài khoản hệ thống trước khi thao 
 #
 msgid "Authenticate users via email account before being manipulated"
 msgstr "Xác thực người dùng qua tài khoản email trước khi thao tác với biểu mẫu"
+
+#
+msgid "Avoid using characters: `, &` in the option. This can misunderstandings export data retrieval."
+msgstr "Không nên sử dụng các ký tự: “, &” trong các lựa chọn. Điều này có thể gây hiểu lầm trong quá trình xuất dữ liệu."
+
+#
+msgid "Styles are different ways of presenting select tags that improve the user's data selection experience in a more flexible and understandable way."
+msgstr "Kiểu là những cách khác nhau để trình bày các thẻ đã chọn nhằm cải thiện trải nghiệm lựa chọn dữ liệu của người dùng theo cách linh hoạt và dễ hiểu hơn."
+
+#
+msgid "The option name will be a concatenation of the column name and row name, separated by an ampersand (&)."
+msgstr "Tên tùy chọn sẽ là sự kết hợp giữa tên cột và tên hàng, được phân tách bằng dấu và (&)."
+
+#
+msgid "Sample preview"
+msgstr "Mẫu xem trước"
+
+#
+msgid "Click button close or outside for close."
+msgstr "Để đóng cửa sổ, hãy nhấp vào nút Đóng hoặc click vào bất kỳ vị trí nào bên ngoài cửa sổ."
+
+#
+msgid "Tick only once per row, column or unbound - depending on this configuration"
+msgstr "Chỉ đánh dấu một lần cho mỗi hàng, cột hoặc không ràng buộc - tùy thuộc vào cấu hình này"
+
+#
+msgid "Group by"
+msgstr "Gom nhóm theo"
+
+#
+msgid "Not group"
+msgstr "Không nhóm"
+
+#
+msgid "By columns"
+msgstr "Theo cột"
+
+#
+msgid "By rows"
+msgstr "Theo dòng"
+
+#
+msgid "All rows cannot be duplicated."
+msgstr "Tất cả tên dòng không được trùng nhau."
+
+#
+msgid "All columns cannot be duplicated."
+msgstr "Tất cả tên cột không được trùng nhau."

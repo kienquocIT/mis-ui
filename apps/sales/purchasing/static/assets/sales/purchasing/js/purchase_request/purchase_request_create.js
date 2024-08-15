@@ -8,9 +8,13 @@ $(document).ready(async function () {
             await PurchaseRequestAction.changeType(0);
             break;
         case 'stock':
-            ele_request_for.val('Stock');
+            ele_request_for.val('Stock Free');
             ele_request_for.attr('data-id', 1);
             await PurchaseRequestAction.changeType(1)
+            break;
+        case 'stock-plan':
+            $('#modal-select-distribution').modal('show');
+            await PurchaseRequestAction.changeType(3);
             break;
         case 'other':
             ele_request_for.val('Other');
@@ -45,11 +49,20 @@ $(document).ready(async function () {
         $(this).closest('.modal').modal('hide');
     })
 
-    $('#btn-select-type-stock').on('click', async function () {
+    $('#btn-select-type-stock-free').on('click', async function () {
         PurchaseRequestAction.updateURLParameter(urlEle.data('url-this-page'), 'stock');
         ele_request_for.val('Stock');
         ele_request_for.attr('data-id', 1);
         await PurchaseRequestAction.changeType(1);
+        PurchaseRequestAction.deleteDtbPRProduct();
+        $(this).closest('.modal').modal('hide');
+    })
+
+    $('#btn-select-type-stock-plan').on('click', async function () {
+        PurchaseRequestAction.updateURLParameter(urlEle.data('url-this-page'), 'stock-plan');
+        ele_request_for.val('Stock Plan');
+        ele_request_for.attr('data-id', 3);
+        await PurchaseRequestAction.changeType(3);
         PurchaseRequestAction.deleteDtbPRProduct();
         $(this).closest('.modal').modal('hide');
     })

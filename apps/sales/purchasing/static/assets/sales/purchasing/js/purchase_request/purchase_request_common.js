@@ -5,6 +5,7 @@ let ele_sale_order = $('[name="sale_order"]')
 let btn_change_pr_product = $('.btn-change-pr-product');
 let btn_add_product = $('.btn-add-product');
 let tableProductForSO = $('#datatable-pr-product-so');
+let tableProductForStockPlan = $('#datatable-pr-product-stock-plan');
 let tableProductForOther = $('#datatable-pr-product-other');
 let supplierSelectEle = $('#box-select-supplier')
 let contactSelectEle = $('#box-select-contact')
@@ -93,6 +94,27 @@ class PurchaseRequestLoadPage {
     static loadTax(ele, data) {
         ele.initSelect2({
             data: data,
+        })
+    }
+
+    static loadTaxDistribution(ele, url, data) {
+        ele.initSelect2({
+            ajax: {
+                url: url,
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'tax_list',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function() {
+            let tax_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
+            let unit_price = parseFloat($(this).closest('tr').find('.inp-unit-price-distribution').attr('value'))
+            let quantity = parseFloat($(this).closest('tr').find('.request_number').text())
+            let tax_rate = ele.val() ? parseFloat(tax_selected?.['rate']) : 0
+            let subtotal_after_tax = quantity * unit_price + quantity * unit_price * tax_rate / 100
+            $(this).closest('tr').find('.inp-subtotal-distribution').attr('data-init-money', subtotal_after_tax)
+            $.fn.initMaskMoney2()
         })
     }
 
@@ -241,7 +263,7 @@ class PurchaseRequestLoadPage {
 
 class PurchaseRequestAction {
 
-    static loadDtbPRProductForSO(product_datas) {
+    static loadDtbPRProductForSO(product_datas=[]) {
         if (!$.fn.DataTable.isDataTable('#datatable-pr-product-so')) {
             tableProductForSO.DataTableDefault({
                 rowIdx: true,
@@ -303,6 +325,74 @@ class PurchaseRequestAction {
                 },],
             });
         }
+    }
+
+    static loadDtbPRProductForDistribution(product_datas=[]) {
+        tableProductForStockPlan.DataTable().clear().destroy()
+        tableProductForStockPlan.DataTableDefault({
+            rowIdx: true,
+            reloadCurrency: true,
+            paging: false,
+            autoWidth: false,
+            data: product_datas,
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: () => {
+                        return ``
+                    }
+                },
+                {
+                    className: 'wrap-text w-20',
+                    render: (data, type, row) => {
+                        return `<span data-id="${row?.['id']}" class="w-30 badge badge-soft-primary product-distribution">${row?.['code']}</span>&nbsp;<span>${row?.['title']}</span>`;
+                    }
+                },
+                {
+                    className: 'wrap-text w-10',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['description']}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text text-center w-10',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['uom']}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text text-center w-10',
+                    render: (data, type, row) => {
+                        return `<span class="request_number">${row?.['request_number']}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `<input class="form-control mask-money inp-unit-price-distribution" value="0"/>`
+                    }
+                },
+                {
+                    className: 'wrap-text w-15',
+                    render: () => {
+                        return `<select class="form-select select2 request-product-tax"></select>`;
+                    }
+                },
+                {
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `<span class="mask-money inp-subtotal-distribution" data-init-money="0"></span>`
+                    }
+                },
+            ],
+            initComplete: function () {
+                if (product_datas.length > 0) {
+                    tableProductForStockPlan.find('tbody tr').each(function () {
+                        PurchaseRequestLoadPage.loadTaxDistribution($(this).find('.request-product-tax'), tableProductForStockPlan.attr('data-url-tax'))
+                    })
+                }
+            }
+        });
     }
 
     static loadDtbPRProductForOther(product_datas) {
@@ -404,58 +494,103 @@ class PurchaseRequestAction {
         $('#input-product-total').attr('value', '');
     }
 
-    static loadDtbSOProduct(product_datas) {
-        if (!$.fn.DataTable.isDataTable('#datatable-product-of-so')) {
-            let $table = $('#datatable-product-of-so')
-            $table.DataTableDefault({
-                rowIdx: true,
-                paging: false,
-                scrollY: '200px',
-                autoWidth: false,
-                data: product_datas,
-                columns: [{
-                    targets: 0,
-                    className: 'wrap-text',
+    static loadDtbSOProduct(product_datas=[]) {
+        let $table = $('#datatable-product-of-so')
+        $table.DataTable().clear().destroy()
+        $table.DataTableDefault({
+            rowIdx: true,
+            paging: false,
+            scrollY: '20vh',
+            scrollX: '100vh',
+            scrollCollapse: true,
+            data: product_datas,
+            columns: [{
+                className: 'wrap-text',
+                render: () => {
+                    return ``
+                }
+            }, {
+                data: 'title',
+                className: 'wrap-text',
+                render: (data) => {
+                    return `<p>${data}</p>`
+                }
+            }, {
+                data: 'quantity',
+                className: 'wrap-text text-primary',
+                render: (data) => {
+                    return `<p>${data}</p>`
+                }
+            }, {
+                data: 'remain',
+                className: 'wrap-text text-primary',
+                render: (data) => {
+                    return `<p class="p-so-product-remain">${data}</p>`
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="form-check"><input type="checkbox" class="form-check-input inp-check-so-product" data-id="${row.id}"/></span>`
+                }
+            }, {
+                data: 'quantity',
+                className: 'wrap-text',
+                render: () => {
+                    return `<input class="form-control inp-request-so-product" value="0"/>`
+                }
+            },],
+        });
+    }
+
+    static loadDtbDistributionProduct(product_datas=[]) {
+        let $table = $('#datatable-product-of-distribution')
+        $table.DataTable().clear().destroy()
+        $table.DataTableDefault({
+            rowIdx: true,
+            paging: false,
+            scrollY: '20vh',
+            scrollX: '100vh',
+            scrollCollapse: true,
+            data: product_datas,
+            columns: [
+                {
+                    className: 'wrap-text w-10',
                     render: () => {
                         return ``
                     }
-                }, {
-                    targets: 1,
-                    className: 'wrap-text',
+                },
+                {
+                    className: 'wrap-text w-40',
                     render: (data, type, row) => {
-                        return `<span class="form-check"><input type="checkbox" class="form-check-input inp-check-so-product" data-id="${row.id}"/></span>`
+                        return `<span data-product-id="${row?.['id']}"
+                                      data-product-code="${row?.['code']}"
+                                      data-product-title="${row?.['title']}"
+                                      data-product-uom="${row?.['uom']?.['title']}"
+                                      data-product-description="${row?.['description']}"
+                                      class="w-30 badge badge-secondary product-span"
+                                >${row?.['code']}</span>&nbsp;<span class="text-secondary">${row?.['title']}</span>`
                     }
-                }, {
-                    data: 'title',
-                    targets: 2,
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<p>${data}</p>`
+                },
+                {
+                    className: 'wrap-text text-center w-15',
+                    render: (data, type, row) => {
+                        return `<span class="expected-number-span">${row?.['expected_number']}</span>`
                     }
-                }, {
-                    data: 'quantity',
-                    targets: 3,
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<p>${data}</p>`
+                },
+                {
+                    className: 'wrap-text text-center w-15',
+                    render: (data, type, row) => {
+                        return `<span class="remain-number-span">${parseFloat(row?.['expected_number']) - parseFloat(row?.['purchase_request_number'])}</span>`
                     }
-                }, {
-                    data: 'remain',
-                    targets: 4,
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<p class="p-so-product-remain">${data}</p>`
+                },
+                {
+                    className: 'wrap-text text-center w-20',
+                    render: (data, type, row) => {
+                        return `<input type="number" class="form-control request-number-input" value="0" max="${parseFloat(row?.['expected_number']) - parseFloat(row?.['purchase_request_number'])}">`
                     }
-                }, {
-                    data: 'quantity',
-                    targets: 5,
-                    className: 'wrap-text',
-                    render: () => {
-                        return `<input class="form-control inp-request-so-product"/>`
-                    }
-                },],
-            });
-        }
+                }
+            ],
+        });
     }
 
     getHtmlProductTitle(row, product) {
@@ -497,78 +632,127 @@ class PurchaseRequestAction {
     }
 
     static async loadSaleOrder(sale_order_id) {
-        if (!$.fn.DataTable.isDataTable('#datatable-sale-order')) {
-            let $table = $('#datatable-sale-order')
-            let frm = new SetupFormSubmit($table);
-            let config = await loadConfig();
-            let list_emp_reference = config.employee_reference.map(obj => obj.employee.id);
-            let emp_current_id = $('#employee_current_id').val();
-            let url = frm.dataUrl;
-            if (!list_emp_reference.includes(emp_current_id)) {
-                url = `{0}?employee_inherit={1}`.format_by_idx(frm.dataUrl, emp_current_id)
-            }
-            $table.DataTableDefault({
-                useDataServer: true,
-                rowIdx: true,
-                paging: false,
-                scrollY: '200px',
-                autoWidth: false,
-                ajax: {
-                    url: url,
-                    data: {
-                        "system_status": 3,
-                    },
-                    type: frm.dataMethod,
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && resp.data.hasOwnProperty('sale_order_list')) {
-                            let sale_order_list = [];
-                            resp.data['sale_order_list'].map(function (item) {
-                                if (item?.['is_create_purchase_request'] || item.id === sale_order_id) {
-                                    sale_order_list.push(item);
-                                }
-                            })
-                            return sale_order_list;
-                        }
-                        throw Error('Call data raise errors.')
-                    },
+        let $table = $('#datatable-sale-order')
+        $table.DataTable().clear().destroy()
+        let frm = new SetupFormSubmit($table);
+        let config = await loadConfig();
+        let list_emp_reference = config.employee_reference.map(obj => obj.employee.id);
+        let emp_current_id = $('#employee_current_id').val();
+        let url = frm.dataUrl;
+        if (!list_emp_reference.includes(emp_current_id)) {
+            url = `{0}?employee_inherit={1}`.format_by_idx(frm.dataUrl, emp_current_id)
+        }
+        $table.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            paging: false,
+            scrollY: '20vh',
+            scrollX: '100vh',
+            scrollCollapse: true,
+            ajax: {
+                url: url,
+                data: {
+                    "system_status": 3,
                 },
-                columns: [{
-                    targets: 0,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('sale_order_list')) {
+                        let sale_order_list = [];
+                        resp.data['sale_order_list'].map(function (item) {
+                            if (item?.['is_create_purchase_request'] || item.id === sale_order_id) {
+                                sale_order_list.push(item);
+                            }
+                        })
+                        return sale_order_list;
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
+            columns: [
+                {
                     className: 'wrap-text',
                     render: () => {
                         return ``
                     }
                 }, {
-                    targets: 1,
+                    data: 'code',
+                    className: 'wrap-text',
+                    render: (data) => {
+                        return `<span class="badge badge-primary p-so-code">${data}</span>`
+                    }
+                }, {
+                    data: 'title',
+                    className: 'wrap-text',
+                    render: (data, type, row) => {
+                        return `<span class="text-primary">${data}</span>`
+                    }
+                }, {
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<span class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-so" data-id="${row.id}"/></span>`
                     }
+                }
+            ],
+        });
+    }
+
+    static async loadDistributionPlan() {
+        let $table = $('#datatable-distribution')
+        $table.DataTable().clear().destroy()
+        $table.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            paging: false,
+            scrollY: '20vh',
+            scrollX: '100vh',
+            scrollCollapse: true,
+            ajax: {
+                url: $table.attr('data-url'),
+                data: {
+                    "system_status": 3,
+                },
+                type: $table.attr('data-method'),
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('distribution_plan_list')) {
+                        let distribution_plan_list = [];
+                        resp.data['distribution_plan_list'].map(function (item) {
+                            if (!item?.['is_create_purchase_request'] || item.id === sale_order_id) {
+                                distribution_plan_list.push(item);
+                            }
+                        })
+                        return distribution_plan_list;
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-10',
+                    render: () => {
+                        return ``
+                    }
                 }, {
-                    data: 'title',
-                    targets: 2,
-                    className: 'wrap-text',
+                    className: 'wrap-text w-70',
                     render: (data, type, row) => {
-                        return `<p>${data}</p>`
+                        return `<span class="badge badge-primary p-so-code">${row?.['code']}</span>&nbsp;<span class="text-primary">${row?.['title']}</span>`
                     }
                 }, {
-                    data: 'code',
-                    targets: 3,
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<p class="p-so-code">${data}</p>`
+                    className: 'wrap-text text-center w-20',
+                    render: (data, type, row) => {
+                        return `<span class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-distribution" data-id="${row.id}"/></span>`
                     }
-                },],
-            });
-        }
+                }
+            ],
+        });
     }
 
     static loadSOProduct(id, table) {
         let dict_so = JSON.parse($('#data-sale-order').text());
         let dict_so_product = JSON.parse($('#data-sale-order-product').text());
         let dict_self_product = JSON.parse($('#data-self-product').text())
-        table.clear().draw();
+        let so_product_table_data = []
         if (dict_so.hasOwnProperty(id)) {
             let so_product_datas = dict_so[id]?.['product_data'];
             so_product_datas.map(function (item) {
@@ -613,16 +797,45 @@ class PurchaseRequestAction {
                                             'quantity': item.product_quantity,
                                             'remain': remain,
                                         }
-                                        table.row.add(data_temp).draw().node();
+                                        so_product_table_data.push(data_temp)
                                     }
                                 }
                             })
+
+                            PurchaseRequestAction.loadDtbSOProduct(so_product_table_data)
                         }
                     }
                 })
             }
         }
     }
+
+    static loadDistributionProduct(distribution_id) {
+        let dataParam = {}
+        let ajax = $.fn.callAjax2({
+            url: $('#datatable-product-of-distribution').attr('data-url').replace('/0', `/${distribution_id}`),
+            data: dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('distribution_plan_detail')) {
+                    return data?.['distribution_plan_detail'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([ajax]).then(
+            (results) => {
+                if (results[0]?.['product']) {
+                    PurchaseRequestAction.loadDtbDistributionProduct([results[0]?.['product']])
+                }
+            })
+        }
 
     static updateURLParameter(urlCurrent, paramValue) {
         let param = $.param({
@@ -803,12 +1016,35 @@ class PurchaseRequestAction {
                 ele_sale_order.closest('.form-group').removeClass('hidden');
                 btn_add_product.addClass('hidden');
                 btn_change_pr_product.removeClass('hidden');
+
                 tableProductForSO.removeClass('hidden');
+
                 tableProductForOther.DataTable().clear().destroy();
                 tableProductForOther.addClass('hidden');
+                tableProductForStockPlan.DataTable().clear().destroy();
+                tableProductForStockPlan.addClass('hidden');
+
                 await PurchaseRequestAction.loadSaleOrder(sale_order_id);
                 PurchaseRequestAction.loadDtbSOProduct([]);
-                PurchaseRequestAction.loadDtbPRProductForSO();
+                PurchaseRequestAction.loadDtbPRProductForSO([]);
+                break;
+            case 3:
+                ele_request_for.val('Stock Plan');
+                ele_request_for.attr('data-id', 3);
+                ele_sale_order.closest('.form-group').removeClass('hidden');
+                btn_add_product.addClass('hidden');
+                btn_change_pr_product.removeClass('hidden');
+
+                tableProductForStockPlan.removeClass('hidden');
+
+                tableProductForOther.DataTable().clear().destroy();
+                tableProductForOther.addClass('hidden');
+                tableProductForSO.DataTable().clear().destroy();
+                tableProductForSO.addClass('hidden');
+
+                await PurchaseRequestAction.loadDistributionPlan();
+                PurchaseRequestAction.loadDtbDistributionProduct([]);
+                PurchaseRequestAction.loadDtbPRProductForDistribution([]);
                 break;
             default:
                 ele_sale_order.removeAttr('data-id');
@@ -851,6 +1087,12 @@ class PurchaseRequestEvent {
             } else {
                 table_so_product.clear().draw();
             }
+        })
+        
+        $(document).on('change', '.inp-check-distribution', function () {
+            let table_distribution_product = $('#datatable-product-of-distribution')
+            table_distribution_product.DataTable().clear().destroy();
+            PurchaseRequestAction.loadDistributionProduct($(this).data('id'), table_distribution_product);
         })
 
         $('#btn-select-so-product').on('click', function () {
@@ -901,6 +1143,50 @@ class PurchaseRequestEvent {
                     text: transEle.data('trans-enter-request'),
                 })
             }
+        })
+
+        $('#btn-select-distribution-product').on('click', function () {
+            let distribution_product_table = $('#datatable-product-of-distribution')
+            let request_product_data = []
+            let flag = true
+            distribution_product_table.find('tbody tr').each(function () {
+                let limit_number = $(this).find('.remain-number-span').text() ? parseFloat($(this).find('.remain-number-span').text()) : 0
+                let request_number = $(this).find('.request-number-input').val() ? parseFloat($(this).find('.request-number-input').val()) : 0
+                if (request_number <= limit_number) {
+                    request_product_data.push({
+                        'id': $(this).find('.product-span').attr('data-product-id'),
+                        'code': $(this).find('.product-span').attr('data-product-code'),
+                        'title': $(this).find('.product-span').attr('data-product-title'),
+                        'description': $(this).find('.product-span').attr('data-product-description'),
+                        'uom': $(this).find('.product-span').attr('data-product-uom'),
+                        'request_number': request_number
+                    })
+                }
+                else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: transEle.data('trans-enter-request'),
+                    })
+                    flag = false
+                    request_product_data = []
+                }
+            })
+            if (flag) {
+                PurchaseRequestAction.loadDtbPRProductForDistribution(request_product_data)
+                $('#modal-select-distribution').modal('hide')
+            }
+        })
+
+        $(document).on('change', '.inp-unit-price-distribution', function () {
+            let tax_ele = $(this).closest('tr').find('.request-product-tax')
+            let tax_selected = SelectDDControl.get_data_from_idx(tax_ele, tax_ele.val())
+            let unit_price = parseFloat($(this).closest('tr').find('.inp-unit-price-distribution').attr('value'))
+            let quantity = parseFloat($(this).closest('tr').find('.request_number').text())
+            let tax_rate = tax_ele.val() ? parseFloat(tax_selected?.['rate']) : 0
+            let subtotal_after_tax = quantity * unit_price + quantity * unit_price * tax_rate / 100
+            $(this).closest('tr').find('.inp-subtotal-distribution').attr('data-init-money', subtotal_after_tax)
+            $.fn.initMaskMoney2()
         })
 
         $(document).on('change', '.inp-request-so-product', function () {

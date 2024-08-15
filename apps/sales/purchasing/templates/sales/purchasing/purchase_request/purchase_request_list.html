@@ -42,24 +42,27 @@
 
     <div class="modal fade" id="modal-create-pr" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">{% trans 'Select type of purchase' %}</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">{% trans 'Request For' %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-4">
-                            <button type="button" class="btn btn-info w-100" id="btn-create-for-sale-order">{% trans 'For Sale Order' %}</button>
+                        <div class="col-12 col-md-6 col-lg-3 p-1">
+                            <button type="button" class="btn btn-soft-primary w-100" id="btn-create-for-sale-order">{% trans 'For Sale Order' %}</button>
                         </div>
-                        <div class="col-4">
-                            <a class="btn btn-primary w-100 text-white" id="btn-create-for-stock">{% trans 'For Stock' %}</a>
+                        <div class="col-12 col-md-6 col-lg-3 p-1">
+                            <button class="btn btn-soft-danger w-100" id="btn-create-for-stock-free">{% trans 'For Stock Free' %}</button>
                         </div>
-                        <div class="col-4">
-                            <a class="btn btn-warning w-100 text-white" id="btn-create-for-other">{% trans 'For Other' %}</a>
+                        <div class="col-12 col-md-6 col-lg-3 p-1">
+                            <button class="btn btn-soft-secondary w-100" id="btn-create-for-stock-plan">{% trans 'For Stock Plan' %}</button>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 p-1">
+                            <button class="btn btn-soft-success w-100" id="btn-create-for-other">{% trans 'For Other' %}</button>
                         </div>
                     </div>
                 </div>

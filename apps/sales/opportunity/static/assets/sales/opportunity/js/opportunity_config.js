@@ -382,12 +382,12 @@ $(document).ready(function () {
             $.fn.callAjax2({
                 url: frm.dataUrl,
                 method: frm.dataMethod,
-                data: frm.dataMethod
+                data: frm.dataForm
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
+                        $.fn.notifyB({description: "Create successfully"}, 'success')
                         let table = $('#table-opportunity-config-stage').DataTable();
                         table.ajax.reload();
                         $('#modalCreateStage').modal('hide');
@@ -418,7 +418,7 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
+                            $.fn.notifyB({description: "Delete successfully"}, 'success')
                             let table = $('#table-opportunity-config-stage').DataTable();
                             table.ajax.reload();
                         }

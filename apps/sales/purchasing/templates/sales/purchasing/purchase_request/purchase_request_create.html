@@ -179,21 +179,54 @@
         </div>
         <div class="tab-content" id="tab-content-purchase-request-product">
             <div class="tab-pane fade show active" id="tab_line_detail">
-                <table id="datatable-pr-product-so" class="table nowrap w-100 mb-5">
+                <table id="datatable-pr-product-so" class="table nowrap w-100 mb-5 hidden">
                     <thead>
-                    <th class="w-5">#</th>
-                    <th>{% trans "Product" %}</th>
-                    <th>{% trans "Description" %}</th>
-                    <th>{% trans "UoM" %}</th>
-                    <th>{% trans "Quantity" %}</th>
-                    <th>{% trans "Unit Price" %}</th>
-                    <th>{% trans "Tax" %}</th>
-                    <th>{% trans "Subtotal Price" %}</th>
+                        <tr>
+                        <th class="w-5">#</th>
+                        <th>{% trans "Product" %}</th>
+                        <th>{% trans "Description" %}</th>
+                        <th>{% trans "UoM" %}</th>
+                        <th>{% trans "Quantity" %}</th>
+                        <th>{% trans "Unit Price" %}</th>
+                        <th>{% trans "Tax" %}</th>
+                        <th>{% trans "Subtotal Price" %}</th>
+                        </tr>
                     </thead>
+                    <tbody></tbody>
+                </table>
+
+                <table data-url-tax="{% url 'TaxListAPI' %}" id="datatable-pr-product-stock-plan" class="table nowrap w-100 mb-5 hidden">
+                    <thead>
+                        <tr>
+                            <th style="min-width: 50px"></th>
+                            <th style="min-width: 200px">{% trans "Product" %}</th>
+                            <th style="min-width: 100px">{% trans "Description" %}</th>
+                            <th style="min-width: 100px">{% trans "UoM" %}</th>
+                            <th style="min-width: 100px">{% trans "Request quantity" %}</th>
+                            <th style="min-width: 200px">{% trans "Unit Price" %}</th>
+                            <th style="min-width: 200px">{% trans "Tax" %}</th>
+                            <th style="min-width: 200px">{% trans "Subtotal Price" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="5"></td>
+                        <td>
+                            <input class="form-control mb-1" disabled readonly value="{% trans 'Pretax Amount' %}">
+                            <input class="form-control mb-1" disabled readonly value="{% trans 'Taxes' %}">
+                            <input class="form-control mb-1" disabled readonly value="{% trans 'Total' %}">
+                        </td>
+                        <td colspan="2">
+                            <input id="input-product-pretax-amount" class="form-control mask-money" disabled readonly>
+                        </td>
+                    </tr>
+                    </tfoot>
                 </table>
 
                 <table id="datatable-pr-product-other" class="table nowrap w-100 mb-5 hidden">
                     <thead>
+                    <tr>
                     <th class="w-5">#</th>
                     <th>{% trans "Product" %}</th>
                     <th>{% trans "Description" %}</th>
@@ -203,7 +236,9 @@
                     <th>{% trans "Tax" %}</th>
                     <th>{% trans "Subtotal Price" %}</th>
                     <th class="w-5"></th>
+                    </tr>
                     </thead>
+                    <tbody></tbody>
                 </table>
                 <div class="row">
                     <div class="col-5">
@@ -221,13 +256,7 @@
                         <div class="row mb-2">
                             <div class="col-6"><p>{% trans 'Pretax Amount' %}</p></div>
                             <div class="col-6">
-                                <input
-                                        id="input-product-pretax-amount"
-                                        type="text"
-                                        class="form-control mask-money"
-                                        data-return-type="number"
-                                        readonly
-                                >
+                                <input id="input-product-pretax-amount" class="form-control mask-money" readonly>
                             </div>
                         </div>
                         <div class="row mb-2">
@@ -268,38 +297,44 @@
             <div class="modal-dialog modal-xl" style="min-width: 80%" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans 'Select Items' %}</h5>
+                        <h5 class="modal-title">{% trans 'Select items' %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-5 border">
-                                <table id="datatable-sale-order" class="table nowrap w-100 mb-5"
+                            <div class="col-12 col-md-12 col-lg-5 border rounded">
+                                <table id="datatable-sale-order" class="table nowrap w-100 table-hover"
                                        data-url="{% url "SaleOrderPurchasingStaffListAPI" %}"
                                        data-method="GET">
-                                    <thead>
-                                    <th class="w-5">#</th>
-                                    <th class="w-5"></th>
-                                    <th class="w-60">{% trans "Name" %}</th>
-                                    <th class="w-30">{% trans "Code" %}</th>
+                                    <thead class="bg-primary-light-5">
+                                        <tr>
+                                            <th style="min-width: 20px"></th>
+                                            <th style="min-width: 100px">{% trans "Code" %}</th>
+                                            <th style="min-width: 200px">{% trans "Name" %}</th>
+                                            <th style="min-width: 50px"></th>
+                                        </tr>
                                     </thead>
+                                    <tbody></tbody>
                                 </table>
                             </div>
-                            <div class="col-7 border">
-                                <table id="datatable-product-of-so" class="table nowrap mb-5 w-100"
+                            <div class="col-12 col-md-12 col-lg-7 border rounded">
+                                <table id="datatable-product-of-so" class="table nowrap table-hover w-100"
                                        data-method="GET"
                                        data-url="{% url 'ProductListSaleOrderAPI' pk=0 %}"
                                 >
-                                    <thead>
-                                    <th class="w-5">#</th>
-                                    <th class="w-5"></th>
-                                    <th class="w-45">{% trans "Product" %}</th>
-                                    <th class="w-15">{% trans "Quantity" %}</th>
-                                    <th class="w-15">{% trans "Remain" %}</th>
-                                    <th class="w-15">{% trans "Request" %}</th>
+                                    <thead class="bg-primary-light-5">
+                                        <tr>
+                                            <th style="min-width: 20px"></th>
+                                            <th style="min-width: 150px">{% trans "Product" %}</th>
+                                            <th style="min-width: 50px">{% trans "Quantity" %}</th>
+                                            <th style="min-width: 50px">{% trans "Remain" %}</th>
+                                            <th style="min-width: 50px"></th>
+                                            <th style="min-width: 100px">{% trans "Request" %}</th>
+                                        </tr>
                                     </thead>
+                                    <tbody></tbody>
                                 </table>
                             </div>
                         </div>
@@ -314,41 +349,94 @@
             </div>
         </div>
 
-        <div class="modal fade" id="modal-select-request-for" tabindex="-1" role="dialog"
-             aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal fade" id="modal-select-distribution" tabindex="-1" role="dialog" aria-labelledby="exampleModalLarge01" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document" style="min-width: 80%;">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">{% trans 'Select type of purchase' %}</h5>
+                        <h5 class="modal-title">{% trans 'Select items' %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-4">
-                                <button type="button" class="btn btn-info w-100" type="button"
-                                        id="btn-select-type-sale-order" data-bs-toggle="modal"
-                                        data-bs-target="#modal-select-sale-order">{% trans 'For Sale Order' %}</button>
+                            <div class="col-12 col-md-12 col-lg-5 border rounded">
+                                <table id="datatable-distribution" class="table nowrap table-hover w-100"
+                                       data-url="{% url 'DistributionPlanListAPI' %}"
+                                       data-method="GET">
+                                    <thead class="bg-primary-light-5">
+                                        <tr>
+                                            <th style="min-width: 20px"></th>
+                                            <th style="min-width: 150px">{% trans "Stock plan" %}</th>
+                                            <th style="min-width: 50px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
-                            <div class="col-4">
-                                <button class="btn btn-primary w-100" type="button"
-                                        id="btn-select-type-stock">{% trans 'For Stock' %}</button>
-                            </div>
-                            <div class="col-4">
-                                <button class="btn btn-warning w-100" type="button"
-                                        id="btn-select-type-other">{% trans 'For Other' %}</button>
+                            <div class="col-12 col-md-12 col-lg-7 border rounded">
+                                <table id="datatable-product-of-distribution" class="table nowrap table-hover w-100"
+                                       data-method="GET"
+                                       data-url="{% url 'DistributionPlanDetailAPI' '0' %}"
+                                >
+                                    <thead class="bg-primary-light-5">
+                                        <tr>
+                                            <th style="min-width: 20px"></th>
+                                            <th style="min-width: 150px">{% trans "Product" %}</th>
+                                            <th style="min-width: 50px">{% trans "Quantity" %}</th>
+                                            <th style="min-width: 50px">{% trans "Remain" %}</th>
+                                            <th style="min-width: 100px">{% trans "Request" %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"
-                                data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                                data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                        <button type="button" class="btn btn-primary"
+                                id="btn-select-distribution-product">{% trans 'Next' %}</button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="modal-select-request-for" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{% trans 'Request For' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-3 p-1">
+                            <button type="button" class="btn btn-soft-primary w-100" id="btn-select-type-sale-order">{% trans 'For Sale Order' %}</button>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 p-1">
+                            <button class="btn btn-soft-danger w-100" id="btn-select-type-stock-free">{% trans 'For Stock Free' %}</button>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 p-1">
+                            <button class="btn btn-soft-secondary w-100" id="btn-select-type-stock-plan">{% trans 'For Stock Plan' %}</button>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 p-1">
+                            <button class="btn btn-soft-success w-100" id="btn-select-type-other">{% trans 'For Other' %}</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
         <div class="hidden">
             <div id="box-select-so-product">
             <span class="input-affix-wrapper">
@@ -438,7 +526,6 @@
            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
     />
 {% endblock %}
-
 {% block jsFooter %}
 
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

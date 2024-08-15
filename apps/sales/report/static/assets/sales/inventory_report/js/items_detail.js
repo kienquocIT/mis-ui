@@ -117,6 +117,7 @@ $(document).ready(function () {
     LoadWarehouseSelectBox(warehouses_select_Ele)
 
     function RenderTableWithParameter(table, data_list=[]) {
+        console.log(data_list)
         table.DataTable().clear().destroy()
         table.DataTableDefault({
             dom: '',
@@ -146,7 +147,7 @@ $(document).ready(function () {
                                 html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
                             }
                             if (row?.['sale_order_code']) {
-                                html += `<span class="badge badge-pill badge-soft-red"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order_code']}</span>`
+                                html += `<span class="badge badge-pill badge-soft-red sale-order-td" data-so-id="${row?.['sale_order_id']}"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order_code']}</span>`
                             }
                             return html
                         }
@@ -220,10 +221,10 @@ $(document).ready(function () {
                             return `<span style="font-size: medium" class="badge badge-pill text-secondary current-quantity-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}">${row?.['current_quantity']}</span>`
                         }
                         else if (row?.['row_type'] === 'prd') {
-                            return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill sum-current-quantity-${row?.['product_id']}"></span>`
+                            return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill sum-current-quantity-${row?.['product_id']}-${row?.['sale_order_id']}"></span>`
                         }
                         else if (row?.['row_type'] === 'wh') {
-                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-primary sum-current-quantity-of-wh-${row?.['product_id']}">${row?.['ending_balance_quantity']}</span>`
+                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-primary sum-current-quantity-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}">${row?.['ending_balance_quantity']}</span>`
                         }
                         return ``
                     }
@@ -238,10 +239,10 @@ $(document).ready(function () {
                             return `<span style="font-size: medium" class="badge badge-pill text-secondary mask-money current-cost-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}" data-init-money="${row?.['current_cost']}"></span>`
                         }
                         else if (row?.['row_type'] === 'prd') {
-                            return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill mask-money sum-current-cost-${row?.['product_id']}" data-init-money=""></span>`
+                            return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill mask-money sum-current-cost-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money=""></span>`
                         }
                         else if (row?.['row_type'] === 'wh') {
-                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-primary mask-money sum-current-cost-of-wh-${row?.['product_id']}" data-init-money="${row?.['ending_balance_cost']}"></span>`
+                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-primary mask-money sum-current-cost-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money="${row?.['ending_balance_cost']}"></span>`
                         }
                         return ``
                     }
@@ -256,10 +257,10 @@ $(document).ready(function () {
                             return `<span style="font-size: medium" class="badge badge-pill text-secondary mask-money current-value-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}" data-init-money="${row?.['current_value']}"></span>`
                         }
                         else if (row?.['row_type'] === 'prd') {
-                            return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill mask-money sum-current-value-${row?.['product_id']}" data-init-money=""></span>`
+                            return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill mask-money sum-current-value-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money=""></span>`
                         }
                         else if (row?.['row_type'] === 'wh') {
-                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-primary mask-money sum-current-value-of-wh-${row?.['product_id']}" data-init-money="${row?.['ending_balance_value']}"></span>`
+                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-primary mask-money sum-current-value-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money="${row?.['ending_balance_value']}"></span>`
                         }
                         return ``
                     }
@@ -298,25 +299,26 @@ $(document).ready(function () {
 
                 table.find('.product-td').each(function () {
                     let product_id = $(this).attr('data-product-id')
+                    let sale_order_id = $(this).closest('tr').find('.sale-order-td').attr('data-so-id')
 
                     let sum_current_quantity = 0
-                    table.find(`.sum-current-quantity-of-wh-${product_id}`).each(function () {
+                    table.find(`.sum-current-quantity-of-wh-${product_id}-${sale_order_id}`).each(function () {
                         sum_current_quantity += parseFloat($(this).text())
                     })
 
                     let sum_current_cost = 0
-                    table.find(`.sum-current-cost-of-wh-${product_id}`).each(function () {
+                    table.find(`.sum-current-cost-of-wh-${product_id}-${sale_order_id}`).each(function () {
                         sum_current_cost += parseFloat($(this).attr('data-init-money'))
                     })
 
                     let sum_current_value = 0
-                    table.find(`.sum-current-value-of-wh-${product_id}`).each(function () {
+                    table.find(`.sum-current-value-of-wh-${product_id}-${sale_order_id}`).each(function () {
                         sum_current_value += parseFloat($(this).attr('data-init-money'))
                     })
 
-                    table.find(`.sum-current-quantity-${product_id}`).text(sum_current_quantity)
-                    table.find(`.sum-current-cost-${product_id}`).attr('data-init-money', sum_current_cost)
-                    table.find(`.sum-current-value-${product_id}`).attr('data-init-money', sum_current_value)
+                    table.find(`.sum-current-quantity-${product_id}-${sale_order_id}`).text(sum_current_quantity)
+                    table.find(`.sum-current-cost-${product_id}-${sale_order_id}`).attr('data-init-money', sum_current_cost)
+                    table.find(`.sum-current-value-${product_id}-${sale_order_id}`).attr('data-init-money', sum_current_value)
                 })
 
                 const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
@@ -342,6 +344,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_detail_list')) {
+                        console.log(data?.['report_inventory_detail_list'])
                         return data?.['report_inventory_detail_list'];
                     }
                     return {};
@@ -366,6 +369,7 @@ $(document).ready(function () {
                             'product_uom': item?.['product']?.['uom']?.['title'],
                             'product_lot_number': item?.['product']?.['lot_number'],
                             'sale_order_code': item?.['product']?.['sale_order_code'],
+                            'sale_order_id': item?.['sale_order']?.['id'],
                             'we': trans_script.attr('data-trans-we')
                         })
                         for (const stock_activity of item?.['stock_activities']) {
@@ -380,6 +384,7 @@ $(document).ready(function () {
                                         'ending_balance_quantity': stock_activity?.['ending_balance_quantity'],
                                         'ending_balance_cost': stock_activity?.['ending_balance_cost'],
                                         'ending_balance_value': stock_activity?.['ending_balance_value'],
+                                        'sale_order_id': item?.['sale_order']?.['id'],
                                     })
                                     table_inventory_report_data.push({
                                         'row_type': 'open',
@@ -388,6 +393,7 @@ $(document).ready(function () {
                                         'opening_balance_quantity': stock_activity?.['opening_balance_quantity'],
                                         'opening_balance_cost': stock_activity?.['opening_balance_cost'],
                                         'opening_balance_value': stock_activity?.['opening_balance_value'],
+                                        'sale_order_id': item?.['sale_order']?.['id'],
                                     })
                                     for (const activity of stock_activity?.['data_stock_activity']) {
                                         let text_color = ''
@@ -436,6 +442,7 @@ $(document).ready(function () {
                                             'current_quantity': activity?.['current_quantity'],
                                             'current_cost': activity?.['current_cost'],
                                             'current_value': activity?.['current_value'],
+                                            'sale_order_id': item?.['sale_order']?.['id'],
                                         })
                                     }
                                 }
@@ -450,6 +457,7 @@ $(document).ready(function () {
                                     'ending_balance_quantity': stock_activity?.['ending_balance_quantity'],
                                     'ending_balance_cost': stock_activity?.['ending_balance_cost'],
                                     'ending_balance_value': stock_activity?.['ending_balance_value'],
+                                    'sale_order_id': item?.['sale_order']?.['id'],
                                 })
                                 table_inventory_report_data.push({
                                     'row_type': 'open',
@@ -458,6 +466,7 @@ $(document).ready(function () {
                                     'opening_balance_quantity': stock_activity?.['opening_balance_quantity'],
                                     'opening_balance_cost': stock_activity?.['opening_balance_cost'],
                                     'opening_balance_value': stock_activity?.['opening_balance_value'],
+                                    'sale_order_id': item?.['sale_order']?.['id'],
                                 })
                                 for (const activity of stock_activity?.['data_stock_activity']) {
                                     let text_color = ''
@@ -506,6 +515,7 @@ $(document).ready(function () {
                                         'current_quantity': activity?.['current_quantity'],
                                         'current_cost': activity?.['current_cost'],
                                         'current_value': activity?.['current_value'],
+                                        'sale_order_id': item?.['sale_order']?.['id'],
                                     })
                                 }
                             }

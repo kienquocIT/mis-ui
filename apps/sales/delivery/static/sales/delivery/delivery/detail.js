@@ -59,7 +59,6 @@ $(async function () {
                 };
                 keyResp = 'regis_borrow_list';
             }
-
             $.fn.callAjax2({
                 'url': url,
                 'method': 'get',
@@ -341,12 +340,12 @@ $(async function () {
             for (let pwh of dataSrc) {
                 pwh['picked'] = 0;
                 pwh['is_regis_so'] = false;
-                if (!pwh.hasOwnProperty('sale_order')) {
+                if (!pwh.hasOwnProperty('sale_order') && type === 0) {
                     if ($eleSO.attr('data-so')) {
                         pwh['sale_order'] = JSON.parse($eleSO.attr('data-so'));
                     }
                 }
-                for (let deliveryData in prod_data?.['delivery_data']) {
+                for (let deliveryData of prod_data?.['delivery_data']) {
                     if (pwh?.['sale_order']?.['id'] === deliveryData?.['sale_order']) {
                         pwh['picked'] = deliveryData?.['stock'];
                     }
@@ -386,8 +385,8 @@ $(async function () {
                 }
 
                 baseData.push(pwh);
-                if (pwh?.['sale_order']?.['id']) {
-                    if (type === 0) {
+                if (type === 0) {
+                    if (pwh?.['sale_order']?.['id']) {
                         if (!soDataJson.hasOwnProperty(String(pwh?.['sale_order']?.['id']))) {
                             soDataJson[String(pwh?.['sale_order']?.['id'])] = {
                                 'sale_order': pwh?.['sale_order'],
@@ -400,19 +399,18 @@ $(async function () {
                             soDataJson[String(pwh?.['sale_order']?.['id'])]['available_stock'] += pwh?.['available_stock'];
                         }
                     }
-                    if (type === 1) {
-                        if (!commonDataJson.hasOwnProperty(String(pwh?.['sale_order']?.['id']))) {
-                            commonDataJson[String(pwh?.['sale_order']?.['id'])] = {
-                                'sale_order': pwh?.['sale_order'],
-                                'available_stock': pwh?.['common_stock'],
-                                'is_regis_common': true,
-                                'pw_data': [pwh]
-                            };
-                        } else {
-                            commonDataJson[String(pwh?.['sale_order']?.['id'])]['pw_data'].push(pwh);
-                        }
+                }
+                if (type === 1) {
+                    if (!commonDataJson.hasOwnProperty('common_warehouse')) {
+                        commonDataJson['common_warehouse'] = {
+                            'sale_order': pwh?.['sale_order'],
+                            'available_stock': pwh?.['common_stock'],
+                            'is_regis_common': true,
+                            'pw_data': [pwh]
+                        };
+                    } else {
+                        commonDataJson['common_warehouse']['pw_data'].push(pwh);
                     }
-
                 }
             }
             for (let key in soDataJson) {
@@ -465,7 +463,7 @@ $(async function () {
                                         </div>`;
                             }
                             if (row?.['is_regis_common'] === true) {
-                                let target = ".cl-" + row?.['sale_order']?.['id'].replace(/-/g, "");
+                                let target = ".cl-is_regis_common";
                                 return `<div class="d-flex align-items-center">
                                             <button 
                                                 type="button" 
@@ -546,7 +544,7 @@ $(async function () {
                                     disabled = 'disabled';
                                 }
                             }
-                            return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row?.['picked']}" ${disabled}>`;
+                            return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row?.['picked'] ? row?.['picked'] : 0}" ${disabled}>`;
                         }
                     },
                 ],
@@ -603,7 +601,12 @@ $(async function () {
                 if (child.getAttribute('data-row')) {
                     let dataRow = JSON.parse(child.getAttribute('data-row'));
                     let row = child.closest('tr');
-                    let cls = 'cl-' + dataRow?.['sale_order']?.['id'].replace(/-/g, "");
+                    let cls = '';
+                    if (dataRow?.['sale_order']?.['id']) {
+                        cls = 'cl-' + dataRow?.['sale_order']?.['id'].replace(/-/g, "");
+                    } else {
+                        cls = 'cl-is_regis_common';
+                    }
                     row.classList.add(cls);
                     row.classList.add('collapse');
                     row.classList.add('show');

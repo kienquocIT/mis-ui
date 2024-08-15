@@ -5954,11 +5954,11 @@ msgstr "Đang giao"
 
 #
 msgid "Partially delivered"
-msgstr "Đã giao một phần"
+msgstr "Giao một phần"
 
 #
 msgid "Delivered"
-msgstr "Đã giao xong"
+msgstr "Giao xong"
 
 #
 msgid "Partially received"
@@ -8412,3 +8412,7 @@ msgstr "Giao hàng"
 #
 msgid "Common warehouse"
 msgstr "Kho chung"
+
+#
+msgid "My project"
+msgstr "Dự án của tôi"

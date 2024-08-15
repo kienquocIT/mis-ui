@@ -440,10 +440,17 @@ $(async function () {
                 columns: [
                     {
                         targets: 0,
-                        class: 'w-30',
+                        class: 'w-35',
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['is_regis_so'] === true) {
+                                let project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-project')}: ${row?.['sale_order']?.['code']}</span>`;
+                                if ($eleSO.attr('data-so')) {
+                                    let dataSO = JSON.parse($eleSO.attr('data-so'));
+                                    if (row?.['sale_order']?.['id'] === dataSO?.['id']) {
+                                        project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-my-project')}</span>`;
+                                    }
+                                }
                                 let target = ".cl-" + row?.['sale_order']?.['id'].replace(/-/g, "");
                                 return `<div class="d-flex align-items-center">
                                             <button 
@@ -459,7 +466,7 @@ $(async function () {
                                             >
                                                 <span class="icon"><i class="fas fa-chevron-down"></i></span>
                                             </button>
-                                            <span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-project')}: ${row?.['sale_order']?.['code']}</span><span class="badge badge-pink badge-outline">${$trans.attr('data-available')}: ${row?.['available_stock']}</span>
+                                            ${project}<span class="badge badge-pink badge-outline">${$trans.attr('data-available')}: ${row?.['available_stock']}</span>
                                         </div>`;
                             }
                             if (row?.['is_regis_common'] === true) {
@@ -489,7 +496,7 @@ $(async function () {
                             if (row?.['product']?.['general_traceability_method'] === 0) {
                                 disabled = 'disabled';
                             }
-                            return `<div class="d-flex align-items-center ml-5">
+                            return `<div class="d-flex align-items-center ml-3">
                                         <div class="form-check">
                                             <input
                                                 type="radio"

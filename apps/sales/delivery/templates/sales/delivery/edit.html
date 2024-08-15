@@ -279,7 +279,7 @@
                                             <th>{% trans 'UOM' %}</th>
                                             <th>{% trans 'Exp date' %}</th>
                                             <th>{% trans 'Mfg date' %}</th>
-                                            <th>{% trans 'Get' %}</th>
+                                            <th>{% trans 'Deliver' %}</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -357,6 +357,7 @@
            data-title-mdl="{% trans 'Deliver product' %}"
            data-project="{% trans 'Project' %}"
            data-common-wh="{% trans 'Common warehouse' %}"
+           data-my-project="{% trans 'My project' %}"
     >
     <input type="hidden" id="url-factory"
            data-prod-detail="{% url 'ProductDetail' 1 %}"

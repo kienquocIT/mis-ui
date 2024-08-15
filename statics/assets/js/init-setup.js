@@ -5119,6 +5119,8 @@ class DocumentControl {
             if (!doc_change_order) {
                 doc_change_order = "";
             }
+            let $breadcrumbCode = $('#idx-breadcrumb-current-code');
+            $breadcrumbCode.empty();
             if (code) {
                 let clsState = 'hidden';
                 if (is_active === true) {
@@ -5126,7 +5128,7 @@ class DocumentControl {
                 } else if (clsState === false) {
                     clsState = 'badge badge-light badge-indicator';
                 }
-                $('#idx-breadcrumb-current-code').html(
+                $breadcrumbCode.html(
                     `
                     <span class="${clsState}"></span>
                     <span class="badge badge-primary" id="documentCode" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${code}</span>
@@ -5153,11 +5155,11 @@ class DocumentControl {
                     system_status = key[system_status]
                 }
                 if (window.location.href.includes('/update/') && dataStatus === 3) {
-                    $('#idx-breadcrumb-current-code').append(
+                    $breadcrumbCode.append(
                         `<span class="badge badge-soft-blue" id="documentCR" data-status="${dataStatus + 2}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
                     ).removeClass('hidden');
                 } else {
-                    $('#idx-breadcrumb-current-code').append(
+                    $breadcrumbCode.append(
                         `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
                     ).removeClass('hidden');
                 }

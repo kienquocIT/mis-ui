@@ -689,22 +689,6 @@ $(function () {
                 'employee_inherit_id',
             ]
             filterFieldList(field_list, _form.dataForm);
-
-
-            // let csr = $("[name=csrfmiddlewaretoken]").val();
-            // $.fn.callAjax(_form.dataUrl, _form.dataMethod, {'final_acceptance_indicator': updateIndicatorData}, csr)
-            //     .then(
-            //         (resp) => {
-            //             let data = $.fn.switcherResp(resp);
-            //             if (data) {
-            //                 $.fn.notifyB({description: data.message}, 'success')
-            //                 $.fn.redirectUrl($form.attr('data-url-redirect'), 1000);
-            //             }
-            //         },
-            //         (errs) => {
-            //             console.log(errs)
-            //         }
-            //     )
             WFRTControl.callWFSubmitForm(_form);
         });
 

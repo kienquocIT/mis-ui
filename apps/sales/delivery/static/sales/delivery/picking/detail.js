@@ -349,9 +349,9 @@ $(async function () {
                             }
                             for (let borrow_data of data?.[keyResp][0]?.['borrow_data_general_stock']) {
                                 if ($eleSO.attr('data-so')) {
-                                    let dataS0 = JSON.parse($eleSO.attr('data-so'));
+                                    let dataSO = JSON.parse($eleSO.attr('data-so'));
                                     for (let data of borrow_data?.['regis_data']) {
-                                        data['sale_order'] = dataS0;
+                                        data['sale_order'] = dataSO;
                                         data['available_stock'] = data?.['common_stock'];
                                     }
                                 }
@@ -378,6 +378,12 @@ $(async function () {
                             let so = data?.['sale_order'];
                             let available = (data?.['available_stock'] - data?.['available_picked']) * finalRate;
                             let badgeStock = `<span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-project')}: ${so?.['code']}</span>`;
+                            if ($eleSO.attr('data-so')) {
+                                let dataSO = JSON.parse($eleSO.attr('data-so'));
+                                if (so?.['id'] === dataSO?.['id']) {
+                                    badgeStock = `<span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-my-project')}</span>`;
+                                }
+                            }
                             if (data?.['is_pw']) {
                                 badgeStock = `<span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-common-wh')}</span>`;
                             }

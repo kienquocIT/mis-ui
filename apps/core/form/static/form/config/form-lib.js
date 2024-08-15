@@ -3801,7 +3801,7 @@ class FormSelectComponentType extends FormComponentAbstract {
                         value="${item.value}"
                         data-col="${item.col}"
                         data-row="${item.row}" 
-                        data-group="${item.group}"
+                        data-group="${item.group || ''}"
                         ${selectedTmp ? "selected" : ""}
                     >${item.title}</option>
                 `);
@@ -4166,7 +4166,7 @@ class FormManyCheckboxComponentType extends FormComponentAbstract {
 
         for (let i = 0; i < configArr.length; i++) {
             this.applyInputsDataToInput(inpArr$[i], configArr[i]);
-            const ele$ = $(`<div class="form-checkbox-group mb-1"></div>`).append(inpArr$[i]).append(labelArr$[i]);
+            const ele$ = $(`<div class="form-checkbox-group f-many-checkbox mb-1"></div>`).append(inpArr$[i]).append(labelArr$[i]);
             switch (config.checkbox_style) {
                 case 'default':
                     break

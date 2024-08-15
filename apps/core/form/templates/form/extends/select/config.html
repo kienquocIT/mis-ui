@@ -1,4 +1,4 @@
-{% load i18n string_utils define_action %}
+{% load i18n string_utils define_action static %}
 
 {% assign_out_bool_str idxIsMultiple False as rIdxIsMultiple %}
 
@@ -30,6 +30,12 @@
 
         <hr style="background-color: #2a3746"/>
 
+        <ul class="w-100 mb-3" style="padding: 10px;padding-left: 40px;border-left: 1px solid #ff9100; background-color: #fffdeb; color: #ff9100; list-style: circle;">
+            <li>{% trans "Avoid using characters: `, &` in the option. This can misunderstandings export data retrieval." %}</li>
+            <li>{% trans "All columns cannot be duplicated." %}</li>
+            <li>{% trans "All rows cannot be duplicated." %}</li>
+        </ul>
+
         <div class="form-group mb-3" id="group-select-box-option-config">
             <div class="w-100 mb-3">
                 <label class="form-label">{% trans 'Options' %}</label>
@@ -41,20 +47,95 @@
             <div class="form-group mb-3">
                 {% assign_out_random selectStyleIdx as rSelectStyleIdx %}
                 <label for="{{ rSelectStyleIdx }}" class="form-label">{% trans 'Select style' %}</label>
-                <select name="style" id="{{ rSelectStyleIdx }}" class="form-select">
-                    <option value="default">{% trans 'Default' %}</option>
-                    <option value="xbox">{% trans 'Checkbox / Radio box' %}</option>
-                    <option value="matrix">{% trans 'Matrix' %}</option>
-                </select>
+                <div class="input-group">
+                    <select name="style" id="{{ rSelectStyleIdx }}" class="form-select">
+                        <option value="default">{% trans 'Default' %}</option>
+                        <option value="xbox">{% trans 'Checkbox / Radio box' %}</option>
+                        <option value="matrix">{% trans 'Matrix' %}</option>
+                    </select>
+                    <button
+                            type="button"
+                            class="btn btn-outline-secondary no-transform"
+                            data-bs-toggle="modal"
+                            data-bs-target="#selectStyleSamplePreview"
+                    >
+                        {% trans 'Sample preview' %}
+                    </button>
+                </div>
                 <small class="form-text text-muted">
-                    <ul style="list-style: circle;">
-                        <li>{% trans "Styles are different ways of presenting select tags that improve the user's data selection experience in a more flexible and understandable way." %}</li>
-                        <li>{% trans "The end result is always the underlying choices, which are reflected in the report data." %}</li>
-                    </ul>
+                    {% trans "Styles are different ways of presenting select tags that improve the user's data selection experience in a more flexible and understandable way." %}
                 </small>
             </div>
+            <div id="select-group-option-matrix" style="display: none;">
+                <div class="form-group mb-3">
+                    {% assign_out_random matrixGroupByIdx as rMatrixGroupByIdx %}
+                    <label for="{{ rMatrixGroupByIdx }}">{% trans 'Group by' %}</label>
+                    <select name="matrix_group_by" id="{{ rMatrixGroupByIdx }}" class="form-select">
+                        <option value="">{% trans 'Not group' %}</option>
+                        <option value="col">{% trans 'By columns' %}</option>
+                        <option value="row">{% trans 'By rows' %}</option>
+                    </select>
+                    <small class="form-text text-muted">
+                        {% trans 'Tick only once per row, column or unbound - depending on this configuration' %}
+                    </small>
+                </div>
 
-            <div class="mb-3">
+                <button
+                        class="btn btn-primary btn-xs mb-1 no-transform" data-bs-toggle="modal" data-bs-target="#setupMatrixModal"
+                >{% trans 'Setup matrix' %}</button>
+                <small class="form-text text-muted">
+                    {% trans 'The option name will be a concatenation of the column name and row name, separated by an ampersand (&).' %}
+                </small>
+                <div class="w-100 overflow-x-auto">
+                    <table class="table table-bordered" id="matrix-table-show">
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div
+                        class="modal fade" id="setupMatrixModal" tabindex="-1" role="dialog"
+                        aria-labelledby="setupMatrixModal" aria-hidden="true"
+                >
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div>
+                                    <p style="font-size: 1.1rem;" class="modal-title">{% trans 'Setup matrix' %}</p>
+                                    <small class="text-muted">{% trans 'Click button close or outside for close.' %}</small>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p id="setup-matrix-errors" class="text-danger"></p>
+                                <div class="w-100 d-flex">
+                                    <div style="flex-basis: calc(50% - 15px);margin-right: 15px;">
+                                        <p>{% trans 'Columns' %}</p>
+                                        <ol class="matrix-list-config" id="matrix-of-rows">
+                                            <button id="matrix-add-new-column" class="btn btn-primary no-transform" type="button">
+                                                <span class="icon">
+                                                    <i class="fa-solid fa-plus"></i>
+                                                </span>
+                                            </button>
+                                        </ol>
+                                    </div>
+                                    <div style="flex-basis: calc(50% - 15px);margin-left: 15px;">
+                                        <p>{% trans 'Rows' %}</p>
+                                        <ol class="matrix-list-config" id="matrix-of-cols">
+                                            <button id="matrix-add-new-row" class="btn btn-primary no-transform" type="button">
+                                                <span class="icon">
+                                                    <i class="fa-solid fa-plus"></i>
+                                                </span>
+                                            </button>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3" id="select-group-option-default" style="display: none;">
                 <div class="w-100 mb-1 select-box-item select-box-item-data d-none" id="select-option-base">
                     <div class="d-flex">
                         <div class="select-box-icon-dnd">
@@ -140,117 +221,81 @@
                     </button>
                 </div>
             </div>
+        </div>
 
-            <div>
-                <button
-                        class="btn btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#setupMatrixModal"
-                >{% trans 'Setup matrix' %}</button>
-                <div class="w-100 overflow-x-auto">
-                    <table class="table table-bordered" id="matrix-table-show">
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div
-                        class="modal fade" id="setupMatrixModal" tabindex="-1" role="dialog"
-                        aria-labelledby="setupMatrixModal" aria-hidden="true"
-                >
-                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <div>
-                                    <p style="font-size: 1.1rem;" class="modal-title">{% trans 'Setup matrix' %}</p>
-                                    <small class="text-muted">{% trans 'Click button close or outside for close.' %}</small>
-                                </div>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
+        <div
+                    class="modal fade" id="selectStyleSamplePreview" tabindex="-1" role="dialog"
+                    aria-labelledby="selectStyleSamplePreview" aria-hidden="true"
+            >
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div>
+                                <p style="font-size: 1.1rem;" class="modal-title">{% trans 'Sample preview' %}</p>
+                                <small class="text-muted">{% trans 'Click button close or outside for close.' %}</small>
                             </div>
-                            <div class="modal-body">
-                                <div class="w-100 d-flex">
-                                    <div style="flex-basis: calc(50% - 15px);margin-right: 15px;">
-                                        <p>{% trans 'Columns' %}</p>
-                                        <ol class="matrix-list-config">
-                                            <li>
-                                                <div class="matrix-drag">
-                                                    <i class="fa-solid fa-grip-vertical"></i>
-                                                </div>
-                                                <input class="matrix-value form-control" value="Hoàn toàn hài lòng" name="matrix_columns" />
-                                                <div class="matrix-delete">
-                                                    <button type="button" class="matrix-btn-delete">
-                                                        <i class="fa-solid fa-xmark"></i>
-                                                    </button>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="matrix-drag">
-                                                    <i class="fa-solid fa-grip-vertical"></i>
-                                                </div>
-                                                <input class="matrix-value form-control" value="Bình thường" name="matrix_columns" />
-                                                <div class="matrix-delete">
-                                                    <button type="button" class="matrix-btn-delete">
-                                                        <i class="fa-solid fa-xmark"></i>
-                                                    </button>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="matrix-drag">
-                                                    <i class="fa-solid fa-grip-vertical"></i>
-                                                </div>
-                                                <input class="matrix-value form-control" value="Hoàn toàn không hài lòng" name="matrix_columns"/>
-                                                <div class="matrix-delete">
-                                                    <button type="button" class="matrix-btn-delete">
-                                                        <i class="fa-solid fa-xmark"></i>
-                                                    </button>
-                                                </div>
-                                            </li>
-                                            <button id="matrix-add-new-column" class="btn btn-primary no-transform" type="button">{% trans 'Add new row' %}</button>
-                                        </ol>
-                                    </div>
-                                    <div style="flex-basis: calc(50% - 15px);margin-left: 15px;">
-                                        <p>{% trans 'Rows' %}</p>
-                                        <ol class="matrix-list-config">
-                                            <li>
-                                                <div class="matrix-drag">
-                                                    <i class="fa-solid fa-grip-vertical"></i>
-                                                </div>
-                                                <input class="matrix-value form-control" value="Tiền gửi, tiết kiệm" name="matrix_rows" />
-                                                <div class="matrix-delete">
-                                                    <button type="button" class="matrix-btn-delete">
-                                                        <i class="fa-solid fa-xmark"></i>
-                                                    </button>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="matrix-drag">
-                                                    <i class="fa-solid fa-grip-vertical"></i>
-                                                </div>
-                                                <input class="matrix-value form-control" value="Dịch vụ thẻ" name="matrix_rows"/>
-                                                <div class="matrix-delete">
-                                                    <button type="button" class="matrix-btn-delete">
-                                                        <i class="fa-solid fa-xmark"></i>
-                                                    </button>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="matrix-drag">
-                                                    <i class="fa-solid fa-grip-vertical"></i>
-                                                </div>
-                                                <input class="matrix-value form-control" value="Dịch vụ du học" name="matrix_rows" />
-                                                <div class="matrix-delete">
-                                                    <button type="button" class="matrix-btn-delete">
-                                                        <i class="fa-solid fa-xmark"></i>
-                                                    </button>
-                                                </div>
-                                            </li>
-                                            <button id="matrix-add-new-row" class="btn btn-primary no-transform" type="button">{% trans 'Add new row' %}</button>
-                                        </ol>
-                                    </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" style="background: #f1f1f1;">
+                            <h4>Default</h4>
+                            <p>{% trans 'Options' %}</p>
+                            <ul style="list-style: circle;">
+                                <li>Lựa chọn 1</li>
+                                <li>Lựa chọn 2</li>
+                                <li>Lựa chọn 3</li>
+                            </ul>
+                            <p>{% trans 'Preview' %}</p>
+                            <p>{% trans 'Single' %}</p>
+                            <img src="{% static 'form/config/images/select/style_default_single.png' %}" alt="" style="max-height: 200px;">
+                            <p>{% trans 'Multiple' %}</p>
+                            <img src="{% static 'form/config/images/select/style_default_multiple.png' %}" alt="" style="max-height: 200px;">
+                            <hr/>
+
+                            <h4>Checkbox & Radio box</h4>
+                            <p>{% trans 'Options' %}</p>
+                            <ul style="list-style: circle;">
+                                <li>Lựa chọn 1</li>
+                                <li>Lựa chọn 2</li>
+                                <li>Lựa chọn 3</li>
+                            </ul>
+                            <p>{% trans 'Preview' %}</p>
+                            <p>{% trans 'Single' %}</p>
+                            <img src="{% static 'form/config/images/select/style_selectbox_single.png' %}" alt="" style="max-height: 200px;">
+                            <p>{% trans 'Multiple' %}</p>
+                            <img src="{% static 'form/config/images/select/style_selectbox_multiple.png' %}" alt="" style="max-height: 200px;">
+                            <hr />
+
+                            <h4>Matrix</h4>
+                            <p>{% trans 'Options' %}</p>
+                            <div class="row">
+                                <div class="col-6">
+                                    <p>{% trans 'Columns' %}</p>
+                                    <ul style="list-style: circle;">
+                                       <li>Column 1</li>
+                                       <li>Column 2</li>
+                                    </ul>
+                                </div>
+                                <div class="col-6">
+                                    <p>{% trans 'Rows' %}</p>
+                                    <ul style="list-style: circle;">
+                                        <li>Row 1</li>
+                                        <li>Row 2</li>
+                                        <li>Row 3</li>
+                                    </ul>
                                 </div>
                             </div>
+                            <p>{% trans 'Preview' %}</p>
+                            <p>{% trans 'Not group' %}</p>
+                            <img src="{% static 'form/config/images/select/style_matrix_not_group.png' %}" alt="" style="max-height: 200px;">
+                            <p>{% trans 'By columns' %}</p>
+                            <img src="{% static 'form/config/images/select/style_matrix_group_col.png' %}" alt="" style="max-height: 200px;">
+                            <p>{% trans 'By rows' %}</p>
+                            <img src="{% static 'form/config/images/select/style_matrix_group_row.png' %}" alt="" style="max-height: 200px;">
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
 
         <hr style="background-color: #2a3746"/>
@@ -388,58 +433,85 @@
         const btnAddMatrixColumn$ = form$.find('#matrix-add-new-column');
         const btnAddMatrixRow$ = form$.find('#matrix-add-new-row');
         const tblMatrixShow$ = form$.find('#matrix-table-show');
-
-        matrixModal$.on('shown.bs.modal', function (){
-            $(tblMatrixShow$).trigger('data.load');
-        })
-
-        matrixModal$.on('change', 'input[name]', function (){
-            $(tblMatrixShow$).trigger('data.load');
-        })
+        const style$ = form$.find('select[name=style]');
+        const optionDefault$ = form$.find('#select-group-option-default');
+        const optionMatrix$ = form$.find('#select-group-option-matrix');
+        const matrixOfRows = form$.find('#matrix-of-rows');
+        const matrixOfCols = form$.find('#matrix-of-cols');
 
         tblMatrixShow$.on('data.load', function (event){
             const dataForm = SetupFormSubmit.serializerObject($(form$));
-            const data = {
-                'rows': dataForm['matrix_rows'],
-                'cols': dataForm['matrix_columns'],
+            if (Array.isArray(dataForm?.['matrix_rows'])){
+                dataForm['matrix_rows'] = dataForm['matrix_rows'];
+            } else if (dataForm?.['matrix_rows']) {
+                dataForm['matrix_rows'] = [dataForm['matrix_rows']];
+            } else {
+                dataForm['matrix_rows'] = [];
+            }
+            if (Array.isArray(dataForm?.['matrix_cols'])){
+                dataForm['matrix_cols'] = dataForm['matrix_cols'];
+            } else if (dataForm?.['matrix_cols']) {
+                dataForm['matrix_cols'] = [dataForm['matrix_cols']];
+            } else {
+                dataForm['matrix_cols'] = [];
             }
             let trData = [];
-            let firstRow = data['cols'].map(
+            let firstRow = dataForm?.['matrix_cols'].map(
                 item => `<td>${item}</td>`
             ).join("")
             trData.push(`<tr><td></td>${firstRow}</tr>`)
 
-            data['rows'].map(
+            dataForm?.['matrix_rows'].map(
                 item => {
                     trData.push(`
                         <tr>
                             <td>${item}</td>
-                            ${data['cols'].map(item2 => '<td><i class="fa-regular fa-square-check"></i></td>')}
+                            ${dataForm?.['matrix_cols'].map(item2 => '<td><i class="fa-regular fa-square-check"></i></td>')}
                         </tr>
                     `);
                 }
             )
+
+            let txtErrs = [];
+            if (dataForm['matrix_cols'].length !== new Set(dataForm['matrix_cols']).size) {
+                txtErrs.push(`<p>${$.fn.gettext('All columns cannot be duplicated.')}</p>`);
+            }
+            if (dataForm['matrix_rows'].length !== new Set(dataForm['matrix_rows']).size) {
+                txtErrs.push(`<p>${$.fn.gettext('All rows cannot be duplicated.')}</p>`);
+            }
+            if (txtErrs.length > 0){
+                form$.find('#setup-matrix-errors').empty().append(txtErrs)
+            }
+
             tblMatrixShow$.find('tbody').empty().append(trData.join(""));
         })
 
-        function newItemMatrix(ele$, rows_or_cols){
-            $(`<li>
-                <div class="matrix-drag">
-                    <i class="fa-solid fa-grip-vertical"></i>
-                </div>
-                <input class="matrix-value form-control" value="${$.fn.gettext('Enter text')}" name="matrix_${rows_or_cols}" />
-                <div class="matrix-delete">
-                    <button>
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-            </li>`).insertBefore($(ele$));
+        function newItemMatrix(ele$, rows_or_cols, opts){
+            opts = {
+                value: '',
+                firing_trigger: true,
+                ...opts,
+            }
+            const nextAmount = ele$.closest('.matrix-list-config').find('li').length + 1;
+            $(`
+                <li>
+                    <div class="matrix-drag">
+                        <i class="fa-solid fa-grip-vertical"></i>
+                    </div>
+                    <input class="matrix-value form-control" maxlength="50" value="${opts['value'] || $.fn.gettext('Enter text') + ' ' + nextAmount}" name="matrix_${rows_or_cols}" />
+                    <div class="matrix-delete">
+                        <button class="matrix-btn-delete">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </li>
+            `).insertBefore($(ele$));
 
-            tblMatrixShow$.trigger('data.load');
+            if (opts['firing_trigger'] === true) tblMatrixShow$.trigger('data.load');
         }
 
         btnAddMatrixColumn$.on('click', function(){
-            newItemMatrix($(this), 'columns');
+            newItemMatrix($(this), 'cols');
         })
         btnAddMatrixRow$.on('click', function(){
             newItemMatrix($(this), 'rows');
@@ -447,17 +519,87 @@
 
         form$.find('.matrix-list-config')
             .on('click', 'button.matrix-btn-delete', function (){
-               alert('Request delete.');
-            })
-            .each(function (){
-                $(this).sortable({
-                    items: "li",
-                    revert: true,
-                    placeholder: "item-dragging",
-                    update: function (event, ui) {
+                const btnThis = $(this);
+                Swal.fire({
+                    title: $.fn.transEle.attr('data-sure-delete'),
+                    html: $(btnThis).closest('.matrix-delete').siblings('.matrix-value').val(),
+                    showCancelButton: true,
+                    confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                    cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $(btnThis).closest('li').remove();
                         tblMatrixShow$.trigger('data.load');
                     }
                 })
+            })
+            .on('change', 'input[name=matrix_rows]', function (){
+                tblMatrixShow$.trigger('data.load');
+            })
+            .on('change', 'input[name=matrix_cols]', function (){
+                tblMatrixShow$.trigger('data.load');
+            })
+            .sortable({
+                items: "li",
+                revert: true,
+                placeholder: "item-dragging",
+                update: function (event, ui) {
+                    tblMatrixShow$.trigger('data.load');
+                }
+            });
+
+        style$.on('change', function (){
+            optionMatrix$.trigger('data.load');
+
+            // optionDefault$.show(0);
+            // optionMatrix$.show(0);
+
+            const value = $(this).val();
+            switch (value) {
+                case 'default':
+                case 'xbox':
+                    isMultiple$.prop('disabled', false).trigger('change');
+                    optionDefault$.slideDown('fast');
+                    optionMatrix$.hide(0);
+                    break
+                case 'matrix':
+                    isMultiple$.prop('checked', true).prop('disabled', true).trigger('change');
+                    optionDefault$.hide(0);
+                    optionMatrix$.slideDown('fast');
+                    break
+            }
+        }).trigger('change');
+
+        optionMatrix$
+            .on('data.clean', function (event){
+                tblMatrixShow$.find('tbody').empty();
+                matrixOfRows.find('li').remove();
+                matrixOfCols.find('li').remove();
+            })
+            .on('data.load', function (event, config){
+                if (config){
+                    (config?.['matrix_cols'] || []).map(
+                        item => newItemMatrix(
+                            btnAddMatrixColumn$,
+                            'cols',
+                            {
+                                'value': item,
+                                'firing_trigger': false,
+                            }
+                        )
+                    );
+                    (config?.['matrix_rows'] || []).map(
+                        item => newItemMatrix(
+                            btnAddMatrixRow$,
+                            'rows',
+                            {
+                                'value': item,
+                                'firing_trigger': false,
+                            }
+                        )
+                    );
+                    tblMatrixShow$.trigger('data.load');
+                }
             });
     })
 </script>

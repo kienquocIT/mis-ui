@@ -14,7 +14,7 @@ from rest_framework.views import APIView
 from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, ServerMsg, TypeCheck
 from apps.core.account.models import User
 
-from .forms import AuthLoginForm
+from .forms import AuthLoginForm, ForgotPasswordForm, ForgotPasswordValidOTPForm, ForgotPasswordResendOTP
 from apps.shared.csrf import CSRFCheckSessionAuthentication, APIAllowAny
 from apps.shared.decorators import OutLayoutRender
 
@@ -227,6 +227,7 @@ class MyLanguageAPI(APIView):
 class ForgotPasswordView(View):
     authentication_classes = [AllowAny]
 
+    @mask_view(login_require=False)
     def get(self, request, *args, **kwargs):
         if request.user and not isinstance(request.user, AnonymousUser):
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
@@ -236,7 +237,11 @@ class ForgotPasswordView(View):
         request.user = AnonymousUser
         if check_home_domain(request) is True:
             return OutLayoutRender(request=request).render_404()
-        ctx = {'ui_domain': settings.UI_DOMAIN, 'captcha_enabled': False}
+        ctx = {
+            'ui_domain': settings.UI_DOMAIN,
+            'captcha_enabled': settings.GG_RECAPTCHA_ENABLED,
+            'secret_key_gg': settings.GG_RECAPTCHA_CLIENT_KEY if settings.GG_RECAPTCHA_ENABLED else None,
+        }
         return render(request, 'auths/forgot_passwd.html', ctx)
 
 
@@ -251,13 +256,15 @@ class ForgotPasswordAPI(APIView):
 
     @mask_view(login_require=False, is_api=True)
     def post(self, request, *args, **kwargs):
+        frm = ForgotPasswordForm(data=request.data)
+        frm.is_valid()
         # get OTP first
         resp = ServerAPI(
             request=request, user=request.user, url=ApiURL.USER_FORGOT_PASSWORD,
             cus_headers={
                 'Accept-Language': request.headers.get('Accept-Language', settings.LANGUAGE_CODE)
             }
-        ).post(data=request.data)
+        ).post(data=frm.cleaned_data)
         return resp.auto_return()
 
 
@@ -272,6 +279,14 @@ class ForgotPasswordDetailAPI(APIView):
 
     @mask_view(login_require=False, is_api=True)
     def get(self, request, *args, pk, **kwargs):
+        captcha = self.request.query_params.dict().get('captcha', None)
+        frm = ForgotPasswordResendOTP(
+            data={
+                'g_recaptcha_response': captcha,
+                'pk': pk,
+            }
+        )
+        frm.is_valid()
         # refresh push OTP
         if pk and TypeCheck.check_uuid(pk):
             resp = ServerAPI(
@@ -282,11 +297,16 @@ class ForgotPasswordDetailAPI(APIView):
 
     @mask_view(login_require=False, is_api=True)
     def put(self, request, *args, pk, **kwargs):
+        frm = ForgotPasswordValidOTPForm(data={
+            **request.data,
+            'pk': pk,
+        })
+        frm.is_valid()
         # enter OTP
         if pk and TypeCheck.check_uuid(pk):
             resp = ServerAPI(
                 request=request, user=request.user, url=ApiURL.USER_FORGOT_PASSWORD_DETAIL.fill_key(pk=pk)
-            ).put(data=request.data)
+            ).put(data=frm.cleaned_data)
             return resp.auto_return()
         return OutLayoutRender(request=request).render_404()
 

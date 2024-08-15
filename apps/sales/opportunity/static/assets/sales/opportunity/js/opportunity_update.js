@@ -552,13 +552,25 @@ $(document).ready(function () {
                             let stage = $(this).closest('.sub-stage');
                             let index = stage.index();
                             let ele_stage = $('#div-stage .sub-stage');
-                            $('.stage-lost').removeClass('bg-red-light-5 border-red stage-selected');
+                            $('.stage-lost').removeClass('stage-selected');
+                            $('.stage-lost').css('background-color', '#e7e7e7')
+                            $('.stage-lost').css('color', '#6f6f6f')
+                            $('.stage-lost').next().css('border-left', '30px solid #e7e7e7')
                             for (let i = 0; i <= ele_stage.length; i++) {
                                 if (i <= index) {
-                                    if (!ele_stage.eq(i).hasClass('stage-lost'))
-                                        ele_stage.eq(i).addClass('bg-primary-light-5 border-primary  stage-selected');
+                                    if (!ele_stage.eq(i).hasClass('stage-lost')) {
+                                        ele_stage.eq(i).addClass('stage-selected');
+                                        ele_stage.eq(i).css('background-color', '#5a82b7')
+                                        ele_stage.eq(i).css('color', 'white')
+                                        ele_stage.eq(i).find('.dropdown span').css('color', 'white')
+                                        ele_stage.eq(i).next().css('border-left', '30px solid #5a82b7')
+                                    }
                                 } else {
-                                    ele_stage.eq(i).removeClass('bg-primary-light-5 border-primary  stage-selected');
+                                    ele_stage.eq(i).removeClass('stage-selected');
+                                    ele_stage.eq(i).css('background-color', '#e7e7e7')
+                                    ele_stage.eq(i).css('color', '#6f6f6f')
+                                    ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
+                                    ele_stage.eq(i).next().css('border-left', '30px solid #e7e7e7')
                                 }
                             }
                             loadWinRate();
@@ -609,12 +621,19 @@ $(document).ready(function () {
                     dict_stage
                 );
                 if (is_lost) {
-                    $('.stage-lost').addClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
+                    let ele_stage = $('.stage-lost')
+                    ele_stage.addClass('stage-selected');
+                    ele_stage.css('background-color', 'rgb(236, 171, 171)')
+                    ele_stage.css('color', 'white')
+                    ele_stage.next().css('border-left', '30px solid rgb(236, 171, 171)')
                     // $('.stage-close').addClass('fw-bolder text-blue bg-blue-light-5 border-blue stage-selected');
                     // $('#input-close-deal').prop('checked', true)
                 }
                 else {
-                    $('.stage-lost').removeClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
+                    $('.stage-lost').removeClass('stage-selected');
+                    $('.stage-lost').css('background-color', '#e7e7e7')
+                    $('.stage-lost').css('color', '#6f6f6f')
+                    $('.stage-lost').next().css('border-left', '30px solid #e7e7e7')
                     // $('.stage-close').removeClass('fw-bolder text-blue bg-blue-light-5 border-blue stage-selected');
                     // $('#input-close-deal').prop('checked', false)
                 }
@@ -624,10 +643,18 @@ $(document).ready(function () {
 
             $(document).on('change', '#input-close-deal', function () {
                 if ($(this).is(':checked')) {
-                    $(this).closest('.sub-stage').addClass('bg-blue-light-5 border-blue  stage-selected');
+                    $(this).closest('.sub-stage').addClass('stage-selected');
+                    $(this).closest('.sub-stage').css('background-color', '#5a82b7')
+                    $(this).closest('.sub-stage').css('color', 'white')
+                    $(this).closest('.sub-stage').find('.dropdown span').css('color', 'white')
+                    $(this).closest('.sub-stage').next().css('border-left', '30px solid #5a82b7')
                     $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', true);
                 } else {
-                    $(this).closest('.sub-stage').removeClass('bg-blue-light-5 border-blue  stage-selected');
+                    $(this).closest('.sub-stage').removeClass('stage-selected');
+                    $(this).closest('.sub-stage').css('background-color', '#e7e7e7')
+                    $(this).closest('.sub-stage').css('color', '#6f6f6f')
+                    $(this).closest('.sub-stage').find('.dropdown span').css('color', '#6f6f6f')
+                    $(this).closest('.sub-stage').next().css('border-left', '30px solid #e7e7e7')
                     $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', false);
                     if ($('#check-agency-role').is(':checked')) {
                         $('#select-box-end-customer').prop('disabled', false);

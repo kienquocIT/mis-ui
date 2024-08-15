@@ -38,7 +38,7 @@
     function checkBase(value, element, callback) {
         // get rules field
         let rules = this.settings.rules?.[$(element).attr('name')] || null;
-        if (!value) {
+        if (!value || (Array.isArray(value) && value.length === 0)) {
             // allow empty
             if (!$(element).attr('required')) return true;
             // check rule
@@ -273,6 +273,48 @@
         },
         (params, element) => {
             let msg = $.validator.messages?.["datePicker"] || "Please enter a valid date.";
+            return $.validator.format(
+                msg,
+                params
+            );
+        }
+    )
+
+    $.validator.addMethod(
+        'matrixGroupBy'.toLowerCase(),
+        function (value, element) {
+            return checkBase.bind(this)(value, element, function (rules){
+                if (value){
+                    let groups = new Set([]);
+                    $(element).find('option[data-group]').each(function (){
+                        groups.add($(this).attr('data-group'));
+                    })
+                    let hasErrors = false;
+                    Array.from(groups).map(
+                        group_code => {
+                            const option$ = $(element).find(`option[data-group="${group_code}"]:selected`);
+                            if (option$.length !== 1){
+                                hasErrors = true;
+                            }
+                        }
+                    )
+                    return !hasErrors
+                }
+            })
+        },
+        (params, element) => {
+            const typeGroup = $(element).attr('data-select-matrix-group');
+            let msg = "Please complete the options on the matrix.";
+            switch (typeGroup) {
+                case 'row':
+                    msg = $.validator.messages?.["matrixGroupByRow"] || msg;
+                    break
+                case 'col':
+                    msg = $.validator.messages?.["matrixGroupByCol"] || msg;
+                    break
+                default:
+                    break
+            }
             return $.validator.format(
                 msg,
                 params

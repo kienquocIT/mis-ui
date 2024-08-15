@@ -1,16 +1,12 @@
-from django.contrib.auth.models import AnonymousUser
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.views import View
-from django.views.decorators.clickjacking import xframe_options_exempt
 from rest_framework import status
 from rest_framework.views import APIView
 
+from django.shortcuts import render
+from django.views import View
+from django.utils.translation import gettext_lazy as _
 from apps.core.form.utils import FormAuthController
 from apps.shared import mask_view, ServerAPI, ApiURL, TypeCheck
 from apps.shared.apis import RespData
-from apps.shared.decorators import OutLayoutRender
-from apps.shared.exceptions import handle_exception_all_view
 from apps.shared.http import HttpRequestControl
 
 
@@ -209,6 +205,30 @@ def get_ctx_user_current(request, authentication_type):
     return user_current
 
 
+def html_footer_sub_form():
+    warning_txt = _(
+        'Do not submit confidential information such as credit card details, mobile and ATM PINs, OTPs, '
+        'account passwords, etc.'
+    )
+    power_by = _('Powered by')
+    mail_report_abuse = "mailto:support@bflow.vn?Subject=Report%20abuse%20form&body=URL%3A%20%5BPlease%20replace" \
+                        "%20with%20form%20URL%5D%0AFull%20name%3A%20%5BPlease%20replace%20with%20your%20full%20name" \
+                        "%5D%0AOther%20contact%3A%20%5BPlease%20replace%20with%20your%20contact%20information%5D" \
+                        "%0AReason%20for%20report%3A%20%5BPlease%20replace%20with%20your%20reason%5D"
+    report_abuse = _('Report Abuse')
+    logo_url = "https://www.bflow.vn/images/brand/bflow-by-mts/png/bflow-by-mts-original.png"
+    return f"""
+        <p class="foot-warning-text">
+            {warning_txt}
+        </p>
+        <a href="{mail_report_abuse}" class="foot-report-abuse">{report_abuse}</a>
+        <div class="foot-power-by">
+            <span style="margin-right: 1rem;">{power_by}</span>
+            <img src="{logo_url}" alt="" style="width: 100px;"/>
+        </div>
+    """
+
+
 def publish_data(resp, code, request, use_at, submitted_data=None):
     result = resp.result
     if result and isinstance(result, dict):
@@ -218,7 +238,10 @@ def publish_data(resp, code, request, use_at, submitted_data=None):
 
         form_remark = result.get('form_remark', '')
 
-        html_text = result.get('html_text', '')
+        html_text = result.get('html_text', '').replace(
+            '${footerSub}',
+            html_footer_sub_form()
+        )
         theme_assets = result.get('theme_assets', {})
 
         company_logo = result.get('company_logo', '')

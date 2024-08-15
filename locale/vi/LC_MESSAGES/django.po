@@ -8394,6 +8394,59 @@ msgid "Plan description"
 msgstr "Mô tả kế hoạch"
 
 #
+msgid "Project home"
+msgstr "Trang chủ dự án"
+
+#
+msgid "Baseline request"
+msgstr "Yêu cầu đường cơ sở"
+
+#
+msgid "New project this month"
+msgstr "Dự án mới trong tháng"
+
+#
+msgid "Project tasks"
+msgstr "Công việc dự án"
+
+#
+msgid "Project Expense"
+msgstr "Chi phí dự án"
+
+#
+msgid "Project Owner"
+msgstr "Pháp nhân dự án"
+
+#
+msgid "Project per years"
+msgstr "Dự án trên năm"
+
+#
+msgid "Project status"
+msgstr "Tình trạng dự án"
+
+#
+msgid "excl tax"
+msgstr "chưa thuế"
+
+#
+msgid "All (Completed)"
+msgstr "Tất cả (Hoàn thành)"
+
+#
+msgid "Goods stock plan"
+msgstr "Kế hoạch nhập hàng"
+
+#
+msgid "Periodic result"
+msgstr "Kết quả định kỳ"
+
+#
+msgid "Cumulative result"
+msgstr "Kết quả tích luỹ"
+
+
+#
 msgid "Received before"
 msgstr "Đã nhập"
 

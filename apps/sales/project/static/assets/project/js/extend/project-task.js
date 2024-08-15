@@ -558,9 +558,8 @@ class Task_in_project {
         }).then(
             (resp) => {
                 const data = $.fn.switcherResp(resp);
-                if (data && (data['status'] === 201 || data['status'] === 200)) {
+                if (data && (data['status'] === 201 || data['status'] === 200))
                     $.fn.notifyB({description: data.message}, 'success');
-                }
                 window.task_done = false
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')

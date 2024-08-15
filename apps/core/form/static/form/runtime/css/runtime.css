@@ -417,6 +417,10 @@ table.matrix-table .matrix-cell-check input[type=checkbox] {
     height: 1.2rem;
 }
 
+table.matrix-table .matrix-cell-check input[type=checkbox]:disabled:checked {
+    filter: invert(100%) hue-rotate(18deg) brightness(5);
+}
+
 .matrix-text {
     font-size: 0.8rem;
     font-style: italic;
@@ -425,3 +429,15 @@ table.matrix-table .matrix-cell-check input[type=checkbox] {
 }
 
 /* -- Matrix */
+
+/* xbox */
+select[data-select-style="xbox"] ~ .form-checkbox-group input[type=checkbox]:disabled:checked {
+    filter: invert(100%) hue-rotate(18deg) brightness(5);
+}
+/* -- xbox */
+
+/* Many checkbox */
+.f-many-checkbox:not(.form-checkbox-switch) input[type=checkbox]:disabled:checked {
+    filter: invert(100%) hue-rotate(18deg) brightness(5);
+}
+/* -- Many checkbox */

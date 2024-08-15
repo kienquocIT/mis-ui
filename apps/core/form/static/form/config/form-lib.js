@@ -230,7 +230,7 @@ class SortableField {
         ele$.addClass('sortable-item-highlight');
         setTimeout(
             () => ele$.removeClass('sortable-item-highlight'),
-            2000
+            1010
         )
     }
 
@@ -395,7 +395,7 @@ class SortableField {
         return arrResult;
     }
 
-    html_all() {
+    html_all(keep_footer) {
         const sortable$ = $(this.ele$.prop('outerHTML'));
         const page$ = $('#page-sortable');
 
@@ -468,6 +468,9 @@ class SortableField {
         // remove class
         html$.find('.ui-sortable').removeClass('ui-sortable');
         html$.find('.sortable-item').removeClass('sortable-item').alterClass('sortable-item-*');
+
+        // empty footer sub
+        if (keep_footer === false) html$.find('.form-foot-sub').empty().text('${footerSub}');
 
         return html$.children().prop('outerHTML');
     }
@@ -634,7 +637,7 @@ class ToolboxField {
                 'done': function () {
                     let body$ = clsThis.iframePreview$.contents().find("body");
                     let content$ = body$.find("#contents");
-                    let html = clsThis.formTitleCls.return_html_all();
+                    let html = clsThis.formTitleCls.return_html_all(true);
 
                     $.fn.callAjax2({
                         url: clsThis.iframePreview$.attr('data-format-url'),
@@ -650,7 +653,7 @@ class ToolboxField {
                             let sanitize_html = data['sanitize_html'];
                             if (content$.find('form').length > 0) content$.find('form').empty().append(sanitize_html); else content$.empty().append(sanitize_html);
                             // add JS
-                            body$.append(`<script src="/static/form/runtime/runtime.js"></script>`)
+                            body$.append(`<script src="/static/form/runtime/js/preview.js"></script>`)
                             // active theme
                             const theme_selected = clsThis.formConfig('theme_selected');
                             if (theme_selected) {
@@ -1682,8 +1685,8 @@ class FormTitleComponentType extends FormComponentAbstract {
 
     // Export for all
 
-    return_html_all() {
-        return this.sortableCls.html_all();
+    return_html_all(keep_footer=false) {
+        return this.sortableCls.html_all(keep_footer);
     }
 
     return_config_all() {
@@ -1785,6 +1788,7 @@ class FormPageListComponentType extends FormComponentAbstract {
 
     get defaultConfig() {
         return {
+            'label': 'Page', // fake label in client, don't save in API
             'enabled': false,
             'items': [],
             'show_progress_page': true,
@@ -2225,7 +2229,7 @@ class FormPageListComponentType extends FormComponentAbstract {
     }
 
     trigger_objRemove() {
-        this.config = {'items': []};
+        this.config = {'enabled': false, 'items': []};
         this.trigger_objReinitEle();
         this.sortableItem$.hide();
     }
@@ -3797,7 +3801,7 @@ class FormSelectComponentType extends FormComponentAbstract {
                         value="${item.value}"
                         data-col="${item.col}"
                         data-row="${item.row}" 
-                        data-group="${item.group}"
+                        data-group="${item.group || ''}"
                         ${selectedTmp ? "selected" : ""}
                     >${item.title}</option>
                 `);
@@ -4162,7 +4166,7 @@ class FormManyCheckboxComponentType extends FormComponentAbstract {
 
         for (let i = 0; i < configArr.length; i++) {
             this.applyInputsDataToInput(inpArr$[i], configArr[i]);
-            const ele$ = $(`<div class="form-checkbox-group mb-1"></div>`).append(inpArr$[i]).append(labelArr$[i]);
+            const ele$ = $(`<div class="form-checkbox-group f-many-checkbox mb-1"></div>`).append(inpArr$[i]).append(labelArr$[i]);
             switch (config.checkbox_style) {
                 case 'default':
                     break

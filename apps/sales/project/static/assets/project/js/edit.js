@@ -128,7 +128,7 @@ $(document).ready(function () {
                 $('#employeeInheritInput').attr('data-value', data['employee_inherit'].id).val(data['employee_inherit'].full_name);
                 $('#dateStart').val(moment(data.start_date).format('DD/MM/YYYY'))
                 $('#dateFinish').val(moment(data.finish_date).format('DD/MM/YYYY'))
-                $('.completion_rate_block .heading').text(`${data['completion_rate']}%`)
+
                 const afterData = fGanttCustom.convert_data(data.groups, data?.['works'])
                 new_gantt.load_more(afterData)
                 ProjectTeamsHandle.render(data.members)
@@ -141,6 +141,16 @@ $(document).ready(function () {
                 }
                 else $('#create_baseline').prop('disabled', true)
                 WFRTControl.setWFInitialData('projectbaseline', 'post');
+
+                let numInc = 0
+                let intervalId = setInterval(() => {
+                    if (numInc <= data['completion_rate']) {
+                        $('').text();
+                        $('.completion_rate_block .heading span').text(numInc++)
+                    } else {
+                        clearInterval(intervalId);
+                    }
+                }, 50);
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )

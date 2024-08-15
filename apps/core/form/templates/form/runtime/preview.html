@@ -1,6 +1,21 @@
 {% extends 'form/runtime/base.html' %}
 {% load i18n static form_runtime %}
 
+{% block CSP %}
+    <meta
+            http-equiv="Content-Security-Policy"
+            content="
+                default-src 'none';
+                script-src 'self' 'unsafe-inline';
+                style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+                font-src 'self' https://fonts.gstatic.com;
+                img-src 'self' https: data:;
+                frame-src 'self' https:;
+                connect-src 'self' https://api.ipify.org;
+            "
+    >
+{% endblock %}
+
 {% block Contents %}
     {% random_idx as formIdx %}
     <form

@@ -8383,11 +8383,11 @@ msgstr "Giá sản phẩm"
 
 #
 msgid "Break event point"
-msgstr "Điểm hoà vốn"
+msgstr "Số lượng hoà vốn"
 
 #
 msgid "Expected number"
-msgstr "Doanh số kì vọng"
+msgstr "Số lượng kì vọng"
 
 #
 msgid "Plan description"
@@ -8441,3 +8441,10 @@ msgstr "Kết quả định kỳ"
 msgid "Cumulative result"
 msgstr "Kết quả tích luỹ"
 
+#
+msgid "Request quantity"
+msgstr "SL yêu cầu"
+
+#
+msgid "Stock plan"
+msgstr "Kế hoạch nhập hàng"

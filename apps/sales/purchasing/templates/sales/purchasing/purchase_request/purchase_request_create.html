@@ -179,7 +179,7 @@
         </div>
         <div class="tab-content" id="tab-content-purchase-request-product">
             <div class="tab-pane fade show active" id="tab_line_detail">
-                <table id="datatable-pr-product-so" class="table nowrap w-100 mb-5">
+                <table id="datatable-pr-product-so" class="table nowrap w-100 mb-5 hidden">
                     <thead>
                         <tr>
                         <th class="w-5">#</th>
@@ -195,20 +195,33 @@
                     <tbody></tbody>
                 </table>
 
-                <table id="datatable-pr-product-stock-plan" class="table nowrap w-100 mb-5">
+                <table data-url-tax="{% url 'TaxListAPI' %}" id="datatable-pr-product-stock-plan" class="table nowrap w-100 mb-5 hidden">
                     <thead>
                         <tr>
-                            <th></th>
-                            <th>{% trans "Product" %}</th>
-                            <th>{% trans "Description" %}</th>
-                            <th>{% trans "UoM" %}</th>
-                            <th>{% trans "Quantity" %}</th>
-                            <th>{% trans "Unit Price" %}</th>
-                            <th>{% trans "Tax" %}</th>
-                            <th>{% trans "Subtotal Price" %}</th>
+                            <th style="min-width: 50px"></th>
+                            <th style="min-width: 200px">{% trans "Product" %}</th>
+                            <th style="min-width: 100px">{% trans "Description" %}</th>
+                            <th style="min-width: 100px">{% trans "UoM" %}</th>
+                            <th style="min-width: 100px">{% trans "Request quantity" %}</th>
+                            <th style="min-width: 200px">{% trans "Unit Price" %}</th>
+                            <th style="min-width: 200px">{% trans "Tax" %}</th>
+                            <th style="min-width: 200px">{% trans "Subtotal Price" %}</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="5"></td>
+                        <td>
+                            <input class="form-control mb-1" disabled readonly value="{% trans 'Pretax Amount' %}">
+                            <input class="form-control mb-1" disabled readonly value="{% trans 'Taxes' %}">
+                            <input class="form-control mb-1" disabled readonly value="{% trans 'Total' %}">
+                        </td>
+                        <td colspan="2">
+                            <input id="input-product-pretax-amount" class="form-control mask-money" disabled readonly>
+                        </td>
+                    </tr>
+                    </tfoot>
                 </table>
 
                 <table id="datatable-pr-product-other" class="table nowrap w-100 mb-5 hidden">
@@ -243,13 +256,7 @@
                         <div class="row mb-2">
                             <div class="col-6"><p>{% trans 'Pretax Amount' %}</p></div>
                             <div class="col-6">
-                                <input
-                                        id="input-product-pretax-amount"
-                                        type="text"
-                                        class="form-control mask-money"
-                                        data-return-type="number"
-                                        readonly
-                                >
+                                <input id="input-product-pretax-amount" class="form-control mask-money" readonly>
                             </div>
                         </div>
                         <div class="row mb-2">

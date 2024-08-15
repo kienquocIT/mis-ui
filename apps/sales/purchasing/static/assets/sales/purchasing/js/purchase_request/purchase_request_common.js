@@ -97,6 +97,27 @@ class PurchaseRequestLoadPage {
         })
     }
 
+    static loadTaxDistribution(ele, url, data) {
+        ele.initSelect2({
+            ajax: {
+                url: url,
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'tax_list',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function() {
+            let tax_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
+            let unit_price = parseFloat($(this).closest('tr').find('.inp-unit-price-distribution').attr('value'))
+            let quantity = parseFloat($(this).closest('tr').find('.request_number').text())
+            let tax_rate = ele.val() ? parseFloat(tax_selected?.['rate']) : 0
+            let subtotal_after_tax = quantity * unit_price + quantity * unit_price * tax_rate / 100
+            $(this).closest('tr').find('.inp-subtotal-distribution').attr('data-init-money', subtotal_after_tax)
+            $.fn.initMaskMoney2()
+        })
+    }
+
     static loadUoM(ele, data, param) {
         ele.initSelect2({
             data: data,
@@ -316,47 +337,61 @@ class PurchaseRequestAction {
             data: product_datas,
             columns: [
                 {
-                    className: 'wrap-text',
+                    className: 'wrap-text w-5',
                     render: () => {
                         return ``
                     }
-                }, {
-                    className: 'wrap-text',
+                },
+                {
+                    className: 'wrap-text w-20',
                     render: (data, type, row) => {
-                        return `<span class="w-30 badge badge-soft-primary">${row?.['code']}</span>&nbsp;<span>${row?.['title']}</span>`;
+                        return `<span data-id="${row?.['id']}" class="w-30 badge badge-soft-primary product-distribution">${row?.['code']}</span>&nbsp;<span>${row?.['title']}</span>`;
                     }
-                }, {
-                    className: 'wrap-text',
+                },
+                {
+                    className: 'wrap-text w-10',
                     render: (data, type, row) => {
                         return `<span>${row?.['description']}</span>`
                     }
-                }, {
-                    className: 'wrap-text',
+                },
+                {
+                    className: 'wrap-text text-center w-10',
                     render: (data, type, row) => {
-                        return `<span>xxx</span>`
+                        return `<span>${row?.['uom']}</span>`
                     }
-                }, {
-                    className: 'wrap-text text-center',
+                },
+                {
+                    className: 'wrap-text text-center w-10',
                     render: (data, type, row) => {
-                        return `<span>${row?.['request_number']}</span>`
+                        return `<span class="request_number">${row?.['request_number']}</span>`
                     }
-                }, {
-                    className: 'wrap-text',
+                },
+                {
+                    className: 'wrap-text w-15',
                     render: (data, type, row) => {
-                        return `<input class="form-control mask-money inp-unit-price" value="0"/>`
+                        return `<input class="form-control mask-money inp-unit-price-distribution" value="0"/>`
                     }
-                }, {
-                    className: 'wrap-text',
+                },
+                {
+                    className: 'wrap-text w-15',
                     render: () => {
                         return `<select class="form-select select2 request-product-tax"></select>`;
                     }
-                }, {
-                    className: 'wrap-text',
+                },
+                {
+                    className: 'wrap-text w-15',
                     render: (data, type, row) => {
-                        return `<span class="mask-money inp-subtotal" data-init-money="0"></span>`
+                        return `<span class="mask-money inp-subtotal-distribution" data-init-money="0"></span>`
                     }
                 },
-            ]
+            ],
+            initComplete: function () {
+                if (product_datas.length > 0) {
+                    tableProductForStockPlan.find('tbody tr').each(function () {
+                        PurchaseRequestLoadPage.loadTaxDistribution($(this).find('.request-product-tax'), tableProductForStockPlan.attr('data-url-tax'))
+                    })
+                }
+            }
         });
     }
 
@@ -523,28 +558,32 @@ class PurchaseRequestAction {
                     render: () => {
                         return ``
                     }
-                }, {
+                },
+                {
                     className: 'wrap-text w-40',
                     render: (data, type, row) => {
                         return `<span data-product-id="${row?.['id']}"
                                       data-product-code="${row?.['code']}"
                                       data-product-title="${row?.['title']}"
-                                      data-product-uom="${row?.['uom']}"
+                                      data-product-uom="${row?.['uom']?.['title']}"
                                       data-product-description="${row?.['description']}"
                                       class="w-30 badge badge-secondary product-span"
                                 >${row?.['code']}</span>&nbsp;<span class="text-secondary">${row?.['title']}</span>`
                     }
-                }, {
+                },
+                {
                     className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
                         return `<span class="expected-number-span">${row?.['expected_number']}</span>`
                     }
-                }, {
+                },
+                {
                     className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
                         return `<span class="remain-number-span">${parseFloat(row?.['expected_number']) - parseFloat(row?.['purchase_request_number'])}</span>`
                     }
-                }, {
+                },
+                {
                     className: 'wrap-text text-center w-20',
                     render: (data, type, row) => {
                         return `<input type="number" class="form-control request-number-input" value="0" max="${parseFloat(row?.['expected_number']) - parseFloat(row?.['purchase_request_number'])}">`
@@ -1137,6 +1176,17 @@ class PurchaseRequestEvent {
                 PurchaseRequestAction.loadDtbPRProductForDistribution(request_product_data)
                 $('#modal-select-distribution').modal('hide')
             }
+        })
+
+        $(document).on('change', '.inp-unit-price-distribution', function () {
+            let tax_ele = $(this).closest('tr').find('.request-product-tax')
+            let tax_selected = SelectDDControl.get_data_from_idx(tax_ele, tax_ele.val())
+            let unit_price = parseFloat($(this).closest('tr').find('.inp-unit-price-distribution').attr('value'))
+            let quantity = parseFloat($(this).closest('tr').find('.request_number').text())
+            let tax_rate = tax_ele.val() ? parseFloat(tax_selected?.['rate']) : 0
+            let subtotal_after_tax = quantity * unit_price + quantity * unit_price * tax_rate / 100
+            $(this).closest('tr').find('.inp-subtotal-distribution').attr('data-init-money', subtotal_after_tax)
+            $.fn.initMaskMoney2()
         })
 
         $(document).on('change', '.inp-request-so-product', function () {

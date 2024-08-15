@@ -352,6 +352,7 @@ $(async function () {
                                     let dataS0 = JSON.parse($eleSO.attr('data-so'));
                                     for (let data of borrow_data?.['regis_data']) {
                                         data['sale_order'] = dataS0;
+                                        data['available_stock'] = data?.['common_stock'];
                                     }
                                 }
                                 let dataBorrow = setupDataPW(borrow_data?.['regis_data'], whID);
@@ -364,7 +365,6 @@ $(async function () {
                                 }
                             }
                         }
-
                         for (let data of dataPW) {
                             let finalRate = 1;
                             if (data?.['uom'] && prod?.['uom_data']) {
@@ -381,14 +381,14 @@ $(async function () {
                             if (data?.['is_pw']) {
                                 badgeStock = `<span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-common-wh')}</span>`;
                             }
-                            htmlStock += `<div class="d-flex mb-1 align-items-center">
-                                            ${badgeStock}
-                                            <span class="pw-available text-success" data-so="${JSON.stringify(so).replace(/"/g, "&quot;")}" data-so-id="${so?.['id']}">${available}</span>
+                            htmlStock += `<div class="row mb-1 align-items-center">
+                                            <div class="col-12 col-md-6 col-lg-6">${badgeStock}</div>
+                                            <div class="col-12 col-md-6 col-lg-6"><span class="badge badge-pink badge-outline pw-available" data-so="${JSON.stringify(so).replace(/"/g, "&quot;")}" data-so-id="${so?.['id']}">${available}</span></div>
                                         </div>`;
-                            htmlPick += `<div class="d-flex mb-1 align-items-center">
-                                        <div>${badgeStock}</div>
-                                        <input class="form-control so-quantity-pick" type="number" value="0" data-so="${JSON.stringify(so).replace(/"/g, "&quot;")}" data-so-id="${so?.['id']}">
-                                    </div>`;
+                            htmlPick += `<div class="row mb-1 align-items-center">
+                                            <div class="col-12 col-md-6 col-lg-6"><div>${badgeStock}</div></div>
+                                            <div class="col-12 col-md-6 col-lg-6"><input class="form-control so-quantity-pick" type="number" value="0" data-so="${JSON.stringify(so).replace(/"/g, "&quot;")}" data-so-id="${so?.['id']}"></div>                                   
+                                        </div>`;
                         }
                     }
 

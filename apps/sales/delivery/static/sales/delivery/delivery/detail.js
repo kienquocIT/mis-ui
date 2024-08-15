@@ -461,7 +461,7 @@ $(async function () {
                                             >
                                                 <span class="icon"><i class="fas fa-chevron-down"></i></span>
                                             </button>
-                                            <span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-project')}: ${row?.['sale_order']?.['code']}</span><span class="badge badge-warning badge-outline">${$trans.attr('data-available')}: ${row?.['available_stock']}</span>
+                                            <span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-project')}: ${row?.['sale_order']?.['code']}</span><span class="badge badge-pink badge-outline">${$trans.attr('data-available')}: ${row?.['available_stock']}</span>
                                         </div>`;
                             }
                             if (row?.['is_regis_common'] === true) {
@@ -480,7 +480,7 @@ $(async function () {
                                             >
                                                 <span class="icon"><i class="fas fa-chevron-down"></i></span>
                                             </button>
-                                            <span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-common-wh')}</span><span class="badge badge-warning badge-outline">${$trans.attr('data-available')}: ${row?.['available_stock']}</span>
+                                            <span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-common-wh')}</span><span class="badge badge-pink badge-outline">${$trans.attr('data-available')}: ${row?.['available_stock']}</span>
                                         </div>`;
                             }
                             let checked = '';
@@ -787,14 +787,8 @@ $(async function () {
                 ],
                 rowCallback(row, data, index) {
                     $(`input.form-control`, row).on('change', function () {
-                        prodTable.validateQuantity(this);
-                        let valueLotInit = row?.querySelector('.table-row-quantity-init')?.innerHTML;
-                        if (parseFloat(this.value) <= parseFloat(valueLotInit)) {
-                            prodTable.loadQuantityDeliveryByLot(this);
-                        } else {
-                            $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
-                            this.value = '0';
-                        }
+                        prodTable.formatNum(this);
+                        prodTable.loadQuantityDeliveryByLot(this);
                     });
                 },
             });
@@ -802,6 +796,61 @@ $(async function () {
                 tableLot.DataTable().clear().draw();
                 tableLot.DataTable().rows.add(data ? data : []).draw();
             }
+        };
+
+        loadQuantityDeliveryByLot(ele) {
+            let row = ele.closest('tr');
+            if (row?.querySelector('.table-row-quantity-init')) {
+                let value = parseFloat(ele.value);
+                let valueLotInit = parseFloat(row?.querySelector('.table-row-quantity-init')?.innerHTML);
+                if (value > valueLotInit) {
+                    $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
+                    ele.value = '0';
+                    prodTable.loadQuantityDeliveryByLot(ele);
+                    return false;
+                }
+            }
+            let tableWH = $('#productStockDetail');
+            let rowChecked = tableWH[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr');
+            if (rowChecked) {
+                let newQuantity = 0;
+                let {valStock, valAvb} = prodTable.getValStockValAvb(tableWH, rowChecked);
+                let eleWHInput = rowChecked?.querySelector('.table-row-picked');
+                let lotData = [];
+                if (eleWHInput) {
+                    $('#datable-delivery-wh-lot').DataTable().rows().every(function () {
+                        let row = this.node();
+                        let rowLotData = this.data();
+                        let valueLotInit= row?.querySelector('.table-row-quantity-init')?.innerHTML;
+                        let valueLotInput = row?.querySelector('.table-row-quantity-delivery')?.value;
+                        newQuantity += parseFloat(valueLotInput);
+                        if (parseFloat(valueLotInput) > 0 && parseFloat(valueLotInput) <= parseFloat(valueLotInit)) {
+                            lotData.push({
+                                'product_warehouse_lot_id': rowLotData?.['id'],
+                                'quantity_initial': parseFloat(valueLotInit),
+                                'quantity_delivery': parseFloat(valueLotInput),
+                            })
+                        }
+                    });
+                    if (newQuantity <= valStock && newQuantity <= valAvb) {
+                        eleWHInput.value = newQuantity;
+                        // store new row data & redraw row
+                        let rowIndex = tableWH.DataTable().row(rowChecked).index();
+                        let $row = tableWH.DataTable().row(rowIndex);
+                        let rowData = $row.data();
+                        rowData['picked'] = newQuantity;
+                        rowData['lot_data'] = lotData;
+                        rowData['is_checked'] = true;
+                        tableWH.DataTable().row(rowIndex).data(rowData).draw();
+                    } else {
+                        $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
+                        ele.value = '0';
+                        prodTable.loadQuantityDeliveryByLot(ele);
+                        return false;
+                    }
+                }
+            }
+            return true;
         };
 
         loadSerial(eleChecked, row, data, productWHID) {
@@ -980,66 +1029,15 @@ $(async function () {
             }
         };
 
-        loadUnCheckWH() {
-            for (let eleCheck of $('#productStockDetail')[0].querySelectorAll('.table-row-checkbox')) {
-                eleCheck.checked = false;
-                $(eleCheck.closest('tr')).css('background-color', '');
-            }
-        };
-
-        loadQuantityDeliveryByLot(ele) {
-            let tableWH = $('#productStockDetail');
-            let rowChecked = tableWH[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr');
-            if (rowChecked) {
-                let newQuantity = 0;
-                let valueWHAvailable = rowChecked?.querySelector('.table-row-available')?.innerHTML;
-                let eleWHInput = rowChecked?.querySelector('.table-row-picked');
-                let lotData = [];
-                if (valueWHAvailable && eleWHInput) {
-                    $('#datable-delivery-wh-lot').DataTable().rows().every(function () {
-                        let row = this.node();
-                        let rowLotData = this.data();
-                        let valueLotInit= row?.querySelector('.table-row-quantity-init')?.innerHTML;
-                        let valueLotInput = row?.querySelector('.table-row-quantity-delivery')?.value;
-                        newQuantity += parseFloat(valueLotInput);
-                        if (parseFloat(valueLotInput) > 0 && parseFloat(valueLotInput) <= parseFloat(valueLotInit)) {
-                            lotData.push({
-                                'product_warehouse_lot_id': rowLotData?.['id'],
-                                'quantity_initial': parseFloat(valueLotInit),
-                                'quantity_delivery': parseFloat(valueLotInput),
-                            })
-                        }
-                    });
-                    if (newQuantity <= parseFloat(valueWHAvailable)) {
-                        eleWHInput.value = newQuantity;
-                        // store new row data & redraw row
-                        let rowIndex = tableWH.DataTable().row(rowChecked).index();
-                        let $row = tableWH.DataTable().row(rowIndex);
-                        let rowData = $row.data();
-                        rowData['picked'] = newQuantity;
-                        rowData['lot_data'] = lotData;
-                        rowData['is_checked'] = true;
-                        tableWH.DataTable().row(rowIndex).data(rowData).draw();
-                    } else {
-                        $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
-                        ele.value = '0';
-                        prodTable.loadQuantityDeliveryByLot(ele);
-                        return false;
-                    }
-                }
-            }
-            return true;
-        };
-
         loadQuantityDeliveryBySerial(ele) {
             let tableWH = $('#productStockDetail');
             let rowChecked = tableWH[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr');
             if (rowChecked) {
                 let newQuantity = 0;
-                let valueWHAvailable = rowChecked?.querySelector('.table-row-available')?.innerHTML;
+                let {valStock, valAvb} = prodTable.getValStockValAvb(tableWH, rowChecked);
                 let eleWHInput = rowChecked?.querySelector('.table-row-picked');
                 let serialData = [];
-                if (valueWHAvailable && eleWHInput) {
+                if (eleWHInput) {
                     $('#datable-delivery-wh-serial').DataTable().rows().every(function () {
                         let row = this.node();
                         let rowSerialData = this.data();
@@ -1053,7 +1051,7 @@ $(async function () {
                             }
                         }
                     });
-                    if (newQuantity <= parseFloat(valueWHAvailable)) {
+                    if (newQuantity <= valStock && newQuantity <= valAvb) {
                         eleWHInput.value = newQuantity;
                         // store new row data & redraw row
                         let rowIndex = tableWH.DataTable().row(rowChecked).index();
@@ -1067,14 +1065,43 @@ $(async function () {
                         $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
                         ele.checked = false;
                         prodTable.loadQuantityDeliveryBySerial(ele);
-                        return false
+                        return false;
                     }
                 }
             }
             return true;
         };
 
-        validateQuantity(ele) {
+        getValStockValAvb(table, rowChecked) {
+            let valStock = 0;
+            if (rowChecked?.querySelector('.table-row-available')) {
+                valStock = parseFloat(rowChecked?.querySelector('.table-row-available')?.innerHTML);
+            }
+            let valAvb = 0;
+            for (let cls of rowChecked.classList) {
+                if (cls.includes('cl')) {
+                    let target = '.' + cls;
+                    let clParent = table[0].querySelector(`.cl-parent[data-bs-target="${target}"]`);
+                    if (clParent) {
+                        if (clParent.getAttribute('data-row')) {
+                            let dataRow = JSON.parse(clParent.getAttribute('data-row'));
+                            valAvb = dataRow?.['available_stock'];
+                            break;
+                        }
+                    }
+                }
+            }
+            return {valStock: valStock, valAvb: valAvb};
+        };
+
+        loadUnCheckWH() {
+            for (let eleCheck of $('#productStockDetail')[0].querySelectorAll('.table-row-checkbox')) {
+                eleCheck.checked = false;
+                $(eleCheck.closest('tr')).css('background-color', '');
+            }
+        };
+
+        formatNum(ele) {
             let value = ele.value;
             // Replace non-digit characters with an empty string
             value = value.replace(/[^0-9.]/g, '');

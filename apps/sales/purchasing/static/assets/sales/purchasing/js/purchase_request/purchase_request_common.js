@@ -113,8 +113,9 @@ class PurchaseRequestLoadPage {
             let quantity = parseFloat($(this).closest('tr').find('.request_number').text())
             let tax_rate = ele.val() ? parseFloat(tax_selected?.['rate']) : 0
             let subtotal_after_tax = quantity * unit_price + quantity * unit_price * tax_rate / 100
-            $(this).closest('tr').find('.inp-subtotal-distribution').attr('data-init-money', subtotal_after_tax)
+            $(this).closest('tr').find('.inp-subtotal-distribution').attr('value', subtotal_after_tax)
             $.fn.initMaskMoney2()
+            PurchaseRequestAction.calculate_sum_distribution_prd()
         })
     }
 
@@ -333,7 +334,9 @@ class PurchaseRequestAction {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            autoWidth: false,
+            scrollY: '20vh',
+            scrollX: '100vh',
+            scrollCollapse: true,
             data: product_datas,
             columns: [
                 {
@@ -355,13 +358,13 @@ class PurchaseRequestAction {
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-10',
+                    className: 'wrap-text w-10',
                     render: (data, type, row) => {
                         return `<span>${row?.['uom']}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-10',
+                    className: 'wrap-text w-10',
                     render: (data, type, row) => {
                         return `<span class="request_number">${row?.['request_number']}</span>`
                     }
@@ -369,7 +372,7 @@ class PurchaseRequestAction {
                 {
                     className: 'wrap-text w-15',
                     render: (data, type, row) => {
-                        return `<input class="form-control mask-money inp-unit-price-distribution" value="0"/>`
+                        return `<input class="form-control mask-money text-right inp-unit-price-distribution" value="0"/>`
                     }
                 },
                 {
@@ -381,7 +384,7 @@ class PurchaseRequestAction {
                 {
                     className: 'wrap-text w-15',
                     render: (data, type, row) => {
-                        return `<span class="mask-money inp-subtotal-distribution" data-init-money="0"></span>`
+                        return `<input class="form-control mask-money text-right inp-subtotal-distribution" disabled readonly value="0">`
                     }
                 },
             ],
@@ -1023,6 +1026,10 @@ class PurchaseRequestAction {
                 tableProductForOther.addClass('hidden');
                 tableProductForStockPlan.DataTable().clear().destroy();
                 tableProductForStockPlan.addClass('hidden');
+                $('#sum-space').prop('hidden', false)
+                $('#distribution-sum-space').prop('hidden', true)
+                $('#sale-order-code-div').prop('hidden', false)
+                $('#distribution-code-div').prop('hidden', true)
 
                 await PurchaseRequestAction.loadSaleOrder(sale_order_id);
                 PurchaseRequestAction.loadDtbSOProduct([]);
@@ -1041,6 +1048,10 @@ class PurchaseRequestAction {
                 tableProductForOther.addClass('hidden');
                 tableProductForSO.DataTable().clear().destroy();
                 tableProductForSO.addClass('hidden');
+                $('#sum-space').prop('hidden', true)
+                $('#distribution-sum-space').prop('hidden', false)
+                $('#sale-order-code-div').prop('hidden', true)
+                $('#distribution-code-div').prop('hidden', false)
 
                 await PurchaseRequestAction.loadDistributionPlan();
                 PurchaseRequestAction.loadDtbDistributionProduct([]);
@@ -1056,6 +1067,10 @@ class PurchaseRequestAction {
                 tableProductForOther.DataTable().clear().destroy();
                 tableProductForSO.DataTable().clear().destroy();
                 tableProductForSO.addClass('hidden');
+                $('#sum-space').prop('hidden', false)
+                $('#distribution-sum-space').prop('hidden', true)
+                $('#sale-order-code-div').prop('hidden', true)
+                $('#distribution-code-div').prop('hidden', true)
                 PurchaseRequestAction.loadDtbPRProductForOther();
                 break;
         }
@@ -1073,6 +1088,24 @@ class PurchaseRequestAction {
         ele.find('.span-contact-job-title').text(data.job_title);
         ele.find('.span-contact-mobile').text(data.mobile);
         ele.find('.span-contact-email').text(data.email);
+    }
+
+    static calculate_sum_distribution_prd() {
+        let sum_pre_tax = 0
+        let sum_tax = 0
+        let sum_after_tax = 0
+        tableProductForStockPlan.find('tbody tr').each(function () {
+            let quantity = $(this).find('.request_number').text()
+            let unit_price = $(this).find('.inp-unit-price-distribution').attr('value')
+            let after_tax = $(this).find('.inp-subtotal-distribution').attr('value')
+            sum_pre_tax += (quantity ? parseFloat(quantity) : 0) * (unit_price ? parseFloat(unit_price) : 0)
+            sum_after_tax += after_tax ? parseFloat(after_tax) : 0
+            sum_tax = (after_tax ? parseFloat(after_tax) : 0) - ((quantity ? parseFloat(quantity) : 0) * (unit_price ? parseFloat(unit_price) : 0))
+        })
+        $('#distribution-sum-pretax').attr('value', sum_pre_tax)
+        $('#distribution-sum-tax').attr('value', sum_tax)
+        $('#distribution-sum-aftertax').attr('value', sum_after_tax)
+        $.fn.initMaskMoney2()
     }
 }
 
@@ -1152,7 +1185,8 @@ class PurchaseRequestEvent {
             distribution_product_table.find('tbody tr').each(function () {
                 let limit_number = $(this).find('.remain-number-span').text() ? parseFloat($(this).find('.remain-number-span').text()) : 0
                 let request_number = $(this).find('.request-number-input').val() ? parseFloat($(this).find('.request-number-input').val()) : 0
-                if (request_number <= limit_number) {
+
+                if (request_number && request_number <= limit_number && $(this).find('.remain-number-span').text() && $(this).find('.request-number-input').val()) {
                     request_product_data.push({
                         'id': $(this).find('.product-span').attr('data-product-id'),
                         'code': $(this).find('.product-span').attr('data-product-code'),
@@ -1174,6 +1208,11 @@ class PurchaseRequestEvent {
             })
             if (flag) {
                 PurchaseRequestAction.loadDtbPRProductForDistribution(request_product_data)
+                $('.inp-check-distribution').each(function () {
+                    if ($(this).prop('checked')) {
+                        $('#stock-plan').val($(this).closest('tr').find('.p-so-code').text())
+                    }
+                })
                 $('#modal-select-distribution').modal('hide')
             }
         })
@@ -1185,8 +1224,9 @@ class PurchaseRequestEvent {
             let quantity = parseFloat($(this).closest('tr').find('.request_number').text())
             let tax_rate = tax_ele.val() ? parseFloat(tax_selected?.['rate']) : 0
             let subtotal_after_tax = quantity * unit_price + quantity * unit_price * tax_rate / 100
-            $(this).closest('tr').find('.inp-subtotal-distribution').attr('data-init-money', subtotal_after_tax)
+            $(this).closest('tr').find('.inp-subtotal-distribution').attr('value', subtotal_after_tax)
             $.fn.initMaskMoney2()
+            PurchaseRequestAction.calculate_sum_distribution_prd()
         })
 
         $(document).on('change', '.inp-request-so-product', function () {

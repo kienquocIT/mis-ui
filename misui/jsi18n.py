@@ -33,4 +33,5 @@ I18N_JS_MATCH_APP = {
     'mailer': 'apps.core.mailer',
     'form': 'apps.core.form',
     'form_runtime': ['apps.core.form', 'djangojs_runtime'],
+    'project_home': 'apps.sales.project',
 }

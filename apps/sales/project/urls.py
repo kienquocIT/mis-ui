@@ -5,7 +5,7 @@ from apps.sales.project.views import ProjectList, ProjectCreate, ProjectCreateAP
     ProjectWorkListAPI, ProjectGroupDetailAPI, ProjectWorkDetailAPI, ProjectMemberAddAPI, ProjectMemberDetailAPI, \
     ProjectUpdateOrderAPI, ProjectTaskListAPI, ProjectGroupDDListAPI, ProjectTaskDetailAPI, ProjectWorkExpenseAPI, \
     ProjectListBaselineAPI, ProjectBaselineDetail, ProjectBaselineDetailAPI, ProjectHome, ProjectConfig, \
-    ProjectConfigAPI, ProjectExpenseListAPI
+    ProjectConfigAPI, ProjectExpenseListAPI, ProjectListBaseline, ProjectWorkList
 
 urlpatterns = [
     # project
@@ -25,6 +25,7 @@ urlpatterns = [
     path('group/create-api', ProjectCreateGroupAPI.as_view(), name='ProjectCreateGroupAPI'),
     path('group/detail-api/<str:pk>', ProjectGroupDetailAPI.as_view(), name='ProjectGroupDetailAPI'),
     # project work
+    path('work/list', ProjectWorkList.as_view(), name='ProjectWorkList'),
     path('work/list-api', ProjectWorkListAPI.as_view(), name='ProjectWorkListAPI'),
     path('work/create-api', ProjectWorkCreateAPI.as_view(), name='ProjectWorkCreateAPI'),
     path('work/detail-api/<str:pk>', ProjectWorkDetailAPI.as_view(), name='ProjectWorkDetailAPI'),
@@ -47,8 +48,9 @@ urlpatterns = [
     path('work-expense-list', ProjectWorkExpenseAPI.as_view(), name='ProjectWorkExpenseAPI'),
     path('project-expense-list', ProjectExpenseListAPI.as_view(), name='ProjectExpenseListAPI'),
     # project baseline
-    path('baseline-api', ProjectListBaselineAPI.as_view(), name='ProjectListBaselineAPI'),
-    path('detail/baseline-version/<str:pk>', ProjectBaselineDetail.as_view(), name='ProjectBaselineDetail'),
+    path('baseline/list', ProjectListBaseline.as_view(), name='ProjectListBaseline'),
+    path('baseline/list-api', ProjectListBaselineAPI.as_view(), name='ProjectListBaselineAPI'),
+    path('baseline/detail/baseline-version/<str:pk>', ProjectBaselineDetail.as_view(), name='ProjectBaselineDetail'),
     path(
         'detail/baseline-version/detail-api/<str:pk>', ProjectBaselineDetailAPI.as_view(),
         name='ProjectBaselineDetailAPI'

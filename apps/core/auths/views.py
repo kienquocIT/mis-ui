@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.models import AnonymousUser
@@ -145,6 +147,10 @@ class AuthLogin(APIView):
                 if user:
                     if not frm.cleaned_data.get('remember'):
                         request.session.set_expiry(0)
+                    # random DEVICE_ID
+                    request.session.update({
+                        ServerAPI.KEY_SESSION_DEVICE_ID: uuid4().hex
+                    })
                     # call login to system with register session credential to request
                     login(request, user)
                     ctx = {

@@ -620,6 +620,9 @@ class ServerAPI:
     Public class and call from views/utils
     """
 
+    KEY_SESSION_DEVICE_ID = "Device-ID"
+    KEY_X_SOURCE = "web"
+
     def __init__(self, url, **kwargs):
         self.cus_headers = kwargs.get('cus_headers', None)
         api_domain = kwargs.get('api_domain', settings.API_DOMAIN)
@@ -657,23 +660,34 @@ class ServerAPI:
                 return {'DATAISDD': 'true'}
         return {}
 
+    @classmethod
+    def get_language_client(cls, request):
+        if request and request.headers:
+            return request.headers.get('Accept-Language', settings.LANGUAGE_CODE)
+        return 'vi'
+
+    @classmethod
+    def get_device_id(cls, request):
+        if request and request.session.get(cls.KEY_SESSION_DEVICE_ID, None):
+            return request.session.get(cls.KEY_SESSION_DEVICE_ID)
+        return ''
+
     @property
     def headers(self) -> dict:
         """
         Setup headers for request
         Returns: Dict
             'content-type': 'application/json',
-            ...
+            'Accept-Language': 'vi',
+            'X-Source: 'web',
+            'Device-ID': '...',
         """
-
-        def get_language_client():
-            if self.request and self.request.headers:
-                return self.request.headers.get('Accept-Language', settings.LANGUAGE_CODE)
-            return 'vi'
 
         data = {
             'content-type': 'application/json',
-            'Accept-Language': get_language_client(),
+            'Accept-Language': self.get_language_client(request=self.request),
+            'X-Source': self.KEY_X_SOURCE,
+            'Device-ID': self.get_device_id(request=self.request),
             **self.setup_header_dropdown,
             **self.headers_tmp,
         }

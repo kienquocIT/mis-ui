@@ -230,5 +230,9 @@ msgid "Dec"
 msgstr "TH 12"
 
 #
-msgid "Unit: Month"
-msgstr "Đơn vị: Tháng"
+msgid "By Project owner"
+msgstr "Bởi Quản lý dự án"
+
+#
+msgid "By System status"
+msgstr "Bởi Trạng thái"

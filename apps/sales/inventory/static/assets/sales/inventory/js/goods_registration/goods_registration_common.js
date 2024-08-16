@@ -262,7 +262,6 @@ class GoodsRegistrationBorrowHandle {
             frm.dataForm['gre_item_source'] = current_gre_item_id
             frm.dataForm['quantity'] = parseFloat(row.find('.so-available-input').val()) - parseFloat(row.find('.so-available-input').attr('data-raw-value'))
             frm.dataForm['uom'] = row_save_btn.attr('data-uom')
-            frm.dataForm['warehouse_mapped'] = row_save_btn.attr('data-warehouse')
         }
         else {
             frm.dataForm['gre_source'] = $.fn.getPkDetail();
@@ -362,7 +361,7 @@ function loadStockQuantityOtherDataTableBorrow() {
                     {
                         className: 'wrap-text w-20 text-center',
                         render: (data, type, row) => {
-                            return row?.['sale_order']?.['code']? `
+                            return row?.['sale_order']?.['code'] ? `
                                 <span class="text-primary fw-bold"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order']?.['code']}</span>
                             ` : `
                                 <span class="text-primary fw-bold">${script_trans.attr('data-trans-general-warehouse')}</span>`
@@ -406,7 +405,7 @@ function loadStockQuantityOtherDataTableBorrow() {
                                         class="btn btn-soft-primary btn-xs so-available-save"
                                         data-sale-order-destination-id="${row?.['sale_order']?.['id']}"
                                         data-uom="${row?.['borrow_uom']?.['id']}"
-                                        data-warehouse="${row?.['warehouse_mapped']?.['id']}"
+                                        data-so="${row?.['sale_order']?.['id']}"
                                 >
                                     ${script_trans.attr('data-trans-save')}
                                 </button>
@@ -658,7 +657,7 @@ frm_borrow_from_other.submit(function (event) {
 
 frm_borrow_row.submit(function (event) {
     event.preventDefault();
-    if (borrow_row.attr('data-warehouse') === undefined) {
+    if (borrow_row.find('.so-available-save').attr('data-so') === 'undefined') {
         let combinesData = new GoodsRegistrationBorrowHandle().combinesDataStock($(this), borrow_row);
         if (combinesData) {
             WindowControl.showLoading();

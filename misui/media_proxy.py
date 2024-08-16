@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from requests.exceptions import ConnectionError, SSLError, Timeout
 
 from apps.shared import RandomGenerate
-from apps.shared.apis.api import APIUtil
+from apps.shared.apis.api import APIUtil, ServerAPI
 from apps.shared.csrf import APIAllowAny
 
 
@@ -58,6 +58,7 @@ class MediaProxyView(APIView):
                 'HTTP_ACCEPT_LANGUAGE', self.DEFAULT_HTTP_ACCEPT_LANGUAGE
             ),
             'Content-Type': request.META.get('CONTENT_TYPE', self.DEFAULT_CONTENT_TYPE),
+            ServerAPI.KEY_SESSION_DEVICE_ID: ServerAPI.get_device_id(request=request),
         }
 
     def get_headers(self, request, push_auth: bool = True):

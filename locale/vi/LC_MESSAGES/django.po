@@ -1684,7 +1684,7 @@ msgstr "Thêm sản phẩm"
 
 #
 msgid "Pretax Amount"
-msgstr "Tổng số tiền truớc thuế"
+msgstr "Tổng trước thuế"
 
 #
 msgid "Taxes"
@@ -1692,7 +1692,7 @@ msgstr "Thuế"
 
 #
 msgid "Total"
-msgstr "Tổng"
+msgstr "Tổng cộng"
 
 #
 msgid "Product list is empty"
@@ -8398,8 +8398,8 @@ msgid "Project home"
 msgstr "Trang chủ dự án"
 
 #
-msgid "Baseline request"
-msgstr "Yêu cầu đường cơ sở"
+msgid "Baseline list"
+msgstr "Danh sách đường cơ sở"
 
 #
 msgid "New project this month"
@@ -8434,6 +8434,14 @@ msgid "All (Completed)"
 msgstr "Tất cả (Hoàn thành)"
 
 #
+msgid "Project baseline"
+msgstr "Đường cơ sở của dự án"
+
+#
+msgid "System status"
+msgstr "Trạng thái"
+
+#
 msgid "Goods stock plan"
 msgstr "Kế hoạch nhập hàng"
 
@@ -8452,6 +8460,14 @@ msgstr "SL yêu cầu"
 #
 msgid "Stock plan"
 msgstr "Kế hoạch nhập hàng"
+
+#
+msgid "Stock plan code"
+msgstr "Mã kế hoạch nhập hàng"
+
+#
+msgid "TOTAL"
+msgstr "TỔNG CỘNG"
 
 #
 msgid "Received before"

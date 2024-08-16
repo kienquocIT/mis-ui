@@ -22,273 +22,285 @@
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
-                        <label class="form-label required">{% trans 'Name' %}</label>
-                        <input class="form-control" placeholder="Input Name" name="title" required/>
+                        <label for="title" class="form-label required">{% trans 'Name' %}</label>
+                        <input id="title" class="form-control" placeholder="Input Name" name="title" required/>
                     </div>
                 </div>
-                <div class="col-12 col-md-2 col-lg-2">
+                <div class="col-6 col-md-3 col-lg-3">
                     <div class="form-group">
-                        <label class="form-label required">{% trans 'Delivered Date' %}</label>
-                        <input class="form-control" name="delivered_date" required/>
+                        <label for="date-delivery" class="form-label required">{% trans 'Delivered Date' %}</label>
+                        <input id="date-delivery" class="form-control" name="delivered_date" required/>
                     </div>
                 </div>
-                <div class="col-12 col-md-2 col-lg-2">
+                <div class="col-6 col-md-3 col-lg-3">
                     <div class="form-group">
-                        <label class="form-label">{% trans 'Purchase Status' %}</label>
-                        <input class="form-control" name="purchase_status" value="Wait" data-value="0" readonly required/>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 col-md-4 col-lg-4">
-                    <div class="form-group">
-                        <label class="form-label required">{% trans 'Supplier' %}</label>
-                        <span class="input-affix-wrapper">
-                        <span class="input-prefix" id="dropdownBeneficiary">
-                            <i class="fas fa-info-circle text-primary" aria-expanded="false"
-                               data-bs-toggle="dropdown"></i>
-                            <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
-                                  style="width: 25rem;">
-                                <div class="row">
-                                    <span class="col-7">{% trans "More information" %}</span>
-                                    <a class="col-5 text-right" target="_blank"
-                                       href="{% url 'AccountDetail' pk=0 %}">
-                                        <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i
-                                                class="bi bi-arrow-right"></i></span>
-                                    </a>
-                                </div>
-                                <div class="dropdown-divider"></div>
-                                <div class="row">
-                                    <span class="col-5">{% trans "Supplier Name" %}</span>
-                                    <span class="col-7 text-primary span-supplier-name"></span>
-                                </div>
-                                <div class="row">
-                                    <span class="col-5">{% trans "Code" %}</span>
-                                    <span class="col-7 text-primary span-supplier-code"></span>
-                                </div>
-                            </span>
-                        </span>
-                        <select
-                                class="form-control select2"
-                                id="box-select-supplier"
-                                name="supplier"
-                                data-method="GET"
-                                data-url="{% url "AccountForSaleListAPI" %}"
-                                data-keyResp="account_sale_list"
-                                data-keyText="name"
-                                required
-                        >
-                        </select>
-                    </span>
-                    </div>
-                </div>
-                <div class="col-12 col-md-2 col-lg-2">
-                    <div class="form-group">
-                        <label class="form-label required">{% trans 'Contact' %}</label>
-                        <span class="input-affix-wrapper">
-                        <span class="input-prefix" id="dropdownBeneficiary">
-                            <i class="fas fa-info-circle text-primary" aria-expanded="false"
-                               data-bs-toggle="dropdown"></i>
-                            <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
-                                  style="width: 25rem;">
-                                <div class="row">
-                                    <span class="col-7">{% trans "More information" %}</span>
-                                    <a class="col-5 text-right" target="_blank"
-                                       href="{% url 'ContactDetail' pk=0 %}">
-                                        <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i
-                                                class="bi bi-arrow-right"></i></span>
-                                    </a>
-                                </div>
-                                <div class="dropdown-divider"></div>
-                                <div class="row">
-                                    <span class="col-5">{% trans "Contact Name" %}</span>
-                                    <span class="col-7 text-primary span-contact-name"></span>
-                                </div>
-                                <div class="row">
-                                    <span class="col-5">{% trans "Job Title" %}</span>
-                                    <span class="col-7 text-primary span-contact-job-title"></span>
-                                </div>
-                                <div class="row">
-                                    <span class="col-5">{% trans "Mobile" %}</span>
-                                    <span class="col-7 text-primary span-contact-mobile"></span>
-                                </div>
-                                <div class="row">
-                                    <span class="col-5">{% trans "Email" %}</span>
-                                    <span class="col-7 text-primary span-contact-email"></span>
-                                </div>
-                            </span>
-                        </span>
-                        <select
-                                class="form-select"
-                                id="box-select-contact"
-                                data-method="GET"
-                                name="contact"
-                                data-url="{% url "ContactListAPI" %}"
-                                data-keyResp="contact_list"
-                                data-keyText="fullname"
-                                required
-                        >
-                        </select>
-                    </span>
+                        <label for="pr-status" class="form-label">{% trans 'Purchase Status' %}</label>
+                        <input id="pr-status" class="form-control form-control-line fw-bold" name="purchase_status" value="{% trans 'Wait' %}" data-value="0" readonly required/>
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
-                        <label class="form-label">{% trans 'Note' %}</label>
-                        <input class="form-control" name="note"/>
+                        <label for="box-select-supplier" class="form-label required">{% trans 'Supplier' %}</label>
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix" id="dropdownBeneficiary">
+                                <i class="fas fa-info-circle text-primary" aria-expanded="false"
+                                   data-bs-toggle="dropdown"></i>
+                                <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
+                                      style="width: 25rem;">
+                                    <div class="row">
+                                        <span class="col-7">{% trans "More information" %}</span>
+                                        <a class="col-5 text-right" target="_blank"
+                                           href="{% url 'AccountDetail' pk=0 %}">
+                                            <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i
+                                                    class="bi bi-arrow-right"></i></span>
+                                        </a>
+                                    </div>
+                                    <div class="dropdown-divider"></div>
+                                    <div class="row">
+                                        <span class="col-5">{% trans "Supplier Name" %}</span>
+                                        <span class="col-7 text-primary span-supplier-name"></span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-5">{% trans "Code" %}</span>
+                                        <span class="col-7 text-primary span-supplier-code"></span>
+                                    </div>
+                                </span>
+                            </span>
+                            <select
+                                    class="form-control select2"
+                                    id="box-select-supplier"
+                                    name="supplier"
+                                    data-method="GET"
+                                    data-url="{% url "AccountForSaleListAPI" %}"
+                                    data-keyResp="account_sale_list"
+                                    data-keyText="name"
+                                    required
+                            >
+                            </select>
+                        </span>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-12 col-md-4 col-lg-4">
+                <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
-                        <label class="form-label required">{% trans 'Request For' %}</label>
+                        <label for="box-select-contact" class="form-label required">{% trans 'Contact' %}</label>
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix" id="dropdownBeneficiary">
+                                <i class="fas fa-info-circle text-primary" aria-expanded="false"
+                                   data-bs-toggle="dropdown"></i>
+                                <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
+                                      style="width: 25rem;">
+                                    <div class="row">
+                                        <span class="col-7">{% trans "More information" %}</span>
+                                        <a class="col-5 text-right" target="_blank"
+                                           href="{% url 'ContactDetail' pk=0 %}">
+                                            <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i
+                                                    class="bi bi-arrow-right"></i></span>
+                                        </a>
+                                    </div>
+                                    <div class="dropdown-divider"></div>
+                                    <div class="row">
+                                        <span class="col-5">{% trans "Contact Name" %}</span>
+                                        <span class="col-7 text-primary span-contact-name"></span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-5">{% trans "Job Title" %}</span>
+                                        <span class="col-7 text-primary span-contact-job-title"></span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-5">{% trans "Mobile" %}</span>
+                                        <span class="col-7 text-primary span-contact-mobile"></span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-5">{% trans "Email" %}</span>
+                                        <span class="col-7 text-primary span-contact-email"></span>
+                                    </div>
+                                </span>
+                            </span>
+                            <select
+                                    class="form-select"
+                                    id="box-select-contact"
+                                    data-method="GET"
+                                    name="contact"
+                                    data-url="{% url "ContactListAPI" %}"
+                                    data-keyResp="contact_list"
+                                    data-keyText="fullname"
+                                    required
+                            >
+                            </select>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-5 col-md-3 col-lg-3">
+                    <div class="form-group">
+                        <label for="request-for" class="form-label required">{% trans 'Request For' %}</label>
                         <span class="input-affix-wrapper">
                             <span class="input-prefix" id="dropdownCreator">
                                 <a href="#" data-bs-toggle="modal" data-bs-target="#modal-select-request-for">
                                     <i class="fa-solid fa-ellipsis text-primary"></i>
                                 </a>
                             </span>
-                            <input type="text" class="form-control" name="request_for" readonly>
+                            <input id="request-for" type="text" class="form-control" name="request_for" readonly>
                         </span>
                     </div>
                 </div>
-                <div class="col-12 col-md-2 col-lg-2">
+                <div class="col-7 col-md-3 col-lg-3" hidden id="sale-order-code-div">
                     <div class="form-group">
-                        <label class="form-label required">{% trans 'Order Code' %}</label>
-                        <input class="form-control" name="sale_order" readonly/>
+                        <label for="sale-order" class="form-label required">{% trans 'Order Code' %}</label>
+                        <input id="sale-order" class="form-control form-control-line text-primary fw-bold" name="sale_order" readonly/>
+                    </div>
+                </div>
+                <div class="col-7 col-md-3 col-lg-3" hidden id="distribution-code-div">
+                    <div class="form-group">
+                        <label for="stock-plan" class="form-label required">{% trans 'Stock plan code' %}</label>
+                        <input id="stock-plan" class="form-control form-control-line text-primary fw-bold" readonly/>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label for="note" class="form-label">{% trans 'Note' %}</label>
+                        <textarea id="note" class="form-control" name="note"></textarea>
                     </div>
                 </div>
             </div>
         </div>
-        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="text-primary btn btn-animated btn-icon btn-xs w-100"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Expand / Collapse' %}"><i class="fas fa-angle-double-up text-primary"></i></span></button>
+        <span type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="text-primary btn btn-animated btn-icon btn-xs w-100"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Expand / Collapse' %}"><i class="fas fa-angle-double-up text-primary"></i></span></span>
 
         <div class="row">
-            <ul class="nav nav-light nav-tabs" id="purchase-request-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
-                        <span class="nav-link-text">{% trans 'Line Detail' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
-                        <span class="nav-link-text">{% trans 'Attachment' %}</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="tab-content" id="tab-content-purchase-request-product">
-            <div class="tab-pane fade show active" id="tab_line_detail">
-                <table id="datatable-pr-product-so" class="table nowrap w-100 mb-5 hidden">
-                    <thead>
-                        <tr>
-                        <th class="w-5">#</th>
-                        <th>{% trans "Product" %}</th>
-                        <th>{% trans "Description" %}</th>
-                        <th>{% trans "UoM" %}</th>
-                        <th>{% trans "Quantity" %}</th>
-                        <th>{% trans "Unit Price" %}</th>
-                        <th>{% trans "Tax" %}</th>
-                        <th>{% trans "Subtotal Price" %}</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="col-12">
+                <ul class="nav nav-light nav-tabs" id="purchase-request-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                            <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                            <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                        </a>
+                    </li>
+                </ul>
 
-                <table data-url-tax="{% url 'TaxListAPI' %}" id="datatable-pr-product-stock-plan" class="table nowrap w-100 mb-5 hidden">
-                    <thead>
-                        <tr>
-                            <th style="min-width: 50px"></th>
-                            <th style="min-width: 200px">{% trans "Product" %}</th>
-                            <th style="min-width: 100px">{% trans "Description" %}</th>
-                            <th style="min-width: 100px">{% trans "UoM" %}</th>
-                            <th style="min-width: 100px">{% trans "Request quantity" %}</th>
-                            <th style="min-width: 200px">{% trans "Unit Price" %}</th>
-                            <th style="min-width: 200px">{% trans "Tax" %}</th>
-                            <th style="min-width: 200px">{% trans "Subtotal Price" %}</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tfoot>
-                    <tr>
-                        <td colspan="5"></td>
-                        <td>
-                            <input class="form-control mb-1" disabled readonly value="{% trans 'Pretax Amount' %}">
-                            <input class="form-control mb-1" disabled readonly value="{% trans 'Taxes' %}">
-                            <input class="form-control mb-1" disabled readonly value="{% trans 'Total' %}">
-                        </td>
-                        <td colspan="2">
-                            <input id="input-product-pretax-amount" class="form-control mask-money" disabled readonly>
-                        </td>
-                    </tr>
-                    </tfoot>
-                </table>
+                <div class="tab-content" id="tab-content-purchase-request-product">
+                    <div class="tab-pane fade show active" id="tab_line_detail">
+                        <div class="row">
+                            <div class="col-12">
+                                <table id="datatable-pr-product-so" class="table nowrap w-100 mb-5 hidden">
+                                    <thead>
+                                        <tr>
+                                        <th class="w-5">#</th>
+                                        <th>{% trans "Product" %}</th>
+                                        <th>{% trans "Description" %}</th>
+                                        <th>{% trans "UoM" %}</th>
+                                        <th>{% trans "Quantity" %}</th>
+                                        <th>{% trans "Unit Price" %}</th>
+                                        <th>{% trans "Tax" %}</th>
+                                        <th>{% trans "Subtotal Price" %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                                <table data-url-tax="{% url 'TaxListAPI' %}" id="datatable-pr-product-stock-plan" class="table nowrap w-100 mb-5 hidden">
+                                    <thead>
+                                        <tr>
+                                            <th style="min-width: 50px"></th>
+                                            <th style="min-width: 200px">{% trans "Product" %}</th>
+                                            <th style="min-width: 100px">{% trans "Description" %}</th>
+                                            <th style="min-width: 100px">{% trans "UoM" %}</th>
+                                            <th style="min-width: 100px">{% trans "Request quantity" %}</th>
+                                            <th style="min-width: 200px">{% trans "Unit Price" %}</th>
+                                            <th style="min-width: 200px">{% trans "Tax" %}</th>
+                                            <th style="min-width: 200px">{% trans "Subtotal Price" %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                                <table id="datatable-pr-product-other" class="table nowrap w-100 mb-5 hidden">
+                                    <thead>
+                                    <tr>
+                                    <th class="w-5">#</th>
+                                    <th>{% trans "Product" %}</th>
+                                    <th>{% trans "Description" %}</th>
+                                    <th>{% trans "UoM" %}</th>
+                                    <th>{% trans "Quantity" %}</th>
+                                    <th>{% trans "Unit Price" %}</th>
+                                    <th>{% trans "Tax" %}</th>
+                                    <th>{% trans "Subtotal Price" %}</th>
+                                    <th class="w-5"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="distribution-sum-space">
+                            <div class="row">
+                                <div class="col-12 col-lg-7 mt-3">
+                                    <button type="button"
+                                                class="btn btn-primary btn-change-pr-product"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modal-select-distribution">{% trans 'Change' %}</button>
+                                </div>
+                                <div class="col-12 col-lg-5 mt-3 text-right">
+                                    <div class="row">
+                                        <label for="distribution-sum-pretax" class="col-4 col-form-label text-primary">{% trans 'Pretax Amount' %}</label>
+                                        <div class="col-8">
+                                            <input id="distribution-sum-pretax" class="form-control form-control-line mask-money text-right text-primary mb-1" value="0" disabled readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label for="distribution-sum-tax" class="col-4 col-form-label text-primary">{% trans 'Taxes' %}</label>
+                                        <div class="col-8">
+                                            <input id="distribution-sum-tax" class="form-control form-control-line mask-money text-right text-primary mb-1" value="0" disabled readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label for="distribution-sum-aftertax" class="col-4 col-form-label text-primary">{% trans 'TOTAL' %}</label>
+                                        <div class="col-8">
+                                            <input id="distribution-sum-aftertax" class="form-control form-control-line mask-money text-right text-primary mb-1" value="0" disabled readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="sum-space">
+                            <div class="col-5">
+                                <button type="button"
+                                        class="btn btn-primary btn-change-pr-product"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modal-select-sale-order">{% trans 'Change' %}</button>
 
-                <table id="datatable-pr-product-other" class="table nowrap w-100 mb-5 hidden">
-                    <thead>
-                    <tr>
-                    <th class="w-5">#</th>
-                    <th>{% trans "Product" %}</th>
-                    <th>{% trans "Description" %}</th>
-                    <th>{% trans "UoM" %}</th>
-                    <th>{% trans "Quantity" %}</th>
-                    <th>{% trans "Unit Price" %}</th>
-                    <th>{% trans "Tax" %}</th>
-                    <th>{% trans "Subtotal Price" %}</th>
-                    <th class="w-5"></th>
-                    </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <div class="row">
-                    <div class="col-5">
-                        <button type="button"
-                                class="btn btn-primary btn-change-pr-product"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modal-select-sale-order">{% trans 'Change' %}</button>
-
-                        <div class="dropdown">
-                            <button type="button" data-bs-toggle="dropdown" id="btn-add-pr-product"
-                                    class="btn btn-primary btn-add-product">{% trans "New Product" %}</button>
+                                <div class="dropdown">
+                                    <button type="button" data-bs-toggle="dropdown" id="btn-add-pr-product"
+                                            class="btn btn-primary btn-add-product">{% trans "New Product" %}</button>
+                                </div>
+                            </div>
+                            <div class="col-7 mt-5">
+                                <div class="row mb-2">
+                                    <div class="col-6"><label for="input-product-pretax-amount">{% trans 'Pretax Amount' %}</label></div>
+                                    <div class="col-6">
+                                        <input id="input-product-pretax-amount" class="form-control mask-money" readonly>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-6"><label for="input-product-taxes">{% trans 'Taxes' %}</label></div>
+                                    <div class="col-6">
+                                        <input id="input-product-taxes" type="text" class="form-control mask-money" data-return-type="number" readonly>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row mb-2">
+                                    <div class="col-6"><label for="input-product-total">{% trans 'Total' %}</label></div>
+                                    <div class="col-6">
+                                        <input id="input-product-total" type="text" class="form-control mask-money" data-return-type="number" readonly>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-7 mt-5">
-                        <div class="row mb-2">
-                            <div class="col-6"><p>{% trans 'Pretax Amount' %}</p></div>
-                            <div class="col-6">
-                                <input id="input-product-pretax-amount" class="form-control mask-money" readonly>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-6"><p>{% trans 'Taxes' %}</p></div>
-                            <div class="col-6">
-                                <input
-                                        id="input-product-taxes"
-                                        type="text"
-                                        class="form-control mask-money"
-                                        data-return-type="number"
-                                        readonly
-                                >
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row mb-2">
-                            <div class="col-6"><b>{% trans 'Total' %}</b></div>
-                            <div class="col-6">
-                                <input
-                                        id="input-product-total"
-                                        type="text"
-                                        class="form-control mask-money"
-                                        data-return-type="number"
-                                        readonly
-                                >
-                            </div>
-                        </div>
+                    <div class="tab-pane fade show active" id="tab_attachment">
+
                     </div>
                 </div>
-            </div>
-            <div class="tab-pane fade show active" id="tab_attachment">
-
             </div>
         </div>
 

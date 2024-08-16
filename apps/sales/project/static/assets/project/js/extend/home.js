@@ -299,7 +299,7 @@ class HomeChart {
                 name: val,
                 data: []
             };
-            for (let i = 1; i < 12; i++){
+            for (let i = 1; i <= 12; i++){
                 let child = 0
                 for (let grandChild of item){
                     const dateCreated = new Date(grandChild.date_created)

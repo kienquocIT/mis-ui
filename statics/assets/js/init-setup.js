@@ -2331,16 +2331,12 @@ class WFRTControl {
                     // khi phiếu trong trạng thái đã tạo ( state > 1) thì button save không có hiệu lực
                     if (data['runtime_detail']?.['state'] >= 1) $('#idxRealAction .btn[type="submit"][form]').not('.btn-wf-after-finish').addClass('hidden');
                     // Finish with workflow non-apply -> show idxDataRuntimeNotFound
-                    let $dataRTNotFound = $('#idxDataRuntimeNotFound')
+                    let $dataRTNotFound = $('#idxDataRuntimeNotFound');
                     if (data['runtime_detail']?.['state'] === 3) $dataRTNotFound.removeClass('hidden');
-                    $dataRTNotFound.empty().append(
-                        WFRTControl.setupHTMLNonWF(false)
-                    )
+                    $dataRTNotFound.empty().append(WFRTControl.setupHTMLNonWF(false));
                     let eleStatus = $('#systemStatus');
                     if (eleStatus.attr('data-status') === '4') {  // if canceled after finish with workflow non-apply
-                        $dataRTNotFound.empty().append(
-                            WFRTControl.setupHTMLNonWF(true)
-                        )
+                        $dataRTNotFound.empty().append(WFRTControl.setupHTMLNonWF(true));
                     }
                     let actionMySelf = data['runtime_detail']['action_myself'];
                     if (actionMySelf) {
@@ -2348,7 +2344,6 @@ class WFRTControl {
                         let taskID = actionMySelf['id'];
                         if (taskID) {
                             WFRTControl.setTaskWF(taskID);
-
                             let actions = actionMySelf['actions'];
                             if (actions && Array.isArray(actions) && actions.length > 0) {
                                 WFRTControl.setActionsList(actions);
@@ -2369,10 +2364,10 @@ class WFRTControl {
                                 }
                             }
                         }
-                        // zones handler
-                        if (window.location.href.includes('/update/')) {
-                            let isCR = false;
+                        // ZONES HANDLE
+                        if (window.location.href.includes('/update/')) {  // page update
                             // active btn save change and back if current employee is owner, status is finished
+                            let isCR = false;
                             let eleDocCR = $('#documentCR');
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
                             if (eleDocCR.attr('data-status') === '5' && eleDocCR.attr('data-inherit') === currentEmployee) {
@@ -2387,7 +2382,7 @@ class WFRTControl {
                                 }
                             }
                         }
-                        if (window.location.href.includes('/detail/')) {
+                        if (window.location.href.includes('/detail/')) {  // page detail
                             WFRTControl.activeSetZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
                             // active btn change and cancel if current employee is owner, status is finished
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
@@ -2733,8 +2728,8 @@ class WFRTControl {
             // apply zones hidden config
             if (zonesHiddenData.length > 0) {
                 zonesHiddenData.map((item) => {
-                    if (item.code) {
-                        let inputMapProperties = input_mapping_properties[item.code];
+                    if (item?.['code']) {
+                        let inputMapProperties = input_mapping_properties[item?.['code']];
                         if (inputMapProperties && typeof inputMapProperties === 'object') {
                             let arrTmpFind = [];
                             inputMapProperties['name'].map((nameFind) => {

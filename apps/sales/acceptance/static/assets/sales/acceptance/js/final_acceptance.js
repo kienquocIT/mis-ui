@@ -22,7 +22,7 @@ $(function () {
                 columns: [
                     {
                         targets: 0,
-                        width: '15%',
+                        width: '12%',
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['acceptance_affect_by'] === 1) {
@@ -38,7 +38,7 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '10%',
+                        width: '12%',
                         render: (data, type, row) => {
                             let faAffectBy = row?.['acceptance_affect_by'];
                             let app = '';
@@ -138,7 +138,7 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '10%',
+                        width: '6%',
                         render: (data, type, row) => {
                             if (row?.['acceptance_affect_by'] === 1) {
                                 let rate = parseInt(row?.['rate_value'].toFixed(1));
@@ -150,7 +150,7 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '20%',
+                        width: '25%',
                         render: (data, type, row) => {
                             let dataFA = {};
                             if ($eleDataFact.attr('data-detail')) {

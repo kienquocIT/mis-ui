@@ -14,7 +14,7 @@
         <div class="home-action">
             <div class="btn-group btn-group-rounded">
                 <a href="{% url 'ProjectList' %}" class="btn btn-outline-secondary">{% trans 'List' %}</a>
-{#                <a href="{% url 'ProjectList' %}" class="btn btn-outline-secondary">{% trans 'Baseline request' %}</a>#}
+                <a href="{% url 'ProjectListBaseline' %}" class="btn btn-outline-secondary">{% trans 'Baseline list' %}</a>
             </div>
             <a href="{% url 'ProjectCreate' %}">
                 <button class="btn btn-outline-primary" type="button">
@@ -101,7 +101,7 @@
             <div class="col-xs-12 col-md-6 mb-5">
                 <div class="bg-main p-4 style-box css-skeleton">
                     <label class="font-3 font-weight-bold mb-2 txt-gray">{% trans 'Project per years' %}</label>
-                    <h6 class="font-2 chart_heading txt-gray">{% trans 'Unit' %}: {% trans 'Month' %}</h6>
+                    <h6 class="font-2 chart_heading txt-gray"></h6>
                     <div id="prj_chart_year">
                         <span></span>
                         <span></span>

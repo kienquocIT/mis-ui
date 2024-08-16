@@ -8398,8 +8398,8 @@ msgid "Project home"
 msgstr "Trang chủ dự án"
 
 #
-msgid "Baseline request"
-msgstr "Yêu cầu đường cơ sở"
+msgid "Baseline list"
+msgstr "Danh sách đường cơ sở"
 
 #
 msgid "New project this month"
@@ -8432,6 +8432,14 @@ msgstr "chưa thuế"
 #
 msgid "All (Completed)"
 msgstr "Tất cả (Hoàn thành)"
+
+#
+msgid "Project baseline"
+msgstr "Đường cơ sở của dự án"
+
+#
+msgid "System status"
+msgstr "Trạng thái"
 
 #
 msgid "Goods stock plan"

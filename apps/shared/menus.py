@@ -720,7 +720,7 @@ class SpaceItem:
                 MenusProject.HOME,
                 MenusProject.LIST,
                 MenusProject.BASELINE,
-                MenusProject.WORKS,
+                # MenusProject.WORKS,
             ]
         ),
         'purchase': SpaceCommon(

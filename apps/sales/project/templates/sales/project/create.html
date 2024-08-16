@@ -20,7 +20,7 @@
 {% block pageContent %}
     <!-- from create-->
     <form class="container-fluid mt-4" id="project_form" method="post" data-method="post" autocomplete="off"
-          data-url-redirect="{% url 'ProjectList' %}" data-url="{% url 'ProjectCreateAPI' %}">
+          data-url-redirect="{% url 'ProjectEdit' 1 %}" data-url="{% url 'ProjectCreateAPI' %}">
         {% csrf_token %}
         <div class="row">
             <div class="col-xs-12 col-md-6 form-group">

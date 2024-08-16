@@ -637,6 +637,14 @@ class MenusProject:
         name='Project list', code='menu_project', view_name='ProjectList',
         icon='<i class="fa-solid fa-bars-progress"></i>',
     )
+    BASELINE = MenuCommon(
+        name='Baseline', code='menu_baseline_list', view_name='ProjectListBaseline',
+        icon='<i class="bi bi-signpost-fill"></i>',
+    )
+    # WORKS = MenuCommon(
+    #     name='Works', code='menu_works_list', view_name='ProjectWorkList',
+    #     icon='<i class="bi bi-filter-circle font-3"></i>',
+    # )
 
 
 # Space Setup
@@ -711,6 +719,8 @@ class SpaceItem:
             menus=[
                 MenusProject.HOME,
                 MenusProject.LIST,
+                MenusProject.BASELINE,
+                MenusProject.WORKS,
             ]
         ),
         'purchase': SpaceCommon(

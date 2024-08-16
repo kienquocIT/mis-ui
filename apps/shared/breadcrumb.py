@@ -8,7 +8,8 @@ from unidecode import unidecode
 class BreadcrumbChildren:  # pylint: disable=too-few-public-methods
     """prepare url breadcrumbs"""
 
-    def __init__(self, title, url=None, arg_pattern=None, kw_pattern=None, is_append_code=False):
+    def __init__(self, title: object, url: object = None,
+            arg_pattern: object = None, kw_pattern: object = None, is_append_code: object = False) -> object:
         self.title = title
         self.url = url if url else ''
         self.arg_pattern = arg_pattern if arg_pattern and isinstance(arg_pattern, list) else []
@@ -369,6 +370,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # PROJECT
     PROJECT_HOME = BreadcrumbChildren(_('Project home'), 'ProjectList')
     PROJECT_LIST = BreadcrumbChildren(_('Project list'), 'ProjectList')
+    PROJECT_BASELINE = BreadcrumbChildren(_('Project baseline'), 'ProjectListBaseline')
+    PROJECT_WORKS = BreadcrumbChildren(_('Project works'), 'ProjectWorkList')
     PROJECT_CONFIG = BreadcrumbChildren(_('Project config'), 'ProjectConfig')
 
     # Zones
@@ -941,6 +944,8 @@ class BreadcrumbView:
     PROJECT_CONFIG = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_CONFIG]
     PROJECT_HOME = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_HOME]
     PROJECT_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_LIST]
+    PROJECT_BASELINE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_BASELINE]
+    PROJECT_WORKS = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_WORKS]
     PROJECT_CREATE_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_CREATE]
     PROJECT_DETAIL_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_DETAIL]
     PROJECT_UPDATE_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_UPDATE]

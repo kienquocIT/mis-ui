@@ -3,7 +3,8 @@ __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI',
            'ProjectWorkListAPI', 'ProjectGroupDetailAPI', 'ProjectWorkDetailAPI', 'ProjectMemberAddAPI',
            'ProjectMemberDetailAPI', 'ProjectUpdateOrderAPI', 'ProjectTaskListAPI', 'ProjectGroupDDListAPI',
            'ProjectTaskDetailAPI', 'ProjectWorkExpenseAPI', 'ProjectListBaselineAPI', 'ProjectBaselineDetail',
-           'ProjectBaselineDetailAPI', 'ProjectHome', 'ProjectConfig', 'ProjectConfigAPI', 'ProjectExpenseListAPI'
+           'ProjectBaselineDetailAPI', 'ProjectHome', 'ProjectConfig', 'ProjectConfigAPI', 'ProjectExpenseListAPI',
+           'ProjectListBaseline', 'ProjectWorkList'
            ]
 
 from django.views import View
@@ -232,6 +233,17 @@ class ProjectWorkCreateAPI(APIView):
         return resp.auto_return()
 
 
+class ProjectWorkList(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/project/extends/work-list.html',
+        breadcrumb='PROJECT_WORKS',
+        menu_active='menu_works_list',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class ProjectWorkListAPI(APIView):
     @mask_view(
         login_require=True,
@@ -412,6 +424,17 @@ class ProjectExpenseListAPI(APIView):
         return resp.auto_return(key_success='project_expense_list')
 
 
+class ProjectListBaseline(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/project/extends/baseline-list.html',
+        breadcrumb='PROJECT_BASELINE',
+        menu_active='menu_baseline_list',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class ProjectListBaselineAPI(APIView):
 
     @mask_view(
@@ -469,6 +492,7 @@ class ProjectHome(View):
         template='sales/project/extends/home.html',
         breadcrumb='PROJECT_HOME',
         menu_active='id_menu_project_home',
+        jsi18n='project_home',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -506,3 +530,5 @@ class ProjectConfigAPI(APIView):
             resp.result['message'] = f'{BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+

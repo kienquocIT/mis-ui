@@ -12,17 +12,17 @@
     {% csrf_token %}
 
     <div class="row">
-        <div class="col-12 col-md-3 col-lg-3 border-right">
-            <h5><b><span class="mask-money" id="report-product-revenue" data-init-money="0"></span></b></h5>
-            <b><p class="text-blue">{% trans 'Revenue' %}</p></b>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="mb-2"><b class="text-blue">{% trans 'Revenue' %}</b></div>
+            <h5><span class="mask-money" id="report-product-revenue" data-init-money="0"></span></h5>
         </div>
-        <div class="col-12 col-md-3 col-lg-3 border-right">
-            <h5><b><span class="mask-money" id="report-product-gross-profit" data-init-money="0"></span></b></h5>
-            <b><p class="text-yellow">{% trans 'Gross profit' %}</p></b>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="mb-2"><b class="text-yellow">{% trans 'Gross profit' %}</b></div>
+            <h5><span class="mask-money" id="report-product-gross-profit" data-init-money="0"></span></h5>
         </div>
-        <div class="col-12 col-md-3 col-lg-3 border-right">
-            <h5><b><span class="mask-money" id="report-product-net-income" data-init-money="0"></span></b></h5>
-            <b><p class="text-green">{% trans 'Net income' %}</p></b>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="mb-2"><b class="text-green">{% trans 'Net income' %}</b></div>
+            <h5><span class="mask-money" id="report-product-net-income" data-init-money="0"></span></h5>
         </div>
     </div>
 
@@ -32,7 +32,7 @@
         <div class="col-12 col-md-2 col-lg-2">
             <div class="card">
                 <div class="card-header card-header-action bg-teal-light-5 h-40p">
-                    <span class="badge badge-secondary badge-sm">
+                    <span class="badge badge-primary badge-outline badge-sm">
                         <span>
                             <span class="icon"><span class="feather-icon"><i class="fas fa-filter"></i></span></span>
                             {% trans 'Filter' %}

@@ -116,7 +116,7 @@ class ContractLoadDataHandle {
                 if (eleOrder.getAttribute('data-row')) {
                     let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
                     dataRow['is_current'] = false;
-                    dataRow['oder'] = order;
+                    dataRow['order'] = order;
                     order += 1;
                     result.push(dataRow);
                 }

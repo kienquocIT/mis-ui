@@ -12,7 +12,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="row div-activity">
-                            <div class="col-5 col-md-5 col-lg-3">
+                            <div class="col-12 col-md-5 col-lg-5 mb-1">
                                 <div class="dropdown">
                                     <button type="button" id="btn-create-related-feature" class="w-100 btn btn-soft-primary dropdown-toggle btn-xs" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
                                         {% trans 'Create Related Feature' %}
@@ -42,7 +42,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-5 col-md-5 col-lg-3">
+                            <div class="col-10 col-md-5 col-lg-4 mb-1">
                                 <div class="dropdown">
                                     <button type="button" class="w-50 btn btn-soft-primary dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
                                         {% trans 'Shortcut' %}
@@ -71,15 +71,15 @@
                                data-method="GET">
                             <thead>
                                 <tr>
-                                    <th>
+                                    <th class="w-5" style="min-width: 50px">
                                         <button type="button" class="btn btn-xs p-0" id="btn-refresh-activity" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Refresh' %}">
                                             <span class="icon">
                                                 <i class="fas fa-redo-alt text-primary"></i>
                                             </span>
                                         </button>
                                     </th>
-                                    <th class="w-25">{% trans "Activity" %}</th>
-                                    <th class="w-30">
+                                    <th class="w-15" style="min-width: 150px">{% trans "Activity" %}</th>
+                                    <th class="w-35" style="min-width: 250px">
                                         {% trans 'Subject' %}
                                         <i class="fas fa-info-circle icon-info"
                                            data-bs-toggle="tooltip"
@@ -87,9 +87,9 @@
                                            title="{% trans 'Press row here to see detail.' %}">
                                         </i>
                                     </th>
-                                    <th class="w-15">{% trans "Code" %}</th>
-                                    <th class="w-15">{% trans "Status" %}</th>
-                                    <th class="w-15">{% trans "Date" %}</th>
+                                    <th class="w-15" style="min-width: 100px">{% trans "Code" %}</th>
+                                    <th class="w-10" style="min-width: 100px">{% trans "Status" %}</th>
+                                    <th class="w-20 text-right" style="min-width: 100px">{% trans "Date" %}</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -101,132 +101,122 @@
     </div>
 </div>
 
-<div class="accordion mt-3" id="accordionPanelsStayOpenExampleTwo">
+<div class="accordion mt-3 mb-5" id="accordionPanelsStayOpenExampleTwo">
     <div class="accordion-item">
         <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
                 <i class="fas fa-outdent"></i>&nbsp;<span>{% trans 'Details' %}</span>
             </button>
         </h2>
-        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
+        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingTwo">
             <div class="accordion-body">
                 <div class="row">
+                    <div class="col-12 text-right">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input is-invalid" id="check-lost-reason">
+                            <label class="form-check-label text-danger fw-bold" for="check-lost-reason">{% trans "Lost by other reason" %}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-12">
-                        <ul class="nav nav-pills nav-icon nav-pills-soft nav-light" id="tab-select">
-                            <li class="nav-item w-15">
+                        <ul class="nav nav-line nav-tabs nav-light" id="tab-select">
+                            <li class="nav-item">
                                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_product">
                                     <span class="nav-link-text">{% trans 'Product' %}</span>
                                 </a>
                             </li>
-                            <li class="nav-item w-15">
+                            <li class="nav-item">
                                 <a class="nav-link" data-bs-toggle="tab" href="#tab_competitors">
                                     <span class="nav-link-text">{% trans 'Competitors' %}</span>
                                 </a>
                             </li>
-                            <li class="nav-item w-15">
+                            <li class="nav-item">
                                 <a class="nav-link" data-bs-toggle="tab" href="#tab_contact_role">
                                     <span class="nav-link-text">{% trans 'Contact Role' %}</span>
                                 </a>
                             </li>
-                            <li class="nav-item w-15">
+                            <li class="nav-item">
                                 <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_account_history">
                                     <span class="nav-link-text">{% trans 'Account History' %}</span>
                                 </a>
                             </li>
-                            <li class="nav-item w-15">
+                            <li class="nav-item">
                                 <a class="nav-link" data-bs-toggle="tab" href="#tab_team">
                                     <span class="nav-link-text">{% trans 'Team' %}</span>
                                 </a>
                             </li>
-                            <li class="nav-item w-15">
+                            <li class="nav-item">
                                 <a class="nav-link" data-bs-toggle="tab" href="#tab_lead">
                                     <span class="nav-link-text">{% trans 'Lead' %}</span>
                                 </a>
-                            </li>
-                            <li class="nav-item w-10 text-right">
-                                <div class="form-check mt-2">
-                                    <input type="checkbox" class="form-check-input is-invalid" id="check-lost-reason">
-                                    <label class="form-check-label text-danger fw-bold" for="check-lost-reason">{% trans "Lost" %}</label>
-                                </div>
                             </li>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="tab_product">
                                 <div class="row">
                                     <div class="col-12">
-                                        <div class="table-responsive">
-                                            <table class="table w-100 nowrap" id="table-products">
-                                                <thead>
+                                        <table class="table w-100 nowrap" id="table-products">
+                                            <thead>
                                                 <tr>
-                                                    <th></th>
-                                                    <th>{% trans "Product" %}</th>
-                                                    <th>{% trans 'Product Category' %}</th>
-                                                    <th>{% trans 'UoM' %}</th>
-                                                    <th>{% trans "Quantity" %}</th>
-                                                    <th>{% trans "Unit Price" %}</th>
-                                                    <th>{% trans "Tax" %}</th>
-                                                    <th>{% trans "Subtotal Price" %}</th>
-                                                    <th></th>
+                                                    <th class="w-5" style="min-width: 50px"></th>
+                                                    <th class="w-20" style="min-width: 350px">{% trans "Product" %}</th>
+                                                    <th class="w-10" style="min-width: 150px">{% trans 'Product Category' %}</th>
+                                                    <th class="w-10" style="min-width: 150px">{% trans 'UoM' %}</th>
+                                                    <th class="w-10" style="min-width: 150px">{% trans "Quantity" %}</th>
+                                                    <th class="w-15" style="min-width: 200px">{% trans "Unit Price" %}</th>
+                                                    <th class="w-10" style="min-width: 150px">{% trans "Tax" %}</th>
+                                                    <th class="w-15" style="min-width: 200px">{% trans "Subtotal Price" %}</th>
+                                                    <th class="w-5" style="min-width: 50px"></th>
                                                 </tr>
-                                                </thead>
-                                                <tfoot>
-                                                <tr>
-                                                    <td></td>
-                                                    <td colspan="1">
-                                                        <div class="dropdown">
-                                                            <button type="button" id="btn-add-row-line-detail" data-bs-toggle="dropdown" class="btn btn-outline-primary btn-sm w-100">
-                                                                <i class="fas fa-plus-circle"></i>
-                                                                {% trans 'Add Product' %}
-                                                            </button>
-                                                            <div class="dropdown-menu">
-                                                                <a class="dropdown-item" href="#" id="btn-add-select-product">{% trans 'Select Product' %}</a>
-                                                                <a class="dropdown-item" href="#" id="btn-add-input-product">{% trans 'Input Product' %}</a>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td colspan="3"></td>
-                                                    <td colspan="4">
-                                                        <div class="row mt-3 mb-2">
-                                                            <div class="col-7"><label for="input-product-pretax-amount" class="form-check-label">{% trans 'Pretax Amount' %}</label></div>
-                                                            <div class="col-5 readonly">
-                                                                <input id="input-product-pretax-amount" type="text" class="form-control mask-money" data-return-type="number" readonly>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb-2">
-                                                            <div class="col-7"><label for="input-product-taxes" class="form-check-label">{% trans 'Taxes' %}</label></div>
-                                                            <div class="col-5 readonly">
-                                                                <input id="input-product-taxes" type="text" class="form-control mask-money" data-return-type="number" readonly>
-                                                            </div>
-                                                        </div>
-                                                        <div class="dropdown-divider"></div>
-                                                        <div class="row mb-2">
-                                                            <div class="col-7"><label for="input-product-total" class="form-check-label">{% trans 'Total' %}</label></div>
-                                                            <div class="col-5 readonly">
-                                                                <input id="input-product-total" type="text" class="form-control mask-money" data-return-type="number" readonly>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb-2">
-                                                            <div class="col-7">
-                                                                <div class="row">
-                                                                    <div class="col-7">
-                                                                        <label for="estimated-gross-profit-value">{% trans 'Estimated gross profit' %}</label>
-                                                                    </div>
-                                                                    <div class="col-5">
-                                                                        <span class="input-affix-wrapper">
-                                                                            <input id="estimated-gross-profit-percent" type="number" min="0" max="100" class="form-control">
-                                                                            <span class="input-suffix"><i class="fas fa-percent"></i></span>
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-5 readonly">
-                                                                <input id="estimated-gross-profit-value" type="text" class="form-control mask-money" data-return-type="number" readonly>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                </tfoot>
-                                            </table>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-lg-4 mt-3">
+                                        <div class="dropdown">
+                                            <button type="button" id="btn-add-row-line-detail" data-bs-toggle="dropdown" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-plus-circle"></i>
+                                                {% trans 'Add Product' %}
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="#" id="btn-add-select-product">{% trans 'Select Product' %}</a>
+                                                <a class="dropdown-item" href="#" id="btn-add-input-product">{% trans 'Input Product' %}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-8 mt-3">
+                                        <div class="row mb-2">
+                                            <label for="input-product-pretax-amount" class="text-right col-4 col-form-label text-primary">{% trans 'Pretax Amount' %}</label>
+                                            <div class="col-8">
+                                                <input id="input-product-pretax-amount" type="text" class="text-right text-primary form-control-line form-control mask-money" data-return-type="number" disabled readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <label for="input-product-taxes" class="text-right col-4 col-form-label text-primary">{% trans 'Taxes' %}</label>
+                                            <div class="col-8">
+                                                <input id="input-product-taxes" type="text" class="text-right text-primary form-control-line form-control mask-money" data-return-type="number" disabled readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <label for="input-product-total" class="text-right col-4 col-form-label text-primary">{% trans 'TOTAL' %}</label>
+                                            <div class="col-8">
+                                                <input id="input-product-total" type="text" class="text-right text-primary form-control-line form-control mask-money" data-return-type="number" disabled readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <label for="estimated-gross-profit-value" class="text-right col-4 col-form-label text-primary">{% trans 'Estimated gross profit' %}</label>
+                                            <div class="col-3">
+                                                <span class="input-affix-wrapper">
+                                                    <input id="estimated-gross-profit-percent" type="number" min="0" max="100" class="text-center text-primary form-control">
+                                                    <span class="input-suffix"><i class="fas fa-percent text-primary"></i></span>
+                                                </span>
+                                            </div>
+                                            <div class="col-5">
+                                                <input id="estimated-gross-profit-value" type="text" class="text-right text-primary form-control-line form-control mask-money" data-return-type="number" disabled readonly>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -234,68 +224,64 @@
                             <div class="tab-pane fade" id="tab_competitors">
                                 <div class="row">
                                     <div class="col-12">
-                                        <div class="table-responsive">
-                                            <table class="table nowrap w-100" id="table-competitors">
-                                                <thead>
-                                                <tr>
-                                                    <th class="wrap-text w-30">
-                                                        {% trans "Competitor" %}
-                                                        <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Select competitor accounts."></i>
-                                                    </th>
-                                                    <th class="wrap-text w-25">{% trans 'Strength' %}</th>
-                                                    <th class="wrap-text w-25">{% trans 'Weakness' %}</th>
-                                                    <th class="wrap-text w-15">{% trans "Win deal" %}</th>
-                                                    <th class="wrap-text w-5"></th>
-                                                </tr>
-                                                </thead>
-                                                <tfoot>
-                                                <tr>
-                                                    <td colspan="1">
-                                                        <button type="button" id="btn-add-competitor" data-bs-toggle="dropdown" class="btn btn-outline-primary btn-sm w-100">
-                                                <i class="fas fa-plus-circle"></i>
-                                                {% trans 'Add Competitor' %}
-                                            </button>
-                                                    </td>
-                                                    <td colspan="4"></td>
-                                                </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
+                                        <table class="table nowrap w-100" id="table-competitors">
+                                            <thead>
+                                            <tr>
+                                                <th class="w-5" style="min-width: 50px"></th>
+                                                <th class="w-25" style="min-width: 300px">
+                                                    {% trans "Competitor" %}
+                                                    <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Select competitor accounts."></i>
+                                                </th>
+                                                <th class="w-25" style="min-width: 150px">{% trans 'Strength' %}</th>
+                                                <th class="w-25" style="min-width: 150px">{% trans 'Weakness' %}</th>
+                                                <th class="w-15" style="min-width: 150px">{% trans "Win deal" %}</th>
+                                                <th class="w-5" style="min-width: 50px"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <button type="button" id="btn-add-competitor" data-bs-toggle="dropdown" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-plus-circle"></i>
+                                            {% trans 'Add Competitor' %}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="tab_contact_role">
                                 <div class="row">
                                     <div class="col-12">
-                                        <div class="table-responsive">
-                                            <table class="table nowrap w-100" id="table-contact-role">
-                                                <thead>
+                                        <table class="table nowrap w-100" id="table-contact-role">
+                                            <thead>
                                                 <tr>
-                                                    <th class="w-25">{% trans "Which Customer" %}</th>
-                                                    <th>{% trans 'Name' %}</th>
-                                                    <th>{% trans 'Job title' %}</th>
-                                                    <th>{% trans "Role" %}</th>
-                                                    <th></th>
+                                                    <th class="w-5" style="min-width: 50px"></th>
+                                                    <th class="w-25" style="min-width: 250px">{% trans "Which Customer" %}</th>
+                                                    <th class="w-25" style="min-width: 250px">{% trans 'Name' %}</th>
+                                                    <th class="w-20" style="min-width: 250px">{% trans 'Job title' %}</th>
+                                                    <th class="w-20" style="min-width: 250px">{% trans "Role" %}</th>
+                                                    <th class="w-5" style="min-width: 50px"></th>
                                                 </tr>
-                                                </thead>
-                                                <tfoot>
-                                                <tr>
-                                                    <td colspan="1">
-                                                        <button type="button" id="btn-add-contact" data-bs-toggle="dropdown" class="btn btn-outline-primary btn-sm w-100">
-                                                <i class="fas fa-plus-circle"></i>
-                                                {% trans 'Add Contact' %}
-                                            </button>
-                                                    </td>
-                                                    <td colspan="3">
-                                                        <div class="form-group">
-                                                            <label class="form-label" for="box-select-factor">{% trans "Select Reason why customer buy your product" %}</label>
-                                                            <select class="form-select" multiple id="box-select-factor" data-method="GET" data-url="{% url 'OpportunityCustomerDecisionFactorListAPI' %}" data-keyResp="opportunity_decision_factor"></select>
-                                                        </div>
-                                                    </td>
-                                                    <td></td>
-                                                </tr>
-                                                </tfoot>
-                                            </table>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <button type="button" id="btn-add-contact" data-bs-toggle="dropdown" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-plus-circle"></i>
+                                            {% trans 'Add Contact' %}
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="form-label" for="box-select-factor">{% trans "Select Reason why customer buy your product" %}</label>
+                                            <select class="form-select" multiple id="box-select-factor" data-method="GET" data-url="{% url 'OpportunityCustomerDecisionFactorListAPI' %}" data-keyResp="opportunity_decision_factor"></select>
                                         </div>
                                     </div>
                                 </div>
@@ -304,7 +290,7 @@
                                 <div class="d-flex overflow-auto"></div>
                             </div>
                             <div class="tab-pane fade" id="tab_team">
-                                <div class="row mb-3">
+                                <div class="row">
                                     <div class="col-12">
                                         <div class="row" id="member-item-list">
                                             <div class="member-item col-12 col-lg-4 col-md-4 text-center">
@@ -316,7 +302,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
+                                <div class="row mt-3">
                                     <div class="col-12 hidden" id="box-edit-permit" data-url="{% url 'MemberOfOpportunityDetail' pk_opp=pk pk_member='__pk_member__' %}" data-id="">
                                         <div class="row mb-2">
                                             <div class="col-12 col-md-8 col-lg-8 col-xl-8 mb-1">
@@ -362,17 +348,17 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="tab_lead">
-                                <div class="row mb-3">
+                                <div class="row">
                                     <div class="col-12">
                                         <table class="table nowrap w-100" id="lead-list-table" data-method="GET" data-url-detail="{% url 'LeadDetail' '0' %}" data-url="{% url 'LeadListForOpportunityAPI' %}">
                                             <thead>
                                             <tr>
-                                                <th></th>
-                                                <th>{% trans 'Code' %}</th>
-                                                <th>{% trans 'Name' %}</th>
-                                                <th>{% trans 'Source' %}</th>
-                                                <th>{% trans 'Contact name' %}</th>
-                                                <th>{% trans 'Date created' %}</th>
+                                                <th class="w-5" style="min-width: 50px"></th>
+                                                <th class="w-15" style="min-width: 150px">{% trans 'Code' %}</th>
+                                                <th class="w-25" style="min-width: 150px">{% trans 'Name' %}</th>
+                                                <th class="w-15" style="min-width: 100px">{% trans 'Source' %}</th>
+                                                <th class="w-25" style="min-width: 150px">{% trans 'Contact name' %}</th>
+                                                <th class="w-15" style="min-width: 150px">{% trans 'Date created' %}</th>
                                             </tr>
                                             </thead>
                                         </table>

@@ -22,12 +22,12 @@ $(function () {
         },
         columns: [
             {
-                width: '5%',
+                className: 'w-5',
                 render: () => {
                     return '';
                 },
             }, {
-                width: "10%",
+                className: 'w-10',
                 data: 'logo',
                 render: (data, type, row, meta) => {
                     if (data){
@@ -36,65 +36,46 @@ $(function () {
                     return ``;
                 }
             },{
-                width: '10%',
                 data: 'code',
-                className: 'wrap-text',
+                className: 'wrap-text w-10',
                 render: (data, type, row, meta) => {
-                    return `<a href="/company/detail/` + row.id + `">${data}</a>`
+                    return `<span class="w-80 badge badge-primary" href="/company/detail/` + row.id + `">${data}</span>`
                 }
             }, {
-                width: '20%',
                 data: 'title',
-                className: 'wrap-text',
+                className: 'wrap-text w-35',
                 'render': (data, type, row, meta) => {
                     if (data) {
-                        if (row.id === company_current_id) {
-                            return `<div class="media align-items-center">
-                                        <div class="media-head me-2">
-                                            <div class="avatar avatar-xs avatar-primary avatar-rounded">
-                                                <span class="initial-wrap"><b>` + row.title.charAt(0).toUpperCase() + `</b></span>
-                                            </div>
-                                        </div>
-                                        <div class="media-body">
-                                            <a href="/company/detail/` + row.id + `">
-                                                <span class="d-block"><b>` + row.title + `</b></span>
-                                            </a>
-                                        </div>
-                                    </div>`;
-                        }
-                        else {
-                            return `<div class="media align-items-center">
-                                        <div class="media-body">
-                                            <a href="/company/detail/` + row.id + `">
-                                                <span class="d-block"><b>` + row.title + `</b></span>
-                                            </a>
-                                        </div>
-                                    </div>`;
-                        }
+                        return `<div class="media align-items-center">
+                                    <div class="media-body">
+                                        <a href="/company/detail/` + row.id + `">
+                                            <span class="d-block"><b>` + row.title + `</b></span>
+                                        </a>
+                                    </div>
+                                </div>`;
                     } else {
                         return ''
                     }
                 }
 
             }, {
-                width: '20%',
+                className: 'w-15',
                 data: 'date_created',
                 render: (data, type, row, meta) => {
                     return $x.fn.displayRelativeTime(data);
                 }
             }, {
-                width: '20%',
+                className: 'w-15',
                 data: 'representative_fullname',
                 render: (data, type, row, meta) => {
                     if (data) {
-                        return `<div class="representative_fullname"><span class="badge badge-primary">` + data + `</span></div>`;
+                        return `<div class="representative_fullname"><span class="fw-bold text-blue">` + data + `</span></div>`;
                     } else {
-                        return `<div class="representative_fullname"><span class="badge badge-primary">` + $('input[name=default_representative_name]').val() + `</span></div>`;
+                        return `<div class="representative_fullname"><span class="fw-bold text-blue">` + $('input[name=default_representative_name]').val() + `</span></div>`;
                     }
                 }
             }, {
-                width: '15%',
-                className: 'action-center',
+                className: 'action-center w-10',
                 render: (data, type, row, meta) => {
                     let btnOpenWebsite = `
                         <a href="${generate_ui_url(row?.['sub_domain'] || '')}" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btnRedirectToWebsite">
@@ -103,9 +84,7 @@ $(function () {
                             </span>
                         </a>
                     `;
-
-                    let bt1 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="del-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                    return `<div>${bt1}${btnOpenWebsite}</div>`;
+                    return `<div>${btnOpenWebsite}</div>`;
                 }
             },
         ]

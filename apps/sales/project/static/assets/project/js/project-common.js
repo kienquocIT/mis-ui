@@ -78,7 +78,9 @@ $(document).ready(function () {
             })
     });
 
-
+    $('#groupWeight, #workWeight').keyup(delay(function (e) {
+        validWeight(this)
+    }, 500));
 });
 function reGetDetail(gantt_obj){
     const $FormElm = $('#project_form');
@@ -460,6 +462,28 @@ function validateNumber(value) {
     let reg = new RegExp(/^-?\d*\.?\d+(e[+-]?\d+)?$/i);
     if (!reg.test(temp)) temp = 0
     return temp;
+}
+
+function validWeight(elmObj) {
+    let $elm = jQuery(elmObj),
+    value = elmObj.value,
+    regex = /^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/;
+    if (value && regex.test(value)) {
+        $elm.removeClass('is-invalid cl-red')
+        if (elmObj.value > 100) elmObj.value = 100
+    }
+    else {
+        $elm.addClass('is-invalid cl-red')
+        elmObj.value = 0
+    }
+}
+
+function delay(fn, ms) {
+	let timer = 0;
+    return function (...args){
+    	clearTimeout(timer)
+        timer = setTimeout(fn.bind(this, ...args), ms || 0)
+    }
 }
 
 class ProjectTeamsHandle {

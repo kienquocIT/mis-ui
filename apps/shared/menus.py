@@ -309,6 +309,10 @@ class MenusCRM:
         name='Product', code='id_menu_product_list', view_name='ProductList',
         icon='<i class="bi bi-archive-fill"></i>',
     )
+    BOR = MenuCommon(
+        name='Bill of resources', code='menu_bor_list', view_name='BORList',
+        icon='<i class="fab fa-connectdevelop"></i>',
+    )
     PRICING = MenuCommon(
         name='Pricing', code='menu_pricing', view_name='',
         icon='<i class="bi bi-tags-fill"></i>',
@@ -709,6 +713,7 @@ class SpaceItem:
                 MenusCRM.SALE_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.PRODUCT,
+                MenusCRM.BOR,
                 MenusCRM.PRICING,
                 MenusCRM.CASH_OUTFLOW,
                 MenusCRM.SALE_ACTIVITIES,

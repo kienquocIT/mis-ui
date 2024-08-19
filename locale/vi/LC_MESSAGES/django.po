@@ -8434,10 +8434,6 @@ msgid "All (Completed)"
 msgstr "Tất cả (Hoàn thành)"
 
 #
-msgid "Project baseline"
-msgstr "Đường cơ sở của dự án"
-
-#
 msgid "System status"
 msgstr "Trạng thái"
 

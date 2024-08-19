@@ -5802,7 +5802,7 @@ msgstr "Theo điều chỉnh tồn kho"
 
 #
 msgid "For production"
-msgstr "Theo sản phẩm"
+msgstr "Cho sản phẩm"
 
 #
 msgid "Estimate is wrong format"
@@ -8512,3 +8512,23 @@ msgstr "Mã Công ty"
 #
 msgid "Product/Service name"
 msgstr "Tên Sản phẩm/Dịch vụ"
+
+#
+msgid "For service"
+msgstr "Cho dịch vụ"
+
+#
+msgid "For sale"
+msgstr "Cho bán hàng"
+
+#
+msgid "For external expense"
+msgstr "Cho chi phí ngoài"
+
+#
+msgid "Task name"
+msgstr "Tên task"
+
+#
+msgid "Labor"
+msgstr "Nhân công"

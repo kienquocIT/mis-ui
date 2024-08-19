@@ -430,6 +430,7 @@ class ProjectListBaseline(View):
         template='sales/project/extends/baseline-list.html',
         breadcrumb='PROJECT_BASELINE',
         menu_active='menu_baseline_list',
+        jsi18n='project_home'
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

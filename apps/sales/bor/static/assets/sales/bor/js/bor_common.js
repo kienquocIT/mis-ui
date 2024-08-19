@@ -82,6 +82,14 @@ function loadProduct(ele, data) {
         keyResp: 'product_list',
         keyId: 'id',
         keyText: 'title',
+    }).on('change', function () {
+        if (ele.val()) {
+            let product_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
+            console.log(product_selected)
+            loadUOM(ele.closest('tr').find('.material-uom'), product_selected?.['general_uom_group']?.['id'])
+            ele.closest('tr').find('.material-unit-price').attr('value', product_selected?.['general_price'] ? product_selected?.['general_price'] : 0)
+            $.fn.initMaskMoney2()
+        }
     })
 }
 

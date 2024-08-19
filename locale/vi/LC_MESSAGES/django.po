@@ -8532,3 +8532,15 @@ msgstr "Tên task"
 #
 msgid "Labor"
 msgstr "Nhân công"
+
+#
+msgid "Process description"
+msgstr "Mô tả quy trình"
+
+#
+msgid "Materials / Components"
+msgstr "Vật liệu / Linh kiện"
+
+#
+msgid "Disassemble"
+msgstr "Có thể tháo rời"

@@ -1646,19 +1646,13 @@ class GRDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-expire-date" value="${row?.['expire_date']}">
                                 </div>`;
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 3,
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-manufacture-date" value="${row?.['manufacture_date']}">
@@ -1666,7 +1660,7 @@ class GRDataTableHandle {
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 4,
                     render: () => {
                         return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
@@ -2035,19 +2029,13 @@ class GRDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-expire-date" value="${row?.['expire_date']}">
                                 </div>`;
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 3,
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-manufacture-date" value="${row?.['manufacture_date']}">
@@ -2089,19 +2077,13 @@ class GRDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-expire-date" value="${row?.['expire_date']}">
                                 </div>`;
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 3,
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-manufacture-date" value="${row?.['manufacture_date']}">
@@ -2109,7 +2091,7 @@ class GRDataTableHandle {
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 4,
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-warranty-start" value="${row?.['warranty_start']}">
@@ -2117,7 +2099,7 @@ class GRDataTableHandle {
                     }
                 },
                 {
-                    targets: 6,
+                    targets: 5,
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-warranty-end" value="${row?.['warranty_end']}">

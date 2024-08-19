@@ -413,8 +413,8 @@
                                                 <tr class="bg-light">
                                                     <th class="w-15">{% trans 'Warehouse Code' %}</th>
                                                     <th class="w-20">{% trans 'Warehouse Name' %}</th>
-                                                    <th class="w-20">{% trans 'Enter data later' %}</th>
-                                                    <th class="w-15">{% trans 'Quantity' %}</th>
+                                                    <th class="w-15">{% trans 'Input later' %}</th>
+                                                    <th class="w-20">{% trans 'Quantity' %}</th>
                                                     <th class="w-15">{% trans 'UOM' %}</th>
                                                 </tr>
                                                 </thead>
@@ -424,8 +424,8 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div data-simplebar class="h-350p nicescroll-bar" id="scroll-table-lot-serial" hidden>
-                                            <div id="table-good-receipt-manage-lot-area" hidden>
+                                        <div id="scroll-table-lot-serial" hidden>
+                                            <div data-simplebar class="nicescroll-bar" id="table-good-receipt-manage-lot-area" hidden>
                                                 <table
                                                     id="datable-good-receipt-manage-lot"
                                                     class="table nowrap min-w-1000p w-100"
@@ -436,18 +436,16 @@
                                                     <tr class="bg-light">
                                                         <th class="required w-30">{% trans 'Lot number' %}</th>
                                                         <th class="required w-15">{% trans 'Quantity' %}</th>
-                                                        <th class="w-10">{% trans 'UOM' %}</th>
                                                         <th class="w-15">{% trans 'Exp date' %}</th>
                                                         <th class="w-15">{% trans 'Mfg date' %}</th>
-                                                        <th class="w-5"></th>
+                                                        <th class="w-10"></th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
                                                     </tbody>
                                                 </table>
                                             </div>
-
-                                            <div id="table-good-receipt-manage-serial-area" hidden>
+                                            <div data-simplebar class="nicescroll-bar" id="table-good-receipt-manage-serial-area" hidden>
                                                 <table
                                                     id="datable-good-receipt-manage-serial"
                                                     class="table nowrap min-w-1000p w-100"
@@ -483,7 +481,7 @@
             </div>
 
             <div class="modal fade" id="productIAModalCenter" tabindex="-1" role="dialog" aria-labelledby="productIAModalCenter" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
+                <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
                     <div class="modal-content">
                         <div class="modal-header h-65p">
                             <h5 class="modal-title text-primary ml-3"><b>{% trans 'Product list' %}</b></h5>
@@ -501,13 +499,13 @@
                                                 data-method="GET"
                                             >
                                                 <thead>
-                                                <tr>
-                                                    <th class="w-30">{% trans 'Product' %}</th>
-                                                    <th class="w-30">{% trans 'Warehouse' %}</th>
-                                                    <th class="w-5">{% trans 'Quantity' %}</th>
-                                                    <th class="w-5">{% trans 'UOM' %}</th>
-                                                    <th class="w-5">{% trans 'Enter data later' %}</th>
-                                                    <th class="w-20">{% trans 'This time' %}</th>
+                                                <tr class="bg-light">
+                                                    <th class="w-20">{% trans 'Product' %}</th>
+                                                    <th class="w-20">{% trans 'Warehouse' %}</th>
+                                                    <th class="w-10">{% trans 'Quantity' %}</th>
+                                                    <th class="w-15">{% trans 'UOM' %}</th>
+                                                    <th class="w-15">{% trans 'Input later' %}</th>
+                                                    <th class="w-15">{% trans 'This time' %}</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -518,8 +516,8 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="row">
-                                        <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-ia-lot-serial" hidden>
-                                            <div id="table-good-receipt-ia-lot-area" hidden>
+                                        <div id="scroll-table-ia-lot-serial" hidden>
+                                            <div data-simplebar class="nicescroll-bar" id="table-good-receipt-ia-lot-area" hidden>
                                                 <table
                                                     id="datable-good-receipt-ia-lot"
                                                     class="table nowrap min-w-1000p w-100"
@@ -527,10 +525,9 @@
                                                     data-method="GET"
                                                 >
                                                     <thead>
-                                                    <tr>
-                                                        <th class="required w-35">{% trans 'Lot number' %}</th>
+                                                    <tr class="bg-light">
+                                                        <th class="required w-30">{% trans 'Lot number' %}</th>
                                                         <th class="required w-15">{% trans 'Quantity' %}</th>
-                                                        <th class="w-10">{% trans 'UOM' %}</th>
                                                         <th class="w-20">{% trans 'Exp date' %}</th>
                                                         <th class="w-20">{% trans 'Mfg date' %}</th>
                                                     </tr>
@@ -539,8 +536,7 @@
                                                     </tbody>
                                                 </table>
                                             </div>
-
-                                            <div id="table-good-receipt-ia-serial-area" hidden>
+                                            <div data-simplebar class="nicescroll-bar" id="table-good-receipt-ia-serial-area" hidden>
                                                 <table
                                                     id="datable-good-receipt-ia-serial"
                                                     class="table nowrap min-w-1000p w-100"
@@ -548,10 +544,9 @@
                                                     data-method="GET"
                                                 >
                                                     <thead>
-                                                    <tr>
+                                                    <tr class="bg-light">
                                                         <th class="w-15">{% trans 'Vendor serial no.' %}</th>
                                                         <th class="w-15">{% trans 'Serial no.' %}</th>
-                                                        <th class="w-10">{% trans 'UOM' %}</th>
                                                         <th class="w-15">{% trans 'Exp date' %}</th>
                                                         <th class="w-15">{% trans 'Mfr date' %}</th>
                                                         <th class="w-15">{% trans 'Warranty start' %}</th>

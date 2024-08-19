@@ -54,7 +54,7 @@
     </div>
 </div>
 
-<div class="row mt-5">
+<div class="row mt-10">
     <div class="col-12">
         <h5 class="text-primary fw-bold mb-3 bg-primary-light-5 rounded px-3 py-2"><i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;{% trans 'Process description' %}</h5>
         <div class="border rounded p-3">
@@ -65,7 +65,7 @@
                             <i class="far fa-plus-square"></i>
                         </span>
                     </span>
-                    <span>{% trans 'Add row' %}</span>
+                    <span>{% trans 'Add new row' %}</span>
                 </span>
             </button>
             <table class="table nowrap w-100" id="process-description-table">
@@ -73,7 +73,7 @@
                 <tr>
                     <th style="min-width: 30px"></th>
                     <th style="min-width: 300px">{% trans 'Task name' %}</th>
-                    <th style="min-width: 200px">{% trans 'Labor' %}</th>
+                    <th style="min-width: 250px">{% trans 'Labor' %}</th>
                     <th style="min-width: 100px">{% trans 'Quantity' %}</th>
                     <th style="min-width: 150px">{% trans 'UOM' %}</th>
                     <th style="min-width: 250px">{% trans 'Unit price' %}</th>
@@ -88,18 +88,39 @@
     </div>
 </div>
 
-<div class="row mt-5">
+<div class="row mt-2">
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="border rounded p-3">
+            <h6 class="text-primary fw-bold">{% trans 'Labor summary' %}</h6>
+            <table class="table nowrap w-100" id="labor-summary-table">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{% trans 'Labor' %}</th>
+                    <th>{% trans 'Quantity' %}</th>
+                    <th>{% trans 'UOM' %}</th>
+                    <th>{% trans 'Unit price' %}</th>
+                    <th>{% trans 'Subtotal price' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-10">
     <div class="col-12">
         <h5 class="text-blue fw-bold mb-3 bg-blue-light-5 rounded px-3 py-2"><i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;{% trans 'Materials / Components' %}</h5>
         <div class="border rounded p-3">
-            <button type="button" class="btn btn-outline-primary btn-sm" id="add-new-material">
+            <button type="button" class="btn btn-outline-blue btn-sm" id="add-new-material">
                 <span>
                     <span class="icon">
                         <span class="feather-icon">
                             <i class="far fa-plus-square"></i>
                         </span>
                     </span>
-                    <span>{% trans 'Add row' %}</span>
+                    <span>{% trans 'Add new row' %}</span>
                 </span>
             </button>
             <table class="table nowrap w-100" id="material-table">
@@ -113,6 +134,38 @@
                     <th style="min-width: 250px">{% trans 'Unit price' %}</th>
                     <th style="min-width: 250px">{% trans 'Subtotal price' %}</th>
                     <th style="min-width: 120px">{% trans 'Disassemble' %}</th>
+                    <th style="min-width: 250px">{% trans 'Note' %}</th>
+                    <th style="min-width: 50px"></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-10">
+    <div class="col-12">
+        <h5 class="text-secondary fw-bold mb-3 bg-secondary-light-5 rounded px-3 py-2"><i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;{% trans 'Tools' %}</h5>
+        <div class="border rounded p-3">
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="add-new-tool">
+                <span>
+                    <span class="icon">
+                        <span class="feather-icon">
+                            <i class="far fa-plus-square"></i>
+                        </span>
+                    </span>
+                    <span>{% trans 'Add new row' %}</span>
+                </span>
+            </button>
+            <table class="table nowrap w-100" id="tools-table">
+                <thead>
+                <tr>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 100px">{% trans 'Code' %}</th>
+                    <th style="min-width: 250px">{% trans 'Name' %}</th>
+                    <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                    <th style="min-width: 150px">{% trans 'UOM' %}</th>
                     <th style="min-width: 250px">{% trans 'Note' %}</th>
                     <th style="min-width: 50px"></th>
                 </tr>

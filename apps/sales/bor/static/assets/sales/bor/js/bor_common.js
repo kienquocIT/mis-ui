@@ -3,6 +3,8 @@ const process_description_table = $('#process-description-table')
 const add_new_process_description = $('#add-new-process-description')
 const material_table = $('#material-table')
 const add_new_material = $('#add-new-material')
+const tools_table = $('#tools-table')
+const add_new_tool = $('#add-new-tool')
 
 function addRow(table, data) {
     table.DataTable().row.add(data).draw();
@@ -85,12 +87,68 @@ function loadProduct(ele, data) {
     }).on('change', function () {
         if (ele.val()) {
             let product_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
-            console.log(product_selected)
+            ele.closest('tr').find('.material-code').text(product_selected?.['code'])
             loadUOM(ele.closest('tr').find('.material-uom'), product_selected?.['general_uom_group']?.['id'])
             ele.closest('tr').find('.material-unit-price').attr('value', product_selected?.['general_price'] ? product_selected?.['general_price'] : 0)
             $.fn.initMaskMoney2()
         }
     })
+}
+
+function loadTool(ele, data) {
+    let dataParam = {}
+    let ajax = $.fn.callAjax2({
+        url: script_url.attr('data-url-tool-config'),
+        data: dataParam,
+        method: 'GET'
+    }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && typeof data === 'object' && data.hasOwnProperty('product_type')) {
+                return data?.['product_type'];
+            }
+            return {};
+        },
+        (errs) => {
+            console.log(errs);
+        }
+    )
+
+    Promise.all([ajax]).then(
+        (results) => {
+            let tool_type_id = results[0]?.['id']
+            if (tool_type_id) {
+                ele.initSelect2({
+                    ajax: {
+                        url: script_url.attr('data-url-product'),
+                        method: 'GET',
+                    },
+                    callbackDataResp: function (resp, keyResp) {
+                        let result = []
+                        for (let i = 0; i < resp.data[keyResp].length; i++) {
+                            for (let j = 0; j < resp.data[keyResp][i]?.['general_product_types_mapped'].length; j++) {
+                                let prd_type = resp.data[keyResp][i]?.['general_product_types_mapped'][j]
+                                if (prd_type?.['id'] === tool_type_id) {
+                                    result.push(resp.data[keyResp][i])
+                                    break;
+                                }
+                            }
+                        }
+                        return result;
+                    },
+                    data: (data ? data : null),
+                    keyResp: 'product_list',
+                    keyId: 'id',
+                    keyText: 'title',
+                }).on('change', function () {
+                    if (ele.val()) {
+                        let tool_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
+                        ele.closest('tr').find('.tool-code').text(tool_selected?.['code'])
+                        loadUOM(ele.closest('tr').find('.tool-uom'), tool_selected?.['general_uom_group']?.['id'])
+                    }
+                })
+            }
+        })
 }
 
 function loadProcessDescriptionTable(data_list=[], option='create') {
@@ -178,7 +236,7 @@ function loadMaterialTable(data_list=[], option='create') {
             },
             {
                 'render': () => {
-                    return `<span class="material-code"></span>`;
+                    return `<span class="badge badge-blue material-code"></span>`;
                 }
             },
             {
@@ -235,11 +293,85 @@ function loadMaterialTable(data_list=[], option='create') {
     });
 }
 
+function loadToolsTable(data_list=[], option='create') {
+    tools_table.DataTable().clear().destroy()
+    tools_table.DataTableDefault({
+        rowIdx: true,
+        reloadCurrency: true,
+        paging: false,
+        scrollY: '35vh',
+        scrollX: '100vh',
+        scrollCollapse: true,
+        data: data_list,
+        columns: [
+            {
+                'render': () => {
+                    return ``;
+                }
+            },
+            {
+                'render': () => {
+                    return `<span class="badge badge-secondary tool-code"></span>`;
+                }
+            },
+            {
+                'render': () => {
+                    return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 tool-item"></select>`;
+                }
+            },
+            {
+                'render': () => {
+                    return `<input ${option === 'detail' ? 'disabled readonly' : ''} type="number" class="form-control tool-quantity" value="0">`;
+                }
+            },
+            {
+                'render': () => {
+                    return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 tool-uom"></select>`;
+                }
+            },
+            {
+                'render': () => {
+                    return `<textarea ${option === 'detail' ? 'disabled' : ''} class="form-control tool-note"></textarea>`;
+                }
+            },
+            {
+                'render': () => {
+                    return `<button ${option === 'detail' ? 'disabled' : ''} type="button" class="btn del-row"><i class="fas fa-trash-alt text-secondary"></i></button>`;
+                }
+            },
+        ],
+        initComplete: function () {
+            if (data_list.length > 0) {
+                tools_table.find('tbody tr').each(function (index) {
+
+                })
+            }
+        }
+    });
+}
+
 class BORHandle {
     load(option) {
         loadProcessDescriptionTable()
         loadMaterialTable()
+        loadToolsTable()
     }
+}
+
+function calculate_process_table(row) {
+    let quantity = row.find('.process-quantity').val() ? parseFloat(row.find('.process-quantity').val()) : 0
+    let unit_price = row.find('.process-unit-price').attr('value') ? parseFloat(row.find('.process-unit-price').attr('value')) : 0
+    let subtotal = quantity * unit_price
+    row.find('.process-subtotal-price').attr('value', subtotal)
+    $.fn.initMaskMoney2()
+}
+
+function calculate_material_table(row) {
+    let quantity = row.find('.material-quantity').val() ? parseFloat(row.find('.material-quantity').val()) : 0
+    let unit_price = row.find('.material-unit-price').attr('value') ? parseFloat(row.find('.material-unit-price').attr('value')) : 0
+    let subtotal = quantity * unit_price
+    row.find('.material-subtotal-price').attr('value', subtotal)
+    $.fn.initMaskMoney2()
 }
 
 add_new_process_description.on('click', function () {
@@ -252,6 +384,20 @@ add_new_material.on('click', function () {
     addRow(material_table, {})
     let row_added = material_table.find('tbody tr:last-child')
     loadProduct(row_added.find('.material-item'))
+})
+
+add_new_tool.on('click', function () {
+    addRow(tools_table, {})
+    let row_added = tools_table.find('tbody tr:last-child')
+    loadTool(row_added.find('.tool-item'))
+})
+
+$(document).on("change", '.process-quantity', function () {
+    calculate_process_table($(this).closest('tr'))
+})
+
+$(document).on("change", '.material-quantity', function () {
+    calculate_material_table($(this).closest('tr'))
 })
 
 $(document).on("click", '.del-row', function () {

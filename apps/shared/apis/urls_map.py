@@ -588,6 +588,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DISTRIBUTION_PLAN_LIST = StringUrl('distribution-plans/list')
     DISTRIBUTION_PLAN_DETAIL = StringUrl('distribution-plans/detail/{pk}')
 
+    # Bill of resources
+    BOR_LIST = StringUrl('bill-of-resources/list')
+    BOR_DETAIL = StringUrl('bill-of-resources/detail/{pk}')
+
     # AR Invoice
     DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')
     AR_INVOICE_LIST = StringUrl('ar-invoice/list')

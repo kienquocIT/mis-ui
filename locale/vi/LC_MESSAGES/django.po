@@ -8512,3 +8512,7 @@ msgstr "Cho Nhập hàng Tự do"
 #
 msgid "Company code"
 msgstr "Mã Công ty"
+
+#
+msgid "Product/Service name"
+msgstr "Tên Sản phẩm/Dịch vụ"

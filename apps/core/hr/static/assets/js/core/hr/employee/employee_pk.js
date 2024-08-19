@@ -111,7 +111,7 @@ class EmployeeLoadPage {
         // frm.dataForm['is_admin_company'] = frm.dataForm['is_admin_company'] === 'on';
         // frm.dataForm['plan_app'] = new HandlePlanApp().combinesData();
         frm.dataForm['date_joined'] = moment($('#employee-date-joined').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
-        frm.dataForm['dob'] = moment($('#employee-dob').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
+        frm.dataForm['dob'] = $('#employee-dob').val() ? moment($('#employee-dob').val(), 'DD/MM/YYYY').format('YYYY-MM-DD') : null
         frm.dataForm['role'] = EmployeeLoadPage.roleSelectEle.val()
 
         if (!frm.dataForm['user']) frm.dataForm['user'] = null;

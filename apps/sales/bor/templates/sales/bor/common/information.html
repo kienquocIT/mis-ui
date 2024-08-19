@@ -1,0 +1,28 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-4">
+        <div class="form-check">
+			<input type="radio" id="for-production" name="bor-type" class="form-check-input" checked>
+			<label class="form-check-label" for="for-production">{% trans 'For production' %}</label>
+		</div>
+    </div>
+    <div class="col-4">
+        <div class="form-check">
+			<input type="radio" id="for-service" name="bor-type" class="form-check-input">
+			<label class="form-check-label" for="for-service">{% trans 'For service' %}</label>
+		</div>
+    </div>
+    <div class="col-4">
+        <div class="form-check">
+			<input type="radio" id="for-sale" name="bor-type" class="form-check-input">
+			<label class="form-check-label" for="for-sale">{% trans 'For sale' %}</label>
+		</div>
+    </div>
+    <div class="col-4">
+        <div class="form-check">
+			<input type="radio" id="for-external-expense" name="bor-type" class="form-check-input">
+			<label class="form-check-label" for="for-external-expense">{% trans 'For external expense' %}</label>
+		</div>
+    </div>
+</div>

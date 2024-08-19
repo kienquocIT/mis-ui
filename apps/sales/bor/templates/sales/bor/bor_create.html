@@ -27,6 +27,7 @@
 {#          data-url-redirect="{% url 'DistributionPlanList' %}"#}
     >
         {% csrf_token %}
+        {% include 'sales/bor/common/information.html' %}
     </form>
 {% endblock %}
 {% block jsFooter %}

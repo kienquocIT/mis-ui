@@ -7173,8 +7173,8 @@ msgid "Select inventory adjustment"
 msgstr "Chọn phiếu kiểm kê kho"
 
 #
-msgid "Enter data later"
-msgstr "Nhập liệu sau"
+msgid "Input later"
+msgstr "Nhập sau"
 
 #
 msgid "Vendor serial no."

@@ -250,10 +250,7 @@ $(async function () {
                                     + `<i class="fa-solid fa-ellipsis"></i></button></div>`;
                             }
                             if (!data?.['is_not_inventory']){
-                                html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
-                                    + `<p id="ready_row-${meta.row}">${row}<p/>`
-                                    + `<button type="button" class="btn btn-flush-primary btn-icon" disabled>`
-                                    + `<i class="fa-solid fa-ellipsis"></i></button></div>`;
+                                html = `<p id="ready_row-${meta.row}">${row}<p/>`;
                             }
                             return html
                         }
@@ -262,6 +259,10 @@ $(async function () {
                         targets: 7,
                         class: 'w-15 text-center',
                         render: (row, type, data, meta) => {
+                            let disabled = '';
+                            if ($form.attr('data-method').toLowerCase() === 'get') {
+                                disabled = 'disabled';
+                            }
                             let quantity = 0
                             if (data.picked_quantity) quantity = data.picked_quantity
                             let html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
@@ -285,9 +286,8 @@ $(async function () {
                                 html = `<p class="text-center">${quantity}<p/>`
                             if (!data?.['is_not_inventory']){
                                 html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
-                                + `<input type="number" class="form-control w-100p services_input" id="prod_row-${meta.row}" value="${quantity}">`
-                                + `<button type="button" class="btn" disabled>`
-                                + `<i class="fa-solid fa-ellipsis"></i></button></div>`;
+                                + `<input type="number" class="form-control w-100p services_input" id="prod_row-${meta.row}" value="${quantity}" ${disabled}>`
+                                + `</div>`;
                             }
                             return html
                         }

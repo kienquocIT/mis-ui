@@ -1283,7 +1283,7 @@ class PODataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    width: '1%',
+                    class: 'w-5',
                     render: (data, type, row, meta) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" data-row="${dataRow}">${(meta.row + 1)}</span>`
@@ -1291,7 +1291,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '25%',
+                    class: 'w-20',
                     render: (data, type, row) => {
                         let checked = '';
                         let disabled = '';
@@ -1325,35 +1325,35 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '10%',
+                    class: 'w-15',
                     render: (data, type, row) => {
                         return `<span class="table-row-code">${row?.['purchase_request']?.['code']}</span>`
                     }
                 },
                 {
                     targets: 3,
-                    width: '10%',
+                    class: 'w-10',
                     render: (data, type, row) => {
                         return `<span class="table-row-uom-request" id="${row.uom.id}">${row.uom.title}</span>`
                     }
                 },
                 {
                     targets: 4,
-                    width: '10%',
+                    class: 'w-10',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-request">${row.quantity}</span>`
                     }
                 },
                 {
                     targets: 5,
-                    width: '10%',
+                    class: 'w-10',
                     render: (data, type, row) => {
                         return `<span class="table-row-remain">${row?.['remain_for_purchase_order']}</span>`
                     }
                 },
                 {
                     targets: 6,
-                    width: '20%',
+                    class: 'w-20',
                     render: (data, type, row) => {
                         if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
                             if (row.hasOwnProperty('quantity_order')) {

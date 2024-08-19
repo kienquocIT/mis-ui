@@ -70,3 +70,5 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     DELIVERY_UPDATE = _('Delivery update successfully')
     DISTRIBUTION_PLAN_CREATE = _('Distribution plan create successfully')
     DISTRIBUTION_PLAN_UPDATE = _('Distribution plan update successfully')
+    CONTRACT_CREATE = _('Contract create successfully')
+    CONTRACT_UPDATE = _('Contract update successfully')

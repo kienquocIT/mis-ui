@@ -663,3 +663,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     BUDGET_REPORT_COMPANY_LIST = StringUrl('report/budget-report-company/list')
     BUDGET_REPORT_GROUP_LIST = StringUrl('report/budget-report-group/list')
     BUDGET_REPORT_PAYMENT_LIST = StringUrl('report/budget-report-payment/list')
+
+    # Contract
+    CONTRACT_LIST = StringUrl('contract/list')

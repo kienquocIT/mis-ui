@@ -22,7 +22,7 @@ $(function () {
                 columns: [
                     {
                         targets: 0,
-                        width: '15%',
+                        width: '12%',
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['acceptance_affect_by'] === 1) {
@@ -38,9 +38,10 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '10%',
+                        width: '12%',
                         render: (data, type, row) => {
                             let faAffectBy = row?.['acceptance_affect_by'];
+                            let app = '';
                             let title = '';
                             let code = '';
                             if (row?.['is_sale_order'] === true) {
@@ -48,14 +49,17 @@ $(function () {
                                 code = row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : '';
                             }
                             if (faAffectBy === 4) {
+                                app = eleTrans.attr('data-payment');
                                 title = row?.['payment']?.['title'] ? row?.['payment']?.['title'] : '';
                                 code = row?.['payment']?.['code'] ? row?.['payment']?.['code'] : '';
                             }
                             if (faAffectBy === 3) {
+                                app = eleTrans.attr('data-delivery');
                                 title = row?.['delivery_sub']?.['title'] ? row?.['delivery_sub']?.['title'] : '';
                                 code = row?.['delivery_sub']?.['code'] ? row?.['delivery_sub']?.['code'] : '';
                             }
-                            return `<span class="badge badge-soft-success">${code}</span>
+                            return `<span class="badge badge-success badge-outline">${app}</span>
+                                    <span class="badge badge-soft-success">${code}</span>
                                     <span class="table-row-title">${title}</span>`;
                         }
                     },
@@ -134,7 +138,7 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '10%',
+                        width: '6%',
                         render: (data, type, row) => {
                             if (row?.['acceptance_affect_by'] === 1) {
                                 let rate = parseInt(row?.['rate_value'].toFixed(1));
@@ -146,7 +150,7 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '20%',
+                        width: '25%',
                         render: (data, type, row) => {
                             let dataFA = {};
                             if ($eleDataFact.attr('data-detail')) {
@@ -685,22 +689,6 @@ $(function () {
                 'employee_inherit_id',
             ]
             filterFieldList(field_list, _form.dataForm);
-
-
-            // let csr = $("[name=csrfmiddlewaretoken]").val();
-            // $.fn.callAjax(_form.dataUrl, _form.dataMethod, {'final_acceptance_indicator': updateIndicatorData}, csr)
-            //     .then(
-            //         (resp) => {
-            //             let data = $.fn.switcherResp(resp);
-            //             if (data) {
-            //                 $.fn.notifyB({description: data.message}, 'success')
-            //                 $.fn.redirectUrl($form.attr('data-url-redirect'), 1000);
-            //             }
-            //         },
-            //         (errs) => {
-            //             console.log(errs)
-            //         }
-            //     )
             WFRTControl.callWFSubmitForm(_form);
         });
 

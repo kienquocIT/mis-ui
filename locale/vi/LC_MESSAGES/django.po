@@ -5954,19 +5954,19 @@ msgstr "Đang giao"
 
 #
 msgid "Partially delivered"
-msgstr "Đã giao một phần"
+msgstr "Giao một phần"
 
 #
 msgid "Delivered"
-msgstr "Đã giao xong"
+msgstr "Giao xong"
 
 #
 msgid "Partially received"
-msgstr "Đã nhập một phần"
+msgstr "Nhập một phần"
 
 #
 msgid "Received"
-msgstr "Đã nhập xong"
+msgstr "Nhập đủ"
 
 #
 msgid "From Price List in left side"
@@ -7842,11 +7842,11 @@ msgstr "Thông tin giao dịch"
 
 #
 msgid "Mfg date"
-msgstr "Ngày sản xuất"
+msgstr "NSX"
 
 #
 msgid "Exp date"
-msgstr "Hạn sử dụng"
+msgstr "HSD"
 
 #
 msgid "Hover to product code to see more information."
@@ -8468,6 +8468,30 @@ msgstr "Mã nhập hàng"
 #
 msgid "TOTAL"
 msgstr "TỔNG CỘNG"
+
+#
+msgid "Received before"
+msgstr "Đã nhập"
+
+#
+msgid "This time"
+msgstr "Nhập"
+
+#
+msgid "Deliver"
+msgstr "Giao"
+
+#
+msgid "Deliver product"
+msgstr "Giao hàng"
+
+#
+msgid "Common warehouse"
+msgstr "Kho chung"
+
+#
+msgid "My project"
+msgstr "Dự án của tôi"
 
 #
 msgid "For Sale Order"

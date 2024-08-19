@@ -43,9 +43,8 @@ function loadCompanyWard(wardData) {
 }
 
 $('#save-changes-modal-company-address').on('click', function () {
-    let company_address_modal = $('#detail-company-address-modal');
     try {
-        let detail_company_address = company_address_modal.val();
+        let detail_company_address = $('#detail-company-address-modal').val();
         let city = companyCityEle.find(`option:selected`).text();
         let district = companyDistrictEle.find(`option:selected`).text();
         let ward = companyWardEle.find(`option:selected`).text();
@@ -58,14 +57,13 @@ $('#save-changes-modal-company-address').on('click', function () {
             } else {
                 company_address = detail_company_address + ', ' + ward + ', ' + district + ', ' + city;
             }
-
-            company_address_modal.val('');
         } else {
             $.fn.notifyB({description: "Missing address information!"}, 'failure');
         }
 
         if (company_address) {
             $('#address').val(company_address);
+            $('#modal-company-address').modal('hide')
         }
     } catch (error) {
         $.fn.notifyB({description: "No address information!"}, 'failure');
@@ -310,23 +308,26 @@ const FunctionNumberTableData = [
 function loadFunctionNumberTable(table_data = []) {
     $('#function_number_table').DataTableDefault({
         rowIdx: true,
+        scrollX: '100vh',
+        scrollY: '50vh',
+        scrollCollapse: true,
         paging: false,
         data: table_data,
         columns: [
             {
-                className: 'wrap-text w-5',
+                className: 'wrap-text',
                 render: () => {
                     return ``;
                 }
             }, {
                 data: 'function',
-                className: 'wrap-text w-15',
+                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<span class="text-primary">${row.function}</span>`;
                 }
             }, {
                 data: '',
-                className: 'wrap-text w-15',
+                className: 'wrap-text',
                 render: () => {
                     let system = trans_script_ele.attr('data-trans-numbering0');
                     let user_defined = trans_script_ele.attr('data-trans-numbering1');
@@ -337,13 +338,13 @@ function loadFunctionNumberTable(table_data = []) {
                 }
             }, {
                 data: '',
-                className: 'wrap-text w-45',
+                className: 'wrap-text',
                 render: () => {
                     return `<span class="schema-show text-primary"></span>`;
                 }
             }, {
                 data: '',
-                className: 'wrap-text text-center w-10',
+                className: 'wrap-text text-center',
                 render: () => {
                     return `<span class="text-primary schema-custom" hidden data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;
                 }
@@ -358,23 +359,26 @@ function loadFunctionNumberTableDetail(option = 'detail', table_detail_data = []
     });
     $('#function_number_table').DataTableDefault({
         rowIdx: true,
+        scrollX: '100vh',
+        scrollY: '50vh',
+        scrollCollapse: true,
         paging: false,
         data: table_detail_data,
         columns: [
             {
-                className: 'wrap-text w-5',
+                className: 'wrap-text',
                 render: () => {
                     return ``;
                 }
             }, {
                 data: 'function',
-                className: 'wrap-text w-15',
+                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<span class="text-primary"><b>${FunctionNumberTableData[row.function].function}</b></span>`;
                 }
             }, {
                 data: '',
-                className: 'wrap-text w-15',
+                className: 'wrap-text',
                 render: (data, type, row) => {
                     let disabled = '';
                     if (option === 'detail') {
@@ -396,7 +400,7 @@ function loadFunctionNumberTableDetail(option = 'detail', table_detail_data = []
                 }
             }, {
                 data: '',
-                className: 'wrap-text w-45',
+                className: 'wrap-text',
                 render: (data, type, row) => {
                     if (row.schema) {
                         return `<span data-schema="${row.schema}" data-first-number="${row.first_number}" data-last-number="${row.last_number}" data-reset-frequency="${row.reset_frequency}" data-min-number-char="${row.min_number_char}" class="schema-show text-primary">${row.schema_text}</span>`;
@@ -406,7 +410,7 @@ function loadFunctionNumberTableDetail(option = 'detail', table_detail_data = []
                 }
             }, {
                 data: '',
-                className: 'wrap-text text-center w-10',
+                className: 'wrap-text text-center',
                 render: (data, type, row) => {
                     if (option !== 'detail') {
                         if (row.schema) {

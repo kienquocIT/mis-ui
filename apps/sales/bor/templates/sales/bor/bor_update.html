@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Bill of resources update' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-detail-bor">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+    ></script>
+    <form id="form-detail-bor"
+{#          data-url="{% url 'DistributionPlanDetailAPI' pk=pk %}"#}
+{#          data-url-redirect="{% url 'DistributionPlanDetail' pk=pk %}"#}
+          data-method="PUT"
+    >
+        {% csrf_token %}
+    </form>
+{% endblock %}
+{% block dataHiddenGroup %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
+    <script src="{% static 'assets/sales/bor/js/bor_common.js' %}"></script>
+    <script src="{% static 'assets/sales/bor/js/bor_update.js' %}"></script>
+{% endblock %}

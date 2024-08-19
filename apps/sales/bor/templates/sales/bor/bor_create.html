@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Bill of resources create' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <style>
+        .select2-selection__rendered {
+            max-width: 250px;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-create-bor">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+            data-url-labor="{% url 'ExpenseListAPI' %}"
+            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
+            data-url-product="{% url 'ProductListAPI' %}"
+    ></script>
+    <form id="form-create-bor"
+          data-method="POST"
+{#          data-url="{% url 'DistributionPlanListAPI' %}"#}
+{#          data-url-redirect="{% url 'DistributionPlanList' %}"#}
+    >
+        {% csrf_token %}
+        {% include 'sales/bor/common/information.html' %}
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
+    <script src="{% static 'assets/sales/bor/js/bor_common.js' %}"></script>
+    <script src="{% static 'assets/sales/bor/js/bor_create.js' %}"></script>
+{% endblock %}

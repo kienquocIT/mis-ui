@@ -15,7 +15,13 @@ class PurchaseRequestCreate(View):
         perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp1 = ServerAPI(
+            user=request.user,
+            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
+        ).get()
+        return {
+            'data': {'employee_current': resp1.result},
+        }, status.HTTP_200_OK
 
 
 class PurchaseRequestList(View):

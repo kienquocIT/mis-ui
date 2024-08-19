@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Project works' %}
+{% endblock %}
+{% block cssHeader %}
+    <style></style>
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+
+{% block pageContent %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <table
+                    class="table nowrap w-100 min-w-1500p"
+                    id="project_works_tb"
+                    data-method="get"
+                    data-url="{% url 'ProjectListBaselineAPI' %}"
+                >
+                    <thead>
+                        <tr>
+                            <td><span>{% trans 'Code' %}</span></td>
+                            <td><span>{% trans 'Name' %}</span></td>
+                            <td><span>{% trans 'Project PM' %}</span></td>
+                            <td><span>{% trans 'Start date' %}</span></td>
+                            <td><span>{% trans 'Finish date' %}</span></td>
+                            <td><span>{% trans 'Completion rate' %}</span></td>
+                            <td><span>{% trans 'Date created' %}</span></td>
+                            <td><span>{% trans 'System status' %}</span></td>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input type="hidden" id="url-factory" aria-label="url-factory"
+           data-baseline-url="{% url 'ProjectBaselineDetail' 1 %}"
+           data-filter_employee="{% url 'EmployeeListAPI' %}"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/project/js/extend/baseline-list.js' %}"></script>
+{% endblock %}

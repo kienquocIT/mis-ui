@@ -35,7 +35,11 @@ $(document).ready(function () {
         if (!$.fn.DataTable.isDataTable('#lead-list-table')) {
             let dtb = $('#lead-list-table');
             dtb.DataTableDefault({
+                styleDom: 'hide-foot',
                 rowIdx: true,
+                scrollX: '100vh',
+                scrollY: '25vh',
+                scrollCollapse: true,
                 data: datasource,
                 columns: [
                     {

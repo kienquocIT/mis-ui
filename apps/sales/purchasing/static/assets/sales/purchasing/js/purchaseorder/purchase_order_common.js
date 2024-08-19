@@ -42,8 +42,8 @@ class POLoadDataHandle {
                 if (data) {
                     if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
                         for (let product of data.product_sale_list) {
-                            if (product.hasOwnProperty('product_choice') && Array.isArray(product.product_choice)) {
-                                if (product['product_choice'].includes(2)) {  // has choice allow purchase
+                            if (product.hasOwnProperty('product_choice') && Array.isArray(product?.['product_choice'])) {
+                                if (product?.['product_choice'].includes(2)) {  // product allow purchase
                                     finalData.push(product);
                                 }
                             }

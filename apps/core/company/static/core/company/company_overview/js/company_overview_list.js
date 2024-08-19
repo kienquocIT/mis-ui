@@ -43,6 +43,8 @@ $(function () {
             let dtb = $('#datable_company_overview_list');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
+                rowIndex: true,
+                useDataServer: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -56,7 +58,7 @@ $(function () {
                 },
                 columns: [
                     {
-                        render: (data, type, row, meta) => {
+                        render: () => {
                             return ''
                         }
                     },
@@ -65,7 +67,7 @@ $(function () {
                         width: '10%',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<a href="{0}"><span class="badge badge-soft-primary">{1}</span></a>`.format_by_idx(
+                            return `<a href="{0}"><span class="badge badge-primary">{1}</span></a>`.format_by_idx(
                                 frm.getUrlDetail(row.id), data
                             )
                         }
@@ -74,6 +76,11 @@ $(function () {
                         data: 'title',
                         width: '25%',
                         className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            return `<a href="{0}"><span class="text-primary fw-bold">${data}</span></a>`.format_by_idx(
+                                frm.getUrlDetail(row.id), data
+                            )
+                        }
                     },
                     {
                         data: 'license_used',
@@ -81,13 +88,14 @@ $(function () {
                         width: '35%',
                         render: (data, type, row, meta) => {
                             let arr_html = [];
-                            for (let i = 0; i < data.length; i++) if (typeof data[i] === 'object') arr_html += `<span class="badge badge-primary my-1">` + data[i].key + ` (` + data[i].quantity + `)` + `</span> `;
+                            for (let i = 0; i < data.length; i++) if (typeof data[i] === 'object') arr_html += `<span class="badge badge-outline badge-secondary m-1">` + data[i].key + ` (` + data[i].quantity + `)` + `</span> `;
                             return arr_html;
                         }
                     },
                     {
                         data: 'total_user',
                         width: '10%',
+                        className: 'text-center',
                         render: (data, type, row, meta) => {
                             return String.format(`<span class="badge badge-soft-success w-50">{0}</span>`, data)
                         }
@@ -95,6 +103,7 @@ $(function () {
                     {
                         data: 'power_user',
                         width: '10%',
+                        className: 'text-center',
                         render: (data, type, row, meta) => {
                             return String.format(`<span class="badge badge-soft-warning w-50">{0}</span>`, data)
                         }
@@ -102,6 +111,7 @@ $(function () {
                     {
                         data: 'employee_linked_user',
                         width: '10%',
+                        className: 'text-center',
                         render: (data, type, row, meta) => {
                             return String.format(`<span class="badge badge-soft-indigo w-100">{0} / {1}</span>`, row['employee_linked_user'], row['employee'],)
                         }
@@ -145,6 +155,7 @@ $(function () {
         if (!$.fn.DataTable.isDataTable('#tbl-user-of-tenant')) {
             let frm_user_tenant = new SetupFormSubmit(tblUserOfTenant);
             tblUserOfTenant.DataTableDefault({
+                rowIndex: true,
                 useDataServer: true,
                 ajax: {
                     url: frm_user_tenant.dataUrl,
@@ -160,18 +171,18 @@ $(function () {
                 },
                 columns: [
                     {
-                        render: (data, type, row, meta) => {
+                        render: () => {
                             return ''
                         }
                     }, {
                         render: (data, type, row, meta) => {
-                            return `<a href="{0}">{1}</a>`.format_by_idx(frm_user_tenant.dataUrlDetail + row.id, row.username,);
+                            return `<a class="fw-bold" href="{0}">{1}</a>`.format_by_idx(frm_user_tenant.dataUrlDetail + row.id, row.username,);
                         }
                     }, {
                         render: (data, type, row, meta) => {
                             let html_row = `<div class="{0}">{1}</div>`
                             if (row.avatar) return html_row.format_by_idx("avatar", `<img src="{0}" alt="user" class="avatar-img">`.format_by_idx(row.avatar));
-                            return html_row.format_by_idx('avatar avatar-xs avatar-primary avatar-rounded', `<span class="initial-wrap">{0}</span>`.format_by_idx(row.full_name.split(' ').map(item => item.charAt(0)).join(""),),) + ` <span>{0}</span>`.format_by_idx(row.full_name);
+                            return html_row.format_by_idx('avatar avatar-xs avatar-soft-primary avatar-rounded', `<span class="initial-wrap">{0}</span>`.format_by_idx(row.full_name.charAt(0))) + ` <span>{0}</span>`.format_by_idx(row.full_name);
                         }
                     }, {
                         data: 'company_list',
@@ -197,11 +208,12 @@ $(function () {
                             }
                             return '';
                         }
-                    }, {
-                        render: (data, type, row, meta) => {
-                            return `<button class="btn btn-icon btn-rounded btn-rounded btn-flush-primary flush-soft-hover btn-edit-popup" data-bs-toggle="modal" data-bs-target="#changeUserCompanies"><span class="icon"><i class="far fa-edit" ></i></span></button>`;
-                        }
                     },
+                    // {
+                    //     render: (data, type, row, meta) => {
+                    //         return `<button class="btn btn-icon btn-rounded btn-rounded btn-flush-primary flush-soft-hover btn-edit-popup" data-bs-toggle="modal" data-bs-target="#changeUserCompanies"><span class="icon"><i class="far fa-edit" ></i></span></button>`;
+                    //     }
+                    // },
                 ]
             });
         }

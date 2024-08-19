@@ -175,16 +175,25 @@ class NodeLoadDataHandle {
     };
 
     static loadBoxEmployee(ele, dataEmployee = {}) {
-        let companyVal = $(ele[0].closest('.collab-in-workflow-area').querySelector('.box-in-workflow-company')).val();
-        let roleVal = $(ele[0].closest('.collab-in-workflow-area').querySelector('.box-in-workflow-role')).val();
+        let dataParams = {};
+        let inWFArea = ele[0].closest('.collab-in-workflow-area');
+        if (inWFArea) {
+            let $company = $(inWFArea.querySelector('.box-in-workflow-company'));
+            let $role = $(inWFArea.querySelector('.box-in-workflow-role'));
+            if ($company) {
+                dataParams['company_id'] = $company.val();
+            }
+            if ($role) {
+                dataParams['role__id'] = $role.val();
+            }
+        }
         ele.initSelect2({
             data: dataEmployee,
-            'dataParams': {'company_id': companyVal, 'role__id': roleVal},
+            'dataParams': dataParams,
             disabled: !(ele.attr('data-url')),
             templateResult: function (state) {
-                let groupHTML = `<span class="badge badge-soft-primary">${state.data?.group?.title ? state.data.group.title : "_"}</span>`
-                let activeHTML = state.data?.is_active === true ? `<span class="badge badge-success"></span>` : `<span class="badge badge-light"></span>`;
-                return $(`<span>${state.text} ${activeHTML} ${groupHTML}</span>`);
+                let groupHTML = `<span class="badge badge-soft-success">${state.data?.group?.title ? state.data.group.title : "_"}</span>`
+                return $(`<span>${state.text} ${groupHTML}</span>`);
             },
         });
         return true;

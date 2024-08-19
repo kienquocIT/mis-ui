@@ -309,6 +309,10 @@ class MenusCRM:
         name='Product', code='id_menu_product_list', view_name='ProductList',
         icon='<i class="bi bi-archive-fill"></i>',
     )
+    BOR = MenuCommon(
+        name='Bill of resources', code='menu_bor_list', view_name='BORList',
+        icon='<i class="fab fa-connectdevelop"></i>',
+    )
     PRICING = MenuCommon(
         name='Pricing', code='menu_pricing', view_name='',
         icon='<i class="bi bi-tags-fill"></i>',
@@ -641,6 +645,14 @@ class MenusProject:
         name='Project list', code='menu_project', view_name='ProjectList',
         icon='<i class="fa-solid fa-bars-progress"></i>',
     )
+    BASELINE = MenuCommon(
+        name='Baseline', code='menu_baseline_list', view_name='ProjectListBaseline',
+        icon='<i class="bi bi-signpost-fill"></i>',
+    )
+    # WORKS = MenuCommon(
+    #     name='Works', code='menu_works_list', view_name='ProjectWorkList',
+    #     icon='<i class="bi bi-filter-circle font-3"></i>',
+    # )
 
 
 # Space Setup
@@ -701,6 +713,7 @@ class SpaceItem:
                 MenusCRM.SALE_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.PRODUCT,
+                MenusCRM.BOR,
                 MenusCRM.PRICING,
                 MenusCRM.CASH_OUTFLOW,
                 MenusCRM.SALE_ACTIVITIES,
@@ -714,6 +727,8 @@ class SpaceItem:
             menus=[
                 MenusProject.HOME,
                 MenusProject.LIST,
+                MenusProject.BASELINE,
+                # MenusProject.WORKS,
             ]
         ),
         'purchase': SpaceCommon(

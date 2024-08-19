@@ -2509,7 +2509,7 @@ msgstr "Tạo Vai trò"
 
 #
 msgid "Organization"
-msgstr "Tổ Chức"
+msgstr "Tổ chức"
 
 #
 msgid "User List"

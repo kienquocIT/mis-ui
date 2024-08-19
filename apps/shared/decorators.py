@@ -116,6 +116,7 @@ class ArgumentDecorator:
                 'first_name': str(user.first_name),
                 'last_name': str(user.last_name),
                 'fullname': user.get_full_name(),
+                'username': user.username,
                 'username_auth': user.username_auth,
                 'email': user.email,
                 'is_admin_tenant': user.is_admin_tenant,

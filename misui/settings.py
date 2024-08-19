@@ -224,6 +224,8 @@ MEDIA_URL = '/media/'
 default_auto_field = 'django.db.models.BigAutoField'
 
 # REST API
+JWT_KEY_2FA_ENABLED = 'is_2fa_enabled'
+JWT_KEY_2FA_VERIFIED = 'is_2fa_verified'
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
     'DEFAULT_AUTHENTICATION_CLASSES': (

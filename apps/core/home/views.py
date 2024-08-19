@@ -11,8 +11,7 @@ from apps.shared.apps_code_to_txt import AppsCodeToList
 
 class HomeView(View):
     @mask_view(
-        login_require=False,
-        auth_require=False,
+        login_require=True,
         template='core/home/home.html',
         breadcrumb='HOME_PAGE',
         menu_active='id_menu_home_page',

@@ -13,6 +13,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+import jwt
+
 from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, ServerMsg, TypeCheck
 from apps.core.account.models import User
 
@@ -26,61 +28,6 @@ def check_home_domain(request):
     if meta_hosts and f'{settings.UI_DOMAIN_SUB_HOME}.{settings.UI_DOMAIN}' in meta_hosts:
         return True
     return False
-
-
-class AuthOAuth2Login(APIView):
-    permission_classes = [AllowAny]
-
-    @classmethod
-    def get(cls, request):
-        ctx = {'is_notify_key': False}
-        if request.user and request.user.is_authenticated and isinstance(request.user, User):
-            resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
-            if resp.state is True:
-                ctx['user_data'] = {
-                    'id': request.user.id,
-                    'first_name': request.user.first_name,
-                    'last_name': request.user.last_name,
-                    'avatar': request.user.avatar_url,
-                    'companies_data': request.user.companies_data,
-                }
-        # request.session.flush()
-        # request.user = AnonymousUser
-        return render(request, 'auths/login_OAuth2.html', ctx)
-
-    @classmethod
-    def post_callback_success(cls, result):
-        return {
-            'id': result['id'],
-            'access_code': result['code'],
-            'secret_token_regis': result['access_token_regis'],
-        }
-
-    @mask_view(auth_require=True, is_api=True)
-    def post(self, request, *args, **kwargs):
-        # {
-        #   "company_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        #   "access_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        #   "user_agent": "string",
-        #   "public_ip": "string"
-        # }
-        company_id = request.data.get('company_id', None)
-        access_id = request.data.get('access_id', None)
-        public_ip = request.META.get('HTTP_X_FORWARDED_FOR') or request.META.get('REMOTE_ADDR')
-        user_agent = request.META.get('HTTP_USER_AGENT')
-        if company_id and TypeCheck.check_uuid(company_id) and access_id and TypeCheck.check_uuid(
-                access_id
-        ) and public_ip and user_agent:
-            data = {
-                "company_id": company_id,
-                "access_id": access_id,
-                "user_agent": user_agent,
-                "public_ip": public_ip
-            }
-            url = ApiURL.API_FORWARD_ACCESS_TOKEN_MEDIA
-            resp = ServerAPI(request=request, user=request.user, url=url).post(data=data)
-            return resp.auto_return(callback_success=self.post_callback_success)
-        return {}, status.HTTP_403_FORBIDDEN
 
 
 class AuthLoginSelectTenant(APIView):
@@ -141,46 +88,52 @@ class AuthLogin(APIView):
         frm = AuthLoginForm(data=request.data)
         frm.is_valid()
         resp = ServerAPI(request=request, user=None, url=ApiURL.login).post(frm.cleaned_data)
-        match resp.state:
-            case True:
-                user = User.regis_with_api_result(resp.result)
-                if user:
-                    if not frm.cleaned_data.get('remember'):
-                        request.session.set_expiry(0)
-                    # random DEVICE_ID
-                    request.session.update({
-                        ServerAPI.KEY_SESSION_DEVICE_ID: uuid4().hex
-                    })
-                    # call login to system with register session credential to request
-                    login(request, user)
-                    ctx = {
-                        'detail': AuthMsg.login_success,
-                        'user_data': {
-                            'first_name': user.first_name,
-                            'last_name': user.last_name,
-                            'avatar': user.avatar_url,
-                            'companies_data': request.user.companies_data,
-                        } if is_oauth2 is True else {}
-                    }
-                    return ctx, status.HTTP_200_OK
-                return {'detail': AuthMsg.login_exc, 'data': resp.result}, status.HTTP_400_BAD_REQUEST
-            case False:
-                return resp.errors, status.HTTP_400_BAD_REQUEST
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_400_BAD_REQUEST
+        print('resp:', resp.status, resp.result)
+        if resp.state is True:
+            user = User.regis_with_api_result(resp.result)
+            if user:
+                if not frm.cleaned_data.get('remember'):
+                    request.session.set_expiry(0)
+                # random DEVICE_ID
+                request.session.update({
+                    ServerAPI.KEY_SESSION_DEVICE_ID: uuid4().hex
+                })
+                # call login to system with register session credential to request
+                login(request, user)
+
+                # context
+                ctx = {
+                    'detail': AuthMsg.login_success,
+                    'user_data': {
+                        'first_name': user.first_name,
+                        'last_name': user.last_name,
+                        'avatar': user.avatar_url,
+                        'companies_data': request.user.companies_data,
+                    } if is_oauth2 is True else {}
+                }
+
+                #
+                token = jwt.decode(user.access_token, options={"verify_signature": False})
+                is_2fa_verified = token.get(settings.JWT_KEY_2FA_VERIFIED, False)
+                is_2fa_enabled = token.get(settings.JWT_KEY_2FA_ENABLED, False)
+                if is_2fa_enabled is True and is_2fa_verified is False:
+                    ctx['redirect_to'] = reverse('TwoFAVerifyView')
+
+                return ctx, status.HTTP_200_OK
+            return {'detail': AuthMsg.login_exc, 'data': resp.result}, status.HTTP_400_BAD_REQUEST
+        return resp.errors, status.HTTP_400_BAD_REQUEST
 
 
-class AuthLogout(APIView):
-    permission_classes = [APIAllowAny]  # force skip check permit action when skip authenticated
-    authentication_classes = [CSRFCheckSessionAuthentication]  # force check csrf
+class AuthLogout(View):
+    authentication_classes = [AllowAny]
 
-    @mask_view(login_require=False, is_api=True)
     def get(self, request, *args, **kwargs):
         try:
             logout(request)
             request.user = AnonymousUser
         except Exception:
             pass
-        return redirect(reverse('AuthLogin') + '?next=' + request.query_params.get('next', ''))
+        return redirect(reverse('AuthLogin') + '?next=' + request.GET.get('next', '/'))
 
 
 class TenantLoginChoice(APIView):

@@ -3844,8 +3844,8 @@ msgid "Only the Account Manager of a Customer is allowed to create an Opportunit
 msgstr "Chỉ quản lý của khách hàng mới được tạo cơ hội kinh doanh cho khách hàng đó  "
 
 #
-msgid "Lost"
-msgstr "Thất bại"
+msgid "Lost by other reason"
+msgstr "Thất bại bởi lí do khác"
 
 #
 msgid "Configuration does not allow selecting stage"
@@ -4036,7 +4036,7 @@ msgstr "Sao chép đến đơn hàng"
 
 #
 msgid "Is admin"
-msgstr "Là quản trị viên"
+msgstr "Là QTV"
 
 #
 msgid "Current page automatically goes to end page after the new row was added"
@@ -8463,8 +8463,28 @@ msgstr "Kế hoạch nhập hàng"
 
 #
 msgid "Stock plan code"
-msgstr "Mã kế hoạch nhập hàng"
+msgstr "Mã nhập hàng"
 
 #
 msgid "TOTAL"
 msgstr "TỔNG CỘNG"
+
+#
+msgid "For Sale Order"
+msgstr "Cho Đơn hàng"
+
+#
+msgid "For Other"
+msgstr "Khác"
+
+#
+msgid "For Stock Plan"
+msgstr "Cho Kế hoạch Nhập hàng"
+
+#
+msgid "For Stock Free"
+msgstr "Cho Nhập hàng Tự do"
+
+#
+msgid "Company code"
+msgstr "Mã Công ty"

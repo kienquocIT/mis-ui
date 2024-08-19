@@ -371,10 +371,11 @@ function APLoadReturnDate() {
         singleDatePicker: true,
         timePicker: false,
         showDropdowns: true,
+        autoApply: true,
         minYear: parseInt(moment().format('YYYY')),
         minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM'))-1, parseInt(moment().format('DD'))),
         locale: {
-            format: 'YYYY-MM-DD'
+            format: 'DD/MM/YYYY'
         },
         "cancelClass": "btn-secondary",
         maxYear: parseInt(moment().format('YYYY')) + 100,
@@ -1240,7 +1241,7 @@ $(document).on("click", '#btn-add-row-line-detail', function () {
 });
 
 $(document).on("click", '.btn-del-line-detail', function () {
-    deleteRow(tableLineDetail, parseInt($(this).find('td:first-child').text()))
+    deleteRow(tableLineDetail, parseInt($(this).closest('tr').find('td:first-child').text()))
     calculate_price();
 });
 
@@ -1397,7 +1398,7 @@ function LoadDetailAP(option) {
 
                 $('#created_date_id').val(data.date_created.split(' ')[0]).prop('readonly', true)
 
-                $('#return_date_id').val(data.return_date.split(' ')[0])
+                $('#return_date_id').val(moment(data.return_date.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
 
                 APLoadCreator(data.creator_name);
 
@@ -1468,7 +1469,7 @@ class AdvancePaymentHandle {
 
         frm.dataForm['method'] = parseInt(ap_method_Ele.val());
 
-        frm.dataForm['return_date'] = $('#return_date_id').val();
+        frm.dataForm['return_date'] = moment($('#return_date_id').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
 
         frm.dataForm['creator_name'] = APCreatorEle.val();
         if (!frm.dataForm['creator_name']) {

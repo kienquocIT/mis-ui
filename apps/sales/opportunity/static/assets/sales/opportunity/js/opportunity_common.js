@@ -1042,6 +1042,9 @@ class OpportunityActivity {
         $table.DataTable().clear().destroy()
         $table.DataTableDefault({
             rowIdx: true,
+            scrollX: '100vh',
+            scrollY: '25vh',
+            scrollCollapse: true,
             ajax: {
                 url: $table.attr('data-url-logs_list'),
                 type: 'GET',
@@ -1113,7 +1116,7 @@ class OpportunityActivity {
                             if (Object.keys(row?.['task']).length > 0) {
                                 badgeType = 'badge-soft-sky';
                             }
-                            return `<span class="badge ${badgeType}">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
+                            return `<span class="w-80 badge ${badgeType}">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                         }
                         return `<p></p>`;
                     }
@@ -1161,10 +1164,11 @@ class OpportunityActivity {
                 },
                 {
                     targets: 3,
+                    className: 'text-center',
                     render: (data, type, row) => {
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code'] && row?.['doc_data']?.['code']) {
-                                return `<span class="badge badge-primary">${row?.['doc_data']?.['code']}</span>`;
+                                return `<span class="w-80 badge badge-soft-blue">${row?.['doc_data']?.['code']}</span>`;
                             }
                         }
                         return `<p>--</p>`;
@@ -1172,6 +1176,7 @@ class OpportunityActivity {
                 },
                 {
                     targets: 4,
+                    className: 'text-center',
                     render: (data, type, row) => {
                         if (row?.['app_code'] && [0, 1].includes(row?.['log_type'])) {
                             if (row?.['log_type'] === 0 && row?.['doc_data']?.['system_status']) {
@@ -1186,7 +1191,7 @@ class OpportunityActivity {
                                 return `<div class="row"><span class="badge badge-${sttMapBadge[row?.['doc_data']?.['system_status']]}">${sttTxt[row?.['doc_data']?.['system_status']][1]}</span></div>`;
                             }
                             if (row?.['log_type'] === 1 && row?.['doc_data']?.['task_status']) {
-                                return `<div class="row"><span class="badge badge-soft-pink">${row?.['doc_data']?.['task_status']}</span></div>`;
+                                return `<div class="row"><span class="w-80 badge badge-soft-pink">${row?.['doc_data']?.['task_status']}</span></div>`;
                             }
                         }
                         return `<p>--</p>`;
@@ -1194,6 +1199,7 @@ class OpportunityActivity {
                 },
                 {
                     targets: 5,
+                    className: 'text-right',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(row?.['date_created'], {
                             'outputFormat': 'DD-MM-YYYY',
@@ -1416,9 +1422,13 @@ function loadDtbProduct(data) {
     if (!$.fn.DataTable.isDataTable('#table-products')) {
         let dtb = OpportunityLoadDetail.productTableEle;
         dtb.DataTableDefault({
+            styleDom: 'hide-foot',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
+            scrollX: '100vh',
+            scrollY: '25vh',
+            scrollCollapse: true,
             data: data,
             columns: [
                 {
@@ -1446,14 +1456,14 @@ function loadDtbProduct(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-uom w-80p" data-method="GET" data-url="${urlEle.data('url-uom')}" data-keyResp="unit_of_measure" required></select>`
+                        return `<select class="form-select box-select-uom" data-method="GET" data-url="${urlEle.data('url-uom')}" data-keyResp="unit_of_measure" required></select>`
                     }
                 },
                 {
                     data: 'product_quantity',
                     className: 'wrap-text',
                     render: (data) => {
-                        return `<input type="number" class="form-control w-80p input-quantity" value="{0}" required/>`.format_by_idx(
+                        return `<input type="number" class="form-control input-quantity" value="{0}" required/>`.format_by_idx(
                             data
                         )
                     }
@@ -1462,7 +1472,7 @@ function loadDtbProduct(data) {
                     data: 'product_unit_price',
                     className: 'wrap-text',
                     render: (data) => {
-                        return `<input type="text" class="form-control w-150p mask-money input-unit-price" data-return-type="number" value="{0}" required/>`.format_by_idx(
+                        return `<input type="text" class="form-control mask-money input-unit-price" data-return-type="number" value="{0}" required/>`.format_by_idx(
                             data
                         )
                     }
@@ -1477,7 +1487,7 @@ function loadDtbProduct(data) {
                     data: 'product_subtotal_price',
                     className: 'wrap-text',
                     render: (data) => {
-                        return `<input class="form-control mask-money w-200p input-subtotal" type="text" data-return-type="number" value="{0}" readonly required>`.format_by_idx(
+                        return `<input class="form-control mask-money input-subtotal" type="text" data-return-type="number" value="{0}" readonly required>`.format_by_idx(
                             data
                         )
                     }
@@ -1497,9 +1507,20 @@ function loadDtbCompetitor(data) {
     if (!$.fn.DataTable.isDataTable('#table-competitors')) {
         let dtb = OpportunityLoadDetail.competitorTableEle;
         dtb.DataTableDefault({
+            styleDom: 'hide-foot',
+            rowIdx: true,
             data: data,
             paging: false,
+            scrollX: '100vh',
+            scrollY: '25vh',
+            scrollCollapse: true,
             columns: [
+                {
+                    className: 'wrap-text',
+                    render: () => {
+                        return ``
+                    }
+                },
                 {
                     className: 'wrap-text',
                     render: () => {
@@ -1538,8 +1559,7 @@ function loadDtbCompetitor(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<a class="btn btn-icon btn-del-item"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>
-`
+                        return `<a class="btn btn-icon btn-del-item"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
                     }
                 },
             ],
@@ -1551,9 +1571,20 @@ function loadDtbContactRole(data) {
     if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
         let dtb = OpportunityLoadDetail.contactRoleTableEle;
         dtb.DataTableDefault({
+            styleDom: 'hide-foot',
+            rowIdx: true,
             data: data,
             paging: false,
+            scrollX: '100vh',
+            scrollY: '25vh',
+            scrollCollapse: true,
             columns: [
+                {
+                    className: 'wrap-text',
+                    render: () => {
+                        return ``
+                    }
+                },
                 {
                     className: 'wrap-text',
                     render: () => {

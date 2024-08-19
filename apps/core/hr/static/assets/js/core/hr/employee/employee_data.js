@@ -34,17 +34,17 @@ $(function () {
                 width: '10%',
                 'data': 'code',
                 render: (data, type, row, meta) => {
-                    let urlEmployeeDetail = urlDetail.replace('__pk__', row.id);
-                    return `<a href="${urlEmployeeDetail}"><span class="badge badge-primary">${data}</span></a>`;
+                    const link = urlDetail.replace('0', row.id);
+                    return `<a href="${link}"><span class="badge badge-primary">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
                 }
             },
             {
-                width: '15%',
+                width: '20%',
                 'data': 'full_name',
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('full_name') && row.hasOwnProperty('first_name') && typeof row.full_name === 'string') {
                         let avatarHTML = `
-                            <div class="avatar avatar-xs avatar-success avatar-rounded">
+                            <div class="avatar avatar-xs avatar-soft-primary avatar-rounded">
                                 <span class="initial-wrap">${row.first_name.charAt(0).toUpperCase()}</span>
                             </div>
                         `;
@@ -55,13 +55,14 @@ $(function () {
                                 </div>
                             `;
                         }
+                        const link = urlDetail.replace('0', row.id);
                         return `
-                            <div class="media align-items-center">
+                            <a href="${link}"><div class="media align-items-center">
                                 <div class="media-head me-2">${avatarHTML}</div>
                                 <div class="media-body">
-                                    <span class="d-block">` + row.full_name + `</span>
+                                    <span class="d-block text-primary fw-bold">` + row.full_name + `</span>
                                 </div>
-                            </div>
+                            </div></a>
                         `;
                     }
                     return '';
@@ -73,7 +74,7 @@ $(function () {
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('group') && typeof row.group === "object") {
                         if (Object.keys(row.group).length !== 0) {
-                            return `<span class="badge badge-primary">` + row.group.title + `</span>`;
+                            return `<span class="badge badge-soft-blue">` + row.group.title + `</span>`;
                         }
                     }
                     return '';
@@ -85,7 +86,7 @@ $(function () {
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('role') && Array.isArray(row.role)) {
                         let result = [];
-                        row.role.map(item => item.title ? result.push(`<span class="badge badge-soft-primary mb-1 mr-1">` + item.title + `</span>`) : null);
+                        row.role.map(item => item.title ? result.push(`<span class="badge badge-outline badge-soft-pumpkin mb-1 mr-1">` + item.title + `</span>`) : null);
                         return result.join(" ");
                     }
                     return '';
@@ -101,22 +102,22 @@ $(function () {
                 }
             },
             {
-                width: '5%',
+                width: '10%',
                 'className': 'action-center',
                 data: 'is_active',
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('is_active') && typeof row.is_active === 'boolean') {
                         if (row.is_active) {
-                            return `<span class="badge badge-info badge-indicator badge-indicator-xl"></span>`;
+                            return `<span class="badge badge-success badge-indicator badge-indicator-xl"></span>`;
                         } else {
-                            return `<span class="badge badge-light badge-indicator badge-indicator-xl"></span>`;
+                            return `<span class="badge badge-danger badge-indicator badge-indicator-xl"></span>`;
                         }
                     }
                     return '';
                 }
             },
             {
-                width: '5%',
+                width: '10%',
                 data: 'is_admin_company',
                 render: (data, type, row, meta) => {
                     return `
@@ -126,18 +127,18 @@ $(function () {
                 `;
                 }
             },
-            {
-                width: '15%',
-                'className': 'action-center',
-                'render': (data, type, row, meta) => {
-                    let urlDetail = "/hr/employee/" + row.id
-                    let urlList = "/hr/employee"
-                    let urlUpdate = "/hr/employee/update/" + row.id
-                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="${urlUpdate}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#" data-url="${urlDetail}" data-method="DELETE" data-url-redirect="${urlList}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                    return bt2 + bt3;
-                }
-            },
+            // {
+            //     width: '15%',
+            //     'className': 'action-center',
+            //     'render': (data, type, row, meta) => {
+            //         let urlDetail = "/hr/employee/" + row.id
+            //         let urlList = "/hr/employee"
+            //         let urlUpdate = "/hr/employee/update/" + row.id
+            //         let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="${urlUpdate}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+            //         // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#" data-url="${urlDetail}" data-method="DELETE" data-url-redirect="${urlList}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+            //         return bt2;
+            //     }
+            // },
         ]
     });
 });

@@ -36,6 +36,13 @@
             border-bottom: 1px solid #dce2e5;
             color: #5e7d8a;
             font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .popover-head .popover-close {
+            cursor: pointer;
+            margin-right: 10px;
         }
 
         .popover-detail .popover-body {
@@ -234,6 +241,7 @@
         <div class="popover-detail" style="display: none;">
             <div class="popover-head">
                 <p class="popover-title">User ABC</p>
+                <span class="popover-close"><i class="fa-solid fa-circle-xmark fa-lg"></i></span>
             </div>
             <div class="popover-body">
                 <p class="h5">{% trans 'User companies currently' %}</p>
@@ -279,6 +287,7 @@
 
             const popover$ = $('#popover-user');
             const popoverDetail$ = popover$.find('.popover-detail');
+            const btnClose$ = popover$.find('.popover-close');
             const btnCancel$ = popover$.find('.popover-cancel');
             const btnSubmit$ = popover$.find('.popover-submit');
             const title$ = popover$.find('.popover-title');
@@ -369,6 +378,9 @@
                 frm$.trigger('submit');
             })
             btnCancel$.on('click', function () {
+                popover$.trigger('data.close');
+            });
+            btnClose$.on('click', function () {
                 popover$.trigger('data.close');
             });
 

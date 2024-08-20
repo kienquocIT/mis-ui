@@ -21,10 +21,14 @@ class HomeView(View):
             employee_current_data = getattr(request.user, 'employee_current_data', {})
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
             if resp.state is True:
-                return {
-                           'employee_current_data': employee_current_data,
-                           'app_name_list': AppsCodeToList.get_data()
-                       }, status.HTTP_200_OK
+                next_url = request.GET.get('next', None)
+                if next_url:
+                    return redirect(next_url)
+                ctx = {
+                    'employee_current_data': employee_current_data,
+                    'app_name_list': AppsCodeToList.get_data()
+                }
+                return ctx, status.HTTP_200_OK
         # return redirect(reverse('LandingPageView'))
         return redirect(reverse('AuthLogin'))
 
@@ -249,9 +253,11 @@ class GatewayPKMiddleDetailView(APIView):
 class GatewayViewNameListView(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        return {'views_name': BreadcrumbView.get_list_view(
-            search_txt=request.query_params.get('search', '')
-        )}, status.HTTP_200_OK
+        return {
+                   'views_name': BreadcrumbView.get_list_view(
+                       search_txt=request.query_params.get('search', '')
+                   )
+               }, status.HTTP_200_OK
 
 
 class GatewayViewNameParseView(APIView):

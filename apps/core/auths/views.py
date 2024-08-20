@@ -20,7 +20,7 @@ from apps.core.account.models import User
 
 from .forms import AuthLoginForm, ForgotPasswordForm, ForgotPasswordValidOTPForm, ForgotPasswordResendOTP
 from apps.shared.csrf import CSRFCheckSessionAuthentication, APIAllowAny
-from apps.shared.decorators import OutLayoutRender
+from apps.shared.decorators import OutLayoutRender, session_flush
 
 
 def check_home_domain(request):
@@ -39,8 +39,7 @@ class AuthLoginSelectTenant(APIView):
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
             if resp.state is True:
                 return redirect(request.query_params.get('next', reverse('HomeView')))
-        request.session.flush()
-        request.user = AnonymousUser
+        session_flush()
         return render(
             request,
             'auths/select_tenant.html' if settings.UI_ALLOW_SHOW_SELECT_TENANT else 'auths/select_tenant_deny.html',
@@ -62,8 +61,7 @@ class AuthLogin(APIView):
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
             if resp.state is True:
                 return redirect(request.query_params.get('next', reverse('HomeView')))
-        request.session.flush()
-        request.user = AnonymousUser
+        session_flush(request=request)
         if check_home_domain(request) is True:
             return redirect(reverse('AuthLoginSelectTenant'))
         return render(
@@ -88,7 +86,6 @@ class AuthLogin(APIView):
         frm = AuthLoginForm(data=request.data)
         frm.is_valid()
         resp = ServerAPI(request=request, user=None, url=ApiURL.login).post(frm.cleaned_data)
-        print('resp:', resp.status, resp.result)
         if resp.state is True:
             user = User.regis_with_api_result(resp.result)
             if user:
@@ -129,8 +126,8 @@ class AuthLogout(View):
 
     def get(self, request, *args, **kwargs):
         try:
+            session_flush(request=request)
             logout(request)
-            request.user = AnonymousUser
         except Exception:
             pass
         return redirect(reverse('AuthLogin') + '?next=' + request.GET.get('next', '/'))
@@ -192,8 +189,7 @@ class ForgotPasswordView(View):
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
             if resp.state is True:
                 return redirect(request.query_params.get('next', reverse('HomeView')))
-        request.session.flush()
-        request.user = AnonymousUser
+        session_flush(request=request)
         if check_home_domain(request) is True:
             return OutLayoutRender(request=request).render_404()
         ctx = {

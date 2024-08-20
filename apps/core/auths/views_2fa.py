@@ -1,4 +1,5 @@
 from django.contrib.auth import login
+from django.contrib.auth.models import AnonymousUser
 from rest_framework import status
 from rest_framework.views import APIView
 from django.views import View
@@ -6,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.shared import mask_view, ServerAPI, ApiURL, TypeCheck
 from apps.shared.apis import RespData
+from apps.shared.decorators import session_flush
 
 
 class MyProfileView(View):
@@ -64,6 +66,8 @@ class TwoFAIntegrateAPI(APIView):
     def put(self, request, *args, **kwargs):
         # update state enable of 2FA
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.TWO_FA_INTEGRATE).put(data=request.data)
+        if resp.state:
+            session_flush(request=request)
         return resp.auto_return(key_success='2fa')
 
     @mask_view(login_require=True, is_api=True)
@@ -81,6 +85,8 @@ class TwoFAIntegrateAPI(APIView):
             url = ApiURL.TWO_FA_INTEGRATE
             data = {'otp': otp}
             resp = ServerAPI(request=request, user=request.user, url=url).delete(data=data)
+            if resp.state:
+                session_flush(request=request)
             return resp.auto_return(key_success='2fa')
 
 
@@ -101,6 +107,8 @@ class TwoFAIntegrateDetailAPI(APIView):
                 url = ApiURL.TWO_FA_INTEGRATE_DETAIL.fill_key(pk=pk)
                 data = {'otp': otp}
                 resp = ServerAPI(request=request, user=request.user, url=url).put(data=data)
+                if resp.state:
+                    session_flush(request=request)
                 return resp.auto_return(key_success='2fa')
         return RespData.resp_404()
 
@@ -120,5 +128,7 @@ class TwoFAIntegrateDetailAPI(APIView):
                 url = ApiURL.TWO_FA_INTEGRATE_DETAIL.fill_key(pk=pk)
                 data = {'otp': otp}
                 resp = ServerAPI(request=request, user=request.user, url=url).delete(data=data)
+                if resp.state:
+                    session_flush(request=request)
                 return resp.auto_return(key_success='2fa')
         return RespData.resp_404()

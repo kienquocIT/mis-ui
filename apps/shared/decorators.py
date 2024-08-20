@@ -6,6 +6,7 @@ from functools import wraps
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.db import models
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -27,6 +28,7 @@ from .utils import RandomGenerate
 
 __all__ = [
     'mask_view',
+    'session_flush',
     'OutLayoutRender',
 ]
 
@@ -160,6 +162,25 @@ class OutLayoutRender:
         return render(self.request, 'extends/systems/out-layout/503.html', {})
 
 
+def session_flush(request):
+    try:
+        if (
+                request.user
+                and request.user.is_authenticated is True
+                and not isinstance(request.user, AnonymousUser)
+                and isinstance(request.user, models.Model)
+        ):
+            request.user.access_token = None
+            request.user.refresh_token = None
+            request.user.save(update_fields=["access_token", "refresh_token"])
+        request.user = AnonymousUser
+        request.session.flush()
+        return True
+    except Exception as err:
+        print('[session_flush]:', str(err))
+    return False
+
+
 def mask_view(**parent_kwargs):
     """mask func before api method call form client to UI"""
     # is_api: default False
@@ -215,8 +236,7 @@ def mask_view(**parent_kwargs):
                     path_redirect = reverse('AuthLogin')
                     if cls_check.real_path:
                         path_redirect += f"?next={cls_check.real_path}"
-                    request.session.flush()
-                    request.user = AnonymousUser
+                    session_flush(request=request)
                     return redirect(path_redirect)
 
             # fake call check permission to post, put, delete
@@ -303,8 +323,7 @@ def mask_view(**parent_kwargs):
                     if request.user and not isinstance(request.user, AnonymousUser) and request.user.is_authenticated:
                         match http_status:
                             case status.HTTP_401_UNAUTHORIZED:
-                                request.session.flush()
-                                request.user = AnonymousUser
+                                session_flush(request=request)
                                 return redirect(reverse('AuthLogin'))
                             case status.HTTP_500_INTERNAL_SERVER_ERROR:
                                 return HttpResponse(status=500)

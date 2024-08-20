@@ -136,6 +136,7 @@ $(function () {
            QuotationLoadDataHandle.loadBtnAddProductS2(this.closest('tr'));
         });
 
+        // QUICK PRODUCT
         $('#addQuickProduct').on('shown.bs.modal', function () {
             let $boxPType = $('#add-product-type');
             let $boxPCategory = $('#add-product-category');
@@ -174,6 +175,10 @@ $(function () {
             dataSubmit['sale_default_uom'] = $('#add-product-uom').val();
             dataSubmit['sale_tax'] = $('#add-product-tax').val();
             dataSubmit['general_traceability_method'] = parseInt($('#add-product-method').val());
+            dataSubmit['product_choice'] = [0];
+            for (let choice of $('#quick-product-choice')[0].querySelectorAll('.form-check-input:checked')) {
+                dataSubmit['product_choice'].push(parseInt(choice.value));
+            }
             WindowControl.showLoading();
             $.fn.callAjax2(
                 {

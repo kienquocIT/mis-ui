@@ -26,6 +26,38 @@ class QuotationLoadDataHandle {
         return true;
     };
 
+    static loadCssS2($ele, maxWidth) {
+        if ($ele.is("select") && $ele.hasClass("select2-hidden-accessible")) {
+            let $render = $ele.next('.select2-container').find('.select2-selection__rendered');
+            if ($render && $render.length > 0) {
+                $render.css('max-width', maxWidth);
+            }
+        }
+        return true;
+    };
+
+    static loadEventCheckbox(ele) {
+        let checkboxes = ele.querySelectorAll('.form-check-input[type="radio"]');
+        checkboxes.forEach((checkbox) => {
+            checkbox.addEventListener('click', function () {
+                let checked = checkbox.checked;
+                for (let eleCheck of checkboxes) {
+                    eleCheck.checked = false;
+                }
+                checkbox.checked = checked;
+            });
+        });
+        return true;
+    };
+
+    static loadInitQuickProd() {
+        let choice = $('#quick-product-choice');
+        if (choice && choice.length > 0) {
+            QuotationLoadDataHandle.loadEventCheckbox(choice[0]);
+        }
+        return true;
+    };
+
     static loadInitOpportunity() {
         let form = $('#frm_quotation_create');
         if (form.attr('data-method').toLowerCase() === 'post') {
@@ -328,7 +360,7 @@ class QuotationLoadDataHandle {
         )
     };
 
-    static loadBoxQuotationProduct(ele, dataProduct = {}) {
+    static loadBoxQuotationProduct($ele, dataProduct = {}) {
         let dataDD = []
         if (QuotationDataTableHandle.productInitEle.val()) {
             dataDD = JSON.parse(QuotationDataTableHandle.productInitEle.val());
@@ -336,15 +368,11 @@ class QuotationLoadDataHandle {
         if (Object.keys(dataProduct).length > 0) {
             dataDD = dataProduct
         }
-        ele.initSelect2({
+        $ele.initSelect2({
             data: dataDD,
         });
-        // add css to row box select2
-        let row = ele[0].closest('tr');
-        let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
-        if (boxRender) {
-            boxRender.style.maxWidth = '230px';
-        }
+        // add css to select2_rendered
+        QuotationLoadDataHandle.loadCssS2($ele, '230px');
     };
 
     static loadBtnAddProductS2(row) {
@@ -685,11 +713,8 @@ class QuotationLoadDataHandle {
         $(newRow.querySelector('.table-row-item')).val('').trigger('change');
         QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
         QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-        // add css to row box select2
-        let boxRender = newRow?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
-        if (boxRender) {
-            boxRender.style.maxWidth = '230px';
-        }
+        // add css to select2_rendered
+        QuotationLoadDataHandle.loadCssS2($(newRow.querySelector('.table-row-item')), '230px');
         // load again table cost
         QuotationLoadDataHandle.loadDataTableCost();
         QuotationLoadDataHandle.loadSetWFRuntimeZone();

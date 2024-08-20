@@ -15,6 +15,7 @@ class MyProfileView(View):
         login_require=True,
         template='auths_2fa/my_profile.html',
         jsi18n='auth',
+        breadcrumb='MY_PROFILE_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

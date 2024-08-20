@@ -124,3 +124,7 @@ msgstr "Ứng dụng hỗ trợ 2FA"
 #
 msgid "Install application at"
 msgstr "Cài đặt ứng dụng tại"
+
+#
+msgid "My profile"
+msgstr "Hồ sơ của tôi"

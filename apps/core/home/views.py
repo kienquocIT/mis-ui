@@ -195,15 +195,6 @@ class TermsAndConditionsView(View):
         return {}, status.HTTP_200_OK
 
 
-class HelpAndSupportView(View):
-    @mask_view(
-        auth_require=True,
-        template='core/help_support/help_support.html',
-    )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
-
-
 class GatewayMiddleListView(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, plan, app, **kwargs):

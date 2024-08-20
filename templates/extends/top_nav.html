@@ -291,9 +291,26 @@
                                         </div>
                                     </div>
                                 </div>
-                                <a href="{% url 'ChangePasswordView' %}">
-                                    <button class="btn btn-xs btn-outline-secondary">{% trans 'Change password' %}</button>
-                                </a>
+                                <div class="w-100 d-flex">
+                                    <a
+                                            href="{% url 'MyProfileView' %}"
+                                            class="m-1"
+                                            data-bs-toggle="tooltip"
+                                            title="{% trans 'My profile' %}"
+                                    >
+                                        <button class="btn btn-xs btn-outline-primary w-100">
+                                            <i class="fa-solid fa-address-card"></i>
+                                        </button>
+                                    </a>
+                                    <a
+                                            href="{% url 'ChangePasswordView' %}"
+                                            class="m-1"
+                                            data-bs-toggle="tooltip"
+                                            title="{% trans 'Change password' %}"
+                                    >
+                                        <button class="btn btn-xs btn-outline-primary w-100"><i class="fa-solid fa-key"></i></button>
+                                    </a>
+                                </div>
                             </div>
                             <div class="dropdown-divider"></div>
                             <h6 class="dropdown-header">
@@ -380,7 +397,9 @@
                                 </span>
                                 <span>{% trans 'Terms & Conditions' %}</span>
                             </a>
-                            <a class="dropdown-item" href="{% url 'HelpAndSupportView' %}">
+                            <a class="dropdown-item"
+                               href="https://docs.bflow.vn/"
+                            >
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="help-circle"></i>
                                 </span>

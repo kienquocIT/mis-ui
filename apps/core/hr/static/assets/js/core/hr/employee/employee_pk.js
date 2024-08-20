@@ -73,7 +73,6 @@ class EmployeeLoadPage {
             timePicker: false,
             showDropdowns: true,
             autoApply: true,
-            autoUpdateInput: false,
             maxYear: parseInt(moment().format('YYYY')),
             locale: {
                 format: 'DD/MM/YYYY'
@@ -89,7 +88,6 @@ class EmployeeLoadPage {
             timePicker: false,
             showDropdowns: true,
             autoApply: true,
-            autoUpdateInput: false,
             maxYear: parseInt(moment().format('YYYY')),
             locale: {
                 format: 'DD/MM/YYYY hh:mm A'

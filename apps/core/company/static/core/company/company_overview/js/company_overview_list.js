@@ -209,11 +209,15 @@ $(function () {
                             return '';
                         }
                     },
-                    // {
-                    //     render: (data, type, row, meta) => {
-                    //         return `<button class="btn btn-icon btn-rounded btn-rounded btn-flush-primary flush-soft-hover btn-edit-popup" data-bs-toggle="modal" data-bs-target="#changeUserCompanies"><span class="icon"><i class="far fa-edit" ></i></span></button>`;
-                    //     }
-                    // },
+                    {
+                        width: "70px",
+                        render: (data, type, row, meta) => {
+                            return `
+                                <button 
+                                    class="btn btn-icon btn-rounded btn-rounded btn-flush-primary flush-soft-hover btn-edit-popup" 
+                                ><span class="icon"><i class="far fa-edit" ></i></span></button>`;
+                        }
+                    },
                 ]
             });
         }

@@ -571,7 +571,7 @@
                             const twoFA = data['2fa'];
                             if (twoFA) {
                                 imgQrCode$.attr('src', 'data:image/png;base64, ' + twoFA['qrcode']);
-                                inp2FAKey$.val(twoFA['secret_key']);
+                                inp2FAKey$.val(twoFA['secret_key_b32']);
                                 groupIntegrateNew$.slideDown('fast');
                                 btnIntegrateNow$.hide(0);
                                 idTOTP = twoFA['id'];

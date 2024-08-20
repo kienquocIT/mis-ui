@@ -211,17 +211,19 @@
             display: flex;
             justify-content: space-between;
         }
+
         .twoFA-integrate-app > div {
             width: calc(100% / 2 - 30px);
             padding: 5px;
             margin: 5px;
         }
+
         .twoFA-integrate-app div .title > * {
             font-size: 0.8rem;
         }
 
         .two-fa-app-logo img {
-             width: 50px;
+            width: 50px;
         }
 
         .two-fa-link-download {
@@ -229,10 +231,12 @@
             display: flex;
             justify-content: start;
         }
+
         .two-fa-link-download a {
             width: auto;
             margin-right: 1rem;
         }
+
         .two-fa-link-download a img {
             width: 20px;
         }
@@ -284,8 +288,14 @@
                     <tr>
                         <td><span>{% trans 'Integrate status' %}</span></td>
                         <td>
-                            <i class="fa-solid fa-circle-check text-success" id="integrate-state-true" style="display: none;"></i>
-                            <i class="fa-solid fa-circle-xmark text-danger" id="integrate-state-false" style="display: none;"></i>
+                            <i
+                                    class="fa-solid fa-circle-check text-success" id="integrate-state-true"
+                                    style="display: none;"
+                            ></i>
+                            <i
+                                    class="fa-solid fa-circle-xmark text-danger" id="integrate-state-false"
+                                    style="display: none;"
+                            ></i>
                         </td>
                         <td>
                             <button
@@ -313,6 +323,11 @@
                                     id="integrated-button-enable"
                                     style="display: none;"
                             >{% trans 'Enable' %}</button>
+                            <button
+                                    class="btn btn-gradient-danger btn-square btn-xs no-transform ml-3 px-3"
+                                    id="integrated-button-delete"
+                                    style="display: none;"
+                            >{% trans 'Delete' %}</button>
                         </td>
                     </tr>
                 </table>
@@ -381,40 +396,50 @@
                 <div class="w-100 mt-4">
                     <small id="application-supports-2fa-idx"><b>{% trans 'Application supports 2FA' %}</b></small>
                     <div class="w-100 twoFA-integrate-app">
-                                        <div>
-                                            <div class="w-100 two-fa-app-logo">
-                                                <img src="{% static 'two-fa/logo_brand/gg_authenticator/Google_Authenticator_(April_2023).svg' %}" alt="Google Authenticator Logo">
-                                            </div>
-                                            <div class="w-100 title">
-                                                <a href="https://support.google.com/accounts/answer/1066447?hl=vi&co=GENIE.Platform%3DAndroid">Google Authenticator</a>
-                                            </div>
-                                            <div class="two-fa-link-download">
-                                                <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">
-                                                    <img src="{% static 'two-fa/logo_brand/android/android-icon.svg' %}" alt=""/>
-                                                </a>
-                                                <a href="https://apps.apple.com/app/google-authenticator/id388497605">
-                                                    <img src="{% static 'two-fa/logo_brand/apple/apple_appstore-icon.svg' %}" alt="">
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="w-100 two-fa-app-logo">
-                                                <img src="{% static 'two-fa/logo_brand/microsoft_authenticator/unnamed.png' %}" alt="Microsoft Authenticator Logo">
-                                            </div>
-                                            <div class="w-100 title">
-                                                <a href="https://www.microsoft.com/vi-vn/security/mobile-authenticator-app">Microsoft Authenticator</a>
-                                            </div>
-                                            <div class="two-fa-link-download">
-                                                <a href="https://play.google.com/store/apps/details?id=com.azure.authenticator">
-                                                    <img src="{% static 'two-fa/logo_brand/android/android-icon.svg' %}" alt=""/>
-                                                </a>
-                                                <a href="https://apps.apple.com/vn/app/microsoft-authenticator/id983156458">
-                                                    <img src="{% static 'two-fa/logo_brand/apple/apple_appstore-icon.svg' %}" alt="">
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                    <small class="form-text" style="font-style: italic">{% trans 'Or another application that supports 2FA with a token' %}</small>
+                        <div>
+                            <div class="w-100 two-fa-app-logo">
+                                <img
+                                        src="{% static 'two-fa/logo_brand/gg_authenticator/Google_Authenticator_(April_2023).svg' %}"
+                                        alt="Google Authenticator Logo"
+                                >
+                            </div>
+                            <div class="w-100 title">
+                                <a href="https://support.google.com/accounts/answer/1066447?hl=vi&co=GENIE.Platform%3DAndroid">Google
+                                    Authenticator</a>
+                            </div>
+                            <div class="two-fa-link-download">
+                                <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">
+                                    <img src="{% static 'two-fa/logo_brand/android/android-icon.svg' %}" alt=""/>
+                                </a>
+                                <a href="https://apps.apple.com/app/google-authenticator/id388497605">
+                                    <img src="{% static 'two-fa/logo_brand/apple/apple_appstore-icon.svg' %}" alt="">
+                                </a>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="w-100 two-fa-app-logo">
+                                <img
+                                        src="{% static 'two-fa/logo_brand/microsoft_authenticator/unnamed.png' %}"
+                                        alt="Microsoft Authenticator Logo"
+                                >
+                            </div>
+                            <div class="w-100 title">
+                                <a href="https://www.microsoft.com/vi-vn/security/mobile-authenticator-app">Microsoft
+                                    Authenticator</a>
+                            </div>
+                            <div class="two-fa-link-download">
+                                <a href="https://play.google.com/store/apps/details?id=com.azure.authenticator">
+                                    <img src="{% static 'two-fa/logo_brand/android/android-icon.svg' %}" alt=""/>
+                                </a>
+                                <a href="https://apps.apple.com/vn/app/microsoft-authenticator/id983156458">
+                                    <img src="{% static 'two-fa/logo_brand/apple/apple_appstore-icon.svg' %}" alt="">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <small
+                            class="form-text" style="font-style: italic"
+                    >{% trans 'Or another application that supports 2FA with a token' %}</small>
                 </div>
                 <div class="twoFA-warning">
                     <b>{% trans 'Warning' %}</b>
@@ -442,6 +467,7 @@
             const integratedActiveFalse$ = $('#integrated-active-false');
             const integratedBtnDisable$ = $('#integrated-button-disable');
             const integratedBtnEnable$ = $('#integrated-button-enable');
+            const integratedBtnDelete$ = $('#integrated-button-delete');
 
             $.fn.callAjax2({
                 url: btnIntegrateNow$.attr('data-url'),
@@ -466,11 +492,13 @@
                                     integratedBtnDisable$.show(0);
                                     integratedActiveFalse$.hide(0);
                                     integratedBtnEnable$.hide(0);
+                                    integratedBtnDelete$.hide(0);
                                 } else {
                                     integratedActiveTrue$.hide(0);
                                     integratedBtnDisable$.hide(0);
                                     integratedActiveFalse$.show(0);
                                     integratedBtnEnable$.show(0);
+                                    integratedBtnDelete$.show(0);
                                 }
 
                             } else {
@@ -511,13 +539,39 @@
                 )
             }
 
+            function destroy2FA(otp){
+                $.fn.callAjax2({
+                    url: btnIntegrateNow$.attr('data-url'),
+                    method: 'DELETE',
+                    data: {
+                        'otp': otp,
+                    },
+                    isLoading: true,
+                }).then(
+                    resp => {
+                        const data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({
+                                'description': $.fn.gettext('Successful')
+                            }, 'success');
+                            setTimeout(
+                                () => window.location.reload(),
+                                1000
+                            )
+                        }
+                    },
+                    errs => $.fn.switcherResp(errs),
+                )
+            }
+
             integratedBtnEnable$.on('click', function () {
                 Swal.fire({
                     title: $.fn.gettext('Enable 2FA'),
+                    html: $.fn.gettext("If the operation is successful, you will be redirected to log in again."),
                     showCancelButton: true,
                     confirmButtonText: $.fn.transEle.attr('data-confirm'),
                     cancelButtonText: $.fn.transEle.attr('data-cancel'),
-
+                    icon: 'question',
                     input: "text",
                     inputPlaceholder: $.fn.gettext('Enter the OTP verification code'),
                     inputValidator: (value) => {
@@ -535,10 +589,11 @@
             integratedBtnDisable$.on('click', function () {
                 Swal.fire({
                     title: $.fn.gettext('Disable 2FA'),
+                    html: $.fn.gettext("If the operation is successful, you will be redirected to log in again."),
                     showCancelButton: true,
                     confirmButtonText: $.fn.transEle.attr('data-confirm'),
                     cancelButtonText: $.fn.transEle.attr('data-cancel'),
-
+                    icon: 'question',
                     input: "text",
                     inputPlaceholder: $.fn.gettext('Enter the OTP verification code'),
                     inputValidator: (value) => {
@@ -549,6 +604,28 @@
                 }).then((result) => {
                     if (result.isConfirmed && result.value) {
                         changeState2FA(false, result.value);
+                    }
+                })
+            })
+
+            integratedBtnDelete$.on('click', function (){
+                Swal.fire({
+                    title: $.fn.gettext('Destroy 2FA'),
+                    html: $.fn.gettext('Once approved, you cannot undo it.'),
+                    showCancelButton: true,
+                    confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                    cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                    icon: 'warning',
+                    input: "text",
+                    inputPlaceholder: $.fn.gettext('Enter the OTP verification code'),
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return $.fn.gettext('The OTP verification code must be required');
+                        }
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        destroy2FA(result.value);
                     }
                 })
             })
@@ -639,7 +716,7 @@
                     }, 'failure')
                 }
             });
-            inp2FAOtp$.on('keyup', function (event){
+            inp2FAOtp$.on('keyup', function (event) {
                 if (event.key === 'Enter' || event.keyCode === 13) {
                     btn2FAVerify$.trigger('click');
                 }

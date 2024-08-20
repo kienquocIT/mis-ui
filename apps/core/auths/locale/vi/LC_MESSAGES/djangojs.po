@@ -60,3 +60,11 @@ msgstr "Phiên làm việc đã hết hạn"
 #
 msgid "Please enter the verification code"
 msgstr "Vui lòng nhập mã xác thực"
+
+#
+msgid "Destroy 2FA"
+msgstr "Xoá 2FA"
+
+#
+msgid "If the operation is successful, you will be redirected to log in again."
+msgstr "Nếu thao tác thành công, bạn sẽ được chuyển hướng để đăng nhập lại."

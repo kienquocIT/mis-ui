@@ -32,6 +32,7 @@ class TwoFAVerifyView(View):
 class TwoFAVerifyAPIView(APIView):
     @mask_view(login_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
+        # verify OTP on all TOTP
         otp = request.data.get('otp', None)
         if otp:
             data = {'otp': otp}
@@ -49,23 +50,44 @@ class TwoFAVerifyAPIView(APIView):
 class TwoFAIntegrateAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
+        # get state show in my profile
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.TWO_FA_INTEGRATE).get()
         return resp.auto_return(key_success='2fa')
 
     @mask_view(login_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
+        # request generate TOTP for user
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.TWO_FA_INTEGRATE).post(data={})
         return resp.auto_return(key_success='2fa')
 
     @mask_view(login_require=True, is_api=True)
     def put(self, request, *args, **kwargs):
+        # update state enable of 2FA
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.TWO_FA_INTEGRATE).put(data=request.data)
         return resp.auto_return(key_success='2fa')
+
+    @mask_view(login_require=True, is_api=True)
+    def delete(self, request, *args, **kwargs):
+        # destroy 2FA was integrated
+        try:
+            otp = int(request.data.get('otp', ''))
+        except ValueError:
+            return RespData.resp_400(
+                {
+                    'otp': _("The otp is required")
+                }
+            )
+        else:
+            url = ApiURL.TWO_FA_INTEGRATE
+            data = {'otp': otp}
+            resp = ServerAPI(request=request, user=request.user, url=url).delete(data=data)
+            return resp.auto_return(key_success='2fa')
 
 
 class TwoFAIntegrateDetailAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def put(self, request, *args, pk, **kwargs):
+        # verify OTP of TOTP object
         if pk and TypeCheck.check_uuid(pk):
             try:
                 otp = int(request.data.get('otp', ''))
@@ -79,5 +101,24 @@ class TwoFAIntegrateDetailAPI(APIView):
                 url = ApiURL.TWO_FA_INTEGRATE_DETAIL.fill_key(pk=pk)
                 data = {'otp': otp}
                 resp = ServerAPI(request=request, user=request.user, url=url).put(data=data)
+                return resp.auto_return(key_success='2fa')
+        return RespData.resp_404()
+
+    @mask_view(login_require=True, is_api=True)
+    def delete(self, request, *args, pk, **kwargs):
+        # destroy 2FA was integrated
+        if pk and TypeCheck.check_uuid(pk):
+            try:
+                otp = int(request.data.get('otp', ''))
+            except ValueError:
+                return RespData.resp_400(
+                    {
+                        'otp': _("The otp is required")
+                    }
+                )
+            else:
+                url = ApiURL.TWO_FA_INTEGRATE_DETAIL.fill_key(pk=pk)
+                data = {'otp': otp}
+                resp = ServerAPI(request=request, user=request.user, url=url).delete(data=data)
                 return resp.auto_return(key_success='2fa')
         return RespData.resp_404()

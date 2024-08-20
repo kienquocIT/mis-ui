@@ -8486,10 +8486,6 @@ msgid "Common warehouse"
 msgstr "Kho chung"
 
 #
-msgid "My project"
-msgstr "Dự án của tôi"
-
-#
 msgid "For Sale Order"
 msgstr "Cho Đơn hàng"
 
@@ -8544,3 +8540,11 @@ msgstr "Vật liệu / Linh kiện"
 #
 msgid "Disassemble"
 msgstr "Có thể tháo rời"
+
+#
+msgid "Current order"
+msgstr "Đơn hàng hiện tại"
+
+#
+msgid "Other order"
+msgstr "Đơn hàng khác"

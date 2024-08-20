@@ -444,11 +444,11 @@ $(async function () {
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['is_regis_so'] === true) {
-                                let project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-project')}: ${row?.['sale_order']?.['code']}</span>`;
+                                let project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-other-order')}: ${row?.['sale_order']?.['code']}</span>`;
                                 if ($eleSO.attr('data-so')) {
                                     let dataSO = JSON.parse($eleSO.attr('data-so'));
                                     if (row?.['sale_order']?.['id'] === dataSO?.['id']) {
-                                        project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-my-project')}</span>`;
+                                        project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-current-order')}</span>`;
                                     }
                                 }
                                 let target = ".cl-" + row?.['sale_order']?.['id'].replace(/-/g, "");

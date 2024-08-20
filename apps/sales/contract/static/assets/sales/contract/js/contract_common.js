@@ -136,6 +136,11 @@ class ContractLoadDataHandle {
             }
         }
     };
+
+    // DETAIL
+    static loadDetail(data) {
+        $('#contract-title').val(data?.['title']);
+    };
 }
 
 // DataTable
@@ -294,13 +299,13 @@ class ContractStoreHandle {
 class ContractSubmitHandle {
     static setupDataDocument() {
         let result = [];
+        let attachmentAll = [];
         ContractDataTableHandle.$tableDocument.DataTable().rows().every(function () {
             let row = this.node();
             let eleOrd = row.querySelector('.table-row-order');
             let eleTitle = row.querySelector('.table-row-title');
             let btnAttach = row.querySelector('.attach-file');
             if (eleOrd && eleTitle && btnAttach) {
-                let remark = '';
                 let attachment_data = [];
                 let attachment = [];
                 if (btnAttach.getAttribute('data-store')) {
@@ -308,25 +313,26 @@ class ContractSubmitHandle {
                     attachment_data = dataStore?.['attachment_data'];
                     for (let attach of dataStore?.['attachment_data']) {
                         attachment.push(attach?.['attachment']?.['id']);
+                        attachmentAll.push(attach?.['attachment']?.['id']);
                     }
                 }
                 result.push({
                     'title': eleTitle.value,
                     'remark': ContractLoadDataHandle.$remark.val(),
-                    'attachment': attachment,
+                    // 'attachment': attachment,
                     'attachment_data': attachment_data,
                     'order': parseInt(eleOrd.innerHTML),
                 })
             }
         });
-        return result
+        return {'dataDoc': result, 'attachment': attachmentAll}
     };
 
     static setupDataSubmit(_form) {
-        let dataDocument = ContractSubmitHandle.setupDataDocument();
-        if (dataDocument.length > 0) {
-            _form.dataForm['document_data'] = dataDocument;
-        }
+        ContractStoreHandle.storeAttachment();
+        let dataDocParse = ContractSubmitHandle.setupDataDocument();
+        _form.dataForm['document_data'] = dataDocParse?.['dataDoc'];
+        _form.dataForm['attachment'] = dataDocParse?.['attachment'];
     };
 }
 

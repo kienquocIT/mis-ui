@@ -4,21 +4,23 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_contract_create">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
+    <a href="{% url 'QuotationUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit" hidden>
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
             </span>
-        </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 
 {% block pageContent %}
     <form
-            data-url="{% url 'ContractListAPI' %}"
+            data-url="{% url 'ContractDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'ContractList' %}"
-            data-method="POST"
+            data-method="GET"
             id="frm_contract_create"
             method="post"
     >
@@ -32,6 +34,7 @@
                             name="title"
                             id="contract-title"
                             required
+                            readonly
                     >
                 </div>
                 <label class="form-label required">{% trans 'Document' %}</label>
@@ -51,11 +54,6 @@
                     <tbody>
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-start mb-3">
-                    <button type="button" class="btn btn-outline-primary" id="btn-add-doc">
-                        <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
-                    </button>
-                </div>
                 <div class="form-group">
                     <label class="form-label" for="inp-contents">{% trans 'Abstract' %}</label>
                     <textarea class="form-control" id="inp-contents"></textarea>
@@ -64,7 +62,7 @@
             <div class="col-12 col-md-5 col-lg-5" id="file-area">
                 <div class="form-group">
                     <label class="form-label" for="contract-doc-remark">{% trans 'Description' %}</label>
-                    <textarea class="form-control" rows="3" id="contract-doc-remark" name="remarks" disabled></textarea>
+                    <textarea class="form-control" rows="3" id="contract-doc-remark" name="remarks" readonly></textarea>
                 </div>
                 <label class="form-label">{% trans 'Attachment' %}</label>
                 <div id="attachment" hidden>
@@ -122,6 +120,7 @@
     <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script src="{% static 'assets/sales/contract/js/contract_common.js' %}"></script>
     <script src="{% static 'assets/sales/contract/js/contract_create.js' %}"></script>
+    <script src="{% static 'assets/sales/contract/js/contract_detail.js' %}"></script>
     <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
     <script>
         new $x.cls.file($('#attachment')).init({'name': 'attachment'});

@@ -670,3 +670,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Contract
     CONTRACT_LIST = StringUrl('contract/list')
+    CONTRACT_DETAIL = StringUrl('contract')

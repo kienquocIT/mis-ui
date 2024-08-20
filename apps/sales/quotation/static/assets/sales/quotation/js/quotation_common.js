@@ -2206,7 +2206,7 @@ class QuotationDataTableHandle {
                             let target = ".group-" + String(row?.['group_order']);
                             return `<button 
                                         type="button" 
-                                        class="btn btn-icon btn-rounded btn-outline-primary btn-xs table-row-group" 
+                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-xs table-row-group" 
                                         data-bs-toggle="collapse"
                                         data-bs-target="${target}"
                                         data-bs-placement="top"
@@ -2229,9 +2229,9 @@ class QuotationDataTableHandle {
                         if (row?.['is_group'] === true) {
                             return `<input type="text" class="form-control table-row-group-title-edit" value="${row?.['group_title']}">
                                     <div class="d-flex hidden area-group-show">
-                                        <b><p class="text-primary text-uppercase mt-2 table-row-group-title-show">${row?.['group_title']}</p></b>
-                                        <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-edit-group"><span class="icon"><i class="far fa-edit"></i></span></button>
-                                        <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-del-group"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
+                                        <b><p class="text-uppercase mt-2 mr-2 table-row-group-title-show">${row?.['group_title']}</p></b>
+                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-edit-group"><span class="icon"><i class="far fa-edit"></i></span></button>
+                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-del-group"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                                     </div>`;
                         }
                         let $form = $('#frm_quotation_create');

@@ -9,6 +9,7 @@ from django.conf import settings
 from django.http import response
 from requests_toolbelt import MultipartEncoder
 from rest_framework import status
+from rest_framework_simplejwt.tokens import UntypedToken
 
 from .urls_map import ApiURL, StringUrl
 
@@ -259,7 +260,8 @@ class RespData:
                 return {key_success: self.result, **page_info}, status_success
             return self.result, status_success
         elif self.status == 401:
-            return self.resp_401()
+            error_code = self.errors.get('auth_error_code', None)
+            return self.resp_401(auth_error_code=error_code)
         elif self.status == 403:
             return self.resp_403()
         elif self.status == 404:
@@ -281,8 +283,9 @@ class RespData:
         return {'render_api_status': 1400, **errors_data}, status.HTTP_400_BAD_REQUEST
 
     @classmethod
-    def resp_401(cls):
-        return {}, status.HTTP_401_UNAUTHORIZED  # mask_view return 302 (redirect to log in)
+    def resp_401(cls, auth_error_code='authentication_failed'):
+        ctx = {'error_code': auth_error_code}
+        return ctx, status.HTTP_401_UNAUTHORIZED  # mask_view return 302 (redirect to log in)
 
     @classmethod
     def resp_403(cls):
@@ -790,3 +793,13 @@ class ServerAPI:
     @classmethod
     def empty_200(cls):
         return {}, status.HTTP_200_OK
+
+    def check_2fa_of_user_token(self) -> bool or str:
+        # True: accept continue
+        # 'REDIRECT_VERIFIED_OTP': goto verify otp page
+        if self.user:
+            token = UntypedToken(self.user.access_token)
+            verified_2fa = token.payload.get(settings.JWT_KEY_2FA_VERIFIED, None)
+            if verified_2fa is not True and self.user.auth_2fa is True:
+                return 'REDIRECT_VERIFIED_OTP'
+        return True

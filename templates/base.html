@@ -94,9 +94,60 @@
             :root {
                 --bs-body-color: rgb(32, 33, 36);
                 --bs-body-font-family: "Roboto", "Google Sans", "Roboto Mono", sans-serif;
-                --bs-body-font-size: 16px;
+                --bs-body-font-size: 14px;
                 --bs-body-font-weight: 400;
                 --bs-body-line-height: 24px;
+            }
+
+            @media screen and (max-width: 600px) {
+                html, body {
+                    font-size: 11px;
+                }
+                :root {
+                    --bs-body-font-size: 11px;
+                }
+            }
+
+            @media screen and (min-width: 601px) and (max-width: 768px) {
+                html, body {
+                    font-size: 12px;
+                }
+                :root {
+                    --bs-body-font-size: 12px;
+                }
+            }
+            @media screen and (min-width: 601px) and (max-width: 768px) and (-webkit-min-device-pixel-ratio: 1.25) {
+                html, body {
+                    font-size: 11px;
+                }
+                :root {
+                    --bs-body-font-size: 11px;
+                }
+            }
+
+            @media screen and (min-width: 769px) {
+                html, body {
+                    font-size: 14px;
+                }
+                :root {
+                    --bs-body-font-size: 14px;
+                }
+            }
+            @media screen and (min-width: 769px) and (-webkit-min-device-pixel-ratio: 1.25) {
+                html, body {
+                    font-size: 13px;
+                }
+                :root {
+                    --bs-body-font-size: 13px;
+                }
+            }
+            @media screen and (min-width: 769px) and (-webkit-min-device-pixel-ratio: 1.5) {
+                html, body {
+                    font-size: 12px;
+                }
+                :root {
+                    --bs-body-font-size: 12px;
+                }
             }
 
             {#  Override css of select2 for select2 working in Bootstrap Modal  #}

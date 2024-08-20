@@ -54,6 +54,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     USER_DETAIL_PAGE = BreadcrumbChildren(_('User detail'))
     USER_EDIT_PAGE = BreadcrumbChildren(_('Edit user'))
     USER_CHANGE_PASSWORD = BreadcrumbChildren(_('Change password'))
+    MY_PROFILE = BreadcrumbChildren(_('My profile'))
 
     # website
     MY_WEBSITE_LIST = BreadcrumbChildren(_('My Website'), 'MyCompanyWebsiteList')
@@ -477,6 +478,7 @@ class BreadcrumbView:
     USER_DETAIL_PAGE = USER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     USER_EDIT_PAGE = USER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
     USER_CHANGE_PASSWORD = USER_LIST_PAGE + [BreadcrumbItem.USER_CHANGE_PASSWORD]
+    MY_PROFILE_PAGE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.MY_PROFILE]
 
     MY_WEBSITE_LIST = [BreadcrumbItem.MY_WEBSITE_LIST]
 

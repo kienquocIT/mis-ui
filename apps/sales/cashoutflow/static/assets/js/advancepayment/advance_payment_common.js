@@ -477,7 +477,7 @@ function changePriceCommon(tr) {
     }
     $.fn.initMaskMoney2();
     if (unit_price.attr('value') && quantity.val()) {
-        let subtotal_value = parseFloat(unit_price.attr('value')) * parseInt(quantity.val())
+        let subtotal_value = parseFloat(unit_price.attr('value')) * parseFloat(quantity.val())
         subtotal.attr('value', subtotal_value);
         subtotal_after_tax.attr('value', subtotal_value + subtotal_value * tax_rate / 100);
     }

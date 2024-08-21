@@ -5802,7 +5802,7 @@ msgstr "Theo điều chỉnh tồn kho"
 
 #
 msgid "For production"
-msgstr "Cho sản phẩm"
+msgstr "Cho sản xuất"
 
 #
 msgid "Estimate is wrong format"
@@ -8518,12 +8518,12 @@ msgid "For sale"
 msgstr "Cho bán hàng"
 
 #
-msgid "For external expense"
-msgstr "Cho chi phí ngoài"
+msgid "For internal expense"
+msgstr "Cho chi phí nội bộ"
 
 #
 msgid "Task name"
-msgstr "Tên task"
+msgstr "Tên công việc"
 
 #
 msgid "Labor"
@@ -8548,6 +8548,10 @@ msgstr "Đơn hàng hiện tại"
 #
 msgid "Other order"
 msgstr "Đơn hàng khác"
+
+#
+msgid "Labor summary"
+msgstr "Tổng nhân công"
 
 #
 msgid "Current"

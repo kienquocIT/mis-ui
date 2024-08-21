@@ -72,5 +72,5 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     DISTRIBUTION_PLAN_UPDATE = _('Distribution plan update successfully')
     CONTRACT_CREATE = _('Contract create successfully')
     CONTRACT_UPDATE = _('Contract update successfully')
-    BOR_CREATE = _('Bill of resources create successfully')
-    BOR_UPDATE = _('Bill of resources update successfully')
+    BOM_CREATE = _('Bill of material create successfully')
+    BOM_UPDATE = _('Bill of material update successfully')

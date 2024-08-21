@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Bill of resources list' %}{% endblock %}
+{% block title %}{% trans 'Bill of material list' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url "BORCreate" %}">
+    <a href="{% url "BOMCreate" %}">
         <button class="btn btn-outline-primary" type="button">
             <span>
                 <span>{% trans 'Add' %}</span>
@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col-12">
             <table class="table nowrap w-100"
-                   id="bor-list-table"
+                   id="bom-list-table"
                    data-method="GET"
 {#                   data-url="{% url 'DistributionPlanListAPI' %}"#}
 {#                   data-url-detail="{% url 'DistributionPlanDetail' '0' %}"#}
@@ -44,5 +44,5 @@
 {% block jsFooterUnCompress %}
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/sales/bor/js/bor_list.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/bom/bom_list.js' %}"></script>
 {% endblock %}

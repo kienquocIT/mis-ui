@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Bill of resources update' %}{% endblock %}
+{% block title %}{% trans 'Bill of material update' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form-detail-bor">
+    <button class="btn btn-outline-primary" type="submit" form="form-detail-bom">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -20,7 +20,7 @@
 {% block pageContent %}
     <script id="script-url"
     ></script>
-    <form id="form-detail-bor"
+    <form id="form-detail-bom"
 {#          data-url="{% url 'DistributionPlanDetailAPI' pk=pk %}"#}
 {#          data-url-redirect="{% url 'DistributionPlanDetail' pk=pk %}"#}
           data-method="PUT"
@@ -33,6 +33,6 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
-    <script src="{% static 'assets/sales/bor/js/bor_common.js' %}"></script>
-    <script src="{% static 'assets/sales/bor/js/bor_update.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/bom/bom_common.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/bom/bom_update.js' %}"></script>
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Bill of resources detail' %}{% endblock %}
+{% block title %}{% trans 'Bill of material detail' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
 {% endblock %}
@@ -22,7 +22,7 @@
 {% block pageContent %}
     <script id="script-url"
     ></script>
-    <form id="form-detail-bor"
+    <form id="form-detail-bom"
 {#          data-url="{% url 'DistributionPlanDetailAPI' pk=pk %}"#}
           data-method="GET"
     >
@@ -34,6 +34,6 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
-    <script src="{% static 'assets/sales/bor/js/bor_common.js' %}"></script>
-    <script src="{% static 'assets/sales/bor/js/bor_detail.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/bom/bom_common.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/bom/bom_detail.js' %}"></script>
 {% endblock %}

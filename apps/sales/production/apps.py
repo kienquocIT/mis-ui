@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class BorConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "apps.sales.bor"
+    name = "apps.sales.production"

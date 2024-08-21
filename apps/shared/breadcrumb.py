@@ -361,10 +361,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     DISTRIBUTION_PLAN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     DISTRIBUTION_PLAN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
-    BOR_LIST_PAGE = BreadcrumbChildren(_('Bill of resources list'), 'BORList')
-    BOR_CREATE_PAGE = BreadcrumbChildren(_('Bill of resources create'), 'BORCreate')
-    BOR_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
-    BOR_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+    BOM_LIST_PAGE = BreadcrumbChildren(_('Bill of material list'), 'BOMList')
+    BOM_CREATE_PAGE = BreadcrumbChildren(_('Bill of material create'), 'BOMCreate')
+    BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
     MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
@@ -932,10 +932,10 @@ class BreadcrumbView:
     DISTRIBUTION_PLAN_DETAIL_PAGE = DISTRIBUTION_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     DISTRIBUTION_PLAN_UPDATE_PAGE = DISTRIBUTION_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
-    BOR_LIST_PAGE = [BreadcrumbItem.BOR_LIST_PAGE]
-    BOR_CREATE_PAGE = BOR_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
-    BOR_DETAIL_PAGE = BOR_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
-    BOR_UPDATE_PAGE = BOR_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    BOM_LIST_PAGE = [BreadcrumbItem.BOM_LIST_PAGE]
+    BOM_CREATE_PAGE = BOM_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    BOM_DETAIL_PAGE = BOM_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    BOM_UPDATE_PAGE = BOM_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     PRINTER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PRINTER_CONFIG_LIST_PAGE]
     PRINTER_CONFIG_LIST_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]

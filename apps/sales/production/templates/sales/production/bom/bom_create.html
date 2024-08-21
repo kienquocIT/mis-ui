@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Bill of resources create' %}{% endblock %}
+{% block title %}{% trans 'Bill of material create' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
     <style>
@@ -13,7 +13,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form-create-bor">
+    <button class="btn btn-outline-primary" type="submit" form="form-create-bom">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -29,18 +29,18 @@
             data-url-product="{% url 'ProductListAPI' %}"
             data-url-tool-config="{% url 'AssetToolsConfigViewAPI' %}"
     ></script>
-    <form id="form-create-bor"
+    <form id="form-create-bom"
           data-method="POST"
 {#          data-url="{% url 'DistributionPlanListAPI' %}"#}
 {#          data-url-redirect="{% url 'DistributionPlanList' %}"#}
     >
         {% csrf_token %}
-        {% include 'sales/bor/common/information.html' %}
+        {% include 'sales/production/bom/common/information.html' %}
     </form>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
-    <script src="{% static 'assets/sales/bor/js/bor_common.js' %}"></script>
-    <script src="{% static 'assets/sales/bor/js/bor_create.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/bom/bom_common.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/bom/bom_create.js' %}"></script>
 {% endblock %}

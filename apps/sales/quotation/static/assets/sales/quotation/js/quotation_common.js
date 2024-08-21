@@ -997,23 +997,19 @@ class QuotationLoadDataHandle {
                             general_price_id = priceData?.['id'];
                             general_price = parseFloat(priceData?.['value']);
                         }
-                        if (!["Expired", "Invalid"].includes(priceData?.['price_status'])) { // If Valid Price
+                        if (!["Expired", "Invalid"].includes(priceData?.['price_status'])) {
                             if (priceData?.['id'] === account_price_id) { // check CUSTOMER_PRICE then set customer_price
                                 customer_price = parseFloat(priceData?.['value']);
-                                htmlDD += `<a class="dropdown-item table-row-price-option option-btn-checked text-black border border-grey mb-1" data-value="${parseFloat(priceData?.['value'])}">
-                                                            <div class="d-flex justify-content-between">
-                                                                <span class="mr-5">${priceData?.['title']}</span>
-                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(priceData?.['value'])}"></span>
-                                                            </div>
-                                                        </a>`;
-                            } else {
-                                htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(priceData?.['value'])}">
-                                                            <div class="d-flex justify-content-between">
-                                                                <span class="mr-5">${priceData?.['title']}</span>
-                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(priceData?.['value'])}"></span>
-                                                            </div>
-                                                        </a>`;
                             }
+                            htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(priceData?.['value'])}">
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="mr-5">${priceData?.['title']}</span>
+                                                    <div>
+                                                        <span class="mask-money mr-5" data-init-money="${parseFloat(priceData?.['value'])}"></span>
+                                                        <span>(${priceData?.['uom']?.['title']})</span>
+                                                    </div>
+                                                </div>
+                                            </a>`;
                         }
                     }
                 }

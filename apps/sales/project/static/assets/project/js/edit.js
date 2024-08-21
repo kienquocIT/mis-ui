@@ -141,16 +141,7 @@ $(document).ready(function () {
                 }
                 else $('#create_baseline').prop('disabled', true)
                 WFRTControl.setWFInitialData('projectbaseline', 'post');
-
-                let numInc = 0
-                let intervalId = setInterval(() => {
-                    if (numInc <= data['completion_rate']) {
-                        $('').text();
-                        $('.completion_rate_block .heading span').text(numInc++)
-                    } else {
-                        clearInterval(intervalId);
-                    }
-                }, 50);
+                animating_number(data['completion_rate'], $('.completion_rate_block .heading span'))
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )

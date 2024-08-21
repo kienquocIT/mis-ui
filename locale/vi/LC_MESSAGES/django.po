@@ -8552,3 +8552,7 @@ msgstr "Đơn hàng khác"
 #
 msgid "Labor summary"
 msgstr "Tổng nhân công"
+
+#
+msgid "Select one"
+msgstr "Chọn một"

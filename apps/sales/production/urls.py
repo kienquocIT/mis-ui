@@ -1,6 +1,6 @@
 from django.urls import path
 from apps.sales.production.views import (
-    BOMList, BOMCreate, BOMDetail, BOMUpdate, BOMListAPI, BOMDetailAPI,
+    BOMList, BOMCreate, BOMDetail, BOMUpdate, BOMListAPI, BOMDetailAPI, LaborListForBOMAPI,
 )
 
 urlpatterns = [
@@ -9,5 +9,7 @@ urlpatterns = [
     path('detail/<str:pk>', BOMDetail.as_view(), name='BOMDetail'),
     path('update/<str:pk>', BOMUpdate.as_view(), name='BOMUpdate'),
     path('api', BOMListAPI.as_view(), name='BOMListAPI'),
-    path('api/<str:pk>', BOMDetailAPI.as_view(), name='BOMDetailAPI')
+    path('api/<str:pk>', BOMDetailAPI.as_view(), name='BOMDetailAPI'),
+
+    path('labor-for-BOM/api', LaborListForBOMAPI.as_view(), name='LaborListForBOMAPI'),
 ]

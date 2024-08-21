@@ -1,4 +1,5 @@
 const script_url = $('#script-url')
+const script_trans = $('#script-trans')
 const process_description_table = $('#process-description-table')
 const add_new_process_description = $('#add-new-process-description')
 const material_table = $('#material-table')
@@ -20,6 +21,26 @@ function deleteRow(table, currentRow) {
     row.remove().draw();
 }
 
+function loadLaborPrice(ele, labor_selected, uom_id) {
+    ele.closest('tr').find('.dropdown-menu').html(`<h6 class="dropdown-header">${script_trans.attr('data-trans-select-one')}</h6>`)
+    for (let i = 0; i < labor_selected?.['price_list'].length; i++) {
+        console.log(labor_selected?.['price_list'][i]?.['uom']?.['id'], uom_id)
+        ele.closest('tr').find('.dropdown-menu').append(
+            `<a class="${labor_selected?.['price_list'][i]?.['uom']?.['id'] !== uom_id ? 'disabled' : ''} labor-price-option dropdown-item border rounded mb-1" href="#">
+                <div class="row">
+                    <div class="col-5">
+                        <span class="labor-uom badge badge-primary badge-sm" data-id="${labor_selected?.['price_list'][i]?.['uom']?.['id']}">${labor_selected?.['price_list'][i]?.['uom']?.['title']}</span>                 
+                    </div>
+                    <div class="col-7">
+                        <span class="labor-price-value text-primary mask-money" data-init-money="${labor_selected?.['price_list'][i]?.['price_value']}"></span>
+                    </div>
+                </div>
+            </a>`
+        )
+    }
+    $.fn.initMaskMoney2()
+}
+
 function loadLabor(ele, data) {
     ele.initSelect2({
         ajax: {
@@ -30,14 +51,15 @@ function loadLabor(ele, data) {
             return resp.data[keyResp];
         },
         data: (data ? data : null),
-        keyResp: 'expense_list',
+        keyResp: 'labor_list',
         keyId: 'id',
         keyText: 'title',
     }).on('change', function () {
         if (ele.val()) {
             let labor_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
             loadUOM(ele.closest('tr').find('.process-uom'), labor_selected?.['uom_group']?.['id'])
-            ele.closest('tr').find('.process-unit-price').attr('value', labor_selected?.['price_list'].length > 0 ? labor_selected?.['price_list'][0]?.['price_value'] : 0)
+            loadLaborPrice(ele, labor_selected, ele.closest('tr').find('.process-uom').val())
+
             calculate_process_table(ele.closest('tr'))
             $.fn.initMaskMoney2()
 
@@ -200,7 +222,15 @@ function loadProcessDescriptionTable(data_list=[], option='create') {
             },
             {
                 'render': () => {
-                    return `<input disabled readonly class="form-control mask-money process-unit-price" value="0">`;
+                    return `
+                        <div class="input-group">
+                            <span class="input-affix-wrapper">
+                                <input disabled readonly class="form-control mask-money process-unit-price" value="0">
+                                <a href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="input-suffix"><i class="bi bi-three-dots-vertical"></i></span></a>
+                                <div class="dropdown-menu border rounded border-primary"></div>
+                            </span>
+                        </div>
+                        `;
                 }
             },
             {
@@ -381,6 +411,9 @@ $(document).on("change", '.process-quantity', function () {
 
 $(document).on("change", '.process-uom', function () {
     let this_row = $(this).closest('tr')
+    let labor_selected = SelectDDControl.get_data_from_idx(this_row.find('.process-labor'), this_row.find('.process-labor').val())
+    loadLaborPrice(this_row.find('.process-labor'), labor_selected, $(this).val())
+
     if (this_row.find('.process-labor').val() && this_row.find('.process-uom').val()) {
         update_labor_summary_table()
     }
@@ -463,4 +496,18 @@ $(document).on("click", '.add-new-material', function () {
     let new_material_row = create_material_row()
     $(this).closest('tr').after(new_material_row)
     loadProduct(new_material_row.find('.material-item'))
+})
+
+$(document).on("click", '.labor-price-option', function () {
+    loadUOM(
+        $(this).closest('tr').find('.process-uom'),
+        null,
+        {
+            'id': $(this).find('.labor-uom').attr('data-id'),
+            'title': $(this).find('.labor-uom').text()
+        }
+    )
+    let labor_price_value = $(this).find('.labor-price-value').attr('data-init-money')
+    $(this).closest('tr').find('.process-unit-price').attr('value', labor_price_value)
+    $.fn.initMaskMoney2()
 })

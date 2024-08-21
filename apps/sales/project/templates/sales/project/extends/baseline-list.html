@@ -63,9 +63,6 @@
            data-baseline-url="{% url 'ProjectBaselineDetail' 1 %}"
            data-filter_employee="{% url 'EmployeeListAPI' %}"
     >
-{#    <input type="hidden" id="trans-factory" aria-label="trans-factory"#}
-{#           data-by-prj="{% trans 'By Project owner' %}" data-by-stt="{% trans 'By System status' %}"#}
-{#    >#}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/project/js/extend/baseline-list.js' %}"></script>

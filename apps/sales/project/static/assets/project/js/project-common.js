@@ -407,8 +407,8 @@ function show_task_list(){
     }
 
     $asModal.on('shown.bs.modal', function(){
-        const $pjElm = $('#id'), check_page_version = $('#project_form').hasClass('baseline_version');
-        let baseline_data = $('#project_form').data('baseline_data');
+        const $pjElm = $('#id'), $prjForm = $('#project_form'), check_page_version = $prjForm.hasClass('baseline_version');
+        let baseline_data = $prjForm.data('baseline_data');
         if ($taskTbl.hasClass('dataTable')) $taskTbl.DataTable().destroy();
         if ($abdTable.hasClass('dataTable')) $abdTable.DataTable().destroy();
         let workID = $asModal.find('#modal_work_id').val();
@@ -484,6 +484,29 @@ function delay(fn, ms) {
     	clearTimeout(timer)
         timer = setTimeout(fn.bind(this, ...args), ms || 0)
     }
+}
+
+function animating_number(number, elm){
+    let start = 0;
+    let startTime = null;
+    let currentNumber = 0;
+    let duration = 500;
+
+    function animationStep(timestamp) {
+        if (!startTime) startTime = timestamp;
+        let progress = timestamp - startTime;
+        currentNumber = Math.min(start + (number * (progress / duration)), number);
+        if (progress < duration)
+            requestAnimationFrame(animationStep);
+        else
+            // Ensure the final value is set
+            currentNumber = number;
+            if (currentNumber % 1 !== 0)
+                currentNumber = currentNumber.toFixed(1)
+            elm.text(currentNumber)
+    }
+
+    requestAnimationFrame(animationStep);
 }
 
 class ProjectTeamsHandle {
@@ -909,6 +932,7 @@ class ProjectWorkExpenseHandle{
             rowCallback: function (row, data, index) {
                 // on change EXPENSE LABOR NAME
                 $('.expense_labor_name', row).on('select2:select', function (e){
+                    console.log('labor name')
                     data.expense_name = e.params.data.data
                     data.expense_item = data.expense_name.expense_item
                     data.expense_price = data.expense_name['price_list'][0]?.price_value || 0
@@ -921,26 +945,12 @@ class ProjectWorkExpenseHandle{
                     let data_item = e.params.data.data
                     if ($(this).hasClass('expense_item')) data.expense_item = data_item
                     else data.uom = data_item
+                    console.log('uom on change')
                 })
 
-                // on change field QUANTITY and UNIT PRICE
-                $('.valid-number, .expense_price, .expense_name', row).on('blur', function(){
-                    let idx = $(row).index()
-                    if ($(this).hasClass('valid-number'))
-                        data.quantity = this.value = validateNumber(this.value)
-                    else if ($(this).hasClass('expense_price')) data.expense_price = validateNumber(this.value)
-                    else data.title = this.value
-                    if (data.expense_price && data.quantity){
-                        // render subtotal
-                        data.sub_total = data.expense_price * data.quantity
-                        crtTable.cell({row: idx, column: 5}).data(data.sub_total).draw(false)
-                        // render parent data when child data is complete row
-                        let total_after = data.sub_total
-                        if ((data?.tax && Object.keys(data.tax).length > 0) && data.tax.rate !== 0)
-                            total_after += data.tax.rate/100 * total_after
-                        crtTable.cell(idx, 7).data(total_after).draw(false)
-                        ProjectWorkExpenseHandle.calcSubTotal(crtTable.data().toArray(), trElm)
-                    }
+                // on change EXPENSE NAME
+                $('.expense_name', row).on('change', function(){
+                    data.title = this.value
                 });
 
                 // trigger on change TAX
@@ -971,10 +981,9 @@ class ProjectWorkExpenseHandle{
             drawCallback: function () {
                 // run select2 row
                 $('.tax_item, .select_uom, .expense_item, .expense_labor_name', $('#expense_child_' + workID)).each(function(){
-                   $(this).initSelect2()
+                    if (!$(this).hasClass("select2-hidden-accessible")) $(this).initSelect2()
                 });
-                ProjectWorkExpenseHandle.calcAllTotal()
-                // run label money
+                // // run label money
                 $.fn.initMaskMoney2()
             },
         });
@@ -996,6 +1005,27 @@ class ProjectWorkExpenseHandle{
             }]
             crtTable.rows.add(temp).draw()
         })
+
+        // on change field QUANTITY and UNIT PRICE
+        crtTable.on('change', 'tbody tr .valid-number, tbody tr .expense_price', function () {
+            const $idx = $(this).closest('tr'),
+                _idx = crtTable.row($idx).index();
+
+            let data = crtTable.row($idx).data();
+
+            if ($(this).hasClass('valid-number'))
+                data.quantity = this.value = validateNumber(this.value)
+            else data.expense_price = validateNumber(this.value)
+            if (data.expense_price && data.quantity){
+                data.sub_total = data.expense_price * data.quantity
+                crtTable.cell({row: _idx, column: 5}).data(data.sub_total).draw(false)
+                let total_after = data.sub_total
+                if ((data?.tax && Object.keys(data.tax).length > 0) && data.tax.rate !== 0)
+                    total_after += data.tax.rate/100 * total_after
+                crtTable.cell(_idx, 7).data(total_after).draw(false)
+                ProjectWorkExpenseHandle.calcSubTotal(crtTable.data().toArray(), trElm)
+            }
+        });
 
         if (!check_page_version){
             $.fn.callAjax2({

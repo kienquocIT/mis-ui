@@ -2829,7 +2829,7 @@ msgstr "Ngày xuất hóa đơn"
 
 #
 msgid "Acceptance date"
-msgstr "Ngày thông qua"
+msgstr "Ngày nghiệm thu"
 
 #
 msgid "End of invoice month"
@@ -8548,3 +8548,11 @@ msgstr "Đơn hàng hiện tại"
 #
 msgid "Other order"
 msgstr "Đơn hàng khác"
+
+#
+msgid "Current"
+msgstr "Hiện tại"
+
+#
+msgid "Old"
+msgstr "Cũ"

@@ -91,6 +91,20 @@ class ContractDetail(View):
                }, status.HTTP_200_OK
 
 
+class ContractUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/contract/contract_update.html',
+        breadcrumb='',
+        menu_active='',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        ctx = {
+            'data': {'doc_id': pk},
+        }
+        return ctx, status.HTTP_200_OK
+
+
 class ContractDetailAPI(APIView):
 
     @mask_view(

@@ -232,11 +232,18 @@ $(function () {
 // Action on click price list's option
         tableProduct.on('click', '.table-row-price-option', function () {
             let row = this.closest('tr');
-            let priceValRaw = $(this)[0].getAttribute('data-value');
-            if (priceValRaw) {
+            if (this.getAttribute('data-value') && this.getAttribute('data-price') && row.querySelector('.table-row-uom')) {
+                let priceVal = $(this)[0].getAttribute('data-value');
+                let eleUOM = row.querySelector('.table-row-uom');
+                let dataPrice = JSON.parse(this.getAttribute('data-price'));
+                if (dataPrice?.['uom']?.['id'] !== $(eleUOM).val()) {
+                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-valid-price-uom')}, 'failure');
+                    return false;
+                }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
-                    $(elePrice).attr('value', String(priceValRaw));
+                    $(elePrice).addClass('text-primary');
+                    $(elePrice).attr('value', String(priceVal));
                     $.fn.initMaskMoney2();
                     QuotationCalculateCaseHandle.commonCalculate(tableProduct, row);
                 }
@@ -252,21 +259,41 @@ $(function () {
         });
 
 // ******** Action on change data of table row PRODUCT => calculate data for row & calculate data total
-        tableProduct.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
+        tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
                 if ($(this).hasClass('table-row-item')) {
                     QuotationLoadDataHandle.loadDataProductSelect($(this));
                 }
-                // validate number
                 if ($(this).hasClass('validated-number')) {
                     validateNumber(this);
                 }
-                // Clear table COST if item or quantity change
-                if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
+                if ($(this).hasClass('table-row-price')) {
+                    $(this).removeClass('text-primary');
+                }
+                if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-uom') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
                     // load again table cost
                     QuotationLoadDataHandle.loadDataTableCost();
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                    if ($(this).hasClass('table-row-uom')) {
+                        let priceChecked = row.querySelector('.option-btn-checked');
+                        if (priceChecked) {
+                            if (priceChecked.getAttribute('data-price')) {
+                                let dataPrice = JSON.parse(priceChecked.getAttribute('data-price'));
+                                if (dataPrice?.['uom']?.['id'] !== $(this).val()) {
+                                    let elePrice = row.querySelector('.table-row-price');
+                                    if (elePrice) {
+                                        $(elePrice).attr('value', String(0));
+                                    }
+                                    let allOption = $(row).find('.table-row-price-option');
+                                    if (allOption) {
+                                        allOption.removeClass('option-btn-checked');
+                                    }
+                                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-valid-price-uom')}, 'failure');
+                                }
+                            }
+                        }
+                    }
                 }
                 // Delete all promotion rows
                 deletePromotionRows(tableProduct, true, false);
@@ -279,16 +306,6 @@ $(function () {
                 // store data
                 QuotationStoreDataHandle.storeProduct(row);
             }
-        });
-
-// If change product uom then clear table COST
-        tableProduct.on('change', '.table-row-uom', function () {
-            let row = this.closest('tr');
-            // load again table cost
-            QuotationLoadDataHandle.loadDataTableCost();
-            QuotationLoadDataHandle.loadSetWFRuntimeZone();
-            // store data
-            QuotationStoreDataHandle.storeProduct(row);
         });
 
 // Action on table row group title

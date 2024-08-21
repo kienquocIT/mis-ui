@@ -427,12 +427,9 @@ class QuotationLoadDataHandle {
                 }
                 // load PRICE
                 if (price && priceList) {
-                    let {customerPrice, generalPrice} = QuotationLoadDataHandle.loadPriceProduct(ele[0]);
-                    if (customerPrice) {
-                        $(price).attr('value', String(customerPrice));
-                    } else {
-                        $(price).attr('value', String(generalPrice));
-                    }
+                    let lastPrice = QuotationLoadDataHandle.loadPriceProduct(ele[0]);
+                    $(price).attr('value', String(lastPrice));
+                    $(price).addClass('text-primary');
                 }
                 // load TAX
                 if (tax && data?.['tax']) {
@@ -983,41 +980,37 @@ class QuotationLoadDataHandle {
             // load PRICE
             if (price && priceList) {
                 let account_price_id = document.getElementById('customer-price-list').value;
-                let general_price_id = null;
-                let general_price = 0;
-                let customer_price = null;
                 let current_price_checked = price.getAttribute('value');
                 let transJSON = {};
+                let lastPrice = 0;
                 transJSON['Valid'] = QuotationLoadDataHandle.transEle.attr('data-valid');
                 $(priceList).empty();
                 let htmlDD = ``;
                 if (Array.isArray(data?.['price_list']) && data?.['price_list'].length > 0) {
                     for (let priceData of data?.['price_list']) {
+                        let clsChecked = '';
                         if (priceData?.['is_default'] === true) { // check GENERAL_PRICE_LIST OF PRODUCT then set general_price
-                            general_price_id = priceData?.['id'];
-                            general_price = parseFloat(priceData?.['value']);
+                            lastPrice = parseFloat(priceData?.['value']);
+                            clsChecked = 'option-btn-checked';
                         }
-                        if (!["Expired", "Invalid"].includes(priceData?.['price_status'])) { // If Valid Price
+                        if (!["Expired", "Invalid"].includes(priceData?.['price_status'])) {
                             if (priceData?.['id'] === account_price_id) { // check CUSTOMER_PRICE then set customer_price
-                                customer_price = parseFloat(priceData?.['value']);
-                                htmlDD += `<a class="dropdown-item table-row-price-option option-btn-checked text-black border border-grey mb-1" data-value="${parseFloat(priceData?.['value'])}">
-                                                            <div class="d-flex justify-content-between">
-                                                                <span class="mr-5">${priceData?.['title']}</span>
-                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(priceData?.['value'])}"></span>
-                                                            </div>
-                                                        </a>`;
-                            } else {
-                                htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(priceData?.['value'])}">
-                                                            <div class="d-flex justify-content-between">
-                                                                <span class="mr-5">${priceData?.['title']}</span>
-                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(priceData?.['value'])}"></span>
-                                                            </div>
-                                                        </a>`;
+                                lastPrice = parseFloat(priceData?.['value']);
+                                clsChecked = 'option-btn-checked';
                             }
+                            htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1 ${clsChecked}" data-value="${parseFloat(priceData?.['value'])}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}">
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="mr-5">${priceData?.['title']}</span>
+                                                    <div>
+                                                        <span class="mask-money mr-5" data-init-money="${parseFloat(priceData?.['value'])}"></span>
+                                                        <span>(${priceData?.['uom']?.['title']})</span>
+                                                    </div>
+                                                </div>
+                                            </a>`;
                         }
                     }
                 }
-                $(priceList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-60p position-relative overflow-y-scroll">${htmlDD}</div>`);
+                $(priceList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-80p position-relative overflow-y-scroll">${htmlDD}</div>`);
                 // If change price then remove promotion & shipping
                 if (current_price_checked !== price.getAttribute('value')) {
                     is_change_price = true;
@@ -1027,12 +1020,11 @@ class QuotationLoadDataHandle {
                     deletePromotionRows($(tableProduct), true, false);
                     deletePromotionRows($(tableProduct), false, true);
                 }
-
-                return {customerPrice: customer_price, generalPrice: general_price};
+                return lastPrice;
             }
         }
         $.fn.initMaskMoney2();
-        return {customerPrice: null, generalPrice: null};
+        return 0;
     };
 
     static loadCostProduct(eleProduct) {
@@ -1779,7 +1771,7 @@ class QuotationLoadDataHandle {
             $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
         }
         if (is_copy === false) {
-            // check if not finish or reject then remove hidden btn edit page
+            // check if not finish or reject then open btn edit page
             if (![2, 3, 4].includes(data?.['system_status'])) {
                 let btnEdit = $('#btn-enable-edit');
                 if (btnEdit && btnEdit.length > 0) {

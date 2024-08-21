@@ -43,7 +43,7 @@ $(function () {
                         targets: 1,
                         width: '5%',
                         render: (data, type, row) => {
-                            let link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
+                            let link = $('#quotation-link').data('link-detail').format_url_with_uuid(row?.['id']);
                             if (row?.['code']) {
                                 if (row?.['is_change'] === true && row?.['document_root_id'] && row?.['system_status'] === 3) {
                                     let target = `.cl-${row?.['document_root_id'].replace(/-/g, "")}`;
@@ -74,7 +74,7 @@ $(function () {
                         targets: 2,
                         width: '17%',
                         render: (data, type, row) => {
-                            const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id'])
+                            const link = $('#quotation-link').data('link-detail').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
                         }
                     },

@@ -64,7 +64,7 @@ $(document).ready(function(){
         columns: [
             {
                 data: 'project_data',
-                width: '7%',
+                width: '5%',
                 render: (row, type, data) => {
                     const _code = row.code,
                         _url = $urlFact.attr('data-baseline-url').format_url_with_uuid(data.project_data.id);
@@ -74,14 +74,14 @@ $(document).ready(function(){
             },
             {
                 data: 'project_data',
-                width: '25%',
+                width: '30%',
                 render: (row) => {
                     return row.title
                 }
             },
             {
                 data: 'project_data',
-                width: '17%',
+                width: '15%',
                 render: (row, type, data) => {
                     return row?.['employee_inherit'] ? row?.['employee_inherit'].full_name : '--'
                 }
@@ -109,7 +109,7 @@ $(document).ready(function(){
             },
             {
                 data: 'project_data',
-                width: '10%',
+                width: '15%',
                 class: 'text-center',
                 render: (row) => {
                     const comRate = row?.['completion_rate']
@@ -135,7 +135,7 @@ $(document).ready(function(){
             },
             {
                 data: 'system_status',
-                width: '8%',
+                width: '10%',
                 class: 'text-center',
                 render: (row, type, data) => {
                     return `<span class="badge badge-${status_data[row]['cls']}">${status_data[row]['txt']}</span>`;

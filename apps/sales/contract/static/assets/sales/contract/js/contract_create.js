@@ -7,6 +7,8 @@ $(function () {
         ContractDataTableHandle.dataTableDocument();
         ContractDataTableHandle.dataTableFile();
         ContractTinymceHandle.initTinymce();
+        WFRTControl.setWFInitialData('contractapproval', formSubmit.attr('data-method'));
+
 
         ContractLoadDataHandle.$btnAddDoc.on('click', function () {
             ContractLoadDataHandle.loadAddDoc();

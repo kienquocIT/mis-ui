@@ -76,7 +76,7 @@ $(document).ready(function () {
                 $('.gaw-btn').addClass('hidden')
                 Task_in_project.init(project)
                 ProjectWorkExpenseHandle.init(work)
-                $('.completion_rate_block .heading').text(`${project['completion_rate']}%`)
+                animating_number(project['completion_rate'], $('.completion_rate_block .heading span'))
                 if (project.system_status <= 2)
                     $('.btn-edit-page, #create_baseline').prop('hidden', false)
                 else{

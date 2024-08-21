@@ -50,7 +50,8 @@
 {% block dataHiddenGroup %}
     <input
             type="text" id="quotation-link"
-            data-link-update="{% url 'QuotationDetail' 1 %}"
+            data-link-detail="{% url 'QuotationDetail' 1 %}"
+            data-link-update="{% url 'QuotationUpdate' 1 %}"
             data-link-list="{% url 'QuotationList' %}"
     >
     <input

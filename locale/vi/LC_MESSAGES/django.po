@@ -2829,7 +2829,7 @@ msgstr "Ngày xuất hóa đơn"
 
 #
 msgid "Acceptance date"
-msgstr "Ngày thông qua"
+msgstr "Ngày nghiệm thu"
 
 #
 msgid "End of invoice month"
@@ -8552,6 +8552,18 @@ msgstr "Đơn hàng khác"
 #
 msgid "Labor summary"
 msgstr "Tổng nhân công"
+
+#
+msgid "Current"
+msgstr "Hiện tại"
+
+#
+msgid "Old"
+msgstr "Cũ"
+
+#
+msgid "Price is not valid for unit of measure"
+msgstr "Giá không hợp lệ với đơn vị tính"
 
 #
 msgid "Select one"

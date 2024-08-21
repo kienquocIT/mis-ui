@@ -522,6 +522,11 @@ class Task_in_project {
                         $EmpElm.val(data.employee_inherit.id).trigger('change')
                     else $EmpElm.append(`<option value="${data.employee_inherit.id}" selected>${
                         data.employee_inherit.full_name}</option>`).trigger('change')
+                    const $STTElm = $('#selectStatus', $form)
+                    if ($STTElm.find(`option[value="${data.task_status.id}"]`).length > 0)
+                        $STTElm.val(data.task_status.id).trigger('change')
+                    else $STTElm.append(`<option value="${data.task_status.id}" selected>${
+                        data.task_status.title}</option>`).trigger('change')
 
                     window.formLabel.renderLabel(data.label)
                     window.editor.setData(data.remark)

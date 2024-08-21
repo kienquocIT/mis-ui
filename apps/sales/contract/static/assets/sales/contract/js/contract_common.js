@@ -1,5 +1,6 @@
 // Load data
 class ContractLoadDataHandle {
+    static $form = $('#frm_contract_create');
     static $btnAddDoc = $('#btn-add-doc');
     static $fileArea = $('#file-area');
     static $remark = $('#contract-doc-remark');
@@ -13,6 +14,7 @@ class ContractLoadDataHandle {
         let dataAdd = {
             "title": "",
             "order": order,
+            "attachment_data": [],
         }
         ContractDataTableHandle.$tableDocument.DataTable().row.add(dataAdd).draw().node();
         return true;
@@ -65,8 +67,10 @@ class ContractLoadDataHandle {
 
     // FILE
     static loadAddFile(dataList) {
-        ContractDataTableHandle.$tableFile.DataTable().clear().draw();
-        ContractDataTableHandle.$tableFile.DataTable().rows.add(dataList).draw();
+        if (dataList) {
+            ContractDataTableHandle.$tableFile.DataTable().clear().draw();
+            ContractDataTableHandle.$tableFile.DataTable().rows.add(dataList).draw();
+        }
         return true;
     };
 
@@ -140,6 +144,14 @@ class ContractLoadDataHandle {
     // DETAIL
     static loadDetail(data) {
         $('#contract-title').val(data?.['title']);
+        ContractDataTableHandle.$tableDocument.DataTable().rows.add(data?.['document_data']).draw();
+        // check if not finish or reject then open btn edit page
+        if (![2, 3, 4].includes(data?.['system_status'])) {
+            let $btnEdit = $('#btn-enable-edit');
+            if ($btnEdit && $btnEdit.length > 0) {
+                $btnEdit[0].removeAttribute('hidden');
+            }
+        }
     };
 }
 
@@ -167,7 +179,11 @@ class ContractDataTableHandle {
                     targets: 1,
                     width: '60%',
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-title" value="${row?.['remark'] ? row?.['remark'] : ''}" required>`;
+                        let readonly = '';
+                        if (ContractLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                            readonly = 'readonly';
+                        }
+                        return `<input type="text" class="form-control table-row-title" value="${row?.['title'] ? row?.['title'] : ''}" required ${readonly}>`;
                     }
                 },
                 {
@@ -176,7 +192,7 @@ class ContractDataTableHandle {
                     width: '10%',
                     render: (data, type, row) => {
                         return `<div class="d-flex">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover attach-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-attach-file')}" data-store="" data-order="${row?.['order']}"><span class="icon"><i class="fas fa-paperclip"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover attach-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-attach-file')}" data-store="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-order="${row?.['order']}"><span class="icon"><i class="fas fa-paperclip"></i></span></button>
                                     <div class="tmp-uploader" hidden></div>
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover view-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-view-file')}" hidden><span class="icon"><i class="far fa-eye"></i></span></button>
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-delete')}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
@@ -208,10 +224,13 @@ class ContractDataTableHandle {
                     targets: 1,
                     width: '25%',
                     render: (data, type, row) => {
+                        let txt = ContractLoadDataHandle.$trans.attr('data-old');
+                        let badge = 'danger';
                         if (row?.['order'] === 1) {
-                            return `<span class="table-row-version">Current version</span>`;
+                            txt = ContractLoadDataHandle.$trans.attr('data-current');
+                            badge = 'success';
                         }
-                        return `<span class="table-row-version">Old version</span>`;
+                        return `<span class="badge badge-soft-${badge} table-row-version">${txt}</span>`;
                     }
                 },
                 {
@@ -228,8 +247,12 @@ class ContractDataTableHandle {
                         if (row?.['is_current'] === true) {
                             return ``;
                         }
+                        let disabled = '';
+                        if (ContractLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                            disabled = 'disabled';
+                        }
                         return `<div class="d-flex">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover set-current" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-set-current')}"><span class="icon"><i class="fas fa-retweet"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover set-current" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-set-current')}" ${disabled}><span class="icon"><i class="fas fa-retweet"></i></span></button>
                                 </div>`;
                     }
                 },

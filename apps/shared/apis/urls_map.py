@@ -96,6 +96,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ACCOUNT_USER_TENANT = StringUrl('account/user-tenant')
     ACCOUNT_USER_ADMIN_TENANT = StringUrl('account/user-admin-tenant')
 
+    # 2FA
+    TWO_FA = StringUrl('auth/2fa')
+    TWO_FA_INTEGRATE = StringUrl('auth/2fa/integrate')
+    TWO_FA_INTEGRATE_DETAIL = StringUrl('auth/2fa/integrate/{pk}')
+
     # employee
     EMPLOYEE_UPLOAD_AVATAR = StringUrl('hr/employee/{pk}/upload-avatar')
     EMPLOYEE_LIST = StringUrl('hr/employees')
@@ -670,3 +675,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Contract
     CONTRACT_LIST = StringUrl('contract/list')
+    CONTRACT_DETAIL = StringUrl('contract')

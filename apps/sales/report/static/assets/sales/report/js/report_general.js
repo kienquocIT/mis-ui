@@ -25,7 +25,7 @@ $(function () {
                             if (row?.['type_group_by'] === 0) {
                                 return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
                             } else {
-                                return `<div class="row"><span class="badge badge-indigo">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span></div>`;
+                                return `<div class="row"><span class="badge badge-indigo badge-outline">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span></div>`;
                             }
                         }
                     },
@@ -365,7 +365,6 @@ $(function () {
                 if ($table.DataTable().data().count() !== 0) {
                     let firstRow = $table.DataTable().row(0).node();
                     $(firstRow).css({
-                        'background-color': '#ebf5f5',
                         'color': '#007D88',
                         'font-weight': 'bold'
                     });

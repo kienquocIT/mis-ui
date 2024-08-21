@@ -1,0 +1,419 @@
+{% load static compress i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta Tags -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans 'Verify 2FA' %} &#8901; Bflow</title>
+    <meta name="description" content="Bflow"/>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'assets/images/brand/bflow/favicon.ico' %}">
+    <link rel="icon" href="{% static 'assets/images/brand/bflow/favicon.ico' %}" type="image/x-icon">
+
+    <meta property="og:url" content="www.bflow.vn"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="{% trans 'Verify 2FA' %} &#8901; Bflow"/>
+    <meta property="og:description" content="Bflow - Giải pháp toàn diện cho doanh nghiệp"/>
+    <meta property="og:image" content="{% static 'assets/images/brand/bflow/favicon.ico' %}"/>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap"
+            rel="stylesheet"
+    >
+    {% compress css %}
+        <!-- CSS -->
+        <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'login/auth.css' %}" rel="stylesheet" type="text/css">
+        <style>
+            html, body {
+                font-family: "Josefin Sans", sans-serif;
+                font-optical-sizing: auto;
+                font-style: normal;
+            }
+
+            select option:checked {
+                background-color: #e5fdff !important;
+                color: #37ceda !important;
+            }
+        </style>
+
+        <style>
+            .otp-split-ui {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .otp-split-ui .otp-split-ui-group {
+                padding: 0 20px;
+                box-sizing: border-box;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                overflow: hidden;
+            }
+
+            .otp-split-ui .otp-split-ui-group input {
+                text-align: center;
+                font-weight: bold;
+                width: calc(100% / 7);
+                min-width: calc(1rem + 10px);
+                border: 2px solid #d8d8d8;
+                background-color: rgba(216, 216, 216, 0.1);
+                color: #9e9e9e;
+                padding: 5px;
+                border-radius: 5px;
+                box-sizing: border-box;
+                outline: none;
+                -webkit-transition: 0.5s;
+                transition: color 0.2s, background-color 0.3s, border 0.1s;
+                -moz-appearance: textfield;
+                appearance: none;
+            }
+
+            .otp-split-ui .otp-split-ui-group input::-webkit-outer-spin-button,
+            .otp-split-ui .otp-split-ui-group input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+
+            .otp-split-ui .otp-split-ui-group input:focus {
+                color: #5e7d8a;
+                border-color: #bfcbd0;
+                background-color: rgba(191, 203, 208, 0.3);
+            }
+
+            .otp-split-ui .otp-split-ui-group input:not(:placeholder-shown) {
+                color: #00ab66;
+                border-color: #00d67f;
+                background-color: rgba(0, 171, 102, 0.1);
+            }
+        </style>
+    {% endcompress %}
+</head>
+<body>
+<!-- Wrapper -->
+<div class="hk-wrapper hk-pg-auth bg-light position-relative" data-footer="simple">
+    <!-- Main Content -->
+    <div class="hk-pg-wrapper pt-0 pb-xl-0 pb-5">
+        <canvas id="canvas" class="position-absolute"></canvas>
+        <div class="hk-pg-body pt-0 pb-xl-0">
+            <!-- Container -->
+            <div class="container-xxl">
+                <!-- Row -->
+                <div class="row mx-auto" style="max-width: 450px;">
+                    <div class="col-12 position-relative ">
+                        <form
+                                class="w-100"
+                                autocomplete="off"
+                                id="form-verify-2fa"
+                                data-url="{% url 'TwoFAVerifyAPIView' %}"
+                                data-url-login="{% url 'AuthLogin' %}"
+                        >
+                            {% csrf_token %}
+                            <div class="card card-lg card-border box-vertical-blur">
+                                <div class="card-body">
+                                    <div class="text-center mb-7 overflow-hidden">
+                                        <a class="navbar-brand me-0" href="https://www.bflow.vn">
+                                            <img
+                                                    class="brand-img d-inline-block"
+                                                    src="{% static 'assets/images/brand/bflow-by-mts/png/bflow-by-mts-original.png' %}"
+                                                    alt="brand"
+                                                    style="width: 70%; object-fit: cover;margin-top: 30px;"
+                                            >
+                                        </a>
+                                    </div>
+                                    <div class="w-100 mb-2">
+                                        <h4 class="text-center">{% trans '2FA Authentication' %}</h4>
+                                        <small class="form-text py-2" style="display: block;width: 100%;text-align: center;">{% trans 'Enter verification code' %}</small>
+                                    </div>
+                                    <div class="row gx-3 otp-split-ui">
+                                        <div class="form-group otp-split-ui-group" style="display: none;">
+                                            <input type="number" placeholder=" " name="otp" autofocus/>
+                                            <input type="number" placeholder=" " name="otp" />
+                                            <input type="number" placeholder=" " name="otp" />
+                                            <input type="number" placeholder=" " name="otp" />
+                                            <input type="number" placeholder=" " name="otp" />
+                                            <input type="number" placeholder=" " name="otp" />
+                                        </div>
+                                        <div class="form-group otp-input-ui-group" style="display: none;">
+                                            <div class="input-group position-relative">
+                                                <span class="input-group-text">
+                                                    <i class="fa-solid fa-user-lock"></i>
+                                                </span>
+                                                <input
+                                                        type="text"
+                                                        id="inp-otp"
+                                                        name="otp"
+                                                        class="form-control" tabindex="0"
+                                                        placeholder="{% trans 'Enter the OTP verification code' %}"
+                                                        autofocus
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="recapcha" class="mt-1 mb-1"></div>
+                                    <input
+                                            type="submit" class="btn btn-primary btn-uppercase btn-block mb-3"
+                                            placeholder="{% trans 'Enter the OTP verification code' %}"
+                                            value="{% trans 'Verify' %}" tabindex="1"
+                                    >
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-12 position-relative text-center">
+                        <p class="footer-text pb-0 copyrighttext">
+                            <span class="copy-text">BFlow © 2023 All rights reserved.</span>
+                        </p>
+                    </div>
+                </div>
+                <!-- /Row -->
+            </div>
+            <!-- /Container -->
+        </div>
+        <!-- /Page Body -->
+    </div>
+    <!-- /Main Content -->
+    <div id="loadingContainer" class="loading-container hidden">
+        <div class="my-spinner">
+            <div class="my-circle my-circle-1"></div>
+            <div class="my-circle my-circle-2"></div>
+            <div class="my-circle my-circle-3"></div>
+            <div class="my-circle my-circle-4"></div>
+            <div class="my-circle my-circle-5"></div>
+        </div>
+    </div>
+</div>
+<!-- /Wrapper -->
+
+<script src="{% url 'javascript-catalog' packages='auth' %}"></script>
+{% if captcha_enabled == True %}
+    <script type="text/javascript">
+        window.ggCaptChaEnabled = "True";
+
+        function onloadCallback() {
+            grecaptcha.render('recapcha', {
+                'sitekey': '{{ secret_key_gg }}'
+            });
+        }
+    </script>
+    <script
+            src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+            async defer
+    >
+    </script>
+{% endif %}
+
+{% compress js %}
+    <!-- jQuery -->
+    <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- FeatherIcons JS -->
+    <script src="{% static 'assets/js/feather.min.js' %}"></script>
+
+    <!-- Fancy Dropdown JS -->
+    <script src="{% static 'assets/js/dropdown-bootstrap-extended.js' %}"></script>
+
+    <!-- Simplebar JS -->
+    <script src="{% static 'vendors/simplebar/dist/simplebar.min.js' %}"></script>
+
+    <!-- Notify Popup -->
+    <script src="{% static 'assets/js/notify.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
+
+    <!-- Init JS -->
+    <script src="{% static 'assets/js/init.js' %}"></script>
+    <script src="{% static 'login/backdrop-animated.js' %}"></script>
+    <script src="{% static 'login/login.js' %}"></script>
+
+    {% if captcha_enabled == True %}
+        <script type="text/javascript">
+            window.ggCaptChaEnabled = "True";
+
+            function onloadCallback() {
+                grecaptcha.render('recapcha', {
+                    'sitekey': '{{ secret_key_gg }}'
+                });
+            }
+        </script>
+        <script
+                src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+                async defer
+        >
+        </script>
+    {% endif %}
+
+    <!-- Custom JS -->
+    <script>
+        function authGettext(txt) {
+            try {
+                return gettext(txt)
+            } catch (e) {
+                return txt
+            }
+        }
+
+        $(document).ready(function () {
+            let boxHeight = $('.hk-pg-body').height();
+            $(':root').css('--box-height', `(50vh + ${boxHeight / 2}px)`);
+
+            const frm$ = $('#form-verify-2fa');
+            const styleOTP = 'split'; // 'split' or 'input'
+            const OTPinput$ = frm$.find('#inp-otp');
+            const OTPSplitInp$ = $('.otp-split-ui-group input');
+
+            if (styleOTP === 'split') {
+                $('.otp-split-ui-group').show(0);
+                OTPSplitInp$.prop('required', true);
+                $(OTPSplitInp$[0]).focus();
+                $('.otp-input-ui-group').hide(0);
+                OTPinput$.prop('required', false);
+            } else {
+                $('.otp-split-ui-group').hide(0);
+                OTPSplitInp$.prop('required', false).hide(0);
+                $('.otp-input-ui-group').show(0);
+                OTPinput$.prop('required', true).show(0);
+                OTPinput$.focus();
+            }
+
+            frm$.on('submit', function (event) {
+                event.preventDefault();
+
+                let state = false;
+                if (window.ggCaptChaEnabled === 'True') {
+                    let response = grecaptcha.getResponse();
+                    if (!response) {
+                        $.fn.notifyBLogin({
+                            'description': authGettext('Please solve the captcha.'),
+                        }, 'failure');
+                        return false;
+                    } else {
+                        state = true;
+                    }
+                } else {
+                    state = true;
+                }
+
+                let otp = '';
+                if (styleOTP === 'split'){
+                    OTPSplitInp$.each(function (){
+                        otp += $(this).val();
+                    })
+                } else {
+                    otp = OTPinput$.val();
+                }
+
+                if (otp.length < 6){
+                    state = false;
+                    $.fn.notifyBLogin({
+                        'description': authGettext('Please enter the verification code'),
+                    }, 'failure');
+                }
+
+                if (state === true) {
+                    $.fn.showLoadingLogin();
+
+                    const bodyData = {
+                        'otp': otp,
+                    }
+                    $.fn.callAjaxLogin(
+                        frm$.attr('data-url'),
+                        'POST',
+                        bodyData,
+                        frm$.find('input[name="csrfmiddlewaretoken"]').val(),
+                    ).then(
+                        resp => {
+                            $.fn.hideLoadingLogin();
+                            const urlResolved = new URL(window.location.href);
+                            const nextUrl = urlResolved.searchParams.get('next', '/');
+                            if (resp.status === 200) {
+                                $.fn.notifyBLogin({
+                                    'description': authGettext('The verification is successful')
+                                }, 'success');
+                                setTimeout(
+                                    () => window.location.href = nextUrl !== window.location.href ? nextUrl : "/",
+                                    1000
+                                )
+                            }
+                        },
+                        errs => {
+                            $.fn.hideLoadingLogin();
+                            switch (errs?.['status']) {
+                                case 401:
+                                    $.fn.notifyBLogin({
+                                        'description': authGettext("The session login was expired")
+                                    }, 'failure');
+                                    setTimeout(
+                                        () => {
+                                            window.location.href = frm$.attr('data-url-login');
+                                        },
+                                        1000
+                                    )
+                                    break
+                                case 400:
+                                    Object.entries(errs?.['data']?.['errors'] || {}).map(
+                                        ([key, value]) => {
+                                            if (key !== 'status') {
+                                                $.fn.notifyBLogin({
+                                                    'description': value
+                                                }, 'failure')
+                                            }
+                                        }
+                                    )
+                                    break
+                                default:
+                                    break
+                            }
+
+                        },
+                    )
+
+                }
+            })
+
+            OTPSplitInp$.on('input', function () {
+                const value = $(this).val();
+                const next$ = $(this).next('input');
+                switch (value.length) {
+                    case 0:
+                        break
+                    case 1:
+                        if (next$.length > 0) next$.focus();
+                        break
+                    default:
+                        $(this).val(value[0]).trigger('change');
+                        if (next$.length > 0) {
+                            next$.val(value.slice(1))
+                            next$.focus();
+                            next$.trigger('input');
+                        }
+                        break
+                }
+            }).on('keydown', function (event) {
+                const key = event.keyCode || event.charCode;
+                if (key === 8 || key === 46) {
+                    const value = $(this).val();
+                    if (!value){
+                        const prev$ = $(this).prev('input');
+                        if (prev$.length > 0) prev$.focus();
+                    }
+                }
+            });
+        })
+        ;
+    </script>
+{% endcompress %}
+</body>
+</html>

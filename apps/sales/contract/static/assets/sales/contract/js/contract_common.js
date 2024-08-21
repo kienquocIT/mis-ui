@@ -116,7 +116,7 @@ class ContractLoadDataHandle {
                 if (eleOrder.getAttribute('data-row')) {
                     let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
                     dataRow['is_current'] = false;
-                    dataRow['oder'] = order;
+                    dataRow['order'] = order;
                     order += 1;
                     result.push(dataRow);
                 }
@@ -135,6 +135,11 @@ class ContractLoadDataHandle {
                 headerToolbar.classList.add('hidden');
             }
         }
+    };
+
+    // DETAIL
+    static loadDetail(data) {
+        $('#contract-title').val(data?.['title']);
     };
 }
 
@@ -173,7 +178,7 @@ class ContractDataTableHandle {
                         return `<div class="d-flex">
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover attach-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-attach-file')}" data-store="" data-order="${row?.['order']}"><span class="icon"><i class="fas fa-paperclip"></i></span></button>
                                     <div class="tmp-uploader" hidden></div>
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover view-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-view-file')}"><span class="icon"><i class="far fa-eye"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover view-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-view-file')}" hidden><span class="icon"><i class="far fa-eye"></i></span></button>
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-delete')}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                                 </div>`;
                     }
@@ -221,7 +226,7 @@ class ContractDataTableHandle {
                     width: '5%',
                     render: (data, type, row) => {
                         if (row?.['is_current'] === true) {
-                            return `<i class="fas fa-check text-green ml-2"></i>`;
+                            return ``;
                         }
                         return `<div class="d-flex">
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover set-current" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-set-current')}"><span class="icon"><i class="fas fa-retweet"></i></span></button>
@@ -294,13 +299,13 @@ class ContractStoreHandle {
 class ContractSubmitHandle {
     static setupDataDocument() {
         let result = [];
+        let attachmentAll = [];
         ContractDataTableHandle.$tableDocument.DataTable().rows().every(function () {
             let row = this.node();
             let eleOrd = row.querySelector('.table-row-order');
             let eleTitle = row.querySelector('.table-row-title');
             let btnAttach = row.querySelector('.attach-file');
             if (eleOrd && eleTitle && btnAttach) {
-                let remark = '';
                 let attachment_data = [];
                 let attachment = [];
                 if (btnAttach.getAttribute('data-store')) {
@@ -308,25 +313,26 @@ class ContractSubmitHandle {
                     attachment_data = dataStore?.['attachment_data'];
                     for (let attach of dataStore?.['attachment_data']) {
                         attachment.push(attach?.['attachment']?.['id']);
+                        attachmentAll.push(attach?.['attachment']?.['id']);
                     }
                 }
                 result.push({
                     'title': eleTitle.value,
                     'remark': ContractLoadDataHandle.$remark.val(),
-                    'attachment': attachment,
+                    // 'attachment': attachment,
                     'attachment_data': attachment_data,
                     'order': parseInt(eleOrd.innerHTML),
                 })
             }
         });
-        return result
+        return {'dataDoc': result, 'attachment': attachmentAll}
     };
 
     static setupDataSubmit(_form) {
-        let dataDocument = ContractSubmitHandle.setupDataDocument();
-        if (dataDocument.length > 0) {
-            _form.dataForm['document_data'] = dataDocument;
-        }
+        ContractStoreHandle.storeAttachment();
+        let dataDocParse = ContractSubmitHandle.setupDataDocument();
+        _form.dataForm['document_data'] = dataDocParse?.['dataDoc'];
+        _form.dataForm['attachment'] = dataDocParse?.['attachment'];
     };
 }
 

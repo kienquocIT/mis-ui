@@ -92,3 +92,7 @@ msgstr "Nhân bản"
 #
 msgid "Successfully"
 msgstr "Thành công"
+
+#
+msgid "Once approved, you cannot undo it."
+msgstr "Khi đã phê duyệt, bạn không thể hoàn tác."

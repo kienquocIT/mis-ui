@@ -250,10 +250,7 @@ $(async function () {
                                     + `<i class="fa-solid fa-ellipsis"></i></button></div>`;
                             }
                             if (!data?.['is_not_inventory']){
-                                html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
-                                    + `<p id="ready_row-${meta.row}">${row}<p/>`
-                                    + `<button type="button" class="btn btn-flush-primary btn-icon" disabled>`
-                                    + `<i class="fa-solid fa-ellipsis"></i></button></div>`;
+                                html = `<p id="ready_row-${meta.row}">${row}<p/>`;
                             }
                             return html
                         }
@@ -262,6 +259,10 @@ $(async function () {
                         targets: 7,
                         class: 'w-15 text-center',
                         render: (row, type, data, meta) => {
+                            let disabled = '';
+                            if ($form.attr('data-method').toLowerCase() === 'get') {
+                                disabled = 'disabled';
+                            }
                             let quantity = 0
                             if (data.picked_quantity) quantity = data.picked_quantity
                             let html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
@@ -285,9 +286,8 @@ $(async function () {
                                 html = `<p class="text-center">${quantity}<p/>`
                             if (!data?.['is_not_inventory']){
                                 html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
-                                + `<input type="number" class="form-control w-100p services_input" id="prod_row-${meta.row}" value="${quantity}">`
-                                + `<button type="button" class="btn" disabled>`
-                                + `<i class="fa-solid fa-ellipsis"></i></button></div>`;
+                                + `<input type="number" class="form-control w-100p services_input" id="prod_row-${meta.row}" value="${quantity}" ${disabled}>`
+                                + `</div>`;
                             }
                             return html
                         }
@@ -444,11 +444,11 @@ $(async function () {
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['is_regis_so'] === true) {
-                                let project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-project')}: ${row?.['sale_order']?.['code']}</span>`;
+                                let project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-other-order')}: ${row?.['sale_order']?.['code']}</span>`;
                                 if ($eleSO.attr('data-so')) {
                                     let dataSO = JSON.parse($eleSO.attr('data-so'));
                                     if (row?.['sale_order']?.['id'] === dataSO?.['id']) {
-                                        project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-my-project')}</span>`;
+                                        project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-current-order')}</span>`;
                                     }
                                 }
                                 let target = ".cl-" + row?.['sale_order']?.['id'].replace(/-/g, "");

@@ -2,7 +2,7 @@ from django.conf import settings
 from django.urls import path
 from apps.core.home.views import (
     HomeView, NotFoundView, ServerMaintainView,
-    ComponentCollections, TermsAndConditionsView, HelpAndSupportView, UtilitiesView,
+    ComponentCollections, TermsAndConditionsView, UtilitiesView,
     BookMarkListAPI, BookMarkDetailAPI,
     DocPinedListAPI, DocPinedDetailAPI,
     GatewayMiddleListView, GatewayMiddleDetailView, GatewayViewNameListView, GatewayViewNameParseView, DefaultDataView,
@@ -16,7 +16,6 @@ urlpatterns = [
     path('404', NotFoundView.as_view(), name='NotFoundView'),
     path('503', ServerMaintainView.as_view(), name='ServerMaintainView'),
     path('terms', TermsAndConditionsView.as_view(), name='TermsAndConditionsView'),
-    path('help-and-support', HelpAndSupportView.as_view(), name='HelpAndSupportView'),
 
     # bookmarks
     path('bookmarks', BookMarkListAPI.as_view(), name='BookMarkListAPI'),

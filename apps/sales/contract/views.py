@@ -74,3 +74,41 @@ class ContractListAPI(APIView):
             url=ApiURL.CONTRACT_LIST,
             msg=SaleMsg.CONTRACT_CREATE
         )
+
+
+class ContractDetail(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/contract/contract_detail.html',
+        menu_active='',
+        breadcrumb='',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {
+                   'data': {'doc_id': pk},
+               }, status.HTTP_200_OK
+
+
+class ContractDetailAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.CONTRACT_DETAIL.push_id(pk)).get()
+        return resp.auto_return()
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        return update_contract(
+            request=request,
+            url=ApiURL.CONTRACT_DETAIL,
+            pk=pk,
+            msg=SaleMsg.CONTRACT_UPDATE
+        )

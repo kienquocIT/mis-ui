@@ -2509,7 +2509,7 @@ msgstr "Tạo Vai trò"
 
 #
 msgid "Organization"
-msgstr "Tổ Chức"
+msgstr "Tổ chức"
 
 #
 msgid "User List"
@@ -7173,8 +7173,8 @@ msgid "Select inventory adjustment"
 msgstr "Chọn phiếu kiểm kê kho"
 
 #
-msgid "Enter data later"
-msgstr "Nhập liệu sau"
+msgid "Input later"
+msgstr "Nhập sau"
 
 #
 msgid "Vendor serial no."
@@ -8486,10 +8486,6 @@ msgid "Common warehouse"
 msgstr "Kho chung"
 
 #
-msgid "My project"
-msgstr "Dự án của tôi"
-
-#
 msgid "For Sale Order"
 msgstr "Cho Đơn hàng"
 
@@ -8544,6 +8540,14 @@ msgstr "Vật liệu / Linh kiện"
 #
 msgid "Disassemble"
 msgstr "Có thể tháo rời"
+
+#
+msgid "Current order"
+msgstr "Đơn hàng hiện tại"
+
+#
+msgid "Other order"
+msgstr "Đơn hàng khác"
 
 #
 msgid "Labor summary"

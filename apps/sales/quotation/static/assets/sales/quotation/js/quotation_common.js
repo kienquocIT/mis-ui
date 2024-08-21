@@ -26,6 +26,38 @@ class QuotationLoadDataHandle {
         return true;
     };
 
+    static loadCssS2($ele, maxWidth) {
+        if ($ele.is("select") && $ele.hasClass("select2-hidden-accessible")) {
+            let $render = $ele.next('.select2-container').find('.select2-selection__rendered');
+            if ($render && $render.length > 0) {
+                $render.css('max-width', maxWidth);
+            }
+        }
+        return true;
+    };
+
+    static loadEventCheckbox(ele) {
+        let checkboxes = ele.querySelectorAll('.form-check-input[type="radio"]');
+        checkboxes.forEach((checkbox) => {
+            checkbox.addEventListener('click', function () {
+                let checked = checkbox.checked;
+                for (let eleCheck of checkboxes) {
+                    eleCheck.checked = false;
+                }
+                checkbox.checked = checked;
+            });
+        });
+        return true;
+    };
+
+    static loadInitQuickProd() {
+        let choice = $('#quick-product-choice');
+        if (choice && choice.length > 0) {
+            QuotationLoadDataHandle.loadEventCheckbox(choice[0]);
+        }
+        return true;
+    };
+
     static loadInitOpportunity() {
         let form = $('#frm_quotation_create');
         if (form.attr('data-method').toLowerCase() === 'post') {
@@ -328,7 +360,7 @@ class QuotationLoadDataHandle {
         )
     };
 
-    static loadBoxQuotationProduct(ele, dataProduct = {}) {
+    static loadBoxQuotationProduct($ele, dataProduct = {}) {
         let dataDD = []
         if (QuotationDataTableHandle.productInitEle.val()) {
             dataDD = JSON.parse(QuotationDataTableHandle.productInitEle.val());
@@ -336,15 +368,11 @@ class QuotationLoadDataHandle {
         if (Object.keys(dataProduct).length > 0) {
             dataDD = dataProduct
         }
-        ele.initSelect2({
+        $ele.initSelect2({
             data: dataDD,
         });
-        // add css to row box select2
-        let row = ele[0].closest('tr');
-        let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
-        if (boxRender) {
-            boxRender.style.maxWidth = '230px';
-        }
+        // add css to select2_rendered
+        QuotationLoadDataHandle.loadCssS2($ele, '230px');
     };
 
     static loadBtnAddProductS2(row) {
@@ -685,11 +713,8 @@ class QuotationLoadDataHandle {
         $(newRow.querySelector('.table-row-item')).val('').trigger('change');
         QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
         QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-        // add css to row box select2
-        let boxRender = newRow?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
-        if (boxRender) {
-            boxRender.style.maxWidth = '230px';
-        }
+        // add css to select2_rendered
+        QuotationLoadDataHandle.loadCssS2($(newRow.querySelector('.table-row-item')), '230px');
         // load again table cost
         QuotationLoadDataHandle.loadDataTableCost();
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
@@ -2181,7 +2206,7 @@ class QuotationDataTableHandle {
                             let target = ".group-" + String(row?.['group_order']);
                             return `<button 
                                         type="button" 
-                                        class="btn btn-icon btn-rounded btn-outline-primary btn-xs table-row-group" 
+                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-xs table-row-group" 
                                         data-bs-toggle="collapse"
                                         data-bs-target="${target}"
                                         data-bs-placement="top"
@@ -2204,9 +2229,9 @@ class QuotationDataTableHandle {
                         if (row?.['is_group'] === true) {
                             return `<input type="text" class="form-control table-row-group-title-edit" value="${row?.['group_title']}">
                                     <div class="d-flex hidden area-group-show">
-                                        <b><p class="text-primary text-uppercase mt-2 table-row-group-title-show">${row?.['group_title']}</p></b>
-                                        <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-edit-group"><span class="icon"><i class="far fa-edit"></i></span></button>
-                                        <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-del-group"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
+                                        <b><p class="text-uppercase mt-2 mr-2 table-row-group-title-show">${row?.['group_title']}</p></b>
+                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-edit-group"><span class="icon"><i class="far fa-edit"></i></span></button>
+                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-del-group"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                                     </div>`;
                         }
                         let $form = $('#frm_quotation_create');

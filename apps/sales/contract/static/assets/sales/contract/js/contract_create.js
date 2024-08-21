@@ -39,6 +39,7 @@ $(function () {
             let submitFields = [
                 'title',
                 'document_data',
+                'attachment',
             ]
             if (_form.dataForm) {
                 ContractCommonHandle.filterFieldList(submitFields, _form.dataForm);

@@ -84,7 +84,7 @@
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-3 col-lg-3">
-                                        <div class="rounded-5 bg-green-light-5 p-2 mt-4 text-center w-65">
+                                        <div class="rounded-4 bg-green-light-5 p-2 mt-4 text-center w-65">
                                             <div class="form-check">
                                                 <input type="checkbox" class="form-check-input" id="quotation-customer-confirm" name="is_customer_confirm">
                                                 <label class="form-check-label" for="quotation-customer-confirm">{% trans 'Customer Confirm' %}</label>
@@ -694,13 +694,29 @@
                                         required
                                 >
                             </div>
-                            <div class="form-group">
-                                <label class="form-label required" for="add-product-code">{% trans 'Code' %}</label>
-                                <input
-                                        type="text" class="form-control"
-                                        id="add-product-code"
-                                        required
-                                >
+                            <div class="row">
+                                <div class="col-12 col-md-8 col-lg-8">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="add-product-code">{% trans 'Code' %}</label>
+                                        <input
+                                                type="text" class="form-control"
+                                                id="add-product-code"
+                                                required
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <div class="mt-4" id="quick-product-choice">
+                                        <div class="form-check form-check-inline d-flex align-items-center">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="2">
+                                            <label class="form-check-label" for="inlineCheckbox2">{% trans 'For Purchase' %}</label>
+                                        </div>
+                                        <div class="form-check form-check-inline d-flex align-items-center">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1">
+                                            <label class="form-check-label" for="inlineCheckbox1">{% trans 'For Inventory' %}</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label class="form-label" for="add-product-remark">{% trans 'Description' %}</label>

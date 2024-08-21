@@ -377,11 +377,11 @@ $(async function () {
                             }
                             let so = data?.['sale_order'];
                             let available = (data?.['available_stock'] - data?.['available_picked']) * finalRate;
-                            let badgeStock = `<span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-project')}: ${so?.['code']}</span>`;
+                            let badgeStock = `<span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-other-order')}: ${so?.['code']}</span>`;
                             if ($eleSO.attr('data-so')) {
                                 let dataSO = JSON.parse($eleSO.attr('data-so'));
                                 if (so?.['id'] === dataSO?.['id']) {
-                                    badgeStock = `<span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-my-project')}</span>`;
+                                    badgeStock = `<span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-current-order')}</span>`;
                                 }
                             }
                             if (data?.['is_pw']) {

@@ -1,0 +1,1 @@
+# https://en.m.wikipedia.org/wiki/File:Google_Authenticator_(April_2023).svg

@@ -17,7 +17,7 @@
 {% block pageContent %}
     <form
             data-url="{% url 'ContractListAPI' %}"
-            data-url-redirect="{% url 'QuotationList' %}"
+            data-url-redirect="{% url 'ContractList' %}"
             data-method="POST"
             id="frm_contract_create"
             method="post"
@@ -34,7 +34,7 @@
                             required
                     >
                 </div>
-                <label class="form-label">{% trans 'Document' %}</label>
+                <label class="form-label required">{% trans 'Document' %}</label>
                 <table
                     id="datable-contract-document"
                     class="table nowrap w-100"

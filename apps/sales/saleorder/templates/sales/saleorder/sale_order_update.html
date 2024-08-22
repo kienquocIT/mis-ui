@@ -59,91 +59,81 @@
                 <div class="container-fluid">
                     {% trans 'Select Sale Person' as inherit_title %}
                     {% include 'extends/the-documents/bastion.html' with opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
-                    <div class="card">
-                        <div class="card-header card-header-action bg-teal-light-5 h-40p">
-                            <b class="text-primary">{% trans 'Information' %}</b>
-                            <div class="card-action-wrap">
-                                <a class="btn btn-xs btn-icon btn-rounded btn-flush-secondary flush-soft-hover"  data-bs-toggle="collapse" href="#collapseExample" aria-expanded="true"><span class="icon"><span class="feather-icon"><i data-feather="chevron-down"></i></span></span></a>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="quotation-create-title">{% trans 'Title' %}</label>
+                                <input
+                                        type="text" class="form-control"
+                                        name="title"
+                                        id="quotation-create-title"
+                                        required
+                                >
                             </div>
                         </div>
-                        <div class="collapse multi-collapse show" id="collapseExample">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-12 col-md-6 col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label required" for="quotation-create-title">{% trans 'Title' %}</label>
-                                            <input
-                                                    type="text" class="form-control"
-                                                    name="title"
-                                                    id="quotation-create-title"
-                                                    required
-                                            >
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-3 col-lg-3">
-                                        <div class="form-group">
-                                            <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
-                                            <p class="mt-2 border-bottom" id="quotation-create-date-created"></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-3 col-lg-3">
-                                        <div class="form-group">
-                                            <label class="form-label" for="select-box-quotation">{% trans 'Quotation' %}</label>
-                                            <p class="mt-2 border-bottom" id="select-box-quotation" data-detail="">{% trans 'None' %}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-md-6 col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Customer' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="select-box-quotation-create-customer"
-                                                    data-url="{% url "AccountForSaleListAPI" %}"
-                                                    data-method="GET"
-                                                    data-link-detail="{% url "AccountDetail" 1 %}"
-                                                    name="customer"
-                                                    data-keyResp="account_sale_list"
-                                                    data-keyText="name"
-                                                    required
-                                            ></select>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-3 col-lg-3">
-                                        <div class="form-group">
-                                            <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Contact' %}</label>
-                                            <select
-                                                class="form-select"
-                                                id="select-box-quotation-create-contact"
-                                                data-url="{% url "ContactListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url 'ContactDetail' 1 %}"
-                                                name="contact"
-                                                data-keyResp="contact_list"
-                                                required
-                                            ></select>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-3 col-lg-3">
-                                        <div class="form-group">
-                                            <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="select-box-quotation-create-payment-term"
-                                                    data-url="{% url "PaymentsTermsListAPI" %}"
-                                                    data-link-detail=""
-                                                    data-method="GET"
-                                                    name="payment_term"
-                                                    data-keyResp="payment_terms_list"
-                                                    required
-                                            ></select>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
+                                <p class="mt-2 border-bottom" id="quotation-create-date-created"></p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label" for="select-box-quotation">{% trans 'Quotation' %}</label>
+                                <p class="mt-2 border-bottom" id="select-box-quotation" data-detail="">{% trans 'None' %}</p>
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Customer' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="select-box-quotation-create-customer"
+                                        data-url="{% url "AccountForSaleListAPI" %}"
+                                        data-method="GET"
+                                        data-link-detail="{% url "AccountDetail" 1 %}"
+                                        name="customer"
+                                        data-keyResp="account_sale_list"
+                                        data-keyText="name"
+                                        required
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Contact' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="select-box-quotation-create-contact"
+                                    data-url="{% url "ContactListAPI" %}"
+                                    data-method="GET"
+                                    data-link-detail="{% url 'ContactDetail' 1 %}"
+                                    name="contact"
+                                    data-keyResp="contact_list"
+                                    required
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="select-box-quotation-create-payment-term"
+                                        data-url="{% url "PaymentsTermsListAPI" %}"
+                                        data-link-detail=""
+                                        data-method="GET"
+                                        name="payment_term"
+                                        data-keyResp="payment_terms_list"
+                                        required
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div class="row">
                         <div class="row">
                             <ul class="nav nav-light nav-tabs" id="quotation-tabs">

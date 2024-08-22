@@ -2021,7 +2021,7 @@ msgstr "Thể tích"
 
 #
 msgid "Weight"
-msgstr "Cân nặng"
+msgstr "Trọng lượng"
 
 #
 msgid "UoM Code"
@@ -5969,8 +5969,8 @@ msgid "Received"
 msgstr "Nhập đủ"
 
 #
-msgid "From Price List in left side"
-msgstr "Chọn theo danh sách giá bên trái"
+msgid "From Price List in right side"
+msgstr "Chọn theo danh sách giá bên phải"
 
 #
 msgid "For Inventory"
@@ -8568,3 +8568,27 @@ msgstr "Giá không hợp lệ với đơn vị tính"
 #
 msgid "Select one"
 msgstr "Chọn một"
+
+#
+msgid "Product overview"
+msgstr "Tổng quan sản phẩm"
+
+#
+msgid "Product warehouse detail"
+msgstr "Chi tiết tồn kho của sản phẩm"
+
+#
+msgid "Production"
+msgstr "Sản xuất"
+
+#
+msgid "Supplied by"
+msgstr "Nguồn cung cấp"
+
+#
+msgid "Making"
+msgstr "Chế tạo"
+
+#
+msgid "Product image"
+msgstr "Hình ảnh sản phẩm"

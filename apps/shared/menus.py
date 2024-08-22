@@ -307,7 +307,7 @@ class MenusCRM:
     )
     PRODUCT = MenuCommon(
         name='Product', code='id_menu_product_list', view_name='ProductList',
-        icon='<i class="bi bi-archive-fill"></i>',
+        icon='<i class="bi bi-nut-fill"></i>',
     )
     PRICING = MenuCommon(
         name='Pricing', code='menu_pricing', view_name='',

@@ -32,6 +32,7 @@ class ProdOrderLoadDataHandle {
     };
 
     static loadInitPage() {
+        // select2
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxType, ProdOrderLoadDataHandle.dataType);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, ProdOrderLoadDataHandle.dataStatus);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd);
@@ -39,7 +40,7 @@ class ProdOrderLoadDataHandle {
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxGroup);
-        // init date picker
+        // date picker
         $('.date-picker').each(function () {
             $(this).daterangepicker({
                 singleDatePicker: true,
@@ -59,6 +60,10 @@ class ProdOrderLoadDataHandle {
         })
         // Dtb
         ProdOrderDataTableHandle.dataTableMain();
+        // collapse
+        $('#btn-collapse').click(function () {
+            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
+        });
     }
 
 }

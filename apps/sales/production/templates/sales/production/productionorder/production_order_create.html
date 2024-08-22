@@ -2,6 +2,7 @@
 {% load static i18n %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="frm_production_order">
@@ -70,7 +71,7 @@
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label required" for="quantity">{% trans 'Quantity' %}</label>
-                            <input type="text" class="form-control valid-number" id="quantity" value="0" required>
+                            <input type="text" class="form-control valid-number" id="quantity" value="1" required>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
@@ -114,6 +115,7 @@
                         data-link-detail=""
                         name="sale_order"
                         data-keyResp="sale_order_list"
+                        multiple
                         required
                     ></select>
                 </div>
@@ -122,7 +124,7 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
+                            <label class="form-label" for="date-created">{% trans 'Date Created' %}</label>
                             <p class="mt-2 border-bottom" id="date-created">21/08/2024</p>
                         </div>
                     </div>
@@ -141,7 +143,79 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="start-date">{% trans 'Start date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="start-date" id="start-date"
+                                       class="form-control date-picker" autocomplete="off">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="end-date">{% trans 'End date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="end-date" id="end-date"
+                                       class="form-control date-picker" autocomplete="off">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label required" for="box-group">{% trans 'Group' %}</label>
+                            <select
+                                class="form-select"
+                                id="box-group"
+                                data-url="{% url "GroupListAPI" %}"
+                                data-method="GET"
+                                data-link-detail=""
+                                name="group"
+                                data-keyResp="group_list"
+                                required
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="time">{% trans 'Time' %}</label>
+                            <p class="mt-2 border-bottom" id="time">24h</p>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+        <div class="row">
+            <table
+                    id="table_production_order"
+                    class="table nowrap min-w-1280p w-100 mb-5"
+                    data-url="{% url 'ReportRevenueListAPI' %}"
+                    data-method="get"
+            >
+                <thead>
+                <tr class="bg-light">
+                    <th>{% trans 'Task' %}</th>
+                    <th>{% trans 'UOM' %}</th>
+                    <th>{% trans 'Quantity' %}</th>
+                    <th>{% trans 'Warehouse' %}</th>
+                    <th>{% trans 'Stock' %}</th>
+                    <th>{% trans 'Available' %}</th>
+                    <th>{% trans 'Labor' %}</th>
+                    <th>{% trans 'Tools' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
     </form>
 
@@ -168,4 +242,6 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/productionorder/production_order_common.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/productionorder/production_order_create.js' %}"></script>
 {% endblock %}

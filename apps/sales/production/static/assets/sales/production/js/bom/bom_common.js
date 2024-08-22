@@ -1,16 +1,13 @@
 const script_url = $('#script-url')
 const script_trans = $('#script-trans')
 const process_description_table = $('#process-description-table')
+const labor_summary_labor = $('#labor-summary-table')
 const add_new_process_description = $('#add-new-process-description')
 const material_table = $('#material-table')
 const tools_table = $('#tools-table')
 const add_new_tool = $('#add-new-tool')
 
 function addRow(table, data) {
-    table.DataTable().row.add(data).draw();
-}
-
-function addRowAfterRow(dtb, data, index) {
     table.DataTable().row.add(data).draw();
 }
 
@@ -24,17 +21,17 @@ function deleteRow(table, currentRow) {
 function loadLaborPrice(ele, labor_selected, uom_id) {
     ele.closest('tr').find('.dropdown-menu').html(`<h6 class="dropdown-header">${script_trans.attr('data-trans-select-one')}</h6>`)
     for (let i = 0; i < labor_selected?.['price_list'].length; i++) {
-        console.log(labor_selected?.['price_list'][i]?.['uom']?.['id'], uom_id)
         ele.closest('tr').find('.dropdown-menu').append(
             `<a class="${labor_selected?.['price_list'][i]?.['uom']?.['id'] !== uom_id ? 'disabled' : ''} labor-price-option dropdown-item border rounded mb-1" href="#">
                 <div class="row">
                     <div class="col-5">
-                        <span class="labor-uom badge badge-primary badge-sm" data-id="${labor_selected?.['price_list'][i]?.['uom']?.['id']}">${labor_selected?.['price_list'][i]?.['uom']?.['title']}</span>                 
+                        <span class="labor-uom badge badge-success badge-sm" data-id="${labor_selected?.['price_list'][i]?.['uom']?.['id']}">${labor_selected?.['price_list'][i]?.['uom']?.['title']}</span>                 
                     </div>
-                    <div class="col-7">
-                        <span class="labor-price-value text-primary mask-money" data-init-money="${labor_selected?.['price_list'][i]?.['price_value']}"></span>
+                    <div class="col-7 text-right">
+                        <span class="labor-price-value text-success mask-money" data-init-money="${labor_selected?.['price_list'][i]?.['price_value']}"></span>
                     </div>
                 </div>
+                ${labor_selected?.['price_list'][i]?.['uom']?.['id'] !== uom_id ? `<span class="fst-italic small">${script_trans.attr('data-trans-can-not-select')}</span>` : ''}
             </a>`
         )
     }
@@ -60,12 +57,10 @@ function loadLabor(ele, data) {
             loadUOM(ele.closest('tr').find('.process-uom'), labor_selected?.['uom_group']?.['id'])
             loadLaborPrice(ele, labor_selected, ele.closest('tr').find('.process-uom').val())
 
-            calculate_process_table(ele.closest('tr'))
-            $.fn.initMaskMoney2()
-
             let this_row = ele.closest('tr')
             if (ele.val() && this_row.find('.process-uom').val() && this_row.find('.process-quantity').val()) {
                 update_labor_summary_table()
+                process_description_table.DataTable().draw(false)
             }
         }
     })
@@ -186,13 +181,11 @@ function loadTool(ele, data) {
 function loadProcessDescriptionTable(data_list=[], option='create') {
     process_description_table.DataTable().clear().destroy()
     process_description_table.DataTableDefault({
-        dom: '<"row"<"col-12"<"blog-toolbar-right"f>>>',
         rowIdx: true,
         reloadCurrency: true,
         paging: false,
-        // scrollY: '35vh',
-        // scrollX: '100vh',
-        // scrollCollapse: true,
+        scrollX: '100vh',
+        scrollCollapse: true,
         data: data_list,
         columns: [
             {
@@ -202,35 +195,35 @@ function loadProcessDescriptionTable(data_list=[], option='create') {
             },
             {
                 'render': () => {
-                    return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} class="form-control process-task-name"></textarea>`;
+                    return `<textarea required ${option === 'detail' ? 'disabled readonly' : ''} class="form-control process-task-name"></textarea>`;
                 }
             },
             {
                 'render': () => {
-                    return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 process-labor"></select>`;
+                    return `<select required ${option === 'detail' ? 'disabled' : ''} class="form-select select2 process-labor"></select>`;
                 }
             },
             {
                 'render': () => {
-                    return `<input ${option === 'detail' ? 'disabled readonly' : ''} type="number" class="form-control process-quantity" value="0">`;
+                    return `<input required ${option === 'detail' ? 'disabled readonly' : ''} type="number" class="form-control process-quantity" value="0">`;
                 }
             },
             {
                 'render': () => {
-                    return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 process-uom"></select>`;
+                    return `<select required ${option === 'detail' ? 'disabled' : ''} class="form-select select2 process-uom"></select>`;
                 }
             },
             {
                 'render': () => {
                     return `
                         <div class="input-group">
-                            <span class="input-affix-wrapper">
-                                <input disabled readonly class="form-control mask-money process-unit-price" value="0">
-                                <a href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="input-suffix"><i class="bi bi-three-dots-vertical"></i></span></a>
-                                <div class="dropdown-menu border rounded border-primary"></div>
-                            </span>
+                            <input required disabled readonly class="form-control mask-money process-unit-price" value="0">
+                            <a href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="input-group-text"><i class="bi bi-three-dots-vertical"></i></span>
+                            </a>
+                            <div class="dropdown-menu position-fixed overflow-y-scroll"></div>
                         </div>
-                        `;
+                    `;
                 }
             },
             {
@@ -259,69 +252,47 @@ function loadProcessDescriptionTable(data_list=[], option='create') {
     });
 }
 
-function loadToolsTable(data_list=[], option='create') {
-    tools_table.DataTable().clear().destroy()
-    tools_table.DataTableDefault({
-        dom: '<"row"<"col-12"<"blog-toolbar-right"f>>>',
-        rowIdx: true,
+function loadLaborSummaryTable(data_list=[], option='create') {
+    labor_summary_labor.DataTable().clear().destroy()
+    labor_summary_labor.DataTableDefault({
+        dom: '',
         reloadCurrency: true,
         paging: false,
-        // scrollY: '35vh',
-        // scrollX: '100vh',
-        // scrollCollapse: true,
         data: data_list,
         columns: [
             {
-                'render': () => {
-                    return ``;
+                'render': (data, type, row) => {
+                    return `<span class="labor-summary-labor-${row?.['labor']?.['id']}-${row?.['uom']?.['id']}">${row?.['labor']?.['title']}</span>`;
                 }
             },
             {
-                'render': () => {
-                    return `<span class="badge badge-secondary tool-code"></span>`;
+                'render': (data, type, row) => {
+                    return `<span class="labor-summary-quantity">${row?.['quantity']}</span>`;
                 }
             },
             {
-                'render': () => {
-                    return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 tool-item"></select>`;
+                'render': (data, type, row) => {
+                    return `<span class="labor-summary-uom">${row?.['uom']?.['title']}</span>`;
                 }
             },
             {
-                'render': () => {
-                    return `<input ${option === 'detail' ? 'disabled readonly' : ''} type="number" class="form-control tool-quantity" value="0">`;
+                'render': (data, type, row) => {
+                    return `<span class="labor-summary-unit-price mask-money" data-init-money="${row?.['unit_price']}"></span>`;
                 }
             },
             {
-                'render': () => {
-                    return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 tool-uom"></select>`;
+                'render': (data, type, row) => {
+                    return `<span class="labor-summary-subtotal-price mask-money" data-init-money="${row?.['subtotal_price']}"></span>`;
                 }
             },
-            {
-                'render': () => {
-                    return `<textarea ${option === 'detail' ? 'disabled' : ''} class="form-control tool-note"></textarea>`;
-                }
-            },
-            {
-                'render': () => {
-                    return `<button ${option === 'detail' ? 'disabled' : ''} type="button" class="btn del-row-tool"><i class="fas fa-trash-alt text-secondary"></i></button>`;
-                }
-            },
-        ],
-        initComplete: function () {
-            if (data_list.length > 0) {
-                tools_table.find('tbody tr').each(function (index) {
-
-                })
-            }
-        }
-    });
+        ]
+    })
 }
 
 class BORHandle {
     load(option) {
         loadProcessDescriptionTable()
-        // loadMaterialTable()
-        // loadToolsTable()
+        loadLaborSummaryTable()
     }
 }
 
@@ -354,51 +325,41 @@ add_new_tool.on('click', function () {
 })
 
 function update_labor_summary_table() {
-    process_description_table.find('tfoot .labor-summary-row').remove()
+    loadLaborSummaryTable()
     process_description_table.find('tbody tr').each(function () {
         let this_row = $(this)
         let this_labor = this_row.find('.process-labor')
         let this_uom = this_row.find('.process-uom')
         let this_quantity = this_row.find('.process-quantity').val() ? parseFloat(this_row.find('.process-quantity').val()) : 0
-        if (this_labor.val() && this_uom.val() && this_quantity) {
+        let this_unit_price = parseFloat(this_row.find('.process-unit-price').attr('value'))
+        if (this_labor.val() && this_uom.val() && this_quantity !== 0 && this_unit_price !== 0) {
             let labor_selected = SelectDDControl.get_data_from_idx(this_labor, this_labor.val())
             let uom_selected = SelectDDControl.get_data_from_idx(this_uom, this_uom.val())
-            let this_unit_price = parseFloat(this_row.find('.process-unit-price').attr('value'))
             let this_subtotal_price = parseFloat(this_row.find('.process-subtotal-price').attr('value'))
-            let row_labor_summary = process_description_table.find(`tfoot tr .labor-summary-labor-${this_labor.val()}-${this_uom.val()}`).closest('tr')
+            let row_labor_summary = $(`.labor-summary-labor-${this_labor.val()}-${this_uom.val()}`).closest('tr')
             if (row_labor_summary.length > 0) {
-                let old_quantity = parseFloat(row_labor_summary.find('.labor-summary-quantity').val())
-                let old_subtotal_price = parseFloat(row_labor_summary.find('.labor-summary-subtotal-price').attr('value'))
-                row_labor_summary.find('.labor-summary-quantity').val(old_quantity + this_quantity)
-                row_labor_summary.find('.labor-summary-subtotal-price').attr('value', old_subtotal_price + this_subtotal_price)
+                let old_quantity = parseFloat(row_labor_summary.find('.labor-summary-quantity').text())
+                let old_subtotal_price = parseFloat(row_labor_summary.find('.labor-summary-subtotal-price').attr('data-init-money'))
+                row_labor_summary.find('.labor-summary-quantity').text(old_quantity + this_quantity)
+                row_labor_summary.find('.labor-summary-subtotal-price').attr('data-init-money', old_subtotal_price + this_subtotal_price)
             } else {
-                process_description_table.find('tfoot').append(`
-                    <tr class="labor-summary-row">
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <input style="border: none; background: none" disabled readonly class="form-control labor-summary-labor-${this_labor.val()}-${this_uom.val()}" value="${labor_selected?.['title']}">
-                        </td>
-                        <td>
-                            <input style="border: none; background: none" disabled readonly class="form-control labor-summary-quantity" value="${this_quantity}">
-                        </td>
-                        <td>
-                            <input style="border: none; background: none" disabled readonly class="form-control labor-summary-uom" value="${uom_selected?.['title']}">
-                        </td>
-                        <td>
-                            <input style="border: none; background: none" disabled readonly class="form-control labor-summary-unit-price mask-money" value="${this_unit_price}">
-                        </td>
-                        <td>
-                            <input style="border: none; background: none" disabled readonly class="form-control labor-summary-subtotal-price mask-money" value="${this_subtotal_price}">
-                        </td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                `)
+                addRow(labor_summary_labor, {
+                    'labor': {
+                        'id': labor_selected?.['id'],
+                        'title': labor_selected?.['title'],
+                    },
+                    'uom': {
+                        'id': uom_selected?.['id'],
+                        'title': uom_selected?.['title'],
+                    },
+                    'quantity': this_quantity,
+                    'unit_price': this_unit_price,
+                    'subtotal_price': this_subtotal_price
+                })
             }
-            $.fn.initMaskMoney2()
         }
     })
+    $.fn.initMaskMoney2()
 }
 
 $(document).on("change", '.process-quantity', function () {
@@ -406,6 +367,7 @@ $(document).on("change", '.process-quantity', function () {
     calculate_process_table(this_row)
     if (this_row.find('.process-labor').val() && this_row.find('.process-uom').val()) {
         update_labor_summary_table()
+        process_description_table.DataTable().draw(false)
     }
 })
 
@@ -416,7 +378,24 @@ $(document).on("change", '.process-uom', function () {
 
     if (this_row.find('.process-labor').val() && this_row.find('.process-uom').val()) {
         update_labor_summary_table()
+        process_description_table.DataTable().draw(false)
     }
+})
+
+$(document).on("click", '.labor-price-option', function () {
+    loadUOM(
+        $(this).closest('tr').find('.process-uom'),
+        null,
+        {
+            'id': $(this).find('.labor-uom').attr('data-id'),
+            'title': $(this).find('.labor-uom').text()
+        }
+    )
+    let labor_price_value = $(this).find('.labor-price-value').attr('data-init-money')
+    $(this).closest('tr').find('.process-unit-price').attr('value', labor_price_value)
+    calculate_process_table($(this).closest('tr'))
+    update_labor_summary_table()
+    $.fn.initMaskMoney2()
 })
 
 $(document).on("change", '.material-quantity', function () {
@@ -488,26 +467,65 @@ function add_material_group(this_row) {
     }
 }
 
-$(document).on("change", '.process-task-name', function () {
-    add_material_group($(this).closest('tr'))
-})
-
 $(document).on("click", '.add-new-material', function () {
     let new_material_row = create_material_row()
     $(this).closest('tr').after(new_material_row)
     loadProduct(new_material_row.find('.material-item'))
 })
 
-$(document).on("click", '.labor-price-option', function () {
-    loadUOM(
-        $(this).closest('tr').find('.process-uom'),
-        null,
-        {
-            'id': $(this).find('.labor-uom').attr('data-id'),
-            'title': $(this).find('.labor-uom').text()
-        }
-    )
-    let labor_price_value = $(this).find('.labor-price-value').attr('data-init-money')
-    $(this).closest('tr').find('.process-unit-price').attr('value', labor_price_value)
-    $.fn.initMaskMoney2()
+
+function create_tool_group_row(index, param={}) {
+    return $(`
+        <tr>
+            <td>${index}</td>
+            <td colspan="6">
+                <span id="tool-for-task-${param?.['row_labor_tool_index']}" class="tool-group mr-2">${param?.['row_labor_name_tool']}</span>
+                <button type="button" class="add-new-tool btn btn-icon btn-rounded btn-flush-primary flush-soft-hover">
+                    <span class="icon"><i class="far fa-plus-square"></i></span>
+                </button>
+            </td>
+        </tr>
+    `)
+}
+
+function create_tool_row() {
+    return $(`
+        <tr>
+            <td></td>
+            <td><span class="badge badge-secondary tool-code"></span></td>
+            <td><select class="form-select select2 tool-item"></select></td>
+            <td><input type="number" class="form-control tool-quantity" value="0"></td>
+            <td><select class="form-select select2 tool-uom"></select></td>
+            <td><textarea class="form-control tool-note"></textarea></td>
+            <td><button type="button" class="btn del-row-tool"><i class="fas fa-trash-alt text-secondary"></i></button></td>
+        </tr>
+    `)
+}
+
+function add_tool_group(this_row) {
+    let index = parseInt(this_row.find('td:eq(0)').text())
+    let get_tool_row_group = tools_table.find(`tbody #tool-for-task-${index}`)
+    if (get_tool_row_group.length > 0) {
+        get_tool_row_group.text(this_row.find('.process-task-name').val())
+    } else {
+        let new_tool_group_row = create_tool_group_row(
+            process_description_table.find('tbody tr').length,
+            {
+                'row_labor_tool_index': this_row.find('td:eq(0)').text(),
+                'row_labor_name_tool': this_row.find('.process-task-name').val()
+            }
+        )
+        tools_table.find('tbody').append(new_tool_group_row)
+    }
+}
+
+$(document).on("click", '.add-new-tool', function () {
+    let new_tool_row = create_tool_row()
+    $(this).closest('tr').after(new_tool_row)
+    loadTool(new_tool_row.find('.tool-item'))
+})
+
+$(document).on("change", '.process-task-name', function () {
+    add_material_group($(this).closest('tr'))
+    add_tool_group($(this).closest('tr'))
 })

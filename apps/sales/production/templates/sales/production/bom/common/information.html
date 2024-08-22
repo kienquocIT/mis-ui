@@ -68,22 +68,40 @@
             </span>
         </button>
         <table class="table nowrap w-100" id="process-description-table">
-                <thead>
+            <thead>
+            <tr>
+                <th style="min-width: 30px"></th>
+                <th style="min-width: 300px">{% trans 'Task name' %}</th>
+                <th style="min-width: 250px">{% trans 'Labor' %}</th>
+                <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                <th style="min-width: 150px">{% trans 'UOM' %}</th>
+                <th style="min-width: 250px">{% trans 'Unit price' %}</th>
+                <th style="min-width: 250px">{% trans 'Subtotal price' %}</th>
+                <th style="min-width: 250px">{% trans 'Note' %}</th>
+                <th style="min-width: 50px"></th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12 col-md-12 col-lg-6">
+        <div class="border rounded p-2">
+            <table class="table table-hover nowrap w-100" id="labor-summary-table">
+            <thead>
                 <tr>
-                    <th style="min-width: 30px"></th>
-                    <th style="min-width: 300px">{% trans 'Task name' %}</th>
-                    <th style="min-width: 250px">{% trans 'Labor' %}</th>
-                    <th style="min-width: 100px">{% trans 'Quantity' %}</th>
-                    <th style="min-width: 150px">{% trans 'UOM' %}</th>
-                    <th style="min-width: 250px">{% trans 'Unit price' %}</th>
-                    <th style="min-width: 250px">{% trans 'Subtotal price' %}</th>
-                    <th style="min-width: 250px">{% trans 'Note' %}</th>
-                    <th style="min-width: 50px"></th>
+                    <th>{% trans 'Labor' %}</th>
+                    <th>{% trans 'Quantity' %}</th>
+                    <th>{% trans 'UOM' %}</th>
+                    <th>{% trans 'Unit price' %}</th>
+                    <th>{% trans 'Subtotal price' %}</th>
                 </tr>
-                </thead>
-                <tbody></tbody>
-                <tfoot></tfoot>
-            </table>
+            </thead>
+            <tbody></tbody>
+        </table>
+        </div>
     </div>
 </div>
 
@@ -93,7 +111,7 @@
         <table class="table nowrap w-100" id="material-table">
             <thead>
             <tr>
-                <th style="min-width: 30px"></th>
+                <th style="width: 30px"></th>
                 <th style="min-width: 100px">{% trans 'Code' %}</th>
                 <th style="min-width: 250px">{% trans 'Name' %}</th>
                 <th style="min-width: 100px">{% trans 'Quantity' %}</th>
@@ -124,19 +142,19 @@
             </span>
         </button>
         <table class="table nowrap w-100" id="tools-table">
-                <thead>
-                <tr>
-                    <th style="min-width: 30px"></th>
-                    <th style="min-width: 100px">{% trans 'Code' %}</th>
-                    <th style="min-width: 250px">{% trans 'Name' %}</th>
-                    <th style="min-width: 100px">{% trans 'Quantity' %}</th>
-                    <th style="min-width: 150px">{% trans 'UOM' %}</th>
-                    <th style="min-width: 250px">{% trans 'Note' %}</th>
-                    <th style="min-width: 50px"></th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <thead>
+            <tr>
+                <th style="width: 30px"></th>
+                <th style="min-width: 100px">{% trans 'Code' %}</th>
+                <th style="min-width: 250px">{% trans 'Name' %}</th>
+                <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                <th style="min-width: 150px">{% trans 'UOM' %}</th>
+                <th style="min-width: 250px">{% trans 'Note' %}</th>
+                <th style="min-width: 50px"></th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
 </div>
 

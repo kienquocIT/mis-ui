@@ -275,6 +275,9 @@ function loadPriceList(price_list_from_detail, option) {
     let tbl = $('#table_price_list');
     tbl.DataTableDefault({
         paging: false,
+        scrollX: '100vh',
+        scrollY: '35vh',
+        scrollCollapse: true,
         useDataServer: true,
         reloadCurrency: true,
         rowIdx: true,
@@ -323,6 +326,8 @@ function loadPriceList(price_list_from_detail, option) {
                             'title': item?.['title'],
                             'price_value': price_value,
                             'price_list_mapped': item?.['price_list_mapped'],
+                            'valid_time_start': moment(item?.['valid_time_start'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'),
+                            'valid_time_end': is_default ? '--' : moment(item?.['valid_time_end'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'),
                             'auto_update': item?.['auto_update'],
                             'factor': item?.['factor']
                         })
@@ -333,28 +338,42 @@ function loadPriceList(price_list_from_detail, option) {
         },
         columns: [
             {
-                className: 'wrap-text w-10',
+                className: 'wrap-text w-5',
                 'render': () => {
                     return ``;
                 }
             }, {
-                className: 'wrap-text w-10',
+                className: 'wrap-text w-5',
                 render: (data, type, row) => {
                     return `<input ${disabled_all_input} ${row.hidden} class="select_price_list" type="checkbox" data-id="${row.id}" ${row.checked} ${row.disabled}>`
                 }
             }, {
-                className: 'wrap-text w-40',
+                className: 'wrap-text w-30',
                 render: (data, type, row) => {
-                    return `<label class="${row.required} form-label">${row.title}</label>`
+                    return `<label class="${row.required} form-label text-primary fw-bold">${row.title}</label>`
                 }
             }, {
-                className: 'wrap-text w-40',
+                className: 'wrap-text w-15',
                 render: (data, type, row) => {
-                    return `<input ${disabled_all_input} value="${row.price_value}" data-is-default="${row.is_default}" ${row.disabled_input} data-source="${row?.['price_list_mapped']}" data-auto-update="${row.auto_update}" data-factor="${row.factor}" data-id="${row.id}" data-return-type="number" type="text" class="form-control mask-money input_price_list">`
+                    return `<span>${row?.['valid_time_start']}</span>`
+                }
+            }, {
+                className: 'wrap-text w-15',
+                render: (data, type, row) => {
+                    return `<span>${row?.['valid_time_end']}</span>`
+                }
+            }, {
+                className: 'wrap-text w-30',
+                render: (data, type, row) => {
+                    return `<input ${disabled_all_input} value="${row.price_value}" data-is-default="${row.is_default}" ${row.disabled_input} data-source="${row?.['price_list_mapped']}" data-auto-update="${row.auto_update}" data-factor="${row.factor}" data-id="${row.id}" data-return-type="number" type="text" class="form-control text-primary mask-money input_price_list">`
                 }
             }
         ],
-    })
+    }).on('draw.dt', function () {
+        tbl.find('tbody').find('tr').each(function () {
+            $(this).after('<tr class="table-row-gap"><td></td></tr>');
+        });
+    });
 }
 
 function loadSaleDefaultUom(data) {
@@ -462,23 +481,23 @@ function loadWareHouseListDetail(product_warehouse_detail) {
         columns: [
             {
                 data: 'code',
-                className: 'wrap-text w-15',
+                className: 'wrap-text text-center w-15',
                 render: (data, type, row) => {
-                    return `<span class="text-secondary table-row-code" data-id="${row.warehouse.id}">${row.warehouse.code}</span>`;
+                    return `<span class="badge badge-soft-blue badge-outline table-row-code" data-id="${row.warehouse.id}">${row.warehouse.code}</span>`;
                 }
             },
             {
                 data: 'title',
-                className: 'wrap-text text-center w-25',
+                className: 'wrap-text text-center w-35',
                 render: (data, type, row) => {
                     return `<span class="text-secondary"><b>${row.warehouse.title}</b></span>`
                 }
             },
             {
                 data: '',
-                className: 'wrap-text text-center w-25',
+                className: 'wrap-text text-center w-15',
                 render: (data, type, row) => {
-                    return `<span>${row?.['stock_amount']}</span>`;
+                    return `<span class="fw-bold">${row?.['stock_amount']}</span>`;
                 }
             },
             {
@@ -547,51 +566,14 @@ function loadWareHouseListDetail(product_warehouse_detail) {
                 }
             });
         }
+    }).on('draw.dt', function () {
+        table_warehouse_list.find('tbody').find('tr').each(function () {
+            $(this).after('<tr class="table-row-gap"><td></td></tr>');
+        });
     });
 }
 
-function loadWareHouseOverView() {
-    if (!$.fn.DataTable.isDataTable('#datatable-warehouse-overview')) {
-        let dtb = $('#datatable-warehouse-overview');
-        dtb.DataTableDefault({
-            dom: '',
-            paging: false,
-            data: [''],
-            columns: [
-                {
-                    data: '',
-                    className: 'wrap-text text-center w-25',
-                    render: () => {
-                        return `<span style="font-weight: bolder" class="text-danger">0</span>`
-                    }
-                },
-                {
-                    data: '',
-                    className: 'wrap-text text-center w-25',
-                    render: () => {
-                        return `<span style="font-weight: bolder" class="text-danger">0</span>`
-                    }
-                },
-                {
-                    data: '',
-                    className: 'wrap-text text-center w-25',
-                    render: () => {
-                        return `<span style="font-weight: bolder" class="text-danger">0</span>`
-                    }
-                },
-                {
-                    data: '',
-                    className: 'wrap-text text-center w-25',
-                    render: () => {
-                        return `<span style="font-weight: bolder" class="text-danger">0</span>`
-                    }
-                },
-            ],
-        });
-    }
-}
-
-function loadWareHouseOverViewDetail(data_overview) {
+function loadWareHouseOverViewDetail(data_overview=[]) {
     let dtb = $('#datatable-warehouse-overview');
     dtb.DataTable().clear().destroy();
     dtb.DataTableDefault({
@@ -601,139 +583,49 @@ function loadWareHouseOverViewDetail(data_overview) {
         columns: [
             {
                 data: 'sum_stock',
-                className: 'wrap-text text-center w-25',
+                className: 'wrap-text text-center w-20',
                 render: (data, type, row) => {
-                    if (row.sum_stock > 0) {
-                        return `<span style="font-weight: bolder" class="text-primary">${row.sum_stock}</span>`
-                    } else {
-                        return `<span style="font-weight: bolder" class="text-danger">${row.sum_stock}</span>`
-                    }
+                    let sum_stock = row?.['sum_stock'] ? row?.['sum_stock'] : 0
+                    return `<span class="fw-bold ${sum_stock > 0 ? 'text-primary' : 'text-danger'}">${sum_stock}</span>`
                 }
             },
             {
                 data: 'sum_wait_for_delivery',
-                className: 'wrap-text text-center w-25',
+                className: 'wrap-text text-center w-20',
                 render: (data, type, row) => {
-                    if (row.sum_wait_for_delivery > 0) {
-                        return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_delivery}</span>`
-                    } else {
-                        return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_delivery}</span>`
-                    }
+                    let sum_wait_for_delivery = row?.['sum_wait_for_delivery'] ? row?.['sum_wait_for_delivery'] : 0
+                    return `<span class="fw-bold ${sum_wait_for_delivery > 0 ? 'text-primary' : 'text-danger'}">${sum_wait_for_delivery}</span>`
                 }
             },
             {
                 data: 'sum_wait_for_receipt',
-                className: 'wrap-text text-center w-25',
+                className: 'wrap-text text-center w-20',
                 render: (data, type, row) => {
-                    if (row.sum_wait_for_receipt > 0) {
-                        return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_receipt}</span>`
-                    } else {
-                        return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_receipt}</span>`
-                    }
+                    let sum_wait_for_receipt = row?.['sum_wait_for_receipt'] ? row?.['sum_wait_for_receipt'] : 0
+                    return `<span class="fw-bold ${sum_wait_for_receipt > 0 ? 'text-primary' : 'text-danger'}">${sum_wait_for_receipt}</span>`
+                }
+            },
+            {
+                data: 'production',
+                className: 'wrap-text text-center w-20',
+                render: (data, type, row) => {
+                    let production = row?.['production'] ? row?.['production'] : 0
+                    return `<span class="fw-bold ${production > 0 ? 'text-primary' : 'text-danger'}">${production}</span>`
                 }
             },
             {
                 data: 'sum_available_value',
-                className: 'wrap-text text-center w-25',
+                className: 'wrap-text text-center w-20',
                 render: (data, type, row) => {
-                    if (row.sum_available_value > 0) {
-                        return `<span style="font-weight: bolder" class="text-primary">${row.sum_available_value}</span>`
-                    } else {
-                        return `<span style="font-weight: bolder" class="text-danger">${row.sum_available_value}</span>`
-                    }
+                    let sum_available_value = row?.['sum_available_value'] ? row?.['sum_available_value'] : 0
+                    return `<span class="fw-bold ${sum_available_value > 0 ? 'text-primary' : 'text-danger'}">${sum_available_value}</span>`
                 }
             },
         ],
-    });
-}
-
-function dataTableLot(data) {
-    $('#datable-lot').DataTableDefault({
-        data: data ? data : [],
-        paging: false,
-        info: false,
-        columnDefs: [],
-        columns: [
-            {
-                targets: 0,
-                render: (data, type, row) => {
-                    let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                    return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
-
-                }
-            },
-            {
-                targets: 1,
-                render: (data, type, row) => {
-                    return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
-                }
-            },
-            {
-                targets: 2,
-                render: (data, type, row) => {
-                    return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
-                }
-            },
-            {
-                targets: 3,
-                render: (data, type, row) => {
-                    return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
-                }
-            },
-        ],
-    });
-}
-
-function dataTableSerial(data) {
-    $('#datable-serial').DataTableDefault({
-        data: data ? data : [],
-        columns: [
-            {
-                targets: 0,
-                render: (data, type, row) => {
-                    let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                    return `<span class="badge badge-soft-primary">${row?.['vendor_serial_number'] ? row?.['vendor_serial_number'] : ''}</span>`;
-                }
-            },
-            {
-                targets: 1,
-                render: (data, type, row) => {
-                    return `<span class="badge badge-soft-success">${row?.['serial_number'] ? row?.['serial_number'] : ''}</span>`;
-                }
-            },
-            {
-                targets: 2,
-                render: (data, type, row) => {
-                    return $x.fn.displayRelativeTime(row?.['expire_date'], {
-                        'outputFormat': 'DD-MM-YYYY',
-                    });
-                }
-            },
-            {
-                targets: 3,
-                render: (data, type, row) => {
-                    return $x.fn.displayRelativeTime(row?.['manufacture_date'], {
-                        'outputFormat': 'DD-MM-YYYY',
-                    });
-                }
-            },
-            {
-                targets: 4,
-                render: (data, type, row) => {
-                    return $x.fn.displayRelativeTime(row?.['warranty_start'], {
-                        'outputFormat': 'DD-MM-YYYY',
-                    });
-                }
-            },
-            {
-                targets: 5,
-                render: (data, type, row) => {
-                    return $x.fn.displayRelativeTime(row?.['warranty_end'], {
-                        'outputFormat': 'DD-MM-YYYY',
-                    });
-                }
-            },
-        ],
+    }).on('draw.dt', function () {
+        dtb.find('tbody').find('tr').each(function () {
+            $(this).after('<tr class="table-row-gap"><td colspan="5"></td></tr>');
+        });
     });
 }
 
@@ -976,7 +868,6 @@ class ProductHandle {
         loadInventoryDefaultUom();
         loadPurchaseDefaultUom();
         loadBaseItemUnit();
-        loadWareHouseOverView();
     }
 
     combinesData(frmEle, for_update = false) {
@@ -1012,7 +903,7 @@ function LoadDetailProduct(option) {
                 Detail_data = product_detail;
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(product_detail);
-                console.log(product_detail)
+                // console.log(product_detail)
 
                 $('#code').val(product_detail['code']);
                 $('#title').val(product_detail['title']);
@@ -1833,29 +1724,29 @@ attribute_display_select_by.on('change', function () {
     let value = attribute_display_select_by.val();
     if (value !== '') {
         if (value === '0') {
-            $('#dropdown-list-selection-preview').attr('hidden', false);
-            $('#radio-selection-preview').attr('hidden', true);
-            $('#select-selection-preview').attr('hidden', true);
-            $('#fill-by-text-preview').attr('hidden', true);
-            $('#fill-by-color-preview').attr('hidden', true);
-            $('#fill-by-photo-preview').attr('hidden', true);
+            $('#view-mode-for-select').prop('hidden', true)
+            $('#dropdown-list-selection-preview').prop('hidden', false)
+            $('#radio-selection-preview').prop('hidden', true)
+            $('#fill-by-text-preview').prop('hidden', true)
+            $('#fill-by-color-preview').prop('hidden', true)
+            $('#fill-by-photo-preview').prop('hidden', true)
         }
         if (value === '1') {
-            $('#dropdown-list-selection-preview').attr('hidden', true);
-            $('#radio-selection-preview').attr('hidden', false);
-            $('#select-selection-preview').attr('hidden', true);
-            $('#fill-by-text-preview').attr('hidden', true);
-            $('#fill-by-color-preview').attr('hidden', true);
-            $('#fill-by-photo-preview').attr('hidden', true);
+            $('#view-mode-for-select').prop('hidden', true)
+            $('#dropdown-list-selection-preview').prop('hidden', true)
+            $('#radio-selection-preview').prop('hidden', false)
+            $('#fill-by-text-preview').prop('hidden', true)
+            $('#fill-by-color-preview').prop('hidden', true)
+            $('#fill-by-photo-preview').prop('hidden', true)
         }
         if (value === '2') {
-            $('#dropdown-list-selection-preview').attr('hidden', true);
-            $('#radio-selection-preview').attr('hidden', true);
-            $('#radio-fill-by-text').prop('checked', true);
-            $('#select-selection-preview').attr('hidden', false);
-            $('#fill-by-text-preview').attr('hidden', false);
-            $('#fill-by-color-preview').attr('hidden', true);
-            $('#fill-by-photo-preview').attr('hidden', true);
+            $('#view-mode-for-select').prop('hidden', false)
+            $('#dropdown-list-selection-preview').prop('hidden', true)
+            $('#radio-selection-preview').prop('hidden', true)
+            $('#radio-fill-by-text').prop('checked', true)
+            $('#fill-by-text-preview').prop('hidden', false)
+            $('#fill-by-color-preview').prop('hidden', true)
+            $('#fill-by-photo-preview').prop('hidden', true)
         }
     }
     else {

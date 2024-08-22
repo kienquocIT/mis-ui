@@ -1,0 +1,460 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12">
+        <ul class="nav nav-light nav-tabs" id="tab-select-table">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
+                    <span class="nav-icon-wrap"></span>
+                    <span class="nav-link-text">{% trans 'General' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_sale" id="link-tab-sale">
+                    <span class="nav-icon-wrap"></span>
+                    <span class="nav-link-text">{% trans 'Sale' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_inventory" id="link-tab-inventory">
+                    <span class="nav-icon-wrap"></span>
+                    <span class="nav-link-text">{% trans 'Inventory' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchase" href="#tab_purchase">
+                    <span class="nav-icon-wrap"></span>
+                    <span class="nav-link-text">{% trans 'Purchase' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" id="link-tab-variants" href="#tab_variants">
+                    <span class="nav-icon-wrap"></span>
+                    <span class="nav-link-text">{% trans 'Variants' %}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="tab_general">
+        <div class="row">
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label for="general-select-box-product-type" class="form-label required">{% trans "Product Type" %}</label>
+                    <select id="general-select-box-product-type" class="form-select select2" data-method="GET"
+                            multiple
+                            data-url="{% url 'ProductTypeListAPI' %}"></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="general-select-box-product-category" class="form-label required">{% trans "Product Category" %}</label>
+                    <select id="general-select-box-product-category" class="form-select" data-method="GET"
+                            data-url="{% url "ProductCategoryListAPI" %}"></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="general-select-box-uom-group" class="form-label required">{% trans "UoM Group" %}</label>
+                    <select id="general-select-box-uom-group" class="form-select" data-method="GET"
+                            data-url="{% url "UnitOfMeasureGroupListAPI" %}"
+                            data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="general-select-box-traceability-method" class="form-label">{% trans "Traceability method" %}</label>
+                    <select id="general-select-box-traceability-method" class="form-select" data-method="GET">
+                        <option value="0">{% trans "None" %}</option>
+                        <option value="1">{% trans "Batch/Lot number" %}</option>
+                        <option value="2">{% trans "Serial number" %}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="heading-wth-icon text-primary" id="label-dimension">
+                            <span class="head-icon"><i data-feather="package"></i></span>
+                            {% trans "Product Dimension and Weight Control" %}
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <label for="length" class="form-label">{% trans "Length" %}</label>
+                                    <span class="input-affix-wrapper affix-wth-text">
+                                        <input class="form-control inpDimension" id="length">
+                                        <span class="input-suffix">cm</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <label for="width" class="form-label">{% trans "Width" %}</label>
+                                    <span class="input-affix-wrapper affix-wth-text">
+                                        <input class="form-control inpDimension" id="width">
+                                        <span class="input-suffix">cm</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <label for="height" class="form-label">{% trans "Height" %}</label>
+                                    <span class="input-affix-wrapper affix-wth-text">
+                                        <input class="form-control inpDimension" id="height">
+                                        <span class="input-suffix">cm</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label for="volume" class="form-label">{% trans "Volume" %}</label>
+                                        </div>
+                                        <div class="col-6 text-right">
+                                            <a href="#" id="to-fix-left"><i class="fas fa-caret-left text-primary"></i></a>
+                                            <span style="font-size: small">.00</span>
+                                            <a href="#" id="to-fix-right"><i class="fas fa-caret-right text-primary"></i></a>
+                                        </div>
+                                    </div>
+                                    <span class="input-affix-wrapper affix-wth-text">
+                                        <input class="form-control" id="volume" readonly>
+                                        <span id="VolumeSpan" class="input-suffix"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <label for="weight" class="form-label">{% trans "Weight" %}</label>
+                                    <span class="input-affix-wrapper affix-wth-text">
+                                        <input class="form-control" id="weight">
+                                        <span id="WeightSpan" class="input-suffix"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="tab_sale">
+        <div class="row">
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="sale-select-box-default-uom" class="form-label required">{% trans "Default UoM" %}</label>
+                            <select id="sale-select-box-default-uom" class="form-select" data-method="GET"
+                                    data-url="{% url "UnitOfMeasureListAPI" %}"></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="sale-select-box-tax-code" class="form-label required">{% trans "Tax Code" %}</label>
+                            <select id="sale-select-box-tax-code" class="form-select" data-method="GET"
+                                    data-url="{% url "TaxListAPI" %}"></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-8 text-left">
+                                    <label class="form-label" for="price_list_for_sale_online">{% trans "Price list for sale online" %}</label>
+                                </div>
+                                <div class="col-4 text-right form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="is_publish_website">
+                                    <label class="form-check-label" for="is_publish_website">{% trans "Sale online" %}</label>
+                                </div>
+                            </div>
+                            <select id="price_list_for_sale_online" data-url="{% url 'PriceListAPI' %}" class="select2 form-select" data-placeholder="{% trans 'From Price List in right side' %}"></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-12 col-lg-12 col-md-12">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="available_notify_checkbox">
+                                        <label class="form-check-label" for="available_notify_checkbox">{% trans "Notify when available quantity is less than" %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="less_than_number" type="number" min="0" class="form-control">
+                            <label for="less_than_number"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-8 col-lg-8 ul-price-list" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+                <table class="table table-advance nowrap w-100" id="table_price_list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>{% trans 'Select' %}</th>
+                            <th>{% trans 'Price list' %}</th>
+                            <th>{% trans 'Start' %}</th>
+                            <th>{% trans 'End' %}</th>
+                            <th>{% trans 'Price' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="tab_inventory">
+        <div class="row">
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="inventory-select-box-uom-name" class="form-label required">{% trans "UoM Name" %}</label>
+                    <select id="inventory-select-box-uom-name" class="form-select" data-method="GET"
+                            data-url="{% url 'UnitOfMeasureListAPI' %}">
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="inventory-level-min" class="form-label">{% trans "Inventory Level Min" %}</label>
+                    <input id="inventory-level-min" type="number" class="form-control" min="0" step="1" placeholder="Input number">
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="inventory-level-max" class="form-label">{% trans "Inventory Level Max" %}</label>
+                    <input id="inventory-level-max" type="number" class="form-control" min="0" step="1" placeholder="Input number">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6 mt-5">
+                <span class="text-muted">* {% trans 'Product overview' %}</span>
+                <table id="datatable-warehouse-overview" class="table table-advance nowrap w-100">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Stock" %}</th>
+                            <th>{% trans "Sale order" %}</th>
+                            <th>{% trans "Purchase" %}</th>
+                            <th>{% trans "Production" %}</th>
+                            <th>{% trans "Available" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6 mt-5">
+                <span class="text-muted">* {% trans 'Product warehouse detail' %}</span>
+                <table id="datatable-warehouse-list" class="table table-advance nowrap w-100"
+                       data-url="{% url "WareHouseListAPI" %}"
+                       data-method="GET">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Warehouse Code" %}</th>
+                            <th>{% trans "Warehouse Name" %}</th>
+                            <th>{% trans "Stock" %}</th>
+                            <th>{% trans "Cost" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="tab_purchase">
+        <div class="row">
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="purchase-select-box-default-uom" class="form-label required">{% trans "Default UoM" %}</label>
+                    <select id="purchase-select-box-default-uom" class="form-select" data-method="GET"
+                            data-url="{% url "UnitOfMeasureListAPI" %}"></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="purchase-select-box-tax-code" class="form-label required">{% trans "Tax Code" %}</label>
+                    <select id="purchase-select-box-tax-code" class="form-select" data-method="GET"
+                            data-url="{% url "TaxListAPI" %}"></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="purchase-supplied-by" class="form-label required">{% trans "Supplied by" %}</label>
+                    <select id="purchase-supplied-by" class="form-select">
+                        <option value="0">{% trans 'Purchasing' %}</option>
+                        <option value="0">{% trans 'Making' %}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="tab_variants">
+        <table class="table nowrap w-100" id="table-variant-attributes">
+            <thead>
+            <th></th>
+            <th class="required">{% trans 'Attributes' %}</th>
+            <th class="required">{% trans 'Values' %}</th>
+            <th></th>
+            <th class="required">{% trans 'Configurations' %}</th>
+            <th></th>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="row">
+            <div class="col-12">
+                <button id="btn-add-row-variant-attributes" class="btn btn-sm btn-soft-primary mb-3" type="button">
+                    <span>
+                        <span>{% trans "Add new attributes" %}</span>
+                        <span class="icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-variant-attributes" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Add Variant Value' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row form-group">
+                            <label for="attribute-name-modal-input" class="col-4 col-form-label">{% trans 'Attribute name' %}</label>
+                            <div class="col-8">
+                                <input readonly class="form-control" id="attribute-name-modal-input">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label for="value-name-modal-input" class="col-4 col-form-label required">{% trans 'Value name' %}</label>
+                            <div class="col-8">
+                                <input class="form-control" id="value-name-modal-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="add-variant-value-item" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">{% trans 'Add' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-attribute-display" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Attribute display' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="attribute-display-select-by" class="form-label">{% trans 'Select by' %}</label>
+                                    <select class="select2 form-select" id="attribute-display-select-by"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" hidden id="view-mode-for-select">
+                            <div class="col-12 col-lg-3">
+                                <div class="form-check">
+                                    <input type="radio" id="radio-fill-by-text" name="radio-type-2" class="form-check-input fill-by-selection" checked>
+                                    <label class="form-check-label" for="radio-fill-by-text">{% trans 'Fill by text' %}</label>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                <div class="form-check">
+                                    <input type="radio" id="radio-fill-by-color" name="radio-type-2" class="form-check-input fill-by-selection">
+                                    <label class="form-check-label" for="radio-fill-by-color">{% trans 'Fill by color' %}</label>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                <div class="form-check">
+                                    <input type="radio" id="radio-fill-by-photo" name="radio-type-2" class="form-check-input fill-by-selection">
+                                    <label class="form-check-label" for="radio-fill-by-photo">{% trans 'Fill by photo' %}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <label class="w-25 mb-3 mt-5 text-primary">{% trans 'Preview' %}</label>
+                        <div class="row" hidden id="dropdown-list-selection-preview">
+                            <div class="form-group">
+                                <label for="dropdown-list-preview" class="form-label"></label>
+                                <select class="select2 form-select" id="dropdown-list-preview"></select>
+                            </div>
+                        </div>
+                        <div class="row" hidden id="radio-selection-preview"></div>
+                        <div class="row" hidden id="fill-by-text-preview"></div>
+                        <div class="row" hidden id="fill-by-color-preview"></div>
+                        <div class="row" hidden id="fill-by-photo-preview"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="add-attribute-display-item" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">{% trans 'Select' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-variant-item-des" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Variant Description' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="variant-name" class="form-label">{% trans 'Variant name' %}</label>
+                                    <input class="form-control" id="variant-name">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="variant-des" class="form-label">{% trans 'Description' %}</label>
+                                    <input class="form-control" id="variant-des">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="add-variant-des" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">{% trans 'Save' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="table-variant-items-div" hidden>
+            <table id="table-variant-items" class="table nowrap w-100">
+                <thead class="thead-primary">
+                <tr>
+                <th class="w-5"></th>
+                <th class="w-45">
+                    {% trans 'Variant' %}
+                    <span class="badge-label text-white"><span class="badge badge-soft-primary" id="table-variant-items-label">0</span></span>
+                </th>
+                <th class="w-5"></th>
+                <th class="w-20">{% trans 'SKU' %}</th>
+                <th class="w-20">{% trans 'Extra Price' %}</th>
+                <th class="w-5">{% trans 'Active' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>

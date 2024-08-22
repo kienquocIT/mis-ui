@@ -909,7 +909,7 @@ function LoadDetailProduct(option) {
                 Detail_data = product_detail;
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(product_detail);
-                console.log(product_detail)
+                // console.log(product_detail)
 
                 $('#code').val(product_detail['code'])
                 titleEle.val(product_detail['title'])

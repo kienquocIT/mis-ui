@@ -8,7 +8,8 @@ class QuotationLoadDataHandle {
     static quotationSelectEle = $('#select-box-quotation');
     static transEle = $('#app-trans-factory');
     static urlEle = $('#app-url-factory');
-    static customerInitEle = $('#data-init-customer')
+    static customerInitEle = $('#data-init-customer');
+    static dataSuppliedBy = [{'id': 0, 'title': 'Purchasing'}, {'id': 1, 'title': 'Making'}];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false) {
         let opts = {'allowClear': isClear};
@@ -1545,6 +1546,8 @@ class QuotationLoadDataHandle {
                     QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
+                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
+                    $(newRow.querySelector('.table-row-supplied-by')).val(dataProduct?.['purchase_information']?.['supplied_by']).change();
                 }
                 if (shipping) { // SHIPPING
                     if (shipping.getAttribute('data-shipping')) {
@@ -2021,6 +2024,10 @@ class QuotationLoadDataHandle {
                             QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow?.['product_data']);
                             QuotationLoadDataHandle.loadCostProduct(row.querySelector('.table-row-item'));
                         }
+                        if (row.querySelector('.table-row-supplied-by')) {
+                            QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
+                            $(row.querySelector('.table-row-supplied-by')).val(0).change();
+                        }
                     }
                     $(row.querySelector('.table-row-uom')).empty();
                     QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
@@ -2134,6 +2141,9 @@ class QuotationLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.btn-del-group')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-supplied-by')) {
             ele.setAttribute('disabled', 'true');
         }
     };
@@ -2540,6 +2550,12 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
+                    render: (data, type, row) => {
+                        return `<select class="form-select table-row-supplied-by"></select>`;
+                    }
+                },
+                {
+                    targets: 3,
                     render: () => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_costs_data";
@@ -2558,7 +2574,7 @@ class QuotationDataTableHandle {
                     },
                 },
                 {
-                    targets: 3,
+                    targets: 4,
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_costs_data";
@@ -2569,7 +2585,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 5,
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_costs_data";
@@ -2617,7 +2633,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 6,
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_costs_data";
@@ -2678,7 +2694,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 6,
+                    targets: 7,
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_costs_data";
@@ -2694,17 +2710,6 @@ class QuotationDataTableHandle {
                                     hidden
                                 >
                             </div>`;
-                    }
-                },
-                {
-                    targets: 7,
-                    render: () => {
-                        let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data";
-                        }
-                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
                     }
                 },
             ],

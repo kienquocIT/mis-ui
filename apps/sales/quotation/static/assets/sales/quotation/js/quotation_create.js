@@ -187,28 +187,28 @@ $(function () {
                     'data': dataSubmit,
                 }
             ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && (data['status'] === 201 || data['status'] === 200)) {
-                            $.fn.notifyB({description: data.message}, 'success');
-                            // call ajax again data ProductSales
-                            if (QuotationDataTableHandle.productInitEle.val()) {
-                                let dataInitProduct = JSON.parse(QuotationDataTableHandle.productInitEle.val());
-                                dataInitProduct.unshift(data);
-                                QuotationDataTableHandle.productInitEle.val(JSON.stringify(dataInitProduct));
-                                QuotationLoadDataHandle.loadReInitDataTableProduct();
-                            }
-                            setTimeout(() => {
-                                WindowControl.hideLoading();
-                            }, 1000);
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        // call ajax again data ProductSales
+                        if (QuotationDataTableHandle.productInitEle.val()) {
+                            let dataInitProduct = JSON.parse(QuotationDataTableHandle.productInitEle.val());
+                            dataInitProduct.unshift(data);
+                            QuotationDataTableHandle.productInitEle.val(JSON.stringify(dataInitProduct));
+                            QuotationLoadDataHandle.loadReInitDataTableProduct();
                         }
-                    }, (err) => {
                         setTimeout(() => {
                             WindowControl.hideLoading();
-                        }, 1000)
-                        $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                        }, 1000);
                     }
-                )
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                }
+            )
         });
 
 // Action on delete row product

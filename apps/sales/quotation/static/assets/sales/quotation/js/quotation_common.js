@@ -981,9 +981,7 @@ class QuotationLoadDataHandle {
             if (price && priceList) {
                 let account_price_id = document.getElementById('customer-price-list').value;
                 let current_price_checked = price.getAttribute('value');
-                let transJSON = {};
                 let lastPrice = 0;
-                transJSON['Valid'] = QuotationLoadDataHandle.transEle.attr('data-valid');
                 $(priceList).empty();
                 let htmlDD = ``;
                 if (Array.isArray(data?.['price_list']) && data?.['price_list'].length > 0) {
@@ -993,7 +991,7 @@ class QuotationLoadDataHandle {
                             lastPrice = parseFloat(priceData?.['value']);
                             clsChecked = 'option-btn-checked';
                         }
-                        if (!["Expired", "Invalid"].includes(priceData?.['price_status'])) {
+                        if (priceData?.['price_status'] === 1) {
                             if (priceData?.['id'] === account_price_id) { // check CUSTOMER_PRICE then set customer_price
                                 lastPrice = parseFloat(priceData?.['value']);
                                 clsChecked = 'option-btn-checked';

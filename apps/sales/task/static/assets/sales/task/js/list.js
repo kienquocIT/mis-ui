@@ -1342,8 +1342,6 @@ $(function () {
             });
         }
 
-
-
         static renderGantt(){
             const $transElm = $('#trans-factory')
             let columns_gantt = [

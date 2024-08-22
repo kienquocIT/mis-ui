@@ -178,11 +178,11 @@ function updatePriceAfterReloadGroupMember() {
             })
 
             for (let i = 0; i < 12; i++) {
-                $(this).find(`.sum-m${i+1} .sum-group-m${i+1}`).attr('data-init-money', sum_m[i])
+                $(this).find(`.sum-m${i+1} .sum-group-m${i+1}`).attr('value', sum_m[i])
                 sum_month_target_company[i] += parseFloat(sum_m[i])
             }
             for (let i = 0; i < 4; i++) {
-                $(this).find(`.sum-q${i+1} .sum-group-q${i+1}`).attr('data-init-money', sum_q[i])
+                $(this).find(`.sum-q${i+1} .sum-group-q${i+1}`).attr('value', sum_q[i])
                 sum_quarter_target_company[i] += parseFloat(sum_q[i])
             }
             $(this).find('.sum-year .sum-group-year').attr('data-init-money', sum_year)
@@ -191,11 +191,11 @@ function updatePriceAfterReloadGroupMember() {
 
 
         for (let i = 0; i < 12; i++) {
-            revenuePlanTable.find(`tfoot .sum-company-m${i+1}`).attr('data-init-money', sum_month_target_company[i])
+            revenuePlanTable.find(`thead .sum-company-m${i+1}`).attr('value', sum_month_target_company[i])
         }
 
         for (let i = 0; i < 4; i++) {
-            revenuePlanTable.find(`tfoot .sum-company-q${i+1}`).attr('data-init-money', sum_quarter_target_company[i])
+            revenuePlanTable.find(`thead .sum-company-q${i+1}`).attr('value', sum_quarter_target_company[i])
         }
 
         $('tfoot .sum-company-year').attr('data-init-money', sum_year_target_company)
@@ -256,11 +256,11 @@ function updatePriceAfterReloadGroupMember() {
             })
 
             for (let i = 0; i < 12; i++) {
-                $(this).find(`.sum-m${i+1} .sum-group-m${i+1}-profit`).attr('data-init-money', sum_m[i])
+                $(this).find(`.sum-m${i+1} .sum-group-m${i+1}-profit`).attr('value', sum_m[i])
                 sum_month_profit_target_company[i] += parseFloat(sum_m[i])
             }
             for (let i = 0; i < 4; i++) {
-                $(this).find(`.sum-q${i+1} .sum-group-q${i+1}-profit`).attr('data-init-money', sum_q[i])
+                $(this).find(`.sum-q${i+1} .sum-group-q${i+1}-profit`).attr('value', sum_q[i])
                 sum_quarter_profit_target_company[i] += parseFloat(sum_q[i])
             }
             $(this).find('.sum-year .sum-group-year-profit').attr('data-init-money', sum_year)
@@ -269,11 +269,11 @@ function updatePriceAfterReloadGroupMember() {
 
 
         for (let i = 0; i < 12; i++) {
-            revenuePlanTable.find(`tfoot .sum-company-m${i+1}-profit`).attr('data-init-money', sum_month_profit_target_company[i])
+            revenuePlanTable.find(`thead .sum-company-m${i+1}-profit`).attr('value', sum_month_profit_target_company[i])
         }
 
         for (let i = 0; i < 4; i++) {
-            revenuePlanTable.find(`tfoot .sum-company-q${i+1}-profit`).attr('data-init-money', sum_quarter_profit_target_company[i])
+            revenuePlanTable.find(`thead .sum-company-q${i+1}-profit`).attr('value', sum_quarter_profit_target_company[i])
         }
 
         $('tfoot .sum-company-year-profit').attr('data-init-money', sum_year_profit_target_company)
@@ -349,11 +349,11 @@ $(document).on("change", '.month-target', function () {
         })
 
         for (let i = 0; i < 12; i++) {
-            $(this).find(`.sum-m${i+1} .sum-group-m${i+1}`).attr('data-init-money', sum_m[i])
+            $(this).find(`.sum-m${i+1} .sum-group-m${i+1}`).attr('value', sum_m[i])
             sum_month_target_company[i] += parseFloat(sum_m[i])
         }
         for (let i = 0; i < 4; i++) {
-            $(this).find(`.sum-q${i+1} .sum-group-q${i+1}`).attr('data-init-money', sum_q[i])
+            $(this).find(`.sum-q${i+1} .sum-group-q${i+1}`).attr('value', sum_q[i])
             sum_quarter_target_company[i] += parseFloat(sum_q[i])
         }
         $(this).find('.sum-year .sum-group-year').attr('data-init-money', sum_year)
@@ -362,11 +362,11 @@ $(document).on("change", '.month-target', function () {
 
 
     for (let i = 0; i < 12; i++) {
-        revenuePlanTable.find(`tfoot .sum-company-m${i+1}`).attr('data-init-money', sum_month_target_company[i])
+        revenuePlanTable.find(`thead .sum-company-m${i+1}`).attr('value', sum_month_target_company[i])
     }
 
     for (let i = 0; i < 4; i++) {
-        revenuePlanTable.find(`tfoot .sum-company-q${i+1}`).attr('data-init-money', sum_quarter_target_company[i])
+        revenuePlanTable.find(`thead .sum-company-q${i+1}`).attr('value', sum_quarter_target_company[i])
     }
 
     $('tfoot .sum-company-year').attr('data-init-money', sum_year_target_company)
@@ -427,11 +427,11 @@ $(document).on("change", '.month-target-profit', function () {
         })
 
         for (let i = 0; i < 12; i++) {
-            $(this).find(`.sum-m${i+1} .sum-group-m${i+1}-profit`).attr('data-init-money', sum_m[i])
+            $(this).find(`.sum-m${i+1} .sum-group-m${i+1}-profit`).attr('value', sum_m[i])
             sum_month_profit_target_company[i] += parseFloat(sum_m[i])
         }
         for (let i = 0; i < 4; i++) {
-            $(this).find(`.sum-q${i+1} .sum-group-q${i+1}-profit`).attr('data-init-money', sum_q[i])
+            $(this).find(`.sum-q${i+1} .sum-group-q${i+1}-profit`).attr('value', sum_q[i])
             sum_quarter_profit_target_company[i] += parseFloat(sum_q[i])
         }
         $(this).find('.sum-year .sum-group-year-profit').attr('data-init-money', sum_year)
@@ -440,11 +440,11 @@ $(document).on("change", '.month-target-profit', function () {
 
 
     for (let i = 0; i < 12; i++) {
-        revenuePlanTable.find(`tfoot .sum-company-m${i+1}-profit`).attr('data-init-money', sum_month_profit_target_company[i])
+        revenuePlanTable.find(`thead .sum-company-m${i+1}-profit`).attr('value', sum_month_profit_target_company[i])
     }
 
     for (let i = 0; i < 4; i++) {
-        revenuePlanTable.find(`tfoot .sum-company-q${i+1}-profit`).attr('data-init-money', sum_quarter_profit_target_company[i])
+        revenuePlanTable.find(`thead .sum-company-q${i+1}-profit`).attr('value', sum_quarter_profit_target_company[i])
     }
 
     $('tfoot .sum-company-year-profit').attr('data-init-money', sum_year_profit_target_company)

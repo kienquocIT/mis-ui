@@ -8588,3 +8588,7 @@ msgstr "Nguồn cung cấp"
 #
 msgid "Making"
 msgstr "Chế tạo"
+
+#
+msgid "Product image"
+msgstr "Hình ảnh sản phẩm"

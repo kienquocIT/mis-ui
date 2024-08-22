@@ -1,15 +1,17 @@
 from django.urls import path
 from apps.sales.production.views import (
-    BOMList, BOMCreate, BOMDetail, BOMUpdate, BOMListAPI, BOMDetailAPI, ProductionOrderCreate,
+    BOMList, BOMCreate, BOMDetail, BOMUpdate, BOMListAPI, BOMDetailAPI, LaborListForBOMAPI, ProductionOrderCreate
 )
 
 urlpatterns = [
-    path('list', BOMList.as_view(), name='BOMList'),
-    path('create', BOMCreate.as_view(), name='BOMCreate'),
-    path('detail/<str:pk>', BOMDetail.as_view(), name='BOMDetail'),
-    path('update/<str:pk>', BOMUpdate.as_view(), name='BOMUpdate'),
-    path('api', BOMListAPI.as_view(), name='BOMListAPI'),
-    path('api/<str:pk>', BOMDetailAPI.as_view(), name='BOMDetailAPI'),
+    path('bill-of-material/list', BOMList.as_view(), name='BOMList'),
+    path('bill-of-material/create', BOMCreate.as_view(), name='BOMCreate'),
+    path('bill-of-material/detail/<str:pk>', BOMDetail.as_view(), name='BOMDetail'),
+    path('bill-of-material/update/<str:pk>', BOMUpdate.as_view(), name='BOMUpdate'),
+    path('bill-of-material/api', BOMListAPI.as_view(), name='BOMListAPI'),
+    path('bill-of-material/api/<str:pk>', BOMDetailAPI.as_view(), name='BOMDetailAPI'),
+
+    path('bill-of-material/labor-for-BOM/api', LaborListForBOMAPI.as_view(), name='LaborListForBOMAPI'),
 
     # production order
     path('production-order/create', ProductionOrderCreate.as_view(), name='ProductionOrderCreate'),

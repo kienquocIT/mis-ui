@@ -8564,3 +8564,7 @@ msgstr "Cũ"
 #
 msgid "Price is not valid for unit of measure"
 msgstr "Giá không hợp lệ với đơn vị tính"
+
+#
+msgid "Select one"
+msgstr "Chọn một"

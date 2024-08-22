@@ -24,10 +24,14 @@
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
-            data-url-labor="{% url 'ExpenseListAPI' %}"
+            data-url-labor="{% url 'LaborListForBOMAPI' %}"
             data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
             data-url-product="{% url 'ProductListAPI' %}"
             data-url-tool-config="{% url 'AssetToolsConfigViewAPI' %}"
+    ></script>
+    <script id="script-trans"
+            data-trans-select-one="{% trans 'Select one' %}"
+            data-trans-can-not-select="{% trans "Can't be selected due to different UOM" %}"
     ></script>
     <form id="form-create-bom"
           data-method="POST"

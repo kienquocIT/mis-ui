@@ -1547,7 +1547,7 @@ class QuotationLoadDataHandle {
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
-                    $(newRow.querySelector('.table-row-supplied-by')).val(dataProduct?.['purchase_information']?.['supplied_by']).change();
+                    $(newRow.querySelector('.table-row-supplied-by')).val(dataProduct?.['supplied_by']).change();
                 }
                 if (shipping) { // SHIPPING
                     if (shipping.getAttribute('data-shipping')) {

@@ -1,3 +1,6 @@
+let titleEle = $('#title')
+let partNumberEle = $('#part-number')
+let suppliedByEle = $('#purchase-supplied-by')
 let check_tab_inventory = $('#check-tab-inventory');
 let check_tab_sale = $('#check-tab-sale');
 let check_tab_purchase = $('#check-tab-purchase');
@@ -508,8 +511,8 @@ function loadWareHouseListDetail(product_warehouse_detail) {
                 }
             },
         ],
-        rowCallback(row, data, index) {
-            $(`button.btn-detail`, row).on('click', function (e) {
+        rowCallback(row) {
+            $(`button.btn-detail`, row).on('click', function () {
                 let $tableLot = $('#datable-lot');
                 let $tableSerial = $('#datable-serial');
                 let idProduct = $.fn.getPkDetail();
@@ -606,11 +609,11 @@ function loadWareHouseOverViewDetail(data_overview=[]) {
                 }
             },
             {
-                data: 'production',
+                data: 'production_amount',
                 className: 'wrap-text text-center w-20',
                 render: (data, type, row) => {
-                    let production = row?.['production'] ? row?.['production'] : 0
-                    return `<span class="fw-bold ${production > 0 ? 'text-primary' : 'text-danger'}">${production}</span>`
+                    let production_amount = row?.['production_amount'] ? row?.['production_amount'] : 0
+                    return `<span class="fw-bold ${production_amount > 0 ? 'text-primary' : 'text-danger'}">${production_amount}</span>`
                 }
             },
             {
@@ -635,17 +638,20 @@ function Disable(option) {
         $('.form-select').prop('disabled', true).css({color: 'black'});
         $('.select2').prop('disabled', true);
         $('input').prop('disabled', true);
-        $('#btn-add-row-variant-attributes').prop('disabled', true);
+        btn_Add_Line_Variant_Attributes.prop('disabled', true);
     }
 }
 
 function getDataForm() {
     let data = {
         'code': $('#code').val(),
-        'title': $('#title').val(),
+        'title': titleEle.val(),
         'description': $('#description').val()
     };
     data['product_choice'] = []
+
+    data['part_number'] = partNumberEle.val();
+    data['supplied_by'] = suppliedByEle.val();
 
     data['length'] = parseFloat(lengthEle.val());
     data['width'] = parseFloat(widthEle.val());
@@ -716,7 +722,7 @@ function getDataForm() {
                     variant_name_content.push($(this).text());
                     variant_des_content.push($(this).text());
                 })
-                variant_name = $('#title').val() + ' (' + variant_name_content.join(', ') + ')';
+                variant_name = titleEle.val() + ' (' + variant_name_content.join(', ') + ')';
                 variant_des = variant_des_content.join(', ');
             }
             let variant_SKU = row.find('.SKU-input').val();
@@ -903,11 +909,12 @@ function LoadDetailProduct(option) {
                 Detail_data = product_detail;
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(product_detail);
-                // console.log(product_detail)
+                console.log(product_detail)
 
-                $('#code').val(product_detail['code']);
-                $('#title').val(product_detail['title']);
-                $('#description').val(product_detail['description']);
+                $('#code').val(product_detail['code'])
+                titleEle.val(product_detail['title'])
+                $('#description').val(product_detail['description'])
+                partNumberEle.val(product_detail['part_number'])
 
                 if (product_detail['product_choice'].includes(0)) {
                     $('#check-tab-sale').attr('checked', true);
@@ -998,6 +1005,7 @@ function LoadDetailProduct(option) {
                     let purchase_information = product_detail['purchase_information'];
                     loadPurchaseDefaultUom(purchase_information['default_uom']);
                     loadPurchaseTaxCode(purchase_information['tax']);
+                    suppliedByEle.val(product_detail?.['purchase_information']?.['supplied_by'])
                 }
 
                 $('#data-detail-page').val(JSON.stringify(product_detail));
@@ -1392,14 +1400,14 @@ $(document).on("click", '.add-variant-item-des', function () {
         $('#variant-des').val(variant_des);
     }
     else {
-        if ($('#title').val() !== '') {
+        if (titleEle.val() !== '') {
             let variant_name_content = [];
             let variant_des_content = [];
             current_row_variant_item.find('.variant-item').each(function () {
                 variant_name_content.push($(this).text());
                 variant_des_content.push($(this).text());
             })
-            $('#variant-name').val($('#title').val() + ' (' + variant_name_content.join(', ') + ')');
+            $('#variant-name').val(titleEle.val() + ' (' + variant_name_content.join(', ') + ')');
             $('#variant-des').val(variant_des_content.join(', '));
         }
         else {

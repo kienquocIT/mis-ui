@@ -7,6 +7,15 @@ $(function () {
 
         // WFRTControl.setWFInitialData('productionorder', formSubmit.attr('data-method'));
 
+        ProdOrderLoadDataHandle.$boxProd.on('change', function () {
+            ProdOrderLoadDataHandle.loadAddDtbRows();
+        });
+
+        ProdOrderLoadDataHandle.$quantity.on('change', function () {
+            ProdOrderLoadDataHandle.loadChangeQuantity();
+            ProdOrderLoadDataHandle.loadTime();
+        });
+
 
 // SUBMIT FORM
         formSubmit.submit(function (e) {

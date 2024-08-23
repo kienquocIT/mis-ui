@@ -12,8 +12,12 @@ class ProdOrderLoadDataHandle {
     static $boxGroup = $('#box-group');
     static $trans = $('#app-trans-factory');
     static $urls = $('#app-urls-factory');
-    static dataType = [{'id': 0, 'title': 'Production'}, {'id': 1, 'title': 'Assembly'}, {'id': 2, 'title': 'Disassembly'}];
-    static dataStatus = [{'id': 0, 'title': 'Planned'}];
+    static dataType = [
+        {'id': 0, 'title': ProdOrderLoadDataHandle.$trans.attr('data-production')},
+        {'id': 1, 'title': ProdOrderLoadDataHandle.$trans.attr('data-assembly')},
+        {'id': 2, 'title': ProdOrderLoadDataHandle.$trans.attr('data-disassembly')}
+    ];
+    static dataStatus = [{'id': 0, 'title': ProdOrderLoadDataHandle.$trans.attr('data-planned')}];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false) {
         let opts = {'allowClear': isClear};
@@ -64,22 +68,19 @@ class ProdOrderLoadDataHandle {
         $('#btn-collapse').click(function () {
             $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
-
-
-        //
-        ProdOrderLoadDataHandle.loadAddDtbRows();
     };
 
     static loadAddDtbRows(data) {
         let tmp = [
-            {'is_group': true, 'group_order': 1, 'group_title': 'Gia công chân bàn', 'labor': 1, 'uom_labor_data': {'id': 0, 'title': 'Giờ'}},
-            {'group_order': 1, 'product_data': {'id': 0, 'title': 'Gỗ khối 10x10x100'}, 'quantity': 6, 'order': 1},
-            {'group_order': 1, 'product_data': {'id': 1, 'title': 'Pat kim loại chân bàn lớn'}, 'quantity':  6, 'order': 2},
+            {'is_group': true, 'group_order': 1, 'group_title': 'Gia công chân bàn', 'labor_bom': 1, 'labor': 0, 'uom_labor_data': {'id': 0, 'title': 'Giờ'}, 'tool_data': []},
+            {'group_order': 1, 'product_data': {'id': 0, 'title': 'Gỗ khối 10x10x100', 'available_amount': 125}, 'warehouse_data': {'id': 0, 'title': 'Kho 1', 'available_stock': 105}, 'quantity_bom': 6, 'quantity': 0, 'order': 1},
+            {'group_order': 1, 'product_data': {'id': 1, 'title': 'Pat kim loại chân bàn lớn', 'available_amount': 80}, 'warehouse_data': {'id': 0, 'title': 'Kho 1', 'available_stock': 80}, 'quantity_bom':  6, 'quantity': 0, 'order': 2},
 
-            {'is_group': true, 'group_order': 2, 'group_title': 'Lắp ráp', 'labor': 2, 'uom_labor_data': {'id': 0, 'title': 'Giờ'}},
-            {'group_order': 2, 'product_data': {'id': 0, 'title': 'Mặt bàn lớn'}, 'quantity': 1, 'order': 1},
-            {'group_order': 2, 'product_data': {'id': 1, 'title': 'Vít lớn 4mm'}, 'quantity': 3, 'order': 2},
+            {'is_group': true, 'group_order': 2, 'group_title': 'Lắp ráp', 'labor_bom': 2, 'labor': 0, 'uom_labor_data': {'id': 0, 'title': 'Giờ'}, 'tool_data': []},
+            {'group_order': 2, 'product_data': {'id': 0, 'title': 'Mặt bàn lớn', 'available_amount': 15}, 'warehouse_data': {'id': 0, 'title': 'Kho 1', 'available_stock': 15}, 'quantity_bom': 1, 'quantity': 0, 'order': 1},
+            {'group_order': 2, 'product_data': {'id': 1, 'title': 'Vít lớn 4mm', 'available_amount': 45}, 'warehouse_data': {'id': 0, 'title': 'Kho 1', 'available_stock': 30}, 'quantity_bom': 3, 'quantity': 0, 'order': 2},
         ]
+        ProdOrderDataTableHandle.$tableMain.DataTable().clear().draw();
         ProdOrderDataTableHandle.$tableMain.DataTable().rows.add(tmp).draw();
         ProdOrderLoadDataHandle.loadDD(ProdOrderDataTableHandle.$tableMain);
         ProdOrderLoadDataHandle.loadSetCollapse();
@@ -173,7 +174,27 @@ class ProdOrderLoadDataHandle {
         }
         ProdOrderLoadDataHandle.$time.empty().html(`${time} Giờ`);
         return true;
-    }
+    };
+
+    static loadChangeQuantity() {
+        let multi = 1;
+        if (ProdOrderLoadDataHandle.$quantity) {
+            multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
+        }
+        ProdOrderDataTableHandle.$tableMain.DataTable().rows().every(function () {
+            let row = this.node();
+            if (row.querySelector('.table-row-order').getAttribute('data-row')) {
+                let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
+                if (row.querySelector('.table-row-labor')) {
+                    row.querySelector('.table-row-labor').innerHTML = dataRow?.['labor_bom'] * multi;
+                }
+                if (row.querySelector('.table-row-quantity')) {
+                    row.querySelector('.table-row-quantity').innerHTML = dataRow?.['quantity_bom'] * multi;
+                }
+            }
+        });
+        return true;
+    };
 
 }
 
@@ -244,7 +265,7 @@ class ProdOrderDataTableHandle {
                         if (row?.['is_group'] === true) {
                             return ``;
                         }
-                        return `<span class="table-row-quantity">${row?.['quantity'] * multi}</span>`;
+                        return `<span class="table-row-quantity">${row?.['quantity_bom'] * multi}</span>`;
                     }
                 },
                 {
@@ -264,7 +285,7 @@ class ProdOrderDataTableHandle {
                         if (row?.['is_group'] === true) {
                             return ``;
                         }
-                        return `<span class="table-row-stock"></span>`;
+                        return `<span class="table-row-stock">${row?.['warehouse_data']?.['available_stock'] ? row?.['warehouse_data']?.['available_stock'] : 0}</span>`;
                     }
                 },
                 {
@@ -274,7 +295,7 @@ class ProdOrderDataTableHandle {
                         if (row?.['is_group'] === true) {
                             return ``;
                         }
-                        return `<span class="table-row-available"></span>`;
+                        return `<span class="table-row-available">${row?.['product_data']?.['available_amount'] ? row?.['product_data']?.['available_amount'] : 0}</span>`;
                     }
                 },
                 {
@@ -282,7 +303,7 @@ class ProdOrderDataTableHandle {
                     width: '10%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
-                            return `<span class="table-row-labor">${row?.['labor'] * multi} </span><span class="table-row-uom-labor">${row?.['uom_labor_data']?.['title']}</span>`;
+                            return `<span class="table-row-labor">${row?.['labor_bom'] * multi}</span><span class="table-row-uom-labor"> ${row?.['uom_labor_data']?.['title']}</span>`;
                         }
                         return ``;
                     }

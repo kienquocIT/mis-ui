@@ -14,7 +14,7 @@ class ProductionOrderCreate(View):
         auth_require=True,
         template='sales/production/productionorder/production_order_create.html',
         menu_active='',
-        breadcrumb='',
+        breadcrumb='PRODUCTION_ORDER_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
         ctx = {}

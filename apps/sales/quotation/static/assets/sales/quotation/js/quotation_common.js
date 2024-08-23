@@ -392,7 +392,7 @@ class QuotationLoadDataHandle {
                     let eleResult = $s2Result[0].closest('.select2-results');
                     if (eleResult) {
                         if (!$form[0].classList.contains('sale-order')) {
-                            $(eleResult).before(`<button type="button" class="btn btn-link btn-animated btn-sm" id="${addProductID}" data-bs-toggle="modal" data-bs-target="#addQuickProduct">
+                            $(eleResult).before(`<button type="button" class="btn btn-link btn-animated" id="${addProductID}" data-bs-toggle="modal" data-bs-target="#addQuickProduct">
                                                     <span><span class="icon"><i class="far fa-plus-square"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add-new')}</span></span>
                                                 </button>`);
                         }

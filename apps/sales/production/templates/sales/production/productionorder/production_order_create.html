@@ -116,6 +116,7 @@
                             data-link-detail=""
                             name="sale_order"
                             data-keyResp="sale_order_list"
+                            data-keyText="code"
                             multiple
                             required
                         ></select>
@@ -234,6 +235,10 @@
     <input
         type="text"
         id="app-trans-factory"
+        data-production="{% trans 'Production' %}"
+        data-assembly="{% trans 'Assembly' %}"
+        data-disassembly="{% trans 'Disassembly' %}"
+        data-planned="{% trans 'Planned' %}"
     >
     <input
         type="text"

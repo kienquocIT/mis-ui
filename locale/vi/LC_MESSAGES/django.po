@@ -8600,3 +8600,7 @@ msgstr "Lệnh sản xuất"
 #
 msgid "Production group"
 msgstr "Nhóm sản xuất"
+
+#
+msgid "Contract approval"
+msgstr "Phê duyệt hợp đồng"

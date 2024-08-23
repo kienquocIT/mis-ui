@@ -19,6 +19,7 @@ function deleteRow(table, currentRow) {
 }
 
 function loadLaborPrice(ele, labor_selected, uom_id) {
+    ele.closest('tr').find('.process-unit-price').attr('value', 0)
     ele.closest('tr').find('.dropdown-menu').html(`<h6 class="dropdown-header">${script_trans.attr('data-trans-select-one')}</h6>`)
     for (let i = 0; i < labor_selected?.['price_list'].length; i++) {
         ele.closest('tr').find('.dropdown-menu').append(
@@ -60,7 +61,6 @@ function loadLabor(ele, data) {
             let this_row = ele.closest('tr')
             if (ele.val() && this_row.find('.process-uom').val() && this_row.find('.process-quantity').val()) {
                 update_labor_summary_table()
-                process_description_table.DataTable().draw(false)
             }
         }
     })
@@ -115,9 +115,6 @@ function loadProduct(ele, data) {
             let product_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
             ele.closest('tr').find('.material-code').text(product_selected?.['code'])
             loadUOM(ele.closest('tr').find('.material-uom'), product_selected?.['general_uom_group']?.['id'])
-            ele.closest('tr').find('.material-unit-price').attr('value', product_selected?.['general_price'] ? product_selected?.['general_price'] : 0)
-            calculate_material_table(ele.closest('tr'))
-            $.fn.initMaskMoney2()
         }
     })
 }
@@ -296,6 +293,25 @@ class BORHandle {
     }
 }
 
+//// COMMON
+
+function reload_index_for_material_and_tool_table() {
+    material_table.find('tbody tr').each(function (index) {
+        $(this).find('td:eq(0)').text(parseInt(index) + 1)
+    })
+    tools_table.find('tbody tr').each(function (index) {
+        $(this).find('td:eq(0)').text(parseInt(index) + 1)
+    })
+}
+
+//// PROCESS
+
+add_new_process_description.on('click', function () {
+    addRow(process_description_table, {})
+    let row_added = process_description_table.find('tbody tr:last-child')
+    loadLabor(row_added.find('.process-labor'))
+})
+
 function calculate_process_table(row) {
     let quantity = row.find('.process-quantity').val() ? parseFloat(row.find('.process-quantity').val()) : 0
     let unit_price = row.find('.process-unit-price').attr('value') ? parseFloat(row.find('.process-unit-price').attr('value')) : 0
@@ -304,24 +320,61 @@ function calculate_process_table(row) {
     $.fn.initMaskMoney2()
 }
 
-function calculate_material_table(row) {
-    let quantity = row.find('.material-quantity').val() ? parseFloat(row.find('.material-quantity').val()) : 0
-    let unit_price = row.find('.material-unit-price').attr('value') ? parseFloat(row.find('.material-unit-price').attr('value')) : 0
-    let subtotal = quantity * unit_price
-    row.find('.material-subtotal-price').attr('value', subtotal)
-    $.fn.initMaskMoney2()
-}
-
-add_new_process_description.on('click', function () {
-    addRow(process_description_table, {})
-    let row_added = process_description_table.find('tbody tr:last-child')
-    loadLabor(row_added.find('.process-labor'))
+$(document).on("change", '.process-task-name', function () {
+    let process_row_index = parseInt($(this).closest('tr').find('td:eq(0)').text())
+    let process_task_name = $(this).closest('tr').find('.process-task-name').val()
+    if ($(this).val()) {
+        add_material_group(process_row_index, process_task_name)
+        add_tool_group(process_row_index, process_task_name)
+    }
+    else {
+        remove_material_group(process_row_index)
+        remove_tool_group(process_row_index)
+    }
 })
 
-add_new_tool.on('click', function () {
-    addRow(tools_table, {})
-    let row_added = tools_table.find('tbody tr:last-child')
-    loadTool(row_added.find('.tool-item'))
+$(document).on("change", '.process-quantity', function () {
+    let this_row = $(this).closest('tr')
+    calculate_process_table(this_row)
+    if (this_row.find('.process-labor').val() && this_row.find('.process-uom').val()) {
+        update_labor_summary_table()
+        process_description_table.DataTable().draw(false)
+    }
+})
+
+$(document).on("change", '.process-uom', function () {
+    let this_row = $(this).closest('tr')
+    let labor_selected = SelectDDControl.get_data_from_idx(this_row.find('.process-labor'), this_row.find('.process-labor').val())
+    loadLaborPrice(this_row.find('.process-labor'), labor_selected, $(this).val())
+
+    if (this_row.find('.process-labor').val() && this_row.find('.process-uom').val()) {
+        update_labor_summary_table()
+        process_description_table.DataTable().draw(false)
+    }
+})
+
+$(document).on("click", '.labor-price-option', function () {
+    loadUOM(
+        $(this).closest('tr').find('.process-uom'),
+        null,
+        {
+            'id': $(this).find('.labor-uom').attr('data-id'),
+            'title': $(this).find('.labor-uom').text()
+        }
+    )
+    let labor_price_value = $(this).find('.labor-price-value').attr('data-init-money')
+    $(this).closest('tr').find('.process-unit-price').attr('value', labor_price_value)
+    calculate_process_table($(this).closest('tr'))
+    update_labor_summary_table()
+    $.fn.initMaskMoney2()
+})
+
+$(document).on("click", '.del-row-process', function () {
+    let row_index = $(this).closest('tr').find('td:eq(0)').text()
+    deleteRow($(this).closest('table'), row_index)
+    remove_material_group(row_index)
+    remove_tool_group(row_index)
+    reload_index_for_material_and_tool_table()
 })
 
 function update_labor_summary_table() {
@@ -362,65 +415,25 @@ function update_labor_summary_table() {
     $.fn.initMaskMoney2()
 }
 
-$(document).on("change", '.process-quantity', function () {
-    let this_row = $(this).closest('tr')
-    calculate_process_table(this_row)
-    if (this_row.find('.process-labor').val() && this_row.find('.process-uom').val()) {
-        update_labor_summary_table()
-        process_description_table.DataTable().draw(false)
-    }
-})
+//// MATERIAL
 
-$(document).on("change", '.process-uom', function () {
-    let this_row = $(this).closest('tr')
-    let labor_selected = SelectDDControl.get_data_from_idx(this_row.find('.process-labor'), this_row.find('.process-labor').val())
-    loadLaborPrice(this_row.find('.process-labor'), labor_selected, $(this).val())
-
-    if (this_row.find('.process-labor').val() && this_row.find('.process-uom').val()) {
-        update_labor_summary_table()
-        process_description_table.DataTable().draw(false)
-    }
-})
-
-$(document).on("click", '.labor-price-option', function () {
-    loadUOM(
-        $(this).closest('tr').find('.process-uom'),
-        null,
-        {
-            'id': $(this).find('.labor-uom').attr('data-id'),
-            'title': $(this).find('.labor-uom').text()
-        }
-    )
-    let labor_price_value = $(this).find('.labor-price-value').attr('data-init-money')
-    $(this).closest('tr').find('.process-unit-price').attr('value', labor_price_value)
-    calculate_process_table($(this).closest('tr'))
-    update_labor_summary_table()
-    $.fn.initMaskMoney2()
-})
-
-$(document).on("change", '.material-quantity', function () {
-    calculate_material_table($(this).closest('tr'))
-})
-
-$(document).on("click", '.del-row-process', function () {
+$(document).on("click", '.add-new-material', function () {
     let row_index = $(this).closest('tr').find('td:eq(0)').text()
-    deleteRow($(this).closest('table'), row_index)
+    let new_material_row = create_material_row(row_index)
+    $(this).closest('tr').after(new_material_row)
+    loadProduct(new_material_row.find('.material-item'))
 })
 
 $(document).on("click", '.del-row-material', function () {
     $(this).closest('tr').remove()
 })
 
-$(document).on("click", '.del-row-tool', function () {
-    $(this).closest('tr').remove()
-})
-
-function create_material_group_row(index, param={}) {
+function create_material_group_row(index, task_name) {
     return $(`
-        <tr>
+        <tr class="material-for-task-${index}">
             <td>${index}</td>
             <td colspan="9">
-                <span id="material-for-task-${param?.['row_labor_material_index']}" class="material-group mr-2">${param?.['row_labor_name_material']}</span>
+                <span class="material-group mr-2">${task_name}</span>
                 <button type="button" class="add-new-material btn btn-icon btn-rounded btn-flush-primary flush-soft-hover">
                     <span class="icon"><i class="far fa-plus-square"></i></span>
                 </button>
@@ -429,9 +442,9 @@ function create_material_group_row(index, param={}) {
     `)
 }
 
-function create_material_row() {
+function create_material_row(index) {
     return $(`
-        <tr>
+        <tr class="material-for-task-${index}">
             <td></td>
             <td><span class="badge badge-blue material-code"></span></td>
             <td><select class="form-select select2 material-item"></select></td>
@@ -450,36 +463,39 @@ function create_material_row() {
     `)
 }
 
-function add_material_group(this_row) {
-    let index = parseInt(this_row.find('td:eq(0)').text())
-    let get_material_row_group = material_table.find(`tbody #material-for-task-${index}`)
+function add_material_group(index, task_name) {
+    let get_material_row_group = material_table.find(`tbody .material-for-task-${index} .material-group`)
     if (get_material_row_group.length > 0) {
-        get_material_row_group.text(this_row.find('.process-task-name').val())
+        get_material_row_group.text(task_name)
     } else {
-        let new_material_group_row = create_material_group_row(
-            process_description_table.find('tbody tr').length,
-            {
-                'row_labor_material_index': this_row.find('td:eq(0)').text(),
-                'row_labor_name_material': this_row.find('.process-task-name').val()
-            }
-        )
+        let new_material_group_row = create_material_group_row(index, task_name)
         material_table.find('tbody').append(new_material_group_row)
     }
 }
 
-$(document).on("click", '.add-new-material', function () {
-    let new_material_row = create_material_row()
-    $(this).closest('tr').after(new_material_row)
-    loadProduct(new_material_row.find('.material-item'))
+function remove_material_group(index) {
+    material_table.find(`tbody .material-for-task-${index}`).closest('tr').remove()
+}
+
+//// TOOL
+
+$(document).on("click", '.add-new-tool', function () {
+    let row_index = $(this).closest('tr').find('td:eq(0)').text()
+    let new_tool_row = create_tool_row(row_index)
+    $(this).closest('tr').after(new_tool_row)
+    loadTool(new_tool_row.find('.tool-item'))
 })
 
+$(document).on("click", '.del-row-tool', function () {
+    $(this).closest('tr').remove()
+})
 
-function create_tool_group_row(index, param={}) {
+function create_tool_group_row(index, task_name) {
     return $(`
-        <tr>
+        <tr class="tool-for-task-${index}">
             <td>${index}</td>
             <td colspan="6">
-                <span id="tool-for-task-${param?.['row_labor_tool_index']}" class="tool-group mr-2">${param?.['row_labor_name_tool']}</span>
+                <span class="tool-group mr-2">${task_name}</span>
                 <button type="button" class="add-new-tool btn btn-icon btn-rounded btn-flush-primary flush-soft-hover">
                     <span class="icon"><i class="far fa-plus-square"></i></span>
                 </button>
@@ -488,9 +504,9 @@ function create_tool_group_row(index, param={}) {
     `)
 }
 
-function create_tool_row() {
+function create_tool_row(index) {
     return $(`
-        <tr>
+        <tr class="tool-for-task-${index}">
             <td></td>
             <td><span class="badge badge-secondary tool-code"></span></td>
             <td><select class="form-select select2 tool-item"></select></td>
@@ -502,30 +518,16 @@ function create_tool_row() {
     `)
 }
 
-function add_tool_group(this_row) {
-    let index = parseInt(this_row.find('td:eq(0)').text())
-    let get_tool_row_group = tools_table.find(`tbody #tool-for-task-${index}`)
+function add_tool_group(index, task_name) {
+    let get_tool_row_group = tools_table.find(`tbody .tool-for-task-${index} .tool-group`)
     if (get_tool_row_group.length > 0) {
-        get_tool_row_group.text(this_row.find('.process-task-name').val())
+        get_tool_row_group.text(task_name)
     } else {
-        let new_tool_group_row = create_tool_group_row(
-            process_description_table.find('tbody tr').length,
-            {
-                'row_labor_tool_index': this_row.find('td:eq(0)').text(),
-                'row_labor_name_tool': this_row.find('.process-task-name').val()
-            }
-        )
+        let new_tool_group_row = create_tool_group_row(index, task_name)
         tools_table.find('tbody').append(new_tool_group_row)
     }
 }
 
-$(document).on("click", '.add-new-tool', function () {
-    let new_tool_row = create_tool_row()
-    $(this).closest('tr').after(new_tool_row)
-    loadTool(new_tool_row.find('.tool-item'))
-})
-
-$(document).on("change", '.process-task-name', function () {
-    add_material_group($(this).closest('tr'))
-    add_tool_group($(this).closest('tr'))
-})
+function remove_tool_group(index) {
+    tools_table.find(`tbody .tool-for-task-${index}`).closest('tr').remove()
+}

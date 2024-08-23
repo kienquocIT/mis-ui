@@ -323,8 +323,8 @@ $(document).on("click", '.btn-add-new-row', function () {
     let tab_table = $(document.getElementById(`table-${group_id}`))
     let row = $(`
         <tr>
-            <td><span class="index"></span>&nbsp;<button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-row-btn"><span class="icon"><i class="far fa-trash-alt"></i></span></button></td>
-            <td><select class="select2 form-select expense-item-select"></select></td>
+            <td class="fix1 bg-white"><span class="index"></span>&nbsp;<button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-row-btn"><span class="icon"><i class="far fa-trash-alt"></i></span></button></td>
+            <td class="fix2 bg-white"><select class="select2 form-select expense-item-select"></select></td>
             <td class="text-right"><input class="form-control mask-money money-m1th belong-q1" value="0"></td>
             <td class="text-right"><input class="form-control mask-money money-m2th belong-q1" value="0"></td>
             <td class="text-right"><input class="form-control mask-money money-m3th belong-q1" value="0"></td>

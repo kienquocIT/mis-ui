@@ -198,7 +198,7 @@ function updatePriceAfterReloadGroupMember() {
             revenuePlanTable.find(`thead .sum-company-q${i+1}`).attr('value', sum_quarter_target_company[i])
         }
 
-        $('tfoot .sum-company-year').attr('data-init-money', sum_year_target_company)
+        $('thead .sum-company-year').attr('data-init-money', sum_year_target_company)
 
         $.fn.initMaskMoney2()
     })
@@ -276,7 +276,7 @@ function updatePriceAfterReloadGroupMember() {
             revenuePlanTable.find(`thead .sum-company-q${i+1}-profit`).attr('value', sum_quarter_profit_target_company[i])
         }
 
-        $('tfoot .sum-company-year-profit').attr('data-init-money', sum_year_profit_target_company)
+        $('thead .sum-company-year-profit').attr('data-init-money', sum_year_profit_target_company)
 
         $.fn.initMaskMoney2()
     })
@@ -369,7 +369,7 @@ $(document).on("change", '.month-target', function () {
         revenuePlanTable.find(`thead .sum-company-q${i+1}`).attr('value', sum_quarter_target_company[i])
     }
 
-    $('tfoot .sum-company-year').attr('data-init-money', sum_year_target_company)
+    $('thead .sum-company-year').attr('data-init-money', sum_year_target_company)
 
     $.fn.initMaskMoney2()
 })
@@ -447,7 +447,7 @@ $(document).on("change", '.month-target-profit', function () {
         revenuePlanTable.find(`thead .sum-company-q${i+1}-profit`).attr('value', sum_quarter_profit_target_company[i])
     }
 
-    $('tfoot .sum-company-year-profit').attr('data-init-money', sum_year_profit_target_company)
+    $('thead .sum-company-year-profit').attr('data-init-money', sum_year_profit_target_company)
 
     $.fn.initMaskMoney2()
 })

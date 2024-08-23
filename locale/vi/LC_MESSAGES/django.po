@@ -1620,7 +1620,7 @@ msgstr "Không áp dụng bán hàng và kho cho chi phí"
 
 #
 msgid "Purchasing"
-msgstr "Quá trình mua hàng"
+msgstr "Mua hàng"
 
 #
 msgid "Expense Type"
@@ -8592,3 +8592,11 @@ msgstr "Chế tạo"
 #
 msgid "Product image"
 msgstr "Hình ảnh sản phẩm"
+
+#
+msgid "Production order"
+msgstr "Lệnh sản xuất"
+
+#
+msgid "Production group"
+msgstr "Nhóm sản xuất"

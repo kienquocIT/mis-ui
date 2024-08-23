@@ -9,7 +9,7 @@ class QuotationLoadDataHandle {
     static transEle = $('#app-trans-factory');
     static urlEle = $('#app-url-factory');
     static customerInitEle = $('#data-init-customer');
-    static dataSuppliedBy = [{'id': 0, 'title': 'Purchasing'}, {'id': 1, 'title': 'Making'}];
+    static dataSuppliedBy = [{'id': 0, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-purchase')}, {'id': 1, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-make')}];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false) {
         let opts = {'allowClear': isClear};
@@ -1547,7 +1547,7 @@ class QuotationLoadDataHandle {
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
-                    $(newRow.querySelector('.table-row-supplied-by')).val(dataProduct?.['supplied_by']).change();
+                    $(newRow.querySelector('.table-row-supplied-by')).val(dataProduct?.['supplied_by'] ? dataProduct?.['supplied_by'] : 0).change();
                 }
                 if (shipping) { // SHIPPING
                     if (shipping.getAttribute('data-shipping')) {
@@ -2026,7 +2026,7 @@ class QuotationLoadDataHandle {
                         }
                         if (row.querySelector('.table-row-supplied-by')) {
                             QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
-                            $(row.querySelector('.table-row-supplied-by')).val(0).change();
+                            $(row.querySelector('.table-row-supplied-by')).val(dataRow?.['supplied_by']).change();
                         }
                     }
                     $(row.querySelector('.table-row-uom')).empty();
@@ -2096,13 +2096,13 @@ class QuotationLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-quantity')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-price')) {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-discount')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-tax')) {
             ele.setAttribute('disabled', 'true');
@@ -2117,7 +2117,7 @@ class QuotationLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-remark')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-date')) {
             ele.setAttribute('disabled', 'true');
@@ -2126,7 +2126,7 @@ class QuotationLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-ratio')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
             ele.setAttribute('disabled', 'true');
@@ -5637,6 +5637,9 @@ class QuotationSubmitHandle {
                     rowData['product_title'] = dataProduct?.['title'];
                     rowData['product_code'] = dataProduct?.['code'];
                     rowData['product_data'] = dataProduct;
+                }
+                if (row.querySelector('.table-row-supplied-by')) {
+                    rowData['supplied_by'] = parseInt(row.querySelector('.table-row-supplied-by').value);
                 }
                 let eleUOM = row.querySelector('.table-row-uom');
                 if ($(eleUOM).val()) {

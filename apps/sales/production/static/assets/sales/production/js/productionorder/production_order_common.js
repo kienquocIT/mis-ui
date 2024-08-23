@@ -8,12 +8,10 @@ class ProdOrderLoadDataHandle {
     static $boxWH = $('#box-warehouse');
     static $boxSO = $('#box-so');
     static $boxGroup = $('#box-group');
-    static dataType = [
-        {'id': 0, 'title': 'Production'}, {'id': 1, 'title': 'Assembly'}, {'id': 2, 'title': 'Disassembly'}
-    ]
-    static dataStatus = [
-        {'id': 0, 'title': 'Planned'}
-    ]
+    static $trans = $('#app-trans-factory');
+    static $urls = $('#app-urls-factory');
+    static dataType = [{'id': 0, 'title': 'Production'}, {'id': 1, 'title': 'Assembly'}, {'id': 2, 'title': 'Disassembly'}];
+    static dataStatus = [{'id': 0, 'title': 'Planned'}];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false) {
         let opts = {'allowClear': isClear};
@@ -64,7 +62,92 @@ class ProdOrderLoadDataHandle {
         $('#btn-collapse').click(function () {
             $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
-    }
+    };
+
+    static loadAddDtbRows(data) {
+        let tmp = [
+            {'is_group': true, 'group_order': 1, 'group_title': 'Gia công chân bàn'},
+            {'group_order': 1, 'product_data': {'id': 0, 'title': 'Gỗ khối 10x10x100'}},
+            {'group_order': 1, 'product_data': {'id': 1, 'title': 'Pat kim loại chân bàn lớn'}},
+        ]
+        ProdOrderDataTableHandle.$tableMain.DataTable().rows.add(tmp).draw();
+        ProdOrderLoadDataHandle.loadDD(ProdOrderDataTableHandle.$tableMain);
+        return true;
+    };
+
+    static loadAddDtbRow() {
+        let dataAdd = {};
+        let newRow = ProdOrderDataTableHandle.$tableMain.DataTable().row.add(dataAdd).draw().node();
+        ProdOrderLoadDataHandle.loadDDInit(newRow);
+        return true;
+    };
+
+    static loadAddDtbRowGr() {
+        let order = ProdOrderDataTableHandle.$tableMain[0].querySelectorAll('.table-row-group').length + 1;
+        let dataAdd = {
+            "group_title": '',
+            "is_group": true,
+            'group_order': order,
+        }
+        let newRow = ProdOrderDataTableHandle.$tableMain.DataTable().row.add(dataAdd).draw().node();
+        $(newRow).find('td:eq(1)').attr('colspan', 2);
+        return true;
+    };
+
+    static loadSetCollapse() {
+        for (let child of ProdOrderDataTableHandle.$tableMain[0].querySelectorAll('.cl-child')) {
+            if (child.getAttribute('data-row')) {
+                let dataRow = JSON.parse(child.getAttribute('data-row'));
+                let row = child.closest('tr');
+                let cls = '';
+                if (dataRow?.['group_order']) {
+                    cls = 'cl-' + dataRow?.['group_order'].replace(/-/g, "");
+                }
+                row.classList.add(cls);
+                row.classList.add('collapse');
+                row.classList.add('show');
+            }
+        }
+        return true;
+    };
+
+    static loadDD($table) {
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            if (row.querySelector('.table-row-order').getAttribute('data-row')) {
+                let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
+                if (row.querySelector('.table-row-item')) {
+                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
+                }
+                if (row.querySelector('.table-row-uom')) {
+                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
+                }
+                if (row.querySelector('.table-row-warehouse')) {
+                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), [dataRow?.['warehouse_data']]);
+                }
+                if (row.querySelector('.table-row-tool')) {
+                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tool')), dataRow?.['tool_data']);
+                }
+            }
+        });
+        return true;
+    };
+
+    static loadDDInit(row) {
+        if (row.querySelector('.table-row-item')) {
+            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')));
+        }
+        if (row.querySelector('.table-row-uom')) {
+            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')));
+        }
+        if (row.querySelector('.table-row-warehouse')) {
+            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')));
+        }
+        if (row.querySelector('.table-row-tool')) {
+            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tool')));
+        }
+        return true;
+    };
 
 }
 
@@ -84,55 +167,103 @@ class ProdOrderDataTableHandle {
                     width: '',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return ``;
+                        if (row?.['is_group'] === true) {
+                            let target = ".cl-" + String(row?.['group_order']);
+                            return `<button 
+                                        type="button" 
+                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-xs table-row-group cl-parent" 
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="${target}"
+                                        data-bs-placement="top"
+                                        aria-expanded="true"
+                                        aria-controls="newGroup"
+                                        data-group-order="${row?.['group_order']}"
+                                        data-row="${dataRow}"
+                                    >
+                                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                                    </button>
+                                    <span class="table-row-order" data-row="${dataRow}" hidden></span>`;
+                        }
+                        return `<span class="table-row-order cl-child" data-row="${dataRow}">${row?.['order']}</span>`;
                     }
                 },
                 {
                     targets: 1,
                     width: '',
                     render: (data, type, row) => {
-                        return ``;
+                        if (row?.['is_group'] === true) {
+                            return `<span class="table-row-group-title">${row?.['group_title']}</span>`;
+                        }
+                        return `<select class="form-select table-row-item"></select>`;
                     }
                 },
                 {
                     targets: 2,
                     width: '',
                     render: (data, type, row) => {
-                        return ``;
+                        if (row?.['is_group'] === true) {
+                            return ``;
+                        }
+                        return `<select class="form-select table-row-uom" data-url="${ProdOrderLoadDataHandle.$urls.attr('data-md-uom')}" data-method="GET" data-keyResp="unit_of_measure"></select>`;
                     }
                 },
                 {
                     targets: 3,
                     width: '',
                     render: (data, type, row) => {
-                        return ``;
+                        if (row?.['is_group'] === true) {
+                            return ``;
+                        }
+                        return `<input type="text" class="form-control table-row-quantity" value="">`;
                     }
                 },
                 {
                     targets: 4,
                     width: '',
                     render: (data, type, row) => {
-                        return ``;
+                        if (row?.['is_group'] === true) {
+                            return ``;
+                        }
+                        return `<select class="form-select table-row-warehouse" data-url="${ProdOrderLoadDataHandle.$urls.attr('data-md-warehouse')}" data-method="GET" data-keyResp="warehouse_list"></select>`;
                     }
                 },
                 {
                     targets: 5,
                     width: '',
                     render: (data, type, row) => {
-                        return ``;
+                        if (row?.['is_group'] === true) {
+                            return ``;
+                        }
+                        return `<span class="table-row-stock"></span>`;
                     }
                 },
                 {
                     targets: 6,
                     width: '',
                     render: (data, type, row) => {
-                        return ``;
+                        if (row?.['is_group'] === true) {
+                            return ``;
+                        }
+                        return `<span class="table-row-available"></span>`;
                     }
                 },
                 {
                     targets: 7,
                     width: '',
                     render: (data, type, row) => {
+                        if (row?.['is_group'] === true) {
+                            return `<span class="table-row-labor"></span>`;
+                        }
+                        return ``;
+                    }
+                },
+                {
+                    targets: 8,
+                    width: '',
+                    render: (data, type, row) => {
+                        if (row?.['is_group'] === true) {
+                            return `<select class="form-select table-row-tool"></select>`;
+                        }
                         return ``;
                     }
                 },

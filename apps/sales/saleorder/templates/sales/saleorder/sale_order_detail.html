@@ -73,7 +73,7 @@
                                         type="text" class="form-control"
                                         name="title"
                                         id="quotation-create-title"
-                                        disabled
+                                        readonly
                                 >
                             </div>
                         </div>
@@ -560,6 +560,8 @@
         data-validate-total-payment="{% trans "Total payment must less than or equal to total before tax" %}"
         data-promotion="{% trans "Promotion" %}"
         data-shipping="{% trans "Shipping fee" %}"
+        data-supplied-purchase="{% trans "Purchasing" %}"
+        data-supplied-make="{% trans "Making" %}"
     >
     <input
         type="text"

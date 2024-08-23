@@ -101,7 +101,8 @@ $(document).ready(function () {
                     id: task.id,
                     w_start_date: moment(start).format('YYYY-MM-DD'),
                     w_end_date: moment(end).format('YYYY-MM-DD'),
-                    project: $('#id').val()
+                    project: $('#id').val(),
+                    w_weight: task.weight
                 }
                 if (task?.['child_of_group']) opt.group = task['child_group_id']
                 enqueueAjaxRequest(opt)

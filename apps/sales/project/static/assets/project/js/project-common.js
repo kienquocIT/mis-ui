@@ -5,6 +5,7 @@ $(document).ready(function () {
         const frm = new SetupFormSubmit($FormElm);
         let formData = frm.dataForm, $elmExpenseLst = $('#work_expense_tbl');
         formData.employee_inherit = $('#employeeInheritInput').attr('data-value')
+        formData.start_date = moment(formData['start_date'], 'DD/MM/YYYY').format('YYYY-MM-DD')
         formData.finish_date = moment(formData['finish_date'], 'DD/MM/YYYY').format('YYYY-MM-DD')
 
         if ($elmExpenseLst.length){ // data edit
@@ -181,9 +182,10 @@ function saveWork(gantt_obj) {
         else data.work_dependencies_type = null
         if (groupElm.val()) {
             data.group = groupElm.val();
-            if (workParent.val() && !$workID.val()) // create new work have group related
+            if (workParent.val() && !$workID.val())
+                // create new work have group related
                 data.order = $(`.gantt-left-container .grid-row[data-id="${workParent.val()}"]`).index() + 1
-            else data.order = parseInt($('#work_order').val())
+            else if ($workID.val()) data.order = parseInt($('#work_order').val())
         }
 
         let url = $urlFact.attr('data-work'), method = 'post';

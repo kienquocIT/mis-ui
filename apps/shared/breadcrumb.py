@@ -383,6 +383,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Zones
     ZONES_LIST_PAGE = BreadcrumbChildren(_('Zones'), 'ZonesList')
 
+    # Contract
+    CONTRACT_LIST_PAGE = BreadcrumbChildren(_('Contract approval'), 'ContractList')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -972,4 +975,12 @@ class BreadcrumbView:
     ZONES_LIST_PAGE = [
         BreadcrumbItem.ZONES_LIST_PAGE
     ]
+
+    # Contract
+    CONTRACT_LIST_PAGE = [
+        BreadcrumbItem.CONTRACT_LIST_PAGE
+    ]
+    CONTRACT_CREATE_PAGE = CONTRACT_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    CONTRACT_DETAIL_PAGE = CONTRACT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    CONTRACT_UPDATE_PAGE = CONTRACT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 

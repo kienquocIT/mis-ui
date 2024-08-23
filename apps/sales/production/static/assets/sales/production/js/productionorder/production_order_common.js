@@ -1,6 +1,8 @@
 // Load data
 class ProdOrderLoadDataHandle {
     static $form = $('#frm_production_order');
+    static $quantity = $('#quantity');
+    static $time = $('#time');
     static $boxType = $('#box-type');
     static $boxStatus = $('#box-status');
     static $boxProd = $('#box-product');
@@ -62,16 +64,26 @@ class ProdOrderLoadDataHandle {
         $('#btn-collapse').click(function () {
             $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
+
+
+        //
+        ProdOrderLoadDataHandle.loadAddDtbRows();
     };
 
     static loadAddDtbRows(data) {
         let tmp = [
-            {'is_group': true, 'group_order': 1, 'group_title': 'Gia công chân bàn'},
-            {'group_order': 1, 'product_data': {'id': 0, 'title': 'Gỗ khối 10x10x100'}},
-            {'group_order': 1, 'product_data': {'id': 1, 'title': 'Pat kim loại chân bàn lớn'}},
+            {'is_group': true, 'group_order': 1, 'group_title': 'Gia công chân bàn', 'labor': 1, 'uom_labor_data': {'id': 0, 'title': 'Giờ'}},
+            {'group_order': 1, 'product_data': {'id': 0, 'title': 'Gỗ khối 10x10x100'}, 'quantity': 6, 'order': 1},
+            {'group_order': 1, 'product_data': {'id': 1, 'title': 'Pat kim loại chân bàn lớn'}, 'quantity':  6, 'order': 2},
+
+            {'is_group': true, 'group_order': 2, 'group_title': 'Lắp ráp', 'labor': 2, 'uom_labor_data': {'id': 0, 'title': 'Giờ'}},
+            {'group_order': 2, 'product_data': {'id': 0, 'title': 'Mặt bàn lớn'}, 'quantity': 1, 'order': 1},
+            {'group_order': 2, 'product_data': {'id': 1, 'title': 'Vít lớn 4mm'}, 'quantity': 3, 'order': 2},
         ]
         ProdOrderDataTableHandle.$tableMain.DataTable().rows.add(tmp).draw();
         ProdOrderLoadDataHandle.loadDD(ProdOrderDataTableHandle.$tableMain);
+        ProdOrderLoadDataHandle.loadSetCollapse();
+        ProdOrderLoadDataHandle.loadTime();
         return true;
     };
 
@@ -101,7 +113,7 @@ class ProdOrderLoadDataHandle {
                 let row = child.closest('tr');
                 let cls = '';
                 if (dataRow?.['group_order']) {
-                    cls = 'cl-' + dataRow?.['group_order'].replace(/-/g, "");
+                    cls = 'cl-' + String(dataRow?.['group_order']);
                 }
                 row.classList.add(cls);
                 row.classList.add('collapse');
@@ -128,6 +140,11 @@ class ProdOrderLoadDataHandle {
                 if (row.querySelector('.table-row-tool')) {
                     ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tool')), dataRow?.['tool_data']);
                 }
+                if (row.querySelector('.cl-parent')) {
+                    row.querySelector('.cl-parent').addEventListener('click', function () {
+                        $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
+                    });
+                }
             }
         });
         return true;
@@ -149,6 +166,15 @@ class ProdOrderLoadDataHandle {
         return true;
     };
 
+    static loadTime() {
+        let time = 0;
+        for (let eleLabor of ProdOrderDataTableHandle.$tableMain[0].querySelectorAll('.table-row-labor')) {
+            time += parseInt(eleLabor.innerHTML);
+        }
+        ProdOrderLoadDataHandle.$time.empty().html(`${time} Giờ`);
+        return true;
+    }
+
 }
 
 // DataTable
@@ -156,6 +182,10 @@ class ProdOrderDataTableHandle {
     static $tableMain = $('#table_production_order');
 
     static dataTableMain(data) {
+        let multi = 1;
+        if (ProdOrderLoadDataHandle.$quantity) {
+            multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
+        }
         ProdOrderDataTableHandle.$tableMain.DataTableDefault({
             data: data ? data : [],
             ordering: false,
@@ -164,7 +194,7 @@ class ProdOrderDataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    width: '',
+                    width: '1%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_group'] === true) {
@@ -184,22 +214,22 @@ class ProdOrderDataTableHandle {
                                     </button>
                                     <span class="table-row-order" data-row="${dataRow}" hidden></span>`;
                         }
-                        return `<span class="table-row-order cl-child" data-row="${dataRow}">${row?.['order']}</span>`;
+                        return `<span class="table-row-order ml-3 cl-child" data-row="${dataRow}">${row?.['order']}</span>`;
                     }
                 },
                 {
                     targets: 1,
-                    width: '',
+                    width: '20%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
-                            return `<span class="table-row-group-title">${row?.['group_title']}</span>`;
+                            return `<b class="table-row-group-title">${row?.['group_title']}</b>`;
                         }
                         return `<select class="form-select table-row-item"></select>`;
                     }
                 },
                 {
                     targets: 2,
-                    width: '',
+                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -209,17 +239,17 @@ class ProdOrderDataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '',
+                    width: '5%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
                         }
-                        return `<input type="text" class="form-control table-row-quantity" value="">`;
+                        return `<span class="table-row-quantity">${row?.['quantity'] * multi}</span>`;
                     }
                 },
                 {
                     targets: 4,
-                    width: '',
+                    width: '15%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -229,7 +259,7 @@ class ProdOrderDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '',
+                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -239,7 +269,7 @@ class ProdOrderDataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: '',
+                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -249,20 +279,20 @@ class ProdOrderDataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '',
+                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
-                            return `<span class="table-row-labor"></span>`;
+                            return `<span class="table-row-labor">${row?.['labor'] * multi} </span><span class="table-row-uom-labor">${row?.['uom_labor_data']?.['title']}</span>`;
                         }
                         return ``;
                     }
                 },
                 {
                     targets: 8,
-                    width: '',
+                    width: '18%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
-                            return `<select class="form-select table-row-tool"></select>`;
+                            return `<select class="form-select table-row-tool" multiple></select>`;
                         }
                         return ``;
                     }

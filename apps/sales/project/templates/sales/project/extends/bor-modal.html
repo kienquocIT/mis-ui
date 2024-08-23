@@ -1,0 +1,19 @@
+{% load static i18n %}
+<div class="wrap-bor">
+    <div class="block_01">
+        <select name="related_bor" id="bor_select" class="form-select" data-method="GET"
+                data-url="{% url 'RoleListAPI' %}" data-keyResp="role_list"></select>
+    </div>
+    <div class="block_02">
+        <div class="service-w">
+            <select name="related_service" id="service_select" class="form-select" hidden
+                    data-url="{% url 'EmployeeListAPI' %}"
+                    data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
+                    data-params="{'list_from_app':'{{ data.list_from_app|escape }}'}">
+            </select>
+        </div>
+        <button class="btn btn-outline-primary" id="prev_choice" type="button">
+            <i class="bi bi-arrow-return-right"></i>
+        </button>
+    </div>
+</div>

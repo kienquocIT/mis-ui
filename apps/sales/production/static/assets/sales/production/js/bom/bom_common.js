@@ -1,73 +1,138 @@
 const script_url = $('#script-url')
 const script_trans = $('#script-trans')
+const productEle = $('#product')
+const priceEle = $('#price')
+const timeEle = $('#time')
 const process_description_table = $('#process-description-table')
-const labor_summary_labor = $('#labor-summary-table')
+const labor_summary_table = $('#labor-summary-table')
 const add_new_process_description = $('#add-new-process-description')
 const material_table = $('#material-table')
 const tools_table = $('#tools-table')
-const add_new_tool = $('#add-new-tool')
 
-function addRow(table, data) {
+//// COMMON
+
+class BOMHandle {
+    load() {
+        loadProduct(productEle)
+        loadProcessDescriptionTable()
+        loadLaborSummaryTable()
+    }
+
+    combinesDataForProductionBOM(frmEle) {
+        let frm = new SetupFormSubmit($(frmEle))
+
+        frm.dataForm['bom_type'] = 0
+        frm.dataForm['product'] = productEle.val()
+        frm.dataForm['sum_price'] = priceEle.attr('value')
+        frm.dataForm['sum_time'] = timeEle.val()
+
+        let bom_process_data = []
+        process_description_table.find('tbody tr').each(function () {
+            bom_process_data.push({
+                'order': $(this).find('td:eq(0)').text(),
+                'task_name': $(this).find('.process-task-name').val(),
+                'labor': $(this).find('.process-labor').val(),
+                'quantity': $(this).find('.process-quantity').val(),
+                'uom': $(this).find('.process-uom').val(),
+                'unit_price': $(this).find('.process-unit-price').attr('value'),
+                'subtotal_price': $(this).find('.process-subtotal-price').attr('value'),
+                'note': $(this).find('.process-note').val()
+            })
+        })
+
+        let bom_summary_process_data = []
+        labor_summary_table.find('tbody tr').each(function (index) {
+            bom_summary_process_data.push({
+                'order': parseInt(index) + 1,
+                'labor': $(this).find('.labor-summary-labor').attr('data-labor-id'),
+                'quantity': $(this).find('.labor-summary-quantity').text(),
+                'uom': $(this).find('.labor-summary-uom').attr('data-uom-id'),
+                'unit_price': $(this).find('.labor-summary-unit-price').attr('data-init-money'),
+                'subtotal_price': $(this).find('.labor-summary-subtotal-price').attr('data-init-money'),
+            })
+        })
+
+        let bom_material_component_data = []
+        process_description_table.find('tbody tr').each(function () {
+            let process_index = $(this).find('td:eq(0)').text()
+            let material_order = 0
+            material_table.find(`tbody .material-for-task-${process_index}`).each(function () {
+                if ($(this).find('.material-group').length === 0) {
+                    material_order += 1
+                    bom_material_component_data.push({
+                        'bom_process_order': process_index,
+                        'order': material_order,
+                        'material': $(this).find('.material-item').val(),
+                        'quantity': $(this).find('.material-quantity').val(),
+                        'uom': $(this).find('.material-uom').val(),
+                        'unit_price': $(this).find('.material-unit-price').attr('value'),
+                        'subtotal_price': $(this).find('.material-subtotal-price').attr('value'),
+                        'disassemble': $(this).find('.material-disassemble').prop('checked'),
+                        'note': $(this).find('.material-note').val(),
+                    })
+                }
+            })
+        })
+
+        let bom_tool_data = []
+        process_description_table.find('tbody tr').each(function () {
+            let process_index = $(this).find('td:eq(0)').text()
+            let tool_order = 0
+            tools_table.find(`tbody .tool-for-task-${process_index}`).each(function () {
+                if ($(this).find('.tool-group').length === 0) {
+                    tool_order += 1
+                    bom_tool_data.push({
+                        'bom_process_order': process_index,
+                        'order': tool_order,
+                        'tool': $(this).find('.tool-item').val(),
+                        'quantity': $(this).find('.tool-quantity').val(),
+                        'uom': $(this).find('.tool-uom').val(),
+                        'note': $(this).find('.tool-note').val(),
+                    })
+                }
+            })
+        })
+
+        frm.dataForm['bom_process_data'] = bom_process_data
+        frm.dataForm['bom_summary_process_data'] = bom_summary_process_data
+        frm.dataForm['bom_material_component_data'] = bom_material_component_data
+        frm.dataForm['bom_tool_data'] = bom_tool_data
+
+        // console.log(frm.dataForm)
+        return frm
+    }
+}
+
+function BOMAddRow(table, data) {
     table.DataTable().row.add(data).draw();
 }
 
-function deleteRow(table, currentRow) {
+function BOMDeleteRow(table, currentRow) {
     currentRow = parseInt(currentRow) - 1
     let rowIndex = table.DataTable().row(currentRow).index();
     let row = table.DataTable().row(rowIndex);
     row.remove().draw();
 }
 
-function loadLaborPrice(ele, labor_selected, uom_id) {
-    ele.closest('tr').find('.process-unit-price').attr('value', 0)
-    ele.closest('tr').find('.dropdown-menu').html(`<h6 class="dropdown-header">${script_trans.attr('data-trans-select-one')}</h6>`)
-    for (let i = 0; i < labor_selected?.['price_list'].length; i++) {
-        ele.closest('tr').find('.dropdown-menu').append(
-            `<a class="${labor_selected?.['price_list'][i]?.['uom']?.['id'] !== uom_id ? 'disabled' : ''} labor-price-option dropdown-item border rounded mb-1" href="#">
-                <div class="row">
-                    <div class="col-5">
-                        <span class="labor-uom badge badge-success badge-sm" data-id="${labor_selected?.['price_list'][i]?.['uom']?.['id']}">${labor_selected?.['price_list'][i]?.['uom']?.['title']}</span>                 
-                    </div>
-                    <div class="col-7 text-right">
-                        <span class="labor-price-value text-success mask-money" data-init-money="${labor_selected?.['price_list'][i]?.['price_value']}"></span>
-                    </div>
-                </div>
-                ${labor_selected?.['price_list'][i]?.['uom']?.['id'] !== uom_id ? `<span class="fst-italic small">${script_trans.attr('data-trans-can-not-select')}</span>` : ''}
-            </a>`
-        )
-    }
-    $.fn.initMaskMoney2()
-}
-
-function loadLabor(ele, data) {
+function loadProduct(ele, data) {
     ele.initSelect2({
         ajax: {
-            url: script_url.attr('data-url-labor'),
+            url: ele.attr('data-url'),
             method: 'GET',
         },
         callbackDataResp: function (resp, keyResp) {
             return resp.data[keyResp];
         },
         data: (data ? data : null),
-        keyResp: 'labor_list',
+        keyResp: 'product_list',
         keyId: 'id',
         keyText: 'title',
-    }).on('change', function () {
-        if (ele.val()) {
-            let labor_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
-            loadUOM(ele.closest('tr').find('.process-uom'), labor_selected?.['uom_group']?.['id'])
-            loadLaborPrice(ele, labor_selected, ele.closest('tr').find('.process-uom').val())
-
-            let this_row = ele.closest('tr')
-            if (ele.val() && this_row.find('.process-uom').val() && this_row.find('.process-quantity').val()) {
-                update_labor_summary_table()
-            }
-        }
     })
 }
 
 function loadUOM(ele, group_id, data) {
     if (group_id) {
+        ele.empty()
         ele.initSelect2({
             ajax: {
                 data: {
@@ -87,97 +152,182 @@ function loadUOM(ele, group_id, data) {
     }
 }
 
-function loadProduct(ele, data) {
+function reload_index_for_material_and_tool_table() {
+    material_table.find('tbody .material-group').each(function (index) {
+        $(this).closest('tr').find('td:eq(0)').text(parseInt(index) + 1)
+    })
+    tools_table.find('tbody .tool-group').each(function (index) {
+        $(this).closest('tr').find('td:eq(0)').text(parseInt(index) + 1)
+    })
+}
+
+function calculate_BOM_sum_price() {
+    let sum_price = 0
+    labor_summary_table.find('tbody tr').each(function () {
+        sum_price += parseFloat($(this).find('.labor-summary-subtotal-price').attr('data-init-money'))
+    })
+    material_table.find('tbody tr').each(function () {
+        if ($(this).find('.material-subtotal-price').length > 0) {
+            sum_price += parseFloat($(this).find('.material-subtotal-price').attr('value'))
+        }
+    })
+    priceEle.attr('value', sum_price)
+    $.fn.initMaskMoney2()
+}
+
+function calculate_BOM_sum_time() {
+    let sum_time = 0
+    labor_summary_table.find('tbody tr').each(function () {
+        sum_time += parseFloat($(this).find('.labor-summary-quantity').text()) * parseFloat($(this).find('.labor-summary-uom').attr('data-uom-ratio'))
+    })
+    timeEle.val(sum_time)
+}
+
+function Disable(option) {
+    if (option === 'detail') {
+        $('input').prop('readonly', true).prop('disabled', true)
+        $('textarea').prop('readonly', true).prop('disabled', true)
+        $('select').prop('readonly', true).prop('disabled', true)
+        add_new_process_description.prop('disabled', true)
+        $('.del-row-material').prop('disabled', true)
+        $('.add-new-material').prop('disabled', true)
+        $('.del-row-tool').prop('disabled', true)
+        $('.add-new-tool').prop('disabled', true)
+        $('.material-unit-price').closest('div').find('a').prop('disabled', true)
+    }
+}
+
+function LoadDetailBOM(option) {
+    let url_loaded = $('#form-detail-bom').attr('data-url');
+    $.fn.callAjax(url_loaded, 'GET').then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                data = data['bom_detail'];
+                WFRTControl.setWFRuntimeID(data?.['bom_detail']);
+                $.fn.compareStatusShowPageAction(data);
+                $x.fn.renderCodeBreadcrumb(data);
+                console.log(data)
+
+                loadProduct(productEle, data?.['product'])
+                priceEle.attr('value', data?.['sum_price'])
+                timeEle.val(data?.['sum_time'])
+
+                loadProcessDescriptionTable(data?.['bom_process_data'], option)
+                loadLaborSummaryTable(data?.['bom_summary_process_data'])
+
+                for (let i = 0; i < data?.['bom_process_data'].length; i++) {
+                    let process_row_index = i + 1
+                    let process_task_name = data?.['bom_process_data'][i]?.['task_name']
+                    add_material_group(process_row_index, process_task_name)
+                    add_tool_group(process_row_index, process_task_name)
+
+                    for (let j = 0; j < data?.['bom_material_component_data'].length; j++) {
+                        if (process_row_index === parseInt(data?.['bom_material_component_data'][j]?.['bom_process_order'])) {
+                            let new_material_row = create_material_row(process_row_index)
+                            material_table.append(new_material_row)
+                            let material_selected = data?.['bom_material_component_data'][j]?.['material']
+                            loadMaterial(new_material_row.find('.material-item'), material_selected)
+                            new_material_row.find('.material-code').text(material_selected?.['code'])
+                            new_material_row.find('.material-quantity').val(data?.['bom_material_component_data'][j]?.['quantity'])
+                            loadUOM(
+                                new_material_row.find('.material-uom'),
+                                data?.['bom_material_component_data'][j]?.['uom']?.['group_id'],
+                                data?.['bom_material_component_data'][j]?.['uom']
+                            )
+                            loadMaterialPrice(new_material_row.find('.material-item'), material_selected, new_material_row.find('.material-uom').val())
+                            new_material_row.find('.material-unit-price').attr('value', data?.['bom_material_component_data'][j]?.['unit_price'])
+                            new_material_row.find('.material-subtotal-price').attr('value', data?.['bom_material_component_data'][j]?.['subtotal_price'])
+                            new_material_row.find('.material-disassemble').prop('checked', data?.['bom_material_component_data'][j]?.['disassemble'])
+                            new_material_row.find('.material-note').val(data?.['bom_material_component_data'][j]?.['note'])
+                            new_material_row.find('.del-row-material').prop('disabled', option === 'detail')
+                        }
+                    }
+
+                    for (let k = 0; k < data?.['bom_tool_data'].length; k++) {
+                        if (process_row_index === parseInt(data?.['bom_tool_data'][k]?.['bom_process_order'])) {
+                            let new_tool_row = create_tool_row(process_row_index)
+                            tools_table.append(new_tool_row)
+                            let tool_selected = data?.['bom_tool_data'][k]?.['tool']
+                            loadTool(new_tool_row.find('.tool-item'), tool_selected)
+                            new_tool_row.find('.tool-code').text(new_tool_row?.['code'])
+                            new_tool_row.find('.tool-quantity').val(data?.['bom_tool_data'][k]?.['quantity'])
+                            loadUOM(
+                                new_tool_row.find('.tool-uom'),
+                                data?.['bom_tool_data'][k]?.['uom']?.['group_id'],
+                                data?.['bom_tool_data'][k]?.['uom']
+                            )
+                            new_tool_row.find('.tool-note').val(data?.['bom_tool_data'][k]?.['note'])
+                        }
+                    }
+                }
+
+                $.fn.initMaskMoney2()
+                Disable(option);
+            }
+        })
+}
+
+//// PROCESS
+
+function loadLabor(ele, data) {
     ele.initSelect2({
         ajax: {
-            url: script_url.attr('data-url-product'),
+            url: script_url.attr('data-url-labor'),
             method: 'GET',
         },
         callbackDataResp: function (resp, keyResp) {
-            let result = []
-            for (let i = 0; i < resp.data[keyResp].length; i++) {
-                for (let j = 0; j < resp.data[keyResp][i]?.['general_product_types_mapped'].length; j++) {
-                    let prd_type = resp.data[keyResp][i]?.['general_product_types_mapped'][j]
-                    if (prd_type?.['title'] === "Nguyên vật liệu") {
-                        result.push(resp.data[keyResp][i])
-                        break;
-                    }
-                }
-            }
-            return result;
+            return resp.data[keyResp];
         },
         data: (data ? data : null),
-        keyResp: 'product_list',
+        keyResp: 'labor_list',
         keyId: 'id',
         keyText: 'title',
     }).on('change', function () {
         if (ele.val()) {
-            let product_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
-            ele.closest('tr').find('.material-code').text(product_selected?.['code'])
-            loadUOM(ele.closest('tr').find('.material-uom'), product_selected?.['general_uom_group']?.['id'])
+            let labor_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
+            loadUOM(ele.closest('tr').find('.process-uom'), labor_selected?.['uom_group'], labor_selected?.['uom'])
+            loadLaborPrice(ele, labor_selected, ele.closest('tr').find('.process-uom').val())
+            update_labor_summary_table()
+            calculate_BOM_sum_price()
+            calculate_BOM_sum_time()
         }
     })
 }
 
-function loadTool(ele, data) {
-    let dataParam = {}
-    let ajax = $.fn.callAjax2({
-        url: script_url.attr('data-url-tool-config'),
-        data: dataParam,
-        method: 'GET'
-    }).then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data && typeof data === 'object' && data.hasOwnProperty('product_type')) {
-                return data?.['product_type'];
-            }
-            return {};
-        },
-        (errs) => {
-            console.log(errs);
-        }
-    )
-
-    Promise.all([ajax]).then(
-        (results) => {
-            let tool_type_id = results[0]?.['id']
-            if (tool_type_id) {
-                ele.initSelect2({
-                    ajax: {
-                        url: script_url.attr('data-url-product'),
-                        method: 'GET',
-                    },
-                    callbackDataResp: function (resp, keyResp) {
-                        let result = []
-                        for (let i = 0; i < resp.data[keyResp].length; i++) {
-                            for (let j = 0; j < resp.data[keyResp][i]?.['general_product_types_mapped'].length; j++) {
-                                let prd_type = resp.data[keyResp][i]?.['general_product_types_mapped'][j]
-                                if (prd_type?.['id'] === tool_type_id) {
-                                    result.push(resp.data[keyResp][i])
-                                    break;
-                                }
-                            }
-                        }
-                        return result;
-                    },
-                    data: (data ? data : null),
-                    keyResp: 'product_list',
-                    keyId: 'id',
-                    keyText: 'title',
-                }).on('change', function () {
-                    if (ele.val()) {
-                        let tool_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
-                        ele.closest('tr').find('.tool-code').text(tool_selected?.['code'])
-                        loadUOM(ele.closest('tr').find('.tool-uom'), tool_selected?.['general_uom_group']?.['id'])
-                    }
-                })
-            }
-        })
+function loadLaborPrice(ele, labor_selected, uom_id) {
+    if (ele.closest('tr').find('.process-unit-price').attr('value') === '0') {
+        ele.closest('tr').find('.process-unit-price').attr('value', 0)
+        ele.closest('tr').find('.process-subtotal-price').attr('value', 0)
+    }
+    ele.closest('tr').find('.dropdown-menu').html(`<h6 class="dropdown-header">${script_trans.attr('data-trans-select-one')}</h6>`)
+    for (let i = 0; i < labor_selected?.['price_list'].length; i++) {
+        ele.closest('tr').find('.dropdown-menu').append(
+            `<a class="${labor_selected?.['price_list'][i]?.['uom']?.['id'] !== uom_id ? 'disabled' : ''} labor-price-option dropdown-item border rounded mb-1" href="#">
+                <div class="row">
+                    <div class="col-12">
+                        <span class="text-muted">${labor_selected?.['price_list'][i]?.['price']?.['title']}</span>                 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-5">
+                        <span class="labor-uom badge badge-success badge-sm" data-id="${labor_selected?.['price_list'][i]?.['uom']?.['id']}">${labor_selected?.['price_list'][i]?.['uom']?.['title']}</span>                 
+                    </div>
+                    <div class="col-7 text-right">
+                        <span class="labor-price-value text-success mask-money" data-init-money="${labor_selected?.['price_list'][i]?.['price_value']}"></span>
+                    </div>
+                </div>
+                ${labor_selected?.['price_list'][i]?.['uom']?.['id'] !== uom_id ? `<span class="fst-italic small">${script_trans.attr('data-trans-can-not-select')}</span>` : ''}
+            </a>`
+        )
+    }
+    $.fn.initMaskMoney2()
 }
 
 function loadProcessDescriptionTable(data_list=[], option='create') {
     process_description_table.DataTable().clear().destroy()
     process_description_table.DataTableDefault({
+        styleDom: 'hide-foot',
         rowIdx: true,
         reloadCurrency: true,
         paging: false,
@@ -191,8 +341,8 @@ function loadProcessDescriptionTable(data_list=[], option='create') {
                 }
             },
             {
-                'render': () => {
-                    return `<textarea required ${option === 'detail' ? 'disabled readonly' : ''} class="form-control process-task-name"></textarea>`;
+                'render': (data, type, row) => {
+                    return `<textarea required ${option === 'detail' ? 'disabled readonly' : ''} class="form-control process-task-name">${row?.['task_name'] ? row?.['task_name'] : ''}</textarea>`;
                 }
             },
             {
@@ -201,8 +351,8 @@ function loadProcessDescriptionTable(data_list=[], option='create') {
                 }
             },
             {
-                'render': () => {
-                    return `<input required ${option === 'detail' ? 'disabled readonly' : ''} type="number" class="form-control process-quantity" value="0">`;
+                'render': (data, type, row) => {
+                    return `<input required ${option === 'detail' ? 'disabled readonly' : ''} type="number" class="form-control process-quantity" value="${row?.['quantity'] ? row?.['quantity'] : 0}">`;
                 }
             },
             {
@@ -211,29 +361,30 @@ function loadProcessDescriptionTable(data_list=[], option='create') {
                 }
             },
             {
-                'render': () => {
+                'render': (data, type, row) => {
                     return `
                         <div class="input-group">
-                            <input required disabled readonly class="form-control mask-money process-unit-price" value="0">
-                            <a href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <input required disabled readonly class="form-control mask-money process-unit-price" value="${row?.['unit_price'] ? row?.['unit_price'] : 0}">
+                            <a ${option === 'detail' ? 'disabled' : ''} href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="input-group-text"><i class="bi bi-three-dots-vertical"></i></span>
                             </a>
-                            <div class="dropdown-menu position-fixed overflow-y-scroll"></div>
+                            <div style="min-width: 300px; max-height: 400px" class="dropdown-menu position-fixed overflow-y-scroll"></div>
                         </div>
                     `;
                 }
             },
             {
-                'render': () => {
-                    return `<input disabled readonly class="form-control mask-money process-subtotal-price" value="0">`;
+                'render': (data, type, row) => {
+                    return `<input disabled readonly class="form-control mask-money process-subtotal-price" value="${row?.['subtotal_price'] ? row?.['subtotal_price'] : 0}">`;
                 }
             },
             {
-                'render': () => {
-                    return `<textarea ${option === 'detail' ? 'disabled' : ''} class="form-control process-note"></textarea>`;
+                'render': (data, type, row) => {
+                    return `<textarea ${option === 'detail' ? 'disabled' : ''} class="form-control process-note">${row?.['note'] ? row?.['note'] : ''}</textarea>`;
                 }
             },
             {
+                className: 'text-right',
                 'render': () => {
                     return `<button ${option === 'detail' ? 'disabled' : ''} type="button" class="btn del-row-process"><i class="fas fa-trash-alt text-secondary"></i></button>`;
                 }
@@ -242,24 +393,39 @@ function loadProcessDescriptionTable(data_list=[], option='create') {
         initComplete: function () {
             if (data_list.length > 0) {
                 process_description_table.find('tbody tr').each(function (index) {
-
+                    loadLabor($(this).find('.process-labor'), data_list[index]?.['labor'])
+                    loadUOM($(this).find('.process-uom'), data_list[index]?.['uom']?.['group_id'], data_list[index]?.['uom'])
+                    let labor_selected = data_list[index]?.['labor']
+                    loadLaborPrice($(this).find('.process-labor'), labor_selected, $(this).find('.process-uom').val())
                 })
             }
         }
     });
 }
 
-function loadLaborSummaryTable(data_list=[], option='create') {
-    labor_summary_labor.DataTable().clear().destroy()
-    labor_summary_labor.DataTableDefault({
+function loadLaborSummaryTable(data_list=[]) {
+    labor_summary_table.DataTable().clear().destroy()
+    labor_summary_table.DataTableDefault({
         dom: '',
+        // "order": [[2, 'asc']],
+        // "rowGroup": {
+        //     "dataSrc": function(row) {
+        //         // Trích xuất nội dung từ thẻ <span> trong cột UOM
+        //         return row?.['uom']?.['title'];
+        //     },
+        //     "startRender": function(rows, group) {
+        //         // Hiển thị tên nhóm ở dòng đầu tiên của nhóm
+        //         return $('<tr/>')
+        //             .append(`<td colspan="5">${group}</td></tr>`)
+        //     }
+        // },
         reloadCurrency: true,
         paging: false,
         data: data_list,
         columns: [
             {
                 'render': (data, type, row) => {
-                    return `<span class="labor-summary-labor-${row?.['labor']?.['id']}-${row?.['uom']?.['id']}">${row?.['labor']?.['title']}</span>`;
+                    return `<span data-labor-id="${row?.['labor']?.['id']}" class="labor-summary-labor labor-summary-labor-${row?.['labor']?.['id']}-${row?.['uom']?.['id']}">${row?.['labor']?.['title']}</span>`;
                 }
             },
             {
@@ -269,7 +435,7 @@ function loadLaborSummaryTable(data_list=[], option='create') {
             },
             {
                 'render': (data, type, row) => {
-                    return `<span class="labor-summary-uom">${row?.['uom']?.['title']}</span>`;
+                    return `<span data-uom-ratio="${row?.['uom']?.['ratio']}" data-uom-id="${row?.['uom']?.['id']}" class="labor-summary-uom">${row?.['uom']?.['title']}</span>`;
                 }
             },
             {
@@ -286,30 +452,21 @@ function loadLaborSummaryTable(data_list=[], option='create') {
     })
 }
 
-class BORHandle {
-    load(option) {
-        loadProcessDescriptionTable()
-        loadLaborSummaryTable()
-    }
-}
-
-//// COMMON
-
-function reload_index_for_material_and_tool_table() {
-    material_table.find('tbody tr').each(function (index) {
-        $(this).find('td:eq(0)').text(parseInt(index) + 1)
-    })
-    tools_table.find('tbody tr').each(function (index) {
-        $(this).find('td:eq(0)').text(parseInt(index) + 1)
-    })
-}
-
-//// PROCESS
-
 add_new_process_description.on('click', function () {
-    addRow(process_description_table, {})
+    BOMAddRow(process_description_table, {})
     let row_added = process_description_table.find('tbody tr:last-child')
     loadLabor(row_added.find('.process-labor'))
+})
+
+$(document).on("click", '.del-row-process', function () {
+    let row_index = $(this).closest('tr').find('td:eq(0)').text()
+    BOMDeleteRow($(this).closest('table'), row_index)
+    remove_material_group(row_index)
+    remove_tool_group(row_index)
+    reload_index_for_material_and_tool_table()
+    update_labor_summary_table()
+    calculate_BOM_sum_price()
+    calculate_BOM_sum_time()
 })
 
 function calculate_process_table(row) {
@@ -336,45 +493,27 @@ $(document).on("change", '.process-task-name', function () {
 $(document).on("change", '.process-quantity', function () {
     let this_row = $(this).closest('tr')
     calculate_process_table(this_row)
-    if (this_row.find('.process-labor').val() && this_row.find('.process-uom').val()) {
-        update_labor_summary_table()
-        process_description_table.DataTable().draw(false)
-    }
+    update_labor_summary_table()
+    calculate_BOM_sum_price()
+    calculate_BOM_sum_time()
 })
 
 $(document).on("change", '.process-uom', function () {
     let this_row = $(this).closest('tr')
     let labor_selected = SelectDDControl.get_data_from_idx(this_row.find('.process-labor'), this_row.find('.process-labor').val())
     loadLaborPrice(this_row.find('.process-labor'), labor_selected, $(this).val())
-
-    if (this_row.find('.process-labor').val() && this_row.find('.process-uom').val()) {
-        update_labor_summary_table()
-        process_description_table.DataTable().draw(false)
-    }
+    update_labor_summary_table()
+    calculate_BOM_sum_price()
 })
 
 $(document).on("click", '.labor-price-option', function () {
-    loadUOM(
-        $(this).closest('tr').find('.process-uom'),
-        null,
-        {
-            'id': $(this).find('.labor-uom').attr('data-id'),
-            'title': $(this).find('.labor-uom').text()
-        }
-    )
-    let labor_price_value = $(this).find('.labor-price-value').attr('data-init-money')
-    $(this).closest('tr').find('.process-unit-price').attr('value', labor_price_value)
+    let this_row = $(this).closest('tr')
+    this_row.find('.process-unit-price').attr('value', $(this).find('.labor-price-value').attr('data-init-money'))
     calculate_process_table($(this).closest('tr'))
     update_labor_summary_table()
+    calculate_BOM_sum_price()
+    calculate_BOM_sum_time()
     $.fn.initMaskMoney2()
-})
-
-$(document).on("click", '.del-row-process', function () {
-    let row_index = $(this).closest('tr').find('td:eq(0)').text()
-    deleteRow($(this).closest('table'), row_index)
-    remove_material_group(row_index)
-    remove_tool_group(row_index)
-    reload_index_for_material_and_tool_table()
 })
 
 function update_labor_summary_table() {
@@ -396,7 +535,7 @@ function update_labor_summary_table() {
                 row_labor_summary.find('.labor-summary-quantity').text(old_quantity + this_quantity)
                 row_labor_summary.find('.labor-summary-subtotal-price').attr('data-init-money', old_subtotal_price + this_subtotal_price)
             } else {
-                addRow(labor_summary_labor, {
+                BOMAddRow(labor_summary_table, {
                     'labor': {
                         'id': labor_selected?.['id'],
                         'title': labor_selected?.['title'],
@@ -404,6 +543,7 @@ function update_labor_summary_table() {
                     'uom': {
                         'id': uom_selected?.['id'],
                         'title': uom_selected?.['title'],
+                        'ratio': uom_selected?.['ratio'],
                     },
                     'quantity': this_quantity,
                     'unit_price': this_unit_price,
@@ -417,15 +557,95 @@ function update_labor_summary_table() {
 
 //// MATERIAL
 
+function loadMaterial(ele, data) {
+    ele.initSelect2({
+        ajax: {
+            url: script_url.attr('data-url-material'),
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            return resp.data[keyResp];
+        },
+        data: (data ? data : null),
+        keyResp: 'material_list',
+        keyId: 'id',
+        keyText: 'title',
+    }).on('change', function () {
+        if (ele.val()) {
+            let material_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
+            ele.closest('tr').find('.material-code').text(material_selected?.['code'])
+            loadUOM(ele.closest('tr').find('.material-uom'), material_selected?.['general_uom_group'], material_selected?.['sale_default_uom'])
+            loadMaterialPrice(ele, material_selected, ele.closest('tr').find('.material-uom').val())
+        }
+    })
+}
+
+function loadMaterialPrice(ele, material_selected, uom_id) {
+    if (ele.closest('tr').find('.material-unit-price').attr('value') === '0') {
+        ele.closest('tr').find('.material-unit-price').attr('value', 0)
+        ele.closest('tr').find('.material-subtotal-price').attr('value', 0)
+    }
+    ele.closest('tr').find('.dropdown-menu').html(`<h6 class="dropdown-header">${script_trans.attr('data-trans-select-one')}</h6>`)
+    for (let i = 0; i < material_selected?.['price_list'].length; i++) {
+        ele.closest('tr').find('.dropdown-menu').append(
+            `<a class="${material_selected?.['price_list'][i]?.['uom']?.['id'] !== uom_id ? 'disabled' : ''} material-price-option dropdown-item border rounded mb-1" href="#">
+                <div class="row">
+                    <div class="col-12">
+                        <span class="text-muted">${material_selected?.['price_list'][i]?.['price']?.['title']}</span>                 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-5">
+                        <span class="material-uom badge badge-success badge-sm" data-id="${material_selected?.['price_list'][i]?.['uom']?.['id']}">${material_selected?.['price_list'][i]?.['uom']?.['title']}</span>                 
+                    </div>
+                    <div class="col-7 text-right">
+                        <span class="material-price-value text-success mask-money" data-init-money="${material_selected?.['price_list'][i]?.['price_value']}"></span>
+                    </div>
+                </div>
+                ${material_selected?.['price_list'][i]?.['uom']?.['id'] !== uom_id ? `<span class="fst-italic small">${script_trans.attr('data-trans-can-not-select')}</span>` : ''}
+            </a>`
+        )
+    }
+    $.fn.initMaskMoney2()
+}
+
 $(document).on("click", '.add-new-material', function () {
     let row_index = $(this).closest('tr').find('td:eq(0)').text()
     let new_material_row = create_material_row(row_index)
     $(this).closest('tr').after(new_material_row)
-    loadProduct(new_material_row.find('.material-item'))
+    loadMaterial(new_material_row.find('.material-item'))
 })
 
 $(document).on("click", '.del-row-material', function () {
     $(this).closest('tr').remove()
+    calculate_BOM_sum_price()
+})
+
+function calculate_material_table(row) {
+    let quantity = row.find('.material-quantity').val() ? parseFloat(row.find('.material-quantity').val()) : 0
+    let unit_price = row.find('.material-unit-price').attr('value') ? parseFloat(row.find('.material-unit-price').attr('value')) : 0
+    let subtotal = quantity * unit_price
+    row.find('.material-subtotal-price').attr('value', subtotal)
+    $.fn.initMaskMoney2()
+}
+
+$(document).on("change", '.material-quantity', function () {
+    calculate_material_table($(this).closest('tr'))
+    calculate_BOM_sum_price()
+})
+
+$(document).on("change", '.material-uom', function () {
+    let this_row = $(this).closest('tr')
+    let material_selected = SelectDDControl.get_data_from_idx(this_row.find('.material-item'), this_row.find('.material-item').val())
+    loadMaterialPrice(this_row.find('.material-item'), material_selected, $(this).val())
+    calculate_BOM_sum_price()
+})
+
+$(document).on("click", '.material-price-option', function () {
+    $(this).closest('tr').find('.material-unit-price').attr('value', $(this).find('.material-price-value').attr('data-init-money'))
+    calculate_material_table($(this).closest('tr'))
+    calculate_BOM_sum_price()
+    $.fn.initMaskMoney2()
 })
 
 function create_material_group_row(index, task_name) {
@@ -450,15 +670,23 @@ function create_material_row(index) {
             <td><select class="form-select select2 material-item"></select></td>
             <td><input type="number" class="form-control material-quantity" value="0"></td>
             <td><select class="form-select select2 material-uom"></select></td>
-            <td><input disabled readonly class="form-control mask-money material-unit-price" value="0"></td>
-            <td><input disabled readonly class="form-control mask-money material-subtotal-price" value="0"></td>
             <td>
+                <div class="input-group">
+                    <input required disabled readonly class="form-control mask-money material-unit-price" value="0">
+                    <a href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="input-group-text"><i class="bi bi-three-dots-vertical"></i></span>
+                    </a>
+                    <div style="min-width: 300px; max-height: 400px" class="dropdown-menu position-fixed overflow-y-scroll"></div>
+                </div>
+            </td>
+            <td><input disabled readonly class="form-control mask-money material-subtotal-price" value="0"></td>
+            <td class="text-center">
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input material-disassemble">
                 </div>
             </td>
             <td><textarea class="form-control material-note"></textarea></td>
-            <td><button type="button" class="btn del-row-material"><i class="fas fa-trash-alt text-secondary"></i></button></td>
+            <td class="text-right"><button type="button" class="btn del-row-material"><i class="fas fa-trash-alt text-secondary"></i></button></td>
         </tr>
     `)
 }
@@ -478,6 +706,28 @@ function remove_material_group(index) {
 }
 
 //// TOOL
+
+function loadTool(ele, data) {
+    ele.initSelect2({
+        ajax: {
+            url: script_url.attr('data-url-tool'),
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            return resp.data[keyResp];
+        },
+        data: (data ? data : null),
+        keyResp: 'tool_list',
+        keyId: 'id',
+        keyText: 'title',
+    }).on('change', function () {
+        if (ele.val()) {
+            let tool_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
+            ele.closest('tr').find('.tool-code').text(tool_selected?.['code'])
+            loadUOM(ele.closest('tr').find('.tool-uom'), tool_selected?.['general_uom_group'])
+        }
+    })
+}
 
 $(document).on("click", '.add-new-tool', function () {
     let row_index = $(this).closest('tr').find('td:eq(0)').text()
@@ -513,7 +763,7 @@ function create_tool_row(index) {
             <td><input type="number" class="form-control tool-quantity" value="0"></td>
             <td><select class="form-select select2 tool-uom"></select></td>
             <td><textarea class="form-control tool-note"></textarea></td>
-            <td><button type="button" class="btn del-row-tool"><i class="fas fa-trash-alt text-secondary"></i></button></td>
+            <td class="text-right"><button type="button" class="btn del-row-tool"><i class="fas fa-trash-alt text-secondary"></i></button></td>
         </tr>
     `)
 }

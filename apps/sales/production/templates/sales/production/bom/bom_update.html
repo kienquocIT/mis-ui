@@ -19,13 +19,21 @@
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
+            data-url-labor="{% url 'LaborListForBOMAPI' %}"
+            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
+            data-url-material="{% url 'ProductMaterialListForBOMAPI' %}"
+            data-url-tool="{% url 'ProductToolListForBOMAPI' %}"
+    ></script>
+    <script id="script-trans"
+            data-trans-select-one="{% trans 'Select one' %}"
+            data-trans-can-not-select="{% trans "Can't be selected due to different UOM" %}"
     ></script>
     <form id="form-detail-bom"
-{#          data-url="{% url 'DistributionPlanDetailAPI' pk=pk %}"#}
-{#          data-url-redirect="{% url 'DistributionPlanDetail' pk=pk %}"#}
-          data-method="PUT"
+          data-url="{% url 'BOMDetailAPI' pk=pk %}"
+          data-method="GET"
     >
         {% csrf_token %}
+        {% include 'sales/production/bom/common/information.html' %}
     </form>
 {% endblock %}
 {% block dataHiddenGroup %}

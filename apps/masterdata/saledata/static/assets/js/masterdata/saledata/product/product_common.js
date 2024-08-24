@@ -277,6 +277,7 @@ function loadPriceList(price_list_from_detail, option) {
     }
     let tbl = $('#table_price_list');
     tbl.DataTableDefault({
+        styleDom: 'hide-foot',
         paging: false,
         scrollX: '100vh',
         scrollY: '35vh',

@@ -24,16 +24,17 @@
             <table class="table nowrap w-100"
                    id="bom-list-table"
                    data-method="GET"
-{#                   data-url="{% url 'DistributionPlanListAPI' %}"#}
-{#                   data-url-detail="{% url 'DistributionPlanDetail' '0' %}"#}
+                   data-url="{% url 'BOMListAPI' %}"
+                   data-url-detail="{% url 'BOMDetail' '0' %}"
             >
                 <thead>
                 <tr>
                     <td></td>
                     <td>{% trans 'Code' %}</td>
                     <td>{% trans 'Product/Service name' %}</td>
-                    <td>{% trans 'Time' %}</td>
-                    <td>{% trans 'Cost' %}</td>
+                    <td>{% trans 'Sum time' %}</td>
+                    <td>{% trans 'Sum price' %}</td>
+                    <td>{% trans 'System status' %}</td>
                 </tr>
                 </thead>
                 <tbody></tbody>

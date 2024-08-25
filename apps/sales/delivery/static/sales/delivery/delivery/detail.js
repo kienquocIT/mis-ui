@@ -59,7 +59,6 @@ $(async function () {
                 };
                 keyResp = 'regis_borrow_list';
             }
-
             $.fn.callAjax2({
                 'url': url,
                 'method': 'get',
@@ -80,15 +79,19 @@ $(async function () {
                         temp[isKey] = isData?.['regis_data'];
                         _this.setWarehouseList = temp;
 
-                        let dataRegis = prodTable.setupDataPW(isData?.['regis_data'], prod_data, config);
+                        let dataRegis = prodTable.setupDataPW(isData?.['regis_data'], prod_data, config, 0);
                         for (let borrow_data of isData?.['borrow_data']) {
-                            let dataBorrow = prodTable.setupDataPW(borrow_data?.['regis_data'], prod_data, config);
+                            let dataBorrow = prodTable.setupDataPW(borrow_data?.['regis_data'], prod_data, config, 0);
+                            dataRegis = dataRegis.concat(dataBorrow);
+                        }
+                        for (let borrow_data of isData?.['borrow_data_general_stock']) {
+                            let dataBorrow = prodTable.setupDataPW(borrow_data?.['regis_data'], prod_data, config, 1);
                             dataRegis = dataRegis.concat(dataBorrow);
                         }
                         prodTable.dataTablePW(dataRegis, config);
                     }
                 } else {
-                    let dataPW = prodTable.setupDataPW(isData, prod_data, config);
+                    let dataPW = prodTable.setupDataPW(isData, prod_data, config, 0);
                     prodTable.dataTablePW(dataPW, config);
                 }
 
@@ -247,10 +250,7 @@ $(async function () {
                                     + `<i class="fa-solid fa-ellipsis"></i></button></div>`;
                             }
                             if (!data?.['is_not_inventory']){
-                                html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
-                                    + `<p id="ready_row-${meta.row}">${row}<p/>`
-                                    + `<button type="button" class="btn btn-flush-primary btn-icon" disabled>`
-                                    + `<i class="fa-solid fa-ellipsis"></i></button></div>`;
+                                html = `<p id="ready_row-${meta.row}">${row}<p/>`;
                             }
                             return html
                         }
@@ -259,6 +259,10 @@ $(async function () {
                         targets: 7,
                         class: 'w-15 text-center',
                         render: (row, type, data, meta) => {
+                            let disabled = '';
+                            if ($form.attr('data-method').toLowerCase() === 'get') {
+                                disabled = 'disabled';
+                            }
                             let quantity = 0
                             if (data.picked_quantity) quantity = data.picked_quantity
                             let html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
@@ -282,9 +286,8 @@ $(async function () {
                                 html = `<p class="text-center">${quantity}<p/>`
                             if (!data?.['is_not_inventory']){
                                 html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
-                                + `<input type="number" class="form-control w-100p services_input" id="prod_row-${meta.row}" value="${quantity}">`
-                                + `<button type="button" class="btn" disabled>`
-                                + `<i class="fa-solid fa-ellipsis"></i></button></div>`;
+                                + `<input type="number" class="form-control w-100p services_input" id="prod_row-${meta.row}" value="${quantity}" ${disabled}>`
+                                + `</div>`;
                             }
                             return html
                         }
@@ -329,19 +332,20 @@ $(async function () {
             return true;
         };
 
-        setupDataPW(dataSrc, prod_data, config) {
+        setupDataPW(dataSrc, prod_data, config, type) {
             let finalData = [];
             let baseData = [];
             let soDataJson = {};
+            let commonDataJson = {};
             for (let pwh of dataSrc) {
                 pwh['picked'] = 0;
-                pwh['is_so'] = false;
-                if (!pwh.hasOwnProperty('sale_order')) {
+                pwh['is_regis_so'] = false;
+                if (!pwh.hasOwnProperty('sale_order') && type === 0) {
                     if ($eleSO.attr('data-so')) {
                         pwh['sale_order'] = JSON.parse($eleSO.attr('data-so'));
                     }
                 }
-                for (let deliveryData in prod_data?.['delivery_data']) {
+                for (let deliveryData of prod_data?.['delivery_data']) {
                     if (pwh?.['sale_order']?.['id'] === deliveryData?.['sale_order']) {
                         pwh['picked'] = deliveryData?.['stock'];
                     }
@@ -381,17 +385,43 @@ $(async function () {
                 }
 
                 baseData.push(pwh);
-                if (pwh?.['sale_order']?.['id']) {
-                    if (!soDataJson.hasOwnProperty(String(pwh?.['sale_order']?.['id']))) {
-                        soDataJson[String(pwh?.['sale_order']?.['id'])] = {'sale_order': pwh?.['sale_order'], 'is_so': true, 'pw_data': [pwh]};
+                if (type === 0) {
+                    if (pwh?.['sale_order']?.['id']) {
+                        if (!soDataJson.hasOwnProperty(String(pwh?.['sale_order']?.['id']))) {
+                            soDataJson[String(pwh?.['sale_order']?.['id'])] = {
+                                'sale_order': pwh?.['sale_order'],
+                                'available_stock': pwh?.['available_stock'],
+                                'is_regis_so': true,
+                                'pw_data': [pwh]
+                            };
+                        } else {
+                            soDataJson[String(pwh?.['sale_order']?.['id'])]['pw_data'].push(pwh);
+                            soDataJson[String(pwh?.['sale_order']?.['id'])]['available_stock'] += pwh?.['available_stock'];
+                        }
+                    }
+                }
+                if (type === 1) {
+                    if (!commonDataJson.hasOwnProperty('common_warehouse')) {
+                        commonDataJson['common_warehouse'] = {
+                            'sale_order': pwh?.['sale_order'],
+                            'available_stock': pwh?.['common_stock'],
+                            'is_regis_common': true,
+                            'pw_data': [pwh]
+                        };
                     } else {
-                        soDataJson[String(pwh?.['sale_order']?.['id'])]['pw_data'].push(pwh);
+                        commonDataJson['common_warehouse']['pw_data'].push(pwh);
                     }
                 }
             }
             for (let key in soDataJson) {
                 finalData.push(soDataJson[key]);
                 for (let pwData of soDataJson[key]?.['pw_data']) {
+                    finalData.push(pwData);
+                }
+            }
+            for (let key in commonDataJson) {
+                finalData.push(commonDataJson[key]);
+                for (let pwData of commonDataJson[key]?.['pw_data']) {
                     finalData.push(pwData);
                 }
             }
@@ -410,10 +440,17 @@ $(async function () {
                 columns: [
                     {
                         targets: 0,
-                        class: 'w-15',
+                        class: 'w-35',
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                            if (row?.['is_so'] === true) {
+                            if (row?.['is_regis_so'] === true) {
+                                let project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-other-order')}: ${row?.['sale_order']?.['code']}</span>`;
+                                if ($eleSO.attr('data-so')) {
+                                    let dataSO = JSON.parse($eleSO.attr('data-so'));
+                                    if (row?.['sale_order']?.['id'] === dataSO?.['id']) {
+                                        project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-current-order')}</span>`;
+                                    }
+                                }
                                 let target = ".cl-" + row?.['sale_order']?.['id'].replace(/-/g, "");
                                 return `<div class="d-flex align-items-center">
                                             <button 
@@ -429,7 +466,26 @@ $(async function () {
                                             >
                                                 <span class="icon"><i class="fas fa-chevron-down"></i></span>
                                             </button>
-                                            <span class="badge badge-primary badge-outline">${$trans.attr('data-project')}: ${row?.['sale_order']?.['code']}</span>
+                                            ${project}<span class="badge badge-pink badge-outline">${$trans.attr('data-available')}: ${row?.['available_stock']}</span>
+                                        </div>`;
+                            }
+                            if (row?.['is_regis_common'] === true) {
+                                let target = ".cl-is_regis_common";
+                                return `<div class="d-flex align-items-center">
+                                            <button 
+                                                type="button" 
+                                                class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-xs cl-parent mr-1" 
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="${target}"
+                                                data-bs-placement="top"
+                                                aria-expanded="true"
+                                                aria-controls="newGroup"
+                                                data-group-order="${row?.['group_order']}"
+                                                data-row="${dataRow}"
+                                            >
+                                                <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                                            </button>
+                                            <span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-common-wh')}</span><span class="badge badge-pink badge-outline">${$trans.attr('data-available')}: ${row?.['available_stock']}</span>
                                         </div>`;
                             }
                             let checked = '';
@@ -440,7 +496,7 @@ $(async function () {
                             if (row?.['product']?.['general_traceability_method'] === 0) {
                                 disabled = 'disabled';
                             }
-                            return `<div class="d-flex align-items-center ml-5">
+                            return `<div class="d-flex align-items-center ml-3">
                                         <div class="form-check">
                                             <input
                                                 type="radio"
@@ -451,45 +507,35 @@ $(async function () {
                                                 ${disabled}
                                             >
                                         </div>
-                                        <p>${row?.['warehouse']?.['code']}</p>
+                                        <span class="badge badge-soft-success">${row?.['warehouse']?.['code']}</span><span>${row?.['warehouse']?.['title']}</span>
                                     </div>`;
                         }
                     },
                     {
                         targets: 1,
-                        class: 'w-25',
-                        render: (data, type, row) => {
-                            if (row?.['is_so'] === true) {
-                                return ``;
-                            }
-                            return `<p>${row?.['warehouse']?.['title']}</p>`;
-                        }
-                    },
-                    {
-                        targets: 2,
                         class: 'w-15',
                         render: (data, type, row) => {
-                            if (row?.['is_so'] === true) {
+                            if (row?.['is_regis_so'] === true || row?.['is_regis_common'] === true) {
                                 return ``;
                             }
                             return `<span class="table-row-uom-delivery">${row?.['uom_delivery']?.['title'] ? row?.['uom_delivery']?.['title'] : ''}</span>`;
                         }
                     },
                     {
-                        targets: 3,
+                        targets: 2,
                         class: 'w-20',
                         render: (data, type, row) => {
-                            if (row?.['is_so'] === true) {
+                            if (row?.['is_regis_so'] === true || row?.['is_regis_common'] === true) {
                                 return ``;
                             }
-                            return `<p class="table-row-available text-success">${row?.['available_stock']}</p>`;
+                            return `<p class="table-row-available">${row?.['available_stock']}</p>`;
                         }
                     },
                     {
-                        targets: 4,
+                        targets: 3,
                         class: 'w-25',
                         render: (data, type, row, meta) => {
-                            if (row?.['is_so'] === true) {
+                            if (row?.['is_regis_so'] === true || row?.['is_regis_common'] === true) {
                                 return ``;
                             }
                             let disabled = row?.['product_amount'] <= 0 ? 'disabled' : '';
@@ -505,7 +551,7 @@ $(async function () {
                                     disabled = 'disabled';
                                 }
                             }
-                            return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row?.['picked']}" ${disabled}>`;
+                            return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row?.['picked'] ? row?.['picked'] : 0}" ${disabled}>`;
                         }
                     },
                 ],
@@ -562,7 +608,12 @@ $(async function () {
                 if (child.getAttribute('data-row')) {
                     let dataRow = JSON.parse(child.getAttribute('data-row'));
                     let row = child.closest('tr');
-                    let cls = 'cl-' + dataRow?.['sale_order']?.['id'].replace(/-/g, "");
+                    let cls = '';
+                    if (dataRow?.['sale_order']?.['id']) {
+                        cls = 'cl-' + dataRow?.['sale_order']?.['id'].replace(/-/g, "");
+                    } else {
+                        cls = 'cl-is_regis_common';
+                    }
                     row.classList.add(cls);
                     row.classList.add('collapse');
                     row.classList.add('show');
@@ -572,23 +623,22 @@ $(async function () {
         };
 
         setupTotal() {
-            let eleTotalAvailable = $table[0].querySelector('.total-available');
             let eleTotalPicked = $table[0].querySelector('.total-picked');
             let totalAvailable = 0;
             let totalPicked = 0;
-            if (eleTotalAvailable && eleTotalPicked) {
+            if (eleTotalPicked) {
                 $table.DataTable().rows().every(function () {
                     let row = this.node();
+                    let eleCl = row.querySelector('.cl-parent');
                     let eleAvailable = row.querySelector('.table-row-available');
                     let elePicked = row.querySelector('.table-row-picked');
-                    if (eleAvailable) {
+                    if (eleCl && eleAvailable) {
                         totalAvailable += parseFloat(eleAvailable.innerHTML);
                     }
                     if (elePicked) {
                         totalPicked += parseFloat(elePicked.value);
                     }
                 });
-                eleTotalAvailable.innerHTML = String(totalAvailable);
                 eleTotalPicked.innerHTML = String(totalPicked);
             }
             return true;
@@ -617,14 +667,18 @@ $(async function () {
             let dataParam = {'product_warehouse_id': productWHID};
             let keyResp = 'warehouse_lot_list';
             if (isRegis === true && dataSO && eleChecked.getAttribute('data-row')) {
-                url = tableLot.attr('data-url-regis');
                 let dataRow = JSON.parse(eleChecked.getAttribute('data-row'));
-                dataParam = {
-                    'gre_item_prd_wh__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
-                    'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
-                    'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
-                };
-                keyResp = 'gre_item_prd_wh_lot_list';
+                if (!dataRow?.['is_pw']) {
+                    url = tableLot.attr('data-url-regis');
+                    dataParam = {
+                        'gre_item_prd_wh__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
+                        'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
+                        'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
+                    };
+                    keyResp = 'gre_item_prd_wh_lot_list';
+                } else {
+                    isRegis = false;
+                }
             }
             $.fn.callAjax2({
                     'url': url,
@@ -743,14 +797,8 @@ $(async function () {
                 ],
                 rowCallback(row, data, index) {
                     $(`input.form-control`, row).on('change', function () {
-                        prodTable.validateQuantity(this);
-                        let valueLotInit = row?.querySelector('.table-row-quantity-init')?.innerHTML;
-                        if (parseFloat(this.value) <= parseFloat(valueLotInit)) {
-                            prodTable.loadQuantityDeliveryByLot(this);
-                        } else {
-                            $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
-                            this.value = '0';
-                        }
+                        prodTable.formatNum(this);
+                        prodTable.loadQuantityDeliveryByLot(this);
                     });
                 },
             });
@@ -758,6 +806,61 @@ $(async function () {
                 tableLot.DataTable().clear().draw();
                 tableLot.DataTable().rows.add(data ? data : []).draw();
             }
+        };
+
+        loadQuantityDeliveryByLot(ele) {
+            let row = ele.closest('tr');
+            if (row?.querySelector('.table-row-quantity-init')) {
+                let value = parseFloat(ele.value);
+                let valueLotInit = parseFloat(row?.querySelector('.table-row-quantity-init')?.innerHTML);
+                if (value > valueLotInit) {
+                    $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
+                    ele.value = '0';
+                    prodTable.loadQuantityDeliveryByLot(ele);
+                    return false;
+                }
+            }
+            let tableWH = $('#productStockDetail');
+            let rowChecked = tableWH[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr');
+            if (rowChecked) {
+                let newQuantity = 0;
+                let {valStock, valAvb} = prodTable.getValStockValAvb(tableWH, rowChecked);
+                let eleWHInput = rowChecked?.querySelector('.table-row-picked');
+                let lotData = [];
+                if (eleWHInput) {
+                    $('#datable-delivery-wh-lot').DataTable().rows().every(function () {
+                        let row = this.node();
+                        let rowLotData = this.data();
+                        let valueLotInit= row?.querySelector('.table-row-quantity-init')?.innerHTML;
+                        let valueLotInput = row?.querySelector('.table-row-quantity-delivery')?.value;
+                        newQuantity += parseFloat(valueLotInput);
+                        if (parseFloat(valueLotInput) > 0 && parseFloat(valueLotInput) <= parseFloat(valueLotInit)) {
+                            lotData.push({
+                                'product_warehouse_lot_id': rowLotData?.['id'],
+                                'quantity_initial': parseFloat(valueLotInit),
+                                'quantity_delivery': parseFloat(valueLotInput),
+                            })
+                        }
+                    });
+                    if (newQuantity <= valStock && newQuantity <= valAvb) {
+                        eleWHInput.value = newQuantity;
+                        // store new row data & redraw row
+                        let rowIndex = tableWH.DataTable().row(rowChecked).index();
+                        let $row = tableWH.DataTable().row(rowIndex);
+                        let rowData = $row.data();
+                        rowData['picked'] = newQuantity;
+                        rowData['lot_data'] = lotData;
+                        rowData['is_checked'] = true;
+                        tableWH.DataTable().row(rowIndex).data(rowData).draw();
+                    } else {
+                        $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
+                        ele.value = '0';
+                        prodTable.loadQuantityDeliveryByLot(ele);
+                        return false;
+                    }
+                }
+            }
+            return true;
         };
 
         loadSerial(eleChecked, row, data, productWHID) {
@@ -773,14 +876,18 @@ $(async function () {
             }
             if (isRegis === true && dataSO && eleChecked.getAttribute('data-row')) {
                 let dataRow = JSON.parse(eleChecked.getAttribute('data-row'));
-                url = tableSerial.attr('data-url-regis');
-                dataParam = {
-                    'gre_item_prd_wh__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
-                    'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
-                    'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
-                    'sn_registered__is_delete': false,
-                };
-                keyResp = 'good_registration_serial';
+                if (!dataRow?.['is_pw']) {
+                    url = tableSerial.attr('data-url-regis');
+                    dataParam = {
+                        'gre_item_prd_wh__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
+                        'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
+                        'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
+                        'sn_registered__is_delete': false,
+                    };
+                    keyResp = 'good_registration_serial';
+                } else {
+                    isRegis = false;
+                }
             }
             let detailData = [];
             $.fn.callAjax2({
@@ -932,66 +1039,15 @@ $(async function () {
             }
         };
 
-        loadUnCheckWH() {
-            for (let eleCheck of $('#productStockDetail')[0].querySelectorAll('.table-row-checkbox')) {
-                eleCheck.checked = false;
-                $(eleCheck.closest('tr')).css('background-color', '');
-            }
-        };
-
-        loadQuantityDeliveryByLot(ele) {
-            let tableWH = $('#productStockDetail');
-            let rowChecked = tableWH[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr');
-            if (rowChecked) {
-                let newQuantity = 0;
-                let valueWHAvailable = rowChecked?.querySelector('.table-row-available')?.innerHTML;
-                let eleWHInput = rowChecked?.querySelector('.table-row-picked');
-                let lotData = [];
-                if (valueWHAvailable && eleWHInput) {
-                    $('#datable-delivery-wh-lot').DataTable().rows().every(function () {
-                        let row = this.node();
-                        let rowLotData = this.data();
-                        let valueLotInit= row?.querySelector('.table-row-quantity-init')?.innerHTML;
-                        let valueLotInput = row?.querySelector('.table-row-quantity-delivery')?.value;
-                        newQuantity += parseFloat(valueLotInput);
-                        if (parseFloat(valueLotInput) > 0 && parseFloat(valueLotInput) <= parseFloat(valueLotInit)) {
-                            lotData.push({
-                                'product_warehouse_lot_id': rowLotData?.['id'],
-                                'quantity_initial': parseFloat(valueLotInit),
-                                'quantity_delivery': parseFloat(valueLotInput),
-                            })
-                        }
-                    });
-                    if (newQuantity <= parseFloat(valueWHAvailable)) {
-                        eleWHInput.value = newQuantity;
-                        // store new row data & redraw row
-                        let rowIndex = tableWH.DataTable().row(rowChecked).index();
-                        let $row = tableWH.DataTable().row(rowIndex);
-                        let rowData = $row.data();
-                        rowData['picked'] = newQuantity;
-                        rowData['lot_data'] = lotData;
-                        rowData['is_checked'] = true;
-                        tableWH.DataTable().row(rowIndex).data(rowData).draw();
-                    } else {
-                        $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
-                        ele.value = '0';
-                        prodTable.loadQuantityDeliveryByLot(ele);
-                        return false;
-                    }
-                }
-            }
-            return true;
-        };
-
         loadQuantityDeliveryBySerial(ele) {
             let tableWH = $('#productStockDetail');
             let rowChecked = tableWH[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr');
             if (rowChecked) {
                 let newQuantity = 0;
-                let valueWHAvailable = rowChecked?.querySelector('.table-row-available')?.innerHTML;
+                let {valStock, valAvb} = prodTable.getValStockValAvb(tableWH, rowChecked);
                 let eleWHInput = rowChecked?.querySelector('.table-row-picked');
                 let serialData = [];
-                if (valueWHAvailable && eleWHInput) {
+                if (eleWHInput) {
                     $('#datable-delivery-wh-serial').DataTable().rows().every(function () {
                         let row = this.node();
                         let rowSerialData = this.data();
@@ -1005,7 +1061,7 @@ $(async function () {
                             }
                         }
                     });
-                    if (newQuantity <= parseFloat(valueWHAvailable)) {
+                    if (newQuantity <= valStock && newQuantity <= valAvb) {
                         eleWHInput.value = newQuantity;
                         // store new row data & redraw row
                         let rowIndex = tableWH.DataTable().row(rowChecked).index();
@@ -1019,14 +1075,43 @@ $(async function () {
                         $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
                         ele.checked = false;
                         prodTable.loadQuantityDeliveryBySerial(ele);
-                        return false
+                        return false;
                     }
                 }
             }
             return true;
         };
 
-        validateQuantity(ele) {
+        getValStockValAvb(table, rowChecked) {
+            let valStock = 0;
+            if (rowChecked?.querySelector('.table-row-available')) {
+                valStock = parseFloat(rowChecked?.querySelector('.table-row-available')?.innerHTML);
+            }
+            let valAvb = 0;
+            for (let cls of rowChecked.classList) {
+                if (cls.includes('cl')) {
+                    let target = '.' + cls;
+                    let clParent = table[0].querySelector(`.cl-parent[data-bs-target="${target}"]`);
+                    if (clParent) {
+                        if (clParent.getAttribute('data-row')) {
+                            let dataRow = JSON.parse(clParent.getAttribute('data-row'));
+                            valAvb = dataRow?.['available_stock'];
+                            break;
+                        }
+                    }
+                }
+            }
+            return {valStock: valStock, valAvb: valAvb};
+        };
+
+        loadUnCheckWH() {
+            for (let eleCheck of $('#productStockDetail')[0].querySelectorAll('.table-row-checkbox')) {
+                eleCheck.checked = false;
+                $(eleCheck.closest('tr')).css('background-color', '');
+            }
+        };
+
+        formatNum(ele) {
             let value = ele.value;
             // Replace non-digit characters with an empty string
             value = value.replace(/[^0-9.]/g, '');

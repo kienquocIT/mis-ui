@@ -76,19 +76,19 @@ $(function () {
                     }
                 }, {
                     'width': '10%',
-                    'className': 'wrap-text',
+                    'className': 'wrap-text text-center',
                     'render': (data, type, row, meta) => {
-                        let btnUpdate = `
-                        <a 
-                            href="${updateUrl.format_url_with_uuid(row.id)}" 
-                            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" 
-                            data-bs-toggle="tooltip" data-bs-placement="top" title="${$.fn.transEle.attr('data-edit')}"
-                        >
-                            <span class="icon">
-                                <i class="fa-regular fa-pen-to-square"></i>
-                            </span>
-                        </a>
-                    `;
+                    //     let btnUpdate = `
+                    //     <a
+                    //         href="${updateUrl.format_url_with_uuid(row.id)}"
+                    //         class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button"
+                    //         data-bs-toggle="tooltip" data-bs-placement="top" title="${$.fn.transEle.attr('data-edit')}"
+                    //     >
+                    //         <span class="icon">
+                    //             <i class="fa-regular fa-pen-to-square"></i>
+                    //         </span>
+                    //     </a>
+                    // `;
                         let btnDelete = `
                         <a 
                             class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" 
@@ -100,7 +100,7 @@ $(function () {
                             </span>
                         </a>
                     `;
-                        return `<div class="text-center">` + btnUpdate + btnDelete + `</div>`;
+                        return btnDelete;
                     }
                 },
             ],

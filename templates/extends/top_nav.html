@@ -202,7 +202,7 @@
                         </a>
                         <div
                                 class="modal fade" id="switchMyCompany" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalCenter" aria-hidden="true"
+                                aria-labelledby="switchMyCompany" aria-hidden="true"
                         >
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
@@ -278,17 +278,11 @@
                                     <div class="media-head me-2">
                                         <div class="position-relative avatar avatar-primary avatar-sm avatar-rounded my-avatar">
                                             {{ base|render_avatar_tag|safe }}
-{#                                            <div#}
-{#                                                    id="btnUploadMyAvatar"#}
-{#                                                    class="position-absolute rounded-circle btn bg-dark opacity-80 top-0 left-0 h-100 w-100 d-flex justify-content-center align-items-center my-upload-avatar d-none"#}
-{#                                            >#}
-{#                                                <i class="fa-solid fa-camera text-white"></i>#}
-{#                                            </div>#}
                                         </div>
                                     </div>
                                     <div class="media-body">
                                         <div class="dropdown">
-                                            {{ base.fullname }}
+                                            <a href="{% url 'MyProfileView' %}">{{ base.fullname }}</a>
                                         </div>
                                         <div class="fs-7">
                                             <a
@@ -297,9 +291,26 @@
                                         </div>
                                     </div>
                                 </div>
-                                <a href="{% url 'ChangePasswordView' %}">
-                                    <button class="btn btn-xs btn-outline-secondary">{% trans 'Change password' %}</button>
-                                </a>
+                                <div class="w-100 d-flex">
+                                    <a
+                                            href="{% url 'MyProfileView' %}"
+                                            class="m-1"
+                                            data-bs-toggle="tooltip"
+                                            title="{% trans 'My profile' %}"
+                                    >
+                                        <button class="btn btn-xs btn-outline-primary w-100">
+                                            <i class="fa-solid fa-address-card"></i>
+                                        </button>
+                                    </a>
+                                    <a
+                                            href="{% url 'ChangePasswordView' %}"
+                                            class="m-1"
+                                            data-bs-toggle="tooltip"
+                                            title="{% trans 'Change password' %}"
+                                    >
+                                        <button class="btn btn-xs btn-outline-primary w-100"><i class="fa-solid fa-key"></i></button>
+                                    </a>
+                                </div>
                             </div>
                             <div class="dropdown-divider"></div>
                             <h6 class="dropdown-header">
@@ -366,7 +377,7 @@
                                 <span>{{ base.language|language_full_name }}</span>
                             </a>
 
-                            <a id="link-logout" class="dropdown-item" href="{% url 'AuthLogout' %}">
+                            <a id="link-logout" class="dropdown-item" href="{% url 'AuthLogout' %}?next={{ request.path }}">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="log-out"></i>
                                 </span>
@@ -386,7 +397,9 @@
                                 </span>
                                 <span>{% trans 'Terms & Conditions' %}</span>
                             </a>
-                            <a class="dropdown-item" href="{% url 'HelpAndSupportView' %}">
+                            <a class="dropdown-item"
+                               href="https://docs.bflow.vn/"
+                            >
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="help-circle"></i>
                                 </span>

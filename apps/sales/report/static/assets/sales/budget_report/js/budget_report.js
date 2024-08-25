@@ -233,32 +233,70 @@ $(document).ready(function () {
 
     function filter_by_month(data, company=true) {
         if (company) {
-            let month_order = parseFloat($month_select.val()) - 1
             let filtered_data = []
-            for (let i = 0; i < data.length; i++) {
-                let plan_value = data[i]?.['company_month_list'] ? parseFloat(data[i]?.['company_month_list']?.[month_order]) : 0
-                filtered_data.push({
-                    'expense_item': data[i]?.['expense_item'],
-                    'plan_value': plan_value,
-                    'actual_value': 0,
-                    'difference_value': 0 - plan_value,
-                    'rate_value': 0
-                })
+            let month_order = parseFloat($month_select.val()) - 1
+            if ($('#view-mode-select').val() === '0') {
+                for (let i = 0; i < data.length; i++) {
+                    let plan_value = data[i]?.['company_month_list'] ? parseFloat(data[i]?.['company_month_list']?.[month_order]) : 0
+                    filtered_data.push({
+                        'expense_item': data[i]?.['expense_item'],
+                        'plan_value': plan_value,
+                        'actual_value': 0,
+                        'difference_value': 0 - plan_value,
+                        'rate_value': 0
+                    })
+                }
+            }
+            else {
+                for (let i = 0; i < data.length; i++) {
+                    let plan_value = 0
+                    if (data[i]?.['company_month_list']) {
+                        for (let j = 0; j <= month_order; j++) {
+                            plan_value += data[i]?.['company_month_list']?.[j] ? parseFloat(data[i]?.['company_month_list']?.[j]) : 0
+                        }
+                    }
+                    filtered_data.push({
+                        'expense_item': data[i]?.['expense_item'],
+                        'plan_value': plan_value,
+                        'actual_value': 0,
+                        'difference_value': 0 - plan_value,
+                        'rate_value': 0
+                    })
+                }
             }
             return filtered_data
         }
         else {
             let month_order = parseFloat($month_select.val()) - 1
             let filtered_data = []
-            for (let i = 0; i < data.length; i++) {
-                let plan_value = data[i]?.['group_month_list'] ? parseFloat(data[i]?.['group_month_list']?.[month_order]) : 0
-                filtered_data.push({
-                    'expense_item': data[i]?.['expense_item'],
-                    'plan_value': plan_value,
-                    'actual_value': 0,
-                    'difference_value': 0 - plan_value,
-                    'rate_value': 0
-                })
+            if ($('#view-mode-select').val() === '0') {
+                for (let i = 0; i < data.length; i++) {
+                    let plan_value = data[i]?.['group_month_list'] ? parseFloat(data[i]?.['group_month_list']?.[month_order]) : 0
+                    filtered_data.push({
+                        'expense_item': data[i]?.['expense_item'],
+                        'plan_value': plan_value,
+                        'actual_value': 0,
+                        'difference_value': 0 - plan_value,
+                        'rate_value': 0
+                    })
+                }
+            }
+            else {
+                for (let i = 0; i < data.length; i++) {
+                    let plan_value = 0
+                    if (data[i]?.['group_month_list']) {
+                        for (let j = 0; j <= month_order; j++) {
+                            plan_value += data[i]?.['group_month_list']?.[j] ? parseFloat(data[i]?.['group_month_list']?.[j]) : 0
+                        }
+                    }
+                    filtered_data.push({
+                        'expense_item': data[i]?.['expense_item'],
+                        'plan_value': plan_value,
+                        'actual_value': 0,
+                        'difference_value': 0 - plan_value,
+                        'rate_value': 0
+                    })
+                }
             }
             return filtered_data
         }
@@ -266,32 +304,70 @@ $(document).ready(function () {
 
     function filter_by_quarter(data, company=true) {
         if (company) {
-            let quarter_order = $quarter_select.val() - 1
             let filtered_data = []
-            for (let i = 0; i < data.length; i++) {
-                let plan_value = data[i]?.['company_quarter_list'] ? parseFloat(data[i]?.['company_quarter_list']?.[quarter_order]) : 0
-                filtered_data.push({
-                    'expense_item': data[i]?.['expense_item'],
-                    'plan_value': plan_value,
-                    'actual_value': 0,
-                    'difference_value': 0 - plan_value,
-                    'rate_value': 0
-                })
+            let quarter_order = $quarter_select.val() - 1
+            if ($('#view-mode-select').val() === '0') {
+                for (let i = 0; i < data.length; i++) {
+                    let plan_value = data[i]?.['company_quarter_list'] ? parseFloat(data[i]?.['company_quarter_list']?.[quarter_order]) : 0
+                    filtered_data.push({
+                        'expense_item': data[i]?.['expense_item'],
+                        'plan_value': plan_value,
+                        'actual_value': 0,
+                        'difference_value': 0 - plan_value,
+                        'rate_value': 0
+                    })
+                }
+            }
+            else {
+                for (let i = 0; i < data.length; i++) {
+                    let plan_value = 0
+                    if (data[i]?.['company_quarter_list']) {
+                        for (let j = 0; j <= quarter_order; j++) {
+                            plan_value += data[i]?.['company_quarter_list']?.[j] ? parseFloat(data[i]?.['company_quarter_list']?.[j]) : 0
+                        }
+                    }
+                    filtered_data.push({
+                        'expense_item': data[i]?.['expense_item'],
+                        'plan_value': plan_value,
+                        'actual_value': 0,
+                        'difference_value': 0 - plan_value,
+                        'rate_value': 0
+                    })
+                }
             }
             return filtered_data
         }
         else {
-            let quarter_order = $quarter_select.val() - 1
             let filtered_data = []
-            for (let i = 0; i < data.length; i++) {
-                let plan_value = data[i]?.['group_quarter_list'] ? parseFloat(data[i]?.['group_quarter_list']?.[quarter_order]) : 0
-                filtered_data.push({
-                    'expense_item': data[i]?.['expense_item'],
-                    'plan_value': plan_value,
-                    'actual_value': 0,
-                    'difference_value': 0 - plan_value,
-                    'rate_value': 0
-                })
+            let quarter_order = $quarter_select.val() - 1
+            if ($('#view-mode-select').val() === '0') {
+                for (let i = 0; i < data.length; i++) {
+                    let plan_value = data[i]?.['group_quarter_list'] ? parseFloat(data[i]?.['group_quarter_list']?.[quarter_order]) : 0
+                    filtered_data.push({
+                        'expense_item': data[i]?.['expense_item'],
+                        'plan_value': plan_value,
+                        'actual_value': 0,
+                        'difference_value': 0 - plan_value,
+                        'rate_value': 0
+                    })
+                }
+            }
+            else {
+                for (let i = 0; i < data.length; i++) {
+                    let plan_value = 0
+                    if (data[i]?.['group_quarter_list']) {
+                        for (let j = 0; j <= quarter_order; j++) {
+                            plan_value += data[i]?.['group_quarter_list']?.[j] ? parseFloat(data[i]?.['group_quarter_list']?.[j]) : 0
+                        }
+                    }
+                    filtered_data.push({
+                        'expense_item': data[i]?.['expense_item'],
+                        'plan_value': plan_value,
+                        'actual_value': 0,
+                        'difference_value': 0 - plan_value,
+                        'rate_value': 0
+                    })
+                }
             }
             return filtered_data
         }
@@ -303,6 +379,9 @@ $(document).ready(function () {
             ordering: false,
             rowIdx: true,
             paging: false,
+            scrollY: '70vh',
+            scrollX: '100vh',
+            scrollCollapse: true,
             reloadCurrency: true,
             data: data_list,
             columns: [

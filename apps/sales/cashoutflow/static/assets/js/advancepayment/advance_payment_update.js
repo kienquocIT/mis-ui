@@ -4,7 +4,6 @@ $(document).ready(function () {
     LoadDetailAP('update');
 
     // SUBMIT FORM UPDATE ADVANCE PAYMENT
-    let pk = $.fn.getPkDetail();
     $('#form-detail-advance').submit(function (event) {
         event.preventDefault();
         let form = new AdvancePaymentHandle().combinesData($(this), true);

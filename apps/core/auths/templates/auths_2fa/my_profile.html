@@ -1,0 +1,726 @@
+{% extends 'base.html' %}
+{% load person_utils i18n static %}
+
+{% block cssHeader %}
+    <style>
+        #btn-integrate-now {
+            color: #fff;
+            background: linear-gradient(270deg, #322bf3, #00d67f, #007d88, #81e230);
+            background-size: 800% 800%;
+
+            -webkit-animation: AnimationName 5s ease infinite;
+            -moz-animation: AnimationName 5s ease infinite;
+            -o-animation: AnimationName 5s ease infinite;
+            animation: AnimationName 5s ease infinite;
+        }
+
+        @-webkit-keyframes AnimationName {
+            0% {
+                background-position: 1% 50%
+            }
+            50% {
+                background-position: 99% 50%
+            }
+            100% {
+                background-position: 1% 50%
+            }
+        }
+
+        @-moz-keyframes AnimationName {
+            0% {
+                background-position: 1% 50%
+            }
+            50% {
+                background-position: 99% 50%
+            }
+            100% {
+                background-position: 1% 50%
+            }
+        }
+
+        @-o-keyframes AnimationName {
+            0% {
+                background-position: 1% 50%
+            }
+            50% {
+                background-position: 99% 50%
+            }
+            100% {
+                background-position: 1% 50%
+            }
+        }
+
+        @keyframes AnimationName {
+            0% {
+                background-position: 1% 50%
+            }
+            50% {
+                background-position: 99% 50%
+            }
+            100% {
+                background-position: 1% 50%
+            }
+        }
+    </style>
+    <style>
+        .profile {
+            width: 60%;
+            min-width: 300px;
+            max-width: 500px;
+            border: 1px solid #f1f1f1;
+            box-shadow: 0 0 1px 2px #dce2e5, 0 0 3px 4px #f2f5f6;
+            padding: 30px;
+            border-radius: 5px;
+        }
+
+        .profile-avatar {
+            width: 100%;
+            display: flex;
+            height: 150px;
+        }
+
+        .profile-avatar .img-avatar {
+            width: 40%;
+            min-width: 100px;
+            max-width: 200px;
+            overflow: hidden;
+            padding: 30px;
+            background: rgba(242, 245, 246, 0.5);
+            border-radius: 5px;
+        }
+
+        .profile-avatar .img-avatar .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .text-avatar {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding-left: 30px;
+        }
+
+        .text-avatar p i {
+            margin-right: 5px;
+        }
+
+        .tenant-data {
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .tenant-data b {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .tenant-title {
+        }
+
+        .twoFA-data {
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .twoFA-data b {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .twoFA-data .twoFA-warning {
+            border-left: 3px solid #ff9100;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: rgba(255, 191, 107, 0.1);
+        }
+
+        .twoFA-data .twoFA-warning b {
+            color: #ff9100;
+            font-size: 0.9rem;
+            display: block;
+        }
+
+        .twoFA-data .twoFA-warning ul {
+            padding-left: 20px;
+            list-style: circle;
+            margin-bottom: 0;
+            color: #ffab3d;
+            font-size: 0.8rem;
+        }
+
+        #twoFA-status-grid tr td {
+            padding: 10px 5px;
+        }
+
+        #twoFA-status-grid tr td:nth-child(2) {
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+
+        #twoFA-integrate-new {
+            width: 100%;
+            padding: 30px;
+        }
+
+        #twoFA-integrate-new div {
+            display: flex;
+            justify-content: center;
+        }
+
+        #twoFA-integrate-new img {
+            width: 100%;
+            height: 100%;
+            min-width: 120px;
+            max-width: 300px;
+        }
+
+        .twoFA-integrate-hr {
+            width: 100%;
+            height: 1px;
+            background-color: #9e9e9e;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .twoFA-integrate-hr span {
+            position: absolute;
+            background-color: #fff;
+            top: 0;
+            left: 50%;
+            font-size: 0.6rem;
+            transform: translatex(-50%) translatey(-50%);
+            padding: 5px;
+        }
+
+        .twoFA-integrate-instruction {
+            font-size: 0.8rem;
+            margin-top: 20px;
+        }
+
+        .twoFA-integrate-instruction tr td:first-child {
+            width: 50px;
+            vertical-align: top;
+        }
+    </style>
+    <style>
+        .twoFA-integrate-app {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .twoFA-integrate-app > div {
+            width: calc(100% / 2 - 30px);
+            padding: 5px;
+            margin: 5px;
+        }
+
+        .twoFA-integrate-app div .title > * {
+            font-size: 0.8rem;
+        }
+
+        .two-fa-app-logo img {
+            width: 50px;
+        }
+
+        .two-fa-link-download {
+            width: 100%;
+            display: flex;
+            justify-content: start;
+        }
+
+        .two-fa-link-download a {
+            width: auto;
+            margin-right: 1rem;
+        }
+
+        .two-fa-link-download a img {
+            width: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="w-100 d-flex justify-content-center">
+        <div class="profile">
+            <div class="profile-avatar">
+                <div class="img-avatar">
+                    {{ base|render_avatar_tag|safe }}
+                </div>
+                <div class="text-avatar">
+                    <div>
+                        <h4>{{ base.fullname }}</h4>
+                        <p>
+                            <i class="fa-solid fa-circle-user"></i>
+                            {{ base.username }}
+                        </p>
+                        <p>
+                            <i class="fa-solid fa-envelope"></i>
+                            {{ base.email }}
+                            <i class="fa-solid fa-circle-check text-success" style="display: none;"></i>
+                        </p>
+                        <p>
+                            <i class="fa-solid fa-globe"></i>
+                            {{ base.language|language_full_name }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="tenant-data">
+                <small><b>{% trans 'Organization' %}</b></small>
+                <p class="tenant-title">{{ base.tenant_current_data.title }}</p>
+                {% if base.is_admin_tenant %}
+                    <small class="badge badge-success badge-outline badge-sm no-transform">
+                        {% trans "Your is administrator's tenant" %}
+                    </small>
+                {% else %}
+                    <small class="badge badge-danger badge-outline badge-sm no-transform">
+                        {% trans "Your isn't administrator's tenant" %}
+                    </small>
+                {% endif %}
+            </div>
+            <div class="twoFA-data">
+                <small><b>{% trans 'Two-Factor Authentication' %} (2FA)</b></small>
+                <table id="twoFA-status-grid">
+                    <tr>
+                        <td><span>{% trans 'Integrate status' %}</span></td>
+                        <td>
+                            <i
+                                    class="fa-solid fa-circle-check text-success" id="integrate-state-true"
+                                    style="display: none;"
+                            ></i>
+                            <i
+                                    class="fa-solid fa-circle-xmark text-danger" id="integrate-state-false"
+                                    style="display: none;"
+                            ></i>
+                        </td>
+                        <td>
+                            <button
+                                    id="btn-integrate-now"
+                                    class="btn btn-xs btn-square no-transform"
+                                    data-url="{% url 'TwoFAIntegrateAPI' %}"
+                                    style="display: none;"
+                            >{% trans 'Integrate now' %}</button>
+                        </td>
+                    </tr>
+                    <tr id="integrated-group-active" style="display: none;">
+                        <td><span>{% trans 'Active' %}</span></td>
+                        <td>
+                            <i class="fa-solid fa-circle-check text-success" id="integrated-active-true"></i>
+                            <i class="fa-solid fa-circle-xmark text-danger" id="integrated-active-false"></i>
+                        </td>
+                        <td>
+                            <button
+                                    class="btn btn-gradient-danger btn-square btn-xs no-transform"
+                                    id="integrated-button-disable"
+                                    style="display: none;"
+                            >{% trans 'Disable' %}</button>
+                            <button
+                                    class="btn btn-gradient-success btn-square btn-xs no-transform"
+                                    id="integrated-button-enable"
+                                    style="display: none;"
+                            >{% trans 'Enable' %}</button>
+                            <button
+                                    class="btn btn-gradient-danger btn-square btn-xs no-transform ml-3 px-3"
+                                    id="integrated-button-delete"
+                                    style="display: none;"
+                            >{% trans 'Delete' %}</button>
+                        </td>
+                    </tr>
+                </table>
+                <div id="twoFA-integrate-new" style="display: none;">
+                    <div>
+                        <img
+                                id="twoFA-integrate-qrcode"
+                                src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+                                alt="QRCode 2FA migrate"
+                        />
+                    </div>
+                    <div>
+                        <p class="twoFA-integrate-hr">
+                            <span>{% trans 'or enter the code manually' %}</span>
+                        </p>
+                    </div>
+                    <div>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="inp-2fa-key" readonly/>
+                            <button class="btn btn-outline-secondary" type="button" id="btn-copy-2fa-key">
+                                <i class="fa-regular fa-clipboard"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div style="display: block;" class="mb-3">
+                        <table class="twoFA-integrate-instruction">
+                            <tr>
+                                <td>{% trans 'Step 1' %}</td>
+                                <td>
+                                    {% trans 'Install application at' %}
+                                    <a href="#application-supports-2fa">
+                                        "{% trans 'Application supports 2FA' %}"
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{% trans 'Step 1' %}</td>
+                                <td>{% trans 'Scan the QR code using your 2FA app, or manually enter the provided setup key.' %}</td>
+                            </tr>
+                            <tr>
+                                <td>{% trans 'Step 2' %}</td>
+                                <td>
+                                    <p>{% trans 'Enter the one-time code (OTP) generated by your 2FA app into the provided field.' %}</p>
+                                    <p>{% trans 'Click "Verify" to confirm.' %}</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div style="display: block;">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="inp-2fa-otp"/>
+                            <button
+                                    class="btn btn-outline-secondary no-transform"
+                                    type="button"
+                                    id="btn-verify-2fa-otp"
+                                    data-url="{% url 'TwoFAIntegrateDetailAPI' pk='__pk__' %}"
+                            >
+                                {% trans 'Verify' %}
+                            </button>
+                        </div>
+                        <small class="form-text text-muted">
+                            {% trans "2FA will be activated upon successful integration. The system may require you to log in again." %}
+                        </small>
+                    </div>
+                </div>
+                <div class="w-100 mt-4">
+                    <small id="application-supports-2fa"><b>{% trans 'Application supports 2FA' %}</b></small>
+                    <div class="w-100 twoFA-integrate-app">
+                        <div>
+                            <div class="w-100 two-fa-app-logo">
+                                <img
+                                        src="{% static 'two-fa/logo_brand/gg_authenticator/Google_Authenticator_(April_2023).svg' %}"
+                                        alt="Google Authenticator Logo"
+                                >
+                            </div>
+                            <div class="w-100 title">
+                                <a href="https://support.google.com/accounts/answer/1066447?hl=vi&co=GENIE.Platform%3DAndroid">Google
+                                    Authenticator</a>
+                            </div>
+                            <div class="two-fa-link-download">
+                                <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">
+                                    <img src="{% static 'two-fa/logo_brand/android/android-icon.svg' %}" alt=""/>
+                                </a>
+                                <a href="https://apps.apple.com/app/google-authenticator/id388497605">
+                                    <img src="{% static 'two-fa/logo_brand/apple/apple_appstore-icon.svg' %}" alt="">
+                                </a>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="w-100 two-fa-app-logo">
+                                <img
+                                        src="{% static 'two-fa/logo_brand/microsoft_authenticator/unnamed.png' %}"
+                                        alt="Microsoft Authenticator Logo"
+                                >
+                            </div>
+                            <div class="w-100 title">
+                                <a href="https://www.microsoft.com/vi-vn/security/mobile-authenticator-app">Microsoft
+                                    Authenticator</a>
+                            </div>
+                            <div class="two-fa-link-download">
+                                <a href="https://play.google.com/store/apps/details?id=com.azure.authenticator">
+                                    <img src="{% static 'two-fa/logo_brand/android/android-icon.svg' %}" alt=""/>
+                                </a>
+                                <a href="https://apps.apple.com/vn/app/microsoft-authenticator/id983156458">
+                                    <img src="{% static 'two-fa/logo_brand/apple/apple_appstore-icon.svg' %}" alt="">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <small
+                            class="form-text" style="font-style: italic"
+                    >{% trans 'Or another application that supports 2FA with a token' %}</small>
+                </div>
+                <div class="twoFA-warning">
+                    <b>{% trans 'Warning' %}</b>
+                    <ul>
+                        <li>{% trans 'The system only provides one 2FA configuration per user.' %}</li>
+                        <li>{% trans 'All actions performed with the 2FA setting will require OTP entry.' %}</li>
+                        <li>{% trans 'Enabling 2FA will require OTP verification after login and sensitive operations.' %}</li>
+                        <li>{% trans 'OTP is only valid once per cycle and reuse is not accepted in cycle.' %}</li>
+                        <li>{% trans 'For any issues related to 2FA, please contact the administrator for resolution.' %}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsFooter %}
+    <script>
+        $(document).ready(function () {
+            const btnIntegrateNow$ = $('#btn-integrate-now');
+            const stateIntegrateTrue$ = $('#integrate-state-true');
+            const stateIntegrateFalse$ = $('#integrate-state-false');
+            const integratedGroupActive$ = $('#integrated-group-active')
+            const integratedActiveTrue$ = $('#integrated-active-true');
+            const integratedActiveFalse$ = $('#integrated-active-false');
+            const integratedBtnDisable$ = $('#integrated-button-disable');
+            const integratedBtnEnable$ = $('#integrated-button-enable');
+            const integratedBtnDelete$ = $('#integrated-button-delete');
+
+            $.fn.callAjax2({
+                url: btnIntegrateNow$.attr('data-url'),
+                method: 'GET',
+                isLoading: true,
+            }).then(
+                resp => {
+                    const data = $.fn.switcherResp(resp);
+                    if (data && data.hasOwnProperty('2fa')) {
+                        const twoFADAta = data['2fa'];
+                        if (twoFADAta) {
+                            const enabled = twoFADAta['auth_2fa'] || false;
+                            const integrated = twoFADAta['totp'] || false;
+
+                            if (integrated === true) {
+                                stateIntegrateTrue$.show(0);
+                                stateIntegrateFalse$.hide(0);
+                                btnIntegrateNow$.hide(0);
+                                integratedGroupActive$.show(0);
+                                if (enabled === true) {
+                                    integratedActiveTrue$.show(0);
+                                    integratedBtnDisable$.show(0);
+                                    integratedActiveFalse$.hide(0);
+                                    integratedBtnEnable$.hide(0);
+                                    integratedBtnDelete$.hide(0);
+                                } else {
+                                    integratedActiveTrue$.hide(0);
+                                    integratedBtnDisable$.hide(0);
+                                    integratedActiveFalse$.show(0);
+                                    integratedBtnEnable$.show(0);
+                                    integratedBtnDelete$.show(0);
+                                }
+
+                            } else {
+                                stateIntegrateTrue$.hide(0);
+                                stateIntegrateFalse$.show(0);
+                                btnIntegrateNow$.show(0);
+                                integratedGroupActive$.hide(0);
+                            }
+                        }
+                    }
+                },
+                errs => $.fn.switcherResp(errs),
+            )
+
+            function changeState2FA(state, otp) {
+                $.fn.callAjax2({
+                    url: btnIntegrateNow$.attr('data-url'),
+                    method: 'PUT',
+                    data: {
+                        'enabled': state,
+                        'otp': otp,
+                    },
+                    isLoading: true,
+                }).then(
+                    resp => {
+                        const data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({
+                                'description': $.fn.gettext('Successful')
+                            }, 'success');
+                            setTimeout(
+                                () => window.location.reload(),
+                                1000
+                            )
+                        }
+                    },
+                    errs => $.fn.switcherResp(errs),
+                )
+            }
+
+            function destroy2FA(otp){
+                $.fn.callAjax2({
+                    url: btnIntegrateNow$.attr('data-url'),
+                    method: 'DELETE',
+                    data: {
+                        'otp': otp,
+                    },
+                    isLoading: true,
+                }).then(
+                    resp => {
+                        const data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({
+                                'description': $.fn.gettext('Successful')
+                            }, 'success');
+                            setTimeout(
+                                () => window.location.reload(),
+                                1000
+                            )
+                        }
+                    },
+                    errs => $.fn.switcherResp(errs),
+                )
+            }
+
+            integratedBtnEnable$.on('click', function () {
+                Swal.fire({
+                    title: $.fn.gettext('Enable 2FA'),
+                    html: $.fn.gettext("If the operation is successful, you will be redirected to log in again."),
+                    showCancelButton: true,
+                    confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                    cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                    icon: 'question',
+                    input: "text",
+                    inputPlaceholder: $.fn.gettext('Enter the OTP verification code'),
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return $.fn.gettext('The OTP verification code must be required');
+                        }
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        changeState2FA(true, result.value);
+                    }
+                })
+            })
+
+            integratedBtnDisable$.on('click', function () {
+                Swal.fire({
+                    title: $.fn.gettext('Disable 2FA'),
+                    html: $.fn.gettext("If the operation is successful, you will be redirected to log in again."),
+                    showCancelButton: true,
+                    confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                    cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                    icon: 'question',
+                    input: "text",
+                    inputPlaceholder: $.fn.gettext('Enter the OTP verification code'),
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return $.fn.gettext('The OTP verification code must be required');
+                        }
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed && result.value) {
+                        changeState2FA(false, result.value);
+                    }
+                })
+            })
+
+            integratedBtnDelete$.on('click', function (){
+                Swal.fire({
+                    title: $.fn.gettext('Destroy 2FA'),
+                    html: $.fn.gettext('Once approved, you cannot undo it.'),
+                    showCancelButton: true,
+                    confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                    cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                    icon: 'warning',
+                    input: "text",
+                    inputPlaceholder: $.fn.gettext('Enter the OTP verification code'),
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return $.fn.gettext('The OTP verification code must be required');
+                        }
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        destroy2FA(result.value);
+                    }
+                })
+            })
+
+            const imgQrCode$ = $('#twoFA-integrate-qrcode');
+            const btnCopy2FAKey$ = $('#btn-copy-2fa-key');
+            const inp2FAKey$ = $('#inp-2fa-key');
+            const groupIntegrateNew$ = $('#twoFA-integrate-new');
+            let idTOTP = null;
+
+            btnIntegrateNow$.on('click', function () {
+                $.fn.callAjax2({
+                    url: $(this).attr('data-url'),
+                    method: 'POST',
+                    isLoading: true,
+                }).then(
+                    resp => {
+                        const data = $.fn.switcherResp(resp);
+                        if (data && data?.['2fa']) {
+                            const twoFA = data['2fa'];
+                            if (twoFA) {
+                                imgQrCode$.attr('src', 'data:image/png;base64, ' + twoFA['qrcode']);
+                                inp2FAKey$.val(twoFA['secret_key_b32']);
+                                groupIntegrateNew$.slideDown('fast');
+                                btnIntegrateNow$.hide(0);
+                                idTOTP = twoFA['id'];
+                            }
+                        }
+                    },
+                    errs => $.fn.switcherResp(errs),
+                )
+            });
+            btnCopy2FAKey$.on('click', function () {
+                $(this).prop('disabled', true);
+
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(inp2FAKey$.val());
+                    $.fn.notifyB({
+                        'description': $.fn.gettext('Saved to clipboard!')
+                    }, 'success');
+                    $(this).alterClass('btn-*', 'btn-outline-success');
+                } else {
+                    $.fn.notifyB({
+                        'description': $.fn.gettext('Not support clipboard!')
+                    }, 'failure');
+                    $(this).alterClass('btn-*', 'btn-outline-danger');
+                }
+
+                setTimeout(
+                    () => {
+                        $(this)
+                            .alterClass('btn-*', 'btn-outline-secondary')
+                            .prop('disabled', false);
+                    },
+                    1000
+                )
+            })
+
+            const inp2FAOtp$ = $('#inp-2fa-otp');
+            const btn2FAVerify$ = $('#btn-verify-2fa-otp');
+            btn2FAVerify$.on('click', function () {
+                if (inp2FAOtp$.val()) {
+                    $.fn.callAjax2({
+                        url: $(this).attr('data-url').replaceAll('__pk__', idTOTP),
+                        method: 'PUT',
+                        data: {
+                            'otp': inp2FAOtp$.val(),
+                        },
+                        isLoading: true,
+                    }).then(
+                        resp => {
+                            const data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyB({
+                                    'description': $.fn.gettext('Successful'),
+                                }, 'success');
+                                setTimeout(
+                                    () => window.location.reload(),
+                                    1000
+                                )
+                            }
+                        },
+                        errs => $.fn.switcherResp(errs),
+                    )
+                } else {
+                    $.fn.notifyB({
+                        'description': $.fn.gettext('The OTP code is required'),
+                    }, 'failure')
+                }
+            });
+            inp2FAOtp$.on('keyup', function (event) {
+                if (event.key === 'Enter' || event.keyCode === 13) {
+                    btn2FAVerify$.trigger('click');
+                }
+            })
+        })
+    </script>
+{% endblock %}

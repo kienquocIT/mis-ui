@@ -19,4 +19,6 @@ urlpatterns = [
     path('project/', include('apps.sales.project.urls')),
     path('budget-plan/', include('apps.sales.budgetplan.urls')),
     path('contract/', include('apps.sales.contract.urls')),
+    path('distribution-plan/', include('apps.sales.distributionplan.urls')),
+    path('production/', include('apps.sales.production.urls')),
 ]

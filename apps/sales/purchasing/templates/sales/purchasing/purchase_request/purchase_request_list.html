@@ -16,50 +16,60 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <table id="datatable-purchase-request" class="table nowrap w-100 mb-5"
-           data-url="{% url "PurchaseRequestListAPI" %}"
-           data-method="GET">
-        <thead>
-        <th></th>
-        <th>{% trans "Code" %}
-            <i class="fas fa-info-circle icon-info"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="bottom"
-                   title="{% trans 'Press row here to open detail page.' %}"
-            ></i>
-        </th>
-        <th>{% trans "Name" %}</th>
-        <th>{% trans "Request For" %}</th>
-        <th>{% trans "Sale Order" %}</th>
-        <th>{% trans "Supplier" %}</th>
-        <th>{% trans "Delivered Date" %}</th>
-        <th>{% trans "Status" %}</th>
-        <th>{% trans "Purchase Status" %}</th>
-        </thead>
-    </table>
+    <div class="row">
+        <div class="col-12">
+            <table id="datatable-purchase-request" class="table nowrap w-100 mb-5"
+                   data-url="{% url "PurchaseRequestListAPI" %}"
+                   data-method="GET">
+                <thead>
+                <tr>
+                    <th class="w-5" style="min-width: 50px"></th>
+                    <th class="w-15" style="min-width: 150px">{% trans "Code" %}
+                        <i class="fas fa-info-circle icon-info"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="bottom"
+                               title="{% trans 'Press row here to open detail page.' %}"
+                        ></i>
+                    </th>
+                    <th class="w-15" style="min-width: 250px">{% trans "Name" %}</th>
+                    <th class="w-10" style="min-width: 200px">{% trans "Request For" %}</th>
+                    <th class="w-15" style="min-width: 350px">{% trans "Sale Order" %} / {% trans "Stock plan" %}</th>
+                    <th class="w-10" style="min-width: 350px">{% trans "Supplier" %}</th>
+                    <th class="w-10" style="min-width: 100px">{% trans "Delivered Date" %}</th>
+                    <th class="w-10" style="min-width: 100px">{% trans "Status" %}</th>
+                    <th class="w-10" style="min-width: 100px">{% trans "Purchase Status" %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
 
     <div id="url-data" class="hidden" ></div>
 
     <div class="modal fade" id="modal-create-pr" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">{% trans 'Select type of purchase' %}</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">{% trans 'Request For' %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-4">
-                            <button type="button" class="btn btn-info w-100" id="btn-create-for-sale-order">{% trans 'For Sale Order' %}</button>
+                        <div class="col-12 col-md-6 col-lg-6 p-2">
+                            <button type="button" class="p-3 btn btn-outline-danger w-100" id="btn-create-for-sale-order">{% trans 'For Sale Order' %}</button>
                         </div>
-                        <div class="col-4">
-                            <a class="btn btn-primary w-100 text-white" id="btn-create-for-stock">{% trans 'For Stock' %}</a>
+                        <div class="col-12 col-md-6 col-lg-6 p-2">
+                            <button type="button" class="p-3 btn btn-outline-success w-100" id="btn-create-for-stock-free">{% trans 'For Stock Free' %}</button>
                         </div>
-                        <div class="col-4">
-                            <a class="btn btn-warning w-100 text-white" id="btn-create-for-other">{% trans 'For Other' %}</a>
+                        <div class="col-12 col-md-6 col-lg-6 p-2">
+                            <button type="button" class="p-3 btn btn-outline-blue w-100" id="btn-create-for-stock-plan">{% trans 'For Stock Plan' %}</button>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6 p-2">
+                            <button disabled type="button" class="p-3 btn btn-outline-secondary w-100" id="btn-create-for-other">{% trans 'For Other' %}</button>
                         </div>
                     </div>
                 </div>
@@ -74,5 +84,5 @@
     <input id="url-factory" data-url-create="{% url 'PurchaseRequestCreate' %}" data-url-detail="{% url 'PurchaseRequestDetail' pk=0 %}"/>
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/sales/purchasing/js/purchase_request/purchase_request_list.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchase_request/pr_list.js' %}"></script>
 {% endblock %}

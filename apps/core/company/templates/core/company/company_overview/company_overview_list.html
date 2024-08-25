@@ -7,11 +7,69 @@
             color: red !important;
         }
     </style>
+    <style>
+        #popover-user {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgb(124, 124, 124, 0.4);
+            z-index: 1054;
+        }
+
+        #popover-user .popover-detail {
+            width: 90%;
+            min-width: 300px;
+            max-width: 500px;
+            height: 100%;
+            background-color: #fff;
+            float: right;
+            box-shadow: 0 0 3px 1px #9e9e9e;
+        }
+
+        .popover-detail .popover-head {
+            height: 40px;
+            line-height: 40px;
+            padding-left: 10px;
+            background-color: #f2f5f6;
+            border-bottom: 1px solid #dce2e5;
+            color: #5e7d8a;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .popover-head .popover-close {
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .popover-detail .popover-body {
+            height: calc(100% - 40px - 40px);
+            padding: 10px;
+            overflow-y: scroll;
+        }
+
+        .popover-detail .popover-foot {
+            height: 40px;
+            background-color: #f2f5f6;
+            border-top: 1px solid #dce2e5;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: end;
+        }
+
+        .popover-detail .popover-foot button {
+            width: 100px;
+            height: 25px;
+            margin-right: 10px;
+        }
+    </style>
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
-
 {% block pageAction %}{% endblock %}
-
 {% block pageContent %}
     <div class="hidden">
         <span id="notify-employee-mapped-text">{% trans 'Linked with employee' %}</span>
@@ -38,9 +96,6 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade" id="tab_block_overview">
-                <div class="waiter-miner-group">
-
-                </div>
                 <table
                         id="datable_company_overview_list" class="table nowrap w-100 mb-5"
                         data-url="{% url "CompanyListOverviewListAPI" %}"
@@ -50,11 +105,8 @@
                 >
                     <thead>
                     <tr>
-                        <th>
-                            #
-                        </th>
+                        <th></th>
                         <th class="wrap-text">
-                            &nbsp;&nbsp;&nbsp;&nbsp;
                             {% trans 'Code' %}
                             <i
                                     class="fas fa-info-circle icon-info"
@@ -71,14 +123,16 @@
                     </tr>
                     </thead>
                     <tbody></tbody>
-                    <tfoot style="background-color: rgba(0, 125, 136, 0.15)">
-                    <th></th>
-                    <th style="color: #007D88"><b>Tenant</b></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+                    <tfoot class="bg-primary-light-5">
+                    <tr>
+                        <th></th>
+                        <th class="text-primary"><b>{% trans 'Tenant' %}</b></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
                     </tfoot>
                 </table>
             </div>
@@ -92,7 +146,7 @@
                 >
                     <thead>
                     <tr>
-                        <th>#</th>
+                        <th></th>
                         <th>
                             {% trans 'Username' %}
                             <i
@@ -115,17 +169,17 @@
                         <th>{% trans 'Action' %}</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
-            <div class="tab-pane fade waiter-miner-group" id="tab_block_company">
+            <div class="tab-pane fade" id="tab_block_company">
                 {% include 'core/company/company_overview/employee_of_company.html' %}
             </div>
         </div>
     </div>
     <div
-            class="modal fade" id="changeUserCompanies" tabindex="-1" role="dialog"
+            class="modal fade" id="changeUserCompanies"
+            tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenter"
             aria-hidden="true"
     >
@@ -169,7 +223,9 @@
                     </div>
                     <div class="modal-footer">
                         <div class="group-action-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button
+                                    type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            >{% trans 'Close' %}</button>
                             <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
                         </div>
                         <div class="spinner-border loading-spinner hidden" role="status">
@@ -180,10 +236,169 @@
             </div>
         </div>
     </div>
+
+    <div id="popover-user" style="display: none;">
+        <div class="popover-detail" style="display: none;">
+            <div class="popover-head">
+                <p class="popover-title">User ABC</p>
+                <span class="popover-close"><i class="fa-solid fa-circle-xmark fa-lg"></i></span>
+            </div>
+            <div class="popover-body">
+                <p class="h5">{% trans 'User companies currently' %}</p>
+                <table class="table table-bordered table-hover table-sm mb-4" id="user-company-detail">
+                    <thead class="thead-secondary">
+                        <tr>
+                            <th>{% trans 'Company name' %}</th>
+                            <th>{% trans 'Linked with employee' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <p class="h5">{% trans 'Change companies' %}</p>
+                <form
+                        data-url="{% url 'EmployeeUserByCompanyListOverviewDetailAPI' pk='__pk__' %}"
+                        data-id=""
+                        data-method="PUT"
+                ></form>
+            </div>
+            <div class="popover-foot">
+                <button class="btn btn-secondary btn-square btn-xs no-transform popover-cancel" type="button">
+                    {% trans 'Cancel' %}
+                </button>
+                <button class="btn btn-primary btn-square btn-xs no-transform popover-submit" type="button">
+                    {% trans 'Save' %}
+                </button>
+            </div>
+        </div>
     </div>
 {% endblock %}
-
 {% block jsFooter %}
+    <script src="{% static 'vendors/jquery/dist/jquery-ui.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'core/company/company_overview/js/company_overview_list.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            const company_list = JSON.parse($('#id-company-list').text());
+            const company_dict = company_list.reduce((obj, item) => {
+                obj[item.id] = item;
+                return obj;
+            }, {});
+
+            const popover$ = $('#popover-user');
+            const popoverDetail$ = popover$.find('.popover-detail');
+            const btnClose$ = popover$.find('.popover-close');
+            const btnCancel$ = popover$.find('.popover-cancel');
+            const btnSubmit$ = popover$.find('.popover-submit');
+            const title$ = popover$.find('.popover-title');
+            const frm$ = popover$.find('form');
+            const table$ = popover$.find('#user-company-detail');
+            const tbody$ = table$.find('tbody');
+
+            popover$.on('data.close', function () {
+                popoverDetail$.hide('slide', {direction: "right"}, 250, function () {
+                    popover$.fadeOut(100)
+                })
+            });
+            popover$.on('data.show', function () {
+                popover$.fadeIn(100, function (){
+                    popoverDetail$.show('slide', {direction: "right"}, 250)
+                })
+            });
+            popover$.on('data.load', function (event, data) {
+                const full_name = data?.['full_name'] || '';
+                title$.text(full_name);
+
+                const userID = data?.['id'] || '';
+                frm$.attr('data-id', userID);
+
+                const company_list_current = data?.['company_list'] || [];
+                const employee_mapped = data?.['employee_mapped'] || {};
+                tbody$.empty();
+                company_list_current.map(
+                    companyID => {
+                        const tr$ = $('<tr></tr>');
+
+                        const companyData = company_dict?.[companyID] || {};
+                        tr$.append(`<td>${companyData?.['title'] || ''}</td>`);
+
+                        const employeeMapped = employee_mapped?.[companyID] || null;
+                        if (employeeMapped){
+                            tr$.append(`<td><i class="fas fa-user-check i-blue"></i></td>`);
+                        } else {
+                            tr$.append(`<td><i class="fas fa-user-times i-red"></i></td>`);
+                        }
+                        tbody$.append(tr$);
+                    }
+                )
+
+                frm$.empty();
+                Object.entries(company_dict).map(
+                    ([companyID, companyData]) => {
+                        const idxTmp = 'a_' + $x.fn.randomStr(32);
+                        const state = company_list_current.indexOf(companyID) !== -1;
+                        frm$.append(`
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="${idxTmp}" data-value="${companyID}" ${state ? "checked": ""}>
+                                <label class="form-check-label" for="${idxTmp}">${companyData?.['title'] || ''}</label>
+                            </div>
+                        `)
+                    }
+                )
+            })
+            frm$.on('submit', function (event){
+                event.preventDefault();
+                let companySelected = [];
+                frm$.find('input[type=checkbox]:checked').each(function (){
+                    const eID = $(this).attr('data-value');
+                    companySelected.push(eID);
+                })
+                $.fn.callAjax2({
+                    url: frm$.attr('data-url').replace('__pk__', frm$.attr('data-id')),
+                    method: 'PUT',
+                    data: {
+                        'companies': companySelected
+                    },
+                    isLoading: true,
+                }).then(
+                    resp => {
+                        const dataResp = $.fn.switcherResp(resp);
+                        if (dataResp){
+                            $.fn.notifyB({
+                                'description': $.fn.gettext('Success')
+                            }, 'success');
+                            $('#tbl-user-of-tenant').DataTable().ajax.reload();
+                            popover$.trigger('data.close');
+                        }
+                    },
+                    errs => $.fn.switcherResp(errs),
+                )
+            })
+            btnSubmit$.on('click', function () {
+                frm$.trigger('submit');
+            })
+            btnCancel$.on('click', function () {
+                popover$.trigger('data.close');
+            });
+            btnClose$.on('click', function () {
+                popover$.trigger('data.close');
+            });
+
+            $('#tbl-user-of-tenant').on('click', 'button.btn-edit-popup', function (event) {
+                const rowData = $x.fn.getRowData($(event.target));
+                if (rowData && rowData.hasOwnProperty('id')) {
+                    popover$.trigger('data.show');
+                    popover$.trigger('data.load', rowData);
+                }
+            });
+
+            $(document).keyup(function (e) {
+                if (e.key === "Escape" || e.key === 27) {
+                    if (popover$.is(":visible")) {
+                        popover$.trigger('data.close');
+                    }
+                }
+            });
+        })
+    </script>
 {% endblock %}

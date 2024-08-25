@@ -67,30 +67,32 @@ class EmployeeLoadPage {
 
     static loadDob(dobData) {
         let data = $x.fn.reformatData(dobData, $x.cls.datetime.defaultFormatDate, 'DD/MM/YYYY', '');
-        EmployeeLoadPage.dobEle.dateRangePickerDefault({
-            defaultFormatUsing: 'date',
+        EmployeeLoadPage.dobEle.daterangepicker({
+            drops: 'up',
             singleDatePicker: true,
-            timepicker: false,
+            timePicker: false,
             showDropdowns: true,
-            minYear: 1901,
-            maxYear: parseInt(moment().format('YYYY'), 10),
+            autoApply: true,
+            maxYear: parseInt(moment().format('YYYY')),
             locale: {
                 format: 'DD/MM/YYYY'
             },
-            timePicker: false,
+            "cancelClass": "btn-secondary",
         }).val(data).trigger('change');
     }
 
     static loadDateJoined(dateJoinedData, default_is_now = false) {
-        let dtPickerEle = EmployeeLoadPage.dateJoinedEle.dateRangePickerDefault({
+        let dtPickerEle = EmployeeLoadPage.dateJoinedEle.daterangepicker({
+            drops: 'up',
             singleDatePicker: true,
-            timepicker: false,
+            timePicker: false,
             showDropdowns: true,
-            minYear: 1901,
-            maxYear: parseInt(moment().format('YYYY'), 10),
+            autoApply: true,
+            maxYear: parseInt(moment().format('YYYY')),
             locale: {
                 format: 'DD/MM/YYYY hh:mm A'
             },
+            "cancelClass": "btn-secondary",
         });
 
         let data = '';
@@ -106,8 +108,8 @@ class EmployeeLoadPage {
         // frm.dataForm['is_active'] = frm.dataForm['is_active'] === 'on';
         // frm.dataForm['is_admin_company'] = frm.dataForm['is_admin_company'] === 'on';
         // frm.dataForm['plan_app'] = new HandlePlanApp().combinesData();
-        frm.dataForm['date_joined'] = $x.fn.convertEleDatetime($('#employee-date-joined'), {'defaultIsEmpty': null});
-        frm.dataForm['dob'] = $x.fn.convertEleDate($('#employee-dob'), {'defaultIsEmpty': null});
+        frm.dataForm['date_joined'] = moment($('#employee-date-joined').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
+        frm.dataForm['dob'] = $('#employee-dob').val() ? moment($('#employee-dob').val(), 'DD/MM/YYYY').format('YYYY-MM-DD') : null
         frm.dataForm['role'] = EmployeeLoadPage.roleSelectEle.val()
 
         if (!frm.dataForm['user']) frm.dataForm['user'] = null;

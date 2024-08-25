@@ -453,7 +453,12 @@ class OpportunityLoadDetail {
                                 <label for="input-close-deal" class="form-label">Close Deal</label>
                             </div>`
                         )
-                        ele_first_stage.find('.dropdown-menu').closest('.sub-stage').addClass('fw-bolder text-primary bg-primary-light-5 border-primary  stage-selected');
+                        let ele_stage = ele_first_stage.find('.dropdown-menu').closest('.sub-stage')
+                        ele_stage.addClass('stage-selected')
+                        ele_stage.css('background-color', '#5a82b7')
+                        ele_stage.css('color', 'white')
+                        ele_stage.find('.dropdown span').css('color', 'white')
+                        ele_stage.next().css('border-left', '30px solid #5a82b7')
                     } else {
                         ele_first_stage.find('.dropdown-menu').append(
                             `<div class="form-check form-switch">
@@ -477,15 +482,27 @@ class OpportunityLoadDetail {
                 let ele_stage = $(`.sub-stage[data-id="${item.id}"]`);
                 if (ele_stage.hasClass('stage-lost')) {
                     if (!is_delivery) {
-                        ele_stage.addClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
+                        ele_stage.addClass('stage-selected')
+                        ele_stage.css('background-color', 'rgb(255,94,94)')
+                        ele_stage.css('color', 'white')
+                        ele_stage.next().css('border-left', '30px solid rgb(255,94,94)')
                     }
                 } else if (ele_stage.hasClass('stage-close')) {
                     let el_close_deal = $('#input-close-deal');
                     $('.page-content input, .page-content select, .page-content .btn').not(el_close_deal).not($('#rangeInput')).prop('disabled', true);
-                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 border-primary stage-selected');
                     el_close_deal.prop('checked', true);
+
+                    ele_stage.addClass('stage-selected')
+                    ele_stage.css('background-color', '#5a82b7')
+                    ele_stage.css('color', 'white')
+                    ele_stage.find('.dropdown span').css('color', 'white')
+                    ele_stage.next().css('border-left', '30px solid #5a82b7')
                 } else {
-                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 border-primary stage-selected');
+                    ele_stage.addClass('stage-selected')
+                    ele_stage.css('background-color', '#5a82b7')
+                    ele_stage.css('color', 'white')
+                    ele_stage.find('.dropdown span').css('color', 'white')
+                    ele_stage.next().css('border-left', '30px solid #5a82b7')
                 }
             })
         }
@@ -1025,6 +1042,9 @@ class OpportunityActivity {
         $table.DataTable().clear().destroy()
         $table.DataTableDefault({
             rowIdx: true,
+            scrollX: '100vh',
+            scrollY: '25vh',
+            scrollCollapse: true,
             ajax: {
                 url: $table.attr('data-url-logs_list'),
                 type: 'GET',
@@ -1096,7 +1116,7 @@ class OpportunityActivity {
                             if (Object.keys(row?.['task']).length > 0) {
                                 badgeType = 'badge-soft-sky';
                             }
-                            return `<span class="badge ${badgeType}">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
+                            return `<span class="w-80 badge ${badgeType}">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                         }
                         return `<p></p>`;
                     }
@@ -1144,10 +1164,11 @@ class OpportunityActivity {
                 },
                 {
                     targets: 3,
+                    className: 'text-center',
                     render: (data, type, row) => {
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code'] && row?.['doc_data']?.['code']) {
-                                return `<span class="badge badge-primary">${row?.['doc_data']?.['code']}</span>`;
+                                return `<span class="w-80 badge badge-soft-blue">${row?.['doc_data']?.['code']}</span>`;
                             }
                         }
                         return `<p>--</p>`;
@@ -1155,6 +1176,7 @@ class OpportunityActivity {
                 },
                 {
                     targets: 4,
+                    className: 'text-center',
                     render: (data, type, row) => {
                         if (row?.['app_code'] && [0, 1].includes(row?.['log_type'])) {
                             if (row?.['log_type'] === 0 && row?.['doc_data']?.['system_status']) {
@@ -1169,7 +1191,7 @@ class OpportunityActivity {
                                 return `<div class="row"><span class="badge badge-${sttMapBadge[row?.['doc_data']?.['system_status']]}">${sttTxt[row?.['doc_data']?.['system_status']][1]}</span></div>`;
                             }
                             if (row?.['log_type'] === 1 && row?.['doc_data']?.['task_status']) {
-                                return `<div class="row"><span class="badge badge-soft-pink">${row?.['doc_data']?.['task_status']}</span></div>`;
+                                return `<div class="row"><span class="w-80 badge badge-soft-pink">${row?.['doc_data']?.['task_status']}</span></div>`;
                             }
                         }
                         return `<p>--</p>`;
@@ -1177,6 +1199,7 @@ class OpportunityActivity {
                 },
                 {
                     targets: 5,
+                    className: 'text-right',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(row?.['date_created'], {
                             'outputFormat': 'DD-MM-YYYY',
@@ -1399,9 +1422,13 @@ function loadDtbProduct(data) {
     if (!$.fn.DataTable.isDataTable('#table-products')) {
         let dtb = OpportunityLoadDetail.productTableEle;
         dtb.DataTableDefault({
+            styleDom: 'hide-foot',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
+            scrollX: '100vh',
+            scrollY: '25vh',
+            scrollCollapse: true,
             data: data,
             columns: [
                 {
@@ -1429,14 +1456,14 @@ function loadDtbProduct(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-uom w-80p" data-method="GET" data-url="${urlEle.data('url-uom')}" data-keyResp="unit_of_measure" required></select>`
+                        return `<select class="form-select box-select-uom" data-method="GET" data-url="${urlEle.data('url-uom')}" data-keyResp="unit_of_measure" required></select>`
                     }
                 },
                 {
                     data: 'product_quantity',
                     className: 'wrap-text',
                     render: (data) => {
-                        return `<input type="number" class="form-control w-80p input-quantity" value="{0}" required/>`.format_by_idx(
+                        return `<input type="number" class="form-control input-quantity" value="{0}" required/>`.format_by_idx(
                             data
                         )
                     }
@@ -1445,7 +1472,7 @@ function loadDtbProduct(data) {
                     data: 'product_unit_price',
                     className: 'wrap-text',
                     render: (data) => {
-                        return `<input type="text" class="form-control w-150p mask-money input-unit-price" data-return-type="number" value="{0}" required/>`.format_by_idx(
+                        return `<input type="text" class="form-control mask-money input-unit-price" data-return-type="number" value="{0}" required/>`.format_by_idx(
                             data
                         )
                     }
@@ -1460,7 +1487,7 @@ function loadDtbProduct(data) {
                     data: 'product_subtotal_price',
                     className: 'wrap-text',
                     render: (data) => {
-                        return `<input class="form-control mask-money w-200p input-subtotal" type="text" data-return-type="number" value="{0}" readonly required>`.format_by_idx(
+                        return `<input class="form-control mask-money input-subtotal" type="text" data-return-type="number" value="{0}" readonly required>`.format_by_idx(
                             data
                         )
                     }
@@ -1480,9 +1507,20 @@ function loadDtbCompetitor(data) {
     if (!$.fn.DataTable.isDataTable('#table-competitors')) {
         let dtb = OpportunityLoadDetail.competitorTableEle;
         dtb.DataTableDefault({
+            styleDom: 'hide-foot',
+            rowIdx: true,
             data: data,
             paging: false,
+            scrollX: '100vh',
+            scrollY: '25vh',
+            scrollCollapse: true,
             columns: [
+                {
+                    className: 'wrap-text',
+                    render: () => {
+                        return ``
+                    }
+                },
                 {
                     className: 'wrap-text',
                     render: () => {
@@ -1521,8 +1559,7 @@ function loadDtbCompetitor(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<a class="btn btn-icon btn-del-item"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>
-`
+                        return `<a class="btn btn-icon btn-del-item"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
                     }
                 },
             ],
@@ -1534,9 +1571,20 @@ function loadDtbContactRole(data) {
     if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
         let dtb = OpportunityLoadDetail.contactRoleTableEle;
         dtb.DataTableDefault({
+            styleDom: 'hide-foot',
+            rowIdx: true,
             data: data,
             paging: false,
+            scrollX: '100vh',
+            scrollY: '25vh',
+            scrollCollapse: true,
             columns: [
+                {
+                    className: 'wrap-text',
+                    render: () => {
+                        return ``
+                    }
+                },
                 {
                     className: 'wrap-text',
                     render: () => {
@@ -1905,28 +1953,49 @@ function autoLoadStage(
             id_stage_current = $('#div-stage').find('div:first-child').attr('data-id');
         }
         let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
-        let index = ele_stage_current.index();
+        let index = ele_stage_current.index() - (ele_stage_current.index()/2);
         if (ele_stage_current.hasClass('stage-lost')) {
-            ele_stage_current.addClass('bg-red-light-5 border-red stage-selected');
-            ele_stage.removeClass('bg-primary-light-5 border-primary  stage-selected');
+            ele_stage_current.addClass('stage-selected');
+            ele_stage.removeClass('stage-selected');
+            ele_stage.css('background-color', '#e7e7e7')
+            ele_stage.css('color', '#6f6f6f')
+            ele_stage.find('.dropdown span').css('color', '#6f6f6f')
+            ele_stage.next().css('border-left', '30px solid #e7e7e7')
         }
         else {
             for (let i = 0; i <= ele_stage.length; i++) {
                 if (i <= index) {
-                    if (!ele_stage.eq(i).hasClass('stage-lost'))
-                        ele_stage.eq(i).addClass('bg-primary-light-5 border-primary  stage-selected');
+                    if (!ele_stage.eq(i).hasClass('stage-lost')) {
+                        ele_stage.eq(i).addClass('stage-selected');
+                        ele_stage.eq(i).css('background-color', '#5a82b7')
+                        ele_stage.eq(i).css('color', 'white')
+                        ele_stage.eq(i).find('.dropdown span').css('color', 'white')
+                        ele_stage.eq(i).next().css('border-left', '30px solid #5a82b7')
+                    }
                     else {
-                        ele_stage.eq(i).removeClass('bg-red-light-5 border-red stage-selected');
+                        ele_stage.eq(i).removeClass('stage-selected');
+                        ele_stage.eq(i).css('background-color', '#e7e7e7')
+                        ele_stage.eq(i).css('color', '#6f6f6f')
+                        ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
+                        ele_stage.eq(i).next().css('border-left', '30px solid #e7e7e7')
                     }
                 } else {
-                    ele_stage.eq(i).removeClass('bg-primary-light-5 border-primary  bg-red-light-5 border-red stage-selected');
+                    ele_stage.eq(i).removeClass('stage-selected');
+                    ele_stage.eq(i).css('background-color', '#e7e7e7')
+                    ele_stage.eq(i).css('color', '#6f6f6f')
+                    ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
+                    ele_stage.eq(i).next().css('border-left', '30px solid #e7e7e7')
                 }
             }
         }
 
         if (ele_close_deal.is(':checked')) {
             ele_stage_current = ele_close_deal.closest('.sub-stage');
-            ele_close_deal.closest('.sub-stage').addClass('bg-primary-light-5 border-primary  stage-selected');
+            ele_close_deal.closest('.sub-stage').addClass('stage-selected');
+            ele_close_deal.closest('.sub-stage').css('background-color', '#5a82b7')
+            ele_close_deal.closest('.sub-stage').css('color', 'white')
+            ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', 'white')
+            ele_close_deal.closest('.sub-stage').next().css('border-left', '30px solid #5a82b7')
             $('.page-content input, .page-content select, .page-content .btn').not(ele_close_deal).not($('#rangeInput')).prop('disabled', true);
             if (!config_is_input_rate) {
                 input_rate_ele.prop('disabled', true);
@@ -1935,7 +2004,11 @@ function autoLoadStage(
         }
         else {
             $('.page-content input, .page-content select, .page-content .btn').prop('disabled', false);
-            ele_close_deal.closest('.sub-stage').removeClass('bg-primary-light-5 border-primary  stage-selected');
+            ele_close_deal.closest('.sub-stage').removeClass('stage-selected');
+            ele_close_deal.closest('.sub-stage').css('background-color', '#e7e7e7')
+            ele_close_deal.closest('.sub-stage').css('color', '#6f6f6f')
+            ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', '#6f6f6f')
+            ele_close_deal.closest('.sub-stage').next().css('border-left', '30px solid #e7e7e7')
             if (!config_is_input_rate) {
                 input_rate_ele.prop('disabled', true);
                 $('#input-rate').prop('disabled', true);
@@ -1961,7 +2034,7 @@ function autoLoadStage(
             $('#rangeInput').val(obj_stage?.win_rate);
         }
     }
-
+    
     return id_stage_current, is_lost
 }
 

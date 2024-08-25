@@ -8,11 +8,11 @@ $(document).ready(function () {
         formData.start_date = moment(formData['start_date'], 'DD/MM/YYYY').format('YYYY-MM-DD')
         formData.finish_date = moment(formData['finish_date'], 'DD/MM/YYYY').format('YYYY-MM-DD')
 
-        if ($elmExpenseLst.length){ // data edit
+        if ($elmExpenseLst.length) { // data edit
             formData.work_expense_data = {}
             formData.delete_expense_lst = [...new Set($('#work_expense_data').data('delete_lst'))]
             formData.expense_data = ProjectWorkExpenseHandle.saveExpenseData()
-            for (let item of $elmExpenseLst.DataTable().data().toArray()){
+            for (let item of $elmExpenseLst.DataTable().data().toArray()) {
                 if (item?.expense_data) formData.work_expense_data[item.id] = item.expense_data
             }
         }
@@ -29,7 +29,7 @@ $(document).ready(function () {
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     $.fn.notifyB({description: data.message}, 'success');
                     if (frm.dataMethod === 'post')
-                        window.location.href = $FormElm.attr('data-url-redirect');
+                        window.location.href = $FormElm.attr('data-url-redirect').format_url_with_uuid(data.id)
                     setTimeout(() => {
                         window.location.reload()
                     }, 500)
@@ -48,19 +48,19 @@ $(document).ready(function () {
     // form submit
     SetupFormSubmit.validate($FormElm, {
         errorClass: 'is-invalid cl-red',
-        submitHandler: function(){
+        submitHandler: function () {
             submitHandleFunc()
         }
     })
 
-    $('.toggle-ud .btn').on('click', ()=> $('.toggle-ud').toggleClass('is_show'))
+    $('.toggle-ud .btn').on('click', () => $('.toggle-ud').toggleClass('is_show'))
 
-    $('.toggle-notes').on('click', function(){
+    $('.toggle-notes').on('click', function () {
         $('.content-notes').slideToggle()
     })
 
     // complete project
-    $('#complete_project, #open_project').on('click', function(){
+    $('#complete_project, #open_project').on('click', function () {
         $(this).addClass('disabled');
         let data = {'system_status': 3}
         if ($(this)[0].getAttribute("id") === 'open_project')
@@ -78,9 +78,15 @@ $(document).ready(function () {
             })
     });
 
+    $('#groupWeight, #workWeight').keyup(delay(function (e) {
+        validWeight(this)
+    }, 500));
 
+    // run action click icon load popup BOR
+    action_select_bor()
 });
-function reGetDetail(gantt_obj){
+
+function reGetDetail(gantt_obj) {
     const $FormElm = $('#project_form');
     $('.lazy_loading').addClass('active')
     $.fn.callAjax2({
@@ -95,7 +101,7 @@ function reGetDetail(gantt_obj){
                     let work = res['works'];
                     const afterData = fGanttCustom.convert_data(group, work);
                     gantt_obj.refresh(afterData);
-                    $('.lazy_loading').delay( 1000 ).removeClass('active');
+                    $('.lazy_loading').delay(1000).removeClass('active');
                 }
             }
         )
@@ -162,16 +168,16 @@ function saveWork(gantt_obj) {
             return false
         }
         let workType = $('#select_relationships_type').val(),
-        childIdx = parseInt($('.gantt-wrap').data('detail-index')) + 1,
-        data = {
-            'project': $('#id').val(),
-            'title': $tit.val(),
-            'employee_inherit': $('#selectEmployeeInherit').val(),
-            'w_weight':  $('#workWeight').val() || 0,
-            'w_start_date': moment($startD.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
-            'w_end_date': moment($startE.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
-            'order': childIdx,
-        };
+            childIdx = parseInt($('.gantt-wrap').data('detail-index')) + 1,
+            data = {
+                'project': $('#id').val(),
+                'title': $tit.val(),
+                'employee_inherit': $('#selectEmployeeInherit').val(),
+                'w_weight': $('#workWeight').val() || 0,
+                'w_start_date': moment($startD.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
+                'w_end_date': moment($startE.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
+                'order': childIdx
+            };
         if (workParent.val())
             data.work_dependencies_parent = workParent.val()
         else data.work_dependencies_parent = null
@@ -180,8 +186,10 @@ function saveWork(gantt_obj) {
         else data.work_dependencies_type = null
         if (groupElm.val()) {
             data.group = groupElm.val();
-            if (workParent.val())
+            if (workParent.val() && !$workID.val())
+                // create new work have group related
                 data.order = $(`.gantt-left-container .grid-row[data-id="${workParent.val()}"]`).index() + 1
+            else if ($workID.val()) data.order = parseInt($('#work_order').val())
         }
 
         let url = $urlFact.attr('data-work'), method = 'post';
@@ -199,7 +207,7 @@ function saveWork(gantt_obj) {
                 let res = $.fn.switcherResp(resp);
                 if (res && (res['status'] === 201 || res['status'] === 200)) {
                     $.fn.notifyB({description: res.message}, 'success');
-                    if (method === 'post'){
+                    if (method === 'post') {
                         let crtIdx = parseInt($ganttElm.data('detail-index'))
                         $ganttElm.data('detail-index', crtIdx + 1)
                     }
@@ -217,9 +225,9 @@ function saveWork(gantt_obj) {
     });
 }
 
-function show_task_list(){
+function show_task_list() {
     const $taskTbl = $('#task_list'), $asModal = $('#assign_modal'),
-    $abdTable = $('#task_abandoned_list');
+        $abdTable = $('#task_abandoned_list');
 
     // flag trigger when user click action link task abandoned to current work
     window.task_done = false
@@ -320,7 +328,7 @@ function show_task_list(){
                     class: 'text-center',
                     render: (row) => {
                         const url = $urlPool.attr('data-task_detail').format_url_with_uuid(row.id)
-                            return row ? `<a href="${url}" class="task_detail_view">${row.code}</a>` : '--'
+                        return row ? `<a href="${url}" class="task_detail_view">${row.code}</a>` : '--'
                     }
                 },
                 {
@@ -348,8 +356,8 @@ function show_task_list(){
                     class: 'text-center',
                     render: (row) => {
                         let txt = '--'
-                            if (row?.full_name) txt = row.full_name
-                            return txt
+                        if (row?.full_name) txt = row.full_name
+                        return txt
                     }
                 },
                 {
@@ -404,9 +412,10 @@ function show_task_list(){
 
     }
 
-    $asModal.on('shown.bs.modal', function(){
-        const $pjElm = $('#id'), check_page_version = $('#project_form').hasClass('baseline_version');
-        let baseline_data = $('#project_form').data('baseline_data');
+    $asModal.on('shown.bs.modal', function () {
+        const $pjElm = $('#id'), $prjForm = $('#project_form'),
+            check_page_version = $prjForm.hasClass('baseline_version');
+        let baseline_data = $prjForm.data('baseline_data');
         if ($taskTbl.hasClass('dataTable')) $taskTbl.DataTable().destroy();
         if ($abdTable.hasClass('dataTable')) $abdTable.DataTable().destroy();
         let workID = $asModal.find('#modal_work_id').val();
@@ -415,7 +424,7 @@ function show_task_list(){
         if ((!$pjElm.val() || !workID) && !check_page_version) return false
 
         // check if detail page not baseline page
-        if (!check_page_version){
+        if (!check_page_version) {
             // get current task assign for current work
             $.fn.callAjax2({
                 'url': $taskTbl.attr('data-url'),
@@ -436,8 +445,7 @@ function show_task_list(){
                 },
                 (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
             )
-        }
-        else{
+        } else {
             let task_w_list = [], task_ab_list = [];
             for (let item of baseline_data['work_task_data']) {
                 if (item.work && item.work === workID) task_w_list.push(item)
@@ -462,12 +470,87 @@ function validateNumber(value) {
     return temp;
 }
 
+function validWeight(elmObj) {
+    let $elm = jQuery(elmObj),
+        value = elmObj.value,
+        regex = /^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/;
+    if (value && regex.test(value)) {
+        $elm.removeClass('is-invalid cl-red')
+        if (elmObj.value > 100) elmObj.value = 100
+    } else {
+        $elm.addClass('is-invalid cl-red')
+        elmObj.value = 0
+    }
+}
+
+function delay(fn, ms) {
+    let timer = 0;
+    return function (...args) {
+        clearTimeout(timer)
+        timer = setTimeout(fn.bind(this, ...args), ms || 0)
+    }
+}
+
+function animating_number(number, elm) {
+    let start = 0;
+    let startTime = null;
+    let currentNumber = 0;
+    let duration = 500;
+
+    function animationStep(timestamp) {
+        if (!startTime) startTime = timestamp;
+        let progress = timestamp - startTime;
+        currentNumber = Math.min(start + (number * (progress / duration)), number);
+        if (progress < duration)
+            requestAnimationFrame(animationStep);
+        else
+            // Ensure the final value is set
+            currentNumber = number;
+        if (currentNumber % 1 !== 0)
+            currentNumber = currentNumber.toFixed(1)
+        elm.text(currentNumber)
+    }
+
+    requestAnimationFrame(animationStep);
+}
+
+function action_select_bor(){
+    const $bor = $('#bor_select'), $serv = $('#service_select');
+    $('#bor_select, #service_select').each(function(){
+        $(this).initSelect2()
+    });
+    // click show modal BOR service
+    $('.choice-bor').on('click', function(){
+        $(this).next('.dropdown_custom').toggleClass('is_active')
+    });
+    // BOR list on change
+    $bor.on('select2:select', function(e){
+        let data = e.params.data.data
+        $serv.val('').trigger('change')
+            .attr('data-params', JSON.stringify({'group': data.id}))
+        $('.choice-bor i:nth-child(1)').attr('hidden', false)
+        $('.choice-bor i:nth-child(2)').attr('hidden', true)
+        $('.wrap-bor').addClass('bor_selected')
+    })
+    $serv.on('select2:select', function(e){
+        let data = e.params.data.data
+        $(this).closest('.dropdown_custom').toggleClass('is_active')
+        $('.choice-bor i:nth-child(1)').attr('hidden', true)
+        $('.choice-bor i:nth-child(2)').attr('hidden', false)
+    });
+
+    $('#prev_choice').on('click', function(e){
+        e.preventDefault()
+        $('.wrap-bor').removeClass('bor_selected')
+    })
+}
+
 class ProjectTeamsHandle {
     static crt_user = []
 
-    static saveMemberPermission(){
+    static saveMemberPermission() {
         const btnElm = $('#btnSavePermitMember'), ElmEditBlock = $('#box-edit-permit');
-        btnElm.on('click', function(e){
+        btnElm.on('click', function (e) {
             e.preventDefault();
             let bodyData = {
                 'permit_view_this_project': $('#view_this_project').prop('checked'),
@@ -498,7 +581,7 @@ class ProjectTeamsHandle {
         wrapPermEle.attr('data-id', memberIdx);
         let urlTmp = wrapPermEle.attr('data-url').format_url_with_uuid(memberIdx);
 
-        function loadPermissionDetail(res){
+        function loadPermissionDetail(res) {
             $('#view_this_project').prop('checked', res['permit_view_this_project']);
             $('#can_add_member').prop('checked', res.permit_add_member);
             $('#can_add_gaw').prop('checked', res['permit_add_gaw']);
@@ -516,7 +599,7 @@ class ProjectTeamsHandle {
                 })
         }
 
-        if (!check_page_version){
+        if (!check_page_version) {
             $.fn.callAjax2({
                 url: urlTmp,
                 type: 'GET',
@@ -531,12 +614,11 @@ class ProjectTeamsHandle {
                 },
                 (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
             )
-        }
-        else{
+        } else {
             let baseline_data = $formElm.data('baseline_data');
-            for (let idx in baseline_data['member_perm_data']){
+            for (let idx in baseline_data['member_perm_data']) {
                 let item = baseline_data['member_perm_data'][idx]
-                if (idx === memberIdx){
+                if (idx === memberIdx) {
                     loadPermissionDetail(item)
                     break;
                 }
@@ -545,34 +627,34 @@ class ProjectTeamsHandle {
 
     }
 
-    static render(datas=[], is_detail = false){
+    static render(datas = [], is_detail = false) {
         if (!datas) return true
         const project_PM = $('#selectEmployeeInherit').val(), $ElmCrtEdit = $('#member-current-edit');
 
         // render member
-        for (let data of datas){
+        for (let data of datas) {
             ProjectTeamsHandle.crt_user.push(data.id)
             let temp = $($('.member-tags').html())
             temp.find('.card').attr('data-id', data.id)
             if (data?.['avatar']) temp.find('.avatar img').attr('src', data?.['avatar'])
             else {
-                const nameHTML = $x.fn.renderAvatar(data, '',"","full_name")
+                const nameHTML = $x.fn.renderAvatar(data, '', "", "full_name")
                 temp.find('.avatar').replaceWith(nameHTML);
             }
             temp.find('.card-main-title p').eq(0).text(data.full_name)
-            temp.find('.card-main-title p a').text(data.email).attr('href', 'mailto:'+ data.email)
+            temp.find('.card-main-title p a').text(data.email).attr('href', 'mailto:' + data.email)
 
-            if(project_PM && project_PM !== data.id)
+            if (project_PM && project_PM !== data.id)
                 temp.find('.card-action-wrap .card-action-close').removeClass('hidden')
             $('#tab_members .wrap_members').prepend(temp)
-            if (is_detail === true){
+            if (is_detail === true) {
                 temp.find('.card-action-wrap .card-action-edit i').addClass('bi-eye-slash-fill').removeClass('fa-pen')
                 $('#btnSavePermitMember').addClass('disabled')
                 $ElmCrtEdit.prop('disabled', true)
             }
 
             // event click edit permission of card member
-            temp.find('.card-action-wrap .card-action-edit').on('click', function(){
+            temp.find('.card-action-wrap .card-action-edit').on('click', function () {
                 $('.card-action-wrap .card-action-edit').find('i').addClass('bi-eye-slash-fill').removeClass('bi-eye-fill')
                 $(this).find('i').addClass('bi-eye-fill').removeClass('bi-eye-slash-fill')
                 $('#box-edit-permit').removeClass('hidden')
@@ -584,82 +666,82 @@ class ProjectTeamsHandle {
         $ElmCrtEdit.initSelect2({
             data: datas,
             keyText: 'full_name',
-        }).on('change', function(){
+        }).on('change', function () {
             ProjectTeamsHandle.clickEditMember(this.value)
         })
     }
 
-    static load_employee(){
+    static load_employee() {
         const $tblElm = $('#dtbMember');
         $tblElm.DataTableDefault({
-                rowIdx: true,
-                paging: false,
-                ajax: {
-                    url: $tblElm.attr('data-url'),
-                    type: 'get',
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && resp.data.hasOwnProperty('employee_list')) {
-                            return resp.data['employee_list'] ? resp.data['employee_list'] : [];
-                        }
-                        throw Error('Call data raise errors.')
-                    },
+            rowIdx: true,
+            paging: false,
+            ajax: {
+                url: $tblElm.attr('data-url'),
+                type: 'get',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('employee_list')) {
+                        return resp.data['employee_list'] ? resp.data['employee_list'] : [];
+                    }
+                    throw Error('Call data raise errors.')
                 },
-                columns: [
-                    {
-                        render: () => {
-                            return '';
-                        }
-                    },
-                    {
-                        data: 'code',
-                        className: 'wrap-text w-20',
-                        render: (data) => {
-                            return `<span class="span-emp-code">{0}</span>`.format_by_idx(
-                                data
-                            )
-                        }
-                    },
-                    {
-                        data: 'full_name',
-                        className: 'wrap-text w-30',
-                        render: (data) => {
-                            return `<span class="span-emp-name">{0}</span>`.format_by_idx(
-                                data
-                            )
-                        }
-                    },
-                    {
-                        data: 'group',
-                        className: 'wrap-text w-30',
-                        render: (data) => {
-                            return `<span class="span-emp-email">{0}</span>`.format_by_idx(
-                                data.title || '--'
-                            )
-                        }
-                    },
-                    {
-                        data: 'is_checked_new',
-                        className: 'wrap-text w-10',
-                        render: (data, type, row) => {
-                            if (row.id in ProjectTeamsHandle.crt_user)
-                            if ($('.member-item .card[data-id="' +  + '"]').length > 0) {
+            },
+            columns: [
+                {
+                    render: () => {
+                        return '';
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text w-20',
+                    render: (data) => {
+                        return `<span class="span-emp-code">{0}</span>`.format_by_idx(
+                            data
+                        )
+                    }
+                },
+                {
+                    data: 'full_name',
+                    className: 'wrap-text w-30',
+                    render: (data) => {
+                        return `<span class="span-emp-name">{0}</span>`.format_by_idx(
+                            data
+                        )
+                    }
+                },
+                {
+                    data: 'group',
+                    className: 'wrap-text w-30',
+                    render: (data) => {
+                        return `<span class="span-emp-email">{0}</span>`.format_by_idx(
+                            data.title || '--'
+                        )
+                    }
+                },
+                {
+                    data: 'is_checked_new',
+                    className: 'wrap-text w-10',
+                    render: (data, type, row) => {
+                        if (row.id in ProjectTeamsHandle.crt_user)
+                            if ($('.member-item .card[data-id="' + +'"]').length > 0) {
                                 return `<span class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`
                             }
-                            return `<span class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" ${data === true ? "checked" : ""}/></span>`
-                        }
-                    },
-                ],
-                rowCallback: function (row, data) {
-                    $('.input-select-member', row).on('change', function () {
-                        data['is_checked_new'] = $(this).prop('checked');
-                    })
+                        return `<span class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" ${data === true ? "checked" : ""}/></span>`
+                    }
                 },
-            });
+            ],
+            rowCallback: function (row, data) {
+                $('.input-select-member', row).on('change', function () {
+                    data['is_checked_new'] = $(this).prop('checked');
+                })
+            },
+        });
     }
 
-    static addMember(){
-        $('#add-member').on('click', function(){
+    static addMember() {
+        $('#add-member').on('click', function () {
             const list_add = $('#dtbMember').DataTable().data().toArray().filter((item
             ) => item.is_checked_new && $(`.member-item .card[data-id="${item.id}"]`).length === 0)
             $.fn.callAjax2({
@@ -683,15 +765,15 @@ class ProjectTeamsHandle {
         });
     }
 
-    static init(){
+    static init() {
         ProjectTeamsHandle.load_employee()
         ProjectTeamsHandle.addMember()
         ProjectTeamsHandle.saveMemberPermission()
     }
 }
 
-class ProjectWorkExpenseHandle{
-    static ValidDataRow(data){
+class ProjectWorkExpenseHandle {
+    static ValidDataRow(data) {
         if (data.expense_item.hasOwnProperty('id') &&
             data.uom.hasOwnProperty('id') &&
             data.quantity &&
@@ -702,15 +784,15 @@ class ProjectWorkExpenseHandle{
         return false
     }
 
-    static saveExpenseData(){
+    static saveExpenseData() {
         let dataList = {}, $tblExpense = $('#work_expense_tbl tr.work-expense-wrap');
         let allList = []
-        Array.from($tblExpense).forEach(function(e){
+        Array.from($tblExpense).forEach(function (e) {
             allList = allList.concat($(e).find('table[id*="expense_child_"]').DataTable().data().toArray())
         })
-        for (let idx in allList){
+        for (let idx in allList) {
             let item = allList[idx]
-            if (ProjectWorkExpenseHandle.ValidDataRow(item)){
+            if (ProjectWorkExpenseHandle.ValidDataRow(item)) {
                 const work_id = item.work_id
                 if (!dataList.hasOwnProperty(work_id)) dataList[work_id] = []
                 if (item.id && item.id.length === 16) delete item.id
@@ -720,10 +802,10 @@ class ProjectWorkExpenseHandle{
         return dataList
     }
 
-    static calcSubTotal(data, parentTr){
+    static calcSubTotal(data, parentTr) {
         const tblParent = parentTr.closest('table')
         let total_unit = 0, total_tax = 0, total_price = 0;
-        for (let item of data){
+        for (let item of data) {
             total_unit += item.expense_price * item.quantity
             total_tax += item.tax.rate > 0 ? item.tax.rate / 100 * (item.expense_price * item.quantity) : 0
             total_price += item.expense_price * item.quantity
@@ -738,12 +820,12 @@ class ProjectWorkExpenseHandle{
         $.fn.initMaskMoney2()
     }
 
-    static calcAllTotal(){
+    static calcAllTotal() {
         let tbl = $('#work_expense_tbl').DataTable();
 
         let total_unit = 0, total_tax = 0, total_price = 0;
-        for (let item of tbl.data().toArray()){
-            if (item.expense_data && item.expense_data.price && item.expense_data['total_after_tax']){
+        for (let item of tbl.data().toArray()) {
+            if (item.expense_data && item.expense_data.price && item.expense_data['total_after_tax']) {
                 total_unit += item.expense_data.price
 
                 total_price += item.expense_data['total_after_tax']
@@ -756,15 +838,15 @@ class ProjectWorkExpenseHandle{
         $('tr:nth-child(3) th:nth-child(3)', tbl.table().header()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${total_price}"></span></p>`)
     }
 
-    static appendChildTable(trElm, workID){
+    static appendChildTable(trElm, workID) {
         const $formElm = $('#project_form'), check_page_version = $formElm.hasClass('baseline_version');
         let baseline_data = $formElm.data('baseline_data');
         let dtlSub = `<table id="expense_child_${workID}" class="table nowrap w-100 min-w-1768p mb-5"><thead></thead><tbody></tbody></table>`,
             $addBtn = `<button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="dropdown"><span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${$.fn.gettext("New")}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span></button>`
-            + `<div role="menu" class="dropdown-menu">`
-            + `<a class="dropdown-item add-expense" href="#"><i class="dropdown-icon fas fa-hand-holding-usd text-primary"></i> ${$.fn.gettext("Add Expense")}</a>`
-            + `<a class="dropdown-item add-labor" href="#"><i class="dropdown-icon fas fa-people-carry text-primary"></i> ${$.fn.gettext("Add Labor")}</a>`
-            + `</div>`;
+                + `<div role="menu" class="dropdown-menu">`
+                + `<a class="dropdown-item add-expense" href="#"><i class="dropdown-icon fas fa-hand-holding-usd text-primary"></i> ${$.fn.gettext("Add Expense")}</a>`
+                + `<a class="dropdown-item add-labor" href="#"><i class="dropdown-icon fas fa-people-carry text-primary"></i> ${$.fn.gettext("Add Labor")}</a>`
+                + `</div>`;
         if (check_page_version) $addBtn = ''
         trElm.after(
             `<tr class="work-expense-wrap"><td colspan="4"><div class="WE-content hidden-simple">${$addBtn + dtlSub}</div></td></tr>`
@@ -782,7 +864,7 @@ class ProjectWorkExpenseHandle{
                     width: '19%',
                     render: (row, index, data) => {
                         let htmlOpt = ''
-                        if(row && row.hasOwnProperty('id'))
+                        if (row && row.hasOwnProperty('id'))
                             htmlOpt = `<option value="${row?.id}" selected>${row.title}</option>`
                         let HTML = `<select 
                                     class="form-select expense_labor_name" 
@@ -800,13 +882,13 @@ class ProjectWorkExpenseHandle{
                     width: '19%',
                     render: (row, index, data) => {
                         let htmlOpt = ''
-                        if(row.hasOwnProperty('id')) htmlOpt = `<option value="${row?.id}" selected>${row.title}</option>`
+                        if (row.hasOwnProperty('id')) htmlOpt = `<option value="${row?.id}" selected>${row.title}</option>`
                         let HTML = `<select 
                                     class="form-select expense_item" 
                                     data-url="${$URLFactory.attr('data-expense_item')}"
                                     data-link-detail="${$URLFactory.attr('data-expense_item-detail')}"
                                     data-method="get" data-keyResp="expense_item_list" ${
-                            data?.['is_labor'] === false ? 'required' : 'disabled' }>${htmlOpt}</select>`;
+                            data?.['is_labor'] === false ? 'required' : 'disabled'}>${htmlOpt}</select>`;
                         if (data?.['is_labor'])
                             HTML = `<select class="form-select expense_item_labor" disabled>${htmlOpt}</select>`
                         return HTML;
@@ -818,7 +900,7 @@ class ProjectWorkExpenseHandle{
                     width: '9.4%',
                     render: (row, index, data) => {
                         let htmlOpt = ''
-                        if(row.hasOwnProperty('id')) htmlOpt = `<option value="${row?.id}" selected>${row.title}</option>`
+                        if (row.hasOwnProperty('id')) htmlOpt = `<option value="${row?.id}" selected>${row.title}</option>`
                         let HTML = `<select class="form-select select_uom" data-url="${$URLFactory.attr('data-uom')}"
                                     data-method="get" data-keyResp="unit_of_measure" required>${htmlOpt}</select>`
                         if (data?.['is_labor'])
@@ -857,7 +939,7 @@ class ProjectWorkExpenseHandle{
                     title: $.fn.gettext('Tax'),
                     render: (row) => {
                         let htmlOpt = ''
-                        if(row.hasOwnProperty('id')) htmlOpt = `<option value="${row?.id}" selected>${row.title}</option>`
+                        if (row.hasOwnProperty('id')) htmlOpt = `<option value="${row?.id}" selected>${row.title}</option>`
                         return `<select
                                     class="form-select tax_item"
                                     data-url="${$URLFactory.attr('data-tax')}"
@@ -884,7 +966,8 @@ class ProjectWorkExpenseHandle{
             ],
             rowCallback: function (row, data, index) {
                 // on change EXPENSE LABOR NAME
-                $('.expense_labor_name', row).on('select2:select', function (e){
+                $('.expense_labor_name', row).on('select2:select', function (e) {
+                    console.log('labor name')
                     data.expense_name = e.params.data.data
                     data.expense_item = data.expense_name.expense_item
                     data.expense_price = data.expense_name['price_list'][0]?.price_value || 0
@@ -893,30 +976,16 @@ class ProjectWorkExpenseHandle{
                 })
 
                 // on change EXPENSE ITEM, UoM
-                $('.expense_item, .select_uom', row).on('select2:select', function (e){
+                $('.expense_item, .select_uom', row).on('select2:select', function (e) {
                     let data_item = e.params.data.data
                     if ($(this).hasClass('expense_item')) data.expense_item = data_item
                     else data.uom = data_item
+                    console.log('uom on change')
                 })
 
-                // on change field QUANTITY and UNIT PRICE
-                $('.valid-number, .expense_price, .expense_name', row).on('blur', function(){
-                    let idx = $(row).index()
-                    if ($(this).hasClass('valid-number'))
-                        data.quantity = this.value = validateNumber(this.value)
-                    else if ($(this).hasClass('expense_price')) data.expense_price = validateNumber(this.value)
-                    else data.title = this.value
-                    if (data.expense_price && data.quantity){
-                        // render subtotal
-                        data.sub_total = data.expense_price * data.quantity
-                        crtTable.cell({row: idx, column: 5}).data(data.sub_total).draw(false)
-                        // render parent data when child data is complete row
-                        let total_after = data.sub_total
-                        if ((data?.tax && Object.keys(data.tax).length > 0) && data.tax.rate !== 0)
-                            total_after += data.tax.rate/100 * total_after
-                        crtTable.cell(idx, 7).data(total_after).draw(false)
-                        ProjectWorkExpenseHandle.calcSubTotal(crtTable.data().toArray(), trElm)
-                    }
+                // on change EXPENSE NAME
+                $('.expense_name', row).on('change', function () {
+                    data.title = this.value
                 });
 
                 // trigger on change TAX
@@ -925,9 +994,9 @@ class ProjectWorkExpenseHandle{
                     const selected = e.params.data
                     data.tax = selected.data
                     // render parent data when child data is complete row
-                    if (data.expense_price && data.quantity && data?.tax && Object.keys(data.tax).length > 0){
+                    if (data.expense_price && data.quantity && data?.tax && Object.keys(data.tax).length > 0) {
                         let total_after = data.expense_price * data.quantity
-                        if (data.tax.rate !== 0) total_after += data.tax.rate/100 * total_after
+                        if (data.tax.rate !== 0) total_after += data.tax.rate / 100 * total_after
                         crtTable.cell(idx, 7).data(total_after).draw(false)
                         ProjectWorkExpenseHandle.calcSubTotal(crtTable.data().toArray(), trElm)
                     }
@@ -946,15 +1015,14 @@ class ProjectWorkExpenseHandle{
             },
             drawCallback: function () {
                 // run select2 row
-                $('.tax_item, .select_uom, .expense_item, .expense_labor_name', $('#expense_child_' + workID)).each(function(){
-                   $(this).initSelect2()
+                $('.tax_item, .select_uom, .expense_item, .expense_labor_name', $('#expense_child_' + workID)).each(function () {
+                    if (!$(this).hasClass("select2-hidden-accessible")) $(this).initSelect2()
                 });
-                ProjectWorkExpenseHandle.calcAllTotal()
-                // run label money
+                // // run label money
                 $.fn.initMaskMoney2()
             },
         });
-        $('.add-expense, .add-labor', trElm.next()).on('click', function(e){
+        $('.add-expense, .add-labor', trElm.next()).on('click', function (e) {
             e.preventDefault()
             let temp = [{
                 work_id: workID,
@@ -973,7 +1041,28 @@ class ProjectWorkExpenseHandle{
             crtTable.rows.add(temp).draw()
         })
 
-        if (!check_page_version){
+        // on change field QUANTITY and UNIT PRICE
+        crtTable.on('change', 'tbody tr .valid-number, tbody tr .expense_price', function () {
+            const $idx = $(this).closest('tr'),
+                _idx = crtTable.row($idx).index();
+
+            let data = crtTable.row($idx).data();
+
+            if ($(this).hasClass('valid-number'))
+                data.quantity = this.value = validateNumber(this.value)
+            else data.expense_price = validateNumber(this.value)
+            if (data.expense_price && data.quantity) {
+                data.sub_total = data.expense_price * data.quantity
+                crtTable.cell({row: _idx, column: 5}).data(data.sub_total).draw(false)
+                let total_after = data.sub_total
+                if ((data?.tax && Object.keys(data.tax).length > 0) && data.tax.rate !== 0)
+                    total_after += data.tax.rate / 100 * total_after
+                crtTable.cell(_idx, 7).data(total_after).draw(false)
+                ProjectWorkExpenseHandle.calcSubTotal(crtTable.data().toArray(), trElm)
+            }
+        });
+
+        if (!check_page_version) {
             $.fn.callAjax2({
                 'url': $URLFactory.attr('data-work-expense'),
                 'method': 'get',
@@ -988,15 +1077,14 @@ class ProjectWorkExpenseHandle{
                     $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
                 }
             )
-        }
-        else{
+        } else {
             let data_lst = baseline_data.work_expense_data?.[workID]
             if (data_lst) crtTable.rows.add(data_lst).draw()
         }
 
     }
 
-    static init(data=[]){
+    static init(data = []) {
         const $workExpenseTbl = $('#work_expense_tbl');
         let WExTbl = $workExpenseTbl.DataTableDefault({
             data: data,
@@ -1044,12 +1132,12 @@ class ProjectWorkExpenseHandle{
                     let tr = $(this).parents('tr');
                     tr.toggleClass('active')
 
-                    if (!tr.hasClass('active')){
+                    if (!tr.hasClass('active')) {
                         // when toggle close
-                        tr.next().find('.WE-content').slideToggle({ complete: () => tr.next().addClass('hidden')})
-                    }else{
+                        tr.next().find('.WE-content').slideToggle({complete: () => tr.next().addClass('hidden')})
+                    } else {
                         // toggle open
-                        if (!tr.next().hasClass('work-expense-wrap')){
+                        if (!tr.next().hasClass('work-expense-wrap')) {
                             ProjectWorkExpenseHandle.appendChildTable(tr, data.id)
                         }
                         tr.next().removeClass('hidden').find('.WE-content').slideToggle()
@@ -1062,7 +1150,7 @@ class ProjectWorkExpenseHandle{
                 // add index for update datatable when child is visible
                 $(row).attr('data-idx', index)
             },
-            drawCallback: function(){
+            drawCallback: function () {
                 $.fn.initMaskMoney2()
             },
             footerCallback: function () {
@@ -1073,7 +1161,7 @@ class ProjectWorkExpenseHandle{
                 let totalAfterTax = 0
                 api.rows().every(function () {
                     let data = this.data()
-                    if (data?.['expense_data']?.['price'] && data?.['expense_data']?.['total_after_tax']){
+                    if (data?.['expense_data']?.['price'] && data?.['expense_data']?.['total_after_tax']) {
                         totalPrice += data.expense_data.price
                         totalAfterTax += data.expense_data['total_after_tax']
                         if (data?.['expense_data']?.['tax'])

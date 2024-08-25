@@ -96,6 +96,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ACCOUNT_USER_TENANT = StringUrl('account/user-tenant')
     ACCOUNT_USER_ADMIN_TENANT = StringUrl('account/user-admin-tenant')
 
+    # 2FA
+    TWO_FA = StringUrl('auth/2fa')
+    TWO_FA_INTEGRATE = StringUrl('auth/2fa/integrate')
+    TWO_FA_INTEGRATE_DETAIL = StringUrl('auth/2fa/integrate/{pk}')
+
     # employee
     EMPLOYEE_UPLOAD_AVATAR = StringUrl('hr/employee/{pk}/upload-avatar')
     EMPLOYEE_LIST = StringUrl('hr/employees')
@@ -577,11 +582,21 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     BUDGET_PLAN_LIST = StringUrl('budget-plans/list')
     BUDGET_PLAN_DETAIL = StringUrl('budget-plans/detail/{pk}')
 
+    # Lead
     LEAD_LIST = StringUrl('lead/list')
     LEAD_LIST_FOR_OPP = StringUrl('lead/list-for-opp')
     LEAD_CHART = StringUrl('lead/chart-data')
     LEAD_DETAIL = StringUrl('lead/detail/{pk}')
     LEAD_STAGE_LIST = StringUrl('lead/list-lead-stage')
+
+    # Distribution plan
+    DISTRIBUTION_PLAN_LIST = StringUrl('distribution-plans/list')
+    DISTRIBUTION_PLAN_DETAIL = StringUrl('distribution-plans/detail/{pk}')
+
+    # Bill of material
+    BOM_LIST = StringUrl('bill-of-material/list')
+    BOM_DETAIL = StringUrl('bill-of-material/detail/{pk}')
+    LABOR_LIST_FOR_BOM = StringUrl('saledata/labor-list-for-BOM')
 
     # AR Invoice
     DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')
@@ -658,3 +673,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     BUDGET_REPORT_COMPANY_LIST = StringUrl('report/budget-report-company/list')
     BUDGET_REPORT_GROUP_LIST = StringUrl('report/budget-report-group/list')
     BUDGET_REPORT_PAYMENT_LIST = StringUrl('report/budget-report-payment/list')
+
+    # Contract
+    CONTRACT_LIST = StringUrl('contract/list')
+    CONTRACT_DETAIL = StringUrl('contract')

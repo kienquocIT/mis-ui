@@ -1,24 +1,51 @@
 {% load i18n %}
+<style>
+    .pointer {
+        color: #6f6f6f;
+        flex-direction: row;
+        min-width: 240px;
+        height: 60px;
+        position: relative;
+        background: #e7e7e7;
+        margin-left: -24px; !important;
+    }
+    .pointer:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border-left: 30px solid white;
+        border-top: 30px solid transparent;
+        border-bottom: 30px solid transparent;
+    }
+    .arrow-right {
+        margin-left: -1px;
+        width: 0;
+        height: 0;
+        border-top: 30px solid transparent;
+        border-bottom: 30px solid transparent;
+        z-index: 888;
+    }
+</style>
 
-<div class="">
-    <div class="row">
-        <div class="col-6 text-left">
-            <a href="#" id="btn-auto-update-stage" class="badge badge-primary">
-                <i class="fas fa-sync-alt"></i> {% trans "Auto Update Stage" %}
-            </a>
-        </div>
-        <div class="col-6 text-right" hidden>
-            <a href="#" class="text-blue"><i class="bi bi-bar-chart-line-fill"></i></a>
-        </div>
-    </div>
-    <div class="row mt-2" style="overflow: auto;">
-        <div class="d-flex" id="div-stage" data-method="GET" data-url="{% url "OpportunityConfigStageListAPI" %}"></div>
+<div class="col-6 text-left">
+    <a href="#" id="btn-auto-update-stage" class="badge badge-soft-secondary badge-outline">
+        <i class="fas fa-sync-alt"></i> {% trans "Auto Update Stage" %}
+    </a>
+</div>
+<div class="col-6 text-right" hidden>
+    <a href="#" class="text-blue"><i class="bi bi-bar-chart-line-fill"></i></a>
+</div>
+<div class="col-12 mt-2" style="overflow: auto;">
+        <div class="d-flex" style="margin-left: 24px; !important;" id="div-stage" data-method="GET" data-url="{% url "OpportunityConfigStageListAPI" %}"></div>
         <div id="stage-hidden" class="hidden">
-            <div class="mb-2 border rounded sub-stage w-100 text-center text-primary d-flex justify-content-center py-2 px-2" style="flex-direction: column; min-width: 150px">
-                <p class="stage-indicator"></p>
-                <div class="dropdown dropup pt-3">
+            <div class="pointer mb-2 sub-stage text-center d-flex justify-content-center">
+                <p class="mt-3 ml-5 stage-indicator"></p>
+                <div class="mt-3 ml-3 dropdown dropend">
                     <a href="#" data-bs-toggle="dropdown">
-                        <span class="text-right text-primary">
+                        <span class="text-right" style="color: #706f6f;">
                             <i class="fas fa-chevron-circle-right"></i>
                         </span>
                     </a>
@@ -26,7 +53,7 @@
                         <a class="dropdown-item btn-go-to-stage" href="#">{% trans "Go to Stage" %}</a>
                     </div>
                 </div>
-            </div>&nbsp;
+            </div>
+            <div class="arrow-right text-primary" style="border-left: 30px solid #e7e7e7"></div>
         </div>
     </div>
-</div>

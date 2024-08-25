@@ -8,18 +8,20 @@
             content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     >
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta
-            http-equiv="Content-Security-Policy"
-            content="
-                default-src 'none';
-                script-src 'self';
-                style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-                font-src 'self' https://fonts.gstatic.com;
-                img-src 'self' https: data:;
-                frame-src 'self' https:;
-                connect-src 'self' https://api.ipify.org;
-            "
-    >
+    {% block CSP %}
+        <meta
+                http-equiv="Content-Security-Policy"
+                content="
+                    default-src 'none';
+                    script-src 'self';
+                    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+                    font-src 'self' https://fonts.gstatic.com;
+                    img-src 'self' https: data:;
+                    frame-src 'self' https:;
+                    connect-src 'self' https://api.ipify.org;
+                "
+        >
+    {% endblock %}
 
     {% get_logo logo as logo_resolve %}
 
@@ -138,8 +140,6 @@
     <script src="{% static 'form/runtime/vendors/rangeSlider/index.js' %}"></script>
 
     <script src="{% static 'form/runtime/vendors/notify.min.js' %}"></script>
-
-    <script src="{% static 'form/runtime/runtime.js' %}"></script>
 
     {% block jsContent %}{% endblock %}
 {% endcompress %}

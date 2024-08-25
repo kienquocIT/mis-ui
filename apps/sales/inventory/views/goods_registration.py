@@ -71,7 +71,7 @@ class GoodsRegistrationDetailAPI(APIView):
 
 
 # lấy dữ liệu chi tiết nhập-xuất hàng của dự án
-class GoodsRegistrationItemSubListAPI(APIView):
+class GReItemListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,

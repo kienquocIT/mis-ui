@@ -183,17 +183,19 @@ class fGanttCustom {
             if (depen_type === undefined) depen_type = res.relationships_type
 
             $sltGroup.val('').trigger('change')
-            $('#work_modal #work_id, #work_modal #work_status').remove()
+            $('#work_modal #work_id, #work_modal #work_status, #work_modal #work_order').remove()
 
             $('#workTitle').val(res.title)
             $('#workStartDate').val(moment(date_from, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
             $('#workEndDate').val(moment(date_end, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
-            let $wID = $('<input id="work_id" type="hidden"/>'), $wSTT = $('<input id="work_status" type="hidden"/>')
+            let $wID = $('<input id="work_id" type="hidden"/>'), $wSTT = $('<input id="work_status" type="hidden"/>'),
+                $wORDER = $('<input id="work_order" type="hidden"/>');
             $wID.val(res.id)
             $wSTT.val(res.work_status)
+            $wORDER.val(res.order)
             $('#workWeight').val(res?.w_weight | res.weight)
-            $('#workRate').val(res?.w_rate | res.progress)
-            $('#work_modal .modal-body').append($wID).append($wSTT)
+            $('#workRate').val(res?.['w_rate'] | res.progress)
+            $('#work_modal .modal-body').append($wID).append($wSTT).append($wORDER)
             $('#work_modal #btn-work-add').text($.fn.gettext('Save'))
             if (res.group.hasOwnProperty('id'))
                 $('#select_project_group').attr('data-onload', JSON.stringify(res.group))

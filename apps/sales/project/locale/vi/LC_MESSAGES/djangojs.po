@@ -180,3 +180,59 @@ msgstr "Đã thêm"
 #
 msgid "Finish"
 msgstr "Hoàn thành"
+
+#
+msgid "Jan"
+msgstr "TH 1"
+
+#
+msgid "Feb"
+msgstr "TH 2"
+
+#
+msgid "Mar"
+msgstr "TH 3"
+
+#
+msgid "Apr"
+msgstr "TH 4"
+
+#
+msgid "May"
+msgstr "TH 5"
+
+#
+msgid "Jun"
+msgstr "TH 6"
+
+#
+msgid "Jul"
+msgstr "TH 7"
+
+#
+msgid "Aug"
+msgstr "TH 8"
+
+#
+msgid "Sep"
+msgstr "TH 9"
+
+#
+msgid "Oct"
+msgstr "TH 10"
+
+#
+msgid "Nov"
+msgstr "TH 11"
+
+#
+msgid "Dec"
+msgstr "TH 12"
+
+#
+msgid "By Project owner"
+msgstr "Bởi Quản lý dự án"
+
+#
+msgid "By System status"
+msgstr "Bởi Trạng thái"

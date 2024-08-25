@@ -136,6 +136,7 @@ $(function () {
            QuotationLoadDataHandle.loadBtnAddProductS2(this.closest('tr'));
         });
 
+        // QUICK PRODUCT
         $('#addQuickProduct').on('shown.bs.modal', function () {
             let $boxPType = $('#add-product-type');
             let $boxPCategory = $('#add-product-category');
@@ -174,6 +175,10 @@ $(function () {
             dataSubmit['sale_default_uom'] = $('#add-product-uom').val();
             dataSubmit['sale_tax'] = $('#add-product-tax').val();
             dataSubmit['general_traceability_method'] = parseInt($('#add-product-method').val());
+            dataSubmit['product_choice'] = [0];
+            for (let choice of $('#quick-product-choice')[0].querySelectorAll('.form-check-input:checked')) {
+                dataSubmit['product_choice'].push(parseInt(choice.value));
+            }
             WindowControl.showLoading();
             $.fn.callAjax2(
                 {
@@ -227,11 +232,18 @@ $(function () {
 // Action on click price list's option
         tableProduct.on('click', '.table-row-price-option', function () {
             let row = this.closest('tr');
-            let priceValRaw = $(this)[0].getAttribute('data-value');
-            if (priceValRaw) {
+            if (this.getAttribute('data-value') && this.getAttribute('data-price') && row.querySelector('.table-row-uom')) {
+                let priceVal = $(this)[0].getAttribute('data-value');
+                let eleUOM = row.querySelector('.table-row-uom');
+                let dataPrice = JSON.parse(this.getAttribute('data-price'));
+                if (dataPrice?.['uom']?.['id'] !== $(eleUOM).val()) {
+                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-valid-price-uom')}, 'failure');
+                    return false;
+                }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
-                    $(elePrice).attr('value', String(priceValRaw));
+                    $(elePrice).addClass('text-primary');
+                    $(elePrice).attr('value', String(priceVal));
                     $.fn.initMaskMoney2();
                     QuotationCalculateCaseHandle.commonCalculate(tableProduct, row);
                 }
@@ -247,21 +259,41 @@ $(function () {
         });
 
 // ******** Action on change data of table row PRODUCT => calculate data for row & calculate data total
-        tableProduct.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
+        tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
                 if ($(this).hasClass('table-row-item')) {
                     QuotationLoadDataHandle.loadDataProductSelect($(this));
                 }
-                // validate number
                 if ($(this).hasClass('validated-number')) {
                     validateNumber(this);
                 }
-                // Clear table COST if item or quantity change
-                if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
+                if ($(this).hasClass('table-row-price')) {
+                    $(this).removeClass('text-primary');
+                }
+                if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-uom') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
                     // load again table cost
                     QuotationLoadDataHandle.loadDataTableCost();
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                    if ($(this).hasClass('table-row-uom')) {
+                        let priceChecked = row.querySelector('.option-btn-checked');
+                        if (priceChecked) {
+                            if (priceChecked.getAttribute('data-price')) {
+                                let dataPrice = JSON.parse(priceChecked.getAttribute('data-price'));
+                                if (dataPrice?.['uom']?.['id'] !== $(this).val()) {
+                                    let elePrice = row.querySelector('.table-row-price');
+                                    if (elePrice) {
+                                        $(elePrice).attr('value', String(0));
+                                    }
+                                    let allOption = $(row).find('.table-row-price-option');
+                                    if (allOption) {
+                                        allOption.removeClass('option-btn-checked');
+                                    }
+                                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-valid-price-uom')}, 'failure');
+                                }
+                            }
+                        }
+                    }
                 }
                 // Delete all promotion rows
                 deletePromotionRows(tableProduct, true, false);
@@ -274,16 +306,6 @@ $(function () {
                 // store data
                 QuotationStoreDataHandle.storeProduct(row);
             }
-        });
-
-// If change product uom then clear table COST
-        tableProduct.on('change', '.table-row-uom', function () {
-            let row = this.closest('tr');
-            // load again table cost
-            QuotationLoadDataHandle.loadDataTableCost();
-            QuotationLoadDataHandle.loadSetWFRuntimeZone();
-            // store data
-            QuotationStoreDataHandle.storeProduct(row);
         });
 
 // Action on table row group title
@@ -412,13 +434,14 @@ $(function () {
 // Action on click price list's option
         tableCost.on('click', '.table-row-price-option', function () {
             let priceValRaw = $(this)[0].getAttribute('data-value');
-            let whIDValRaw = $(this)[0].getAttribute('data-wh-id');
             if (priceValRaw) {
                 let row = $(this)[0].closest('tr');
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
                     $(elePrice).attr('value', String(priceValRaw));
-                    $(elePrice).attr('data-wh-id', whIDValRaw);
+                    if ($(this)[0].getAttribute('data-wh')) {
+                        $(elePrice).attr('data-wh', $(this)[0].getAttribute('data-wh'));
+                    }
                     $.fn.initMaskMoney2();
                     QuotationCalculateCaseHandle.commonCalculate(tableCost, row);
                 }
@@ -595,13 +618,8 @@ $(function () {
 
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)
-        $('#btn-check-promotion').on('click', function() {
-            if (QuotationLoadDataHandle.customerSelectEle.val()) {
-                promotionHandle.callPromotion(QuotationLoadDataHandle.customerSelectEle.val(), 0);
-            } else {
-                $('#datable-quotation-create-promotion').DataTable().destroy();
-                QuotationDataTableHandle.dataTablePromotion();
-            }
+        $('#btn-check-promotion').on('click', function () {
+            promotionHandle.callPromotion(0);
         });
 
 // Action click Apply Promotion
@@ -611,23 +629,15 @@ $(function () {
             // ReCalculate Total
             QuotationCalculateCaseHandle.updateTotal(tableProduct[0]);
             // get promotion condition to apply
-            let promotionData = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
+            let promotionData = JSON.parse($(this)[0].getAttribute('data-promotion'));
             let promotionParse = promotionHandle.getPromotionResult(promotionData);
-            let is_promotion_on_row = false;
-            if (promotionParse?.['is_promotion_on_row'] === true) {
-                is_promotion_on_row = true;
-            }
             let TotalOrder = tableProduct[0].querySelectorAll('.table-row-order').length;
             let TotalGroup = tableProduct[0].querySelectorAll('.table-row-group').length;
             let order = (TotalOrder - TotalGroup) + 1;
             let dataAdd = {
                 "tax": {},
                 "order": order,
-                "product": {
-                    "id": promotionParse?.['product_id'],
-                    "title": promotionParse?.['product_title'],
-                    "code": promotionParse?.['product_code'],
-                },
+                "product": {},
                 "product_code": promotionParse?.['product_code'],
                 "product_title": promotionParse?.['product_title'],
                 "unit_of_measure": {},
@@ -643,8 +653,8 @@ $(function () {
                 "product_subtotal_price": 0,
                 "product_discount_amount": 0,
                 "is_promotion": true,
-                "is_promotion_on_row": is_promotion_on_row,
-                "promotion": {"id": promotionParse?.['id'], "title": promotionParse?.['title']},
+                "promotion_id": promotionParse?.['id'],
+                "promotion_data": promotionParse,
                 "is_shipping": false,
                 "shipping": {},
             };
@@ -725,65 +735,46 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // ReCalculate Total
-            QuotationCalculateCaseHandle.updateTotal(tableProduct[0])
-            let shippingPrice = parseFloat($(this)[0].getAttribute('data-shipping-price'));
-            let shippingPriceMargin = parseFloat($(this)[0].getAttribute('data-shipping-price-margin'));
-            let dataShipping = JSON.parse($(this)[0].getAttribute('data-shipping'));
-            let TotalOrder = tableProduct[0].querySelectorAll('.table-row-order').length;
-            let TotalGroup = tableProduct[0].querySelectorAll('.table-row-group').length;
-            let order = (TotalOrder - TotalGroup) + 1;
-            let dataAdd = {
-                "tax": {
-                    "id": "",
-                    "code": "",
-                    "title": "",
-                    "value": 0
-                },
-                "order": order,
-                "product": {
-                    "id": dataShipping?.['id'],
-                    "title": dataShipping?.['shipping_title'],
-                    "code": "",
-                },
-                "product_code": "",
-                "product_title": dataShipping?.['shipping_title'],
-                "unit_of_measure": {
-                    "id": "",
-                    "code": "",
-                    "title": ""
-                },
-                "product_quantity": 1,
-                "product_uom_code": "",
-                "product_tax_title": "",
-                "product_tax_value": 0,
-                "product_uom_title": "",
-                "product_tax_amount": 0,
-                "product_unit_price": shippingPrice,
-                "product_description": dataShipping?.['shipping_title'],
-                "product_discount_value": 0,
-                "product_subtotal_price": shippingPrice,
-                "product_discount_amount": 0,
-                "is_promotion": false,
-                "is_shipping": true,
-                "shipping": {
-                    "id": $(this)[0].getAttribute('data-shipping-id'),
-                    "shipping_price_margin": shippingPriceMargin
-                }
-            };
-            let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-            QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-            QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-            // Re Calculate after add shipping (pretax, discount, total)
-            shippingHandle.calculateShipping(shippingPrice);
-            // Load disabled
-            QuotationLoadDataHandle.loadRowDisabled(newRow);
-            // ReOrder STT
-            reOrderSTT(tableProduct);
-            // load again table cost
-            QuotationLoadDataHandle.loadDataTableCost();
-            QuotationLoadDataHandle.loadSetWFRuntimeZone();
-            // store data
-            QuotationStoreDataHandle.storeProduct(newRow);
+            QuotationCalculateCaseHandle.updateTotal(tableProduct[0]);
+            if (this.getAttribute('data-shipping')) {
+                let dataShipping = JSON.parse(this.getAttribute('data-shipping'));
+                let shippingPrice = parseFloat(dataShipping?.['shipping_price']);
+                let TotalOrder = tableProduct[0].querySelectorAll('.table-row-order').length;
+                let TotalGroup = tableProduct[0].querySelectorAll('.table-row-group').length;
+                let order = (TotalOrder - TotalGroup) + 1;
+                let dataAdd = {
+                    "order": order,
+                    "product_quantity": 1,
+                    "product_uom_code": "",
+                    "product_tax_title": "",
+                    "product_tax_value": 0,
+                    "product_uom_title": "",
+                    "product_tax_amount": 0,
+                    "product_unit_price": shippingPrice,
+                    "product_description": dataShipping?.['title'],
+                    "product_discount_value": 0,
+                    "product_subtotal_price": shippingPrice,
+                    "product_discount_amount": 0,
+                    "is_promotion": false,
+                    "is_shipping": true,
+                    "shipping_id": dataShipping?.['id'],
+                    "shipping_data": dataShipping,
+                };
+                let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+                QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
+                QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+                // Re Calculate after add shipping (pretax, discount, total)
+                shippingHandle.calculateShipping(shippingPrice);
+                // Load disabled
+                QuotationLoadDataHandle.loadRowDisabled(newRow);
+                // ReOrder STT
+                reOrderSTT(tableProduct);
+                // load again table cost
+                QuotationLoadDataHandle.loadDataTableCost();
+                QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                // store data
+                QuotationStoreDataHandle.storeProduct(newRow);
+            }
         });
 
 // INDICATORS
@@ -865,7 +856,7 @@ $(function () {
         formSubmit.submit(function (e) {
             e.preventDefault();
             if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method') === "POST") { // HAS PROMOTION => Check condition again
-                promotionHandle.callPromotion(QuotationLoadDataHandle.customerSelectEle.val(), 1);
+                promotionHandle.callPromotion(1);
                 // Check promotion then Submit Form
                 submitCheckPromotion();
             } else { // NO PROMOTION => submit normal

@@ -35,7 +35,11 @@ $(document).ready(function () {
         if (!$.fn.DataTable.isDataTable('#lead-list-table')) {
             let dtb = $('#lead-list-table');
             dtb.DataTableDefault({
+                styleDom: 'hide-foot',
                 rowIdx: true,
+                scrollX: '100vh',
+                scrollY: '25vh',
+                scrollCollapse: true,
                 data: datasource,
                 columns: [
                     {
@@ -539,13 +543,13 @@ $(document).ready(function () {
                             let stage = $(this).closest('.sub-stage');
                             let index = stage.index();
                             let ele_stage = $('#div-stage .sub-stage');
-                            $('.stage-lost').removeClass('bg-red-light-5 border-red stage-selected');
+                            $('.stage-lost').removeClass('stage-selected');
                             for (let i = 0; i <= ele_stage.length; i++) {
                                 if (i <= index) {
                                     if (!ele_stage.eq(i).hasClass('stage-lost'))
-                                        ele_stage.eq(i).addClass('bg-primary-light-5 border-primary  stage-selected');
+                                        ele_stage.eq(i).addClass('stage-selected');
                                 } else {
-                                    ele_stage.eq(i).removeClass('bg-primary-light-5 border-primary  stage-selected');
+                                    ele_stage.eq(i).removeClass('stage-selected');
                                 }
                             }
                             loadWinRate();
@@ -601,10 +605,10 @@ $(document).ready(function () {
 
             $(document).on('change', '#input-close-deal', function () {
                 if ($(this).is(':checked')) {
-                    $(this).closest('.sub-stage').addClass('bg-primary-light-5 border-primary  stage-selected');
+                    $(this).closest('.sub-stage').addClass('stage-selected');
                     $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', true);
                 } else {
-                    $(this).closest('.sub-stage').removeClass('bg-primary-light-5 border-primary  stage-selected');
+                    $(this).closest('.sub-stage').removeClass('stage-selected');
                     $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', false);
                     if ($('#check-agency-role').is(':checked')) {
                         $('#select-box-end-customer').prop('disabled', false);

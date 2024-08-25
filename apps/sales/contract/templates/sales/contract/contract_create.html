@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block cssHeader %}
-    <link href="{% static 'assets/sales/quotation/css/quotation_create.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_quotation_create">
+    <button class="btn btn-outline-primary" type="submit" form="frm_contract_create">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -17,8 +16,8 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'QuotationListAPI' %}"
-            data-url-redirect="{% url 'QuotationList' %}"
+            data-url="{% url 'ContractListAPI' %}"
+            data-url-redirect="{% url 'ContractList' %}"
             data-method="POST"
             id="frm_contract_create"
             method="post"
@@ -35,7 +34,7 @@
                             required
                     >
                 </div>
-                <label class="form-label">{% trans 'Document' %}</label>
+                <label class="form-label required">{% trans 'Document' %}</label>
                 <table
                     id="datable-contract-document"
                     class="table nowrap w-100"
@@ -52,13 +51,17 @@
                     <tbody>
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-start">
+                <div class="d-flex justify-content-start mb-3">
                     <button type="button" class="btn btn-outline-primary" id="btn-add-doc">
                         <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
                     </button>
                 </div>
+                <div class="form-group">
+                    <label class="form-label" for="inp-contents">{% trans 'Abstract' %}</label>
+                    <textarea class="form-control" id="inp-contents"></textarea>
+                </div>
             </div>
-            <div class="col-12 col-md-5 col-lg-5 bg-light" id="file-area">
+            <div class="col-12 col-md-5 col-lg-5" id="file-area">
                 <div class="form-group">
                     <label class="form-label" for="contract-doc-remark">{% trans 'Description' %}</label>
                     <textarea class="form-control" rows="3" id="contract-doc-remark" name="remarks" disabled></textarea>
@@ -105,6 +108,8 @@
         data-view-file="{% trans 'View current file' %}"
         data-delete="{% trans 'Delete' %}"
         data-set-current="{% trans 'Set to current file' %}"
+        data-current="{% trans 'Current' %}"
+        data-old="{% trans 'Old' %}"
     >
     <input
         type="text"
@@ -119,6 +124,7 @@
     <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script src="{% static 'assets/sales/contract/js/contract_common.js' %}"></script>
     <script src="{% static 'assets/sales/contract/js/contract_create.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
     <script>
         new $x.cls.file($('#attachment')).init({'name': 'attachment'});
 

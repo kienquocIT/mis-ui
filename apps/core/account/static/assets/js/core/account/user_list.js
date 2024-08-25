@@ -45,27 +45,25 @@ $(function () {
         },
         columns: [
             {
-                width: '10%',
+                width: '5%',
                 'render': () => '',
             },
             {
-                width: '30%',
+                width: '35%',
                 'data': 'full_name',
                 'render': (data, type, row) => {
                     if (row.hasOwnProperty('full_name') && row.hasOwnProperty('first_name') && typeof data === 'string') {
-                        return `<div class="media align-items-center">
+                        return `<a href="${urlEle.data('url-user-detail').format_url_with_uuid(row.id)}">
+                            <div class="media align-items-center">
                                 <div class="media-head me-2">
-                                    <div class="avatar avatar-xs avatar-success avatar-rounded">
+                                    <div class="avatar avatar-xs avatar-soft-primary avatar-rounded">
                                         <span class="initial-wrap">` + row.first_name.charAt(0).toUpperCase() + `</span>
                                     </div>
                                 </div>
                                 <div class="media-body">
-                                    <a href="${urlEle.data('url-user-detail').format_url_with_uuid(row.id)}">
-                                        <span class="d-block">${data}</span>
-                                    </a>    
-                                        
+                                    <span class="d-block text-primary fw-bold">${data}</span>
                                 </div>
-                            </div>`;
+                            </div></a>`;
                     }
                     return '';
                 }

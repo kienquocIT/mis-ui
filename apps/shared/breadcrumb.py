@@ -8,7 +8,8 @@ from unidecode import unidecode
 class BreadcrumbChildren:  # pylint: disable=too-few-public-methods
     """prepare url breadcrumbs"""
 
-    def __init__(self, title, url=None, arg_pattern=None, kw_pattern=None, is_append_code=False):
+    def __init__(self, title: object, url: object = None,
+            arg_pattern: object = None, kw_pattern: object = None, is_append_code: object = False) -> object:
         self.title = title
         self.url = url if url else ''
         self.arg_pattern = arg_pattern if arg_pattern and isinstance(arg_pattern, list) else []
@@ -53,6 +54,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     USER_DETAIL_PAGE = BreadcrumbChildren(_('User detail'))
     USER_EDIT_PAGE = BreadcrumbChildren(_('Edit user'))
     USER_CHANGE_PASSWORD = BreadcrumbChildren(_('Change password'))
+    MY_PROFILE = BreadcrumbChildren(_('My profile'))
 
     # website
     MY_WEBSITE_LIST = BreadcrumbChildren(_('My Website'), 'MyCompanyWebsiteList')
@@ -355,6 +357,16 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     LEAD_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     LEAD_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    DISTRIBUTION_PLAN_LIST_PAGE = BreadcrumbChildren(_('Goods stock plan list'), 'DistributionPlanList')
+    DISTRIBUTION_PLAN_CREATE_PAGE = BreadcrumbChildren(_('Goods stock plan create'), 'DistributionPlanCreate')
+    DISTRIBUTION_PLAN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    DISTRIBUTION_PLAN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
+    BOM_LIST_PAGE = BreadcrumbChildren(_('Bill of material list'), 'BOMList')
+    BOM_CREATE_PAGE = BreadcrumbChildren(_('Bill of material create'), 'BOMCreate')
+    BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
     MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
     IMPORT_LIST_PAGE = BreadcrumbChildren(_('Import List'), 'FImportListView')
@@ -364,6 +376,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # PROJECT
     PROJECT_HOME = BreadcrumbChildren(_('Project home'), 'ProjectList')
     PROJECT_LIST = BreadcrumbChildren(_('Project list'), 'ProjectList')
+    PROJECT_BASELINE = BreadcrumbChildren(_('Project Baseline'), 'ProjectListBaseline')
+    PROJECT_WORKS = BreadcrumbChildren(_('Project works'), 'ProjectWorkList')
     PROJECT_CONFIG = BreadcrumbChildren(_('Project config'), 'ProjectConfig')
 
     # Zones
@@ -464,6 +478,7 @@ class BreadcrumbView:
     USER_DETAIL_PAGE = USER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     USER_EDIT_PAGE = USER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
     USER_CHANGE_PASSWORD = USER_LIST_PAGE + [BreadcrumbItem.USER_CHANGE_PASSWORD]
+    MY_PROFILE_PAGE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.MY_PROFILE]
 
     MY_WEBSITE_LIST = [BreadcrumbItem.MY_WEBSITE_LIST]
 
@@ -914,6 +929,16 @@ class BreadcrumbView:
     LEAD_DETAIL_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     LEAD_UPDATE_PAGE = LEAD_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
+    DISTRIBUTION_PLAN_LIST_PAGE = [BreadcrumbItem.DISTRIBUTION_PLAN_LIST_PAGE]
+    DISTRIBUTION_PLAN_CREATE_PAGE = DISTRIBUTION_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    DISTRIBUTION_PLAN_DETAIL_PAGE = DISTRIBUTION_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    DISTRIBUTION_PLAN_UPDATE_PAGE = DISTRIBUTION_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    BOM_LIST_PAGE = [BreadcrumbItem.BOM_LIST_PAGE]
+    BOM_CREATE_PAGE = BOM_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    BOM_DETAIL_PAGE = BOM_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    BOM_UPDATE_PAGE = BOM_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
     PRINTER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PRINTER_CONFIG_LIST_PAGE]
     PRINTER_CONFIG_LIST_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]
     PRINTER_CONFIG_CREATE_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_CREATE]
@@ -931,6 +956,8 @@ class BreadcrumbView:
     PROJECT_CONFIG = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_CONFIG]
     PROJECT_HOME = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_HOME]
     PROJECT_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_LIST]
+    PROJECT_BASELINE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_BASELINE]
+    PROJECT_WORKS = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_WORKS]
     PROJECT_CREATE_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_CREATE]
     PROJECT_DETAIL_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_DETAIL]
     PROJECT_UPDATE_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_UPDATE]

@@ -28,14 +28,34 @@ function resetInputValue() {
         const userLang = navigator.language || navigator.userLanguage;
         moment.locale(userLang.trim().split("-")[0]);
 
-        $('#contents').on('click', 'button.btn-more-submitted', function () {
-            $(this).closest('p').hide(100, function () {
-                const group$ = $(this).closest('div#data-submitted');
-                const item$ = group$.find('p');
-                item$.show();
-                $(this).remove();
+        const content$ = $('#contents');
+        if (content$.length > 0) {
+            content$.on('click', 'button.btn-more-submitted', function () {
+                $(this).closest('p').hide(100, function () {
+                    const group$ = $(this).closest('div#data-submitted');
+                    const item$ = group$.find('p');
+                    item$.show();
+                    $(this).remove();
+                });
             });
-        })
+            const frm$ = content$.find('form');
+            if (frm$.length > 0) {
+                // btn switch
+                let btnSwitch$ = content$.find('#btnSwitchAccount');
+                if (btnSwitch$.length > 0) {
+                    btnSwitch$.attr('href', btnSwitch$.attr('href').replaceAll('__pk__', frm$.attr('data-code')));
+                }
+
+                // current user data
+                let currentUserName$ = content$.find('#form-head--current-user-name');
+                currentUserName$.text(frm$.data('user-current-name'));
+                frm$.removeAttr('data-user-current-name');
+
+                // add type for button send
+                frm$.find('button').attr('type', 'button');
+                frm$.find('.form-action').find('button').attr('type', 'submit');
+            }
+        }
 
         $.fn.formPageInit();
     })
@@ -203,7 +223,6 @@ function resetInputValue() {
         formGetPublicIP: async function () {
             return await $.get("https://api.ipify.org?format=json").then(data => data.ip);
         },
-
         formGettext: function (txt) {
             try {
                 return gettext(txt)
@@ -211,7 +230,6 @@ function resetInputValue() {
                 return txt
             }
         },
-
         formGenerateRandomString(length = 32, startFromLetter = false) {
             let result = '';
             let characterLetter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -228,18 +246,17 @@ function resetInputValue() {
             }
             return result;
         },
-
         formConvertErrorsBeforeRaise: function (errors) {
             let result = {};
             Object.keys(errors).map(
                 key => {
                     result[key] = errors[key];
-                    if (key.startsWith('rate_')) {
+                    if (key.startsWith('rate_') || key.startsWith('select_')) {
                         const eleTmp$ = $(`[name=${key}]`);
                         if (eleTmp$.length > 0) {
                             const ratingGroup$ = eleTmp$.closest('.rating-group');
                             if (ratingGroup$.length > 0) {
-                                let inputName = `rate_${$x.fn.formGenerateRandomString(32)}`;
+                                let inputName = `${key.split("_")[0]}_${$x.fn.formGenerateRandomString(32)}`;
                                 const eleInputErrs$ = ratingGroup$.next('input.fake-input');
                                 if (eleInputErrs$.length === 0) {
                                     $(`<input class="fake-input" name="${inputName}" type="hidden" disabled readonly/>`).insertAfter(ratingGroup$);
@@ -255,7 +272,6 @@ function resetInputValue() {
             )
             return result;
         },
-
         formSerializerInput: function (input$, toObject = false) {
             let item = {
                 'name': $(input$).attr('name'),
@@ -388,7 +404,6 @@ function resetInputValue() {
             }
             return {};
         },
-
         formCallAjax: function (opts) {
             return new Promise(function (resolve, reject) {
                 let url = opts?.['url'] || null;
@@ -427,7 +442,6 @@ function resetInputValue() {
                 }
             })
         },
-
         formDisplayRelativeTime: function (dataStr, opts = {}) {
             if (dataStr) {
                 let format = opts?.['format'] || "YYYY-MM-DD HH:mm:ss";
@@ -445,7 +459,6 @@ function resetInputValue() {
             }
             return '_';
         },
-
         formNotify: function (msg, typeAlert, opts = {}, defaults = {}) {
             $.notify.defaults({
                 'globalPosition': 'top center',
@@ -479,11 +492,9 @@ function resetInputValue() {
                     break
             }
         },
-
         formShowContent: function () {
             $('#contents').css('opacity', '100');
         },
-
         formShowLoaders: function (opacity='100%'){
             $('#content-loaders').css('opacity', opacity).fadeIn('fast');
         },
@@ -495,14 +506,12 @@ function resetInputValue() {
                 timeout ? timeout : 0
             )
         },
-
         formShowContentAndHideLoader: function () {
             $.fn.formHideLoaders();
             $.fn.formShowContent();
         },
-
         formInitSelect2All: function (opts) {
-            $('select').each(function () {
+            $('select:not([data-select-style]), select[data-select-style="default"]').each(function () {
                 const placeholder = $(this).attr('placeholder') || '';
                 const optionEmpty = $(this).find('option[value=""]');
                 if (optionEmpty.length === 0) $(this).prepend(`<option value=""></option>`)
@@ -514,8 +523,171 @@ function resetInputValue() {
                     ...opts,
                 })
             });
-        },
+            $('select[data-select-style="xbox"]').each(function (){
+                const disabled = $(this).prop('disabled');
+                const selectCurrent$ = $(this);
+                const parent$ = $(this).closest('.form-item-input-parent');
+                const isMultiple = !!$(this).prop('multiple');
+                const fakeName = `fakeName_select_` + $.fn.formGenerateRandomString(16);
 
+                $(selectCurrent$).hide(0);
+                $(selectCurrent$).find('option').each(function (){
+                    const option$ = $(this);
+                    const txt = option$.text();
+                    const value = option$.val();
+                    if (value){
+                        const rdIdx = `select_` + $.fn.formGenerateRandomString(32);
+                        let htmlTmp = ``;
+                        if (isMultiple === true){
+                            htmlTmp = `
+                            <div class="form-checkbox-group mb-1">
+                                <input data-value="${value}" type="checkbox" id="${rdIdx}" class="form-checkbox-input form-checkbox-md" ${disabled ? "disabled": ""} />
+                                <label for="${rdIdx}" class="form-checkbox-label">${txt}</label>
+                            </div>
+                        `
+                        } else {
+                            htmlTmp = `
+                            <div class="form-checkbox-group mb-1">
+                                <input data-value="${value}" name="${fakeName}" type="radio" id="${rdIdx}" class="form-checkbox-input form-checkbox-md" ${disabled ? "disabled": ""} />
+                                <label for="${rdIdx}" class="form-checkbox-label">${txt}</label>
+                            </div>
+                        `
+                        }
+                        parent$.append(htmlTmp)
+                    }
+                })
+                if (isMultiple) {
+                    parent$.find('input[type=checkbox]').on('change', function (){
+                        const value = $(this).attr('data-value');
+                        selectCurrent$.find(`option[value="${value}"]`).prop('selected', $(this).prop('checked'));
+                    })
+                } else {
+                    parent$.find(`input[type=radio][name=${fakeName}]`).on('change', function (){
+                        const value = $(this).attr('data-value');
+                        selectCurrent$.val(value);
+                    })
+                }
+
+                selectCurrent$.on('change', function (event, data){
+                    if (data && data?.['skipByCheckboxChange'] === true) return true;
+                    let selected = $(this).val();
+                    if (!Array.isArray(selected)) selected = [selected];
+                    parent$.find(`input[type=checkbox][data-value]`).prop('checked', false);
+                    selected.map(
+                        value => {
+                            let query = `input[type=checkbox][data-value="${value}"]`
+                            if (isMultiple === false) query = `input[type=radio][data-value="${value}"]`
+                            parent$.find(query).prop('checked', true);
+                        }
+                    )
+                })
+            });
+            $('select[data-select-style="matrix"]').each(function (){
+                const disabled = $(this).prop('disabled');
+                const selectCurrent$ = $(this);
+                const parent$ = $(this).closest('.form-item-input-parent');
+                const groupBy = selectCurrent$.attr('data-select-matrix-group');
+
+                $(selectCurrent$).hide(0);
+                let rows = new Set([]);
+                let cols = new Set([]);
+                $(selectCurrent$).find('option').each(function (){
+                    const option$ = $(this);
+                    const value = option$.val();
+                    let dataRow = option$.attr('data-row');
+                    let dataCol = option$.attr('data-col');
+                    if (value && dataRow && dataCol){
+                        rows.add(dataRow);
+                        cols.add(dataCol);
+                    }
+                });
+
+                rows = Array.from(rows);
+                cols = Array.from(cols);
+
+                const tbl$ = $(`<table class="matrix-table matrix-table-default"></table>`);
+                const colFirst = cols.map(item => {
+                    return `<td style="text-align: center;">${item}</td>`
+                })
+                const firstRow$ = `
+                    <tr>
+                        <td><i>${$.fn.formGettext("Contents")}</i></td>
+                        ${colFirst}
+                    </tr>
+                `;
+                const anotherRows = rows.map(
+                    row_name => {
+                        const arr = cols.map(
+                            col_name => {
+                                const option$ = selectCurrent$.find(`option[data-row="${row_name}"][data-col="${col_name}"]`);
+                                if (option$.length > 0){
+                                    const value = option$.attr('value');
+                                    const dataGroup = option$.attr('data-group');
+                                    return `
+                                        <td class="matrix-cell-check">
+                                            <input data-value="${value}" data-group="${dataGroup || ''}" type="checkbox" class="form-checkbox-input form-checkbox-md" ${disabled ? "disabled": ""} />
+                                        </td>
+                                    `
+                                }
+                        })
+                        return `<tr><td>${row_name}</td>${arr.join("")}</tr>`;
+                    }
+                );
+
+                tbl$.append([firstRow$, ...anotherRows]);
+                parent$.append(tbl$);
+                switch (groupBy) {
+                    case 'row':
+                        $(`<small class="matrix-text">${$.fn.formGettext("Each row can have only one tick, and if the data field is mandatory, it must be completed for all rows.")}</small>`).insertAfter(tbl$);
+                        break
+                    case 'col':
+                        $(`<small class="matrix-text">${$.fn.formGettext("Each column can have only one tick, and if the data field is mandatory, it must be completed for all columns.")}</small>`).insertAfter(tbl$);
+                        break
+                }
+
+                try {
+                    let newRule = {};
+                    newRule['matrixGroupBy'.toLowerCase()] = groupBy;
+                    selectCurrent$.rules('add', newRule);
+                } catch (e) {}
+
+                tbl$.find('input[type=checkbox]').on('change', function (event, data){
+                    if (data && data?.['skipBySelectChange'] === true) return true;
+
+                    let inp$ = $(this);
+                    const value = $(inp$).attr('data-value');
+                    const dataGroup = $(inp$).attr('data-group');
+                    if (value){
+                        const option$ = selectCurrent$.find(`option[value="${value}"]`);
+                        if (option$.length > 0){
+                            option$.prop('selected', $(inp$).prop('checked'));
+                            selectCurrent$.trigger('change', {'skipByCheckboxChange': true});
+                        }
+                        if (data && data?.['skipCheckbox'] === true) return;
+                        if (dataGroup){
+                            tbl$.find(`input[data-group="${dataGroup || ''}"]`).each(function (){
+                                if (!$(this).is(inp$)){
+                                    $(this).prop('checked', false).trigger('change', {'skipCheckbox': true});
+                                }
+                            })
+                        }
+                    }
+                });
+                selectCurrent$.on('change', function (event, data){
+                    if (data && data?.['skipByCheckboxChange'] === true) return true;
+
+                    let selected = $(this).val();
+                    if (!Array.isArray(selected)) selected = [selected];
+
+                    tbl$.find(`input[type=checkbox][data-value]`).prop('checked', false);
+                    selected.map(
+                        value => {
+                            tbl$.find(`input[type=checkbox][data-value="${value}"]`).prop('checked', true);
+                        }
+                    )
+                })
+            });
+        },
         formActiveThemeMode: function () {
             if ($(document).data('themeModeActivated') !== true) {
                 // enable watch theme mode
@@ -540,7 +712,6 @@ function resetInputValue() {
                 // $(document).data('themeModeActivated', true)
             }
         },
-
         formInitDatePickerAll: function (opts) {
             opts = {
                 loadDefault: true,
@@ -580,10 +751,12 @@ function resetInputValue() {
                     }
                     if (defaultDate) pickerOpts['defaultDate'] = defaultDate;
                 }
-                $(this).flatpickr(pickerOpts);
+                const flatPickrObj = $(this).flatpickr(pickerOpts);
+                $(this).on('change', function (event, data){
+                    flatPickrObj.setDate(new Date($(this).val()));
+                })
             });
         },
-
         formInitDatetimePickerAll: function (opts) {
             opts = {
                 loadDefault: true,
@@ -622,10 +795,12 @@ function resetInputValue() {
                     }
                     if (defaultDate) pickerOpts['defaultDate'] = defaultDate;
                 }
-                $(this).flatpickr(pickerOpts);
+                const flatPickrObj = $(this).flatpickr(pickerOpts);
+                $(this).on('change', function (event, data){
+                    flatPickrObj.setDate(new Date($(this).val()));
+                })
             });
         },
-
         formInitTimePickerAll: function (opts) {
             opts = {
                 loadDefault: true,
@@ -665,14 +840,15 @@ function resetInputValue() {
                     }
                     if (defaultDate) pickerOpts['defaultDate'] = defaultDate;
                 }
-                $(this).flatpickr(pickerOpts);
+                const flatPickrObj = $(this).flatpickr(pickerOpts);
+                $(this).on('change', function (event, data){
+                    flatPickrObj.setDate(new Date('1900-01-01 ' + $(this).val()));
+                })
             });
         },
-
         formRangeSlider: function (opts){
             $('[data-rangeslider]').ionRangeSlider();
         },
-
         formPageInit: function (){
             const pageProgres$ = $('.progress-steps');
             const progress$ = pageProgres$.find('.steps-bar-progress');
@@ -838,6 +1014,28 @@ function resetInputValue() {
                     }
                 )
             }
+        },
+        formLoadData: function (data){
+            Object.keys(data).map(
+                key => {
+                    let nameRadioSkip = new Set([]);
+                    const ele$ = $(`[name=${key}]`);
+                    if (ele$.is('input[type=checkbox]')){
+                        ele$.prop('checked', data[key]).trigger('change');
+                    } else if (ele$.is('input[type=radio]')) {
+                        const nameTmp = ele$.attr('name');
+                        if (!nameRadioSkip.has(nameTmp)) {
+                            const radio$ = $(`input[type=radio][name="${nameTmp}"][value="${data[key]}"]`);
+                            if (radio$.length > 0){
+                                radio$.prop('checked', true);
+                                nameRadioSkip.add(nameTmp);
+                            }
+                        }
+                    } else {
+                        ele$.val(data[key]).trigger('change');
+                    }
+                }
+            )
         },
     });
 })(jQuery);

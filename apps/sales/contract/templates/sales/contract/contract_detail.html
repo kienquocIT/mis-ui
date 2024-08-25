@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'QuotationUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit" hidden>
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            data-url="{% url 'ContractDetailAPI' pk=pk %}"
+            data-url-redirect="{% url 'ContractList' %}"
+            data-method="GET"
+            id="frm_contract_create"
+            method="post"
+    >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-md-7 col-lg-7 border-right">
+                <div class="form-group">
+                    <label class="form-label required" for="contract-title">{% trans 'Title' %}</label>
+                    <input
+                            type="text" class="form-control"
+                            name="title"
+                            id="contract-title"
+                            required
+                            readonly
+                    >
+                </div>
+                <label class="form-label required">{% trans 'Document' %}</label>
+                <table
+                    id="datable-contract-document"
+                    class="table nowrap w-100"
+                    data-url=""
+                    data-method="GET"
+                >
+                    <thead>
+                    <tr class="bg-light">
+                        <th></th>
+                        <th>{% trans 'Document name' %}</th>
+                        <th>{% trans 'Action' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <div class="form-group">
+                    <label class="form-label" for="inp-contents">{% trans 'Abstract' %}</label>
+                    <textarea class="form-control" id="inp-contents"></textarea>
+                </div>
+            </div>
+            <div class="col-12 col-md-5 col-lg-5" id="file-area">
+                <div class="form-group">
+                    <label class="form-label" for="contract-doc-remark">{% trans 'Description' %}</label>
+                    <textarea class="form-control" rows="3" id="contract-doc-remark" name="remarks" readonly></textarea>
+                </div>
+                <label class="form-label">{% trans 'Attachment' %}</label>
+                <div id="attachment" hidden>
+                    {% include 'extends/files/all.html' %}
+                </div>
+                <table
+                    id="datable-contract-file"
+                    class="table nowrap w-100"
+                    data-url=""
+                    data-method="GET"
+                >
+                    <thead>
+                    <tr class="bg-light">
+                        <th>{% trans 'File name' %}</th>
+                        <th>{% trans 'Version' %}</th>
+                        <th>{% trans 'Date' %}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+
+    <div class="p-3 mt-5">
+        <h6>{% trans 'Comments' %}</h6>
+        <button class="btn btn-primary" id="btn-show-comment">{% trans 'Load comments' %}</button>
+        <div id="comment-group" style="display:none;">
+            {% include 'comment/list.html' %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+        data-attach-file="{% trans 'Attach file' %}"
+        data-view-file="{% trans 'View current file' %}"
+        data-delete="{% trans 'Delete' %}"
+        data-set-current="{% trans 'Set to current file' %}"
+        data-current="{% trans 'Current' %}"
+        data-old="{% trans 'Old' %}"
+    >
+    <input
+        type="text"
+        id="app-url-factory"
+    >
+    {{ data.employee_current|json_script:'employee_current' }}
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
+    <script src="{% static 'assets/sales/contract/js/contract_common.js' %}"></script>
+    <script src="{% static 'assets/sales/contract/js/contract_create.js' %}"></script>
+    <script src="{% static 'assets/sales/contract/js/contract_detail.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
+    <script>
+        new $x.cls.file($('#attachment')).init({'name': 'attachment'});
+
+        $(document).ready(function (){
+            $('#btn-show-comment').on('click', function (){
+                $(this).fadeOut({
+                    duration: 'fast',
+                    always: function (){
+                        $(this).remove();
+                        let appIdx = "b9650500-aba7-44e3-b6e0-2542622702a3";  // Application: Quotation - Quotation
+                        let docIdx = $.fn.getPkDetail();
+                        if (docIdx){
+                            let modalEle = $('#comment-group');
+                            new $x.cls.cmt(modalEle.find('.comment-group'), {'btn_goto_enabled': false}).init(docIdx, appIdx)
+                            modalEle.fadeIn('fast');
+                        } else {
+                            $.fn.notifyB({
+                                'description': `{% trans 'Document is not selected.' %}`,
+                            }, 'failure');
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+{% endblock %}

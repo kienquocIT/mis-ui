@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Goods stock plan list' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url "DistributionPlanCreate" %}">
+        <button class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12">
+            <table class="table nowrap w-100"
+                   id="db-list-table"
+                   data-method="GET"
+                   data-url="{% url 'DistributionPlanListAPI' %}"
+                   data-url-detail="{% url 'DistributionPlanDetail' '0' %}"
+            >
+                <thead>
+                <tr>
+                    <td></td>
+                    <td>{% trans 'Code' %}</td>
+                    <td>{% trans 'Title' %}</td>
+                    <td>{% trans 'Start date' %}</td>
+                    <td>{% trans 'No of months' %}</td>
+                    <td>{% trans 'Status' %}</td>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooterUnCompress %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/distributionplan/js/distribution_plan_list.js' %}"></script>
+{% endblock %}

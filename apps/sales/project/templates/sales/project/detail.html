@@ -35,7 +35,7 @@
                 <div class="col-xs-12 col-md-6 d-flex align-items-center">
                     <input type="hidden" id="data_form">
                     <div class="completion_rate_block">
-                        <p class="heading">0%</p>
+                        <p class="heading"><span>0</span>%</p>
                         <span class="title">{% trans 'Completion rate' %}</span>
                     </div>
                     <a href="#" class="btn btn-primary mr-5" id="create_baseline" hidden>
@@ -238,6 +238,7 @@
     <input type="text" id="url-factory"
            data-work-expense="{% url "ProjectWorkExpenseAPI" %}"
            data-list="{% url 'ProjectList' %}"
+           data-baseline="{% url "ProjectListBaselineAPI" %}"
     >
 {% endblock %}
 {% block jsFooter %}

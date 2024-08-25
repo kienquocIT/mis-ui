@@ -27,9 +27,11 @@ class JavaScriptCatalogCustomize(JavaScriptCatalog):
 
 
 I18N_JS_MATCH_APP = {
+    'auth': 'apps.core.auths',
     'hr': 'apps.core.hr',
     'fimport': 'apps.core.fimport',
     'mailer': 'apps.core.mailer',
     'form': 'apps.core.form',
     'form_runtime': ['apps.core.form', 'djangojs_runtime'],
+    'project_home': 'apps.sales.project',
 }

@@ -493,11 +493,14 @@ function loadAPList() {
                                 if (item?.['opportunity_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['opportunity_mapped']?.['id'])
                                 if (item?.['quotation_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['quotation_mapped']?.['id'])
                                 if (item?.['sale_order_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['sale_order_mapped']?.['id'])
-                                if (item?.['remain_value'] > 0 && item?.['employee_inherit_id'] === initEmployee.id) {
-                                    // console.log(current_sale_code[0])
-                                    // console.log(this_sale_code[0])
+                                if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === initEmployee.id) {
                                     if (current_sale_code.length > 0 && this_sale_code.length > 0) {
                                         if (current_sale_code[0] === this_sale_code[0] && item?.['system_status'] === 3) {
+                                            result.push(item)
+                                        }
+                                    }
+                                    if (current_sale_code.length === 0 && this_sale_code.length === 0) {
+                                        if (item?.['system_status'] === 3) {
                                             result.push(item)
                                         }
                                     }
@@ -511,13 +514,16 @@ function loadAPList() {
                                 if (item?.['opportunity_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['opportunity_mapped']?.['id'])
                                 if (item?.['quotation_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['quotation_mapped']?.['id'])
                                 if (item?.['sale_order_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['sale_order_mapped']?.['id'])
-                                if (item?.['remain_value'] > 0 && item?.['employee_inherit_id'] === initEmployee.id && item?.['id'] === AP_filter) {
-                                    // console.log(current_sale_code[0])
-                                    // console.log(this_sale_code[0])
+                                if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === initEmployee.id && item?.['id'] === AP_filter) {
                                     if (current_sale_code.length > 0 && this_sale_code.length > 0) {
                                         if (current_sale_code[0] === this_sale_code[0] && item?.['system_status'] === 3) {
                                             result.push(item)
                                             break
+                                        }
+                                    }
+                                    if (current_sale_code.length === 0 && this_sale_code.length === 0) {
+                                        if (item?.['system_status'] === 3) {
+                                            result.push(item)
                                         }
                                     }
                                 }
@@ -1240,7 +1246,7 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
 }
 
 $(document).on("click", '#btn-add-row-line-detail', function () {
-    if (opp_mapped_select.val() || quotation_mapped_select.val() || sale_order_mapped_select.val()) {
+    // if (opp_mapped_select.val() || quotation_mapped_select.val() || sale_order_mapped_select.val()) {
         tableLineDetail.append(`<tr id="" class="row-number">
             <td class="number text-center"></td>
             <td><select class="form-select expense-type-select-box"></select></td>
@@ -1283,10 +1289,10 @@ $(document).on("click", '#btn-add-row-line-detail', function () {
 
         count_row(tableLineDetail, 1);
         $.fn.initMaskMoney2();
-    }
-    else {
-        $.fn.notifyB({description: 'Select Sale code first.'}, 'warning');
-    }
+    // }
+    // else {
+    //     $.fn.notifyB({description: 'Select Sale code first.'}, 'warning');
+    // }
 });
 
 $(document).on("click", '.btn-del-line-detail', function () {
@@ -1925,8 +1931,7 @@ class PaymentHandle {
                     } else if (sale_order_mapped && type === '2') {
                         frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
                     } else {
-                        $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
-                        return false;
+                        frm.dataForm['sale_code_type'] = 2;
                     }
                 }
             } else {
@@ -1937,8 +1942,7 @@ class PaymentHandle {
                 } else if (sale_order_mapped && !sale_order_mapped_select.prop('disabled')) {
                     frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
                 } else {
-                    $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
-                    return false;
+                    frm.dataForm['sale_code_type'] = 2;
                 }
             }
         }

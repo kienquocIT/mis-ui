@@ -39,7 +39,7 @@
 <div class="tab-content">
     <div class="tab-pane fade show active" id="tab_general">
         <div class="row">
-            <div class="col-12 col-md-4 col-lg-4">
+            <div class="col-12 col-md-6 col-lg-4">
                 <div class="form-group">
                     <label for="general-select-box-product-type" class="form-label required">{% trans "Product Type" %}</label>
                     <select id="general-select-box-product-type" class="form-select select2" data-method="GET"
@@ -47,14 +47,14 @@
                             data-url="{% url 'ProductTypeListAPI' %}"></select>
                 </div>
             </div>
-            <div class="col-12 col-md-2 col-lg-2">
+            <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="general-select-box-product-category" class="form-label required">{% trans "Product Category" %}</label>
                     <select id="general-select-box-product-category" class="form-select" data-method="GET"
                             data-url="{% url "ProductCategoryListAPI" %}"></select>
                 </div>
             </div>
-            <div class="col-12 col-md-2 col-lg-2">
+            <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="general-select-box-uom-group" class="form-label required">{% trans "UoM Group" %}</label>
                     <select id="general-select-box-uom-group" class="form-select" data-method="GET"
@@ -62,7 +62,7 @@
                             data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"></select>
                 </div>
             </div>
-            <div class="col-12 col-md-2 col-lg-2">
+            <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="general-select-box-traceability-method" class="form-label">{% trans "Traceability method" %}</label>
                     <select id="general-select-box-traceability-method" class="form-select" data-method="GET">
@@ -146,16 +146,16 @@
     </div>
     <div class="tab-pane fade" id="tab_sale">
         <div class="row">
-            <div class="col-12 col-md-4 col-lg-4">
+            <div class="col-12 col-md-6 col-lg-4">
                 <div class="row">
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-12 col-lg-6">
                         <div class="form-group">
                             <label for="sale-select-box-default-uom" class="form-label required">{% trans "Default UoM" %}</label>
                             <select id="sale-select-box-default-uom" class="form-select" data-method="GET"
                                     data-url="{% url "UnitOfMeasureListAPI" %}"></select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-12 col-lg-6">
                         <div class="form-group">
                             <label for="sale-select-box-tax-code" class="form-label required">{% trans "Tax Code" %}</label>
                             <select id="sale-select-box-tax-code" class="form-select" data-method="GET"
@@ -165,18 +165,20 @@
                     <div class="col-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-8 text-left">
+                                <div class="col-8">
                                     <label class="form-label" for="price_list_for_sale_online">{% trans "Price list for sale online" %}</label>
                                 </div>
-                                <div class="col-4 text-right form-check form-switch">
-                                    <input type="checkbox" class="form-check-input" id="is_publish_website">
-                                    <label class="form-check-label" for="is_publish_website">{% trans "Sale online" %}</label>
+                                <div class="col-4 text-right">
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input" id="is_publish_website">
+                                        <label class="form-check-label" for="is_publish_website">{% trans "Sale online" %}</label>
+                                    </div>
                                 </div>
                             </div>
                             <select id="price_list_for_sale_online" data-url="{% url 'PriceListAPI' %}" class="select2 form-select" data-placeholder="{% trans 'From Price List in right side' %}"></select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-12 col-lg-6">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-12 col-lg-12 col-md-12">
@@ -192,7 +194,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-8 col-lg-8 ul-price-list" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+            <div class="col-12 col-md-12 col-lg-8 ul-price-list" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
                 <table class="table table-advance nowrap w-100" id="table_price_list" data-method="GET" data-url="{% url "PriceListAPI" %}">
                     <thead>
                         <tr>
@@ -211,7 +213,7 @@
     </div>
     <div class="tab-pane fade" id="tab_inventory">
         <div class="row">
-            <div class="col-12 col-md-2 col-lg-2">
+            <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="inventory-select-box-uom-name" class="form-label required">{% trans "UoM Name" %}</label>
                     <select id="inventory-select-box-uom-name" class="form-select" data-method="GET"
@@ -219,13 +221,13 @@
                     </select>
                 </div>
             </div>
-            <div class="col-12 col-md-2 col-lg-2">
+            <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="inventory-level-min" class="form-label">{% trans "Inventory Level Min" %}</label>
                     <input id="inventory-level-min" type="number" class="form-control" min="0" step="1" placeholder="Input number">
                 </div>
             </div>
-            <div class="col-12 col-md-2 col-lg-2">
+            <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="inventory-level-max" class="form-label">{% trans "Inventory Level Max" %}</label>
                     <input id="inventory-level-max" type="number" class="form-control" min="0" step="1" placeholder="Input number">
@@ -233,7 +235,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12 col-md-6 col-lg-6 mt-5">
+            <div class="col-12 col-md-9 col-lg-6 mt-5">
                 <span class="text-muted">* {% trans 'Product overview' %}</span>
                 <table id="datatable-warehouse-overview" class="table table-advance nowrap w-100">
                     <thead>
@@ -248,7 +250,7 @@
                     <tbody></tbody>
                 </table>
             </div>
-            <div class="col-12 col-md-6 col-lg-6 mt-5">
+            <div class="col-12 col-md-9 col-lg-6 mt-5">
                 <span class="text-muted">* {% trans 'Product warehouse detail' %}</span>
                 <table id="datatable-warehouse-list" class="table table-advance nowrap w-100"
                        data-url="{% url "WareHouseListAPI" %}"
@@ -268,21 +270,21 @@
     </div>
     <div class="tab-pane fade" id="tab_purchase">
         <div class="row">
-            <div class="col-12 col-md-2 col-lg-2">
+            <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="purchase-select-box-default-uom" class="form-label required">{% trans "Default UoM" %}</label>
                     <select id="purchase-select-box-default-uom" class="form-select" data-method="GET"
                             data-url="{% url "UnitOfMeasureListAPI" %}"></select>
                 </div>
             </div>
-            <div class="col-12 col-md-2 col-lg-2">
+            <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="purchase-select-box-tax-code" class="form-label required">{% trans "Tax Code" %}</label>
                     <select id="purchase-select-box-tax-code" class="form-select" data-method="GET"
                             data-url="{% url "TaxListAPI" %}"></select>
                 </div>
             </div>
-            <div class="col-12 col-md-2 col-lg-2">
+            <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="purchase-supplied-by" class="form-label required">{% trans "Supplied by" %}</label>
                     <select id="purchase-supplied-by" class="form-select">

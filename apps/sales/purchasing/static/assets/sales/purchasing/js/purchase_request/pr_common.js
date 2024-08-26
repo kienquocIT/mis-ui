@@ -437,9 +437,14 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('so_product_list')) {
-                        let product_data = resp.data['so_product_list']?.['product_data']
-                        console.log(product_data)
-                        return product_data ? product_data : [];
+                        let product_data = []
+                        for (let i = 0; i < resp.data['so_product_list']?.['product_data'].length; i++) {
+                            let item = resp.data['so_product_list']?.['product_data'][i]
+                            if (item?.['product']?.['product_choice'].includes(2)) {
+                                product_data.push(item)
+                            }
+                        }
+                        return product_data;
                     }
                     throw Error('Call data raise errors.')
                 },
@@ -955,7 +960,7 @@ btnSelectSOProduct.on('click', function () {
         let limit_number = $(this).find('.remain-span').text() ? parseFloat($(this).find('.remain-span').text()) : ''
         let request_number = $(this).find('.request-number-input').val() ? parseFloat($(this).find('.request-number-input').val()) : ''
 
-        if (limit_number && request_number && request_number <= limit_number) {
+        if (limit_number && request_number !== '' && request_number <= limit_number) {
             request_product_data.push({
                 'sale_order_product_id': $(this).find('.product-span').attr('data-so-product-id'),
                 'id': $(this).find('.product-span').attr('data-product-id'),
@@ -995,7 +1000,7 @@ btnSelectDBProduct.on('click', function () {
         let limit_number = $(this).find('.remain-span').text() ? parseFloat($(this).find('.remain-span').text()) : ''
         let request_number = $(this).find('.request-number-input').val() ? parseFloat($(this).find('.request-number-input').val()) : ''
 
-        if (limit_number && request_number && request_number <= limit_number) {
+        if (limit_number && request_number !== '' && request_number <= limit_number) {
             request_product_data.push({
                 'sale_order_product_id': $(this).find('.product-span').attr('data-so-product-id'),
                 'id': $(this).find('.product-span').attr('data-product-id'),

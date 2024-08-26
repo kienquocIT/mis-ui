@@ -8587,8 +8587,16 @@ msgstr "Nguồn cung cấp"
 
 #
 msgid "Making"
-msgstr "Chế tạo"
+msgstr "Sản xuất"
 
 #
 msgid "Product image"
 msgstr "Hình ảnh sản phẩm"
+
+#
+msgid "Sum price"
+msgstr "Tổng chi phí"
+
+#
+msgid "Sum time"
+msgstr "Tổng thời gian"

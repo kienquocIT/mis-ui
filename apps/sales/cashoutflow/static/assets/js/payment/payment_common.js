@@ -1582,26 +1582,26 @@ function LoadDetailPayment(option) {
                 $x.fn.renderCodeBreadcrumb(data);
                 console.log(data)
 
+                new $x.cls.bastionField({
+                    has_opp: true,
+                    has_inherit: true,
+                    data_inherit: [{
+                        "id": data?.['employee_inherit']?.['id'],
+                        "full_name": data?.['employee_inherit']?.['full_name'] || '',
+                        "first_name": data?.['employee_inherit']?.['first_name'] || '',
+                        "last_name": data?.['employee_inherit']?.['last_name'] || '',
+                        "email": data?.['employee_inherit']?.['email'] || '',
+                        "is_active": data?.['employee_inherit']?.['is_active'] || false,
+                        "selected": true,
+                    }],
+                    data_opp: [{
+                        "id": data?.['opportunity_mapped']?.['id'] || '',
+                        "title": data?.['opportunity_mapped']?.['title'] || '',
+                        "code": data?.['opportunity_mapped']?.['code'] || '',
+                        "selected": true,
+                    }]
+                }).init();
                 if (Object.keys(data?.['opportunity_mapped']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
-                    new $x.cls.bastionField({
-                        has_opp: true,
-                        has_inherit: true,
-                        data_inherit: [{
-                            "id": data?.['employee_inherit']?.['id'],
-                            "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                            "first_name": data?.['employee_inherit']?.['first_name'] || '',
-                            "last_name": data?.['employee_inherit']?.['last_name'] || '',
-                            "email": data?.['employee_inherit']?.['email'] || '',
-                            "is_active": data?.['employee_inherit']?.['is_active'] || false,
-                            "selected": true,
-                        }],
-                        data_opp: [{
-                            "id": data?.['opportunity_mapped']?.['id'] || '',
-                            "title": data?.['opportunity_mapped']?.['title'] || '',
-                            "code": data?.['opportunity_mapped']?.['code'] || '',
-                            "selected": true,
-                        }]
-                    }).init();
                     PaymentLoadQuotation(data?.['opportunity_mapped']?.['quotation_mapped'])
                     LoadPlanQuotation(opp_mapped_select.val(), data?.['opportunity_mapped']?.['quotation_mapped']?.['id'])
                 }

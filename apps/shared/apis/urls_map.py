@@ -599,6 +599,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LABOR_LIST_FOR_BOM = StringUrl('production/labor-list-for-BOM')
     MATERIAL_LIST_FOR_BOM = StringUrl('production/product-material-list-for-BOM')
     TOOL_LIST_FOR_BOM = StringUrl('production/product-tool-list-for-BOM')
+    BOM_ORDER_LIST = StringUrl('production/bom-order/list')
 
     # AR Invoice
     DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')

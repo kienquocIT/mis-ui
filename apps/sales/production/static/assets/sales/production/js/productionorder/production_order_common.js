@@ -12,6 +12,7 @@ class ProdOrderLoadDataHandle {
     static $boxGroup = $('#box-group');
     static $trans = $('#app-trans-factory');
     static $urls = $('#app-urls-factory');
+    static $dataBOM = $('#data-bom');
     static dataType = [
         {'id': 0, 'title': ProdOrderLoadDataHandle.$trans.attr('data-production')},
         {'id': 1, 'title': ProdOrderLoadDataHandle.$trans.attr('data-assembly')},
@@ -70,40 +71,81 @@ class ProdOrderLoadDataHandle {
         });
     };
 
+    static loadBOM() {
+        if (ProdOrderLoadDataHandle.$boxProd.val()) {
+            $.fn.callAjax2({
+                    'url': ProdOrderLoadDataHandle.$urls.attr('data-md-bom'),
+                    'method': 'GET',
+                    'data': {'product_id': ProdOrderLoadDataHandle.$boxProd.val()},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('bom_order_list') && Array.isArray(data.bom_order_list)) {
+                            if (data.bom_order_list.length > 0) {
+                                ProdOrderLoadDataHandle.loadAddDtbRows(ProdOrderLoadDataHandle.loadSetupBOM(data.bom_order_list[0]));
+
+                                let multi = 1;
+                                if (ProdOrderLoadDataHandle.$quantity) {
+                                    multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
+                                }
+                                ProdOrderLoadDataHandle.$time.empty().html(`${data.bom_order_list[0]?.['sum_time'] * multi}`);
+                                ProdOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data.bom_order_list[0]));
+                            }
+                        }
+                    }
+                }
+            )
+        }
+    };
+
+    static loadGetDataBOM() {
+        if (ProdOrderLoadDataHandle.$dataBOM.val()) {
+            return JSON.parse(ProdOrderLoadDataHandle.$dataBOM.val());
+        }
+        return {};
+    };
+
+    static loadSetupBOM(data) {
+        let result = [];
+        for (let task of data?.['bom_task']) {  // task
+            let tool_list = [];
+            for (let tool of data?.['bom_tool']) {
+                if (tool?.['bom_task']?.['id'] === task?.['id']) {
+                    tool_list.push(tool?.['product_data']);
+                }
+            }
+            task['is_task'] = true;
+            task['task_order'] = task?.['order'];
+            task['tool_data'] = tool_list;
+            result.push(task);
+            for (let material of data?.['bom_material']) {
+                if (material?.['bom_task']?.['id'] === task?.['id']) {
+                    material['task_order'] = task?.['order'];
+                    result.push(material);
+                }
+            }
+        }
+        return result;
+    };
+
     static loadAddDtbRows(data) {
         let tmp = [
-            {'is_group': true, 'group_order': 1, 'group_title': 'Gia công chân bàn', 'labor_bom': 1, 'labor': 0, 'uom_labor_data': {'id': 0, 'title': 'Giờ'}, 'tool_data': []},
-            {'group_order': 1, 'product_data': {'id': 0, 'title': 'Gỗ khối 10x10x100', 'available_amount': 125}, 'warehouse_data': {'id': 0, 'title': 'Kho 1', 'available_stock': 105}, 'quantity_bom': 6, 'quantity': 0, 'order': 1},
-            {'group_order': 1, 'product_data': {'id': 1, 'title': 'Pat kim loại chân bàn lớn', 'available_amount': 80}, 'warehouse_data': {'id': 0, 'title': 'Kho 1', 'available_stock': 80}, 'quantity_bom':  6, 'quantity': 0, 'order': 2},
+            {'is_task': true, 'task_order': 1, 'task_title': 'Gia công chân bàn', 'quantity_bom': 1, 'quantity': 0, 'uom_data': {'id': 0, 'title': 'Giờ'}, 'tool_data': []},
+            {'task_order': 1, 'product_data': {'id': 0, 'title': 'Gỗ khối 10x10x100', 'available_amount': 125}, 'warehouse_data': {'id': 0, 'title': 'Kho 1', 'available_stock': 105}, 'quantity_bom': 6, 'quantity': 0, 'order': 1},
+            {'task_order': 1, 'product_data': {'id': 1, 'title': 'Pat kim loại chân bàn lớn', 'available_amount': 80}, 'warehouse_data': {'id': 0, 'title': 'Kho 1', 'available_stock': 80}, 'quantity_bom':  6, 'quantity': 0, 'order': 2},
 
-            {'is_group': true, 'group_order': 2, 'group_title': 'Lắp ráp', 'labor_bom': 2, 'labor': 0, 'uom_labor_data': {'id': 0, 'title': 'Giờ'}, 'tool_data': []},
-            {'group_order': 2, 'product_data': {'id': 0, 'title': 'Mặt bàn lớn', 'available_amount': 15}, 'warehouse_data': {'id': 0, 'title': 'Kho 1', 'available_stock': 15}, 'quantity_bom': 1, 'quantity': 0, 'order': 1},
-            {'group_order': 2, 'product_data': {'id': 1, 'title': 'Vít lớn 4mm', 'available_amount': 45}, 'warehouse_data': {'id': 0, 'title': 'Kho 1', 'available_stock': 30}, 'quantity_bom': 3, 'quantity': 0, 'order': 2},
+            {'is_task': true, 'task_order': 2, 'task_title': 'Lắp ráp', 'quantity_bom': 2, 'quantity': 0, 'uom_data': {'id': 0, 'title': 'Giờ'}, 'tool_data': []},
+            {'task_order': 2, 'product_data': {'id': 0, 'title': 'Mặt bàn lớn', 'available_amount': 15}, 'warehouse_data': {'id': 0, 'title': 'Kho 1', 'available_stock': 15}, 'quantity_bom': 1, 'quantity': 0, 'order': 1},
+            {'task_order': 2, 'product_data': {'id': 1, 'title': 'Vít lớn 4mm', 'available_amount': 45}, 'warehouse_data': {'id': 0, 'title': 'Kho 1', 'available_stock': 30}, 'quantity_bom': 3, 'quantity': 0, 'order': 2},
         ]
         ProdOrderDataTableHandle.$tableMain.DataTable().clear().draw();
-        ProdOrderDataTableHandle.$tableMain.DataTable().rows.add(tmp).draw();
+        ProdOrderDataTableHandle.$tableMain.DataTable().rows.add(data).draw();
         ProdOrderLoadDataHandle.loadDD(ProdOrderDataTableHandle.$tableMain);
         ProdOrderLoadDataHandle.loadSetCollapse();
-        ProdOrderLoadDataHandle.loadTime();
-        return true;
-    };
-
-    static loadAddDtbRow() {
-        let dataAdd = {};
-        let newRow = ProdOrderDataTableHandle.$tableMain.DataTable().row.add(dataAdd).draw().node();
-        ProdOrderLoadDataHandle.loadDDInit(newRow);
-        return true;
-    };
-
-    static loadAddDtbRowGr() {
-        let order = ProdOrderDataTableHandle.$tableMain[0].querySelectorAll('.table-row-group').length + 1;
-        let dataAdd = {
-            "group_title": '',
-            "is_group": true,
-            'group_order': order,
-        }
-        let newRow = ProdOrderDataTableHandle.$tableMain.DataTable().row.add(dataAdd).draw().node();
-        $(newRow).find('td:eq(1)').attr('colspan', 2);
+        // ProdOrderLoadDataHandle.loadTime();
         return true;
     };
 
@@ -113,8 +155,8 @@ class ProdOrderLoadDataHandle {
                 let dataRow = JSON.parse(child.getAttribute('data-row'));
                 let row = child.closest('tr');
                 let cls = '';
-                if (dataRow?.['group_order']) {
-                    cls = 'cl-' + String(dataRow?.['group_order']);
+                if (dataRow?.['task_order']) {
+                    cls = 'cl-' + String(dataRow?.['task_order']);
                 }
                 row.classList.add(cls);
                 row.classList.add('collapse');
@@ -130,16 +172,28 @@ class ProdOrderLoadDataHandle {
             if (row.querySelector('.table-row-order').getAttribute('data-row')) {
                 let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
                 if (row.querySelector('.table-row-item')) {
-                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
+                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')));
+                    if (dataRow?.['product_data']) {
+                        ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
+                    }
                 }
                 if (row.querySelector('.table-row-uom')) {
-                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
+                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')));
+                    if (dataRow?.['uom_data']) {
+                        ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
+                    }
                 }
                 if (row.querySelector('.table-row-warehouse')) {
-                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), [dataRow?.['warehouse_data']]);
+                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')));
+                    if (dataRow?.['warehouse_data']) {
+                        ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), [dataRow?.['warehouse_data']]);
+                    }
                 }
                 if (row.querySelector('.table-row-tool')) {
-                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tool')), dataRow?.['tool_data']);
+                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tool')));
+                    if (dataRow?.['tool_data']) {
+                        ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tool')), dataRow?.['tool_data']);
+                    }
                 }
                 if (row.querySelector('.cl-parent')) {
                     row.querySelector('.cl-parent').addEventListener('click', function () {
@@ -148,6 +202,93 @@ class ProdOrderLoadDataHandle {
                 }
             }
         });
+        return true;
+    };
+
+    static loadChangeWH(row, type= 0) {
+        if (row) {
+            if (row.querySelector('.table-row-item') && row.querySelector('.table-row-warehouse') && row.querySelector('.table-row-stock') && row.querySelector('.table-row-available')) {
+                let productID = $(row.querySelector('.table-row-item')).val();
+                let warehouseID = $(row.querySelector('.table-row-warehouse')).val();
+                let dataParams = {'product_id': productID, 'warehouse_id': warehouseID};
+                if (type === 1) {
+                    dataParams = {'product_id': productID};
+                }
+                $.fn.callAjax2({
+                        'url': ProdOrderLoadDataHandle.$urls.attr('data-md-pwh'),
+                        'method': 'GET',
+                        'data': dataParams,
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('warehouse_products_list') && Array.isArray(data.warehouse_products_list)) {
+                                if (data.warehouse_products_list.length > 0) {
+                                    if (type === 0) {
+                                        let dataPWH = data.warehouse_products_list[0];
+                                        row.querySelector('.table-row-stock').innerHTML = dataPWH?.['stock_amount'];
+                                        row.querySelector('.table-row-available').innerHTML = dataPWH?.['available_stock'];
+                                    }
+                                    if (type === 1) {
+                                        let stock = 0;
+                                        let available = 0;
+                                        for (let dataPWH of data.warehouse_products_list) {
+                                            stock += dataPWH?.['stock_amount'];
+                                            available += dataPWH?.['available_stock'];
+                                        }
+                                        row.querySelector('.table-row-stock').innerHTML = stock;
+                                        row.querySelector('.table-row-available').innerHTML = available;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                )
+            }
+        }
+    };
+
+    static loadChangeProduct(row) {
+        if (row.querySelector('.table-row-item') && row.querySelector('.table-row-uom') && row.querySelector('.table-row-warehouse') && row.querySelector('.table-row-stock') && row.querySelector('.table-row-available')) {
+            let data = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-item')), $(row.querySelector('.table-row-item')).val());
+            if (data) {
+                data['unit_of_measure'] = data?.['purchase_information']?.['uom'];
+                data['uom_group'] = data?.['general_information']?.['uom_group'];
+                // load UOM
+                if (Object.keys(data?.['unit_of_measure']).length !== 0 && Object.keys(data?.['uom_group']).length !== 0) {
+                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [data?.['unit_of_measure']], {'group': data?.['uom_group']?.['id']});
+                } else {
+                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')));
+                }
+                // reset
+                row.querySelector('.table-row-stock').innerHTML = 0;
+                row.querySelector('.table-row-available').innerHTML = 0;
+            }
+        }
+    };
+
+
+
+
+
+    static loadAddDtbRow() {
+        let dataAdd = {};
+        let newRow = ProdOrderDataTableHandle.$tableMain.DataTable().row.add(dataAdd).draw().node();
+        ProdOrderLoadDataHandle.loadDDInit(newRow);
+        return true;
+    };
+
+    static loadAddDtbRowGr() {
+        let order = ProdOrderDataTableHandle.$tableMain[0].querySelectorAll('.table-row-group').length + 1;
+        let dataAdd = {
+            "task_title": '',
+            "is_task": true,
+            'task_order': order,
+        }
+        let newRow = ProdOrderDataTableHandle.$tableMain.DataTable().row.add(dataAdd).draw().node();
+        $(newRow).find('td:eq(1)').attr('colspan', 2);
         return true;
     };
 
@@ -186,7 +327,7 @@ class ProdOrderLoadDataHandle {
             if (row.querySelector('.table-row-order').getAttribute('data-row')) {
                 let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
                 if (row.querySelector('.table-row-labor')) {
-                    row.querySelector('.table-row-labor').innerHTML = dataRow?.['labor_bom'] * multi;
+                    row.querySelector('.table-row-labor').innerHTML = dataRow?.['quantity_bom'] * multi;
                 }
                 if (row.querySelector('.table-row-quantity')) {
                     row.querySelector('.table-row-quantity').innerHTML = dataRow?.['quantity_bom'] * multi;
@@ -218,17 +359,17 @@ class ProdOrderDataTableHandle {
                     width: '1%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        if (row?.['is_group'] === true) {
-                            let target = ".cl-" + String(row?.['group_order']);
+                        if (row?.['is_task'] === true) {
+                            let target = ".cl-" + String(row?.['task_order']);
                             return `<button 
                                         type="button" 
-                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-xs table-row-group cl-parent" 
+                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-xs table-row-task cl-parent" 
                                         data-bs-toggle="collapse"
                                         data-bs-target="${target}"
                                         data-bs-placement="top"
                                         aria-expanded="true"
                                         aria-controls="newGroup"
-                                        data-group-order="${row?.['group_order']}"
+                                        data-group-order="${row?.['task_order']}"
                                         data-row="${dataRow}"
                                     >
                                         <span class="icon"><i class="fas fa-chevron-down"></i></span>
@@ -242,17 +383,17 @@ class ProdOrderDataTableHandle {
                     targets: 1,
                     width: '20%',
                     render: (data, type, row) => {
-                        if (row?.['is_group'] === true) {
-                            return `<b class="table-row-group-title">${row?.['group_title']}</b>`;
+                        if (row?.['is_task'] === true) {
+                            return `<b class="table-row-task-title">${row?.['task_title']}</b>`;
                         }
-                        return `<select class="form-select table-row-item"></select>`;
+                        return `<select class="form-select table-row-item" data-url="${ProdOrderLoadDataHandle.$urls.attr('data-md-product')}" data-method="GET" data-keyResp="product_sale_list"></select>`;
                     }
                 },
                 {
                     targets: 2,
                     width: '10%',
                     render: (data, type, row) => {
-                        if (row?.['is_group'] === true) {
+                        if (row?.['is_task'] === true) {
                             return ``;
                         }
                         return `<select class="form-select table-row-uom" data-url="${ProdOrderLoadDataHandle.$urls.attr('data-md-uom')}" data-method="GET" data-keyResp="unit_of_measure"></select>`;
@@ -262,7 +403,7 @@ class ProdOrderDataTableHandle {
                     targets: 3,
                     width: '5%',
                     render: (data, type, row) => {
-                        if (row?.['is_group'] === true) {
+                        if (row?.['is_task'] === true) {
                             return ``;
                         }
                         return `<span class="table-row-quantity">${row?.['quantity_bom'] * multi}</span>`;
@@ -272,17 +413,21 @@ class ProdOrderDataTableHandle {
                     targets: 4,
                     width: '15%',
                     render: (data, type, row) => {
-                        if (row?.['is_group'] === true) {
+                        if (row?.['is_task'] === true) {
                             return ``;
                         }
-                        return `<select class="form-select table-row-warehouse" data-url="${ProdOrderLoadDataHandle.$urls.attr('data-md-warehouse')}" data-method="GET" data-keyResp="warehouse_list"></select>`;
+                        return `<div class="form-check">
+                                    <input type="checkbox" id="customRadio1" name="customRadio" class="form-check-input check-all-wh">
+                                    <label class="form-check-label" for="customRadio1">All</label>
+                                </div><select class="form-select table-row-warehouse" data-url="${ProdOrderLoadDataHandle.$urls.attr('data-md-warehouse')}" data-method="GET" data-keyResp="warehouse_list"></select>`;
+                        // return `<select class="form-select table-row-warehouse" data-url="${ProdOrderLoadDataHandle.$urls.attr('data-md-warehouse')}" data-method="GET" data-keyResp="warehouse_list"></select>`;
                     }
                 },
                 {
                     targets: 5,
                     width: '10%',
                     render: (data, type, row) => {
-                        if (row?.['is_group'] === true) {
+                        if (row?.['is_task'] === true) {
                             return ``;
                         }
                         return `<span class="table-row-stock">${row?.['warehouse_data']?.['available_stock'] ? row?.['warehouse_data']?.['available_stock'] : 0}</span>`;
@@ -292,7 +437,7 @@ class ProdOrderDataTableHandle {
                     targets: 6,
                     width: '10%',
                     render: (data, type, row) => {
-                        if (row?.['is_group'] === true) {
+                        if (row?.['is_task'] === true) {
                             return ``;
                         }
                         return `<span class="table-row-available">${row?.['product_data']?.['available_amount'] ? row?.['product_data']?.['available_amount'] : 0}</span>`;
@@ -302,8 +447,8 @@ class ProdOrderDataTableHandle {
                     targets: 7,
                     width: '10%',
                     render: (data, type, row) => {
-                        if (row?.['is_group'] === true) {
-                            return `<span class="table-row-labor">${row?.['labor_bom'] * multi}</span><span class="table-row-uom-labor"> ${row?.['uom_labor_data']?.['title']}</span>`;
+                        if (row?.['is_task'] === true) {
+                            return `<span class="table-row-labor">${row?.['quantity_bom'] * multi}</span><span class="table-row-uom-labor"> ${row?.['uom_data']?.['title']}</span>`;
                         }
                         return ``;
                     }
@@ -312,7 +457,7 @@ class ProdOrderDataTableHandle {
                     targets: 8,
                     width: '18%',
                     render: (data, type, row) => {
-                        if (row?.['is_group'] === true) {
+                        if (row?.['is_task'] === true) {
                             return `<select class="form-select table-row-tool" data-url="${ProdOrderLoadDataHandle.$urls.attr('data-md-product')}" data-method="GET" data-keyResp="product_sale_list" multiple></select>`;
                         }
                         return ``;

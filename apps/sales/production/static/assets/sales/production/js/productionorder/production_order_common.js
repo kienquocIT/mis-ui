@@ -313,7 +313,7 @@ class ProdOrderDataTableHandle {
                     width: '18%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
-                            return `<select class="form-select table-row-tool" multiple></select>`;
+                            return `<select class="form-select table-row-tool" data-url="${ProdOrderLoadDataHandle.$urls.attr('data-md-product')}" data-method="GET" data-keyResp="product_sale_list" multiple></select>`;
                         }
                         return ``;
                     }

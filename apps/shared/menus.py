@@ -661,7 +661,13 @@ class MenusProduction:
             MenuCommon(
                 name='Bill of material', code='menu_bom_list', view_name='BOMList',
                 icon='<i class="fab fa-connectdevelop"></i>',
-            )
+            ),
+            MenuCommon(
+                name='Production order',
+                code='menu_production_order_list',
+                view_name='ProductionOrderCreate',
+                icon='<i class="fas fa-boxes"></i>',
+            ),
         ],
     )
 

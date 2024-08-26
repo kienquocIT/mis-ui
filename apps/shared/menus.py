@@ -656,7 +656,7 @@ class MenusProduction:
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     PRODUCTION = MenuCommon(
-        name='Production', code='menu_purchase_activities', view_name='', icon='<i class="fas fa-puzzle-piece"></i>',
+        name='Production', code='menu_purchase_activities', view_name='', icon='<i class="bi bi-robot"></i>',
         child=[
             MenuCommon(
                 name='Bill of material', code='menu_bom_list', view_name='BOMList',
@@ -793,7 +793,7 @@ class SpaceItem:
         'production': SpaceCommon(
             'Production',
             'production',
-            icon='<i class="fas fa-puzzle-piece"></i>',
+            icon='<i class="bi bi-robot"></i>',
             menus=[
                 MenusProduction.HOME,
                 MenusProduction.PRODUCTION,

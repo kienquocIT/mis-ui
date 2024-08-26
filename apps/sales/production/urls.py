@@ -1,6 +1,7 @@
 from django.urls import path
 from apps.sales.production.views import (
-    BOMList, BOMCreate, BOMDetail, BOMUpdate, BOMListAPI, BOMDetailAPI, LaborListForBOMAPI, ProductionOrderCreate
+    BOMList, BOMCreate, BOMDetail, BOMUpdate, BOMListAPI, BOMDetailAPI, LaborListForBOMAPI, ProductionOrderCreate,
+    ProductMaterialListForBOMAPI, ProductToolListForBOMAPI,
 )
 
 urlpatterns = [
@@ -11,7 +12,9 @@ urlpatterns = [
     path('bill-of-material/api', BOMListAPI.as_view(), name='BOMListAPI'),
     path('bill-of-material/api/<str:pk>', BOMDetailAPI.as_view(), name='BOMDetailAPI'),
 
-    path('bill-of-material/labor-for-BOM/api', LaborListForBOMAPI.as_view(), name='LaborListForBOMAPI'),
+    path('labor-list-for-BOM/api', LaborListForBOMAPI.as_view(), name='LaborListForBOMAPI'),
+    path('product-material-list-for-BOM/api', ProductMaterialListForBOMAPI.as_view(), name='ProductMaterialListForBOMAPI'),
+    path('product-tool-list-for-BOM/api', ProductToolListForBOMAPI.as_view(), name='ProductToolListForBOMAPI'),
 
     # production order
     path('production-order/create', ProductionOrderCreate.as_view(), name='ProductionOrderCreate'),

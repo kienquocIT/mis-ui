@@ -114,12 +114,10 @@ $(document).ready(function(){
                 render: (row) => {
                     const comRate = row?.['completion_rate']
                     let percent = 100
-                    if (comRate > 0){
-                        percent = 100 - comRate
-                    }
-                    let txt = `<div class="d-flex justify-content-center align-items-center gap-2">`+
-                        `<div class="bar-percent" style="width: ${comRate ? 100 : 0}%"><span style="left: -${percent}%"></span></div><b>${
-                        row?.['completion_rate']}%</b></div>`
+                    if (comRate > 0) percent = 100 - comRate
+                    let txt = `<div class="d-flex justify-content-center align-items-center gap-2">` +
+                        `<div class="bar-percent" style="width: ${comRate ? 100 : 0}%" ${comRate ? '' : 'hidden'
+                        }><span style="left: -${percent}%"></span></div><b>${row?.['completion_rate']}%</b></div>`
                     return txt
                 }
             },

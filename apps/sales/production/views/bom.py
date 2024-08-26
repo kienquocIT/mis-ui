@@ -5,6 +5,40 @@ from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg, InputMappingProperties
 
 
+class LaborListForBOMAPI(APIView):
+    @mask_view(
+        is_api=True,
+        auth_require=True
+    )
+    def get(self, request, *arg, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.LABOR_LIST_FOR_BOM).get(params)
+        return resp.auto_return(key_success='labor_list')
+
+
+class ProductMaterialListForBOMAPI(APIView):
+    @mask_view(
+        is_api=True,
+        auth_require=True
+    )
+    def get(self, request, *arg, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.MATERIAL_LIST_FOR_BOM).get(params)
+        return resp.auto_return(key_success='material_list')
+
+
+class ProductToolListForBOMAPI(APIView):
+    @mask_view(
+        is_api=True,
+        auth_require=True
+    )
+    def get(self, request, *arg, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.TOOL_LIST_FOR_BOM).get(params)
+        return resp.auto_return(key_success='tool_list')
+
+
+# BEGIN
 class BOMList(View):
     @mask_view(
         auth_require=True,
@@ -110,14 +144,3 @@ class BOMDetailAPI(APIView):
             resp.result['message'] = SaleMsg.BOM_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
-
-
-class LaborListForBOMAPI(APIView):
-    @mask_view(
-        is_api=True,
-        auth_require=True
-    )
-    def get(self, request, *arg, **kwargs):
-        params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.LABOR_LIST_FOR_BOM).get(params)
-        return resp.auto_return(key_success='labor_list')

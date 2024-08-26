@@ -26,8 +26,8 @@
     <script id="script-url"
             data-url-labor="{% url 'LaborListForBOMAPI' %}"
             data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
-            data-url-product="{% url 'ProductListAPI' %}"
-            data-url-tool-config="{% url 'AssetToolsConfigViewAPI' %}"
+            data-url-material="{% url 'ProductMaterialListForBOMAPI' %}"
+            data-url-tool="{% url 'ProductToolListForBOMAPI' %}"
     ></script>
     <script id="script-trans"
             data-trans-select-one="{% trans 'Select one' %}"
@@ -35,8 +35,8 @@
     ></script>
     <form id="form-create-bom"
           data-method="POST"
-{#          data-url="{% url 'DistributionPlanListAPI' %}"#}
-{#          data-url-redirect="{% url 'DistributionPlanList' %}"#}
+          data-url="{% url 'BOMListAPI' %}"
+          data-url-redirect="{% url 'BOMList' %}"
     >
         {% csrf_token %}
         {% include 'sales/production/bom/common/information.html' %}

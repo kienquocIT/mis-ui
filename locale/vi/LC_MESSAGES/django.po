@@ -8594,6 +8594,14 @@ msgid "Product image"
 msgstr "Hình ảnh sản phẩm"
 
 #
+msgid "Sum price"
+msgstr "Tổng chi phí"
+
+#
+msgid "Sum time"
+msgstr "Tổng thời gian"
+
+#
 msgid "Production order"
 msgstr "Lệnh sản xuất"
 

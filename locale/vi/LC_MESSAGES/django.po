@@ -8600,3 +8600,11 @@ msgstr "Tổng chi phí"
 #
 msgid "Sum time"
 msgstr "Tổng thời gian"
+
+#
+msgid "Material / Component"
+msgstr "Vật liệu / Linh kiện"
+
+#
+msgid "Tool"
+msgstr "Công cụ"

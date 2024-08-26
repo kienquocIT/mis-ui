@@ -30,7 +30,8 @@
     ></script>
     <form id="form-detail-bom"
           data-url="{% url 'BOMDetailAPI' pk=pk %}"
-          data-method="GET"
+          data-url-redirect="{% url 'BOMDetail' pk=pk %}"
+          data-method="PUT"
     >
         {% csrf_token %}
         {% include 'sales/production/bom/common/information.html' %}

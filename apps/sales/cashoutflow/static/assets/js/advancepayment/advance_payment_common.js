@@ -95,13 +95,13 @@ function read_money_vnd(num) {
         result = xe2[parseInt(str_n[0])] + " " + read_money_vnd(parseInt(str_n.substring(1, len_n)))
     }
     else if (len_n <= 6) {
-        result = read_money_vnd(parseInt(str_n.substring(0, len_n - 3))) + " nghìn, " + read_money_vnd(parseInt(str_n.substring(len_n - 3, len_n)))
+        result = read_money_vnd(parseInt(str_n.substring(0, len_n - 3))) + " nghìn " + read_money_vnd(parseInt(str_n.substring(len_n - 3, len_n)))
     }
     else if (len_n <= 9) {
-        result = read_money_vnd(parseInt(str_n.substring(0, len_n - 6))) + " triệu, " + read_money_vnd(parseInt(str_n.substring(len_n - 6, len_n)))
+        result = read_money_vnd(parseInt(str_n.substring(0, len_n - 6))) + " triệu " + read_money_vnd(parseInt(str_n.substring(len_n - 6, len_n)))
     }
     else if (len_n <= 12) {
-        result = read_money_vnd(parseInt(str_n.substring(0, len_n - 9))) + " tỷ, " + read_money_vnd(parseInt(str_n.substring(len_n - 9, len_n)))
+        result = read_money_vnd(parseInt(str_n.substring(0, len_n - 9))) + " tỷ " + read_money_vnd(parseInt(str_n.substring(len_n - 9, len_n)))
     }
 
     result = String(result.trim())

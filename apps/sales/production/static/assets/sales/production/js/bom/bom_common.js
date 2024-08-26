@@ -22,7 +22,7 @@ class BOMHandle {
         let frm = new SetupFormSubmit($(frmEle))
 
         frm.dataForm['bom_type'] = 0
-        frm.dataForm['product'] = productEle.val()
+        frm.dataForm['product_id'] = productEle.val()
         frm.dataForm['sum_price'] = priceEle.attr('value')
         frm.dataForm['sum_time'] = timeEle.val()
 
@@ -31,9 +31,9 @@ class BOMHandle {
             bom_process_data.push({
                 'order': $(this).find('td:eq(0)').text(),
                 'task_name': $(this).find('.process-task-name').val(),
-                'labor': $(this).find('.process-labor').val(),
+                'labor_id': $(this).find('.process-labor').val(),
                 'quantity': $(this).find('.process-quantity').val(),
-                'uom': $(this).find('.process-uom').val(),
+                'uom_id': $(this).find('.process-uom').val(),
                 'unit_price': $(this).find('.process-unit-price').attr('value'),
                 'subtotal_price': $(this).find('.process-subtotal-price').attr('value'),
                 'note': $(this).find('.process-note').val()
@@ -44,9 +44,9 @@ class BOMHandle {
         labor_summary_table.find('tbody tr').each(function (index) {
             bom_summary_process_data.push({
                 'order': parseInt(index) + 1,
-                'labor': $(this).find('.labor-summary-labor').attr('data-labor-id'),
+                'labor_id': $(this).find('.labor-summary-labor').attr('data-labor-id'),
                 'quantity': $(this).find('.labor-summary-quantity').text(),
-                'uom': $(this).find('.labor-summary-uom').attr('data-uom-id'),
+                'uom_id': $(this).find('.labor-summary-uom').attr('data-uom-id'),
                 'unit_price': $(this).find('.labor-summary-unit-price').attr('data-init-money'),
                 'subtotal_price': $(this).find('.labor-summary-subtotal-price').attr('data-init-money'),
             })
@@ -62,9 +62,9 @@ class BOMHandle {
                     bom_material_component_data.push({
                         'bom_process_order': process_index,
                         'order': material_order,
-                        'material': $(this).find('.material-item').val(),
+                        'material_id': $(this).find('.material-item').val(),
                         'quantity': $(this).find('.material-quantity').val(),
-                        'uom': $(this).find('.material-uom').val(),
+                        'uom_id': $(this).find('.material-uom').val(),
                         'disassemble': $(this).find('.material-disassemble').prop('checked'),
                         'note': $(this).find('.material-note').val(),
                     })
@@ -82,9 +82,9 @@ class BOMHandle {
                     bom_tool_data.push({
                         'bom_process_order': process_index,
                         'order': tool_order,
-                        'tool': $(this).find('.tool-item').val(),
+                        'tool_id': $(this).find('.tool-item').val(),
                         'quantity': $(this).find('.tool-quantity').val(),
-                        'uom': $(this).find('.tool-uom').val(),
+                        'uom_id': $(this).find('.tool-uom').val(),
                         'note': $(this).find('.tool-note').val(),
                     })
                 }

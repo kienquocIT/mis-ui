@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Bill of resources create' %}{% endblock %}
+{% block title %}{% trans 'Bill of material create' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
     <style>
@@ -13,7 +13,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form-create-bor">
+    <button class="btn btn-outline-primary" type="submit" form="form-create-bom">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -24,22 +24,27 @@
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
-            data-url-labor="{% url 'ExpenseListAPI' %}"
+            data-url-labor="{% url 'LaborListForBOMAPI' %}"
             data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
-            data-url-product="{% url 'ProductListAPI' %}"
+            data-url-material="{% url 'ProductMaterialListForBOMAPI' %}"
+            data-url-tool="{% url 'ProductToolListForBOMAPI' %}"
     ></script>
-    <form id="form-create-bor"
+    <script id="script-trans"
+            data-trans-select-one="{% trans 'Select one' %}"
+            data-trans-can-not-select="{% trans "Can't be selected due to different UOM" %}"
+    ></script>
+    <form id="form-create-bom"
           data-method="POST"
-{#          data-url="{% url 'DistributionPlanListAPI' %}"#}
-{#          data-url-redirect="{% url 'DistributionPlanList' %}"#}
+          data-url="{% url 'BOMListAPI' %}"
+          data-url-redirect="{% url 'BOMList' %}"
     >
         {% csrf_token %}
-        {% include 'sales/bor/common/information.html' %}
+        {% include 'sales/production/bom/common/information.html' %}
     </form>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
-    <script src="{% static 'assets/sales/bor/js/bor_common.js' %}"></script>
-    <script src="{% static 'assets/sales/bor/js/bor_create.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/bom/bom_common.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/bom/bom_create.js' %}"></script>
 {% endblock %}

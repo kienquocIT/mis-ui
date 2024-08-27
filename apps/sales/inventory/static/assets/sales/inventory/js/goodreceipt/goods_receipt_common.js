@@ -43,6 +43,16 @@ class GRLoadDataHandle {
         return true;
     };
 
+    static loadCssS2($ele, maxWidth) {
+        if ($ele.is("select") && $ele.hasClass("select2-hidden-accessible")) {
+            let $render = $ele.next('.select2-container').find('.select2-selection__rendered');
+            if ($render && $render.length > 0) {
+                $render.css('max-width', maxWidth);
+            }
+        }
+        return true;
+    };
+
     static loadCustomAreaByType() {
         let formSubmit = $('#frm_good_receipt_create');
         // Custom Area
@@ -81,17 +91,13 @@ class GRLoadDataHandle {
         });
     };
 
-    static loadBoxProduct(ele, dataProduct = {}) {
-        ele.initSelect2({
+    static loadBoxProduct($ele, dataProduct = {}) {
+        $ele.initSelect2({
             data: dataProduct,
-            disabled: !(ele.attr('data-url')),
+            disabled: !($ele.attr('data-url')),
         });
-        // add css to row box select2
-        let row = ele[0].closest('tr');
-        let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
-        if (boxRender) {
-            boxRender.style.maxWidth = '270px';
-        }
+        // add css to select2_rendered
+        GRLoadDataHandle.loadCssS2($ele, '230px');
     };
 
     static loadDDLot(ele, checkedID = null) {

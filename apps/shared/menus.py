@@ -307,11 +307,7 @@ class MenusCRM:
     )
     PRODUCT = MenuCommon(
         name='Product', code='id_menu_product_list', view_name='ProductList',
-        icon='<i class="bi bi-archive-fill"></i>',
-    )
-    BOR = MenuCommon(
-        name='Bill of resources', code='menu_bor_list', view_name='BORList',
-        icon='<i class="fab fa-connectdevelop"></i>',
+        icon='<i class="bi bi-nut-fill"></i>',
     )
     PRICING = MenuCommon(
         name='Pricing', code='menu_pricing', view_name='',
@@ -655,6 +651,21 @@ class MenusProject:
     # )
 
 
+class MenusProduction:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    PRODUCTION = MenuCommon(
+        name='Production', code='menu_purchase_activities', view_name='', icon='<i class="bi bi-robot"></i>',
+        child=[
+            MenuCommon(
+                name='Bill of material', code='menu_bom_list', view_name='BOMList',
+                icon='<i class="fab fa-connectdevelop"></i>',
+            )
+        ],
+    )
+
+
 # Space Setup
 class SpaceCommon:
     name: str  # 'Sale'
@@ -713,40 +724,32 @@ class SpaceItem:
                 MenusCRM.SALE_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.PRODUCT,
-                MenusCRM.BOR,
                 MenusCRM.PRICING,
                 MenusCRM.CASH_OUTFLOW,
                 MenusCRM.SALE_ACTIVITIES,
                 MenusCRM.TASK,
             ],
         ),
-        'project': SpaceCommon(
-            'Project',
-            'project',
-            icon='<i class="fa-solid fa-weight-scale"></i>',
+        'dms': SpaceCommon(
+            'DMS',
+            'dms',
+            icon='<i class="far fa-folder-open"></i>',
             menus=[
-                MenusProject.HOME,
-                MenusProject.LIST,
-                MenusProject.BASELINE,
-                # MenusProject.WORKS,
-            ]
-        ),
-        'purchase': SpaceCommon(
-            'Purchasing',
-            'purchase',
-            icon='<i class="fas fa-cash-register"></i>',
-            menus=[
-                MenusPurchase.HOME,
-                MenusPurchase.PURCHASE,
+                MenuDMS.WORK_SPACE,
+                MenuDMS.MY_SPACE,
             ],
         ),
-        'inventory': SpaceCommon(
-            'Inventory',
-            'inventory',
-            icon='<i class="fas fa-warehouse"></i>',
+        'e-office': SpaceCommon(
+            'E-office',
+            'e-office',
+            icon='<i class="fa-solid fa-laptop-file"></i>',
             menus=[
-                MenusPurchase.HOME,
-                MenusInventory.INVENTORY,
+                MenuEOffice.HOME,
+                MenuEOffice.CALENDAR,
+                MenuEOffice.LEAVE,
+                MenuEOffice.BUSINESS_TRIP,
+                MenuEOffice.ASSET_TOOLS,
+                MenuEOffice.MEETING,
             ],
         ),
         'forms': SpaceCommon(
@@ -763,27 +766,43 @@ class SpaceItem:
             icon='<i class="fa-solid fa-user-tag"></i>',
             menus=[],
         ),
-        'e-office': SpaceCommon(
-            'E-office',
-            'e-office',
-            icon='<i class="fa-solid fa-laptop-file"></i>',
+        'inventory': SpaceCommon(
+            'Inventory',
+            'inventory',
+            icon='<i class="fas fa-warehouse"></i>',
             menus=[
-                MenuEOffice.HOME,
-                MenuEOffice.CALENDAR,
-                MenuEOffice.LEAVE,
-                MenuEOffice.BUSINESS_TRIP,
-                MenuEOffice.ASSET_TOOLS,
-                MenuEOffice.MEETING,
+                MenusPurchase.HOME,
+                MenusInventory.INVENTORY,
             ],
         ),
-        'dms': SpaceCommon(
-            'DMS',
-            'dms',
-            icon='<i class="far fa-folder-open"></i>',
+        'purchase': SpaceCommon(
+            'Purchasing',
+            'purchase',
+            icon='<i class="fas fa-cash-register"></i>',
             menus=[
-                MenuDMS.WORK_SPACE,
-                MenuDMS.MY_SPACE,
+                MenusPurchase.HOME,
+                MenusPurchase.PURCHASE,
             ],
+        ),
+        'production': SpaceCommon(
+            'Production',
+            'production',
+            icon='<i class="bi bi-robot"></i>',
+            menus=[
+                MenusProduction.HOME,
+                MenusProduction.PRODUCTION,
+            ]
+        ),
+        'project': SpaceCommon(
+            'Project',
+            'project',
+            icon='<i class="fa-solid fa-weight-scale"></i>',
+            menus=[
+                MenusProject.HOME,
+                MenusProject.LIST,
+                MenusProject.BASELINE,
+                # MenusProject.WORKS,
+            ]
         ),
         'report': SpaceCommon(
             'Report',
@@ -841,13 +860,14 @@ class SpaceGroup:
     SPACE = SpaceCommon(
         'Space', 'space', child=[
             SpaceItem.mapping['crm'],
-            SpaceItem.mapping['project'],
-            SpaceItem.mapping['purchase'],
-            SpaceItem.mapping['inventory'],
+            SpaceItem.mapping['dms'],
+            SpaceItem.mapping['e-office'],
             SpaceItem.mapping['forms'],
             SpaceItem.mapping['hrm'],
-            SpaceItem.mapping['e-office'],
-            SpaceItem.mapping['dms'],
+            SpaceItem.mapping['inventory'],
+            SpaceItem.mapping['purchase'],
+            SpaceItem.mapping['production'],
+            SpaceItem.mapping['project'],
             SpaceItem.mapping['report'],
         ]
     )

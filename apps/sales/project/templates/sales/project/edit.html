@@ -31,6 +31,15 @@
                 <div class="col-xs-12 col-md-6 form-group">
                     <label for="titleInput" class="form-label required">{% trans 'Title' %}</label>
                     <input type="text" name="title" id="titleInput" class="form-control" required>
+{#                    <div class="input-group">#}
+{#                        <span class="input-group-text choice-bor">#}
+{#                            <i class="bi bi-journal-bookmark"></i>#}
+{#                            <i class="bi bi-journal-bookmark-fill" hidden></i>#}
+{#                        </span>#}
+{#                        <div class="dropdown_custom">#}
+{#                            {% include 'sales/project/extends/bor-modal.html' %}#}
+{#                        </div>#}
+{#                    </div>#}
                 </div>
                 <div class="col-xs-12 col-md-6 d-flex align-items-center">
                     {{ data.employee_info|json_script:'current_info'}}
@@ -76,7 +85,7 @@
                     <label for="dateStart" class="form-label">{% trans 'Start date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" id="dateStart" name="start_date" class="form-control date-picker"
-                               autocomplete="off">
+                               autocomplete="off" disabled>
                         <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                     </div>
                 </div>

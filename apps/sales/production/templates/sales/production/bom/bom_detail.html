@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Bill of material detail' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/rowgroup/1.3.1/css/rowGroup.dataTables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'BOMUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+            data-url-labor="{% url 'LaborListForBOMAPI' %}"
+            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
+            data-url-material="{% url 'ProductMaterialListForBOMAPI' %}"
+            data-url-tool="{% url 'ProductToolListForBOMAPI' %}"
+    ></script>
+    <script id="script-trans"
+            data-trans-select-one="{% trans 'Select one' %}"
+            data-trans-can-not-select="{% trans "Can't be selected due to different UOM" %}"
+    ></script>
+    <form id="form-detail-bom"
+          data-url="{% url 'BOMDetailAPI' pk=pk %}"
+          data-method="GET"
+    >
+        {% csrf_token %}
+        {% include 'sales/production/bom/common/information.html' %}
+    </form>
+{% endblock %}
+{% block dataHiddenGroup %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/rowgroup/1.3.1/js/dataTables.rowGroup.min.js"></script>
+    <script src="{% static 'assets/sales/production/js/bom/bom_common.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/bom/bom_detail.js' %}"></script>
+{% endblock %}

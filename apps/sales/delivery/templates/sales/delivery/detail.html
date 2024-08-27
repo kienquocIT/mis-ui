@@ -237,7 +237,7 @@
             <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
                 <div class="modal-content">
                     <div class="modal-header h-65p">
-                        <h5 class="modal-title text-primary ml-3"><b class="title-mdl"></b></h5>
+                        <h5 class="modal-title text-primary ml-4"><b class="title-mdl"></b></h5>
                         <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                     </div>
                     <div class="modal-body modal-body-custom">
@@ -355,9 +355,9 @@
            data-picked-ready="{% trans 'Picked' %}"
            data-available="{% trans 'Available' %}"
            data-title-mdl="{% trans 'Deliver product' %}"
-           data-project="{% trans 'Project' %}"
            data-common-wh="{% trans 'Common warehouse' %}"
-           data-my-project="{% trans 'My project' %}"
+           data-current-order="{% trans 'Current order' %}"
+           data-other-order="{% trans 'Other order' %}"
     >
     <input type="hidden" id="url-factory"
            data-prod-detail="{% url 'ProductDetail' 1 %}"

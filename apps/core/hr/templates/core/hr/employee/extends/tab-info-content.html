@@ -28,7 +28,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="form-group">
-                            <label class="form-label" for="select-box-user">{% trans 'User' %}</label>
+                            <label class="form-label" for="select-box-user">{% trans 'User link to the employee' %}</label>
                             <div class="input-group">
                                 <select class="form-select" name="user"
                                         id="select-box-user"
@@ -52,33 +52,21 @@
                     </div>
                     <div class="col-12 col-md-9 col-lg-4">
                         <div class="form-group">
-                            <label class="form-label">{% trans 'Last Name' %}</label>
-                            <input type="text" placeholder="" class="form-control" name="last_name" id="employee-last-name"{% if li_content_head_disabled == True %} disabled readonly {% endif %}>
+                            <label for="employee-last-name" class="form-label required">{% trans 'Surname and Middle Names' %}</label>
+                            <input type="text" placeholder="" class="form-control" name="last_name" id="employee-last-name"{% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 col-lg-4">
                         <div class="form-group">
-                            <label class="form-label">{% trans 'First Name' %}</label>
-                            <input type="text" class="form-control" name="first_name" id="employee-first-name"{% if li_content_head_disabled == True %} disabled readonly {% endif %}>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-12 col-lg-4">
-                        <div class="form-group">
-                            <label class="form-label">{% trans 'Date of Birthday' %}</label>
-                            <input class="form-control" type="text" id="employee-dob" {% if li_content_head_disabled == True %} disabled readonly {% endif %}/>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-12 col-lg-4">
-                        <div class="form-group">
-                            <label class="form-label">{% trans 'Phone' %}</label>
-                            <input type="text" class="form-control" name="phone" id="employee-phone"{% if li_content_head_disabled == True %} disabled readonly {% endif %}>
+                            <label for="employee-first-name" class="form-label required">{% trans 'First Name' %}</label>
+                            <input type="text" class="form-control" name="first_name" id="employee-first-name"{% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
                         </div>
                     </div>
                     <div class="col-12 col-md-12 col-lg-4">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-6">
-                                    <label class="form-label required" for="email">{% trans 'Email' %}</label>
+                                    <label for="employee-email" class="form-label required" for="email">{% trans 'Email' %}</label>
                                 </div>
                                 <div class="col-6 text-right">
                                     <a href="#"><span hidden id="span-verified" class="badge badge-soft-success badge-sm" data-bs-toggle="modal" data-bs-target="#advance-setting-modal">{% trans 'Verified' %}&nbsp;<i class="bi bi-check2-all"></i>
@@ -90,25 +78,37 @@
                                     </a>
                                 </div>
                             </div>
-                            <input type="email" class="form-control" name="email" id="employee-email" {% if li_content_head_disabled == True %} disabled readonly {% endif %}/>
+                            <input type="email" class="form-control" name="email" id="employee-email" {% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
                         </div>
                     </div>
                     <div class="col-12 col-md-12 col-lg-4">
                         <div class="form-group">
-                            <label class="form-label">{% trans 'Date Joined' %}</label>
-                            <input class="form-control" type="text" id="employee-date-joined"{% if li_content_head_disabled == True %} disabled readonly {% endif %}/>
+                            <label for="employee-phone" class="form-label required">{% trans 'Phone' %}</label>
+                            <input type="text" class="form-control" name="phone" id="employee-phone"{% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
                         </div>
                     </div>
                     <div class="col-12 col-md-12 col-lg-4">
                         <div class="form-group">
-                            <label class="form-label">{% trans 'Department' %}</label>
+                            <label for="select-box-group-employee" class="form-label">{% trans 'Department' %}</label>
                             <select class="form-select" name="group" id="select-box-group-employee" data-url="{% url 'GroupListAPI' %}" data-keyResp="group_list"{% if li_content_head_disabled == True %} disabled readonly {% endif %}></select>
                         </div>
                     </div>
                     <div class="col-12 col-md-12 col-lg-4">
                         <div class="form-group">
-                            <label class="form-label">{% trans 'Role' %}</label>
-                            <select class="form-select" name="role" id="select-box-role-employee" data-url="{% url 'RoleListAPI' %}" data-keyResp="role_list"{% if li_content_head_disabled == True %} disabled readonly {% endif %}multiple></select>
+                            <label for="employee-dob" class="form-label">{% trans 'Date of Birthday' %}</label>
+                            <input class="form-control" type="text" id="employee-dob" {% if li_content_head_disabled == True %} disabled readonly {% endif %}/>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-12 col-lg-4">
+                        <div class="form-group">
+                            <label for="employee-date-joined" class="form-label required">{% trans 'Date Joined' %}</label>
+                            <input class="form-control" type="text" id="employee-date-joined"{% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-12 col-lg-4">
+                        <div class="form-group">
+                            <label for="select-box-role-employee" class="form-label">{% trans 'Role' %}</label>
+                            <select class="form-select" name="role" id="select-box-role-employee" data-url="{% url 'RoleListAPI' %}" data-keyResp="role_list"{% if li_content_head_disabled == True %} disabled readonly {% endif %} multiple></select>
                         </div>
                     </div>
                     <div class="col-12 col-md-12 col-lg-12">

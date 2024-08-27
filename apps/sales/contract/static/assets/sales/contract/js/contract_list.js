@@ -34,7 +34,7 @@ $(function () {
                         targets: 1,
                         width: '10%',
                         render: (data, type, row) => {
-                            let link = urlsEle.data('link-update').format_url_with_uuid(row?.['id']);
+                            let link = urlsEle.data('link-detail').format_url_with_uuid(row?.['id']);
                             if (row?.['code']) {
                                 return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`;
                             }
@@ -45,7 +45,7 @@ $(function () {
                         targets: 2,
                         width: '25%',
                         render: (data, type, row) => {
-                            const link = urlsEle.data('link-update').format_url_with_uuid(row?.['id'])
+                            const link = urlsEle.data('link-detail').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
                         }
                     },

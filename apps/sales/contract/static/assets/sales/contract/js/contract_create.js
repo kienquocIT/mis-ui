@@ -7,6 +7,8 @@ $(function () {
         ContractDataTableHandle.dataTableDocument();
         ContractDataTableHandle.dataTableFile();
         ContractTinymceHandle.initTinymce();
+        WFRTControl.setWFInitialData('contractapproval', formSubmit.attr('data-method'));
+
 
         ContractLoadDataHandle.$btnAddDoc.on('click', function () {
             ContractLoadDataHandle.loadAddDoc();
@@ -39,6 +41,7 @@ $(function () {
             let submitFields = [
                 'title',
                 'document_data',
+                'attachment',
             ]
             if (_form.dataForm) {
                 ContractCommonHandle.filterFieldList(submitFields, _form.dataForm);

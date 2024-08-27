@@ -597,9 +597,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DISTRIBUTION_PLAN_LIST = StringUrl('distribution-plans/list')
     DISTRIBUTION_PLAN_DETAIL = StringUrl('distribution-plans/detail/{pk}')
 
-    # Bill of resources
-    BOR_LIST = StringUrl('bill-of-resources/list')
-    BOR_DETAIL = StringUrl('bill-of-resources/detail/{pk}')
+    # Bill of material
+    BOM_LIST = StringUrl('production/bom/list')
+    BOM_DETAIL = StringUrl('production/bom/{pk}')
+    LABOR_LIST_FOR_BOM = StringUrl('production/labor-list-for-BOM')
+    MATERIAL_LIST_FOR_BOM = StringUrl('production/product-material-list-for-BOM')
+    TOOL_LIST_FOR_BOM = StringUrl('production/product-tool-list-for-BOM')
 
     # AR Invoice
     DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')
@@ -679,3 +682,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Contract
     CONTRACT_LIST = StringUrl('contract/list')
+    CONTRACT_DETAIL = StringUrl('contract')

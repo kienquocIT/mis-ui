@@ -45,8 +45,9 @@
 {% block dataHiddenGroup %}
     <input
             type="text" id="app-urls-factory"
-            data-link-update="{% url 'PurchaseOrderDetail' 1 %}"
-            data-link-list="{% url 'PurchaseOrderList' %}"
+            data-link-detail="{% url 'ContractDetail' 1 %}"
+            data-link-update="{% url 'ContractUpdate' 1 %}"
+            data-link-list="{% url 'ContractList' %}"
     >
     <input
             type="text"

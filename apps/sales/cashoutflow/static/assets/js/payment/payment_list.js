@@ -72,7 +72,7 @@ $(document).ready(function () {
                                 return `SO <span><a class="link-secondary underline_hover" target="_blank" href="${dtb.attr('data-url-so-detail').replace('0', row.sale_order_mapped.id)}"><b>${row.sale_order_mapped.title}</b></a></span>`
                             }
                             else {
-                                return ''
+                                return '--'
                             }
                         }
                     },

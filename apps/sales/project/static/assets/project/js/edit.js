@@ -101,7 +101,8 @@ $(document).ready(function () {
                     id: task.id,
                     w_start_date: moment(start).format('YYYY-MM-DD'),
                     w_end_date: moment(end).format('YYYY-MM-DD'),
-                    project: $('#id').val()
+                    project: $('#id').val(),
+                    w_weight: task.weight
                 }
                 if (task?.['child_of_group']) opt.group = task['child_group_id']
                 enqueueAjaxRequest(opt)
@@ -141,16 +142,7 @@ $(document).ready(function () {
                 }
                 else $('#create_baseline').prop('disabled', true)
                 WFRTControl.setWFInitialData('projectbaseline', 'post');
-
-                let numInc = 0
-                let intervalId = setInterval(() => {
-                    if (numInc <= data['completion_rate']) {
-                        $('').text();
-                        $('.completion_rate_block .heading span').text(numInc++)
-                    } else {
-                        clearInterval(intervalId);
-                    }
-                }, 50);
+                animating_number(data['completion_rate'], $('.completion_rate_block .heading span'))
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )

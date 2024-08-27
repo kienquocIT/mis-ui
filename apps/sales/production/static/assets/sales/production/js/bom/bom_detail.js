@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    new BORHandle().load();
+    LoadDetailBOM('detail');
 })

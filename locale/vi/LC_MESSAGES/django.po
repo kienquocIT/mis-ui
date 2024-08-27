@@ -2021,7 +2021,7 @@ msgstr "Thể tích"
 
 #
 msgid "Weight"
-msgstr "Cân nặng"
+msgstr "Trọng lượng"
 
 #
 msgid "UoM Code"
@@ -2829,7 +2829,7 @@ msgstr "Ngày xuất hóa đơn"
 
 #
 msgid "Acceptance date"
-msgstr "Ngày thông qua"
+msgstr "Ngày nghiệm thu"
 
 #
 msgid "End of invoice month"
@@ -5802,7 +5802,7 @@ msgstr "Theo điều chỉnh tồn kho"
 
 #
 msgid "For production"
-msgstr "Cho sản phẩm"
+msgstr "Cho sản xuất"
 
 #
 msgid "Estimate is wrong format"
@@ -5969,8 +5969,8 @@ msgid "Received"
 msgstr "Nhập đủ"
 
 #
-msgid "From Price List in left side"
-msgstr "Chọn theo danh sách giá bên trái"
+msgid "From Price List in right side"
+msgstr "Chọn theo danh sách giá bên phải"
 
 #
 msgid "For Inventory"
@@ -8486,10 +8486,6 @@ msgid "Common warehouse"
 msgstr "Kho chung"
 
 #
-msgid "My project"
-msgstr "Dự án của tôi"
-
-#
 msgid "For Sale Order"
 msgstr "Cho Đơn hàng"
 
@@ -8522,12 +8518,12 @@ msgid "For sale"
 msgstr "Cho bán hàng"
 
 #
-msgid "For external expense"
-msgstr "Cho chi phí ngoài"
+msgid "For internal expense"
+msgstr "Cho chi phí nội bộ"
 
 #
 msgid "Task name"
-msgstr "Tên task"
+msgstr "Tên công việc"
 
 #
 msgid "Labor"
@@ -8544,3 +8540,63 @@ msgstr "Vật liệu / Linh kiện"
 #
 msgid "Disassemble"
 msgstr "Có thể tháo rời"
+
+#
+msgid "Current order"
+msgstr "Đơn hàng hiện tại"
+
+#
+msgid "Other order"
+msgstr "Đơn hàng khác"
+
+#
+msgid "Labor summary"
+msgstr "Tổng nhân công"
+
+#
+msgid "Current"
+msgstr "Hiện tại"
+
+#
+msgid "Old"
+msgstr "Cũ"
+
+#
+msgid "Price is not valid for unit of measure"
+msgstr "Giá không hợp lệ với đơn vị tính"
+
+#
+msgid "Select one"
+msgstr "Chọn một"
+
+#
+msgid "Product overview"
+msgstr "Tổng quan sản phẩm"
+
+#
+msgid "Product warehouse detail"
+msgstr "Chi tiết tồn kho của sản phẩm"
+
+#
+msgid "Production"
+msgstr "Sản xuất"
+
+#
+msgid "Supplied by"
+msgstr "Nguồn cung cấp"
+
+#
+msgid "Making"
+msgstr "Sản xuất"
+
+#
+msgid "Product image"
+msgstr "Hình ảnh sản phẩm"
+
+#
+msgid "Sum price"
+msgstr "Tổng chi phí"
+
+#
+msgid "Sum time"
+msgstr "Tổng thời gian"

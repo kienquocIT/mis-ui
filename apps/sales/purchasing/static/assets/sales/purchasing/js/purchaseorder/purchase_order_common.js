@@ -26,6 +26,16 @@ class POLoadDataHandle {
         return true;
     };
 
+    static loadCssS2($ele, maxWidth) {
+        if ($ele.is("select") && $ele.hasClass("select2-hidden-accessible")) {
+            let $render = $ele.next('.select2-container').find('.select2-selection__rendered');
+            if ($render && $render.length > 0) {
+                $render.css('max-width', maxWidth);
+            }
+        }
+        return true;
+    };
+
     static loadInitProduct() {
         let finalData = [];
         let ele = PODataTableHandle.productInitEle;
@@ -55,7 +65,7 @@ class POLoadDataHandle {
         )
     };
 
-    static loadBoxProduct(ele, dataProduct = {}) {
+    static loadBoxProduct($ele, dataProduct = {}) {
         let dataDD = []
         if (PODataTableHandle.productInitEle.val()) {
             dataDD = JSON.parse(PODataTableHandle.productInitEle.val());
@@ -63,15 +73,11 @@ class POLoadDataHandle {
         if (Object.keys(dataProduct).length > 0) {
             dataDD = dataProduct
         }
-        ele.initSelect2({
+        $ele.initSelect2({
             data: dataDD,
         });
-        // add css to row box select2
-        let row = ele[0].closest('tr');
-        let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
-        if (boxRender) {
-            boxRender.style.maxWidth = '230px';
-        }
+        // add css to select2_rendered
+        POLoadDataHandle.loadCssS2($ele, '230px');
     };
 
     static loadDataProductSelect(ele, is_change_item = true) {
@@ -1357,13 +1363,13 @@ class PODataTableHandle {
                     render: (data, type, row) => {
                         if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
                             if (row.hasOwnProperty('quantity_order')) {
-                                return `<input type="text" class="form-control table-row-quantity-order" value="${row.quantity_order}">`;
+                                return `<input type="text" class="form-control table-row-quantity-order" value="${row?.['quantity_order']}">`;
                             } else {
                                 return `<input type="text" class="form-control table-row-quantity-order" value="0">`;
                             }
                         } else {
                             if (row.hasOwnProperty('quantity_order')) {
-                                return `<input type="text" class="form-control table-row-quantity-order" value="${row.quantity_order}" disabled>`;
+                                return `<input type="text" class="form-control table-row-quantity-order" value="${row?.['quantity_order']}" disabled>`;
                             } else {
                                 return `<input type="text" class="form-control table-row-quantity-order" value="0" disabled>`;
                             }
@@ -2195,6 +2201,12 @@ class POSubmitHandle {
                 let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
                 if (dataRowRaw) {
                     let dataRow = JSON.parse(dataRowRaw);
+                    let is_allow_gr = false;
+                    if (dataRow?.['product'].hasOwnProperty('product_choice') && Array.isArray(dataRow?.['product']?.['product_choice'])) {
+                        if (dataRow?.['product']?.['product_choice'].includes(1)) {  // product allow inventory
+                            is_allow_gr = true;
+                        }
+                    }
                     let tax = dataRow?.['tax'];
                     let product_id = dataRow?.['product']?.['id'];
                     let quantity = parseFloat(dataRow?.['quantity']);
@@ -2210,6 +2222,10 @@ class POSubmitHandle {
                     let quantity_origin = parseFloat(dataRow?.['quantity']);
                     let quantity_order_origin = parseFloat(row.querySelector('.table-row-quantity-order').value);
                     let remain_origin = (parseFloat(row.querySelector('.table-row-remain').innerHTML) - quantity_order);
+                    let gr_remain_quantity = 0;
+                    if (is_allow_gr === true) {
+                        gr_remain_quantity = quantity_order_origin;
+                    }
                     if (parseFloat(row.querySelector('.table-row-remain').innerHTML) > 0) {
                         if (!dataJson.hasOwnProperty(product_id)) {
                             order++
@@ -2220,6 +2236,7 @@ class POSubmitHandle {
                                     'sale_order_product': sale_order_id,
                                     'quantity_order': quantity_order_origin,
                                     'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
+                                    'gr_remain_quantity': gr_remain_quantity,
                                 }],
                                 'product': dataRow?.['product'],
                                 'uom_order_request': productMapUOMList[product_id],
@@ -2253,6 +2270,7 @@ class POSubmitHandle {
                                 'sale_order_product': sale_order_id,
                                 'quantity_order': quantity_order_origin,
                                 'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
+                                'gr_remain_quantity': gr_remain_quantity,
                             });
                             dataJson[product_id].product_quantity_request += quantity;
                             dataJson[product_id].product_quantity_order_request += quantity_order;
@@ -2298,7 +2316,8 @@ class POSubmitHandle {
             let row = this.node();
             let eleProduct = row.querySelector('.table-row-item');
             if (eleProduct) { // PRODUCT
-                let dataInfo = {}
+                let dataInfo = {};
+                let is_allow_gr = false;
                 if ($(eleProduct).val()) {
                     dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                 }
@@ -2306,6 +2325,11 @@ class POSubmitHandle {
                     rowData['product'] = dataInfo?.['id'];
                     rowData['product_title'] = dataInfo?.['title'];
                     rowData['product_code'] = dataInfo?.['code'];
+                    if (dataInfo.hasOwnProperty('product_choice') && Array.isArray(dataInfo?.['product_choice'])) {
+                        if (dataInfo?.['product_choice'].includes(1)) {  // product allow inventory
+                            is_allow_gr = true;
+                        }
+                    }
                 }
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
@@ -2350,6 +2374,9 @@ class POSubmitHandle {
                 if (eleQuantityOrder) {
                     if (eleQuantityOrder.value) {
                         rowData['product_quantity_order_actual'] = parseFloat(eleQuantityOrder.value);
+                        if (is_allow_gr === true) {
+                            rowData['gr_remain_quantity'] = parseFloat(eleQuantityOrder.value);
+                        }
                     }
                 }
                 let stock = row.querySelector('.table-row-stock');

@@ -44,3 +44,7 @@ msgstr "Dữ liệu công việc hiện đang được tổng hợp."
 #
 msgid "Start From Today"
 msgstr "Công việc bắt đầu từ hôm nay"
+
+#
+msgid "Task report"
+msgstr "Báo cáo công việc"

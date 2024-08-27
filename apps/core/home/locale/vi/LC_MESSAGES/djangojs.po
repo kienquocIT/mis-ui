@@ -36,3 +36,15 @@ msgstr "Công việc theo trạng thái"
 #
 msgid "Task status in 7 days"
 msgstr "Trạng thái công việc trong 7 ngày"
+
+#
+msgid "Task report"
+msgstr "Báo cáo công việc"
+
+#
+msgid "Hide this data for the future"
+msgstr "Ẩn dữ liệu này trong tương lai"
+
+#
+msgid "Confirm"
+msgstr "Xác nhận"

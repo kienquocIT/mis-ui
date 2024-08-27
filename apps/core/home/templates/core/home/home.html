@@ -10,8 +10,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 5px;
-            border: 1px solid #6bb4ba;
             color: #00717a;
         }
 
@@ -46,15 +44,31 @@
         .summary-value::after {
             content: counter(num);
         }
+
+        #task-report-high-group {
+            padding: 7px 10px;
+            background-color: #007d88;
+            border-radius: 5px 5px 0 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #task-report-high-group.collapsed {
+            border-radius: 5px !important;
+        }
+
     </style>
     <style>
         #my-task-summary-report > p {
             display: none;
             color: #ff9100;
         }
+
         #my-task-summary-report.collecting > .summary-item {
             display: none;
         }
+
         #my-task-summary-report.collecting > p {
             display: block;
         }
@@ -64,16 +78,20 @@
             justify-content: center;
             align-items: center;
         }
+
         #my-task-by-status canvas {
             display: block;
         }
+
         #my-task-by-status p {
             display: none;
             color: #ff9100;
         }
+
         #my-task-by-status.collecting canvas {
             display: none;
         }
+
         #my-task-by-status.collecting p {
             display: block;
         }
@@ -83,60 +101,104 @@
 {% block blockBreadcrumb %}
 {% endblock %}
 {% block pageContent %}
-    <div class="row mb-2">
-        <div class="col-12 mb-3">
-            <div
-                    id="my-task-summary-report"
-                    class=""
-                    data-url="{% url 'MyTaskSummaryReport' %}"
-            >
-                <div class="summary-item" data-item="new_today">
-                    <p class="summary-value"></p>
-                    <p class="summary-title">{% trans 'Today Assigned Task' %}</p>
-                </div>
-                <div class="summary-item" data-item="start_today">
-                    <p class="summary-value"></p>
-                    <p class="summary-title">{% trans 'Start From Today' %}</p>
-                </div>
-                <div class="summary-item" data-item="overdue">
-                    <p class="summary-value"></p>
-                    <p class="summary-title">{% trans 'Overdue Task' %}</p>
-                </div>
-                <div class="summary-item" data-item="upcoming_today">
-                    <p class="summary-value"></p>
-                    <p class="summary-title">{% trans 'Upcoming Today Task' %}</p>
-                </div>
-                <div class="summary-item" data-item="upcoming_soon">
-                    <p class="summary-value"></p>
-                    <p class="summary-title">{% trans 'Upcoming Other Task' %}</p>
-                </div>
-                <div class="summary-item" data-item="actives">
-                    <p class="summary-value"></p>
-                    <p class="summary-title">{% trans 'Actives Task' %}</p>
-                </div>
-                <p>{% trans "Current task data is being collected." %}</p>
-            </div>
-        </div>
+    <div class="row mb-3">
         <div class="col-12">
-            <div class="row">
-                <div class="col-md-4 col-sm-6 col-xs-12" id="my-task-by-status">
-                    <canvas
-                            style="max-height: 250px;max-width: 400px;"
-                    ></canvas>
-                    <p>{% trans "Current task data is being collected." %}</p>
+            <div style="border-radius: 5px;">
+                <div id="task-report-high-group">
+                    <span>
+                        <span class="h5 mr-2" style="color: #fff;">{% trans 'Task report' %}</span>
+                        <a href="{% url 'OpportunityTaskList' %}">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-white"></i>
+                        </a>
+                    </span>
+                    <div style="display: inline-block">
+                        <button
+                                id="task-report-collapse"
+                                style="display: none;"
+                                class="btn btn-xs text-white"
+                        >
+                            <i class="fa-solid fa-minimize"></i>
+                        </button>
+                        <button
+                                id="task-report-expand"
+                                style="display: none;"
+                                class="btn btn-xs text-white"
+                        >
+                            <i class="fa-solid fa-maximize"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="col-md-4 col-sm-6 col-xs-12">
-                    <canvas
-                            id="my-task-report"
-                            style="max-height: 250px;max-width: 400px;"
-                    ></canvas>
-                </div>
-                <div class="col-md-4 col-sm-12 col-xs-12">
-                    <canvas
-                            id="my-task-report-by-date"
-                            data-url="{% url 'MyTaskReportAPI' %}"
-                            style="max-height: 250px;"
-                    ></canvas>
+                <div id="task-report-group" style="display: none;">
+                    <div
+                            id="my-task-summary-report"
+                            class="w-100"
+                            data-url="{% url 'MyTaskSummaryReport' %}"
+                            style="background-color: #ebf5f5;color: #00585f;"
+                    >
+                        <div class="summary-item" data-item="new_today">
+                            <p class="summary-value"></p>
+                            <p class="summary-title">{% trans 'Today Assigned Task' %}</p>
+                        </div>
+                        <div class="summary-item" data-item="start_today">
+                            <p class="summary-value"></p>
+                            <p class="summary-title">{% trans 'Start From Today' %}</p>
+                        </div>
+                        <div class="summary-item" data-item="overdue">
+                            <p class="summary-value"></p>
+                            <p class="summary-title">{% trans 'Overdue Task' %}</p>
+                        </div>
+                        <div class="summary-item" data-item="upcoming_today">
+                            <p class="summary-value"></p>
+                            <p class="summary-title">{% trans 'Upcoming Today Task' %}</p>
+                        </div>
+                        <div class="summary-item" data-item="upcoming_soon">
+                            <p class="summary-value"></p>
+                            <p class="summary-title">{% trans 'Upcoming Other Task' %}</p>
+                        </div>
+                        <div class="summary-item" data-item="actives">
+                            <p class="summary-value"></p>
+                            <p class="summary-title">{% trans 'Actives Task' %}</p>
+                        </div>
+                        <p>{% trans "Current task data is being collected." %}</p>
+                    </div>
+                    <div class="w-100" style="background-color: #c7e2e5;border-radius: 0 0 5px 5px;">
+                        <div class="row" style="padding: 10px;">
+                            <div class="col-lg-4 col-md-6 col-sm-12" id="my-task-by-status">
+                                <div
+                                        class="w-100"
+                                        style="border: 1px solid #ebf5f5; padding: 10px 20px;background-color: #fff;"
+                                >
+                                    <canvas
+                                            style="max-height: 250px;max-width: 400px;"
+                                    ></canvas>
+                                    <p>{% trans "Current task data is being collected." %}</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div
+                                        class="w-100"
+                                        style="border: 1px solid #ebf5f5; padding: 10px 20px;background-color: #fff;"
+                                >
+                                    <canvas
+                                            id="my-task-report"
+                                            style="max-height: 250px;max-width: 400px;"
+                                    ></canvas>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                <div
+                                        class="w-100"
+                                        style="border: 1px solid #ebf5f5; padding: 10px 20px;background-color: #fff;"
+                                >
+                                    <canvas
+                                            id="my-task-report-by-date"
+                                            data-url="{% url 'MyTaskReportAPI' %}"
+                                            style="max-height: 250px;"
+                                    ></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -456,275 +518,336 @@
     <script src="{% static 'vendors/chartjs/plugins/chartjs-plugin-datalabels@2.0.0.js' %}"></script>
     <script>
         $(document).ready(function () {
-            Chart.register(ChartDataLabels);
+                const taskReportHightGroup$ = $('#task-report-high-group');
+                const taskReportGroup$ = $("#task-report-group");
+                const taskReportCollapse$ = $("#task-report-collapse");
+                const taskReportExpand$ = $("#task-report-expand");
+                const keyTaskReportShow = 'home__task__show';
+                const stateShow = localStorage.getItem(keyTaskReportShow);
 
-            function getRandomColor() {
-                let letters = '0123456789ABCDEF';
-                let color = '#';
-                for (let i = 0; i < 6; i++) {
-                    color += letters[Math.floor(Math.random() * 16)];
-                }
-                console.log('color:', color);
-                return color;
-            }
+                function activeReportShow() {
+                    Chart.register(ChartDataLabels);
 
-            function random_rgba(opacities = [100]) {
-                let o = Math.round, r = Math.random, s = 255;
-                const rData = o(r() * s);
-                const gData = o(r() * s);
-                const bData = o(r() * s);
-                if (Array.isArray(opacities)) {
-                    if (opacities.length > 1) {
-                        return opacities.map(
-                            opacity => `rgba(${rData}, ${gData}, ${bData}, ${opacity / 100})`
-                        )
+                    function getRandomColor() {
+                        let letters = '0123456789ABCDEF';
+                        let color = '#';
+                        for (let i = 0; i < 6; i++) {
+                            color += letters[Math.floor(Math.random() * 16)];
+                        }
+                        console.log('color:', color);
+                        return color;
                     }
-                    return `rgba(${rData}, ${gData}, ${bData}, ${opacities[0] / 100})`
-                }
-                return `rgba(${rData}, ${gData}, ${bData}, ${opacities / 100})`
-            }
 
-            function colorHex2Rgb(hexColor, opacity = 100) {
-                if (hexColor.startsWith('#')) {
-                    hexColor = hexColor.slice(1);
-                }
-                const rData = parseInt(hexColor.substring(0, 2), 16)
-                const gData = parseInt(hexColor.substring(2, 4), 16)
-                const bData = parseInt(hexColor.substring(4, 6), 16);
-                return `rgba(${rData}, ${gData}, ${bData}, ${opacity / 100})`;
-            }
-
-            let chartObjRatio;
-            const canvasTaskReportRatio$ = $('#my-task-report');
-
-            function initChartMyTaskReportRatio(data) {
-                const ratioColorMap = data.map(row => {
-                    if (row.task_color) return [colorHex2Rgb(row.task_color, 30), colorHex2Rgb(row.task_color, 100)];
-                    switch (row.task_status) {
-                        case 'ASSIGN_TASK':
-                            return ['rgba(129,226,48,0.2)', 'rgba(129,226,48,1)'];
-                        case 'FINISH_TASK':
-                            return ['rgba(0,125,136,0.2)', 'rgba(0,125,136,1)'];
-                        default:
-                            return random_rgba([20, 100]);
+                    function random_rgba(opacities = [100]) {
+                        let o = Math.round, r = Math.random, s = 255;
+                        const rData = o(r() * s);
+                        const gData = o(r() * s);
+                        const bData = o(r() * s);
+                        if (Array.isArray(opacities)) {
+                            if (opacities.length > 1) {
+                                return opacities.map(
+                                    opacity => `rgba(${rData}, ${gData}, ${bData}, ${opacity / 100})`
+                                )
+                            }
+                            return `rgba(${rData}, ${gData}, ${bData}, ${opacities[0] / 100})`
+                        }
+                        return `rgba(${rData}, ${gData}, ${bData}, ${opacities / 100})`
                     }
-                })
 
-                const config = {
-                    type: 'polarArea',
-                    data: {
-                        labels: data.map(row => {
+                    function colorHex2Rgb(hexColor, opacity = 100) {
+                        if (hexColor.startsWith('#')) {
+                            hexColor = hexColor.slice(1);
+                        }
+                        const rData = parseInt(hexColor.substring(0, 2), 16)
+                        const gData = parseInt(hexColor.substring(2, 4), 16)
+                        const bData = parseInt(hexColor.substring(4, 6), 16);
+                        return `rgba(${rData}, ${gData}, ${bData}, ${opacity / 100})`;
+                    }
+
+                    let chartObjRatio;
+                    const canvasTaskReportRatio$ = $('#my-task-report');
+
+                    function initChartMyTaskReportRatio(data) {
+                        const ratioColorMap = data.map(row => {
+                            if (row.task_color) return [colorHex2Rgb(row.task_color, 30), colorHex2Rgb(row.task_color, 100)];
                             switch (row.task_status) {
                                 case 'ASSIGN_TASK':
-                                    return $.fn.gettext('Assign task');
+                                    return ['rgba(129,226,48,0.2)', 'rgba(129,226,48,1)'];
                                 case 'FINISH_TASK':
-                                    return $.fn.gettext('Finish task');
+                                    return ['rgba(0,125,136,0.2)', 'rgba(0,125,136,1)'];
                                 default:
-                                    return row?.['task_status_translate'] ? row['task_status_translate'] : row.task_status;
+                                    return random_rgba([20, 100]);
                             }
-                        }),
-                        datasets: [
-                            {
-                                "data": data.map(row => row.count),
-                                "backgroundColor": ratioColorMap.map(row => row[0]),
-                                "borderWidth": 0,
-                                "borderColor": ratioColorMap.map(row => row[1]),
-                            }
-                        ],
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'right',
+                        })
+
+                        const config = {
+                            type: 'polarArea',
+                            data: {
+                                labels: data.map(row => {
+                                    switch (row.task_status) {
+                                        case 'ASSIGN_TASK':
+                                            return $.fn.gettext('Assign task');
+                                        case 'FINISH_TASK':
+                                            return $.fn.gettext('Finish task');
+                                        default:
+                                            return row?.['task_status_translate'] ? row['task_status_translate'] : row.task_status;
+                                    }
+                                }),
+                                datasets: [
+                                    {
+                                        "data": data.map(row => row.count),
+                                        "backgroundColor": ratioColorMap.map(row => row[0]),
+                                        "borderWidth": 0,
+                                        "borderColor": ratioColorMap.map(row => row[1]),
+                                    }
+                                ],
                             },
-                            title: {
-                                display: true,
-                                text: $.fn.gettext('Task status in 7 days'),
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'right',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: $.fn.gettext('Task status in 7 days'),
+                                        color: '#00585f',
+                                    },
+                                    datalabels: {
+                                        formatter: (value, ctx) => {
+                                            return value;
+                                        },
+                                        color: '#ff9100',
+                                    }
+                                }
                             },
-                            datalabels: {
-                                formatter: (value, ctx) => {
-                                    return value;
-                                },
-                                color: '#ff9100',
-                            }
                         }
-                    },
-                }
-                if (chartObjRatio) chartObjRatio.destroy();
-                chartObjRatio = new Chart(
-                    canvasTaskReportRatio$[0],
-                    config
-                );
-            }
+                        if (chartObjRatio) chartObjRatio.destroy();
+                        chartObjRatio = new Chart(
+                            canvasTaskReportRatio$[0],
+                            config
+                        );
+                    }
 
-            let chartObjCount;
-            const canvasTaskReportCountByDay$ = $('#my-task-report-by-date');
+                    let chartObjCount;
+                    const canvasTaskReportCountByDay$ = $('#my-task-report-by-date');
 
-            function initChartMyTaskReportCountByDay(data) {
-                const config = {
-                    type: 'bar',
-                    data: {
-                        labels: data.map(row => $x.fn.parseDate(row.date)),
-                        datasets: [
-                            {
-                                "label": $.fn.gettext('Finished'),
-                                "data": data.map(
-                                    row => row.details
-                                        .filter(detail => detail.task_status === 'FINISH_TASK')
-                                        .reduce((acc, detail) => acc + detail.count, 0)
-                                ),
-                                "borderWidth": 1,
-                                "borderColor": 'rgb(184, 187, 255)',
-                                "backgroundColor": 'rgb(184, 187, 255, 0.3)',
-                                "borderRadius": 5,
+                    function initChartMyTaskReportCountByDay(data) {
+                        const config = {
+                            type: 'bar',
+                            data: {
+                                labels: data.map(row => $x.fn.parseDate(row.date)),
+                                datasets: [
+                                    {
+                                        "label": $.fn.gettext('Finished'),
+                                        "data": data.map(
+                                            row => row.details
+                                                .filter(detail => detail.task_status === 'FINISH_TASK')
+                                                .reduce((acc, detail) => acc + detail.count, 0)
+                                        ),
+                                        "borderWidth": 1,
+                                        "borderColor": 'rgb(184, 187, 255)',
+                                        "backgroundColor": 'rgb(184, 187, 255, 0.3)',
+                                        "borderRadius": 5,
+                                    },
+                                    {
+                                        "label": $.fn.gettext('Assigned'),
+                                        "data": data.map(
+                                            row => row.details
+                                                .filter(detail => detail.task_status === 'ASSIGN_TASK')
+                                                .reduce((acc, detail) => acc + detail.count, 0)
+                                        ),
+                                        "borderWidth": 1,
+                                        "borderColor": 'rgb(254, 182, 222)',
+                                        "backgroundColor": 'rgb(254, 182, 222, 0.3)',
+                                        "borderRadius": 5,
+                                    },
+                                ],
                             },
-                            {
-                                "label": $.fn.gettext('Assigned'),
-                                "data": data.map(
-                                    row => row.details
-                                        .filter(detail => detail.task_status === 'ASSIGN_TASK')
-                                        .reduce((acc, detail) => acc + detail.count, 0)
-                                ),
-                                "borderWidth": 1,
-                                "borderColor": 'rgb(254, 182, 222)',
-                                "backgroundColor": 'rgb(254, 182, 222, 0.3)',
-                                "borderRadius": 5,
-                            },
-                        ],
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                ticks: {
-                                    stepSize: 1,
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: {
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                        beginAtZero: true,
+                                        max: (ctx) => Math.max(
+                                            ...ctx.chart.data.datasets.reduce((acc, currentValue) => acc.concat(currentValue.data), [])
+                                        ) + 1,
+                                    }
                                 },
-                                beginAtZero: true,
-                                max: (ctx) => Math.max(
-                                    ...ctx.chart.data.datasets.reduce((acc, currentValue) => acc.concat(currentValue.data), [])
-                                ) + 1,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: $.fn.gettext('Assigned and Completed task by day'),
+                                        color: '#00585f',
+                                    },
+                                    datalabels: {
+                                        formatter: (value, ctx) => {
+                                            return value > 0 ? value : null;
+                                        },
+                                        color: '#ff9100',
+                                    },
+                                }
+                            },
+                        }
+                        if (chartObjCount) chartObjCount.destroy();
+                        chartObjCount = new Chart(
+                            canvasTaskReportCountByDay$[0],
+                            config
+                        );
+                    }
+
+                    $.fn.callAjax2({
+                        url: canvasTaskReportCountByDay$.attr('data-url'),
+                        method: 'GET',
+                    }).then(
+                        resp => {
+                            const data = $.fn.switcherResp(resp);
+                            if (data && data.hasOwnProperty('my_task_report')) {
+                                const my_task_report = data['my_task_report'];
+                                if (my_task_report) {
+                                    initChartMyTaskReportRatio(my_task_report?.['ratio'] || []);
+                                    initChartMyTaskReportCountByDay(my_task_report?.['by_day'] || []);
+                                }
                             }
                         },
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            title: {
-                                display: true,
-                                text: $.fn.gettext('Assigned and Completed task by day'),
-                            },
-                            datalabels: {
-                                formatter: (value, ctx) => {
-                                    return value > 0 ? value : null;
-                                },
-                                color: '#ff9100',
-                            },
-                        }
-                    },
-                }
-                if (chartObjCount) chartObjCount.destroy();
-                chartObjCount = new Chart(
-                    canvasTaskReportCountByDay$[0],
-                    config
-                );
-            }
+                        errs => $.fn.switcherResp(errs)
+                    )
 
-            $.fn.callAjax2({
-                url: canvasTaskReportCountByDay$.attr('data-url'),
-                method: 'GET',
-            }).then(
-                resp => {
-                    const data = $.fn.switcherResp(resp);
-                    if (data && data.hasOwnProperty('my_task_report')) {
-                        const my_task_report = data['my_task_report'];
-                        if (my_task_report) {
-                            initChartMyTaskReportRatio(my_task_report?.['ratio'] || []);
-                            initChartMyTaskReportCountByDay(my_task_report?.['by_day'] || []);
-                        }
-                    }
-                },
-                errs => $.fn.switcherResp(errs)
-            )
+                    const canvasTaskByStatus$ = $('#my-task-by-status');
+                    const canvasTaskSummaryReport$ = $('#my-task-summary-report');
+                    const eleNewToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="new_today"] .summary-value');
+                    const eleStartToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="start_today"] .summary-value');
+                    const eleOverdue$ = canvasTaskSummaryReport$.find('.summary-item[data-item="overdue"] .summary-value');
+                    const eleUpcomingToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="upcoming_today"] .summary-value');
+                    const eleUpcomingSoon$ = canvasTaskSummaryReport$.find('.summary-item[data-item="upcoming_soon"] .summary-value');
+                    const eleActives$ = canvasTaskSummaryReport$.find('.summary-item[data-item="actives"] .summary-value');
+                    $.fn.callAjax2({
+                        url: canvasTaskSummaryReport$.attr('data-url'),
+                        method: 'GET'
+                    }).then(
+                        resp => {
+                            const respData = $.fn.switcherResp(resp);
+                            if (respData && respData.hasOwnProperty('my_task_summary_report')) {
+                                const summaryDatas = respData?.['my_task_summary_report'] || {};
+                                if (summaryDatas?.['state'] === 'READY') {
+                                    const data = summaryDatas?.['data'] || {};
+                                    eleNewToday$.css('--num', data?.['today_created'] || 0);
+                                    eleStartToday$.css('--num', data?.['start_today'] || 0)
+                                    eleOverdue$.css('--num', data?.['overdue'] || 0);
+                                    eleUpcomingToday$.css('--num', data?.['upcoming_today'] || 0);
+                                    eleUpcomingSoon$.css('--num', data?.['upcoming_soon'] || 0);
+                                    eleActives$.css('--num', data?.['actives'] || 0);
 
-            const canvasTaskByStatus$ = $('#my-task-by-status');
-            const canvasTaskSummaryReport$ = $('#my-task-summary-report');
-            const eleNewToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="new_today"] .summary-value');
-            const eleStartToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="start_today"] .summary-value');
-            const eleOverdue$ = canvasTaskSummaryReport$.find('.summary-item[data-item="overdue"] .summary-value');
-            const eleUpcomingToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="upcoming_today"] .summary-value');
-            const eleUpcomingSoon$ = canvasTaskSummaryReport$.find('.summary-item[data-item="upcoming_soon"] .summary-value');
-            const eleActives$ = canvasTaskSummaryReport$.find('.summary-item[data-item="actives"] .summary-value');
-            $.fn.callAjax2({
-                url: canvasTaskSummaryReport$.attr('data-url'),
-                method: 'GET'
-            }).then(
-                resp => {
-                    const respData = $.fn.switcherResp(resp);
-                    if (respData && respData.hasOwnProperty('my_task_summary_report')) {
-                        const summaryDatas = respData?.['my_task_summary_report'] || {};
-                        if (summaryDatas?.['state'] === 'READY') {
-                            const data = summaryDatas?.['data'] || {};
-                            eleNewToday$.css('--num', data?.['today_created'] || 0);
-                            eleStartToday$.css('--num', data?.['start_today'] || 0)
-                            eleOverdue$.css('--num', data?.['overdue'] || 0);
-                            eleUpcomingToday$.css('--num', data?.['upcoming_today'] || 0);
-                            eleUpcomingSoon$.css('--num', data?.['upcoming_soon'] || 0);
-                            eleActives$.css('--num', data?.['actives'] || 0);
-
-                            const byStatus = data?.['by_status'] || [];
-                            const colorMap = byStatus.map(
-                                row => {
-                                    const pieColor = row.task_color ? row.task_color : getRandomColor();
-                                    return [
-                                        colorHex2Rgb(pieColor, 30),
-                                        colorHex2Rgb(pieColor, 100),
-                                    ]
-                                }
-                            );
-                            new Chart(
-                                canvasTaskByStatus$.find('canvas')[0],
-                                {
-                                    type: 'pie',
-                                    data: {
-                                        labels: byStatus.map(row => row?.['translate_name'] ? row['translate_name'] : row.title),
-                                        datasets: [
-                                            {
-                                                "data": byStatus.map(row => row.count),
-                                                "backgroundColor": colorMap.map(row => row[0]),
-                                                "borderColor": colorMap.map(row => row[0]),
-                                                "borderWidth": 0,
-                                            }
-                                        ],
-                                    },
-                                    options: {
-                                        responsive: true,
-                                        plugins: {
-                                            legend: {
-                                                position: 'right',
+                                    const byStatus = data?.['by_status'] || [];
+                                    const colorMap = byStatus.map(
+                                        row => {
+                                            const pieColor = row.task_color ? row.task_color : getRandomColor();
+                                            return [
+                                                colorHex2Rgb(pieColor, 30),
+                                                colorHex2Rgb(pieColor, 100),
+                                            ]
+                                        }
+                                    );
+                                    new Chart(
+                                        canvasTaskByStatus$.find('canvas')[0],
+                                        {
+                                            type: 'pie',
+                                            data: {
+                                                labels: byStatus.map(row => row?.['translate_name'] ? row['translate_name'] : row.title),
+                                                datasets: [
+                                                    {
+                                                        "data": byStatus.map(row => row.count),
+                                                        "backgroundColor": colorMap.map(row => row[0]),
+                                                        "borderColor": colorMap.map(row => row[0]),
+                                                        "borderWidth": 0,
+                                                    }
+                                                ],
                                             },
-                                            title: {
-                                                display: true,
-                                                text: $.fn.gettext('Task by status')
-                                            },
-                                            datalabels: {
-                                                formatter: (value, ctx) => {
-                                                    return value > 0 ? value : null;
-                                                },
-                                                color: '#ff9100',
+                                            options: {
+                                                responsive: true,
+                                                plugins: {
+                                                    legend: {
+                                                        position: 'right',
+                                                    },
+                                                    title: {
+                                                        display: true,
+                                                        text: $.fn.gettext('Task by status'),
+                                                        color: '#00585f',
+                                                    },
+                                                    datalabels: {
+                                                        formatter: (value, ctx) => {
+                                                            return value > 0 ? value : null;
+                                                        },
+                                                        color: '#ff9100',
+                                                    },
+                                                }
                                             },
                                         }
-                                    },
+                                    )
+                                } else {
+                                    canvasTaskByStatus$.addClass('collecting');
+                                    canvasTaskSummaryReport$.addClass('collecting');
                                 }
-                            )
-                        } else {
-                            canvasTaskByStatus$.addClass('collecting');
-                            canvasTaskSummaryReport$.addClass('collecting');
+                            }
+                        },
+                        errs => {
+                        },
+                    )
+                }
+
+                taskReportCollapse$.on('click', async function () {
+                    const {value: accept} = await Swal.fire({
+                        title: $.fn.gettext('Task report'),
+                        input: "checkbox",
+                        inputValue: 1,
+                        inputPlaceholder: $.fn.gettext('Hide this data for the future'),
+                        confirmButtonText: `${$.fn.gettext('Confirm')}&nbsp;<i class="fa fa-arrow-right"></i>`,
+                    }).then(
+                        (result) => {
+                            if (result.isConfirmed) {
+                                if (result.value) {
+                                    localStorage.setItem(keyTaskReportShow, 'false');
+                                }
+                                taskReportGroup$.slideUp(0);
+                                taskReportExpand$.show(0);
+                                $(taskReportCollapse$).hide(0);
+                                taskReportHightGroup$.addClass('collapsed');
+                            }
                         }
-                    }
-                },
-                errs => {},
-            )
-        })
+                    );
+                })
+                taskReportExpand$.on('click', function () {
+                    localStorage.setItem(keyTaskReportShow, 'true');
+                    taskReportCollapse$.show(0);
+                    $(taskReportExpand$).hide(0);
+                    $x.fn.showLoadingPage({
+                        didOpenEnd: function () {
+                            setTimeout(
+                                () => window.location.reload(),
+                                200
+                            )
+                        }
+                    });
+
+                })
+
+                if (stateShow !== 'false') {
+                    taskReportGroup$.slideDown(0);
+                    taskReportCollapse$.show(0);
+
+                    activeReportShow();
+                } else {
+                    taskReportGroup$.slideUp(0);
+                    taskReportExpand$.show(0);
+                    taskReportHightGroup$.addClass('collapsed')
+                }
+            }
+        )
     </script>
 {% endblock %}

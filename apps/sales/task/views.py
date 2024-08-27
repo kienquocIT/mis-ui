@@ -4,8 +4,11 @@ from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg
 
-__all__ = ['OpportunityTaskConfig', 'OpportunityTaskConfigAPI', 'OpportunityTaskList', 'OpportunityTaskListAPI',
-           'OpportunityTaskStatusAPI', 'OpportunityTaskDetailAPI', 'OpportunityTaskLogTimeAPI']
+__all__ = [
+    'OpportunityTaskConfig', 'OpportunityTaskConfigAPI', 'OpportunityTaskList', 'OpportunityTaskListAPI',
+    'OpportunityTaskStatusAPI', 'OpportunityTaskDetailAPI', 'OpportunityTaskLogTimeAPI',
+    'MyTaskReportAPI', 'MyTaskSummaryReport',
+]
 
 from apps.shared.msg import BaseMsg
 
@@ -163,3 +166,17 @@ class OpportunityTaskLogTimeAPI(APIView):
             resp.result['message'] = SaleMsg.OPPORTUNITY_TASK_LOG
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+class MyTaskReportAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.OPPORTUNITY_TASK_MY_TASK_REPORT).get()
+        return resp.auto_return(key_success='my_task_report')
+
+
+class MyTaskSummaryReport(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.OPPORTUNITY_TASK_MY_TASK_SUMMARY_REPORT).get()
+        return resp.auto_return(key_success='my_task_summary_report')

@@ -1,4 +1,5 @@
 from django import template
+from django.templatetags.static import static
 
 register = template.Library()
 
@@ -31,16 +32,21 @@ def render_avatar(person_data, opts: dict = None):  # using `x|render_avatar|saf
 
 
 @register.filter
-def render_avatar_tag(person_data):  # using `x|render_avatar_tag|safe` after use this templatetags
+def render_avatar_tag(person_data, default_image=False):
+    # using `x|render_avatar_tag|safe` after use this templatetags
     avatar, short_name = parse_person_data(person_data if isinstance(person_data, dict) else {})
+
+    if not avatar and default_image is True:
+        avatar = static('assets/images/systems/person-avt.png')
 
     if avatar:
         return f"""<img 
             src="{avatar if avatar else ''}" 
-            alt="{short_name}" 
+            alt="{short_name if short_name else ''}" 
             class="avatar-img"
+            style="width: 100%; height: 100%;"
         >"""
-    return f'<span class="initial-wrap">{short_name}</span>'
+    return f"""<span class="initial-wrap"></span>"""
 
 
 @register.filter(name='language_full_name')

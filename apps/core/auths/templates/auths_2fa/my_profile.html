@@ -63,10 +63,70 @@
         }
     </style>
     <style>
+        #integrated-button-enable {
+            color: #fff;
+            background: linear-gradient(57deg, #1890ff, #52c41a, #fa541c);
+            background-size: 800% 800%;
+
+            -webkit-animation: EnableButtonKeyFrames 5s ease infinite;
+            -moz-animation: EnableButtonKeyFrames 5s ease infinite;
+            -o-animation: EnableButtonKeyFrames 5s ease infinite;
+            animation: EnableButtonKeyFrames 5s ease infinite;
+        }
+
+        @-webkit-keyframes EnableButtonKeyFrames {
+            0% {
+                background-position: 1% 50%
+            }
+            50% {
+                background-position: 99% 50%
+            }
+            100% {
+                background-position: 1% 50%
+            }
+        }
+
+        @-moz-keyframes EnableButtonKeyFrames {
+            0% {
+                background-position: 1% 50%
+            }
+            50% {
+                background-position: 99% 50%
+            }
+            100% {
+                background-position: 1% 50%
+            }
+        }
+
+        @-o-keyframes EnableButtonKeyFrames {
+            0% {
+                background-position: 1% 50%
+            }
+            50% {
+                background-position: 99% 50%
+            }
+            100% {
+                background-position: 1% 50%
+            }
+        }
+
+        @keyframes EnableButtonKeyFrames {
+            0% {
+                background-position: 1% 50%
+            }
+            50% {
+                background-position: 99% 50%
+            }
+            100% {
+                background-position: 1% 50%
+            }
+        }
+    </style>
+    <style>
         .profile {
-            width: 60%;
+            width: 95%;
             min-width: 300px;
-            max-width: 500px;
+            max-width: 600px;
             border: 1px solid #f1f1f1;
             box-shadow: 0 0 1px 2px #dce2e5, 0 0 3px 4px #f2f5f6;
             padding: 30px;
@@ -80,9 +140,9 @@
         }
 
         .profile-avatar .img-avatar {
-            width: 40%;
+            width: 100%;
             min-width: 100px;
-            max-width: 200px;
+            max-width: 300px;
             overflow: hidden;
             padding: 30px;
             background: rgba(242, 245, 246, 0.5);
@@ -118,6 +178,8 @@
         }
 
         .tenant-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
         }
 
         .twoFA-data {
@@ -241,6 +303,53 @@
             width: 20px;
         }
     </style>
+    <style>
+        .radio-button select {
+            display: none;
+        }
+
+        .radio-button .title {
+            margin-bottom: 10px;
+        }
+
+        .radio-button-ui {
+            display: flex;
+            width: 100%;
+        }
+
+        .radio-button-item {
+            flex: 1 1 auto;
+            padding: 5px;
+            background-color: #fff;
+            color: #003f44;
+            text-align: center;
+            border: 1px solid #007d88;
+            border-top-width: 2px;
+            border-bottom-width: 2px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .radio-button-item:not(.active):hover {
+            background-color: rgba(0, 125, 136, 0.2);
+        }
+
+        .radio-button-item.active {
+            background-color: #007d88;
+            color: #fff;
+        }
+
+        .radio-button-item:first-child {
+            border-left-width: 2px;
+            border-radius: 10px 0 0 10px;
+        }
+
+        .radio-button-item:last-child {
+            border-right-width: 2px;
+            border-radius: 0 10px 10px 0;
+        }
+    </style>
 {% endblock %}
 
 {% block pageContent %}
@@ -248,7 +357,7 @@
         <div class="profile">
             <div class="profile-avatar">
                 <div class="img-avatar">
-                    {{ base|render_avatar_tag|safe }}
+                    {{ base|render_avatar_tag:True|safe }}
                 </div>
                 <div class="text-avatar">
                     <div>
@@ -270,22 +379,22 @@
                 </div>
             </div>
             <div class="tenant-data">
-                <small><b>{% trans 'Organization' %}</b></small>
+                <b>{% trans 'Organization' %}</b>
                 <p class="tenant-title">{{ base.tenant_current_data.title }}</p>
                 {% if base.is_admin_tenant %}
-                    <small class="badge badge-success badge-outline badge-sm no-transform">
+                    <span class="badge badge-soft-success badge-outline badge no-transform">
                         {% trans "Your is administrator's tenant" %}
-                    </small>
+                    </span>
                 {% else %}
-                    <small class="badge badge-danger badge-outline badge-sm no-transform">
+                    <span class="badge badge-soft-danger badge-outline badge no-transform">
                         {% trans "Your isn't administrator's tenant" %}
-                    </small>
+                    </span>
                 {% endif %}
             </div>
             <div class="twoFA-data">
-                <small><b>{% trans 'Two-Factor Authentication' %} (2FA)</b></small>
-                <table id="twoFA-status-grid">
-                    <tr>
+                <b>{% trans 'Two-Factor Authentication' %} (2FA)</b>
+                <table id="twoFA-status-grid" class="w-100 table">
+                    <tr class="table-primary">
                         <td><span>{% trans 'Integrate status' %}</span></td>
                         <td>
                             <i
@@ -306,7 +415,7 @@
                             >{% trans 'Integrate now' %}</button>
                         </td>
                     </tr>
-                    <tr id="integrated-group-active" style="display: none;">
+                    <tr id="integrated-group-active" style="display: none;" class="table-primary">
                         <td><span>{% trans 'Active' %}</span></td>
                         <td>
                             <i class="fa-solid fa-circle-check text-success" id="integrated-active-true"></i>
@@ -319,7 +428,7 @@
                                     style="display: none;"
                             >{% trans 'Disable' %}</button>
                             <button
-                                    class="btn btn-gradient-success btn-square btn-xs no-transform"
+                                    class="btn btn-square btn-xs no-transform"
                                     id="integrated-button-enable"
                                     style="display: none;"
                             >{% trans 'Enable' %}</button>
@@ -394,7 +503,7 @@
                     </div>
                 </div>
                 <div class="w-100 mt-4">
-                    <small id="application-supports-2fa"><b>{% trans 'Application supports 2FA' %}</b></small>
+                    <b id="application-supports-2fa">{% trans 'Application supports 2FA' %}</b>
                     <div class="w-100 twoFA-integrate-app">
                         <div>
                             <div class="w-100 two-fa-app-logo">
@@ -451,6 +560,53 @@
                         <li>{% trans 'For any issues related to 2FA, please contact the administrator for resolution.' %}</li>
                     </ul>
                 </div>
+            </div>
+            <div class="mt-5">
+                <b>{% trans 'Authentication logs' %}</b>
+                <small
+                        class="form-text mb-2"
+                        style="padding: 5px;padding-left: 30px; border-left: 3px solid #ff9100;background-color: rgba(255, 191, 107, 0.1);color: #ffab3d;"
+                >
+                    {% trans 'Authentication log data is only stored for the last 30 days.' %}
+                </small>
+                <div id="auth-log-group" style="display: none;">
+                    <div class="w-100">
+                        <div class="w-100 mb-2">
+                            <div class="radio-button">
+                                <p class="title">{% trans 'Date range data show in chart' %}</p>
+                                <select id="auth-log-length-date">
+                                    <option value="7"></option>
+                                    <option value="14"></option>
+                                    <option value="30"></option>
+                                </select>
+                                <div class="radio-button-ui">
+                                    <span class="radio-button-item active" data-value="7">{% trans '7 days' %}</span>
+                                    <span class="radio-button-item" data-value="14">{% trans '14 days' %}</span>
+                                    <span class="radio-button-item" data-value="30">{% trans '30 days' %}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <canvas
+                                data-url="{% url 'AuthLogReportsAPI' %}"
+                        ></canvas>
+                    </div>
+                    <table
+                            class="table w-100"
+                            data-url="{% url 'AuthLogsAPI' %}"
+                    >
+                        <thead class="thead-primary">
+                        <tr>
+                            <th class="no-transform">{% trans 'Times' %}</th>
+                            <th class="no-transform">{% trans 'Service' %}</th>
+                            <th class="no-transform">{% trans 'Status' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <button class="btn btn-primary btn-square btn-gradient" id="btn-get-auth-traffics">
+                    {% trans 'Get traffics' %}
+                </button>
             </div>
         </div>
     </div>
@@ -539,7 +695,7 @@
                 )
             }
 
-            function destroy2FA(otp){
+            function destroy2FA(otp) {
                 $.fn.callAjax2({
                     url: btnIntegrateNow$.attr('data-url'),
                     method: 'DELETE',
@@ -608,7 +764,7 @@
                 })
             })
 
-            integratedBtnDelete$.on('click', function (){
+            integratedBtnDelete$.on('click', function () {
                 Swal.fire({
                     title: $.fn.gettext('Destroy 2FA'),
                     html: $.fn.gettext('Once approved, you cannot undo it.'),
@@ -721,6 +877,205 @@
                     btn2FAVerify$.trigger('click');
                 }
             })
+        })
+    </script>
+    <script src="{% static 'vendors/chartjs/chart.umd.min.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.radio-button').on('click', '.radio-button-item[data-value]', function (event) {
+                const value = $(event.target).attr('data-value');
+                const parent$ = $(event.target).closest('.radio-button');
+                if (parent$.length > 0) {
+                    const select$ = parent$.find('select');
+                    parent$.find(`.radio-button-item`).each(function () {
+                        if ($(this).attr('data-value') === value) {
+                            $(this).addClass('active');
+                            if (select$.length > 0) select$.val(value).trigger('change');
+                        } else $(this).removeClass('active');
+                    });
+                }
+            })
+
+            const btn$ = $('#btn-get-auth-traffics');
+            const group$ = $('#auth-log-group');
+            const rangeDate$ = $('#auth-log-length-date');
+            const canvas$ = group$.find('canvas');
+            const table$ = group$.find('table');
+
+            let chartObj = null;
+
+            function loadChart() {
+                $.fn.callAjax2({
+                    url: canvas$.attr('data-url') + '?' + $.param({
+                        'range': rangeDate$.val(),
+                    }),
+                    method: 'GET',
+                }).then(
+                    resp => {
+                        const data = $.fn.switcherResp(resp);
+                        if (data && data.hasOwnProperty('auth_logs')) {
+                            const auth_logs = data?.['auth_logs'] || [];
+                            if (auth_logs) {
+                                if (chartObj) chartObj.destroy();
+                                chartObj = new Chart(
+                                    canvas$[0],
+                                    {
+                                        type: 'bar',
+                                        data: {
+                                            labels: auth_logs.map(
+                                                row => $x.fn.parseDate(row.date)
+                                            ),
+                                            datasets: [
+                                                {
+                                                    label: $.fn.gettext('Login'),
+                                                    data: auth_logs.map(
+                                                        row => row.details
+                                                            .filter(detail => detail.endpoint === 'LOGIN')
+                                                            .reduce((acc, detail) => acc + detail.count, 0)
+                                                    ),
+                                                    backgroundColor: 'rgba(19,194,194,0.2)',
+                                                    borderColor: 'rgba(19,194,194,1)',
+                                                    borderWidth: 1,
+                                                },
+                                                {
+                                                    label: $.fn.gettext('Logout'),
+                                                    data: auth_logs.map(
+                                                        row => row.details
+                                                            .filter(detail => detail.endpoint === 'LOGOUT')
+                                                            .reduce((acc, detail) => acc + detail.count, 0)
+                                                    ),
+                                                    backgroundColor: 'rgba(0,125,136,0.2)',
+                                                    borderColor: 'rgba(0,125,136,1)',
+                                                    borderWidth: 1,
+                                                },
+                                                {
+                                                    label: $.fn.gettext('OTP verified success'),
+                                                    data: auth_logs.map(
+                                                        row => row.details
+                                                            .filter(detail => detail.endpoint === '2FA_VERIFY' && detail.log_level === 'INFO')
+                                                            .reduce((acc, detail) => acc + detail.count, 0)
+                                                    ),
+                                                    backgroundColor: 'rgba(160,217,17,0.2)',
+                                                    borderColor: 'rgba(160,217,17,1)',
+                                                    borderWidth: 1,
+                                                },
+                                                {
+                                                    label: $.fn.gettext('OTP verified failure'),
+                                                    data: auth_logs.map(
+                                                        row => row.details
+                                                            .filter(detail => detail.endpoint === '2FA_VERIFY' && detail.log_level === 'ERROR')
+                                                            .reduce((acc, detail) => acc + detail.count, 0)
+                                                    ),
+                                                    backgroundColor: 'rgba(245,34,45,0.2)',
+                                                    borderColor: 'rgba(245,34,45,1)',
+                                                    borderWidth: 1,
+                                                },
+                                            ]
+                                        },
+                                        options: {
+                                            scales: {
+                                                y: {
+                                                    ticks: {
+                                                        stepSize: 1
+                                                    }
+                                                }
+                                            },
+                                        },
+                                    }
+                                );
+                            }
+                        }
+                    },
+                    errs => $.fn.switcherResp(errs),
+                )
+            }
+
+            btn$.on('click', function () {
+                btn$.hide(0);
+                group$.slideDown(0);
+                loadChart();
+                table$.DataTableDefault({
+                    useDataServer: true,
+                    pageLength: 7,
+                    styleDom: 'small',
+                    visibleSearchField: false,
+                    visiblePaging: false,
+                    visibleDisplayRowTotal: true,
+                    visiblePagination: true,
+                    enableVisibleColumns: false,
+                    ajax: {
+                        url: table$.attr('data-url'),
+                        type: 'GET',
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                return resp.data['auth_logs'] ? resp.data['auth_logs'] : [];
+                            }
+                            return [];
+                        },
+                    },
+                    columns: [
+                        {
+                            className: 'wrap-text',
+                            data: 'timestamp',
+                            render: (data, type, row, meta) => $x.fn.displayRelativeTime(data),
+                        },
+                        {
+                            className: 'wrap-text',
+                            data: 'service_name',
+                            render: (data, type, row, meta) => {
+                                switch (data) {
+                                    case 'LOGIN':
+                                        return $.fn.gettext('Login');
+                                    case 'LOGOUT':
+                                        return $.fn.gettext('Logout');
+                                    case '2FA_VERIFY':
+                                        return $.fn.gettext('OTP verify');
+                                    case '2FA_SETUP_CREATE':
+                                        return $.fn.gettext('Create 2FA config');
+                                    case '2FA_SETUP_UPDATE':
+                                        return $.fn.gettext('Update 2FA status')
+                                    case '2FA_SETUP_VALID':
+                                        return $.fn.gettext('Valid 2FA config');
+                                    case '2FA_SETUP_DESTROY':
+                                        console.log('data:', data);
+                                        return $.fn.gettext('Destroy 2FA config')
+                                    default:
+                                        return data;
+                                }
+                            }
+                        },
+                        {
+                            className: 'text-center .min-w-100p wrap-text',
+                            data: 'log_level',
+                            render: (data, type, row, meta) => {
+                                let errors = row?.['errors'] || '';
+                                switch (errors) {
+                                    case 'OTP_NOT_MATCH':
+                                        errors = $.fn.gettext('OTP do not match');
+                                        break
+                                    case 'OTP_USED':
+                                        errors = $.fn.gettext('OTP was used');
+                                        break
+                                    case 'LOCKED_OUT':
+                                        errors = $.fn.gettext('The user was locked out');
+                                        break
+                                }
+                                switch (data) {
+                                    case 'INFO':
+                                        return `<p class="mb-1"><i class="fa-solid fa-circle-check fa-lg text-success"></i></p><p>${errors}</p>`;
+                                    case 'ERROR':
+                                        return `<p class="mb-1"><i class="fa-solid fa-circle-xmark fa-lg text-danger"></i></p><p>${errors}</p>`;
+                                    default:
+                                        return `<p class="mb-1">${data}</p><p>${errors}</p>`;
+                                }
+                            }
+                        },
+                    ]
+                })
+            })
+
+            rangeDate$.on('change', () => loadChart());
         })
     </script>
 {% endblock %}

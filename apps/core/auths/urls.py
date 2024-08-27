@@ -6,7 +6,7 @@ from apps.core.auths.views import (
     MyLanguageAPI,
     AuthLoginSelectTenant,
     ForgotPasswordView, ForgotPasswordAPI, ForgotPasswordDetailAPI,
-    ChangePasswordView, ChangePasswordAPI,
+    ChangePasswordView, ChangePasswordAPI, AuthLogsAPI, AuthLogReportsAPI,
 )
 from apps.core.auths.views_2fa import (
     TwoFAIntegrateAPI, MyProfileView, TwoFAIntegrateDetailAPI,
@@ -27,6 +27,8 @@ urlpatterns = [
     path('change-space', SpaceChangeView.as_view(), name='SpaceChangeView'),
     path('change-password', ChangePasswordView.as_view(), name='ChangePasswordView'),
     path('change-password/api', ChangePasswordAPI.as_view(), name='ChangePasswordAPI'),
+    path('logs', AuthLogsAPI.as_view(), name='AuthLogsAPI'),
+    path('logs/report', AuthLogReportsAPI.as_view(), name='AuthLogReportsAPI'),
 
     path('my-profile', MyProfileView.as_view(), name='MyProfileView'),
     path('2fa', TwoFAVerifyView.as_view(), name='TwoFAVerifyView'),

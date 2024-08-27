@@ -15,6 +15,7 @@ class HomeView(View):
         template='core/home/home.html',
         breadcrumb='HOME_PAGE',
         menu_active='id_menu_home_page',
+        jsi18n='home',
     )
     def get(self, request, *args, **kwargs):
         if request.user:

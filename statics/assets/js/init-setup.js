@@ -4360,21 +4360,28 @@ class DTBControl {
     get mergeDrawCallback() {
         let clsThis = this;
         // merge two drawCallback function
-        let drawCallback01 = this.opts?.['drawCallback'] || function (settings) {
-        };
-        let drawCallBackDefault = function (settings) {
-            // $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-rounded pagination-simple');
-            $('.dataTables_paginate > .pagination').addClass('dtb-pagination-custom')
-            $('.dataTables_info').addClass('dtb-info-custom');
-            $('.dataTables_length label').addClass('dtb-length-custom');
-            $('.dataTables_length select').addClass('dtb-length-list-custom');
+        let drawCallback01 = this.opts?.['drawCallback'] || function (settings) {};
+        const usingOnlyDrawCallbackOverride = this.opts?.['usingOnlyDrawCallbackOverride'] || false;
+        let drawCallBackDefault;
+        drawCallBackDefault = usingOnlyDrawCallbackOverride === true ?
+            function (settings) {
+            } :
+            function (settings) {
+                // $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-rounded pagination-simple');
+                const dataTableWrapper$ = clsThis.dtb$.closest('.dataTables_wrapper');
+                if (dataTableWrapper$.length > 0){
+                    dataTableWrapper$.find('.dataTables_paginate').find('.pagination').addClass('pagination-sm dtb-pagination-custom')
+                    dataTableWrapper$.find('.dataTables_info').addClass('dtb-info-custom');
+                    dataTableWrapper$.find('.dataTables_length label').addClass('dtb-length-custom');
+                    dataTableWrapper$.find('.dataTables_length select').addClass('dtb-length-list-custom');
+                }
 
-            feather.replace();
-            // reload all currency
-            if (clsThis.reloadCurrency === true) $.fn.initMaskMoney2();
-            // buildSelect2();
-            setTimeout(() => DocumentControl.buildSelect2(), 0);
-        }
+                feather.replace();
+                // reload all currency
+                if (clsThis.reloadCurrency === true) $.fn.initMaskMoney2();
+                // buildSelect2();
+                setTimeout(() => DocumentControl.buildSelect2(), 0);
+            }
         return function (settings) {
             drawCallback01.bind(this)(settings);
             drawCallBackDefault.bind(this)(settings);

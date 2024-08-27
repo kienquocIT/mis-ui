@@ -67,11 +67,12 @@ class AuthUser(AbstractBaseUser, PermissionsMixin):
         [2] {Last Name}{Point}{Space}{First Name} <=> A. Nguyen Van
         [Another] Return default order_arrange
         """
-        if self.last_name or self.first_name:
-            if order_arrange == 1:
-                return '{}, {}'.format(self.last_name, self.first_name)  # first ways
-            return '{}. {}'.format(self.last_name, self.first_name)  # second ways or another arrange
-        return self.username
+        return f'{self.last_name} {self.first_name}'
+        # if self.last_name or self.first_name:
+        #     if order_arrange == 1:
+        #         return '{}, {}'.format(self.last_name, self.first_name)  # first ways
+        #     return '{}. {}'.format(self.last_name, self.first_name)  # second ways or another arrange
+        # return self.username
 
     class Meta:
         verbose_name = 'Account Abstract'

@@ -269,8 +269,13 @@
 
 <!-- Wrapper -->
 <div
-        class="hk-wrapper" data-layout="vertical" data-layout-style="collapsed" data-menu="light" data-footer="simple"
+        class="hk-wrapper"
+        data-layout="vertical"
+        data-layout-style="collapsed"
+        data-menu="light"
+        data-footer="simple"
         data-hover="active"
+{#        data-navbar-style="collapsed"#}
 >
     <p
             style="display: none" id="get-menu-active" data-nav-menu="{{ nav.menu_id_current }}"
@@ -294,142 +299,144 @@
                 <div class="blogapp-wrap blogapp-sidebar-toggle">
                     <div class="blogapp-content">
                         <div class="blogapp-detail-wrap w-100">
-                            <header class="blog-header">
-                                <div class="d-flex align-items-center">
-                                    <button class="btn mr-1 hidden" id="btn-show-breadcrumb"><i
-                                            class="fa-solid fa-bars"
-                                    ></i></button>
-                                    <div id="breadcrumb-data">
-                                        {% include 'extends/breadcrumb.html' %}
+                            {% block blockBreadcrumb %}
+                                <header class="blog-header">
+                                    <div class="d-flex align-items-center">
+                                        <button class="btn mr-1 hidden" id="btn-show-breadcrumb"><i
+                                                class="fa-solid fa-bars"
+                                        ></i></button>
+                                        <div id="breadcrumb-data">
+                                            {% include 'extends/breadcrumb.html' %}
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="blog-options-wrap" id="idxPageAction">
-                                    <div class="{% if pk %}hidden{% endif %}" id="idxRealAction">
-                                        {% block pageAction %}{% endblock %}
-                                    </div>
-                                    <button
-                                            type="submit"
-                                            class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            form=""
-                                            data-value=""
-                                            id="idxSaveInZoneWF"
-                                    >
-                                    <span
-                                            class="icon"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="bottom"
-                                            data-bs-original-title="{% trans 'Save in Zone' %}"
-                                    ><i class="fa-solid fa-floppy-disk"></i></span>
-                                    </button>
-
-                                    <button
-                                            class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            type="submit"
-                                            form=""
-                                            data-wf-action=""
-                                            id="idxSaveInZoneWFThenNext"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="bottom"
-                                            data-bs-original-title="{% trans 'Save in zone then call next station' %}"
-                                    >
-                                        {#                                    <i class="icon-action-wf fa-solid fa-floppy-disk"></i>#}
-                                        {#                                    <i class="icon-action-wf fa-solid fa-check"></i>#}
-                                        <span class="icon">
-                                        <i class="fa-solid fa-check-double text-success"></i>
-                                    </span>
-                                    </button>
-
-
-                                    <button
-                                            type="button"
-                                            class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            id="btn-active-edit-zone-wf"
-                                    >
-                                    <span
-                                            class="icon"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="bottom"
-                                            data-bs-original-title="{% trans 'Open edit in Zones' %}"
-                                    ><i class="fa-solid fa-unlock"></i></span>
-                                    </button>
-                                    <button
-                                            type="button"
-                                            class="hidden btn-action-wf btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            data-value=""
-                                            id="btnMainAction"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="bottom"
-                                            data-bs-original-title="{% trans 'Approval' %}"
-                                    >
-                                    <span
-                                            class="icon"
-                                    ></span>
-                                    </button>
-
-                                    <div class="dropdown hidden">
+                                    <div class="blog-options-wrap" id="idxPageAction">
+                                        <div class="{% if pk %}hidden{% endif %}" id="idxRealAction">
+                                            {% block pageAction %}{% endblock %}
+                                        </div>
                                         <button
-                                                aria-expanded="false" data-bs-toggle="dropdown"
-                                                class="btn btn-default btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                type="button"
+                                                type="submit"
+                                                class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                form=""
+                                                data-value=""
+                                                id="idxSaveInZoneWF"
                                         >
                                         <span
                                                 class="icon"
                                                 data-bs-toggle="tooltip"
                                                 data-bs-placement="bottom"
-                                                data-bs-original-title="{% trans 'More actions' %}"
+                                                data-bs-original-title="{% trans 'Save in Zone' %}"
+                                        ><i class="fa-solid fa-floppy-disk"></i></span>
+                                        </button>
+
+                                        <button
+                                                class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                type="submit"
+                                                form=""
+                                                data-wf-action=""
+                                                id="idxSaveInZoneWFThenNext"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="bottom"
+                                                data-bs-original-title="{% trans 'Save in zone then call next station' %}"
                                         >
-                                            ...
+                                            {#                                    <i class="icon-action-wf fa-solid fa-floppy-disk"></i>#}
+                                            {#                                    <i class="icon-action-wf fa-solid fa-check"></i>#}
+                                            <span class="icon">
+                                            <i class="fa-solid fa-check-double text-success"></i>
                                         </span>
                                         </button>
-                                        <div role="menu" class="dropdown-menu" id="idxGroupAction">
-                                            {% for key, value in base_workflow.items %}
-                                                <li class="hidden btn-action-wf" data-value="{{ key }}">
-                                                    <div class="dropdown-item"><i
-                                                            class="icon-action-wf mr-1 {{ value.1 }}"
-                                                    ></i> {{ value.0 }}</div>
-                                                </li>
-                                            {% endfor %}
+
+
+                                        <button
+                                                type="button"
+                                                class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                id="btn-active-edit-zone-wf"
+                                        >
+                                        <span
+                                                class="icon"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="bottom"
+                                                data-bs-original-title="{% trans 'Open edit in Zones' %}"
+                                        ><i class="fa-solid fa-unlock"></i></span>
+                                        </button>
+                                        <button
+                                                type="button"
+                                                class="hidden btn-action-wf btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                data-value=""
+                                                id="btnMainAction"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="bottom"
+                                                data-bs-original-title="{% trans 'Approval' %}"
+                                        >
+                                        <span
+                                                class="icon"
+                                        ></span>
+                                        </button>
+
+                                        <div class="dropdown hidden">
+                                            <button
+                                                    aria-expanded="false" data-bs-toggle="dropdown"
+                                                    class="btn btn-default btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                    type="button"
+                                            >
+                                            <span
+                                                    class="icon"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="bottom"
+                                                    data-bs-original-title="{% trans 'More actions' %}"
+                                            >
+                                                ...
+                                            </span>
+                                            </button>
+                                            <div role="menu" class="dropdown-menu" id="idxGroupAction">
+                                                {% for key, value in base_workflow.items %}
+                                                    <li class="hidden btn-action-wf" data-value="{{ key }}">
+                                                        <div class="dropdown-item"><i
+                                                                class="icon-action-wf mr-1 {{ value.1 }}"
+                                                        ></i> {{ value.0 }}</div>
+                                                    </li>
+                                                {% endfor %}
+                                            </div>
+                                            {% if base_workflow.length > 0 %}
+                                                {% csrf_token %}
+                                            {% endif %}
                                         </div>
-                                        {% if base_workflow.length > 0 %}
-                                            {% csrf_token %}
-                                        {% endif %}
+
+                                        <div class="v-separator  d-lg-inline-block d-none"></div>
+
+                                        <button
+                                                id="btnLogShow"
+                                                class="hidden btn btn-icon btn-rounded bg-dark-hover mr-1 ntt-drawer-toggle-link"
+                                                data-drawer-target="#drawer_log_data"
+                                                data-drawer-active="false"
+                                                href="#"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="bottom"
+                                                data-bs-original-title="{% trans 'Log' %}"
+                                                data-url-runtime-detail="{% url 'FlowRuntimeDetailAPI' pk=1 %}"
+                                                data-url-current-wf="{% url 'WorkflowCurrentOfAppListAPI' %}"
+                                                data-url-app-emp-config="{% url 'AppEmpConfigListAPI' %}"
+                                        >
+                                        <span class="icon icon-xs">
+                                            <i class="fas fa-history fa-sm"></i>
+                                        </span>
+                                        </button>
+                                        <button
+                                                class="btn btn-icon btn-rounded bg-dark-hover mr-1 hk-navbar-togglable"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="bottom"
+                                                data-bs-original-title="{% trans 'Collapse' %}"
+                                        >
+                                        <span class="icon">
+                                            <i class="fa-solid fa-chevron-up fa-sm"></i>
+                                            <i class="fa-solid fa-chevron-down fa-sm d-none"></i>
+                                            <!-- <span class="feather-icon"><i data-feather="chevron-up"></i></span> -->
+                                            <!-- <span class="feather-icon d-none"><i data-feather="chevron-down"></i></span> -->
+                                        </span>
+                                        </button>
                                     </div>
-
-                                    <div class="v-separator  d-lg-inline-block d-none"></div>
-
-                                    <button
-                                            id="btnLogShow"
-                                            class="hidden btn btn-icon btn-rounded bg-dark-hover mr-1 ntt-drawer-toggle-link"
-                                            data-drawer-target="#drawer_log_data"
-                                            data-drawer-active="false"
-                                            href="#"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="bottom"
-                                            data-bs-original-title="{% trans 'Log' %}"
-                                            data-url-runtime-detail="{% url 'FlowRuntimeDetailAPI' pk=1 %}"
-                                            data-url-current-wf="{% url 'WorkflowCurrentOfAppListAPI' %}"
-                                            data-url-app-emp-config="{% url 'AppEmpConfigListAPI' %}"
-                                    >
-                                    <span class="icon icon-xs">
-                                        <i class="fas fa-history fa-sm"></i>
-                                    </span>
-                                    </button>
-                                    <button
-                                            class="btn btn-icon btn-rounded bg-dark-hover mr-1 hk-navbar-togglable"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="bottom"
-                                            data-bs-original-title="{% trans 'Collapse' %}"
-                                    >
-                                    <span class="icon">
-                                        <i class="fa-solid fa-chevron-up fa-sm"></i>
-                                        <i class="fa-solid fa-chevron-down fa-sm d-none"></i>
-                                        <!-- <span class="feather-icon"><i data-feather="chevron-up"></i></span> -->
-                                        <!-- <span class="feather-icon d-none"><i data-feather="chevron-down"></i></span> -->
-                                    </span>
-                                    </button>
-                                </div>
-                                <div class="hk-sidebar-togglable active"></div>
-                            </header>
+                                    <div class="hk-sidebar-togglable active"></div>
+                                </header>
+                            {% endblock %}
                             <div class="blog-body">
                                 <div id="idxPageContent">
                                     {% block pageContent %}

@@ -30,8 +30,8 @@ msgid "Upcoming Today Task"
 msgstr "Công việc hôm nay đến hạn"
 
 #
-msgid "Upcoming Other Task"
-msgstr "Công việc sắp đến hạn khác"
+msgid "Upcoming 3 days Task"
+msgstr "Công việc đến hạn trong 3 ngày tới"
 
 #
 msgid "Actives Task"

@@ -3,6 +3,8 @@ class ProdOrderLoadDataHandle {
     static $form = $('#frm_production_order');
     static $quantity = $('#quantity');
     static $time = $('#time');
+    static $dateStart = $('#date-start');
+    static $dateEnd = $('#date-end');
     static $boxType = $('#box-type');
     static $boxStatus = $('#box-status');
     static $boxProd = $('#box-product');
@@ -174,7 +176,24 @@ class ProdOrderLoadDataHandle {
                 if (row.querySelector('.table-row-item')) {
                     ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')));
                     if (dataRow?.['product_data']) {
-                        ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
+                        $.fn.callAjax2({
+                                'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
+                                'method': 'GET',
+                                'data': {'id': dataRow?.['product_data']?.['id']},
+                                'isDropdown': true,
+                            }
+                        ).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                                        if (data.product_sale_list.length > 0) {
+                                            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [data.product_sale_list[0]]);
+                                        }
+                                    }
+                                }
+                            }
+                        )
                     }
                 }
                 if (row.querySelector('.table-row-uom')) {
@@ -254,11 +273,11 @@ class ProdOrderLoadDataHandle {
         if (row.querySelector('.table-row-item') && row.querySelector('.table-row-uom') && row.querySelector('.table-row-warehouse') && row.querySelector('.table-row-stock') && row.querySelector('.table-row-available')) {
             let data = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-item')), $(row.querySelector('.table-row-item')).val());
             if (data) {
-                data['unit_of_measure'] = data?.['purchase_information']?.['uom'];
-                data['uom_group'] = data?.['general_information']?.['uom_group'];
+                let dataUOM = data?.['purchase_information']?.['uom'];
+                let dataUOMGr = data?.['general_information']?.['uom_group'];
                 // load UOM
-                if (Object.keys(data?.['unit_of_measure']).length !== 0 && Object.keys(data?.['uom_group']).length !== 0) {
-                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [data?.['unit_of_measure']], {'group': data?.['uom_group']?.['id']});
+                if (dataUOM && dataUOMGr?.['id']) {
+                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataUOM], {'group': dataUOMGr?.['id']});
                 } else {
                     ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')));
                 }
@@ -473,12 +492,146 @@ class ProdOrderDataTableHandle {
 
 // Store data
 class ProdOrderStoreHandle {
+
+    static storeRow(row) {
+        if (row.querySelector('.table-row-order')) {
+            if (row.querySelector('.table-row-order').getAttribute('data-row')) {
+                let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
+                if (row.querySelector('.table-row-task')) {  // task
+                    if (row.querySelector('.table-row-labor')) {
+                        dataRow['quantity'] = parseFloat(row.querySelector('.table-row-labor').innerHTML);
+                    }
+                }
+                if (row.querySelector('.table-row-item')) {  // product
+                    let data = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-item')), $(row.querySelector('.table-row-item')).val());
+                    if (data) {
+                        dataRow['product_id'] = data?.['id'];
+                        dataRow['product_data'] = data;
+                    }
+                    if (row.querySelector('.table-row-uom')) {
+                        let data = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-uom')), $(row.querySelector('.table-row-uom')).val());
+                        if (data) {
+                            dataRow['uom_id'] = data?.['id'];
+                            dataRow['uom_data'] = data;
+                        }
+                    }
+                    if (row.querySelector('.table-row-quantity')) {
+                        dataRow['quantity'] = parseFloat(row.querySelector('.table-row-quantity').innerHTML);
+                    }
+                    if (row.querySelector('.table-row-warehouse')) {
+                        let data = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-warehouse')), $(row.querySelector('.table-row-warehouse')).val());
+                        if (data) {
+                            dataRow['warehouse_id'] = data?.['id'];
+                            dataRow['warehouse_data'] = data;
+                        }
+                    }
+                    if (row.querySelector('.table-row-stock')) {
+                        dataRow['stock'] = parseFloat(row.querySelector('.table-row-stock').innerHTML);
+                    }
+                    if (row.querySelector('.table-row-available')) {
+                        dataRow['available'] = parseFloat(row.querySelector('.table-row-available').innerHTML);
+                    }
+                }
+                let submitFields = [
+                    'is_task',
+                    'task_title',
+                    'task_order',
+                    'product_id',
+                    'product_data',
+                    'uom_id',
+                    'uom_data',
+                    'quantity_bom',
+                    'quantity',
+                    'warehouse_id',
+                    'warehouse_data',
+                    'stock',
+                    'available',
+                    'tool',
+                    'order',
+                ]
+                if (dataRow) {
+                    ProdOrderCommonHandle.filterFieldList(submitFields, dataRow);
+                }
+                row.querySelector('.table-row-order').setAttribute('data-row', JSON.stringify(dataRow));
+            }
+        }
+        return true;
+    };
+
+    static storeAll() {
+        ProdOrderDataTableHandle.$tableMain.DataTable().rows().every(function () {
+            let row = this.node();
+            ProdOrderStoreHandle.storeRow(row);
+        });
+        return true;
+    }
+
 }
 
 // Submit Form
 class ProdOrderSubmitHandle {
 
-    static setupDataSubmit(_form) {};
+    static setupTask() {
+        let result = [];
+        ProdOrderDataTableHandle.$tableMain.DataTable().rows().every(function () {
+            let row = this.node();
+            if (row.querySelector('.table-row-order')) {
+                if (row.querySelector('.table-row-order').getAttribute('data-row')) {
+                    result.push(JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row')));
+                }
+            }
+        });
+        return result;
+    };
+
+    static setupDataSubmit(_form) {
+        if (ProdOrderLoadDataHandle.$boxType.val()) {
+            _form.dataForm['type_production'] = parseInt(ProdOrderLoadDataHandle.$boxType.val());
+        }
+        if (ProdOrderLoadDataHandle.$boxProd.val()) {
+            _form.dataForm['product_id'] = ProdOrderLoadDataHandle.$boxProd.val();
+            let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxProd, ProdOrderLoadDataHandle.$boxProd.val());
+            if (data) {
+                _form.dataForm['product_data'] = data;
+            }
+        }
+        if (ProdOrderLoadDataHandle.$quantity.val()) {
+            _form.dataForm['quantity'] = parseFloat(ProdOrderLoadDataHandle.$quantity.val());
+        }
+        if (ProdOrderLoadDataHandle.$boxUOM.val()) {
+            _form.dataForm['uom_id'] = ProdOrderLoadDataHandle.$boxUOM.val();
+            let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxUOM, ProdOrderLoadDataHandle.$boxUOM.val());
+            if (data) {
+                _form.dataForm['uom_data'] = data;
+            }
+        }
+        if (ProdOrderLoadDataHandle.$boxWH.val()) {
+            _form.dataForm['warehouse_id'] = ProdOrderLoadDataHandle.$boxWH.val();
+            let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxWH, ProdOrderLoadDataHandle.$boxWH.val());
+            if (data) {
+                _form.dataForm['warehouse_data'] = data;
+            }
+        }
+        if (ProdOrderLoadDataHandle.$dateStart.val()) {
+            _form.dataForm['date_start'] = String(moment(ProdOrderLoadDataHandle.$dateStart.val(), 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
+        }
+        if (ProdOrderLoadDataHandle.$dateEnd.val()) {
+            _form.dataForm['date_end'] = String(moment(ProdOrderLoadDataHandle.$dateEnd.val(), 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
+        }
+        if (ProdOrderLoadDataHandle.$boxGroup.val()) {
+            _form.dataForm['group_id'] = ProdOrderLoadDataHandle.$boxGroup.val();
+            let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxGroup, ProdOrderLoadDataHandle.$boxGroup.val());
+            if (data) {
+                _form.dataForm['group_data'] = data;
+            }
+        }
+        if (ProdOrderLoadDataHandle.$time.html()) {
+            _form.dataForm['time'] = parseInt(ProdOrderLoadDataHandle.$time.html());
+        }
+
+        ProdOrderStoreHandle.storeAll();
+        _form.dataForm['task_data'] = ProdOrderSubmitHandle.setupTask();
+    };
 }
 
 // Common

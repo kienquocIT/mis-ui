@@ -147,10 +147,10 @@
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label class="form-label" for="start-date">{% trans 'Start date' %}</label>
+                                <label class="form-label required" for="date-start">{% trans 'Start date' %}</label>
                                 <div class="input-affix-wrapper">
-                                    <input type="text" name="start-date" id="start-date"
-                                           class="form-control date-picker" autocomplete="off">
+                                    <input type="text" name="start-date" id="date-start"
+                                           class="form-control date-picker" autocomplete="off" required>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -159,10 +159,10 @@
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label class="form-label" for="end-date">{% trans 'End date' %}</label>
+                                <label class="form-label required" for="date-end">{% trans 'End date' %}</label>
                                 <div class="input-affix-wrapper">
-                                    <input type="text" name="end-date" id="end-date"
-                                           class="form-control date-picker" autocomplete="off">
+                                    <input type="text" name="end-date" id="date-end"
+                                           class="form-control date-picker" autocomplete="off" required>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>

@@ -1691,6 +1691,8 @@ class QuotationLoadDataHandle {
         QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
         // Check promotion -> re calculate
         QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
+        // Load indicator
+        indicatorHandle.loadQuotationIndicator();
         // Set form novalidate
         $form[0].setAttribute('novalidate', 'novalidate');
         $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');

@@ -364,6 +364,7 @@ class ProdOrderLoadDataHandle {
     // Detail
     static loadDetail(data) {
         ProdOrderLoadDataHandle.$title.val(data?.['title']);
+        ProdOrderLoadDataHandle.$quantity.val(data?.['quantity']);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [data?.['product_data']], {'general_product_types_mapped__is_finished_goods': true});
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM, [data?.['uom_data']]);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH, [data?.['warehouse_data']]);
@@ -381,6 +382,7 @@ class ProdOrderLoadDataHandle {
         }
         ProdOrderLoadDataHandle.$time.empty().html(data?.['time']);
         ProdOrderLoadDataHandle.loadAddDtbRows(data?.['task_data']);
+        ProdOrderLoadDataHandle.loadReadonlyDisabled();
         // check if not finish or reject then open btn edit page
         if (![2, 3, 4].includes(data?.['system_status'])) {
             let $btnEdit = $('#btn-enable-edit');
@@ -390,6 +392,25 @@ class ProdOrderLoadDataHandle {
         }
         return true;
     };
+
+    static loadReadonlyDisabled() {
+        ProdOrderDataTableHandle.$tableMain.DataTable().rows().every(function () {
+            let row = this.node();
+            for (let ele of row.querySelectorAll('.table-row-item')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of row.querySelectorAll('.table-row-uom')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of row.querySelectorAll('.table-row-warehouse')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of row.querySelectorAll('.table-row-tool')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            return true;
+        });
+    }
 
 }
 

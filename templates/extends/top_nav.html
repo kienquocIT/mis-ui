@@ -198,7 +198,9 @@
                                 data-bs-toggle="dropdown" data-dropdown-animation data-bs-auto-close="outside"
                                 aria-expanded="false"
                         >
-                            {{ base|render_avatar|safe }}
+                            <div style="max-width: 2rem; max-height: 2rem;overflow: hidden;">
+                                {{ base|render_avatar_tag:True|safe }}
+                            </div>
                         </a>
                         <div
                                 class="modal fade" id="switchMyCompany" tabindex="-1" role="dialog"
@@ -274,15 +276,15 @@
                         </div>
                         <div class="dropdown-menu dropdown-menu-end">
                             <div class="p-2">
-                                <div class="media mb-3">
+                                <div class="media mb-1">
                                     <div class="media-head me-2">
                                         <div class="position-relative avatar avatar-primary avatar-sm avatar-rounded my-avatar">
-                                            {{ base|render_avatar_tag|safe }}
+                                            {{ base|render_avatar_tag:True|safe }}
                                         </div>
                                     </div>
                                     <div class="media-body">
                                         <div class="dropdown">
-                                            <a href="{% url 'MyProfileView' %}">{{ base.fullname }}</a>
+                                            <span>{{ base.fullname }}</span>
                                         </div>
                                         <div class="fs-7">
                                             <a

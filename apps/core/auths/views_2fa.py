@@ -112,24 +112,3 @@ class TwoFAIntegrateDetailAPI(APIView):
                     session_flush(request=request)
                 return resp.auto_return(key_success='2fa')
         return RespData.resp_404()
-
-    @mask_view(login_require=True, is_api=True)
-    def delete(self, request, *args, pk, **kwargs):
-        # destroy 2FA was integrated
-        if pk and TypeCheck.check_uuid(pk):
-            try:
-                otp = int(request.data.get('otp', ''))
-            except ValueError:
-                return RespData.resp_400(
-                    {
-                        'otp': _("The otp is required")
-                    }
-                )
-            else:
-                url = ApiURL.TWO_FA_INTEGRATE_DETAIL.fill_key(pk=pk)
-                data = {'otp': otp}
-                resp = ServerAPI(request=request, user=request.user, url=url).delete(data=data)
-                if resp.state:
-                    session_flush(request=request)
-                return resp.auto_return(key_success='2fa')
-        return RespData.resp_404()

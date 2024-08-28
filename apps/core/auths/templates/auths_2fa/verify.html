@@ -10,14 +10,14 @@
     <meta name="description" content="Bflow"/>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{% static 'assets/images/brand/bflow/favicon.ico' %}">
-    <link rel="icon" href="{% static 'assets/images/brand/bflow/favicon.ico' %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'assets/images/brand/bflow/png/icon/icon-bflow-original-36x36.png' %}">
+    <link rel="icon" href="{% static 'assets/images/brand/bflow/png/icon/icon-bflow-original-36x36.png' %}" type="image/x-icon">
 
     <meta property="og:url" content="www.bflow.vn"/>
     <meta property="og:type" content="website"/>
     <meta property="og:title" content="{% trans 'Verify 2FA' %} &#8901; Bflow"/>
     <meta property="og:description" content="Bflow - Giải pháp toàn diện cho doanh nghiệp"/>
-    <meta property="og:image" content="{% static 'assets/images/brand/bflow/favicon.ico' %}"/>
+    <meta property="og:image" content="{% static 'assets/images/brand/bflow/png/icon/icon-bflow-original-36x36.png' %}"/>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,6 +60,7 @@
             }
 
             .otp-split-ui .otp-split-ui-group input {
+                font-family: Helvetica, Arial, sans-serif;
                 text-align: center;
                 font-weight: bold;
                 width: calc(100% / 7);
@@ -82,7 +83,6 @@
                 -webkit-appearance: none;
                 margin: 0;
             }
-
 
             .otp-split-ui .otp-split-ui-group input:focus {
                 color: #5e7d8a;
@@ -337,13 +337,18 @@
                         resp => {
                             $.fn.hideLoadingLogin();
                             const urlResolved = new URL(window.location.href);
-                            const nextUrl = urlResolved.searchParams.get('next', '/');
+                            let nextUrl = urlResolved.searchParams.get('next', '/');
                             if (resp.status === 200) {
                                 $.fn.notifyBLogin({
                                     'description': authGettext('The verification is successful')
                                 }, 'success');
                                 setTimeout(
-                                    () => window.location.href = nextUrl !== window.location.href ? nextUrl : "/",
+                                    () => {
+                                        if (!nextUrl || nextUrl === window.location.href || nextUrl === frm$.attr('data-url-login')) {
+                                            nextUrl = '/';
+                                        }
+                                        window.location.href = nextUrl;
+                                    },
                                     1000
                                 )
                             }

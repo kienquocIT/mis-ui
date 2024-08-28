@@ -65,8 +65,6 @@ class BOMHandle {
                         'material': $(this).find('.material-item').val(),
                         'quantity': $(this).find('.material-quantity').val(),
                         'uom': $(this).find('.material-uom').val(),
-                        'unit_price': $(this).find('.material-unit-price').attr('value'),
-                        'subtotal_price': $(this).find('.material-subtotal-price').attr('value'),
                         'disassemble': $(this).find('.material-disassemble').prop('checked'),
                         'note': $(this).find('.material-note').val(),
                     })
@@ -166,11 +164,6 @@ function calculate_BOM_sum_price() {
     labor_summary_table.find('tbody tr').each(function () {
         sum_price += parseFloat($(this).find('.labor-summary-subtotal-price').attr('data-init-money'))
     })
-    material_table.find('tbody tr').each(function () {
-        if ($(this).find('.material-subtotal-price').length > 0) {
-            sum_price += parseFloat($(this).find('.material-subtotal-price').attr('value'))
-        }
-    })
     priceEle.attr('value', sum_price)
     $.fn.initMaskMoney2()
 }
@@ -235,9 +228,6 @@ function LoadDetailBOM(option) {
                                 data?.['bom_material_component_data'][j]?.['uom']?.['group_id'],
                                 data?.['bom_material_component_data'][j]?.['uom']
                             )
-                            loadMaterialPrice(new_material_row.find('.material-item'), material_selected, new_material_row.find('.material-uom').val())
-                            new_material_row.find('.material-unit-price').attr('value', data?.['bom_material_component_data'][j]?.['unit_price'])
-                            new_material_row.find('.material-subtotal-price').attr('value', data?.['bom_material_component_data'][j]?.['subtotal_price'])
                             new_material_row.find('.material-disassemble').prop('checked', data?.['bom_material_component_data'][j]?.['disassemble'])
                             new_material_row.find('.material-note').val(data?.['bom_material_component_data'][j]?.['note'])
                             new_material_row.find('.del-row-material').prop('disabled', option === 'detail')
@@ -250,7 +240,7 @@ function LoadDetailBOM(option) {
                             tools_table.append(new_tool_row)
                             let tool_selected = data?.['bom_tool_data'][k]?.['tool']
                             loadTool(new_tool_row.find('.tool-item'), tool_selected)
-                            new_tool_row.find('.tool-code').text(new_tool_row?.['code'])
+                            new_tool_row.find('.tool-code').text(tool_selected?.['code'])
                             new_tool_row.find('.tool-quantity').val(data?.['bom_tool_data'][k]?.['quantity'])
                             loadUOM(
                                 new_tool_row.find('.tool-uom'),
@@ -258,6 +248,7 @@ function LoadDetailBOM(option) {
                                 data?.['bom_tool_data'][k]?.['uom']
                             )
                             new_tool_row.find('.tool-note').val(data?.['bom_tool_data'][k]?.['note'])
+                            new_tool_row.find('.del-row-tool').prop('disabled', option === 'detail')
                         }
                     }
                 }
@@ -297,7 +288,6 @@ function loadLabor(ele, data) {
 
 function loadLaborPrice(ele, labor_selected, uom_id) {
     if (ele.closest('tr').find('.process-unit-price').attr('value') === '0') {
-        ele.closest('tr').find('.process-unit-price').attr('value', 0)
         ele.closest('tr').find('.process-subtotal-price').attr('value', 0)
     }
     ele.closest('tr').find('.dropdown-menu').html(`<h6 class="dropdown-header">${script_trans.attr('data-trans-select-one')}</h6>`)
@@ -575,38 +565,8 @@ function loadMaterial(ele, data) {
             let material_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
             ele.closest('tr').find('.material-code').text(material_selected?.['code'])
             loadUOM(ele.closest('tr').find('.material-uom'), material_selected?.['general_uom_group'], material_selected?.['sale_default_uom'])
-            loadMaterialPrice(ele, material_selected, ele.closest('tr').find('.material-uom').val())
         }
     })
-}
-
-function loadMaterialPrice(ele, material_selected, uom_id) {
-    if (ele.closest('tr').find('.material-unit-price').attr('value') === '0') {
-        ele.closest('tr').find('.material-unit-price').attr('value', 0)
-        ele.closest('tr').find('.material-subtotal-price').attr('value', 0)
-    }
-    ele.closest('tr').find('.dropdown-menu').html(`<h6 class="dropdown-header">${script_trans.attr('data-trans-select-one')}</h6>`)
-    for (let i = 0; i < material_selected?.['price_list'].length; i++) {
-        ele.closest('tr').find('.dropdown-menu').append(
-            `<a class="${material_selected?.['price_list'][i]?.['uom']?.['id'] !== uom_id ? 'disabled' : ''} material-price-option dropdown-item border rounded mb-1" href="#">
-                <div class="row">
-                    <div class="col-12">
-                        <span class="text-muted">${material_selected?.['price_list'][i]?.['price']?.['title']}</span>                 
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-5">
-                        <span class="material-uom badge badge-success badge-sm" data-id="${material_selected?.['price_list'][i]?.['uom']?.['id']}">${material_selected?.['price_list'][i]?.['uom']?.['title']}</span>                 
-                    </div>
-                    <div class="col-7 text-right">
-                        <span class="material-price-value text-success mask-money" data-init-money="${material_selected?.['price_list'][i]?.['price_value']}"></span>
-                    </div>
-                </div>
-                ${material_selected?.['price_list'][i]?.['uom']?.['id'] !== uom_id ? `<span class="fst-italic small">${script_trans.attr('data-trans-can-not-select')}</span>` : ''}
-            </a>`
-        )
-    }
-    $.fn.initMaskMoney2()
 }
 
 $(document).on("click", '.add-new-material', function () {
@@ -618,41 +578,13 @@ $(document).on("click", '.add-new-material', function () {
 
 $(document).on("click", '.del-row-material', function () {
     $(this).closest('tr').remove()
-    calculate_BOM_sum_price()
-})
-
-function calculate_material_table(row) {
-    let quantity = row.find('.material-quantity').val() ? parseFloat(row.find('.material-quantity').val()) : 0
-    let unit_price = row.find('.material-unit-price').attr('value') ? parseFloat(row.find('.material-unit-price').attr('value')) : 0
-    let subtotal = quantity * unit_price
-    row.find('.material-subtotal-price').attr('value', subtotal)
-    $.fn.initMaskMoney2()
-}
-
-$(document).on("change", '.material-quantity', function () {
-    calculate_material_table($(this).closest('tr'))
-    calculate_BOM_sum_price()
-})
-
-$(document).on("change", '.material-uom', function () {
-    let this_row = $(this).closest('tr')
-    let material_selected = SelectDDControl.get_data_from_idx(this_row.find('.material-item'), this_row.find('.material-item').val())
-    loadMaterialPrice(this_row.find('.material-item'), material_selected, $(this).val())
-    calculate_BOM_sum_price()
-})
-
-$(document).on("click", '.material-price-option', function () {
-    $(this).closest('tr').find('.material-unit-price').attr('value', $(this).find('.material-price-value').attr('data-init-money'))
-    calculate_material_table($(this).closest('tr'))
-    calculate_BOM_sum_price()
-    $.fn.initMaskMoney2()
 })
 
 function create_material_group_row(index, task_name) {
     return $(`
         <tr class="material-for-task-${index}">
             <td>${index}</td>
-            <td colspan="9">
+            <td colspan="7">
                 <span class="material-group mr-2">${task_name}</span>
                 <button type="button" class="add-new-material btn btn-icon btn-rounded btn-flush-primary flush-soft-hover">
                     <span class="icon"><i class="far fa-plus-square"></i></span>
@@ -670,16 +602,6 @@ function create_material_row(index) {
             <td><select class="form-select select2 material-item"></select></td>
             <td><input type="number" class="form-control material-quantity" value="0"></td>
             <td><select class="form-select select2 material-uom"></select></td>
-            <td>
-                <div class="input-group">
-                    <input required disabled readonly class="form-control mask-money material-unit-price" value="0">
-                    <a href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="input-group-text"><i class="bi bi-three-dots-vertical"></i></span>
-                    </a>
-                    <div style="min-width: 300px; max-height: 400px" class="dropdown-menu position-fixed overflow-y-scroll"></div>
-                </div>
-            </td>
-            <td><input disabled readonly class="form-control mask-money material-subtotal-price" value="0"></td>
             <td class="text-center">
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input material-disassemble">

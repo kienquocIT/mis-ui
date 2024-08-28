@@ -1,5 +1,6 @@
 $(document).ready(function () {
     new BOMHandle().load();
+    WFRTControl.setWFInitialData('bom', 'PUT')
 
     LoadDetailBOM('update');
 

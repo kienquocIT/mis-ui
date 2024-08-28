@@ -1,5 +1,6 @@
 $(document).ready(function () {
     new BOMHandle().load();
+    WFRTControl.setWFInitialData('bom', 'POST')
 
     $('#form-create-bom').submit(function (event) {
         event.preventDefault();

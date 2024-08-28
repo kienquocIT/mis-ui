@@ -68,3 +68,51 @@ msgstr "Xoá 2FA"
 #
 msgid "If the operation is successful, you will be redirected to log in again."
 msgstr "Nếu thao tác thành công, bạn sẽ được chuyển hướng để đăng nhập lại."
+
+#
+msgid "OTP verified success"
+msgstr "Xác thực OTP thành công"
+
+#
+msgid "OTP verified failure"
+msgstr "Xác thực OTP thất bại"
+
+#
+msgid "Login"
+msgstr "Đăng nhập"
+
+#
+msgid "Logout"
+msgstr "Đăng xuất"
+
+#
+msgid "OTP verify"
+msgstr "Xác thực OTP"
+
+#
+msgid "OTP do not match"
+msgstr "OTP xác thực không đúng"
+
+#
+msgid "OTP was used"
+msgstr "OTP đã được sử dụng"
+
+#
+msgid "The user was locked out"
+msgstr "Người dùng đã bị khóa"
+
+#
+msgid "Create 2FA config"
+msgstr "Tạo cấu hình 2FA"
+
+#
+msgid "Update 2FA status"
+msgstr "Cập nhật trạng thái 2FA"
+
+#
+msgid "Valid 2FA config"
+msgstr "Xác thực cấu hình 2FA"
+
+#
+msgid "Destroy 2FA config"
+msgstr "Xoá cấu hình 2FA"

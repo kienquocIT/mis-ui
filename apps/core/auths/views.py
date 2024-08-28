@@ -126,6 +126,9 @@ class AuthLogout(View):
 
     def get(self, request, *args, **kwargs):
         try:
+            if request.user and request.user.is_authenticated and not isinstance(request.user, AnonymousUser):
+                ServerAPI(request=request, user=request.user, url=ApiURL.logout).delete()
+
             session_flush(request=request)
             logout(request)
         except Exception:
@@ -282,3 +285,17 @@ class ChangePasswordAPI(APIView):
     def put(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.USER_CHANGE_PASSWORD).put(data=request.data)
         return resp.auto_return()
+
+
+class AuthLogsAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.AUTH_LOGS).get()
+        return resp.auto_return(key_success='auth_logs')
+
+
+class AuthLogReportsAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.AUTH_LOGS_REPORT).get()
+        return resp.auto_return(key_success='auth_logs')

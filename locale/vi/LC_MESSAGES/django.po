@@ -8612,3 +8612,19 @@ msgstr "Nhóm sản xuất"
 #
 msgid "Contract approval"
 msgstr "Phê duyệt hợp đồng"
+
+#
+msgid "Contract approval create successfully"
+msgstr "Tạo phê duyệt hợp đồng thành công"
+
+#
+msgid "Contract approval update successfully"
+msgstr "Cập nhật phê duyệt hợp đồng thành công"
+
+#
+msgid "Production order create successfully"
+msgstr "Tạo đơn sản xuất thành công"
+
+#
+msgid "Production order update successfully"
+msgstr "Cập nhật đơn sản xuất thành công"

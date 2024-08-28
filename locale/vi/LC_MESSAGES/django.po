@@ -8592,3 +8592,11 @@ msgstr "Chế tạo"
 #
 msgid "Product image"
 msgstr "Hình ảnh sản phẩm"
+
+#
+msgid "Files of Assigner"
+msgstr "Tài liệu của người giao việc"
+
+#
+msgid "Files of Assignee"
+msgstr "Tài liệu của người nhận việc"

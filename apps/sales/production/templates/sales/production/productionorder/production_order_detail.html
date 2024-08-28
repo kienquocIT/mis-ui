@@ -5,21 +5,23 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_production_order">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
+    <a href="{% url 'ProductionOrderUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit" hidden>
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
             </span>
-        </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 
 {% block pageContent %}
     <form
-            data-url="{% url 'ProductionOrderListAPI' %}"
+            data-url="{% url 'ProductionOrderDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'ProductionOrderList' %}"
-            data-method="POST"
+            data-method="GET"
             id="frm_production_order"
             method="post"
     >
@@ -34,6 +36,7 @@
                                 name="title"
                                 id="title"
                                 required
+                                readonly
                         >
                     </div>
                     <div class="row">
@@ -49,6 +52,7 @@
                                     name="type"
                                     data-keyResp=""
                                     required
+                                    disabled
                                 ></select>
                             </div>
                         </div>
@@ -63,6 +67,7 @@
                                     name="product"
                                     data-keyResp="product_sale_list"
                                     required
+                                    disabled
                                 ></select>
                             </div>
                         </div>
@@ -71,7 +76,7 @@
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label required" for="quantity">{% trans 'Quantity' %}</label>
-                                <input type="text" class="form-control valid-number" id="quantity" value="1" required>
+                                <input type="text" class="form-control valid-number" id="quantity" value="1" required readonly>
                             </div>
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
@@ -86,6 +91,7 @@
                                     name="uom"
                                     data-keyResp="unit_of_measure"
                                     required
+                                    disabled
                                 ></select>
                             </div>
                         </div>
@@ -101,6 +107,7 @@
                                     name="warehouse"
                                     data-keyResp="warehouse_list"
                                     required
+                                    disabled
                                 ></select>
                             </div>
                         </div>
@@ -118,6 +125,7 @@
                             data-keyText="code"
                             multiple
                             required
+                            disabled
                         ></select>
                     </div>
                 </div>
@@ -140,6 +148,7 @@
                                     data-link-detail=""
                                     name="status"
                                     data-keyResp=""
+                                    disabled
                                 ></select>
                             </div>
                         </div>
@@ -150,7 +159,7 @@
                                 <label class="form-label required" for="date-start">{% trans 'Start date' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" name="start-date" id="date-start"
-                                           class="form-control date-picker" autocomplete="off" required>
+                                           class="form-control date-picker" autocomplete="off" required disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -162,7 +171,7 @@
                                 <label class="form-label required" for="date-end">{% trans 'End date' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" name="end-date" id="date-end"
-                                           class="form-control date-picker" autocomplete="off" required>
+                                           class="form-control date-picker" autocomplete="off" required disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -183,6 +192,7 @@
                                     name="group"
                                     data-keyResp="group_list"
                                     required
+                                    disabled
                                 ></select>
                             </div>
                         </div>
@@ -259,4 +269,5 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/sales/production/js/productionorder/production_order_common.js' %}"></script>
     <script src="{% static 'assets/sales/production/js/productionorder/production_order_create.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/productionorder/production_order_detail.js' %}"></script>
 {% endblock %}

@@ -665,7 +665,7 @@ class MenusProduction:
             MenuCommon(
                 name='Production order',
                 code='menu_production_order_list',
-                view_name='ProductionOrderCreate',
+                view_name='ProductionOrderList',
                 icon='<i class="fas fa-boxes"></i>',
             ),
         ],

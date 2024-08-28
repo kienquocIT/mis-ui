@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Contract list' %}{% endblock %}
+{% block title %}{% trans 'Production order list' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 
 {% block pageAction %}
-    <a href="{% url 'ContractCreate' %}"
+    <a href="{% url 'ProductionOrderCreate' %}"
        data-bs-toggle="tooltip"
        data-bs-placement="top"
-       title="{% trans 'Create Contract' %}"
-       id="create_contract_button"
-       data-bs-original-title="Add Contract">
+       title="{% trans 'Create production order' %}"
+       id="create_production_order_button"
+       data-bs-original-title="Add Product Order">
             <button type="button" class="btn btn-outline-primary">
                 <span>
                     <span>{% trans 'Add' %}</span>
@@ -24,9 +24,9 @@
 
 {% block pageContent %}
     <table
-            id="table_contract_list"
+            id="table_production_order_list"
             class="table nowrap w-100 mb-5"
-            data-url="{% url 'ContractListAPI' %}"
+            data-url="{% url 'ProductionOrderListAPI' %}"
             data-method="get"
     >
         <thead>
@@ -45,9 +45,9 @@
 {% block dataHiddenGroup %}
     <input
             type="text" id="app-urls-factory"
-            data-link-detail="{% url 'ContractDetail' 1 %}"
-            data-link-update="{% url 'ContractUpdate' 1 %}"
-            data-link-list="{% url 'ContractList' %}"
+            data-link-detail="{% url 'ProductionOrderDetail' 1 %}"
+            data-link-update="{% url 'ProductionOrderUpdate' 1 %}"
+            data-link-list="{% url 'ProductionOrderList' %}"
     >
     <input
             type="text"
@@ -61,5 +61,5 @@
 {% block jsFooter %}
 
 
-    <script src="{% static 'assets/sales/contract/js/contract_list.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/productionorder/production_order_list.js' %}"></script>
 {% endblock %}

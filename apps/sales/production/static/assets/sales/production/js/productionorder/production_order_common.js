@@ -1,6 +1,7 @@
 // Load data
 class ProdOrderLoadDataHandle {
     static $form = $('#frm_production_order');
+    static $title = $('#title');
     static $quantity = $('#quantity');
     static $time = $('#time');
     static $dateStart = $('#date-start');
@@ -20,7 +21,11 @@ class ProdOrderLoadDataHandle {
         {'id': 1, 'title': ProdOrderLoadDataHandle.$trans.attr('data-assembly')},
         {'id': 2, 'title': ProdOrderLoadDataHandle.$trans.attr('data-disassembly')}
     ];
-    static dataStatus = [{'id': 0, 'title': ProdOrderLoadDataHandle.$trans.attr('data-planned')}];
+    static dataStatus = [
+        {'id': 0, 'title': ProdOrderLoadDataHandle.$trans.attr('data-planned')},
+        {'id': 1, 'title': ProdOrderLoadDataHandle.$trans.attr('data-in-production')},
+        {'id': 2, 'title': ProdOrderLoadDataHandle.$trans.attr('data-done')},
+    ];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false) {
         let opts = {'allowClear': isClear};
@@ -42,7 +47,7 @@ class ProdOrderLoadDataHandle {
         // select2
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxType, ProdOrderLoadDataHandle.dataType);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, ProdOrderLoadDataHandle.dataStatus);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd);
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [], {'general_product_types_mapped__is_finished_goods': true});
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO);
@@ -188,7 +193,7 @@ class ProdOrderLoadDataHandle {
                                 if (data) {
                                     if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
                                         if (data.product_sale_list.length > 0) {
-                                            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [data.product_sale_list[0]]);
+                                            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [data.product_sale_list[0]], {'general_product_types_mapped__is_material': true});
                                         }
                                     }
                                 }
@@ -211,7 +216,7 @@ class ProdOrderLoadDataHandle {
                 if (row.querySelector('.table-row-tool')) {
                     ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tool')));
                     if (dataRow?.['tool_data']) {
-                        ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tool')), dataRow?.['tool_data']);
+                        ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tool')), dataRow?.['tool_data'], {'general_product_types_mapped__is_asset_tool': true});
                     }
                 }
                 if (row.querySelector('.cl-parent')) {
@@ -353,6 +358,36 @@ class ProdOrderLoadDataHandle {
                 }
             }
         });
+        return true;
+    };
+
+    // Detail
+    static loadDetail(data) {
+        ProdOrderLoadDataHandle.$title.val(data?.['title']);
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [data?.['product_data']], {'general_product_types_mapped__is_finished_goods': true});
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM, [data?.['uom_data']]);
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH, [data?.['warehouse_data']]);
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO, [data?.['sale_order_data']]);
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxGroup, [data?.['group_data']]);
+        let date_start = '';
+        if (data?.['date_start']) {
+            date_start = data?.['date_start'];
+            ProdOrderLoadDataHandle.$dateStart.val(moment(date_start).format('DD/MM/YYYY'));
+        }
+        let date_end = '';
+        if (data?.['date_end']) {
+            date_end = data?.['date_end'];
+            ProdOrderLoadDataHandle.$dateEnd.val(moment(date_end).format('DD/MM/YYYY'));
+        }
+        ProdOrderLoadDataHandle.$time.empty().html(data?.['time']);
+        ProdOrderLoadDataHandle.loadAddDtbRows(data?.['task_data']);
+        // check if not finish or reject then open btn edit page
+        if (![2, 3, 4].includes(data?.['system_status'])) {
+            let $btnEdit = $('#btn-enable-edit');
+            if ($btnEdit && $btnEdit.length > 0) {
+                $btnEdit[0].removeAttribute('hidden');
+            }
+        }
         return true;
     };
 
@@ -585,52 +620,59 @@ class ProdOrderSubmitHandle {
     };
 
     static setupDataSubmit(_form) {
-        if (ProdOrderLoadDataHandle.$boxType.val()) {
-            _form.dataForm['type_production'] = parseInt(ProdOrderLoadDataHandle.$boxType.val());
-        }
-        if (ProdOrderLoadDataHandle.$boxProd.val()) {
-            _form.dataForm['product_id'] = ProdOrderLoadDataHandle.$boxProd.val();
-            let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxProd, ProdOrderLoadDataHandle.$boxProd.val());
-            if (data) {
-                _form.dataForm['product_data'] = data;
-            }
-        }
-        if (ProdOrderLoadDataHandle.$quantity.val()) {
-            _form.dataForm['quantity'] = parseFloat(ProdOrderLoadDataHandle.$quantity.val());
-        }
-        if (ProdOrderLoadDataHandle.$boxUOM.val()) {
-            _form.dataForm['uom_id'] = ProdOrderLoadDataHandle.$boxUOM.val();
-            let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxUOM, ProdOrderLoadDataHandle.$boxUOM.val());
-            if (data) {
-                _form.dataForm['uom_data'] = data;
-            }
-        }
-        if (ProdOrderLoadDataHandle.$boxWH.val()) {
-            _form.dataForm['warehouse_id'] = ProdOrderLoadDataHandle.$boxWH.val();
-            let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxWH, ProdOrderLoadDataHandle.$boxWH.val());
-            if (data) {
-                _form.dataForm['warehouse_data'] = data;
-            }
-        }
-        if (ProdOrderLoadDataHandle.$dateStart.val()) {
-            _form.dataForm['date_start'] = String(moment(ProdOrderLoadDataHandle.$dateStart.val(), 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
-        }
-        if (ProdOrderLoadDataHandle.$dateEnd.val()) {
-            _form.dataForm['date_end'] = String(moment(ProdOrderLoadDataHandle.$dateEnd.val(), 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
-        }
-        if (ProdOrderLoadDataHandle.$boxGroup.val()) {
-            _form.dataForm['group_id'] = ProdOrderLoadDataHandle.$boxGroup.val();
-            let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxGroup, ProdOrderLoadDataHandle.$boxGroup.val());
-            if (data) {
-                _form.dataForm['group_data'] = data;
-            }
-        }
-        if (ProdOrderLoadDataHandle.$time.html()) {
-            _form.dataForm['time'] = parseInt(ProdOrderLoadDataHandle.$time.html());
-        }
+        if (ProdOrderLoadDataHandle.$dataBOM.val()) {
+            let dataBom = JSON.parse(ProdOrderLoadDataHandle.$dataBOM.val());
+            _form.dataForm['bom_id'] = dataBom?.['id'];
+            _form.dataForm['bom_data'] = dataBom;
 
-        ProdOrderStoreHandle.storeAll();
-        _form.dataForm['task_data'] = ProdOrderSubmitHandle.setupTask();
+            if (ProdOrderLoadDataHandle.$boxType.val()) {
+                _form.dataForm['type_production'] = parseInt(ProdOrderLoadDataHandle.$boxType.val());
+            }
+            if (ProdOrderLoadDataHandle.$boxProd.val()) {
+                _form.dataForm['product_id'] = ProdOrderLoadDataHandle.$boxProd.val();
+                let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxProd, ProdOrderLoadDataHandle.$boxProd.val());
+                if (data) {
+                    _form.dataForm['product_data'] = data;
+                }
+            }
+            if (ProdOrderLoadDataHandle.$quantity.val()) {
+                _form.dataForm['quantity'] = parseFloat(ProdOrderLoadDataHandle.$quantity.val());
+            }
+            if (ProdOrderLoadDataHandle.$boxUOM.val()) {
+                _form.dataForm['uom_id'] = ProdOrderLoadDataHandle.$boxUOM.val();
+                let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxUOM, ProdOrderLoadDataHandle.$boxUOM.val());
+                if (data) {
+                    _form.dataForm['uom_data'] = data;
+                }
+            }
+            if (ProdOrderLoadDataHandle.$boxWH.val()) {
+                _form.dataForm['warehouse_id'] = ProdOrderLoadDataHandle.$boxWH.val();
+                let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxWH, ProdOrderLoadDataHandle.$boxWH.val());
+                if (data) {
+                    _form.dataForm['warehouse_data'] = data;
+                }
+            }
+            if (ProdOrderLoadDataHandle.$dateStart.val()) {
+                _form.dataForm['date_start'] = String(moment(ProdOrderLoadDataHandle.$dateStart.val(), 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD'));
+            }
+            if (ProdOrderLoadDataHandle.$dateEnd.val()) {
+                _form.dataForm['date_end'] = String(moment(ProdOrderLoadDataHandle.$dateEnd.val(), 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD'));
+            }
+            if (ProdOrderLoadDataHandle.$boxGroup.val()) {
+                _form.dataForm['group_id'] = ProdOrderLoadDataHandle.$boxGroup.val();
+                let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxGroup, ProdOrderLoadDataHandle.$boxGroup.val());
+                if (data) {
+                    _form.dataForm['group_data'] = data;
+                }
+            }
+            if (ProdOrderLoadDataHandle.$time.html()) {
+                _form.dataForm['time'] = parseInt(ProdOrderLoadDataHandle.$time.html());
+            }
+
+            ProdOrderStoreHandle.storeAll();
+            _form.dataForm['task_data'] = ProdOrderSubmitHandle.setupTask();
+
+        }
     };
 }
 

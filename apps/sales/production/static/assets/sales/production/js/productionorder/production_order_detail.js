@@ -1,7 +1,7 @@
 $(function () {
 
     $(document).ready(function () {
-        let $form = $('#frm_contract_create');
+        let $form = $('#frm_production_order');
 
         // call ajax get data detail
         $.fn.callAjax2({
@@ -15,7 +15,7 @@ $(function () {
                     $x.fn.renderCodeBreadcrumb(data);
                     $.fn.compareStatusShowPageAction(data);
                     // store && load data detail
-                    ContractLoadDataHandle.loadDetail(data);
+                    ProdOrderLoadDataHandle.loadDetail(data);
                     // init workflow
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                     // get WF initial zones for change

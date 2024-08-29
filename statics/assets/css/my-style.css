@@ -842,6 +842,7 @@ ul.dm-uploader-result-list li {
     border-left: 3px solid #f1f1f1;
     border-right: 3px solid #f1f1f1;
     background-color: #fcfcfc;
+    position: relative;
 }
 
 ul.dm-uploader-result-list li:hover {
@@ -898,21 +899,18 @@ ul.dm-uploader-result-list li.state-f-success .btn-percent-upload {
 ul.dm-uploader-result-list li .btn-destroy-file {
     opacity: 0;
     visibility: hidden;
-    transform: scale(0);
-
-    max-height: 0;
-    max-width: 0;
     overflow: hidden;
-
-    transition: opacity 0.1s ease-in, visibility 0.1s ease-in, transform 0.35s ease-in-out;
+    transition: opacity 0.1s ease-in, visibility 0.1s ease-in, transform 0.2s ease-in;
+    position: absolute;
+    left: calc(100% - 38px);
+    top: calc(50% - 19px);
+    transform: scale(0)
 }
 
 ul.dm-uploader-result-list li:hover .btn-destroy-file {
     opacity: 1;
     visibility: visible;
-    transform: scale(1);
-    max-height: unset;
-    max-width: unset;
+    transform: scale(1)
 }
 
 @keyframes shakeZoom {

@@ -361,7 +361,7 @@ $(function () {
             let elm = $('.card-title')
             const _this = this
             if (newTaskElm) elm = newTaskElm.find('.card-title')
-            elm.off().on('click', function (e) {
+            elm.on('click', function (e) {
                 e.preventDefault()
                 const taskID = $(this).attr('data-task-id')
                 $.fn.callAjax2({
@@ -438,14 +438,30 @@ $(function () {
                             initCommon.renderSubtask(data.id, _this.getTaskList, data['sub_task_list'])
 
                             if (data.attach) {
-                                const fileDetail = data.attach[0]?.['files']
-                                FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
-                                // load attachments
+                                let $elmAttAssign = $('#assigner_attachment'),
+                                    _lstAssigner = data.attach.filter(function (item) {
+                                        return item['is_assignee_file'] === false;
+                                    }),
+                                    _lstAssignee = data.attach.filter(function (item) {
+                                        return item['is_assignee_file'] === true;
+                                    });
+                                // load attachments of assigner
+                                $elmAttAssign.find('.dm-uploader').dmUploader("destroy")
                                 new $x.cls.file(
-                                    $('#attachment')
+                                    $elmAttAssign
                                 ).init({
-                                    enable_edit: false,
-                                    data: data.attach,
+                                    enable_edit: true,
+                                    data: _lstAssigner,
+                                })
+
+                                // load attachment if assignee
+                                let $elmAttachAssignee = $('#assignee_attachment')
+                                $elmAttachAssignee.find('.dm-uploader').dmUploader("destroy")
+                                new $x.cls.file(
+                                    $elmAttachAssignee
+                                ).init({
+                                    enable_edit: true,
+                                    data: _lstAssignee,
                                 })
                             }
                         }

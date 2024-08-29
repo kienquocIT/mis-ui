@@ -977,8 +977,8 @@ class FileUtils {
 
             FileUtils.enableButtonFakeUpload($(eleSelect$), $.fn.parseBoolean(idInputTextDisabled, true) === true,)
 
-            if (dataDetail && $.fn.hasOwnProperties(dataDetail, ['media_file_id', 'file_name'])) {
-                let media_file_id = dataDetail?.['media_file_id'];
+            if (dataDetail && $.fn.hasOwnProperties(dataDetail, ['id', 'file_name'])) {
+                let media_file_id = dataDetail?.['id'];
                 let file_name = dataDetail?.['file_name'];
                 let file_size = dataDetail?.['file_size'];
                 if (media_file_id && file_name) {
@@ -1090,7 +1090,7 @@ class FileUtils {
             },
             errorOnly: false,
         }).then((resp) => {
-            let detailFile = resp?.data?.detail;
+            let detailFile = resp?.data?.detail ? resp.data.detail : resp?.data?.['file_detail'];
             clsThis.setIdFile(detailFile?.['id']);
             clsThis.setFileNameUploaded(detailFile?.['file_name'], detailFile?.['file_size']);
             WindowControl.hideLoadingButton($(btnMainEle));
@@ -6056,8 +6056,12 @@ class FileControl {
             onFileExtError: function (file) {
             },
             onDestroy: function () {
-                $(element).addClass('d-none');
+                // $(element).addClass('d-none');
                 this.onDisableDaD();
+                clsThis.event_for_destroy(this, 'hide');
+                clsThis.ele$.find('.instruction-upload-file-text p:nth-child(n+1)').remove();
+                clsThis.ele$.find('.dm-uploader-result-list').html('');
+                clsThis.ele$.find('.dm-uploader-no-files').css({ 'display': 'block'});
             },
             onDisableDaD: function () {
                 $(this).find('input[type="file"]').prop('disabled', true).prop('readonly', true);

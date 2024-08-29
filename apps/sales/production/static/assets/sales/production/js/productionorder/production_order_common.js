@@ -175,13 +175,76 @@ class ProdOrderLoadDataHandle {
         return true;
     };
 
+    static loadDDProduct($ele) {
+        let result = [];
+        $.fn.callAjax2({
+                'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
+                'method': 'GET',
+                'data': {
+                    'general_product_types_mapped__is_material': true
+                },
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                        result = result.concat(data.product_sale_list);
+                        ProdOrderLoadDataHandle.loadInitS2($ele, result);
+                        $.fn.callAjax2({
+                                'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
+                                'method': 'GET',
+                                'data': {
+                                    'general_product_types_mapped__is_finished_goods': true,
+                                },
+                                'isDropdown': true,
+                            }
+                        ).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                                        result = result.concat(data.product_sale_list);
+                                        ProdOrderLoadDataHandle.loadInitS2($ele, result);
+                                        $.fn.callAjax2({
+                                                'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
+                                                'method': 'GET',
+                                                'data': {
+                                                    'general_product_types_mapped__is_goods': true,
+                                                },
+                                                'isDropdown': true,
+                                            }
+                                        ).then(
+                                            (resp) => {
+                                                let data = $.fn.switcherResp(resp);
+                                                if (data) {
+                                                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                                                        result = result.concat(data.product_sale_list);
+                                                        ProdOrderLoadDataHandle.loadInitS2($ele, result);
+                                                    }
+                                                }
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        )
+        ProdOrderLoadDataHandle.loadInitS2($ele, result);
+    };
+
     static loadDD($table) {
         $table.DataTable().rows().every(function () {
             let row = this.node();
             if (row.querySelector('.table-row-order').getAttribute('data-row')) {
                 let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
                 if (row.querySelector('.table-row-item')) {
-                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [], {'general_product_types_mapped__is_material': true});
+                    // ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [], {'general_product_types_mapped__is_goods': true, 'general_product_types_mapped__is_finished_goods': true, 'general_product_types_mapped__is_material': true});
+                    ProdOrderLoadDataHandle.loadDDProduct($(row.querySelector('.table-row-item')));
                     if (dataRow?.['product_data']) {
                         $.fn.callAjax2({
                                 'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
@@ -195,7 +258,7 @@ class ProdOrderLoadDataHandle {
                                 if (data) {
                                     if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
                                         if (data.product_sale_list.length > 0) {
-                                            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [data.product_sale_list[0]], {'general_product_types_mapped__is_material': true});
+                                            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [data.product_sale_list[0]]);
                                         }
                                     }
                                 }
@@ -301,54 +364,6 @@ class ProdOrderLoadDataHandle {
         }
     };
 
-
-
-
-
-    static loadAddDtbRow() {
-        let dataAdd = {};
-        let newRow = ProdOrderDataTableHandle.$tableMain.DataTable().row.add(dataAdd).draw().node();
-        ProdOrderLoadDataHandle.loadDDInit(newRow);
-        return true;
-    };
-
-    static loadAddDtbRowGr() {
-        let order = ProdOrderDataTableHandle.$tableMain[0].querySelectorAll('.table-row-group').length + 1;
-        let dataAdd = {
-            "task_title": '',
-            "is_task": true,
-            'task_order': order,
-        }
-        let newRow = ProdOrderDataTableHandle.$tableMain.DataTable().row.add(dataAdd).draw().node();
-        $(newRow).find('td:eq(1)').attr('colspan', 2);
-        return true;
-    };
-
-    static loadDDInit(row) {
-        if (row.querySelector('.table-row-item')) {
-            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')));
-        }
-        if (row.querySelector('.table-row-uom')) {
-            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')));
-        }
-        if (row.querySelector('.table-row-warehouse')) {
-            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')));
-        }
-        if (row.querySelector('.table-row-tool')) {
-            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tool')));
-        }
-        return true;
-    };
-
-    static loadTime() {
-        let time = 0;
-        for (let eleLabor of ProdOrderDataTableHandle.$tableMain[0].querySelectorAll('.table-row-labor')) {
-            time += parseInt(eleLabor.innerHTML);
-        }
-        ProdOrderLoadDataHandle.$time.empty().html(`${time} Giờ`);
-        return true;
-    };
-
     static loadChangeQuantity() {
         let multi = 1;
         if (ProdOrderLoadDataHandle.$quantity) {
@@ -392,13 +407,6 @@ class ProdOrderLoadDataHandle {
         ProdOrderLoadDataHandle.$time.empty().html(data?.['time']);
         ProdOrderLoadDataHandle.loadAddDtbRows(data?.['task_data']);
         ProdOrderLoadDataHandle.loadReadonlyDisabled();
-        // check if not finish or reject then open btn edit page
-        if (![2, 3, 4].includes(data?.['system_status'])) {
-            let $btnEdit = $('#btn-enable-edit');
-            if ($btnEdit && $btnEdit.length > 0) {
-                $btnEdit[0].removeAttribute('hidden');
-            }
-        }
         return true;
     };
 
@@ -410,6 +418,9 @@ class ProdOrderLoadDataHandle {
                     ele.setAttribute('disabled', 'true');
                 }
                 for (let ele of row.querySelectorAll('.table-row-uom')) {
+                    ele.setAttribute('disabled', 'true');
+                }
+                for (let ele of row.querySelectorAll('.check-all-wh')) {
                     ele.setAttribute('disabled', 'true');
                 }
                 for (let ele of row.querySelectorAll('.table-row-warehouse')) {

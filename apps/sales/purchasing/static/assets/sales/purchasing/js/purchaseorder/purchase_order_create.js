@@ -54,6 +54,11 @@ $(function () {
             $(this).val('').trigger('change');
         })
 
+        // collapse
+        $('#btn-collapse').click(function () {
+            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
+        });
+
 
 // EVENTS
         // Action on change dropdown supplier
@@ -173,11 +178,6 @@ $(function () {
                     }
                 }
             }
-        });
-
-        // Action on click button collapse
-        $('#btn-collapse').click(function () {
-            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
         // Action on click button add product

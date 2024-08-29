@@ -1774,13 +1774,6 @@ class QuotationLoadDataHandle {
             $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
         }
         if (is_copy === false) {
-            // check if not finish or reject then open btn edit page
-            if (![2, 3, 4].includes(data?.['system_status'])) {
-                let btnEdit = $('#btn-enable-edit');
-                if (btnEdit && btnEdit.length > 0) {
-                    btnEdit[0].removeAttribute('hidden');
-                }
-            }
             // check if finish then remove hidden btnDelivery (SO)
             if (data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get' && form.classList.contains('sale-order')) {
                 let btnDelivery = $('#btnDeliverySaleOrder');

@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    LoadDetailAP('detail');
+    APHandle.LoadDetailAP('detail');
 })

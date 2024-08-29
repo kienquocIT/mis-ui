@@ -5,6 +5,17 @@ from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg, InputMappingProperties
 
 
+class FinishProductListForBOMAPI(APIView):
+    @mask_view(
+        is_api=True,
+        auth_require=True
+    )
+    def get(self, request, *arg, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.FINISH_PRODUCT_LIST_FOR_BOM).get(params)
+        return resp.auto_return(key_success='product_list')
+
+
 class LaborListForBOMAPI(APIView):
     @mask_view(
         is_api=True,

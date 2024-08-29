@@ -1,0 +1,163 @@
+{% load i18n %}
+
+<div class="accordion accordion-card accordion-soft accordion-icon" id="accordionPanelsStayOpenExampleOne">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                <span class="d-flex align-items-center">
+                    <i class="fas fa-info-circle mr-2 text-primary"></i>
+                    <span>
+                        <span>{% trans 'Information' %}</span>
+                    </span>
+                </span>
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+            <div class="accordion-body">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="title" class="form-label required">{% trans "Title" %}</label>
+                            <input class="form-control" id="title">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label for="created_date" class="form-label">{% trans "Created date" %}</label>
+                            <input id="created_date" class="form-control form-control-line" readonly disabled>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label for="creator-select-box" class="form-label">{% trans "Creator" %}</label>
+                            <span class="input-affix-wrapper">
+                                <span class="input-prefix" id="creator-detail-span">
+                                    <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 20rem;">
+                                        <span class="row small">
+                                            <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
+                                            <a id="btn-detail-creator-tab" class="col-5 text-right" href="{% url 'EmployeeDetail' '0' %}" data-url="{% url 'EmployeeDetail' '0' %}" target="_blank">
+                                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                            </a>
+                                        </span>
+                                        <span class="row small">
+                                            <span class="col-5" style="font-style: italic">{% trans "Employee" %}</span>
+                                            <span class="col-7 text-primary" id="creator-name"></span>
+                                        </span>
+                                        <span class="row small">
+                                            <span class="col-5" style="font-style: italic">{% trans "Code" %}</span>
+                                            <span class="col-7 text-primary" id="creator-code"></span>
+                                        </span>
+                                        <span class="row small">
+                                            <span class="col-5" style="font-style: italic">{% trans "Department" %}</span>
+                                            <span class="col-7 text-primary" id="creator-department"></span>
+                                        </span>
+                                    </span>
+                                </span>
+                                <input class="form-control form-control-line" id="creator-select-box">
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label for="chooseAdvancePayment" class="form-label required">{% trans "Advance Payment" %}</label>
+                            <select id="chooseAdvancePayment"
+                                    class="form-select select2"
+                                    data-method="GET"
+                                    data-url="{% url "APListForReturnAPI" %}">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="form-group">
+                            <label for="box-method-payment" class="form-label required">{% trans "Method" %}</label>
+                            <select data-trans-cash="{% trans "Cash" %}"
+                                    data-trans-bank-transfer="{% trans "Bank transfer" %}"
+                                    id="box-method-payment"
+                                    class="form-select"
+                                    name="method"></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label for="inp-sale-code" class="form-label">{% trans "Sale Code" %}</label>
+                            <input id="inp-sale-code" class="form-control form-control-line" readonly disabled>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label for="chooseBeneficiary" class="form-label">{% trans "Beneficiary" %}</label>
+                            <span class="input-affix-wrapper">
+                                <span class="input-prefix" id="dropdownBeneficiary">
+                                    <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 20rem;">
+                                        <span class="row small">
+                                            <span class="col-7">{% trans "More information" %}</span>
+                                            <a class="col-5 text-right" id="btn-move-to-beneficiary"
+                                               data-url="{% url 'EmployeeDetail' '0' %}"
+                                               href="{% url 'EmployeeDetail' '0' %}">
+                                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i
+                                                        class="bi bi-arrow-right"></i></span>
+                                            </a>
+                                        </span>
+                                        <span class="row small">
+                                            <span class="col-5">{% trans "Employee" %}</span>
+                                            <span class="col-7 text-primary" id="beneficiary-name"></span>
+                                        </span>
+                                        <span class="row small">
+                                            <span class="col-5">{% trans "Code" %}</span>
+                                            <span class="col-7 text-primary" id="beneficiary-code"></span>
+                                        </span>
+                                        <span class="row small">
+                                            <span class="col-5">{% trans "Department" %}</span>
+                                            <span class="col-7 text-primary" id="beneficiary-department"></span>
+                                        </span>
+                                    </span>
+                                </span>
+                                <input disabled readonly class="form-control form-control-line" id="chooseBeneficiary">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <table id="dtbProduct" class="table nowrap w-100">
+            <thead>
+                <tr>
+                    <th class="w-5"></th>
+                    <th class="w-35">{% trans "Expense/Cost items" %}</th>
+                    <th class="w-20">{% trans "Type" %}</th>
+                    <th class="w-20">{% trans "Remain Total" %}</th>
+                    <th class="w-20">{% trans "Return value" %}</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-8 mt-3"></div>
+    <div class="col-12 col-md-6 col-lg-4 mt-3 text-right">
+        <div class="row">
+            <label for="total-value" class="col-4 col-form-label text-primary">{% trans 'TOTAL' %}</label>
+            <div class="col-8">
+                <input disabled class="text-primary text-right form-control form-control-line mask-money zone-readonly mb-1" id="total-value" value="0">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-8 py-5">
+                <div class="border rounded-5 bg-green-light-5 py-1 w-100 text-center">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="money-received">
+                        <label for="money-received" class="text-primary">{% trans "Money received" %}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

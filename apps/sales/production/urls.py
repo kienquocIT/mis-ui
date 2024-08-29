@@ -1,7 +1,7 @@
 from django.urls import path
 from apps.sales.production.views import (
     BOMList, BOMCreate, BOMDetail, BOMUpdate, BOMListAPI, BOMDetailAPI, LaborListForBOMAPI,
-    ProductMaterialListForBOMAPI, ProductToolListForBOMAPI,
+    ProductMaterialListForBOMAPI, ProductToolListForBOMAPI, FinishProductListForBOMAPI,
 )
 
 urlpatterns = [
@@ -12,6 +12,7 @@ urlpatterns = [
     path('bill-of-material/api', BOMListAPI.as_view(), name='BOMListAPI'),
     path('bill-of-material/api/<str:pk>', BOMDetailAPI.as_view(), name='BOMDetailAPI'),
 
+    path('final-product-list-for-BOM/api', FinishProductListForBOMAPI.as_view(), name='FinishProductListForBOMAPI'),
     path('labor-list-for-BOM/api', LaborListForBOMAPI.as_view(), name='LaborListForBOMAPI'),
     path('product-material-list-for-BOM/api', ProductMaterialListForBOMAPI.as_view(), name='ProductMaterialListForBOMAPI'),
     path('product-tool-list-for-BOM/api', ProductToolListForBOMAPI.as_view(), name='ProductToolListForBOMAPI'),

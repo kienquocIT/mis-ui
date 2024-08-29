@@ -1,34 +1,35 @@
 {% load i18n %}
 
 <div class="tab-pane fade" id="tab_plan">
-    <div class="row" style="position: relative; overflow: auto; width: 100%;">
+    <div class="row">
         <div class="col-12">
-            <table id="tab_plan_datatable" hidden class="table nowrap w-100" data-method="GET"
-               data-url-payment-cost-items="{% url 'PaymentCostItemsListAPI' %}"
-               data-url-sale-order="{% url 'SaleOrderExpenseListAPI' %}"
-               data-url-quotation="{% url 'QuotationExpenseListAPI' %}">
-            <thead>
-            <tr>
-                <th></th>
-                <th>{% trans 'Expense items' %}</th>
-                <th><i class="fas fa-clipboard-list"></i>&nbsp;{% trans 'Plan After Tax' %}</th>
-                <th><i class="fas fa-clipboard-check"></i>&nbsp;{% trans 'AP Approved' %}</th>
-                <th><i class="fas fa-undo-alt"></i>&nbsp;{% trans 'Returned value' %}</th>
-                <th><i class="fas fa-exchange-alt"></i>&nbsp;{% trans 'To Payment' %}</th>
-                <th><i class="fas fa-money-bill-wave"></i>&nbsp;{% trans 'Other Payment' %}</th>
-                <th>
-                    <i class="far fa-check-square"></i>&nbsp;
-                    {% trans 'Available' %}
-                    <i class="fas fa-info-circle icon-info"
-                       data-bs-toggle="tooltip"
-                       data-bs-placement="bottom"
-                       title="{% trans 'Available = Plan after Tax - Other payments - AP approved + Returned' %}">
-                    </i>
-                </th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+            <table id="tab_plan_datatable"
+                   class="table nowrap w-100"
+                   data-method="GET"
+                   data-url-payment-cost-items="{% url 'PaymentCostItemsListAPI' %}"
+                   data-url-sale-order="{% url 'SaleOrderExpenseListAPI' %}"
+                   data-url-quotation="{% url 'QuotationExpenseListAPI' %}">
+                <thead>
+                    <tr>
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 100px">{% trans 'Expense items' %}</th>
+                        <th style="min-width: 100px">{% trans 'Plan After Tax' %}</th>
+                        <th style="min-width: 100px">{% trans 'AP Approved' %}</th>
+                        <th style="min-width: 100px">{% trans 'Returned value' %}</th>
+                        <th style="min-width: 100px">{% trans 'To Payment' %}</th>
+                        <th style="min-width: 100px">{% trans 'Other Payment' %}</th>
+                        <th style="min-width: 100px">
+                            {% trans 'Available' %}
+                            <i class="fas fa-info-circle icon-info"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="bottom"
+                               title="{% trans 'Available' %} = {% trans 'Plan After Tax' %} - {% trans 'Other Payment' %} - {% trans 'AP Approved' %} + {% trans 'Returned value' %}">
+                            </i>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
     </div>
     <div class="row">

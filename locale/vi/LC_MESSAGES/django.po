@@ -2153,7 +2153,7 @@ msgstr "Kế hoạch sau thuế"
 
 #
 msgid "AP Approved"
-msgstr "Tạm ứng đã phê duyệt"
+msgstr "Đã tạm ứng"
 
 #
 msgid "To Payment"
@@ -2161,7 +2161,7 @@ msgstr "Thanh toán"
 
 #
 msgid "Other Payment"
-msgstr "Phương thức thanh toán khác"
+msgstr "Thanh toán khác"
 
 #
 msgid "Edit Bank Account"
@@ -2213,7 +2213,7 @@ msgstr "Mã cơ hội kinh doanh"
 
 #
 msgid "Method"
-msgstr "Phương thức thanh toán"
+msgstr "Hình thức"
 
 #
 msgid "Cash"
@@ -3777,7 +3777,7 @@ msgstr "Thêm dòng mới"
 
 #
 msgid "Payment value"
-msgstr "Giá trị phiếu thanh toán"
+msgstr "Giá trị thanh toán"
 
 #
 msgid "Advance Payment value"
@@ -8608,3 +8608,15 @@ msgstr "Vật liệu / Linh kiện"
 #
 msgid "Tool"
 msgstr "Công cụ"
+
+#
+msgid "Converted from AP"
+msgstr "Chuyển đổi từ Tạm ứng"
+
+#
+msgid "Sum"
+msgstr "Tổng"
+
+#
+msgid "Outsourcing"
+msgstr "Gửi gia công"

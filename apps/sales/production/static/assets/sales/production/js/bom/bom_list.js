@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    const trans_script = $('#trans-script')
     function loadBOMList() {
         if (!$.fn.DataTable.isDataTable('#bom-list-table')) {
             let dtb = $('#bom-list-table');
@@ -33,20 +34,38 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'wrap-text w-40',
+                        className: 'wrap-text w-30',
                         'render': (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
                             return `<a href="${link}" class="text-primary"><b>${row?.['product']?.['title']}</b></a>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-20 text-center',
+                        className: 'wrap-text w-20',
+                        'render': (data, type, row) => {
+                            if (row?.['bom_type'] === 0) {
+                                return `<span class="fst-italic">${trans_script.attr('data-trans-for-production')} (${row?.['for_outsourcing'] ? trans_script.attr('data-trans-outsourcing') : ''})</span>`;
+                            }
+                            else if (row?.['bom_type'] === 1) {
+                                return `<span class="fst-italic">${trans_script.attr('data-trans-for-service')}</span>`;
+                            }
+                            else if (row?.['bom_type'] === 2) {
+                                return `<span class="fst-italic">${trans_script.attr('data-trans-for-sale')}</span>`;
+                            }
+                            else if (row?.['bom_type'] === 3) {
+                                return `<span class="fst-italic">${trans_script.attr('data-trans-for-internal-expense')}</span>`;
+                            }
+                            return ''
+                        }
+                    },
+                    {
+                        className: 'wrap-text w-15 text-center',
                         'render': (data, type, row) => {
                             return `<span>${row?.['sum_time']} (h)</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-20 text-center',
+                        className: 'wrap-text w-15 text-center',
                         'render': (data, type, row) => {
                             return `<span class="mask-money" data-init-money="${row?.['sum_price']}"></span>`;
                         }

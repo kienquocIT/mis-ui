@@ -407,6 +407,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # return advance
     RETURN_ADVANCE_LIST = StringUrl('cashoutflow/return-advances')
     RETURN_ADVANCE_DETAIL = StringUrl('cashoutflow/return-advance/{pk}')
+    AP_LIST_FOR_RETURN = StringUrl('cashoutflow/ap-list-for-return')
 
     # transition data config
     DELIVERY_CONFIG = StringUrl('delivery/config')
@@ -596,6 +597,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Bill of material
     BOM_LIST = StringUrl('production/bom/list')
     BOM_DETAIL = StringUrl('production/bom/{pk}')
+    FINISH_PRODUCT_LIST_FOR_BOM = StringUrl('production/finish-product-list-for-BOM')
     LABOR_LIST_FOR_BOM = StringUrl('production/labor-list-for-BOM')
     MATERIAL_LIST_FOR_BOM = StringUrl('production/product-material-list-for-BOM')
     TOOL_LIST_FOR_BOM = StringUrl('production/product-tool-list-for-BOM')

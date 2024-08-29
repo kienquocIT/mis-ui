@@ -4,7 +4,7 @@ from apps.sales.cashoutflow.views import (
     AdvancePaymentUpdate, PaymentCostListAPI,
     ReturnAdvanceListAPI, ReturnAdvanceDetail, ReturnAdvanceCreate, ReturnAdvanceList, ReturnAdvanceDetailAPI,
     PaymentList, PaymentCreate, PaymentListAPI, PaymentDetailAPI, PaymentDetail, PaymentCostItemsListAPI, PaymentUpdate,
-    ReturnAdvanceUpdate, PaymentConfigList, PaymentConfigListAPI, AdvancePaymentCostListAPI
+    ReturnAdvanceUpdate, PaymentConfigList, PaymentConfigListAPI, AdvancePaymentCostListAPI, APListForReturnAPI
 )
 
 urlpatterns = [
@@ -23,6 +23,7 @@ urlpatterns = [
     path('return-advance/api/<str:pk>', ReturnAdvanceDetailAPI.as_view(), name='ReturnAdvanceDetailAPI'),
     path('return-advance/update/<str:pk>', ReturnAdvanceUpdate.as_view(), name='ReturnAdvanceUpdate'),
     path('payments-cost-list', PaymentCostListAPI.as_view(), name='PaymentCostListAPI'),
+    path('ap-list-for-return/api', APListForReturnAPI.as_view(), name='APListForReturnAPI'),
 ] + [
     path('payments', PaymentList.as_view(), name='PaymentList'),
     path('payment-config', PaymentConfigList.as_view(), name='PaymentConfigList'),

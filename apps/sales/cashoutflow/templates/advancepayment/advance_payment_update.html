@@ -7,16 +7,11 @@
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
     <style>
-        tfoot tr {
-            border-style: hidden;!important;
-            font-weight: bold;!important;
-        }
         .mask-money {
             text-align: right; !important;
         }
-        .sticky {
-            position: sticky;
-            top: 0;
+        table .select2-selection__rendered {
+            max-width: 250px;
         }
     </style>
 {% endblock %}
@@ -48,7 +43,7 @@
           data-url-redirect="{% url "AdvancePaymentDetail" pk=pk %}"
           data-url="{% url 'AdvancePaymentDetailAPI' pk=pk %}">
         {% csrf_token %}
-        {% include 'advancepayment/common/body_block.html' %}
+        {% include 'advancepayment/common/information.html' %}
         {% include 'advancepayment/common/tabs.html' %}
     </form>
 {% endblock %}

@@ -2,24 +2,23 @@ $(document).ready(function () {
     new $x.cls.file($('#attachment')).init({'name': 'attachment'});
 
     const urlParams = new URLSearchParams(window.location.search);
-
-    let sale_code_mapped= urlParams.get('sale_code_mapped');
-    let type= urlParams.get('type');
+    let opportunity_obj= urlParams.get('sale_code_mapped');
     let quotation_object= urlParams.get('quotation_object');
     let sale_order_object= urlParams.get('sale_order_object');
+    let type= urlParams.get('type');
 
-    sale_code_mapped = sale_code_mapped !== 'undefined' ? JSON.parse(decodeURIComponent(sale_code_mapped)) : null;
-    type = type !== 'undefined' ? JSON.parse(decodeURIComponent(type)) : null;
+    opportunity_obj = opportunity_obj !== 'undefined' ? JSON.parse(decodeURIComponent(opportunity_obj)) : null;
     quotation_object = quotation_object !== 'undefined' ? JSON.parse(decodeURIComponent(quotation_object)) : null;
     sale_order_object = sale_order_object !== 'undefined' ? JSON.parse(decodeURIComponent(sale_order_object)) : null;
+    type = type !== 'undefined' ? JSON.parse(decodeURIComponent(type)) : null;
 
-    new AdvancePaymentHandle().load(sale_code_mapped, type, quotation_object, sale_order_object);
+    APHandle.LoadPage(opportunity_obj, quotation_object, sale_order_object, type);
     WFRTControl.setWFInitialData('advancepayment', 'POST')
 
     // SUBMIT FORM CREATE ADVANCE PAYMENT
     $('#form-create-advance').submit(function (event) {
         event.preventDefault();
-        let form = new AdvancePaymentHandle().combinesData($(this));
+        let form = APHandle.CombinesData($(this));
         if (form) {
             WFRTControl.callWFSubmitForm(form);
         }

@@ -1,10 +1,10 @@
 $(document).ready(function () {
-    new BOMHandle().load();
+    BOMHandle.LoadPage();
     WFRTControl.setWFInitialData('bom', 'POST')
 
     $('#form-create-bom').submit(function (event) {
         event.preventDefault();
-        let form = new BOMHandle().combinesDataForProductionBOM($(this));
+        let form = BOMHandle.CombinesDataForProductionBOM($(this));
         if (form) {
             WFRTControl.callWFSubmitForm(form);
         }

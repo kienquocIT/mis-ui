@@ -2,7 +2,8 @@ from django.urls import path
 from apps.sales.production.views import (
     BOMList, BOMCreate, BOMDetail, BOMUpdate, BOMListAPI, BOMDetailAPI, LaborListForBOMAPI, ProductionOrderCreate,
     ProductMaterialListForBOMAPI, ProductToolListForBOMAPI, BOMOrderListAPI, ProductionOrderDetail,
-    ProductionOrderListAPI, ProductionOrderDetailAPI, ProductionOrderUpdate, ProductionOrderList, FinishProductListForBOMAPI
+    ProductionOrderListAPI, ProductionOrderDetailAPI, ProductionOrderUpdate, ProductionOrderList,
+    FinishProductListForBOMAPI
 )
 
 urlpatterns = [

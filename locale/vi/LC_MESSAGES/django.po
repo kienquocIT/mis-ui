@@ -8602,6 +8602,14 @@ msgid "Sum time"
 msgstr "Tổng thời gian"
 
 #
+msgid "Files of Assigner"
+msgstr "Tài liệu của người giao việc"
+
+#
+msgid "Files of Assignee"
+msgstr "Tài liệu của người nhận việc"
+
+#
 msgid "Production order"
 msgstr "Lệnh sản xuất"
 

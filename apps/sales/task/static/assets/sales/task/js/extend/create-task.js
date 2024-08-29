@@ -14,7 +14,15 @@ function resetFormTask() {
     $('.create-subtask').addClass('hidden')
     $('[name="parent_n"]').remove();
     window.editor.setData('')
-    $('.create-task').attr('disabled', false)
+    $('.create-task').attr('disabled', false);
+    const $attachElm = $('#assigner_attachment'), $attachElmAssignee = $('#assignee_attachment');
+    $attachElm.find('.dm-uploader').dmUploader("reset")
+    $attachElm.find('.dm-uploader-result-list').html('');
+    $attachElm.find('.dm-uploader-no-files').css({ 'display': 'block'});
+
+    $attachElmAssignee.find('.dm-uploader').dmUploader("reset")
+    $attachElmAssignee.find('.dm-uploader-result-list').html('');
+    $attachElmAssignee.find('.dm-uploader-no-files').css({ 'display': 'block'});
 }
 
 function isValidString(inputString) {
@@ -185,7 +193,8 @@ $(document).ready(function () {
     const $oppElm = $('#opportunity_id')
     const $prjElm = $('#project_id')
 
-    new $x.cls.file($('#attachment')).init({'name': 'attach'});
+    new $x.cls.file($('#assigner_attachment')).init({'name': 'attach'});
+    new $x.cls.file($('#assignee_attachment')).init({'name': 'attach_assignee'});
 
     //--DATETIME-- run single date
     $('input[type=text].date-picker').daterangepicker({
@@ -334,7 +343,6 @@ $(document).ready(function () {
                 if (tagsList)
                     formData.label = JSON.parse(tagsList)
                 formData.employee_created = $assignerElm.attr('value')
-                // formData.task_status = $sttElm.val()
                 const task_status = $sttElm.select2('data')[0]
                 const taskSttData = {
                     'id': task_status.id,
@@ -378,8 +386,8 @@ $(document).ready(function () {
                 if (!formData.project) delete formData.project
                 if ($prjElm.val()) formData.project = formData.project_id = $prjElm.val()
 
-                const $attElm = $('[name="attach"]').val()
-                if ($attElm) formData.attach = [...$attElm]
+                formData.attach = $x.cls.file.get_val(formData.attach, []);
+                formData.attach_assignee = $x.cls.file.get_val(formData.attach_assignee, []);
                 let method = 'POST'
                 let url = form.attr('data-url')
                 formData.id = $('input[name="id"]', form).val()

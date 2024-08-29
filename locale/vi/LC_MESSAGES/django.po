@@ -8628,3 +8628,15 @@ msgstr "Tạo đơn sản xuất thành công"
 #
 msgid "Production order update successfully"
 msgstr "Cập nhật đơn sản xuất thành công"
+
+#
+msgid "Planned"
+msgstr "Đã lên kế hoạch"
+
+#
+msgid "In production"
+msgstr "Đang sản xuất"
+
+#
+msgid "All warehouse"
+msgstr "Tất cả kho hàng"

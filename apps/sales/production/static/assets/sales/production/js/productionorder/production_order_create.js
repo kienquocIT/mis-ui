@@ -61,6 +61,7 @@ $(function () {
                 row.querySelector('.table-row-available').innerHTML = 0;
                 if (this.checked === true) {
                     row.querySelector('.table-row-warehouse').setAttribute('disabled', 'true');
+                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), []);
                     ProdOrderLoadDataHandle.loadChangeWH(row, 1);
                 }
                 if (this.checked === false) {
@@ -89,7 +90,6 @@ $(function () {
                 'uom_data',
                 'warehouse_id',
                 'warehouse_data',
-                'sale_order',
                 'sale_order_data',
                 'status_production',
                 'date_start',

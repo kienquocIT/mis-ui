@@ -76,6 +76,8 @@ class ProdOrderLoadDataHandle {
         $('#btn-collapse').click(function () {
             $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
+        // init WF
+        WFRTControl.setWFInitialData('productionorder', ProdOrderLoadDataHandle.$form.attr('data-method'));
     };
 
     static loadBOM() {
@@ -179,7 +181,7 @@ class ProdOrderLoadDataHandle {
             if (row.querySelector('.table-row-order').getAttribute('data-row')) {
                 let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
                 if (row.querySelector('.table-row-item')) {
-                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')));
+                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [], {'general_product_types_mapped__is_material': true});
                     if (dataRow?.['product_data']) {
                         $.fn.callAjax2({
                                 'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
@@ -207,7 +209,13 @@ class ProdOrderLoadDataHandle {
                         ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
                     }
                 }
+                if (row.querySelector('.check-all-wh')) {
+                    row.querySelector('.check-all-wh').checked = dataRow?.['is_all_warehouse'];
+                }
                 if (row.querySelector('.table-row-warehouse')) {
+                    if (dataRow?.['is_all_warehouse'] === true) {
+                        row.querySelector('.table-row-warehouse').setAttribute('disabled', 'true');
+                    }
                     ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')));
                     if (dataRow?.['warehouse_data']) {
                         ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), [dataRow?.['warehouse_data']]);
@@ -363,12 +371,13 @@ class ProdOrderLoadDataHandle {
 
     // Detail
     static loadDetail(data) {
+        ProdOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data?.['bom_data']));
         ProdOrderLoadDataHandle.$title.val(data?.['title']);
         ProdOrderLoadDataHandle.$quantity.val(data?.['quantity']);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [data?.['product_data']], {'general_product_types_mapped__is_finished_goods': true});
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM, [data?.['uom_data']]);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH, [data?.['warehouse_data']]);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO, [data?.['sale_order_data']]);
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO, data?.['sale_order_data']);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxGroup, [data?.['group_data']]);
         let date_start = '';
         if (data?.['date_start']) {
@@ -394,23 +403,26 @@ class ProdOrderLoadDataHandle {
     };
 
     static loadReadonlyDisabled() {
-        ProdOrderDataTableHandle.$tableMain.DataTable().rows().every(function () {
-            let row = this.node();
-            for (let ele of row.querySelectorAll('.table-row-item')) {
-                ele.setAttribute('disabled', 'true');
-            }
-            for (let ele of row.querySelectorAll('.table-row-uom')) {
-                ele.setAttribute('disabled', 'true');
-            }
-            for (let ele of row.querySelectorAll('.table-row-warehouse')) {
-                ele.setAttribute('disabled', 'true');
-            }
-            for (let ele of row.querySelectorAll('.table-row-tool')) {
-                ele.setAttribute('disabled', 'true');
-            }
-            return true;
-        });
-    }
+        if (ProdOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            ProdOrderDataTableHandle.$tableMain.DataTable().rows().every(function () {
+                let row = this.node();
+                for (let ele of row.querySelectorAll('.table-row-item')) {
+                    ele.setAttribute('disabled', 'true');
+                }
+                for (let ele of row.querySelectorAll('.table-row-uom')) {
+                    ele.setAttribute('disabled', 'true');
+                }
+                for (let ele of row.querySelectorAll('.table-row-warehouse')) {
+                    ele.setAttribute('disabled', 'true');
+                }
+                for (let ele of row.querySelectorAll('.table-row-tool')) {
+                    ele.setAttribute('disabled', 'true');
+                }
+                return true;
+            });
+        }
+        return true;
+    };
 
 }
 
@@ -493,7 +505,7 @@ class ProdOrderDataTableHandle {
                         }
                         return `<div class="form-check">
                                     <input type="checkbox" id="customRadio1" name="customRadio" class="form-check-input check-all-wh">
-                                    <label class="form-check-label" for="customRadio1">All</label>
+                                    <label class="form-check-label" for="customRadio1">${ProdOrderLoadDataHandle.$trans.attr('data-all-wh')}</label>
                                 </div><select class="form-select table-row-warehouse" data-url="${ProdOrderLoadDataHandle.$urls.attr('data-md-warehouse')}" data-method="GET" data-keyResp="warehouse_list"></select>`;
                         // return `<select class="form-select table-row-warehouse" data-url="${ProdOrderLoadDataHandle.$urls.attr('data-md-warehouse')}" data-method="GET" data-keyResp="warehouse_list"></select>`;
                     }
@@ -505,7 +517,7 @@ class ProdOrderDataTableHandle {
                         if (row?.['is_task'] === true) {
                             return ``;
                         }
-                        return `<span class="table-row-stock">${row?.['warehouse_data']?.['available_stock'] ? row?.['warehouse_data']?.['available_stock'] : 0}</span>`;
+                        return `<span class="table-row-stock">${row?.['stock'] ? row?.['stock'] : 0}</span>`;
                     }
                 },
                 {
@@ -515,7 +527,7 @@ class ProdOrderDataTableHandle {
                         if (row?.['is_task'] === true) {
                             return ``;
                         }
-                        return `<span class="table-row-available">${row?.['product_data']?.['available_amount'] ? row?.['product_data']?.['available_amount'] : 0}</span>`;
+                        return `<span class="table-row-available">${row?.['available'] ? row?.['available'] : 0}</span>`;
                     }
                 },
                 {
@@ -557,28 +569,53 @@ class ProdOrderStoreHandle {
                     if (row.querySelector('.table-row-labor')) {
                         dataRow['quantity'] = parseFloat(row.querySelector('.table-row-labor').innerHTML);
                     }
+                    if (row.querySelector('.table-row-tool')) {
+                        if ($(row.querySelector('.table-row-tool')).val()) {
+                            let dataTool = [];
+                            for (let val of $(row.querySelector('.table-row-tool')).val()) {
+                                let data = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-tool')), val);
+                                if (data) {
+                                    dataTool.push(data);
+                                }
+                            }
+                            dataRow['tool_data'] = dataTool;
+                        }
+                    }
                 }
                 if (row.querySelector('.table-row-item')) {  // product
-                    let data = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-item')), $(row.querySelector('.table-row-item')).val());
-                    if (data) {
-                        dataRow['product_id'] = data?.['id'];
-                        dataRow['product_data'] = data;
+                    dataRow['product_id'] = null;
+                    dataRow['product_data'] = {};
+                    if ($(row.querySelector('.table-row-item')).val()) {
+                        let data = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-item')), $(row.querySelector('.table-row-item')).val());
+                        if (data) {
+                            dataRow['product_id'] = data?.['id'];
+                            dataRow['product_data'] = data;
+                        }
                     }
                     if (row.querySelector('.table-row-uom')) {
-                        let data = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-uom')), $(row.querySelector('.table-row-uom')).val());
-                        if (data) {
-                            dataRow['uom_id'] = data?.['id'];
-                            dataRow['uom_data'] = data;
+                        dataRow['uom_id'] = null;
+                        dataRow['uom_data'] = {};
+                        if ($(row.querySelector('.table-row-uom')).val()) {
+                            let data = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-uom')), $(row.querySelector('.table-row-uom')).val());
+                            if (data) {
+                                dataRow['uom_id'] = data?.['id'];
+                                dataRow['uom_data'] = data;
+                            }
                         }
                     }
                     if (row.querySelector('.table-row-quantity')) {
                         dataRow['quantity'] = parseFloat(row.querySelector('.table-row-quantity').innerHTML);
                     }
+                    dataRow['is_all_warehouse'] = !!row.querySelector('.check-all-wh:checked');
                     if (row.querySelector('.table-row-warehouse')) {
-                        let data = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-warehouse')), $(row.querySelector('.table-row-warehouse')).val());
-                        if (data) {
-                            dataRow['warehouse_id'] = data?.['id'];
-                            dataRow['warehouse_data'] = data;
+                        dataRow['warehouse_id'] = null;
+                        dataRow['warehouse_data'] = {};
+                        if ($(row.querySelector('.table-row-warehouse')).val()) {
+                            let data = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-warehouse')), $(row.querySelector('.table-row-warehouse')).val());
+                            if (data) {
+                                dataRow['warehouse_id'] = data?.['id'];
+                                dataRow['warehouse_data'] = data;
+                            }
                         }
                     }
                     if (row.querySelector('.table-row-stock')) {
@@ -598,11 +635,12 @@ class ProdOrderStoreHandle {
                     'uom_data',
                     'quantity_bom',
                     'quantity',
+                    'is_all_warehouse',
                     'warehouse_id',
                     'warehouse_data',
                     'stock',
                     'available',
-                    'tool',
+                    'tool_data',
                     'order',
                 ]
                 if (dataRow) {
@@ -672,6 +710,16 @@ class ProdOrderSubmitHandle {
                 if (data) {
                     _form.dataForm['warehouse_data'] = data;
                 }
+            }
+            if (ProdOrderLoadDataHandle.$boxSO.val()) {
+                let dataSO = [];
+                for (let val of ProdOrderLoadDataHandle.$boxSO.val()) {
+                    let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxSO, val);
+                    if (data) {
+                        dataSO.push(data);
+                    }
+                }
+                _form.dataForm['sale_order_data'] = dataSO;
             }
             if (ProdOrderLoadDataHandle.$dateStart.val()) {
                 _form.dataForm['date_start'] = String(moment(ProdOrderLoadDataHandle.$dateStart.val(), 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD'));

@@ -244,7 +244,7 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'account.User'
 
-SESSION_COOKIE_AGE = 7 * 24 * 60 * 60  # 3 days expires
+SESSION_COOKIE_AGE = 1 * 24 * 60 * 60  # 3 days expires
 
 # CELERY + RABBITMQ CONFIG
 CELERY_BROKER_URL = None  # 'amqp://guest:guest@127.0.0.1:5672//'

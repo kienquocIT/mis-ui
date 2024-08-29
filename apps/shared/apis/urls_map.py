@@ -30,7 +30,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
         return f'{url}/{_id}'
 
     login = StringUrl('auth/sign-in')
-    logout = StringUrl('auth/logout')
+    logout = StringUrl('auth/sign-out')
     my_profile = StringUrl('auth/profile')
     ALIVE_CHECK = StringUrl('auth/alive-check')
     refresh_token = StringUrl('auth/token-refresh')
@@ -42,6 +42,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     USER_MAIL_WELCOME = StringUrl('account/user/{pk}/mail-welcome')
     USER_COMPANIES = StringUrl('account/user/{pk}/companies')
     LANGUAGE_CHANGE = 'auth/language'
+    AUTH_LOGS = 'auth/logs'
+    AUTH_LOGS_REPORT = 'auth/logs/report'
 
     #
     USER_CHANGE_PASSWORD = StringUrl('auth/change-password')
@@ -440,6 +442,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_TASK_DETAIL = StringUrl('task/detail')
     OPPORTUNITY_TASK_LOG_WORK = StringUrl('task/log-work')
     OPPORTUNITY_TASK_STT_UPDATE = StringUrl('task/update-status')
+    OPPORTUNITY_TASK_MY_TASK_REPORT = StringUrl('task/my-report')
+    OPPORTUNITY_TASK_MY_TASK_SUMMARY_REPORT = StringUrl('task/my-summary-report')
 
     OPPORTUNITY_DOCUMENT_LIST = StringUrl('opportunity/document/list')
     OPPORTUNITY_DOCUMENT_DETAIL = StringUrl('opportunity/document/{pk}')
@@ -601,6 +605,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LABOR_LIST_FOR_BOM = StringUrl('production/labor-list-for-BOM')
     MATERIAL_LIST_FOR_BOM = StringUrl('production/product-material-list-for-BOM')
     TOOL_LIST_FOR_BOM = StringUrl('production/product-tool-list-for-BOM')
+    BOM_ORDER_LIST = StringUrl('production/bom-order/list')
 
     # AR Invoice
     DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')
@@ -681,3 +686,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Contract
     CONTRACT_LIST = StringUrl('contract/list')
     CONTRACT_DETAIL = StringUrl('contract')
+
+    # Production order
+    PRODUCTION_ORDER_LIST = StringUrl('production/production-order/list')
+    PRODUCTION_ORDER_DETAIL = StringUrl('production/production-order')

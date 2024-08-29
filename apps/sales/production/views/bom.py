@@ -155,3 +155,14 @@ class BOMDetailAPI(APIView):
             resp.result['message'] = SaleMsg.BOM_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+class BOMOrderListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.BOM_ORDER_LIST).get(params)
+        return resp.auto_return(key_success='bom_order_list')

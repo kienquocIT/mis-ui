@@ -1620,7 +1620,7 @@ msgstr "Không áp dụng bán hàng và kho cho chi phí"
 
 #
 msgid "Purchasing"
-msgstr "Quá trình mua hàng"
+msgstr "Mua hàng"
 
 #
 msgid "Expense Type"
@@ -8600,6 +8600,54 @@ msgstr "Tổng chi phí"
 #
 msgid "Sum time"
 msgstr "Tổng thời gian"
+
+#
+msgid "Files of Assigner"
+msgstr "Tài liệu của người giao việc"
+
+#
+msgid "Files of Assignee"
+msgstr "Tài liệu của người nhận việc"
+
+#
+msgid "Production order"
+msgstr "Lệnh sản xuất"
+
+#
+msgid "Production group"
+msgstr "Nhóm sản xuất"
+
+#
+msgid "Contract approval"
+msgstr "Phê duyệt hợp đồng"
+
+#
+msgid "Contract approval create successfully"
+msgstr "Tạo phê duyệt hợp đồng thành công"
+
+#
+msgid "Contract approval update successfully"
+msgstr "Cập nhật phê duyệt hợp đồng thành công"
+
+#
+msgid "Production order create successfully"
+msgstr "Tạo đơn sản xuất thành công"
+
+#
+msgid "Production order update successfully"
+msgstr "Cập nhật đơn sản xuất thành công"
+
+#
+msgid "Planned"
+msgstr "Đã lên kế hoạch"
+
+#
+msgid "In production"
+msgstr "Đang sản xuất"
+
+#
+msgid "All warehouse"
+msgstr "Tất cả kho hàng"
 
 #
 msgid "Material / Component"

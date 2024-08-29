@@ -27,6 +27,7 @@ class JavaScriptCatalogCustomize(JavaScriptCatalog):
 
 
 I18N_JS_MATCH_APP = {
+    'home': 'apps.core.home',
     'auth': 'apps.core.auths',
     'hr': 'apps.core.hr',
     'fimport': 'apps.core.fimport',

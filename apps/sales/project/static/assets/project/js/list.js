@@ -108,6 +108,7 @@ $(document).ready(function(){
                         {txt: $.fn.gettext("Added"), cls: "soft-warning"},
                         {txt: $.fn.gettext("Finish"), cls: "soft-success"},
                     ]
+                    if (row > 2) row = 2
                     return `<span class="badge badge-${status_data[row]['cls']}">${status_data[row]['txt']}</span>`;
                 }
             },

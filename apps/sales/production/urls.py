@@ -1,7 +1,8 @@
 from django.urls import path
 from apps.sales.production.views import (
-    BOMList, BOMCreate, BOMDetail, BOMUpdate, BOMListAPI, BOMDetailAPI, LaborListForBOMAPI,
-    ProductMaterialListForBOMAPI, ProductToolListForBOMAPI, FinishProductListForBOMAPI,
+    BOMList, BOMCreate, BOMDetail, BOMUpdate, BOMListAPI, BOMDetailAPI, LaborListForBOMAPI, ProductionOrderCreate,
+    ProductMaterialListForBOMAPI, ProductToolListForBOMAPI, BOMOrderListAPI, ProductionOrderDetail,
+    ProductionOrderListAPI, ProductionOrderDetailAPI, ProductionOrderUpdate, ProductionOrderList, FinishProductListForBOMAPI
 )
 
 urlpatterns = [
@@ -16,4 +17,14 @@ urlpatterns = [
     path('labor-list-for-BOM/api', LaborListForBOMAPI.as_view(), name='LaborListForBOMAPI'),
     path('product-material-list-for-BOM/api', ProductMaterialListForBOMAPI.as_view(), name='ProductMaterialListForBOMAPI'),
     path('product-tool-list-for-BOM/api', ProductToolListForBOMAPI.as_view(), name='ProductToolListForBOMAPI'),
+
+    # production order
+    path('bom-order/api/list', BOMOrderListAPI.as_view(), name='BOMOrderListAPI'),
+
+    path('production-order/list', ProductionOrderList.as_view(), name='ProductionOrderList'),
+    path('production-order/api/list', ProductionOrderListAPI.as_view(), name='ProductionOrderListAPI'),
+    path('production-order/create', ProductionOrderCreate.as_view(), name='ProductionOrderCreate'),
+    path('production-order/detail/<str:pk>', ProductionOrderDetail.as_view(), name='ProductionOrderDetail'),
+    path('production-order/detail-api/<str:pk>', ProductionOrderDetailAPI.as_view(), name='ProductionOrderDetailAPI'),
+    path('production-order/update/<str:pk>', ProductionOrderUpdate.as_view(), name='ProductionOrderUpdate'),
 ]

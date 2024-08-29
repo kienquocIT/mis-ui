@@ -37,6 +37,9 @@ $(function () {
                         targets: 0,
                         width: '1%',
                         render: (data, type, row, meta) => {
+                            if (row?.['is_change'] === true && row?.['document_root_id'] && row?.['system_status'] !== 3) {
+                                return ``;
+                            }
                             return `<span class="table-row-order">${(meta.row + 1)}</span>`
                         }
                     },
@@ -48,11 +51,11 @@ $(function () {
                             if (row?.['code']) {
                                 if (row?.['is_change'] === true && row?.['document_root_id'] && row?.['system_status'] === 3) {
                                     let target = `.cl-${row?.['document_root_id'].replace(/-/g, "")}`;
-                                    return `<div class="d-flex">
+                                    return `<div class="d-flex align-items-center">
                                             <div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']} <span class="badge-child badge-child-blue">CR</span></span></a></div>
                                             <small><button 
                                                 type="button" 
-                                                class="btn btn-icon btn-xs cl-parent" 
+                                                class="btn btn-icon btn-xs cl-parent"
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="${target}"
                                                 data-bs-placement="top"

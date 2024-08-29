@@ -1207,12 +1207,6 @@ class GRLoadDataHandle {
         } else {
             $('#good-receipt-date-received').val('');
         }
-        if ([2, 3].includes(data?.['system_status'])) {
-            let $btn = $('#btn-enable-edit');
-            if ($btn.length) {
-                $btn[0].setAttribute('hidden', 'true');
-            }
-        }
         let type_data = {
             '1': GRLoadDataHandle.transEle.attr('data-for-po'),
             '2': GRLoadDataHandle.transEle.attr('data-for-ia'),

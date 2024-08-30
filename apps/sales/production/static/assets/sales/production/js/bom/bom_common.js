@@ -10,9 +10,9 @@ const material_table = $('#material-table')
 const material_table_outsourcing = $('#material-table-outsourcing')
 const tools_table = $('#tools-table')
 const is_outsourcing = $('#is-outsourcing')
+const add_new_outsourcing_material = $('#add-new-outsourcing-material')
 const normal_production_space = $('#normal-production-space')
 const outsourcing_production_space = $('#outsourcing-production-space')
-const add_new_outsourcing_material = $('#add-new-outsourcing-material')
 
 //// COMMON
 

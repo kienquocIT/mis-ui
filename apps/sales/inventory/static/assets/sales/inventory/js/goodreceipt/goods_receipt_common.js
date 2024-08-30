@@ -4,7 +4,7 @@ class GRLoadDataHandle {
     static POSelectEle = $('#box-good-receipt-purchase-order');
     static supplierSelectEle = $('#box-good-receipt-supplier');
     static IASelectEle = $('#box-good-receipt-inventory-adjustment');
-    static $boxProductionOrder = $('#box-production-order');
+    static $boxProduction = $('#box-production-order');
     static initPOProductEle = $('#data-init-purchase-order-products');
     static PRDataEle = $('#purchase_requests_data');
     static btnAddLot = $('#btn-add-manage-lot');
@@ -97,9 +97,13 @@ class GRLoadDataHandle {
             GRDataTableHandle.dataTableGoodReceiptLineDetailIA();
         }
         if (type === "3") {
-            if (!GRLoadDataHandle.$boxProductionOrder.val()) {
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionOrder);
+            if (!GRLoadDataHandle.$boxProduction.val()) {
+                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProduction);
             }
+            GRDataTableHandle.dataTableGoodReceiptProductionProduct();
+            GRDataTableHandle.dataTableGoodReceiptProductionWH();
+            GRDataTableHandle.dataTableGoodReceiptProductionLot();
+            GRDataTableHandle.dataTableGoodReceiptProductionSerial();
             GRDataTableHandle.dataTableGoodReceiptLineDetailProduction();
         }
     };
@@ -1221,6 +1225,27 @@ class GRLoadDataHandle {
         return true;
     };
 
+    // PRODUCTION
+    static loadCheckProductionProduct() {
+        let eleCheck = GRDataTableHandle.tableProductionProduct[0].querySelector('.table-row-checkbox:checked');
+        if (eleCheck) {
+            let row = eleCheck.closest('tr');
+            $(row).css('background-color', '#ebfcf5');
+            let dataRowRaw = $(eleCheck).attr('data-row');
+            if (dataRowRaw) {
+                let dataRow = JSON.parse(dataRowRaw);
+                // store data
+                // GRStoreDataHandle.storeDataAll();
+                GRDataTableHandle.tableProductionLot.DataTable().clear().draw();
+                GRDataTableHandle.tableProductionSerial.DataTable().clear().draw();
+                $('#scroll-table-production-lot-serial')[0].setAttribute('hidden', 'true');
+                GRDataTableHandle.tableProductionWH.DataTable().clear().draw();
+
+            }
+        }
+        return true;
+    };
+
     static loadCssToDtb(tableID) {
         let tableIDWrapper = tableID + '_wrapper';
         let tableWrapper = document.getElementById(tableIDWrapper);
@@ -1432,6 +1457,7 @@ class GRDataTableHandle {
     static uomInitEle = $('#data-init-uom');
     static taxInitEle = $('#data-init-tax');
     static warehouseInitEle = $('#data-init-warehouse');
+
     static tablePOProduct = $('#datable-good-receipt-po-product');
     static tablePR = $('#datable-good-receipt-purchase-request');
     static tableWH = $('#datable-good-receipt-warehouse');
@@ -1444,6 +1470,10 @@ class GRDataTableHandle {
     static tableIASerial = $('#datable-good-receipt-ia-serial');
     static tableLineDetailIA = $('#datable-good-receipt-line-detail-ia');
 
+    static tableProductionProduct = $('#datable-good-receipt-production-product');
+    static tableProductionWH = $('#datable-good-receipt-production-warehouse');
+    static tableProductionLot = $('#datable-good-receipt-production-lot');
+    static tableProductionSerial = $('#datable-good-receipt-production-serial');
     static tableLineDetailProduction = $('#datable-good-receipt-line-detail-production');
 
     // PO
@@ -2272,6 +2302,269 @@ class GRDataTableHandle {
 
 
     // Production
+    static dataTableGoodReceiptProductionProduct(data) {
+        GRDataTableHandle.tableProductionProduct.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<div class="d-flex align-items-center">
+                                        <div class="form-check">
+                                            <input 
+                                                type="radio" 
+                                                class="form-check-input table-row-checkbox" 
+                                                data-id="${row?.['id']}"
+                                                data-row="${dataRow}"
+                                                checked
+                                            >
+                                        </div>
+                                        <span class="table-row-item">${row?.['product']?.['title']}</span>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-uom">${row?.['uom_order_actual']?.['title']}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity">${row?.['product_quantity_order_actual'] ? row?.['product_quantity_order_actual'] : 0}</span>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-gr-completed">${row?.['gr_completed_quantity'] ? row?.['gr_completed_quantity'] : 0}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-gr-remain">${row?.['gr_remain_quantity'] ? row?.['gr_remain_quantity'] : 0}</span>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+                        if (row?.['product']?.['product_choice'].includes(1) || row?.['purchase_request_products_data'].length > 0) { // If PO Product have inventory choice or PO have PR
+                            return `<b><span class="table-row-import text-primary">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span></b>`;
+                        } else { // If PO Product doesn't have inventory choice and PO doesn't have PR
+                            return `<div class="row">
+                                        <input type="text" class="form-control table-row-import validated-number text-primary" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}">
+                                    </div>`;
+                        }
+
+                    }
+                },
+            ],
+            drawCallback: function () {
+                // add css to Dtb
+                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-production-product');
+            },
+        });
+    };
+
+    static dataTableGoodReceiptProductionWH(data) {
+        GRDataTableHandle.tableProductionWH.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<div class="d-flex align-items-center">
+                                    <div class="form-check">
+                                        <input 
+                                            type="radio" 
+                                            class="form-check-input table-row-checkbox" 
+                                            data-id="${row?.['id']}" 
+                                            data-row="${dataRow}"
+                                        >
+                                    </div>
+                                    <span class="table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-item">${row?.['title'] ? row?.['title'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        let checked = ``;
+                        if (row?.['is_additional'] === true) {
+                            checked = `checked`;
+                        }
+                        return `<div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" disabled ${checked}>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-import validated-number text-primary" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}">
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                // add css to Dtb
+                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-production-warehouse');
+            },
+        });
+    };
+
+    static dataTableGoodReceiptProductionLot(data) {
+        GRDataTableHandle.tableProductionLot.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<div class="row">
+                                    <div class="input-group">
+                                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">${GRLoadDataHandle.transEle.attr('data-select')}</button>
+                                        <ul class="dropdown-menu dropdown-bordered dropdown-menu-lot w-250p"></ul>
+                                        <input type="text" class="form-control table-row-lot-number" data-row="${dataRow}" value="${row?.['lot_number'] ? row?.['lot_number'] : ''}">
+                                    </div>
+                                </div>`;
+
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : ''}" required>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-expire-date" value="${row?.['expire_date']}">
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-manufacture-date" value="${row?.['manufacture_date']}">
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: () => {
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                // add css to Dtb
+                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-manage-lot');
+            },
+        });
+    };
+
+    static dataTableGoodReceiptProductionSerial(data) {
+        GRDataTableHandle.tableProductionSerial.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-vendor-serial-number" data-row="${dataRow}" value="${row?.['vendor_serial_number'] ? row?.['vendor_serial_number'] : ''}">
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-serial-number" value="${row?.['serial_number'] ? row?.['serial_number'] : ''}" required>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-expire-date" value="${row?.['expire_date']}">
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-manufacture-date" value="${row?.['manufacture_date']}">
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-warranty-start" value="${row?.['warranty_start']}">
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-warranty-end" value="${row?.['warranty_end']}">
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 6,
+                    render: () => {
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                // add css to Dtb
+                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-manage-serial');
+            },
+        });
+    };
+
     static dataTableGoodReceiptLineDetailProduction(data) {
         GRDataTableHandle.tableLineDetailProduction.not('.dataTable').DataTableDefault({
             data: data ? data : [],

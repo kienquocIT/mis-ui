@@ -10,6 +10,7 @@ $(function () {
         // Elements Case IA
         let btnIAConfirmAdd = $('#btn-confirm-add-ia-product');
         let btnIAEdit = $('#btn-edit-ia-product-good-receipt');
+        let btnProductionEdit = $('#btn-edit-production-good-receipt');
 
         // Load init
         if (formSubmit.attr('data-method') === 'POST') {
@@ -283,6 +284,23 @@ $(function () {
         GRDataTableHandle.tableLineDetailIA.on('change', '.table-row-price', function () {
             let row = this.closest('tr');
             GRCalculateHandle.calculateMain(GRDataTableHandle.tableLineDetailIA, row);
+        });
+
+        // PRODUCTION BEGIN
+        GRLoadDataHandle.$boxProduction.on('change', function () {
+            if (GRLoadDataHandle.$boxProduction.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxProduction, GRLoadDataHandle.$boxProduction.val());
+                let data = [{
+                    'product': dataSelected?.['product_data'],
+                    'uom_order_actual': dataSelected?.['uom_data'],
+                    'product_quantity_order_actual': dataSelected?.['quantity'],
+                }]
+                GRDataTableHandle.tableProductionProduct.DataTable().clear().draw();
+                GRDataTableHandle.tableProductionProduct.DataTable().rows.add(data).draw();
+
+                GRLoadDataHandle.loadCheckProductionProduct();
+            }
+            btnProductionEdit.click();
         });
 
 // SUBMIT FORM

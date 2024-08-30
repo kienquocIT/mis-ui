@@ -341,6 +341,19 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-primary"
+                                        id="btn-edit-production-good-receipt"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#productionModalCenter"
+                                    >
+                                        <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>{% trans 'Edit' %}</span></span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="attachment">
@@ -591,6 +604,125 @@
                     </div>
                 </div>
             </div>
+
+            <div class="modal fade" id="productionModalCenter" tabindex="-1" role="dialog" aria-labelledby="productionModalCenter" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header h-65p">
+                            <h5 class="modal-title text-primary ml-4"><b>{% trans 'Product list' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body modal-body-custom">
+                            <div class="row">
+                                <div class="col-6 border-right">
+                                    <div class="row mb-2">
+                                        <div data-simplebar class="h-700p nicescroll-bar">
+                                            <table
+                                                id="datable-good-receipt-production-product"
+                                                class="table nowrap w-100"
+                                            >
+                                                <thead>
+                                                <tr class="bg-light">
+                                                    <th class="w-25">{% trans 'Product' %}</th>
+                                                    <th class="w-20">{% trans 'UOM' %}</th>
+                                                    <th class="w-10">{% trans 'Quantity' %}</th>
+                                                    <th class="w-15">{% trans 'Received before' %}</th>
+                                                    <th class="w-15">{% trans 'Remain' %}</th>
+                                                    <th class="w-15">{% trans 'This time' %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row mb-2">
+                                        <div data-simplebar class="h-350p nicescroll-bar">
+                                            <table
+                                                id="datable-good-receipt-production-warehouse"
+                                                class="table nowrap w-100"
+                                                data-url="{% url 'WareHouseListAPI' %}?interact=1"
+                                                data-method="GET"
+                                            >
+                                                <thead>
+                                                <tr class="bg-light">
+                                                    <th class="w-15">{% trans 'Warehouse Code' %}</th>
+                                                    <th class="w-20">{% trans 'Warehouse Name' %}</th>
+                                                    <th class="w-15">{% trans 'Input later' %}</th>
+                                                    <th class="w-20">{% trans 'Quantity' %}</th>
+                                                    <th class="w-15">{% trans 'UOM' %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div id="scroll-table-production-lot-serial" hidden>
+                                            <div data-simplebar class="nicescroll-bar" id="table-good-receipt-manage-lot-area" hidden>
+                                                <table
+                                                    id="datable-good-receipt-production-lot"
+                                                    class="table nowrap min-w-1000p w-100"
+                                                    data-url=""
+                                                    data-method="GET"
+                                                >
+                                                    <thead>
+                                                    <tr class="bg-light">
+                                                        <th class="required w-30">{% trans 'Lot number' %}</th>
+                                                        <th class="required w-15">{% trans 'Quantity' %}</th>
+                                                        <th class="w-15">{% trans 'Exp date' %}</th>
+                                                        <th class="w-15">{% trans 'Mfg date' %}</th>
+                                                        <th class="w-10"></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                                <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-lot">
+                                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
+                                                </button>
+                                            </div>
+                                            <div data-simplebar class="nicescroll-bar" id="table-good-receipt-manage-serial-area" hidden>
+                                                <table
+                                                    id="datable-good-receipt-production-serial"
+                                                    class="table nowrap min-w-1000p w-100"
+                                                    data-url=""
+                                                    data-method="GET"
+                                                >
+                                                    <thead>
+                                                    <tr class="bg-light">
+                                                        <th class="w-15">{% trans 'Vendor serial no.' %}</th>
+                                                        <th class="w-15">{% trans 'Serial no.' %}</th>
+                                                        <th class="w-15">{% trans 'Exp date' %}</th>
+                                                        <th class="w-15">{% trans 'Mfg date' %}</th>
+                                                        <th class="w-15">{% trans 'Warranty start' %}</th>
+                                                        <th class="w-15">{% trans 'Warranty end' %}</th>
+                                                        <th class="w-5"></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                                <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-serial">
+                                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-confirm-add-product" data-bs-dismiss="modal">{% trans 'Next' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </form>

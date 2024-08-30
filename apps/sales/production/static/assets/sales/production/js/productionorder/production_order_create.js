@@ -21,8 +21,6 @@ $(function () {
 
         ProdOrderLoadDataHandle.$quantity.on('change', function () {
             ProdOrderLoadDataHandle.loadChangeQuantity();
-            // ProdOrderLoadDataHandle.loadTime();
-
             let multi = 1;
             if (ProdOrderLoadDataHandle.$quantity) {
                 multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());

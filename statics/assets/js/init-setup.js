@@ -413,7 +413,7 @@ class LogController {
                     if (isUpdate === true) {
                         msgMapIcon = '<i class="fas fa-user-edit ml-2 mt-1"></i>';
                     }
-                    childLogHTML += ` <span class="text-low-em">${itemLog['msg']}</span>${msgMapIcon}</div>`;
+                    childLogHTML += ` <span class="fs-7">${itemLog['msg']}</span>${msgMapIcon}</div>`;
                     logHTML.push(childLogHTML);
                 })
                 let logGroupHTML = `<div class="card-body mt-4"><div class="card-text">${logHTML.join("")}</div></div>`
@@ -2288,13 +2288,13 @@ class WFRTControl {
         let htmlFinish = `<div class="row">
                             <div class="d-flex">
                                 <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
-                                <span class="text-low-em">${$.fn.transEle.attr('data-finish-wf-non-apply')}</span><i class="fas fa-check text-green ml-2 mt-1"></i>
+                                <span class="fs-7">${$.fn.transEle.attr('data-finish-wf-non-apply')}</span><i class="fas fa-check text-green ml-2 mt-1"></i>
                             </div>
                         </div>`;
         let htmlCancel = `<div class="row mb-3">
                             <div class="d-flex">
                                 <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
-                                <span class="text-low-em">${$.fn.transEle.attr('data-canceled-by-creator')}</span><i class="fas fa-times text-red ml-2 mt-1"></i>
+                                <span class="fs-7">${$.fn.transEle.attr('data-canceled-by-creator')}</span><i class="fas fa-times text-red ml-2 mt-1"></i>
                             </div>
                         </div>`;
         htmlBody = htmlFinish;
@@ -7247,8 +7247,8 @@ class DiagramControl {
             if ($btnLog && $btnLog.length > 0) {
                 let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
                                 <div class="offcanvas offcanvas-end w-95 mt-5" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
-                                    <div class="offcanvas-body">
-                                        <div class="d-flex justify-content-between mt-4 mb-2 border-bottom">
+                                    <div class="offcanvas-body mt-3">
+                                        <div class="d-flex justify-content-between mt-5 mb-2 border-bottom">
                                             <h5 id="offcanvasTopLabel">Diagram</h5>
                                             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                                 <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Close">

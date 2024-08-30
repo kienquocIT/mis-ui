@@ -1474,6 +1474,12 @@ class APHandle {
                         APLoadTab.LoadPlanQuotationOnly(data?.['quotation_mapped']?.['id'])
                     }
                     else if (Object.keys(data?.['sale_order_mapped']).length !== 0) {
+                        APLoadPage.LoadSaleOrder(data?.['sale_order_mapped'])
+                        APLoadPage.LoadQuotation(data?.['sale_order_mapped']?.['quotation_mapped'])
+
+                        APLoadTab.LoadPlanSaleOrderOnly(data?.['sale_order_mapped']?.['id'])
+                    }
+                    else {
                         new $x.cls.bastionField({
                             has_opp: false,
                             has_inherit: true,
@@ -1487,10 +1493,6 @@ class APHandle {
                                 "selected": true,
                             }],
                         }).init();
-                        APLoadPage.LoadSaleOrder(data?.['sale_order_mapped'])
-                        APLoadPage.LoadQuotation(data?.['sale_order_mapped']?.['quotation_mapped'])
-
-                        APLoadTab.LoadPlanSaleOrderOnly(data?.['sale_order_mapped']?.['id'])
                     }
 
                     $('#title').val(data.title);

@@ -242,7 +242,7 @@ class BOMLoadTab {
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<span class="badge badge-blue material-code">${row?.['material']?.['code']}</span>`;
+                        return `<span class="badge badge-blue material-code">${row?.['material']?.['code'] ? row?.['material']?.['code'] : ''}</span>`;
                     }
                 },
                 {
@@ -276,7 +276,7 @@ class BOMLoadTab {
                 {
                     className: 'text-right',
                     'render': () => {
-                        return `<button ${option === 'detail' ? 'disabled' : ''} type="button" class="btn del-row-material"><i class="fas fa-trash-alt text-secondary"></i></button>`;
+                        return `<button ${option === 'detail' ? 'disabled' : ''} type="button" class="btn del-row-material-outsourcing"><i class="fas fa-trash-alt text-secondary"></i></button>`;
                     }
                 },
             ],
@@ -821,4 +821,9 @@ add_new_outsourcing_material.on('click', function () {
     BOMAction.BOMAddRow(material_table_outsourcing, {})
     let row_added = material_table_outsourcing.find('tbody tr:last-child')
     BOMLoadTab.LoadMaterial(row_added.find('.material-item'))
+})
+
+$(document).on("click", '.del-row-material-outsourcing', function () {
+    let row_index = $(this).closest('tr').find('td:eq(0)').text()
+    BOMAction.BOMDeleteRow($(this).closest('table'), row_index)
 })

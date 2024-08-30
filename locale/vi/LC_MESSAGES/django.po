@@ -7618,7 +7618,7 @@ msgstr "Quản lý dự án"
 
 #
 msgid "Project owner"
-msgstr "Pháp nhân dự án"
+msgstr "Phụ trách dự án"
 
 #
 msgid "Allow view this project"
@@ -8415,7 +8415,7 @@ msgstr "Chi phí dự án"
 
 #
 msgid "Project Owner"
-msgstr "Pháp nhân dự án"
+msgstr "Phụ trách dự án"
 
 #
 msgid "Project per years"

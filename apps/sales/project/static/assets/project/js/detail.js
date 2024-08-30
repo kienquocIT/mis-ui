@@ -77,6 +77,8 @@ $(document).ready(function () {
                 Task_in_project.init(project)
                 ProjectWorkExpenseHandle.init(work)
                 animating_number(project['completion_rate'], $('.completion_rate_block .heading span'))
+                if (data['completion_rate'] !== 100)
+                    $('#complete_project span span:nth-child(2)').text($.fn.gettext('Close Project'))
                 if (project.system_status <= 2)
                     $('.btn-edit-page, #create_baseline').prop('hidden', false)
                 else{

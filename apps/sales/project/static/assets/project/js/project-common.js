@@ -64,8 +64,10 @@ $(document).ready(function () {
     $('#complete_project, #open_project').on('click', function () {
         $(this).addClass('disabled');
         let data = {'system_status': 3}
+        if (parseFloat($('.completion_rate_block .heading span').text()) !== 100)
+            data.system_status = 4
         if ($(this)[0].getAttribute("id") === 'open_project')
-            data = {'system_status': 1}
+            data = {'system_status': 2}
         $.fn.callAjax2({
             'url': $FormElm.attr('data-url'),
             'method': 'put',

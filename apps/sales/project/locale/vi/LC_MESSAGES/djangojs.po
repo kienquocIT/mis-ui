@@ -182,6 +182,10 @@ msgid "Finish"
 msgstr "Hoàn thành"
 
 #
+msgid "Closed"
+msgstr "Đã đóng"
+
+#
 msgid "Jan"
 msgstr "TH 1"
 
@@ -231,8 +235,12 @@ msgstr "TH 12"
 
 #
 msgid "By Project owner"
-msgstr "Bởi Quản lý dự án"
+msgstr "Bởi Phụ trách dự án"
 
 #
 msgid "By System status"
 msgstr "Bởi Trạng thái"
+
+#
+msgid "Close Project"
+msgstr "Đóng dự án"

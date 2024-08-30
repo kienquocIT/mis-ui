@@ -143,6 +143,8 @@ $(document).ready(function () {
                 else $('#create_baseline').prop('disabled', true)
                 WFRTControl.setWFInitialData('projectbaseline', 'post');
                 animating_number(data['completion_rate'], $('.completion_rate_block .heading span'))
+                if (data['completion_rate'] !== 100)
+                    $('#complete_project span span:nth-child(2)').text($.fn.gettext('Close Project'))
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )

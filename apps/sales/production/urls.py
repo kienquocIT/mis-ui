@@ -3,7 +3,7 @@ from apps.sales.production.views import (
     BOMList, BOMCreate, BOMDetail, BOMUpdate, BOMListAPI, BOMDetailAPI, LaborListForBOMAPI, ProductionOrderCreate,
     ProductMaterialListForBOMAPI, ProductToolListForBOMAPI, BOMOrderListAPI, ProductionOrderDetail,
     ProductionOrderListAPI, ProductionOrderDetailAPI, ProductionOrderUpdate, ProductionOrderList,
-    FinishProductListForBOMAPI
+    FinishProductListForBOMAPI, ProductionOrderDDListAPI
 )
 
 urlpatterns = [
@@ -28,4 +28,5 @@ urlpatterns = [
     path('production-order/detail/<str:pk>', ProductionOrderDetail.as_view(), name='ProductionOrderDetail'),
     path('production-order/detail-api/<str:pk>', ProductionOrderDetailAPI.as_view(), name='ProductionOrderDetailAPI'),
     path('production-order/update/<str:pk>', ProductionOrderUpdate.as_view(), name='ProductionOrderUpdate'),
+    path('production-order-dd/api/list', ProductionOrderDDListAPI.as_view(), name='ProductionOrderDDListAPI'),
 ]

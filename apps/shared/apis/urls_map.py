@@ -690,3 +690,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Production order
     PRODUCTION_ORDER_LIST = StringUrl('production/production-order/list')
     PRODUCTION_ORDER_DETAIL = StringUrl('production/production-order')
+    PRODUCTION_ORDER_DD_LIST = StringUrl('production/production-order-dd/list')

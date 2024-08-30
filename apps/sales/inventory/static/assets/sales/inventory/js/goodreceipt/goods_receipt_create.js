@@ -14,21 +14,7 @@ $(function () {
         // Load init
         if (formSubmit.attr('data-method') === 'POST') {
             GRLoadDataHandle.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGr);
-            GRLoadDataHandle.loadBoxPO();
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.supplierSelectEle);
-            GRLoadDataHandle.loadBoxIA();
-            GRDataTableHandle.dataTableGoodReceiptPOProduct();
-            GRDataTableHandle.dataTableGoodReceiptPR();
-            GRDataTableHandle.dataTableGoodReceiptWH();
-            GRDataTableHandle.dataTableGoodReceiptWHLot();
-            GRDataTableHandle.dataTableGoodReceiptWHSerial();
-            GRDataTableHandle.dataTableGoodReceiptLineDetailPO();
-
-
-            GRDataTableHandle.dataTableGoodReceiptIAProduct();
-            GRDataTableHandle.dataTableGoodReceiptIAWHLot();
-            GRDataTableHandle.dataTableGoodReceiptIAWHSerial();
-            GRDataTableHandle.dataTableGoodReceiptLineDetailIA();
+            GRLoadDataHandle.loadCustomAreaByType();
         }
 
         // run datetimepicker

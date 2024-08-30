@@ -112,20 +112,53 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" for="box-so">{% trans 'Sale order' %}</label>
-                        <select
-                            class="form-select"
-                            id="box-so"
-                            data-url="{% url "SaleOrderListAPI" %}"
-                            data-method="GET"
-                            data-link-detail=""
-                            name="sale_order"
-                            data-keyResp="sale_order_list"
-                            data-keyText="code"
-                            multiple
-                            disabled
-                        ></select>
+                    <div class="row">
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label required" for="date-start">{% trans 'Start date' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="start-date" id="date-start"
+                                           class="form-control date-picker" autocomplete="off" required disabled>
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label required" for="date-end">{% trans 'End date' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="end-date" id="date-end"
+                                           class="form-control date-picker" autocomplete="off" required disabled>
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-group">{% trans 'Production group' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="box-group"
+                                    data-url="{% url "GroupListAPI" %}"
+                                    data-method="GET"
+                                    data-link-detail=""
+                                    name="group"
+                                    data-keyResp="group_list"
+                                    required
+                                    disabled
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-2 col-lg-2">
+                            <div class="form-group">
+                                <label class="form-label" for="time">{% trans 'Time' %}</label>
+                                <p class="mt-2 border-bottom" id="time" data-time-bom="0">--</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-6">
@@ -152,55 +185,20 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="date-start">{% trans 'Start date' %}</label>
-                                <div class="input-affix-wrapper">
-                                    <input type="text" name="start-date" id="date-start"
-                                           class="form-control date-picker" autocomplete="off" required disabled>
-                                    <div class="input-suffix">
-                                        <i class="fas fa-calendar-alt"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="date-end">{% trans 'End date' %}</label>
-                                <div class="input-affix-wrapper">
-                                    <input type="text" name="end-date" id="date-end"
-                                           class="form-control date-picker" autocomplete="off" required disabled>
-                                    <div class="input-suffix">
-                                        <i class="fas fa-calendar-alt"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="box-group">{% trans 'Production group' %}</label>
-                                <select
-                                    class="form-select"
-                                    id="box-group"
-                                    data-url="{% url "GroupListAPI" %}"
-                                    data-method="GET"
-                                    data-link-detail=""
-                                    name="group"
-                                    data-keyResp="group_list"
-                                    required
-                                    disabled
-                                ></select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label" for="time">{% trans 'Time' %}</label>
-                                <p class="mt-2 border-bottom" id="time" data-time-bom="0">--</p>
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label" for="box-so">{% trans 'Sale order' %}</label>
+                        <select
+                            class="form-select"
+                            id="box-so"
+                            data-url="{% url "SaleOrderListAPI" %}"
+                            data-method="GET"
+                            data-link-detail=""
+                            name="sale_order"
+                            data-keyResp="sale_order_list"
+                            data-keyText="code"
+                            multiple
+                            disabled
+                        ></select>
                     </div>
                 </div>
             </div>

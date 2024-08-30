@@ -8700,3 +8700,7 @@ msgstr "Tổng"
 #
 msgid "Outsourcing"
 msgstr "Gửi gia công"
+
+#
+msgid "Estimated delivery date"
+msgstr "Ngày giao dự kiến"

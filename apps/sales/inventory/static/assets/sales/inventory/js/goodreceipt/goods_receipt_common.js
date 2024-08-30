@@ -4,6 +4,7 @@ class GRLoadDataHandle {
     static POSelectEle = $('#box-good-receipt-purchase-order');
     static supplierSelectEle = $('#box-good-receipt-supplier');
     static IASelectEle = $('#box-good-receipt-inventory-adjustment');
+    static $boxProductionOrder = $('#box-production-order');
     static initPOProductEle = $('#data-init-purchase-order-products');
     static PRDataEle = $('#purchase_requests_data');
     static btnAddLot = $('#btn-add-manage-lot');
@@ -13,10 +14,10 @@ class GRLoadDataHandle {
     static transEle = $('#app-trans-factory');
     static urlEle = $('#url-factory');
     static dataTypeGr = [
-        // {
-        //     'id': 3,
-        //     'title': GRLoadDataHandle.transEle.attr('data-for-product')
-        // },
+        {
+            'id': 3,
+            'title': GRLoadDataHandle.transEle.attr('data-for-product')
+        },
         {
             'id': 2,
             'title': GRLoadDataHandle.transEle.attr('data-for-ia')
@@ -61,12 +62,46 @@ class GRLoadDataHandle {
         }
         let idAreaShow = 'custom-area-' + String(GRLoadDataHandle.typeSelectEle.val());
         document.getElementById(idAreaShow).removeAttribute('hidden');
+        GRLoadDataHandle.loadChangeByType(GRLoadDataHandle.typeSelectEle.val());
+
         // Line detail
         for (let eleLineDetail of formSubmit[0].querySelectorAll('.custom-line-detail')) {
             eleLineDetail.setAttribute('hidden', 'true');
         }
         let idLineDetailShow = 'custom-line-detail-' + String(GRLoadDataHandle.typeSelectEle.val());
         document.getElementById(idLineDetailShow).removeAttribute('hidden');
+    };
+
+    static loadChangeByType(type) {
+        if (type === "1") {
+            if (!GRLoadDataHandle.POSelectEle.val()) {
+                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.POSelectEle, [], {'is_all_receipted': false, 'system_status': 3});
+            }
+            if (!GRLoadDataHandle.supplierSelectEle.val()) {
+                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.supplierSelectEle);
+            }
+            GRDataTableHandle.dataTableGoodReceiptPOProduct();
+            GRDataTableHandle.dataTableGoodReceiptPR();
+            GRDataTableHandle.dataTableGoodReceiptWH();
+            GRDataTableHandle.dataTableGoodReceiptWHLot();
+            GRDataTableHandle.dataTableGoodReceiptWHSerial();
+            GRDataTableHandle.dataTableGoodReceiptLineDetailPO();
+        }
+        if (type === "2") {
+            if (!GRLoadDataHandle.IASelectEle.val()) {
+                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.IASelectEle, [], {'state': false});
+            }
+            GRDataTableHandle.dataTableGoodReceiptIAProduct();
+            GRDataTableHandle.dataTableGoodReceiptIAWHLot();
+            GRDataTableHandle.dataTableGoodReceiptIAWHSerial();
+            GRDataTableHandle.dataTableGoodReceiptLineDetailIA();
+        }
+        if (type === "3") {
+            if (!GRLoadDataHandle.$boxProductionOrder.val()) {
+                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionOrder);
+            }
+            GRDataTableHandle.dataTableGoodReceiptLineDetailProduction();
+        }
     };
 
     static loadBoxPO(dataPO = {}) {
@@ -1409,9 +1444,11 @@ class GRDataTableHandle {
     static tableIASerial = $('#datable-good-receipt-ia-serial');
     static tableLineDetailIA = $('#datable-good-receipt-line-detail-ia');
 
+    static tableLineDetailProduction = $('#datable-good-receipt-line-detail-production');
+
     // PO
     static dataTableGoodReceiptPOProduct(data) {
-        GRDataTableHandle.tablePOProduct.DataTableDefault({
+        GRDataTableHandle.tablePOProduct.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -1480,7 +1517,7 @@ class GRDataTableHandle {
     };
 
     static dataTableGoodReceiptPR(data) {
-        GRDataTableHandle.tablePR.DataTableDefault({
+        GRDataTableHandle.tablePR.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -1551,7 +1588,7 @@ class GRDataTableHandle {
     };
 
     static dataTableGoodReceiptWH(data) {
-        GRDataTableHandle.tableWH.DataTableDefault({
+        GRDataTableHandle.tableWH.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -1615,7 +1652,7 @@ class GRDataTableHandle {
     };
 
     static dataTableGoodReceiptWHLot(data) {
-        GRDataTableHandle.tableLot.DataTableDefault({
+        GRDataTableHandle.tableLot.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -1674,7 +1711,7 @@ class GRDataTableHandle {
     };
 
     static dataTableGoodReceiptWHSerial(data) {
-        GRDataTableHandle.tableSerial.DataTableDefault({
+        GRDataTableHandle.tableSerial.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -1744,7 +1781,7 @@ class GRDataTableHandle {
     };
 
     static dataTableGoodReceiptLineDetailPO(data) {
-        GRDataTableHandle.tableLineDetailPO.DataTableDefault({
+        GRDataTableHandle.tableLineDetailPO.not('.dataTable').DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
             ordering: false,
@@ -1916,7 +1953,7 @@ class GRDataTableHandle {
 
     // IA
     static dataTableGoodReceiptIAProduct(data) {
-        GRDataTableHandle.tableIAProduct.DataTableDefault({
+        GRDataTableHandle.tableIAProduct.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -1998,7 +2035,7 @@ class GRDataTableHandle {
     };
 
     static dataTableGoodReceiptIAWHLot(data) {
-        GRDataTableHandle.tableIALot.DataTableDefault({
+        GRDataTableHandle.tableIALot.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -2051,7 +2088,7 @@ class GRDataTableHandle {
     };
 
     static dataTableGoodReceiptIAWHSerial(data) {
-        GRDataTableHandle.tableIASerial.DataTableDefault({
+        GRDataTableHandle.tableIASerial.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -2115,7 +2152,128 @@ class GRDataTableHandle {
     };
 
     static dataTableGoodReceiptLineDetailIA(data) {
-        GRDataTableHandle.tableLineDetailIA.DataTableDefault({
+        GRDataTableHandle.tableLineDetailIA.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            ordering: false,
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            columns: [  // 50,250,250,100,150,200,250,250 (1500p)
+                {
+                    targets: 0,
+                    width: '2.5%',
+                    render: (data, type, row, meta) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${(meta.row + 1)}</span>`
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '16.66%',
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <div class="col-12 col-md-11 col-lg-11">
+                                        <select
+                                            class="form-select table-row-item"
+                                            data-product-id="${row?.['product']?.['id']}"
+                                            data-url="${GRDataTableHandle.productInitEle.attr('data-url')}"
+                                            data-link-detail="${GRDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                            data-method="${GRDataTableHandle.productInitEle.attr('data-method')}"
+                                            data-keyResp="product_sale_list"
+                                            required
+                                            disabled
+                                        >
+                                        </select>
+                                    </div>
+                                </div>`;
+                    },
+                },
+                {
+                    targets: 2,
+                    width: '16.66%',
+                    render: (data, type, row) => {
+                        return `<p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    width: '6.66%',
+                    render: () => {
+                        return `<div class="row">
+                                    <select 
+                                        class="form-control table-row-uom"
+                                        data-url="${GRDataTableHandle.uomInitEle.attr('data-url')}"
+                                        data-method="${GRDataTableHandle.uomInitEle.attr('data-method')}"
+                                        data-keyResp="unit_of_measure"
+                                        disabled
+                                    >
+                                    </select>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-import validated-number" value="${row.quantity_import}" disabled>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    width: '13.33%',
+                    render: () => {
+                        return `<div class="row">
+                                    <select 
+                                        class="form-control table-row-warehouse"
+                                        data-url="${GRDataTableHandle.warehouseInitEle.attr('data-url')}"
+                                        data-method="${GRDataTableHandle.warehouseInitEle.attr('data-method')}"
+                                        data-keyResp="warehouse_list"
+                                        disabled
+                                    >
+                                    </select>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 6,
+                    width: '16.66%',
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input 
+                                        type="text" 
+                                        class="form-control mask-money table-row-price" 
+                                        value="${row?.['product_cost_price']}"
+                                        data-return-type="number"
+                                    >
+                                    </div>`;
+                    }
+                },
+                {
+                    targets: 7,
+                    width: '16.66%',
+                    render: (data, type, row) => {
+                        return `<div class="row subtotal-area">
+                                    <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
+                                    <input
+                                        type="text"
+                                        class="form-control table-row-subtotal-raw"
+                                        value="${row?.['product_subtotal_price']}"
+                                        hidden
+                                    >
+                                </div>`;
+                    }
+                },
+            ],
+        });
+    };
+
+
+    // Production
+    static dataTableGoodReceiptLineDetailProduction(data) {
+        GRDataTableHandle.tableLineDetailProduction.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             ordering: false,
             paging: false,

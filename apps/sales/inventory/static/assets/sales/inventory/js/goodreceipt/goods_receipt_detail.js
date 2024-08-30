@@ -2,19 +2,6 @@ $(function () {
 
     $(document).ready(function () {
         let $form = $('#frm_good_receipt_create');
-
-        GRDataTableHandle.dataTableGoodReceiptPOProduct();
-        GRDataTableHandle.dataTableGoodReceiptPR();
-        GRDataTableHandle.dataTableGoodReceiptWH();
-        GRDataTableHandle.dataTableGoodReceiptWHLot();
-        GRDataTableHandle.dataTableGoodReceiptWHSerial();
-        GRDataTableHandle.dataTableGoodReceiptLineDetailPO();
-
-        GRDataTableHandle.dataTableGoodReceiptIAProduct();
-        GRDataTableHandle.dataTableGoodReceiptIAWHLot();
-        GRDataTableHandle.dataTableGoodReceiptIAWHSerial();
-        GRDataTableHandle.dataTableGoodReceiptLineDetailIA();
-
         // call ajax get detail from API
         $.fn.callAjax2({
                 'url': $form.data('url'),

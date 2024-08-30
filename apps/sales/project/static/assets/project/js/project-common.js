@@ -463,6 +463,7 @@ function show_task_list() {
 
 function validateNumber(value) {
     // Replace non-digit characters with an empty string
+    value = value.toString()
     let temp = value.replace(/[^0-9.]/g, '');
     // Remove unnecessary zeros from the integer part
     temp = temp.replace("-", "").replace(/^0+(?=\d)/, '');
@@ -970,7 +971,6 @@ class ProjectWorkExpenseHandle {
             rowCallback: function (row, data, index) {
                 // on change EXPENSE LABOR NAME
                 $('.expense_labor_name', row).on('select2:select', function (e) {
-                    console.log('labor name')
                     data.expense_name = e.params.data.data
                     data.expense_item = data.expense_name.expense_item
                     data.expense_price = data.expense_name['price_list'][0]?.price_value || 0
@@ -983,7 +983,6 @@ class ProjectWorkExpenseHandle {
                     let data_item = e.params.data.data
                     if ($(this).hasClass('expense_item')) data.expense_item = data_item
                     else data.uom = data_item
-                    console.log('uom on change')
                 })
 
                 // on change EXPENSE NAME
@@ -1051,9 +1050,12 @@ class ProjectWorkExpenseHandle {
 
             let data = crtTable.row($idx).data();
 
-            if ($(this).hasClass('valid-number'))
-                data.quantity = this.value = validateNumber(this.value)
-            else data.expense_price = validateNumber(this.value)
+            const _this_value = validateNumber(Number(this.value))
+            if ($(this).hasClass('valid-number')){
+                data.quantity = _this_value
+                this.value = _this_value
+            }
+            else data.expense_price = _this_value
             if (data.expense_price && data.quantity) {
                 data.sub_total = data.expense_price * data.quantity
                 crtTable.cell({row: _idx, column: 5}).data(data.sub_total).draw(false)

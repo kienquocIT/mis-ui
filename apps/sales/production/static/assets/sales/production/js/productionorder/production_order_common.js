@@ -175,7 +175,7 @@ class ProdOrderLoadDataHandle {
         return true;
     };
 
-    static loadDDProduct($ele) {
+    static loadDDProduct($ele, dataProduct) {
         let result = [];
         $.fn.callAjax2({
                 'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
@@ -191,7 +191,6 @@ class ProdOrderLoadDataHandle {
                 if (data) {
                     if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
                         result = result.concat(data.product_sale_list);
-                        ProdOrderLoadDataHandle.loadInitS2($ele, result);
                         $.fn.callAjax2({
                                 'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
                                 'method': 'GET',
@@ -207,25 +206,45 @@ class ProdOrderLoadDataHandle {
                                     if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
                                         result = result.concat(data.product_sale_list);
                                         ProdOrderLoadDataHandle.loadInitS2($ele, result);
-                                        $.fn.callAjax2({
-                                                'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
-                                                'method': 'GET',
-                                                'data': {
-                                                    'general_product_types_mapped__is_goods': true,
-                                                },
-                                                'isDropdown': true,
-                                            }
-                                        ).then(
-                                            (resp) => {
-                                                let data = $.fn.switcherResp(resp);
-                                                if (data) {
-                                                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                                                        result = result.concat(data.product_sale_list);
-                                                        ProdOrderLoadDataHandle.loadInitS2($ele, result);
-                                                    }
-                                                }
-                                            }
-                                        )
+                                        // $.fn.callAjax2({
+                                        //         'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
+                                        //         'method': 'GET',
+                                        //         'data': {
+                                        //             'general_product_types_mapped__is_goods': true,
+                                        //         },
+                                        //         'isDropdown': true,
+                                        //     }
+                                        // ).then(
+                                        //     (resp) => {
+                                        //         let data = $.fn.switcherResp(resp);
+                                        //         if (data) {
+                                        //             if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                                        //                 result = result.concat(data.product_sale_list);
+                                        //                 ProdOrderLoadDataHandle.loadInitS2($ele, result);
+                                        //                 if (dataProduct) {
+                                        //                     $.fn.callAjax2({
+                                        //                             'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
+                                        //                             'method': 'GET',
+                                        //                             'data': {'id': dataProduct?.['id']},
+                                        //                             'isDropdown': true,
+                                        //                         }
+                                        //                     ).then(
+                                        //                         (resp) => {
+                                        //                             let data = $.fn.switcherResp(resp);
+                                        //                             if (data) {
+                                        //                                 if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                                        //                                     if (data.product_sale_list.length > 0) {
+                                        //                                         ProdOrderLoadDataHandle.loadInitS2($ele, [data.product_sale_list[0]]);
+                                        //                                     }
+                                        //                                 }
+                                        //                             }
+                                        //                         }
+                                        //                     )
+                                        //                 }
+                                        //             }
+                                        //         }
+                                        //     }
+                                        // )
                                     }
                                 }
                             }
@@ -234,7 +253,7 @@ class ProdOrderLoadDataHandle {
                 }
             }
         )
-        ProdOrderLoadDataHandle.loadInitS2($ele, result);
+        // ProdOrderLoadDataHandle.loadInitS2($ele, result);
     };
 
     static loadDD($table) {
@@ -243,8 +262,7 @@ class ProdOrderLoadDataHandle {
             if (row.querySelector('.table-row-order').getAttribute('data-row')) {
                 let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
                 if (row.querySelector('.table-row-item')) {
-                    // ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [], {'general_product_types_mapped__is_goods': true, 'general_product_types_mapped__is_finished_goods': true, 'general_product_types_mapped__is_material': true});
-                    ProdOrderLoadDataHandle.loadDDProduct($(row.querySelector('.table-row-item')));
+                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [], {'general_product_types_mapped__is_material': true});
                     if (dataRow?.['product_data']) {
                         $.fn.callAjax2({
                                 'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
@@ -258,7 +276,7 @@ class ProdOrderLoadDataHandle {
                                 if (data) {
                                     if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
                                         if (data.product_sale_list.length > 0) {
-                                            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [data.product_sale_list[0]]);
+                                            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [data.product_sale_list[0]], {'general_product_types_mapped__is_material': true});
                                         }
                                     }
                                 }

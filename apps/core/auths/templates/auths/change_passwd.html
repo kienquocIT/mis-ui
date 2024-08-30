@@ -13,87 +13,104 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form id="frm-change-password" data-url="{% url 'ChangePasswordAPI' %}" data-method="PUT">
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group mb-3">
-                    <label for="inp-current-password" class="form-label required">{% trans 'Current password' %}</label>
-                    <div class="input-group">
-                        <input
-                                type="password"
-                                name="current_password" id="inp-current-password"
-                                class="form-control" placeholder="●●●●●●●●" tabindex="6"
-                                required
-                        />
-                        <button class="btn-show-hide-passwd btn btn-outline-secondary w-100p" type="button" tabindex="7">
-                            <span>{% trans 'Show' %}</span>
-                            <span class="d-none">{% trans 'Hide' %}</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-12">
-                <div class="form-group mb-3">
-                    <label for="inp-new-password" class="form-label required">
-                        {% trans 'New password' %}
-                    </label>
-                    <div class="input-group">
-                        <input
-                                type="password" name="new_password"
-                                id="inp-new-password" class="form-control"
-                                placeholder="●●●●●●●●" tabindex="6"
-                                required
-                        />
-                        <button
-                                class="btn-show-hide-passwd btn btn-outline-secondary w-100p"
-                                type="button" tabindex="7"
-                        >
-                            <span>{% trans 'Show' %}</span>
-                            <span class="d-none">{% trans 'Hide' %}</span>
-                        </button>
-                    </div>
-                    <small class="form-text text-muted">
-                        {% trans 'Use a strong password with at least 6 characters, including a mix of lowercase, uppercase, numbers, and symbols.' %}
-                        <i>!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~</i>
-                    </small>
-                    <div class="w-100">
-                        <small>{% trans 'Strength of password' %}</small>
-                        <div class="progress progress-bar-rounded mb-5">
-                            <div
-                                    class="progress-bar bg-light w-0" role="progressbar"
-                                    aria-valuenow="25" aria-valuemin="0"
-                                    aria-valuemax="100" id="strengthPasswordProgress"
-                            ></div>
+    <div class="container" style="max-width: 700px">
+        <form id="frm-change-password" data-url="{% url 'ChangePasswordAPI' %}" data-method="PUT">
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group mb-3">
+                        <label
+                                for="inp-current-password" class="form-label required"
+                        >{% trans 'Current password' %}</label>
+                        <div class="input-group">
+                            <input
+                                    type="password"
+                                    name="current_password" id="inp-current-password"
+                                    class="form-control" placeholder="●●●●●●●●" tabindex="6"
+                                    required
+                            />
+                            <button
+                                    class="btn-show-hide-passwd btn btn-outline-secondary w-100p" type="button"
+                                    tabindex="7"
+                            >
+                                <span>{% trans 'Show' %}</span>
+                                <span class="d-none">{% trans 'Hide' %}</span>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-12">
-                <div class="form-group mb-3">
-                    <label for="inp-new-password-again" class="form-label required">
-                        {% trans 'New password again' %}
-                    </label>
-                    <div class="input-group">
-                        <input
-                                type="password" name="new_password_again"
-                                id="inp-new-password-again" class="form-control"
-                                placeholder="●●●●●●●●" tabindex="6"
-                                required
-                        />
-                        <button
-                                class="btn-show-hide-passwd btn btn-outline-secondary w-100p"
-                                type="button" tabindex="7"
-                        >
-                            <span>{% trans 'Show' %}</span>
-                            <span class="d-none">{% trans 'Hide' %}</span>
-                        </button>
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <div class="form-group mb-3">
+                        <label for="inp-new-password" class="form-label required">
+                            {% trans 'New password' %}
+                        </label>
+                        <div class="input-group">
+                            <input
+                                    type="password" name="new_password"
+                                    id="inp-new-password" class="form-control"
+                                    placeholder="●●●●●●●●" tabindex="6"
+                                    required
+                            />
+                            <button
+                                    class="btn-show-hide-passwd btn btn-outline-secondary w-100p"
+                                    type="button" tabindex="7"
+                            >
+                                <span>{% trans 'Show' %}</span>
+                                <span class="d-none">{% trans 'Hide' %}</span>
+                            </button>
+                        </div>
+                        <small class="form-text text-muted">
+                            {% trans 'Use a strong password with at least 6 characters, including a mix of lowercase, uppercase, numbers, and symbols.' %}
+                            <i>!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~</i>
+                        </small>
+                        <div class="w-100">
+                            <small>{% trans 'Strength of password' %}</small>
+                            <div class="progress progress-bar-rounded mb-5">
+                                <div
+                                        class="progress-bar bg-light w-0" role="progressbar"
+                                        aria-valuenow="25" aria-valuemin="0"
+                                        aria-valuemax="100" id="strengthPasswordProgress"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-12">
+                    <div class="form-group mb-3">
+                        <label for="inp-new-password-again" class="form-label required">
+                            {% trans 'New password again' %}
+                        </label>
+                        <div class="input-group">
+                            <input
+                                    type="password" name="new_password_again"
+                                    id="inp-new-password-again" class="form-control"
+                                    placeholder="●●●●●●●●" tabindex="6"
+                                    required
+                            />
+                            <button
+                                    class="btn-show-hide-passwd btn btn-outline-secondary w-100p"
+                                    type="button" tabindex="7"
+                            >
+                                <span>{% trans 'Show' %}</span>
+                                <span class="d-none">{% trans 'Hide' %}</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </form>
+            {% if data.include_otp %}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group mb-3">
+                            <label for="inp-otp-2fa" class="form-label required">{% trans 'OTP' %}</label>
+                            <input type="text" name="otp" class="form-control" id="inp-otp-2fa" required minlength="6" maxlength="6" />
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </form>
+    </div>
 {% endblock %}
 
 {% block jsFooter %}
@@ -507,7 +524,7 @@
                 },
             })
 
-            jQuery.validator.addMethod("notSameCurrentPassword", function(value, element) {
+            jQuery.validator.addMethod("notSameCurrentPassword", function (value, element) {
                 {#return this.optional(element) || (parseFloat(value) > 0);#}
                 return $('#inp-new-password').val() !== $('#inp-current-password').val();
             }, $.validator.messages.newPasswordNotSameCurrentPassword);
@@ -539,7 +556,7 @@
                     }).then(
                         (resp) => {
                             let data = $.fn.switcherResp(resp);
-                            if (data){
+                            if (data) {
                                 $.fn.notifyB({
                                     'description': $.fn.transEle.attr('data-success'),
                                 }, 'success');

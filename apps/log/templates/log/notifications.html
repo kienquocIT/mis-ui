@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block pageContent %}
+    <table
+            class="table w-100 no-wrap" id="tbl-notification-list"
+            data-url="{% url 'MyNotifyAllAPI' %}"
+    >
+        <thead>
+            <tr>
+                <th class="no-transform">{% trans 'Status' %}</th>
+                <th class="no-transform">{% trans 'Date created' %}</th>
+                <th class="no-transform">{% trans 'Application' %}</th>
+                <th class="no-transform">{% trans 'Title' %}</th>
+                <th class="no-transform">{% trans 'Remarks' %}</th>
+                <th class="no-transform">{% trans 'Actions' %}</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+{% endblock %}
+
+{% block jsFooter %}
+    <script>
+        $(document).ready(function (){
+            function resolve_app_name(_code_app) {
+                if (_code_app) {
+                    let appData = UrlGatewayReverse.get_app_name(_code_app);
+                    if (appData && appData.hasOwnProperty('title')) return appData['title'];
+                }
+                return _code_app;
+            }
+
+            const tbl$ = $('#tbl-notification-list');
+            tbl$.DataTableDefault({
+                useDataServer: true,
+                pageLength: 5,
+                ajax: {
+                    url: tbl$.attr('data-url'),
+                    type: 'GET',
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('notify_data')) {
+                            return resp.data['notify_data'] ? resp.data['notify_data'] : [];
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
+                columns: [
+                    {
+                        data: 'is_done',
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            if (data === false){
+                                return `<span data-bs-toggle="tooltip" title="Unread" class="badge badge-warning badge-indicator badge-indicator-lg">`;
+                            }
+                            return '<span data-bs-toggle="tooltip" title="Done" class="badge badge-success badge-indicator badge-indicator-lg"></span>';
+                        }
+                    },
+                    {
+                        data: 'date_created',
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(data);
+                        }
+                    },
+                    {
+                        data: 'doc_app',
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return resolve_app_name(data);
+                        }
+                    },
+                    {
+                        data: 'title',
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return `<a href="${UrlGatewayReverse.get_url(row.doc_id, row.doc_app, {'redirect': true})}">${data || '-'}</a>`;
+                        }
+                    },
+                    {
+                        data: 'msg',
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return data;
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return '';
+                        }
+                    },
+                ]
+            })
+        })
+    </script>
+{% endblock %}

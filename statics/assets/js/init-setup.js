@@ -413,7 +413,7 @@ class LogController {
                     if (isUpdate === true) {
                         msgMapIcon = '<i class="fas fa-user-edit ml-2 mt-1"></i>';
                     }
-                    childLogHTML += ` <span class="text-low-em">${itemLog['msg']}</span>${msgMapIcon}</div>`;
+                    childLogHTML += ` <span class="fs-7">${itemLog['msg']}</span>${msgMapIcon}</div>`;
                     logHTML.push(childLogHTML);
                 })
                 let logGroupHTML = `<div class="card-body mt-4"><div class="card-text">${logHTML.join("")}</div></div>`
@@ -581,174 +581,219 @@ class NotifyController {
         new NotifyPopup().cleanChildNotifyBlock();
         let realThis = this;
         if (realThis.notifyCountUrl) realThis.checkNotifyCount();
-        realThis.dropdownData.on("show.bs.dropdown", function () {
-            let dataArea = $('#idxNotifyShowData');
-            WindowControl.showLoadingWaitResponse(dataArea);
-            dataArea.empty();
 
-            let dataUrl = $(this).attr('data-url');
-            let dataMethod = $(this).attr('data-method');
+        let notifyData = [];
+        let currentPage = 0;
+        let pageSize = 10;
+        let filterList = {};
 
-            let appNameTranslate = $("#app_name_translate").text();
-            appNameTranslate = appNameTranslate ? JSON.parse(appNameTranslate) : {};
+        const nowDate = moment().toDate();
+        const btn$ = $('#notifyDropdownData');
+        const notifyGroup$ = $('#notify-bell-list');
+        const notifyContent$ = notifyGroup$.find('.notify-bell-content');
+        const itemEmpty$ = notifyGroup$.find('.notify-bell-empty');
+        const itemSub$ = notifyGroup$.find('#notify-bell-item-sub-base.notify-bell-item-sub');
+        const itemBase$ = notifyGroup$.find('#notify-bell-item-base');
+        const body$ = notifyGroup$.find('.notify-bell-list-body');
+        const loadMore$ = notifyGroup$.find('.notify-bell-load-more');
+        const filter$ = notifyGroup$.find('#notify-bell-filter');
+        const btnSeenAll$ = notifyGroup$.find('#notifyBtnSeenAll');
+        const btnDeleteAll$ = notifyGroup$.find('#notifyBtnDeleteAll');
 
-            function resolve_app_name(_code_app) {
-                if (_code_app) {
-                    let appData = UrlGatewayReverse.get_app_name(_code_app);
-                    if (appData && appData.hasOwnProperty('title')) return appData['title'];
-                }
-                return _code_app;
+        btn$.on('click', function () {
+            if (!notifyGroup$.is(':visible') && body$.find('.notify-bell-item').length === 0) {
+                notifyGroup$.trigger("data.load")
             }
-
-            function has_active_app(_code_app) {
-                if (_code_app) {
-                    let appData = UrlGatewayReverse.get_app_name(_code_app);
-                    return UrlGatewayReverse.has_active_app(appData);
-                }
-                return true;
-            }
-
-            function minimal_msg(item) {
-                let msg = item?.['msg'];
-                if (msg.length > 100) {
-                    let minimal_txt = msg.slice(0, 100);
-                    let more_txt = msg.slice(100);
-                    return `<div class="mb-1">
-                        <small class="text-muted">${minimal_txt}</small>
-                        <small class="notify-minimal-msg text-muted">...</small>
-                        <button class="btn btn-flush-light btn-xs notify-btn-show-full-msg">${$.fn.transEle.attr('data-msg-more')}</button>
-                        <small class="notify-full-msg text-muted" style="display: none">${more_txt}</small>
-                    </div>`
-                }
-                return `<div class="mb-1"><small class="text-muted">${msg}</small></div>`;
-            }
-
-            $.fn.callAjax2({
-                url: dataUrl,
-                method: dataMethod,
-            }).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                let arr_no_seen = [];
-                let arr_seen = [];
-                if (data && data.hasOwnProperty('notify_data')) {
-                    data['notify_data'].map((item) => {
-                        let senderData = item?.['employee_sender_data'] || {};
-                        let urlData = UrlGatewayReverse.get_url(item['doc_id'], item['doc_app'], {
-                            'redirect': true,
-                            'notify_id': item['id']
-                        },);
-                        let relative_time_html = $x.fn.displayRelativeTime(item?.['date_created'], {
-                            'callback': function (data) {
-                                return `<small>${data.relate}</small><small class="ml-auto">${data.output}</small>`;
-                            }
-                        });
-                        let stickyUnseen = item?.['is_done'] === true ? `` : `
-                            <span class="notify-flag-unseen badge badge-warning badge-indicator badge-indicator-xl position-top-start-overflow-1"></span>
-                        `;
-                        let btnSeenItem = item?.['is_done'] === true ? `` : `
-                            <button class="btn btn-xs btn-primary text-no-capital btn-seen-notify"><i class="fa-brands fa-readme"></i> ${dataArea.attr('data-msg-seen')}</button>
-                        `;
-                        let btn_reply_mentions = !item?.['comment_mentions_id'] ? `` : `
-                            <button 
-                                class="btn btn-xs btn-primary text-no-capital btn-notify-reply-comment" 
-                                type="button"
-                            ><i class="fa-solid fa-reply"></i> ${dataArea.attr('data-msg-reply')}</button>
-                        `;
-                        let btn_goto = has_active_app(item?.['doc_app']) !== true ? `` : `
-                            <a href="${urlData}" class="btn btn-xs btn-primary text-no-capital" type="button"><i class="fa-solid fa-right-to-bracket"></i> ${dataArea.attr('data-msg-goto')} </a>
-                        `;
-                        let tmp = `
-                            <div
-                                class="dropdown-item mb-1 bell-menu-item"
-                                data-is-done="${item?.['is_done']}"
-                                data-notify-id="${item?.['id']}"
-                                data-doc-id="${item?.['doc_id']}"
-                                data-app-id="${item?.['application_id']}"
-                                data-comment-id="${item?.['comment_mentions_id']}" 
-                            >
-                                <div class="media">
-                                    <div class="media-head">
-                                        <div class="avatar avatar-soft-primary avatar-rounded avatar-sm position-relative">
-                                            <span class="initial-wrap">${senderData ? $x.fn.renderAvatar(senderData) : '<i class="fa-solid fa-gear"></i>'}</span>
-                                            ${stickyUnseen}
-                                        </div>
-                                    </div>
-                                    <div class="media-body">
-                                        <p class="text-primary title">${item?.['title']}</p>
-                                        <small class="badge badge-primary badge-outline badge-sm mb-1">${resolve_app_name(item?.['doc_app'])}</small>
-                                    </div>
-                                </div>
-                                <div>
-                                    ${minimal_msg(item)}
-                                    <div class="notifications-info">
-                                         <div class="notifications-time mb-1 w-100 d-flex justify-content-start">${relative_time_html}</div>
-                                    </div>
-                                    <div>
-                                        ${btn_goto}
-                                        ${btn_reply_mentions}
-                                        ${btnSeenItem}
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        if (item?.['is_done'] === true) arr_seen.push(tmp); else arr_no_seen.push(tmp);
-                    })
-                }
-
-                if (arr_no_seen.length > 0 || arr_seen.length > 0) {
-                    dataArea.append(arr_no_seen.join("") + arr_seen.join(""));
-                } else {
-                    dataArea.append(`<small class="text-muted">${$.fn.transEle.attr('data-no-data')}</small>`);
-                }
-                ListeningEventController.listenImageLoad(
-                    $(dataArea).find('img'),
-                    {'imgReplace': globeAvatarNotFoundImg},
-                );
-
-                dataArea.find('button.btn-notify-reply-comment').on('click', function (event) {
-                    // event.stopPropagation();
-
-                    let bellNotifyItem = $(this).closest('.bell-menu-item');
-                    let notifyIdx = bellNotifyItem.attr('data-notify-id');
-                    let docIdx = bellNotifyItem.attr('data-doc-id');
-                    let appIdx = bellNotifyItem.attr('data-app-id');
-                    let commentIdx = bellNotifyItem.attr('data-comment-id');
-
-                    // seen
-                    let isDone = bellNotifyItem.attr('data-is-done') === 'true';
-                    if (isDone === false) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx), $(this));
-
-                    //
-                    let modalEle = $('#CommentModal');
-                    new $x.cls.cmt(modalEle.find('.comment-group')).init(docIdx, appIdx, {'comment_id': commentIdx ? commentIdx : null})
-                    // new $x.cls.cmt(modalEle.find('.comment-group')).init(docIdx, appIdx)
-                    modalEle.modal('show');
-                });
-
-                dataArea.find('button.btn-seen-notify').on('click', function (event) {
-                    event.stopPropagation();
-
-                    let bellNotifyItem = $(this).closest('.bell-menu-item');
-                    let notifyIdx = bellNotifyItem.attr('data-notify-id');
-                    // seen
-                    let isDone = bellNotifyItem.attr('data-is-done') === 'true';
-                    if (isDone === false) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx), $(this));
-                })
-
-                dataArea.find('button.notify-btn-show-full-msg').on('click', function (event) {
-                    event.stopPropagation();
-
-                    $(this).siblings('.notify-minimal-msg').fadeOut('fast');
-                    $(this).siblings('.notify-full-msg').fadeIn('fast');
-                    $(this).fadeOut('fast');
-                })
-
-                WindowControl.hideLoadingWaitResponse(dataArea);
-            }, (errs) => {
-                WindowControl.hideLoadingWaitResponse(dataArea);
+            notifyGroup$.fadeToggle(0, function () {
+                notifyContent$.fadeToggle(100);
             });
+        })
+        notifyGroup$.on('click', function (event) {
+            const target$ = $(event.target);
+            if (target$.closest('.notify-bell-content').length === 0) {
+                notifyContent$.fadeToggle(100, function () {
+                    notifyGroup$.fadeToggle(0);
+                })
+            } else {
+                const notifyBellItem$ = $(event.target).closest('.notify-bell-item');
+                const notifyItemData = $(notifyBellItem$).data('notifyItemData');
+
+                if (notifyBellItem$.length > 0 && notifyItemData){
+                    let notifyIdx = notifyItemData?.['id'];
+                    let docIdx = notifyItemData?.['doc_id'];
+                    let appIdx = notifyItemData?.['application_id'];
+                    let commentIdx = notifyItemData?.['comment_mentions_id'];
+
+                    const notifyBtnReply$ = $(event.target).closest('.data-btn-mention-reply');
+                    if (notifyBtnReply$.length > 0){
+                        // seen
+                        let isDone = !!notifyItemData?.['is_done'];
+                        if (isDone === false) call_done_notify(notifyIdx, $(notifyBellItem$));
+
+                        //
+                        let modalEle = $('#CommentModal');
+                        new $x.cls.cmt(modalEle.find('.comment-group')).init(docIdx, appIdx, {'comment_id': commentIdx ? commentIdx : null})
+                        // new $x.cls.cmt(modalEle.find('.comment-group')).init(docIdx, appIdx)
+                        modalEle.modal('show');
+                    }
+
+                    const notifyBtnSeen$ = $(event.target).closest('.data-btn-read-item');
+                    if (notifyBtnSeen$.length > 0){
+                        call_done_notify(notifyIdx, $(notifyBellItem$));
+                    }
+                }
+            }
+        })
+
+        function resolveFilter(){
+            const value = $(filter$).val();
+            if (value === 'unseen'){
+                filterList = {'is_done': false}
+            } else if (value === 'seen'){
+                filterList = {'is_done': true}
+            } else {
+                filterList = {}
+            }
+        }
+
+        resolveFilter();
+
+        function resetNotifyListShowing(){
+            currentPage = 0;
+            body$.children().not(itemEmpty$).remove();
+            itemEmpty$.show(0);
+        }
+
+        filter$.on('change', function (){
+            resolveFilter();
+            resetNotifyListShowing();
+            notifyGroup$.trigger("data.load");
+        })
+
+        function resolve_app_name(_code_app) {
+            if (_code_app) {
+                let appData = UrlGatewayReverse.get_app_name(_code_app);
+                if (appData && appData.hasOwnProperty('title')) return appData['title'];
+            }
+            return _code_app;
+        }
+
+        function date_to_str(dateObj){
+            return `${dateObj.getDate()}-${dateObj.getMonth() + 1}-${dateObj.getFullYear()}`
+        }
+
+        function call_done_notify(notify_id, ele$){
+            $.fn.callAjax2({
+                url: notifyGroup$.attr('data-url-done-notify').replaceAll('__pk__', notify_id),
+                method: 'GET',
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        let counter = Number.parseInt(realThis.bellCount.text());
+                        if (counter > 0) counter -= 1;
+
+                        if (counter > 0) realThis.bellCount.text(counter);
+                        else {
+                            realThis.bellCount.text('0').fadeOut();
+                            realThis.bellIdxIcon.removeClass('my-bell-ring');
+                        }
+                        ele$.removeClass('unread');
+                    }
+                },
+                (errs) => {
+                },
+            );
+
+        }
+
+        function decorate_msg(msg){
+            let regex = /@[^]*?\u200B/g;
+            return $.fn.gettext(msg).replace(regex, (match) => {
+                return `<span class="notify-mention-person">${match}</span>`;
+            });
+
+        }
+
+        function appendNotifyItem(data){
+            itemEmpty$.hide(0);
+            const docId = data?.['doc_id'];
+            const docApp = data?.['doc_app'];
+            const base$ = $(itemBase$.prop('outerHTML')).removeAttr('id');
+            base$.data('notifyItemData', data);
+            base$.addClass('detail');
+            base$.find('.data-btn-detail-item').attr('href', UrlGatewayReverse.get_url(docId, docApp, {'redirect': true}))
+            base$.find('.item-data-msg').html(decorate_msg(data.msg) || '');
+            base$.find('.item-data-app').text(resolve_app_name(data.doc_app));
+            base$.find('.item-data-time').html(
+                $x.fn.displayRelativeTime(data.date_created, {
+                    'callback': function (data) {
+                        const dateStr = data['objDT'].toDate().toISOString().substring(0, 10);
+                        const eleSubTmp$ = notifyGroup$.find(`.notify-bell-item-sub[data-value="${dateStr}"]`);
+                        if (eleSubTmp$.length === 0){
+                            const sub$ = $(itemSub$.prop('outerHTML')).removeAttr('id').attr('data-value', dateStr);
+                            if (data['objDT'].toDate() === nowDate){
+                                sub$.find('p').text('Today');
+                            } else {
+                                sub$.find('p').text(date_to_str(data['objDT'].toDate()));
+                            }
+                            body$.append(sub$);
+                        }
+                        if (data['objDT'].toDate() === nowDate){
+                            base$.attr('title', data.output);
+                            return `<small>${data.relate}</small><small>${data.output}</small>`;
+                        } else {
+                            return `<small>${data.output}</small>`;
+                        }
+
+                    }
+                })
+            );
+            if (data.is_done !== true) base$.addClass('unread');
+            else base$.removeClass('unread');
+            const mentionId = data?.['comment_mentions_id'];
+            const employeeSenderData = data?.['employee_sender_data'];
+            if (mentionId && $x.fn.checkUUID4(mentionId)) {
+                base$.addClass('mention');
+            } else {
+                base$.removeClass('mention');
+            }
+            body$.append(base$)
+        }
+
+        loadMore$.on('click', function (){
+            notifyGroup$.trigger("data.load");
+        })
+
+        notifyGroup$.on("data.load", function () {
+            const url = $(btn$).attr('data-url') + '?' + $.param({...filterList, 'pageSize': pageSize, 'page': currentPage + 1, 'order': '-date_created'});
+            $.fn.callAjax2({
+                url: url,
+                method: 'GET',
+                isLoading: true,
+                errorOnly: true,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    const pageNext = data?.['page_next'];
+                    if (data && data.hasOwnProperty('notify_data')) {
+                        currentPage = currentPage + 1;
+                        notifyData = notifyData.concat(data['notify_data']);
+
+                        if (pageNext) loadMore$.addClass('active');
+                        else loadMore$.removeClass('active');
+
+                        data['notify_data'].map((item) => {
+                            appendNotifyItem(item);
+                        })
+                        body$.find('[data-bs-toggle="tooltip"]').tooltip();
+                    }
+                },
+                errs => {},
+            );
         });
-        realThis.btnSeenAll.click(function (event) {
+
+        btnSeenAll$.on('click', function (event) {
             event.preventDefault();
             let dataUrl = $(this).attr('data-url');
             let dataMethod = $(this).attr('data-method');
@@ -761,12 +806,14 @@ class NotifyController {
                     if (data) {
                         realThis.bellIdxIcon.removeClass('my-bell-ring');
                         realThis.bellCount.text("");
+                        resetNotifyListShowing();
+                        notifyGroup$.trigger("data.load");
                     }
-
                 },)
             }
         });
-        realThis.btnClearAll.click(function (event) {
+
+        btnDeleteAll$.on('click', function (event) {
             event.preventDefault();
             let dataUrl = $(this).attr('data-url');
             let dataMethod = $(this).attr('data-method');
@@ -778,6 +825,8 @@ class NotifyController {
                     let data = $.fn.switcherResp(resp);
                     if (data['status'] === 204) {
                         realThis.checkNotifyCount();
+                        resetNotifyListShowing();
+                        notifyGroup$.trigger("data.load");
                     }
                 });
             }
@@ -2288,13 +2337,13 @@ class WFRTControl {
         let htmlFinish = `<div class="row">
                             <div class="d-flex">
                                 <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
-                                <span class="text-low-em">${$.fn.transEle.attr('data-finish-wf-non-apply')}</span><i class="fas fa-check text-green ml-2 mt-1"></i>
+                                <span class="fs-7">${$.fn.transEle.attr('data-finish-wf-non-apply')}</span><i class="fas fa-check text-green ml-2 mt-1"></i>
                             </div>
                         </div>`;
         let htmlCancel = `<div class="row mb-3">
                             <div class="d-flex">
                                 <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
-                                <span class="text-low-em">${$.fn.transEle.attr('data-canceled-by-creator')}</span><i class="fas fa-times text-red ml-2 mt-1"></i>
+                                <span class="fs-7">${$.fn.transEle.attr('data-canceled-by-creator')}</span><i class="fas fa-times text-red ml-2 mt-1"></i>
                             </div>
                         </div>`;
         htmlBody = htmlFinish;
@@ -3367,12 +3416,15 @@ class UtilControl {
             let callback = opts?.['callback'] || function (data) {
                 return `<p>${data.relate}</p><small>${data.output}</small>`;
             }
-
-            let relateTimeStr = moment(dataStr, format).fromNow();
-            let appendStrData = moment(dataStr, format).format(outputFormat);
+            const objDT = moment(dataStr, format);
+            let relateTimeStr = objDT.fromNow();
+            let appendStrData = objDT.format(outputFormat);
             return callback({
                 'relate': relateTimeStr,
                 'output': appendStrData,
+                'objDT': objDT,
+                'format': format,
+                'outputFormat': outputFormat,
             });
         }
         return '_';
@@ -4605,6 +4657,14 @@ class WindowControl {
         }
     }
 
+    static redirectVerify2FA(timeout=0, location_to_next=true){
+        if (location_to_next === true) {
+            return jQuery.fn.redirectUrl('/auth/2fa', timeout, 'next=' + window.location.pathname);
+        } else {
+            return jQuery.fn.redirectUrl('/auth/2fa', timeout, '');
+        }
+    }
+
     static showLoading(opts) {
         // loadingTitleAction: GET (default), CREATE, UPDATE, DELETE
         function resolve_title() {
@@ -4804,7 +4864,9 @@ class WindowControl {
                 ...opts
             }).then((result) => {
                 if (result.dismiss === Swal.DismissReason.timer || result.isConfirmed || result.value) {
-                    return $x.fn.redirectLogin();
+                    const redirectData = opts?.['redirect_url'] || $x.fn.redirectLogin;
+                    if (typeof redirectData === "function") return redirectData.call();
+                    return opts?.['redirect_url'] || redirectData;
                 }
             });
         } else {
@@ -7247,8 +7309,8 @@ class DiagramControl {
             if ($btnLog && $btnLog.length > 0) {
                 let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
                                 <div class="offcanvas offcanvas-end w-95 mt-5" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
-                                    <div class="offcanvas-body">
-                                        <div class="d-flex justify-content-between mt-4 mb-2 border-bottom">
+                                    <div class="offcanvas-body mt-3">
+                                        <div class="d-flex justify-content-between mt-5 mb-2 border-bottom">
                                             <h5 id="offcanvasTopLabel">Diagram</h5>
                                             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                                 <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Close">
@@ -7427,6 +7489,7 @@ let $x = {
         getSelection: DTBControl.getTableSelected,
 
         redirectLogin: WindowControl.redirectLogin,
+        redirectVerify2FA: WindowControl.redirectVerify2FA,
 
         showLoadingButton: WindowControl.showLoadingButton,
         hideLoadingButton: WindowControl.hideLoadingButton,

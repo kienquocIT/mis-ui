@@ -312,6 +312,7 @@ MEDIA_TIMEOUT = int(os.environ.get('MEDIA_TIMEOUT', '0'))  # seconds
 # Key return resp after call API
 API_KEY_AUTH = 'Authorization'
 API_PREFIX_TOKEN = 'Bearer'
+API_KEY_AUTH_REFRESH = 'Authorization_Refresh'
 API_KEY_RESPONSE_DATA = 'result'
 API_KEY_RESPONSE_ERRORS = 'errors'
 API_KEY_RESPONSE_STATUS = 'status'

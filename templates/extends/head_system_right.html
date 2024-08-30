@@ -1,0 +1,692 @@
+{% load static i18n person_utils %}
+
+<style>
+    #notify-bell-list {
+        width: 100%;
+        height: 100vh;
+        position: absolute;
+        top: var(--blog-header-height);
+        left: 0;
+        background-color: rgba(216, 216, 216, 0.3);
+        z-index: 1055;
+    }
+
+    #notify-bell-item-base,
+    #notify-bell-item-sub-base {
+        display: none;
+    }
+
+    @media screen and (max-width: 576px) {
+        #notify-bell-list .notify-bell-content {
+            width: 100%;
+            max-width: unset;
+        }
+
+        .notify-bell-item .item-image {
+            width: 50px;
+            height: 50px;
+        }
+    }
+
+    @media screen and (min-width: 577px) {
+        #notify-bell-list .notify-bell-content {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .notify-bell-item .item-image {
+            width: 70px;
+            height: 70px;
+        }
+    }
+
+    #notify-bell-list .notify-bell-content {
+        margin-top: 5px;
+        margin-right: 5px;
+        margin-left: auto;
+        width: 100%;
+        min-width: 200px;
+        max-height: calc(100vh - 50px - 5px - 10px);
+        background-color: #fff;
+        border-radius: 5px;
+    }
+
+    #notify-bell-list .notify-bell-list-head {
+        background-color: #faad14;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px 5px 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    #notify-bell-list .head-tools {
+    }
+
+    #notify-bell-list .notify-bell-list-body {
+
+    }
+
+    #notify-bell-list .notify-bell-list-foot {
+        padding: 5px 10px;
+        border-top: 1px solid #f5f5f5;
+        text-align: center;
+    }
+
+    #notify-bell-list .notify-bell-list-foot a:hover {
+        color: #0a53be;
+    }
+
+    .notify-bell-item {
+        padding: 5px 10px;
+    }
+
+    .notify-bell-item-sub {
+        background-color: #c7e2e5;
+        color: #00646d;
+        font-weight: bold;
+        padding-top: 1px;
+        padding-bottom: 1px;
+        font-size: 0.825rem;
+    }
+
+    .notify-bell-item:hover {
+        background-color: rgba(153, 203, 207, 0.1);
+    }
+
+    .notify-bell-item .item-group {
+        display: flex;
+        width: 100%;
+    }
+
+    .notify-bell-item .item-image {
+        flex: 0 0 auto;
+        margin-right: 10px;
+        position: relative;
+    }
+
+    .notify-bell-item .item-data {
+        display: block;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .notify-bell-item .data-btn-detail-item {
+        display: none;
+    }
+    .notify-bell-item .data-btn-read-item {
+        display: none;
+    }
+
+    .notify-bell-item .data-btn-mention-reply {
+        display: none;
+    }
+
+    .notify-bell-item .item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .notify-bell-item .item-image .item-image-unread {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 100%;
+        background-color: #faad14;
+        display: none;
+    }
+
+    .notify-bell-item.detail .data-btn-detail-item {
+        display: block;
+    }
+
+    .notify-bell-item.unread .item-image-unread {
+        display: block;
+    }
+
+    .notify-bell-item.unread .data-btn-read-item {
+        display: block;
+    }
+
+    .notify-bell-item.mention .data-btn-mention-reply {
+        display: block;
+    }
+
+    .notify-bell-item .item-image .item-image-sub-icon {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        height: 20px;
+        width: 20px;
+        border-radius: 100%;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .notify-bell-item .item-data .item-data-app {
+        font-size: 0.824rem;
+        background-color: #007d88;
+        color: #fff;
+        padding: 5px;
+        border-radius: 5px;
+        margin-right: 5px;
+    }
+
+    .notify-bell-item .item-data .item-data-app {
+        font-size: 0.824rem;
+    }
+
+    .notify-bell-item .item-data button icon i {
+        margin-top: 1px;
+    }
+
+    #notify-bell-list .notify-bell-load-more {
+        display: none;
+        justify-content: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        background-color: #ebf5f5;
+    }
+
+    .notify-bell-load-more.active {
+        display: flex !important;
+    }
+    .notify-bell-load-more:hover {
+        cursor: pointer;
+    }
+    .notify-bell-load-more:hover i {
+        transition: 0.2s;
+        animation: NotifyLoadMore 1s linear infinite;
+    }
+
+    .notify-mention-person {
+        color: #007d88;
+        font-weight: bold;
+    }
+
+    @-webkit-keyframes NotifyLoadMore {
+        0% {
+            color: #c2e939;
+            transform: translateY(3px);
+        }
+        25% {
+            color: #e92990;
+        }
+        50% {
+            color: #18ddef;
+            transform: translateY(0);
+        }
+        75% {
+            color: #ff9100;
+        }
+        100% {
+            color: #7429f8;
+            transform: translateY(-3px);
+        }
+    }
+
+    @-moz-keyframes NotifyLoadMore {
+        0% {
+            color: #c2e939;
+            transform: translateY(3px);
+        }
+        25% {
+            color: #e92990;
+        }
+        50% {
+            color: #18ddef;
+            transform: translateY(0);
+        }
+        75% {
+            color: #ff9100;
+        }
+        100% {
+            color: #7429f8;
+            transform: translateY(-3px);
+        }
+    }
+
+    @-o-keyframes NotifyLoadMore {
+        0% {
+            color: #c2e939;
+            transform: translateY(3px);
+        }
+        25% {
+            color: #e92990;
+        }
+        50% {
+            color: #18ddef;
+            transform: translateY(0);
+        }
+        75% {
+            color: #ff9100;
+        }
+        100% {
+            color: #7429f8;
+            transform: translateY(-3px);
+        }
+    }
+
+    @keyframes NotifyLoadMore {
+        0% {
+            color: #c2e939;
+            transform: translateY(3px);
+        }
+        25% {
+            color: #e92990;
+        }
+        50% {
+            color: #18ddef;
+            transform: translateY(0);
+        }
+        75% {
+            color: #ff9100;
+        }
+        100% {
+            color: #7429f8;
+            transform: translateY(-3px);
+        }
+    }
+</style>
+
+<div class="d-inline-block">
+    <button
+            class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover dropdown-toggle no-caret mr-1"
+            id="notifyDropdownData"
+            data-url="{% url 'MyNotifyAllAPI' %}"
+            data-method="GET"
+    >
+        {{ base.app_name_translate|json_script:'app_name_translate' }}
+        <span
+                id="idxNotifyBell"
+                data-url="{% url 'MyNotifyNoDoneCountAPI' %}"
+                class="icon"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                data-bs-original-title="{% trans 'Notifications' %}"
+        >
+            <span class="position-relative">
+                <div class="avatar avatar-icon avatar-xxs avatar-rounded">
+                    <span class="initial-wrap">
+                        <i
+                                class="fa-regular fa-bell fa-sm my-bell"
+                                id="idxNotifyBellIcon"
+                        ></i>
+                    </span>
+                    <span
+                            class="badge badge-warning badge-sm position-top-end-overflow-1"
+                            id="my-notify-count"
+                    ></span>
+                </div>
+            </span>
+        </span>
+    </button>
+    <div
+            id="notify-bell-list"
+            style="display:none;"
+            data-url-done-notify="{% url 'ResolveNotifyItemAPI' pk='__pk__' %}"
+    >
+        <div class="notify-bell-content" style="display:none;">
+            <div class="notify-bell-list-head">
+                <p class="mr-2">{% trans 'Notifications' %}</p>
+                <select class="form-select form-select-sm" style="display: inline-block;width: 100px" id="notify-bell-filter">
+                    <option value="unseen" selected>{% trans 'Not seen' %}</option>
+                    <option value="seen">{% trans 'Seen' %}</option>
+                    <option value="all">{% trans 'All' %}</option>
+                </select>
+                <div class="head-tools">
+                    <button
+                            class="btn btn-icon btn-rounded btn-flush-light btn-xs"
+                            data-bs-toggle="tooltip"
+                            id="notifyBtnSeenAll"
+                            title="{% trans 'Seen all' %}"
+                            data-url="{% url 'MyNotifySeenAllAPI' %}"
+                            data-method="PUT"
+                    >
+                        <span class="icon">
+                            <i class="fa-solid fa-check-double text-white"></i>
+                        </span>
+                    </button>
+                    <button
+                            class="btn btn-icon btn-rounded btn-flush-light btn-xs"
+                            data-bs-toggle="tooltip"
+                            id="notifyBtnDeleteAll"
+                            title="{% trans 'Delete all' %}"
+                            data-url="{% url 'MyNotifyCleanAllAPI' %}"
+                            data-method="DELETE"
+                    >
+                        <span class="icon">
+                            <i class="fa-solid fa-trash text-white"></i>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="notify-bell-item-sub-base" class="notify-bell-item notify-bell-item-sub"><p></p></div>
+            <div
+                    id="notify-bell-item-base"
+                    class="notify-bell-item unread"
+                    data-bs-toggle="tooltip"
+                    title=""
+            >
+                <div class="item-group">
+                    <div class="item-image">
+                        <span class="item-image-unread"></span>
+                        <img
+                                src="{% static 'assets/images/systems/person-avt.png' %}" alt=""
+                                style="width: 100%;height: 100%;filter: opacity(0.5);"
+                        />
+                        <span class="item-image-sub-icon"></span>
+                    </div>
+                    <div class="item-data">
+                        <p class="item-data-msg"></p>
+                        <p>
+                            <span class="item-data-app"></span>
+                            <span class="item-data-time"></span>
+                        </p>
+                        <div class="mt-1 d-flex">
+                            <a href="#" class="data-btn-detail-item">
+                                <button
+                                        class="btn btn-icon btn-flush-primary btn-xs no-transform"
+                                        data-bs-toggle="tooltip"
+                                        title="{% trans 'Goto detail page' %}"
+                                >
+                                    <span class="icon">
+                                        <i class="fa-solid fa-right-to-bracket"></i>
+                                    </span>
+                                </button>
+                            </a>
+                            <button
+                                    class="btn btn-icon btn-flush-primary btn-xs no-transform data-btn-read-item"
+                                    data-bs-toggle="tooltip"
+                                    title="{% trans 'Mark as read' %}"
+                            >
+                                    <span class="icon">
+                                        <i class="fa-brands fa-readme"></i>
+                                    </span>
+                            </button>
+                            <button
+                                    class="btn btn-icon btn-flush-primary btn-xs no-transform data-btn-mention-reply"
+                                    data-bs-toggle="tooltip"
+                                    title="{% trans 'Reply' %}"
+                            >
+                                    <span class="icon">
+                                        <i class="fa-solid fa-comment-dots"></i>
+                                    </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                    class="notify-bell-list-body"
+                    style="max-height: calc(90vh - 120px); min-height: 300px;overflow-y: auto"
+            >
+                <div class="notify-bell-empty">
+                    <div class="w-100 d-flex justify-content-center py-5">
+                        <div class="text-center">
+                            <i class="fa-solid fa-wand-sparkles fa-2xl" style="color: #5e7d8a;"></i>
+                            <p class="mt-3" style="color: #4b646e;">{% trans 'No notification here' %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="notify-bell-load-more" data-bs-toggle="tooltip" title="{% trans 'Click here to load more notifications' %}">
+                <i class="fa-solid fa-angles-down fa-xs"></i>
+            </div>
+            <div class="notify-bell-list-foot">
+                <a href="{% url 'MyNotifyPageView' %}">{% trans 'See all recent notifications' %}</a>
+            </div>
+        </div>
+    </div>
+    <div class="dropdown-menu dropdown-menu-end p-0">
+        <h6 class="dropdown-header px-4 fs-6">
+            {% trans 'Notifications' %}
+            <div>
+                <button
+                        class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                        id="btnNotifySeenAll"
+                        data-url="{% url 'MyNotifySeenAllAPI' %}"
+                        data-method="PUT"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        data-bs-original-title="{% trans 'Seen all' %}"
+                >
+                    <span class="icon">
+                        <i class="fa-solid fa-check-double"></i>
+                    </span>
+                </button>
+                <button
+                        class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                        id="btnNotifyClearAll"
+                        data-url="{% url 'MyNotifyCleanAllAPI' %}"
+                        data-method="DELETE"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        data-bs-original-title="{% trans 'Delete all viewed notifications' %}"
+                >
+                    <span class="icon">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </span>
+                </button>
+            </div>
+        </h6>
+        <div
+                data-simplebar class="dropdown-body p-2"
+                style="height: 38rem;"
+        >
+            <div
+                    id="idxNotifyShowData"
+                    data-url-done-notify="{% url 'ResolveNotifyItemAPI' pk='__pk__' %}"
+                    data-msg-reply="{% trans 'Reply' %}"
+                    data-msg-seen="{% trans 'Mask seen' %}"
+                    data-msg-goto="{% trans 'Goto' %}"
+            ></div>
+        </div>
+        <div class="dropdown-footer hidden"><a
+                href="#"
+        ><u>{% trans 'View all notifications' %}</u></a>
+        </div>
+    </div>
+</div>
+
+<div class="d-inline-block">
+    <button
+            class="btn btn-icon btn-rounded dropdown-toggle no-caret"
+            role="button"
+            data-bs-display="static"
+            data-bs-toggle="dropdown" data-dropdown-animation
+            data-bs-auto-close="outside"
+            aria-expanded="false"
+    >
+        <div style="max-width: 2rem; max-height: 2rem;overflow: hidden;">
+            {{ base|render_avatar_tag:True|safe }}
+        </div>
+    </button>
+    <div class="dropdown-menu dropdown-menu-end">
+        <div class="p-2">
+            <div class="media mb-1">
+                <div class="media-head me-2">
+                    <div class="position-relative avatar avatar-primary avatar-sm avatar-rounded my-avatar">
+                        {{ base|render_avatar_tag:True|safe }}
+                    </div>
+                </div>
+                <div class="media-body">
+                    <div class="dropdown">
+                        <span>{{ base.fullname }}</span>
+                    </div>
+                    <div class="fs-7">
+                        <a
+                                id="email-request-owner"
+                                href="mailto:{{ base.email }}"
+                        >{{ base.email }}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="w-100 d-flex">
+                <a
+                        href="{% url 'MyProfileView' %}"
+                        class="m-1"
+                        data-bs-toggle="tooltip"
+                        title="{% trans 'My profile' %}"
+                >
+                    <button class="btn btn-xs btn-outline-primary w-100">
+                        <i class="fa-solid fa-address-card"></i>
+                    </button>
+                </a>
+                <a
+                        href="{% url 'ChangePasswordView' %}"
+                        class="m-1"
+                        data-bs-toggle="tooltip"
+                        title="{% trans 'Change password' %}"
+                >
+                    <button class="btn btn-xs btn-outline-primary w-100"><i
+                            class="fa-solid fa-key"
+                    ></i></button>
+                </a>
+            </div>
+        </div>
+        <div class="dropdown-divider"></div>
+        <h6 class="dropdown-header">
+            {% trans 'Manage Account' %}
+        </h6>
+        <span
+                class="d-none"
+                id="data-current-base"
+                data-has-company-list="{% if base.companies_data|length > 0 %}true{% else %}false{% endif %}"
+                data-has-current-company="{% if base.company_current_data %}true{% else %}false{% endif %}"
+                data-has-current-employee="{% if base.employee_current_data %}true{% else %}false{% endif %}"
+                data-url-admin-tenant="{% url 'UserAdminTenant' %}"
+                data-url-admin-company="{% url 'EmployeeAdminCompanyAPI' %}"
+        ></span>
+        {% if base.company_current_data %}
+            <a
+                    id="company-current-id"
+                    class="dropdown-item" href="javascript:void(0);"
+                    data-bs-toggle="tooltip" data-bs-placement="left"
+                    title="{% trans 'Click to switch company' %}"
+                    data-id="{{ base.company_current_data.id }}"
+                    style="max-width: 20em;overflow: hidden;text-overflow: ellipsis;"
+            >
+                <span class="dropdown-icon">
+                    <i class="fa-solid fa-retweet"></i>
+                </span>
+                <span
+                        id="btnChangeCurrentCompany"
+                        data-bs-toggle="modal"
+                        data-bs-target="#switchMyCompany"
+                > {{ base.company_current_data.code }} - {{ base.company_current_data.title }} </span>
+            </a>
+            {% if base.employee_current_data %}
+                <a
+                        id="idx-link-to-current-employee"
+                        class="dropdown-item"
+                        href="{% url 'EmployeeDetail' pk=base.employee_current_data.id %}"
+                        data-value-id="{{ base.employee_current_data.id }}"
+                        data-bs-toggle="tooltip" data-bs-placement="left"
+                        title="{% trans 'Profile' %}"
+                >
+                    <span class="dropdown-icon feather-icon">
+                        <i data-feather="user"></i>
+                    </span>
+                    <span>
+                        {{ base.employee_current_data.full_name }}
+                    </span>
+                </a>
+            {% else %}
+                <a class="dropdown-item" href="/">{% trans 'Profile' %}</a>
+            {% endif %}
+        {% endif %}
+
+        <a
+                id="link-language" class="dropdown-item" href="#"
+                data-bs-toggle="tooltip" data-bs-placement="left"
+                title="{% trans 'Language' %}"
+                data-url="{% url 'MyLanguageAPI' %}"
+                data-value="{{ base.language }}"
+        >
+            <span class="dropdown-icon feather-icon">
+                <i data-feather="globe"></i>
+            </span>
+            <span>{{ base.language|language_full_name }}</span>
+        </a>
+
+        <a
+                id="link-logout" class="dropdown-item"
+                href="{% url 'AuthLogout' %}?next={{ request.path }}"
+        >
+            <span class="dropdown-icon feather-icon">
+                <i data-feather="log-out"></i>
+            </span>
+            <span>{% trans 'Sign Out' %}</span>
+        </a>
+
+        <div class="dropdown-divider"></div>
+        <a
+                class="dropdown-item" href="#" data-bs-toggle="modal"
+                data-bs-target="#modalRaiseTicket"
+        >
+            <span class="dropdown-icon feather-icon">
+                <i data-feather="tag"></i>
+            </span>
+            <span>{% trans 'Raise a ticket' %}</span>
+        </a>
+        <a class="dropdown-item" href="{% url 'TermsAndConditionsView' %}">
+            <span class="dropdown-icon feather-icon">
+                <i data-feather="book"></i>
+            </span>
+            <span>{% trans 'Terms & Conditions' %}</span>
+        </a>
+        <a
+                class="dropdown-item"
+                href="https://docs.bflow.vn/"
+        >
+            <span class="dropdown-icon feather-icon">
+                <i data-feather="help-circle"></i>
+            </span>
+            <span>{% trans 'Help & Support' %}</span>
+        </a>
+
+        {% if is_debug_src %}
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header">Testing Product</h6>
+            <a class="dropdown-item" href="{% url 'UtilitiesView' %}">
+                <span class="dropdown-icon">
+                    <i class="fa-solid fa-toolbox"></i>
+                </span>
+                <span>Utility tools page</span>
+            </a>
+            <a class="dropdown-item" href="{% url 'DefaultDataView' %}">
+                <span class="dropdown-icon">
+                    <i class="fa-solid fa-table"></i>
+                </span>
+                <span>System default data page</span>
+            </a>
+            <a class="dropdown-item" href="{% url 'ComponentCollections' %}">
+                <span class="dropdown-icon">
+                    <i class="fa-solid fa-puzzle-piece"></i>
+                </span>
+                <span>Components</span>
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+{#                                            <button#}
+{#                                                    class="btn btn-icon btn-rounded bg-dark-hover mr-1 hk-navbar-togglable"#}
+{#                                                    data-bs-toggle="tooltip"#}
+{#                                                    data-bs-placement="bottom"#}
+{#                                                    data-bs-original-title="{% trans 'Collapse' %}"#}
+{#                                            >#}
+{#                                                <span class="icon">#}
+{#                                                    <i class="fa-solid fa-chevron-up fa-sm"></i>#}
+{#                                                    <i class="fa-solid fa-chevron-down fa-sm d-none"></i>#}
+{#                                                </span>#}
+{#                                            </button>#}

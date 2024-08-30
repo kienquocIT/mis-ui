@@ -5,13 +5,12 @@ $(function () {
         let formSubmit = $('#frm_production_order');
         ProdOrderLoadDataHandle.loadInitPage();
 
-        // WFRTControl.setWFInitialData('productionorder', formSubmit.attr('data-method'));
-
         ProdOrderLoadDataHandle.$boxProd.on('change', function () {
             ProdOrderLoadDataHandle.loadBOM();
             let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxProd, ProdOrderLoadDataHandle.$boxProd.val());
             if (data) {
-                let dataUOM = data?.['purchase_information']?.['uom'];
+                // let dataUOM = data?.['inventory_information']?.['uom'];
+                let dataUOM = data?.['sale_information']?.['default_uom'];
                 let dataUOMGr = data?.['general_information']?.['uom_group'];
                 // load UOM
                 if (dataUOM && dataUOMGr?.['id']) {
@@ -22,8 +21,6 @@ $(function () {
 
         ProdOrderLoadDataHandle.$quantity.on('change', function () {
             ProdOrderLoadDataHandle.loadChangeQuantity();
-            // ProdOrderLoadDataHandle.loadTime();
-
             let multi = 1;
             if (ProdOrderLoadDataHandle.$quantity) {
                 multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());

@@ -152,3 +152,7 @@ msgstr "Dịch vụ"
 #
 msgid "Get traffics"
 msgstr "Lấy thông tin"
+
+#
+msgid "There are some problems with the logout process."
+msgstr "Có một số vấn đề với quá trình đăng xuất."

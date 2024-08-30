@@ -7,6 +7,7 @@ from urllib import parse
 from django.db.models import Model
 from django.conf import settings
 from django.http import response
+from django.urls import reverse
 from requests_toolbelt import MultipartEncoder
 from rest_framework import status
 from rest_framework_simplejwt.tokens import UntypedToken
@@ -61,6 +62,13 @@ class PermCheck:
                 return False, RespData.resp_403()
 
             if not resp.state:
+                if resp.status == 401:
+                    return False, (
+                        {
+                            '__url_redirect': resp.resp_401_redirect_url(next_url=request.path)
+                        },
+                        status.HTTP_401_UNAUTHORIZED
+                    )
                 return False, resp.auto_return()
             return True, RespData.resp_200(data={})
         return False, RespData.resp_403()
@@ -92,6 +100,7 @@ class RespData:
             self,
             _state=None, _result=None, _errors=None, _status=None,
             _page_size=None, _page_count=None, _page_next=None, _page_previous=None,
+            _resp=None,
     ):
         """
         Properties will keep type of attribute that is always correct
@@ -102,6 +111,7 @@ class RespData:
             _errors: .json()['errors'] | 'errors' is default
                      | You can custom key - confirm with API Docs
         """
+        self._resp = _resp
         self._state = _state if _state is not None else False
         self._result = _result if _result is not None else {}
         self._errors = _errors if _errors is not None else {}
@@ -260,8 +270,8 @@ class RespData:
                 return {key_success: self.result, **page_info}, status_success
             return self.result, status_success
         elif self.status == 401:
-            error_code = self.errors.get('auth_error_code', None)
-            return self.resp_401(auth_error_code=error_code)
+            auth_error_code = self.errors.get('auth_error_code', None)
+            return self.resp_401(auth_error_code=auth_error_code)
         elif self.status == 403:
             return self.resp_403()
         elif self.status == 404:
@@ -284,8 +294,14 @@ class RespData:
 
     @classmethod
     def resp_401(cls, auth_error_code='authentication_failed'):
-        ctx = {'error_code': auth_error_code}
+        ctx = {'auth_error_code': auth_error_code}
         return ctx, status.HTTP_401_UNAUTHORIZED  # mask_view return 302 (redirect to log in)
+
+    def resp_401_redirect_url(self, next_url):
+        auth_error_code = self.errors.get('auth_error_code', None)
+        if auth_error_code == 'authentication_2fa_failed':
+            return reverse('TwoFAVerifyView') + f'?next={next_url}'
+        return reverse('AuthLogin') + f'?next={next_url}'
 
     @classmethod
     def resp_403(cls):
@@ -359,6 +375,7 @@ class APIUtil:
     """class with all method and default setup for request API calling"""
     key_auth = settings.API_KEY_AUTH
     prefix_token = settings.API_PREFIX_TOKEN
+    key_auth_refresh = settings.API_KEY_AUTH_REFRESH
     key_response_data = settings.API_KEY_RESPONSE_DATA
     key_response_err = settings.API_KEY_RESPONSE_ERRORS
     key_response_status = settings.API_KEY_RESPONSE_STATUS
@@ -381,6 +398,10 @@ class APIUtil:
 
         """
         return {cls.key_auth: f'{cls.prefix_token} {access_token}'}
+
+    @classmethod
+    def key_authenticated_refresh(cls, refresh_token: str) -> dict:
+        return {cls.key_auth_refresh: refresh_token}
 
     @classmethod
     def get_new_token(cls, refresh_token) -> str or None:
@@ -450,7 +471,17 @@ class APIUtil:
             _page_count=resp_json.get(cls.key_response_page_count, None),
             _page_next=resp_json.get(cls.key_response_page_next, None),
             _page_previous=resp_json.get(cls.key_response_page_previous, None),
+            _resp=resp,
         )
+
+    def handle_expired_token(self, resp_parsed_before: RespData) -> (bool, dict or RespData):
+        auth_error_code = resp_parsed_before.errors.get('auth_error_code', None)
+        if auth_error_code == 'authentication_2fa_failed':
+            pass
+        headers_upgrade = self.refresh_token(user_obj=self.user_obj)
+        if headers_upgrade:
+            return True, headers_upgrade
+        return False, None
 
     def call_get(self, safe_url: str, headers: dict) -> RespData:
         """
@@ -465,14 +496,16 @@ class APIUtil:
             errors: (dict) : is Error Data from API
         """
         resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT)
+        resp_parsed = self.get_data_from_resp(resp)
         if resp.status_code == 401:
             if self.user_obj:
-                # refresh token
-                headers_upgrade = self.refresh_token(user_obj=self.user_obj)
-                if headers_upgrade:
+                state_refresh, headers_upgrade = self.handle_expired_token(resp_parsed_before=resp_parsed)
+                if state_refresh and headers_upgrade:
+                    # refresh token
                     headers.update(headers_upgrade)
                     resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT)
-        return self.get_data_from_resp(resp)
+                    resp_parsed = self.get_data_from_resp(resp)
+        return resp_parsed
 
     def call_post(
             self,
@@ -519,17 +552,19 @@ class APIUtil:
             config['data'] = data
 
         resp = requests.post(**config)
+        resp_parsed = self.get_data_from_resp(resp)
         if resp.status_code == 401:
             if self.user_obj:
-                # refresh token
-                headers_upgrade = self.refresh_token(user_obj=self.user_obj)
-                if headers_upgrade:
+                state_refresh, headers_upgrade = self.handle_expired_token(resp_parsed_before=resp_parsed)
+                if state_refresh and headers_upgrade:
+                    # refresh token
                     headers.update(headers_upgrade)
                     resp = requests.post(
                         url=safe_url, headers=headers, json=data,
                         timeout=REQUEST_TIMEOUT
                     )
-        return self.get_data_from_resp(resp)
+                    resp_parsed = self.get_data_from_resp(resp)
+        return resp_parsed
 
     def call_put(self, safe_url: str, headers: dict, data: dict) -> RespData:
         """
@@ -575,17 +610,19 @@ class APIUtil:
         #     timeout=REQUEST_TIMEOUT
         # )
         resp = requests.put(**config)
+        resp_parsed = self.get_data_from_resp(resp)
         if resp.status_code == 401:
             if self.user_obj:
-                # refresh token
-                headers_upgrade = self.refresh_token(user_obj=self.user_obj)
-                if headers_upgrade:
+                state_refresh, headers_upgrade = self.handle_expired_token(resp_parsed_before=resp_parsed)
+                if state_refresh and headers_upgrade:
+                    # refresh token
                     headers.update(headers_upgrade)
                     resp = requests.put(
                         url=safe_url, headers=headers, json=data,
                         timeout=REQUEST_TIMEOUT
                     )
-        return self.get_data_from_resp(resp)
+                    resp_parsed = self.get_data_from_resp(resp)
+        return resp_parsed
 
     def call_delete(self, safe_url: str, headers: dict, data: dict) -> RespData:
         """
@@ -605,17 +642,21 @@ class APIUtil:
             url=safe_url, headers=headers, json=data,
             timeout=REQUEST_TIMEOUT
         )
+        resp_parsed = self.get_data_from_resp(resp)
         if resp.status_code == 401:
             if self.user_obj:
-                # refresh token
-                headers_upgrade = self.refresh_token(user_obj=self.user_obj)
-                if headers_upgrade:
+                state_refresh, headers_upgrade = self.handle_expired_token(resp_parsed_before=resp_parsed)
+                if state_refresh and headers_upgrade:
+                    # refresh token
                     headers.update(headers_upgrade)
                     resp = requests.delete(
                         url=safe_url, headers=headers, json=data,
                         timeout=REQUEST_TIMEOUT
                     )
-        return self.get_data_from_resp(resp)
+                    resp_parsed = self.get_data_from_resp(resp)
+                elif isinstance(headers_upgrade, RespData):
+                    return headers_upgrade
+        return resp_parsed
 
 
 class ServerAPI:
@@ -639,6 +680,7 @@ class ServerAPI:
         self.is_secret_ui = kwargs.get('is_secret_ui', False)
         self.request = kwargs.get('request', None)
         self.is_check_perm = kwargs.get('is_check_perm', False)
+        self.has_refresh_token = kwargs.get('has_refresh_token', False)
 
         if self.request:
             self.query_params = getattr(self.request, 'query_params', {})
@@ -696,6 +738,8 @@ class ServerAPI:
         }
         if self.user and getattr(self.user, 'access_token', None):
             data.update(APIUtil.key_authenticated(access_token=self.user.access_token))
+        if self.user and getattr(self.user, 'refresh_token', None) and self.has_refresh_token is True:
+            data.update(APIUtil.key_authenticated_refresh(refresh_token=self.user.refresh_token))
         if self.is_minimal is True:
             data[settings.API_KEY_MINIMAL] = settings.API_KEY_VALUE_MINIMAL
 

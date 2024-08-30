@@ -450,10 +450,10 @@
                             const bodyData = {
                                 'tenant_code': $(form).find('input[name=tenant_code]').val(),
                                 'username': $(form).find('input[name=username]').val(),
-                                'g_recaptcha_response': $(document).find('input[name="g-recaptcha-response"]').val(),
+                                'g_recaptcha_response': $(document).find(':input[name="g-recaptcha-response"]').val(),
                             };
 
-                            if (window.ggCaptChaEnabled === 'True' && !bodyData.dataForm['g_recaptcha_response']) {
+                            if (window.ggCaptChaEnabled === 'True' && !bodyData['g_recaptcha_response']) {
                                 authNotifyB({
                                     'description': authGettext('Please solve the captcha.'),
                                 }, 'failure');
@@ -565,7 +565,7 @@
                         if (stateCaptcha) {
                             const bodyData = {
                                 'otp': $(form).find('input[name=otp]').val(),
-                                'g_recaptcha_response': $(document).find('input[name="g-recaptcha-response"]').val(),
+                                'g_recaptcha_response': $(document).find(':input[name="g-recaptcha-response"]').val(),
                             };
 
                             if (window.ggCaptChaEnabled === 'True' && !bodyData.dataForm['g_recaptcha_response']) {

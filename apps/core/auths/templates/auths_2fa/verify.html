@@ -344,7 +344,7 @@
                                 }, 'success');
                                 setTimeout(
                                     () => {
-                                        if (!nextUrl || nextUrl === window.location.href || nextUrl === frm$.attr('data-url-login')) {
+                                        if (!nextUrl || nextUrl === window.location.pathname || nextUrl === frm$.attr('data-url-login')) {
                                             nextUrl = '/';
                                         }
                                         window.location.href = nextUrl;

@@ -1,3 +1,4 @@
+from django.views import View
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FileUploadParser, FormParser
 from rest_framework.views import APIView
@@ -12,6 +13,7 @@ __all__ = [
     'MyNotifySeenAllAPI',
     'MyNotifyAllAPI',
     'MyNotifyCleanAllAPI',
+    'MyNotifyPageView',
 ]
 
 from apps.shared.msg import BaseMsg
@@ -54,6 +56,17 @@ class MyNotifyNoDoneCountAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, url=ApiURL.LOG_MY_NOTIFY_COUNT, user=request.user).get()
         return resp.auto_return(callback_success=self.callback_success)
+
+
+class MyNotifyPageView(View):
+    @mask_view(
+        login_require=True,
+        template='log/notifications.html',
+        breadcrumb='NOTIFICATIONS_PAGE',
+        jsi18n='notification',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
 
 
 class MyNotifyAllAPI(APIView):

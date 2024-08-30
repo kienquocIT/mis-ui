@@ -18,11 +18,11 @@ class HomeView(View):
         jsi18n='home',
     )
     def get(self, request, *args, **kwargs):
+        next_url = request.GET.get('next', '')
         if request.user:
             employee_current_data = getattr(request.user, 'employee_current_data', {})
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
             if resp.state is True:
-                next_url = request.GET.get('next', None)
                 if next_url:
                     return redirect(next_url)
                 ctx = {
@@ -30,8 +30,9 @@ class HomeView(View):
                     'app_name_list': AppsCodeToList.get_data()
                 }
                 return ctx, status.HTTP_200_OK
-        # return redirect(reverse('LandingPageView'))
-        return redirect(reverse('AuthLogin'))
+            elif resp.status == 401:
+                return redirect(resp.resp_401_redirect_url(next_url=next_url))
+        return redirect(reverse('AuthLogin') + f'?next={next_url}')
 
 
 class OutLayoutNotFoundView(View):

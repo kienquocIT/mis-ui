@@ -32,6 +32,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     HOME_PAGE = BreadcrumbChildren(
         _('Home Page'), 'HomeView'
     )
+    NOTIFICATIONS_PAGE = BreadcrumbChildren(_('Notifications'))
 
     # base
     BASTION_LIST = BreadcrumbChildren(_('List'))
@@ -467,6 +468,7 @@ class BreadcrumbView:
     HOME_PAGE = [
         BreadcrumbItem.HOME_PAGE,
     ]
+    NOTIFICATIONS_PAGE = [BreadcrumbItem.NOTIFICATIONS_PAGE]
 
     EMPLOYEE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,

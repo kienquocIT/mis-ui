@@ -15,12 +15,12 @@ from rest_framework.views import APIView
 
 import jwt
 
-from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, ServerMsg, TypeCheck
+from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, TypeCheck
 from apps.core.account.models import User
 
 from .forms import AuthLoginForm, ForgotPasswordForm, ForgotPasswordValidOTPForm, ForgotPasswordResendOTP
 from apps.shared.csrf import CSRFCheckSessionAuthentication, APIAllowAny
-from apps.shared.decorators import OutLayoutRender, session_flush
+from apps.shared.decorators import OutLayoutRender, session_flush, MyJWTClient
 
 
 def check_home_domain(request):
@@ -124,11 +124,18 @@ class AuthLogin(APIView):
 class AuthLogout(View):
     authentication_classes = [AllowAny]
 
+    @mask_view(
+        login_require=False,
+        auth_require=False,
+        template='auths/logout.html',
+    )
     def get(self, request, *args, **kwargs):
+        if request.user and request.user.is_authenticated and not isinstance(request.user, AnonymousUser):
+            resp = ServerAPI(request=request, user=request.user, url=ApiURL.logout, has_refresh_token=True).delete()
+            if resp.state is False:
+                pass
+                # return resp.errors, status.HTTP_200_OK
         try:
-            if request.user and request.user.is_authenticated and not isinstance(request.user, AnonymousUser):
-                ServerAPI(request=request, user=request.user, url=ApiURL.logout).delete()
-
             session_flush(request=request)
             logout(request)
         except Exception:
@@ -276,7 +283,10 @@ class ChangePasswordView(View):
         breadcrumb='USER_CHANGE_PASSWORD',
     )
     def get(self, request, *args, **kwargs):
-        ctx = {}
+        ctx = {'include_otp': False}
+        token_cls = MyJWTClient(user=request.user)
+        if token_cls.get_2fa_enabled() is True:
+            ctx['include_otp'] = True
         return ctx, status.HTTP_200_OK
 
 

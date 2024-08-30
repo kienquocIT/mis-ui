@@ -60,6 +60,7 @@
                                 data-url="{% url 'AuthLogin' %}" data-url-redirect="" data-method="POST"
                                 autocomplete="off"
                                 data-url-select-tenant="{% url 'AuthLoginSelectTenant' %}"
+                                data-url-2fa="{% url 'TwoFAVerifyView' %}"
                         >
                             <div class="card card-lg card-border box-vertical-blur">
                                 <div class="card-body">
@@ -292,6 +293,9 @@
                                     localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
                                     $.fn.notifyBLogin({description: data.detail}, 'success');
                                     let path_redirect = data?.['redirect_to'] || "/";
+                                    if (path_redirect === '2fa'){
+                                        path_redirect = frmLoginEle.attr('data-url-2fa');
+                                    }
                                     const params = Object.fromEntries(new URLSearchParams(location.search));
                                     if (path_redirect){
                                         path_redirect += '?' + $.param({'next': params.next});
@@ -309,9 +313,22 @@
                                 )
                             },
                             (err) => {
-                                $.fn.notifyBLogin({
-                                    'description': authGettext('The username or password is incorrect'),
-                                }, 'failure')
+                                const data = err?.['data'] || {};
+                                if (Object.keys(data).length > 0){
+                                    Object.entries(data).map(
+                                        ([key, value]) => {
+                                            if (key !== 'status') {
+                                                $.fn.notifyBLogin({
+                                                    'description': value,
+                                                }, 'failure');
+                                            }
+                                        }
+                                    )
+                                } else {
+                                    $.fn.notifyBLogin({
+                                        'description': authGettext('The username or password is incorrect'),
+                                    }, 'failure')
+                                }
                                 $.fn.hideLoadingLogin();
                             }
                         )

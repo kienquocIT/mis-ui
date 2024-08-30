@@ -96,3 +96,11 @@ msgstr "Thành công"
 #
 msgid "Once approved, you cannot undo it."
 msgstr "Khi đã phê duyệt, bạn không thể hoàn tác."
+
+#
+msgid "2FA verification request process"
+msgstr "Quy trình này yêu cầu xác minh hai bước (2FA)"
+
+#
+msgid "2FA verification page"
+msgstr "Trang xác minh hai bước (2FA)"

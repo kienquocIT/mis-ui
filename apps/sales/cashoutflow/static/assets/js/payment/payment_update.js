@@ -1,12 +1,11 @@
 $(document).ready(function () {
-    new PaymentHandle().load()
-    LoadDetailPayment('update');
+    PaymentHandle.LoadPage()
+    PaymentHandle.LoadDetailPayment('update');
     WFRTControl.setWFInitialData('payment', 'PUT')
 
-    let pk = $.fn.getPkDetail();
     $('#form-detail-payment').submit(function (event) {
         event.preventDefault();
-        let form = new PaymentHandle().combinesData($(this), true);
+        let form = PaymentHandle.CombinesData($(this), true);
         if (form) {
             WFRTControl.callWFSubmitForm(form);
         }

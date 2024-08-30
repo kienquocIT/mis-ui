@@ -2,7 +2,7 @@
 
 <div class="row mt-3">
     <div class="col-6 col-md-6 col-lg-2">
-        <div class="border border border-primary rounded p-2 mb-2">
+        <div class="border border border-primary rounded pt-3 mb-2" style="min-height: 7vh">
             <div class="row">
                 <div class="col-12 text-center">
                     <div class="form-check">
@@ -10,11 +10,17 @@
                         <label class="form-check-label" for="for-production">{% trans 'For production' %}</label>
                     </div>
                 </div>
+                <div class="col-12 text-center">
+                    <div class="form-check form-check-sm">
+                        <input type="checkbox" id="is-outsourcing" class="form-check-input">
+                        <label class="form-check-label text-primary" for="is-outsourcing">{% trans 'Outsourcing' %}</label>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-6 col-md-6 col-lg-2">
-        <div class="border border border-primary rounded p-2 mb-2">
+        <div class="border border border-primary rounded pt-4 mb-2" style="min-height: 7vh">
             <div class="row">
                 <div class="col-12 text-center">
                     <div class="form-check">
@@ -26,7 +32,7 @@
         </div>
     </div>
     <div class="col-6 col-md-6 col-lg-2">
-        <div class="border border border-primary rounded p-2 mb-2">
+        <div class="border border border-primary rounded pt-4 mb-2" style="min-height: 7vh">
             <div class="row">
                 <div class="col-12 text-center">
                     <div class="form-check">
@@ -38,7 +44,7 @@
         </div>
     </div>
     <div class="col-6 col-md-6 col-lg-2">
-        <div class="border border border-primary rounded p-2 mb-2">
+        <div class="border border border-primary rounded pt-4 mb-2" style="min-height: 7vh">
             <div class="row">
                 <div class="col-12 text-center">
                     <div class="form-check">
@@ -55,7 +61,7 @@
     <div class="col-12 col-md-6 col-lg-4">
         <div class="form-group">
             <label for="product" class="form-label required">{% trans 'Product' %}</label>
-            <select class="form-select select2" id="product" data-url="{% url 'ProductListAPI' %}"></select>
+            <select class="form-select select2" id="product" data-url="{% url 'FinishProductListForBOMAPI' %}"></select>
         </div>
     </div>
     <div class="col-6 col-md-4 col-lg-2">
@@ -72,105 +78,139 @@
     </div>
 </div>
 
-<div class="row mt-10">
-    <div class="col-12">
-        <h5 class="text-primary fw-bold mb-3 bg-primary-light-5 border-primary border rounded px-3 py-2">{% trans 'Process description' %}</h5>
-        <button type="button" class="btn btn-primary btn-sm" id="add-new-process-description">
-            <span>
-                <span class="icon">
-                    <span class="feather-icon">
-                        <i class="far fa-plus-square"></i>
-                    </span>
-                </span>
-                <span>{% trans 'Add new row' %}</span>
-            </span>
-        </button>
-        <table class="table nowrap w-100" id="process-description-table">
-            <thead>
-            <tr>
-                <th style="width: 30px"></th>
-                <th style="min-width: 300px">{% trans 'Task name' %}</th>
-                <th style="min-width: 300px">{% trans 'Labor' %}</th>
-                <th style="min-width: 100px">{% trans 'Quantity' %}</th>
-                <th style="min-width: 150px">{% trans 'UOM' %}</th>
-                <th style="min-width: 250px">{% trans 'Unit price' %}</th>
-                <th style="min-width: 250px">{% trans 'Subtotal price' %}</th>
-                <th style="min-width: 250px">{% trans 'Note' %}</th>
-                <th style="min-width: 50px"></th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-</div>
+{#for production#}
 
-<div class="row mt-5">
-    <div class="col-12 col-md-12 col-lg-6">
-        <h6 class="text-primary fw-bold text-decoration-underline px-3 py-2">{% trans 'Labor summary' %}</h6>
-        <table class="table nowrap w-100" id="labor-summary-table">
-            <thead>
+<div id="normal-production-space" class="mb-20">
+    <div class="row mt-10">
+        <div class="col-12">
+            <h5 class="text-primary fw-bold mb-3 bg-primary-light-5 border-primary border rounded px-3 py-2">{% trans 'Process description' %}</h5>
+            <button type="button" class="btn btn-primary btn-sm" id="add-new-process-description">
+                <span>
+                    <span class="icon">
+                        <span class="feather-icon">
+                            <i class="far fa-plus-square"></i>
+                        </span>
+                    </span>
+                    <span>{% trans 'Add new row' %}</span>
+                </span>
+            </button>
+            <table class="table nowrap w-100" id="process-description-table">
+                <thead>
                 <tr>
-                    <th>{% trans 'Labor' %}</th>
-                    <th>{% trans 'Quantity' %}</th>
-                    <th>{% trans 'UOM' %}</th>
-                    <th>{% trans 'Unit price' %}</th>
-                    <th>{% trans 'Subtotal price' %}</th>
+                    <th style="width: 30px"></th>
+                    <th style="min-width: 300px">{% trans 'Task name' %}</th>
+                    <th style="min-width: 300px">{% trans 'Labor' %}</th>
+                    <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                    <th style="min-width: 150px">{% trans 'UOM' %}</th>
+                    <th style="min-width: 250px">{% trans 'Unit price' %}</th>
+                    <th style="min-width: 250px">{% trans 'Subtotal price' %}</th>
+                    <th style="min-width: 250px">{% trans 'Note' %}</th>
+                    <th style="min-width: 50px"></th>
                 </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
-</div>
-
-<div class="row mt-10">
-    <div class="col-12">
-        <h5 class="text-secondary fw-bold mb-3 bg-secondary-light-5 border-secondary border rounded px-3 py-2">{% trans 'Materials / Components' %}</h5>
-        <table class="table nowrap w-100" id="material-table">
-            <thead>
-            <tr>
-                <th style="width: 30px"></th>
-                <th style="width: 150px">{% trans 'Code' %}</th>
-                <th style="width: 400px">{% trans 'Name' %}</th>
-                <th style="width: 200px">{% trans 'Quantity' %}</th>
-                <th style="width: 200px">{% trans 'UOM' %}</th>
-                <th class="text-center" style="width: 150px">{% trans 'Disassemble' %}</th>
-                <th style="min-width: 250px">{% trans 'Note' %}</th>
-                <th style="width: 50px"></th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+    <div class="row mt-5">
+        <div class="col-12 col-md-12 col-lg-6">
+            <h6 class="text-primary fw-bold text-decoration-underline px-3 py-2">{% trans 'Labor summary' %}</h6>
+            <table class="table nowrap w-100" id="labor-summary-table">
+                <thead>
+                    <tr>
+                        <th>{% trans 'Labor' %}</th>
+                        <th>{% trans 'Quantity' %}</th>
+                        <th>{% trans 'UOM' %}</th>
+                        <th>{% trans 'Unit price' %}</th>
+                        <th>{% trans 'Subtotal price' %}</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
-</div>
-
-<div class="row mt-10">
-    <div class="col-12">
-        <h5 class="text-secondary fw-bold mb-3 bg-secondary-light-5 border-secondary border rounded px-3 py-2">{% trans 'Tools' %}</h5>
-        <button hidden type="button" class="btn btn-secondary btn-xs" id="add-new-tool">
-            <span>
-                <span class="icon">
-                    <span class="feather-icon">
-                        <i class="far fa-plus-square"></i>
+    <div class="row mt-10">
+        <div class="col-12">
+            <h5 class="text-secondary fw-bold mb-3 bg-secondary-light-5 border-secondary border rounded px-3 py-2">{% trans 'Materials / Components' %}</h5>
+            <table class="table nowrap w-100" id="material-table">
+                <thead>
+                <tr>
+                    <th class="w-5"></th>
+                    <th class="w-10">{% trans 'Code' %}</th>
+                    <th class="w-20">{% trans 'Material / Component' %}</th>
+                    <th class="w-10">{% trans 'Quantity' %}</th>
+                    <th class="w-20">{% trans 'UOM' %}</th>
+                    <th class="w-10 text-center">{% trans 'Disassemble' %}</th>
+                    <th class="w-20">{% trans 'Note' %}</th>
+                    <th class="w-5"></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mt-10">
+        <div class="col-12">
+            <h5 class="text-secondary fw-bold mb-3 bg-secondary-light-5 border-secondary border rounded px-3 py-2">{% trans 'Tools' %}</h5>
+            <button hidden type="button" class="btn btn-secondary btn-xs" id="add-new-tool">
+                <span>
+                    <span class="icon">
+                        <span class="feather-icon">
+                            <i class="far fa-plus-square"></i>
+                        </span>
                     </span>
+                    <span>{% trans 'Add new row' %}</span>
                 </span>
-                <span>{% trans 'Add new row' %}</span>
-            </span>
-        </button>
-        <table class="table nowrap w-100" id="tools-table">
-            <thead>
-            <tr>
-                <th style="width: 30px"></th>
-                <th style="width: 150px">{% trans 'Code' %}</th>
-                <th style="width: 400px">{% trans 'Name' %}</th>
-                <th style="width: 200px">{% trans 'Quantity' %}</th>
-                <th style="width: 200px">{% trans 'UOM' %}</th>
-                <th style="min-width: 250px">{% trans 'Note' %}</th>
-                <th style="width: 50px"></th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+            </button>
+            <table class="table nowrap w-100" id="tools-table">
+                <thead>
+                <tr>
+                    <th class="w-5"></th>
+                    <th class="w-10">{% trans 'Code' %}</th>
+                    <th class="w-20">{% trans 'Tool' %}</th>
+                    <th class="w-10">{% trans 'Quantity' %}</th>
+                    <th class="w-20">{% trans 'UOM' %}</th>
+                    <th class="w-30">{% trans 'Note' %}</th>
+                    <th class="w-5"></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<div class="row mb-20"></div>
+{#for product tion outsourcing#}
+
+<div id="outsourcing-production-space" class="mb-20">
+    <div class="row mt-10">
+        <div class="col-12">
+            <h5 class="text-secondary fw-bold mb-3 bg-secondary-light-5 border-secondary border rounded px-3 py-2">{% trans 'Materials / Components' %}</h5>
+            <button type="button" class="btn btn-secondary btn-sm" id="add-new-outsourcing-material">
+                <span>
+                    <span class="icon">
+                        <span class="feather-icon">
+                            <i class="far fa-plus-square"></i>
+                        </span>
+                    </span>
+                    <span>{% trans 'Add new row' %}</span>
+                </span>
+            </button>
+            <table class="table nowrap w-100" id="material-table-outsourcing">
+                <thead>
+                <tr>
+                    <th class="w-5"></th>
+                    <th class="w-10">{% trans 'Code' %}</th>
+                    <th class="w-20">{% trans 'Material / Component' %}</th>
+                    <th class="w-10">{% trans 'Quantity' %}</th>
+                    <th class="w-20">{% trans 'UOM' %}</th>
+                    <th class="w-10 text-center">{% trans 'Disassemble' %}</th>
+                    <th class="w-20">{% trans 'Note' %}</th>
+                    <th class="w-5"></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>

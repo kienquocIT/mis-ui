@@ -1265,13 +1265,6 @@ $(async function () {
                 }
                 // after prepare HTML run event click button done
                 btnDoneClick()
-                // check if not finish or reject then remove hidden btn edit page
-                if (![2, 3, 4].includes(res?.['system_status'])) {
-                    let btnEdit = $('#btn-enable-edit');
-                    if (btnEdit && btnEdit.length > 0) {
-                        btnEdit[0].removeAttribute('hidden');
-                    }
-                }
                 // reset data for edit page
                 if ($form.attr('data-method').toLowerCase() === 'put') {
                     for (let productData of res?.['products']) {

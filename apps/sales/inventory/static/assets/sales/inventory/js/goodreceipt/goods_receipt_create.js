@@ -50,6 +50,11 @@ $(function () {
             $(this).val('').trigger('change');
         });
 
+        // collapse
+        $('#btn-collapse').click(function () {
+            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
+        });
+
         GRLoadDataHandle.typeSelectEle.on('change', function () {
             GRLoadDataHandle.loadCustomAreaByType();
         });
@@ -201,11 +206,6 @@ $(function () {
 
         GRDataTableHandle.tableSerial.on('click', '.del-row', function () {
             deleteRowGR(this.closest('tr'), GRDataTableHandle.tableSerial);
-        });
-
-        // Action on click button collapse
-        $('#btn-collapse').click(function () {
-            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
         $('#productModalCenter').on('change', '.validated-number', function () {

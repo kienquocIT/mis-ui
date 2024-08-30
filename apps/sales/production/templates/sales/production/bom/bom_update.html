@@ -4,6 +4,11 @@
 {% block title %}{% trans 'Bill of material update' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <style>
+        table .select2-selection__rendered {
+            max-width: 250px;
+        }
+    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}

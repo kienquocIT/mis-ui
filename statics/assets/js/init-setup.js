@@ -1026,8 +1026,8 @@ class FileUtils {
 
             FileUtils.enableButtonFakeUpload($(eleSelect$), $.fn.parseBoolean(idInputTextDisabled, true) === true,)
 
-            if (dataDetail && $.fn.hasOwnProperties(dataDetail, ['media_file_id', 'file_name'])) {
-                let media_file_id = dataDetail?.['media_file_id'];
+            if (dataDetail && $.fn.hasOwnProperties(dataDetail, ['id', 'file_name'])) {
+                let media_file_id = dataDetail?.['id'];
                 let file_name = dataDetail?.['file_name'];
                 let file_size = dataDetail?.['file_size'];
                 if (media_file_id && file_name) {
@@ -1139,7 +1139,7 @@ class FileUtils {
             },
             errorOnly: false,
         }).then((resp) => {
-            let detailFile = resp?.data?.detail;
+            let detailFile = resp?.data?.detail ? resp.data.detail : resp?.data?.['file_detail'];
             clsThis.setIdFile(detailFile?.['id']);
             clsThis.setFileNameUploaded(detailFile?.['file_name'], detailFile?.['file_size']);
             WindowControl.hideLoadingButton($(btnMainEle));
@@ -2432,6 +2432,7 @@ class WFRTControl {
                             }
                         }
                         if (window.location.href.includes('/detail/')) {  // page detail
+                            WFRTControl.checkAllowEditZones(actionMySelf);
                             WFRTControl.activeSetZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
                             // active btn change and cancel if current employee is owner, status is finished
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
@@ -2804,6 +2805,20 @@ class WFRTControl {
         }
     }
 
+    static checkAllowEditZones(actionMySelf) {
+        if (actionMySelf?.['is_edit_all_zone']) {
+            if (actionMySelf['is_edit_all_zone'] === true) {
+                $('#idxRealAction').removeClass('hidden');
+            }
+        }
+        if (actionMySelf?.['zones']) {
+            if (actionMySelf['zones'].length > 0) {
+                $('#idxRealAction').removeClass('hidden');
+            }
+        }
+        return true;
+    }
+
     static activeBtnOpenZone(zonesData, zonesHiddenData, isEditAllZone) {
         if (window.location.href.includes('/update/') || window.location.href.includes('/create')) {
             WFRTControl.setZoneData(zonesData);
@@ -2911,17 +2926,18 @@ class WFRTControl {
     }
 
     static setBtnWFAfterFinishDetail() {
-        let eleRealAction = $('#idxRealAction');
+        let $pageAction = $('#idxPageAction');
+        let $realAction = $('#idxRealAction');
         let btnCancel = $('#btnCancel');
         let btnEnableCR = $('#btnEnableCR');
-        if (eleRealAction) {
+        if ($pageAction && $pageAction.length > 0 && $realAction && $realAction.length > 0) {
             if (btnCancel.length <= 0 && btnEnableCR.length <= 0) {
-                $(eleRealAction).append(`<div class="btn-group btn-group-rounded" role="group" aria-label="Basic example">
+                $($realAction).after(`<div class="btn-group btn-group-rounded" role="group" aria-label="Basic example">
                                             <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>
                                             <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>
                                         </div>`);
                 // add event
-                eleRealAction.on('click', '.btn-wf-after-finish', function () {
+                $pageAction.on('click', '.btn-wf-after-finish', function () {
                     return WFRTControl.callActionWF($(this));
                 });
             }
@@ -2929,18 +2945,19 @@ class WFRTControl {
     }
 
     static setBtnWFAfterFinishUpdate() {
-        let eleRealAction = $('#idxRealAction');
+        let $pageAction = $('#idxPageAction');
+        let $realAction = $('#idxRealAction');
         let btnSaveCR = $('#btnSaveCR');
         let btnCancelCR = $('#btnCancelCR');
         let formID = globeFormMappedZone;
-        if (eleRealAction && formID) {
+        if ($pageAction && $pageAction.length > 0 && $realAction && $realAction.length > 0 && formID) {
             if (btnSaveCR.length <= 0 && btnCancelCR.length <= 0) {
-                $(eleRealAction).append(`<div class="btn-group btn-group-rounded" role="group" aria-label="Basic example">
+                $($realAction).after(`<div class="btn-group btn-group-rounded" role="group" aria-label="Basic example">
                                             <button class="btn btn-outline-primary btn-wf-after-finish" type="submit" form="${formID}" id="btnSaveCR" data-value="3">${$.fn.transEle.attr('data-save-change')}</button>
                                             <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancelCR" data-value="4">${$.fn.transEle.attr('data-go-back')}</button>
                                         </div>`);
                 // Add event
-                eleRealAction.on('click', '.btn-wf-after-finish', function () {
+                $pageAction.on('click', '.btn-wf-after-finish', function () {
                     return WFRTControl.callActionWF($(this));
                 });
             }
@@ -2956,25 +2973,29 @@ class WFRTControl {
     }
 
     static compareStatusShowPageAction(resultDetail) {
+        let $realActions = $('#idxRealAction');
         switch (resultDetail?.['system_status']) {
-            case 1:
+            case 1:  // created
+                $realActions.addClass('hidden');
                 break
-            case 2:
+            case 2:  // added
                 break
-            case 3:
+            case 3:  // finished
                 DocumentControl.getElePageAction().find('[type="submit"]').each(function () {
                     $(this).addClass("hidden")
                 });
+                $realActions.addClass('hidden');
                 break
-            case 4:
+            case 4:  // rejected
                 DocumentControl.getElePageAction().find('[type="submit"]').each(function () {
                     $(this).addClass("hidden")
                 });
+                $realActions.addClass('hidden');
                 break
             default:
                 break
         }
-        $('#idxRealAction').removeClass('hidden');
+        // $('#idxRealAction').removeClass('hidden');
     }
 
     static changePropertiesElementIsZone(ele$, opts) {
@@ -6118,8 +6139,12 @@ class FileControl {
             onFileExtError: function (file) {
             },
             onDestroy: function () {
-                $(element).addClass('d-none');
+                // $(element).addClass('d-none');
                 this.onDisableDaD();
+                clsThis.event_for_destroy(this, 'hide');
+                clsThis.ele$.find('.instruction-upload-file-text p:nth-child(n+1)').remove();
+                clsThis.ele$.find('.dm-uploader-result-list').html('');
+                clsThis.ele$.find('.dm-uploader-no-files').css({ 'display': 'block'});
             },
             onDisableDaD: function () {
                 $(this).find('input[type="file"]').prop('disabled', true).prop('readonly', true);

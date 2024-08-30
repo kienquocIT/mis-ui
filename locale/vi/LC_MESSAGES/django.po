@@ -1652,7 +1652,7 @@ msgstr "Không áp dụng bán hàng và kho cho chi phí"
 
 #
 msgid "Purchasing"
-msgstr "Quá trình mua hàng"
+msgstr "Mua hàng"
 
 #
 msgid "Expense Type"
@@ -2185,7 +2185,7 @@ msgstr "Kế hoạch sau thuế"
 
 #
 msgid "AP Approved"
-msgstr "Tạm ứng đã phê duyệt"
+msgstr "Đã tạm ứng"
 
 #
 msgid "To Payment"
@@ -2193,7 +2193,7 @@ msgstr "Thanh toán"
 
 #
 msgid "Other Payment"
-msgstr "Phương thức thanh toán khác"
+msgstr "Thanh toán khác"
 
 #
 msgid "Edit Bank Account"
@@ -2245,7 +2245,7 @@ msgstr "Mã cơ hội kinh doanh"
 
 #
 msgid "Method"
-msgstr "Phương thức thanh toán"
+msgstr "Hình thức"
 
 #
 msgid "Cash"
@@ -3809,7 +3809,7 @@ msgstr "Thêm dòng mới"
 
 #
 msgid "Payment value"
-msgstr "Giá trị phiếu thanh toán"
+msgstr "Giá trị thanh toán"
 
 #
 msgid "Advance Payment value"
@@ -8632,3 +8632,71 @@ msgstr "Tổng chi phí"
 #
 msgid "Sum time"
 msgstr "Tổng thời gian"
+
+#
+msgid "Files of Assigner"
+msgstr "Tài liệu của người giao việc"
+
+#
+msgid "Files of Assignee"
+msgstr "Tài liệu của người nhận việc"
+
+#
+msgid "Production order"
+msgstr "Lệnh sản xuất"
+
+#
+msgid "Production group"
+msgstr "Nhóm sản xuất"
+
+#
+msgid "Contract approval"
+msgstr "Phê duyệt hợp đồng"
+
+#
+msgid "Contract approval create successfully"
+msgstr "Tạo phê duyệt hợp đồng thành công"
+
+#
+msgid "Contract approval update successfully"
+msgstr "Cập nhật phê duyệt hợp đồng thành công"
+
+#
+msgid "Production order create successfully"
+msgstr "Tạo đơn sản xuất thành công"
+
+#
+msgid "Production order update successfully"
+msgstr "Cập nhật đơn sản xuất thành công"
+
+#
+msgid "Planned"
+msgstr "Đã lên kế hoạch"
+
+#
+msgid "In production"
+msgstr "Đang sản xuất"
+
+#
+msgid "All warehouse"
+msgstr "Tất cả kho hàng"
+
+#
+msgid "Material / Component"
+msgstr "Vật liệu / Linh kiện"
+
+#
+msgid "Tool"
+msgstr "Công cụ"
+
+#
+msgid "Converted from AP"
+msgstr "Chuyển đổi từ Tạm ứng"
+
+#
+msgid "Sum"
+msgstr "Tổng"
+
+#
+msgid "Outsourcing"
+msgstr "Gửi gia công"

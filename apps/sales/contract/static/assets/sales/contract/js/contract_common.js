@@ -145,13 +145,6 @@ class ContractLoadDataHandle {
     static loadDetail(data) {
         $('#contract-title').val(data?.['title']);
         ContractDataTableHandle.$tableDocument.DataTable().rows.add(data?.['document_data']).draw();
-        // check if not finish or reject then open btn edit page
-        if (![2, 3, 4].includes(data?.['system_status'])) {
-            let $btnEdit = $('#btn-enable-edit');
-            if ($btnEdit && $btnEdit.length > 0) {
-                $btnEdit[0].removeAttribute('hidden');
-            }
-        }
     };
 }
 

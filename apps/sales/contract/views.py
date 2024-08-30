@@ -32,7 +32,7 @@ class ContractList(View):
         auth_require=True,
         template='sales/contract/contract_list.html',
         menu_active='',
-        breadcrumb='',
+        breadcrumb='CONTRACT_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
@@ -43,7 +43,7 @@ class ContractCreate(View):
         auth_require=True,
         template='sales/contract/contract_create.html',
         menu_active='',
-        breadcrumb='',
+        breadcrumb='CONTRACT_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
         ctx = {
@@ -83,7 +83,7 @@ class ContractDetail(View):
         auth_require=True,
         template='sales/contract/contract_detail.html',
         menu_active='',
-        breadcrumb='',
+        breadcrumb='CONTRACT_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         return {
@@ -96,7 +96,7 @@ class ContractUpdate(View):
         auth_require=True,
         template='sales/contract/contract_update.html',
         breadcrumb='',
-        menu_active='',
+        menu_active='CONTRACT_UPDATE_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         ctx = {

@@ -1,12 +1,12 @@
 $(document).ready(function () {
-    new BOMHandle().load();
+    BOMHandle.LoadPage();
     WFRTControl.setWFInitialData('bom', 'PUT')
 
-    LoadDetailBOM('update');
+    BOMHandle.LoadDetailBOM('update');
 
     $('#form-detail-bom').submit(function (event) {
         event.preventDefault();
-        let form = new BOMHandle().combinesDataForProductionBOM($(this));
+        let form = BOMHandle.CombinesDataForProductionBOM($(this));
         if (form) {
             WFRTControl.callWFSubmitForm(form);
         }

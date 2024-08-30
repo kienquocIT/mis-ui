@@ -751,10 +751,26 @@ class NotifyController {
             );
             if (data.is_done !== true) base$.addClass('unread');
             else base$.removeClass('unread');
+
             const mentionId = data?.['comment_mentions_id'];
             const employeeSenderData = data?.['employee_sender_data'];
             if (mentionId && $x.fn.checkUUID4(mentionId)) {
                 base$.addClass('mention');
+                base$.find('.item-image-sub-icon').addClass('bg-neon').append('<i class="fa-solid fa-quote-left text-white"></i>');
+                if (employeeSenderData){
+                    const itemImage$ = base$.find('.item-image');
+                    const full_name = employeeSenderData?.['full_name'] || '';
+                    const email = employeeSenderData?.['email'] || '';
+                    if (full_name) {
+                        itemImage$
+                            .find('img')
+                            .attr('data-bs-toogle', 'tooltip')
+                            .attr('title', full_name + ' - ' + email)
+                            .removeClass('img-filter-opacity-50');
+                    }
+                    const avatar_img = employeeSenderData?.['avatar_img'] || '';
+                    if (avatar_img) itemImage$.find('img').attr('src', avatar_img);
+                }
             } else {
                 base$.removeClass('mention');
             }

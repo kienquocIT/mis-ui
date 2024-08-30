@@ -351,7 +351,7 @@ class PaymentAction {
                             <div class="col-7">
                                 <input class="total-value-salecode-item form-control form-control-line mask-money text-primary text-right" value="${data_row?.['sum_value'] ? data_row?.['sum_value'] : 0}" disabled readonly>
                             </div>
-                            <script type="application/json" class="detail-ap-items">${JSON.stringify(data_row?.['ap_cost_converted_list'])}</script>
+                            <script type="application/json" class="detail-ap-items">${data_row?.['ap_cost_converted_list'] ? JSON.stringify(data_row?.['ap_cost_converted_list']) : ''}</script>
                         </div>
                     </div>
                 </div>`
@@ -1550,6 +1550,7 @@ class PaymentHandle {
                     frm.dataForm['sale_code_type'] = 2;
                 }
             }
+            frm.dataForm['employee_inherit_id'] = $('#employee_inherit_id').val();
         }
 
         frm.dataForm['payment_expense_valid_list'] = payment_expense_valid_list;

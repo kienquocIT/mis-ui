@@ -8566,8 +8566,8 @@ msgid "Process description"
 msgstr "Mô tả quy trình"
 
 #
-msgid "Materials / Components"
-msgstr "Vật liệu / Linh kiện"
+msgid "Materials/Components"
+msgstr "Vật liệu/Linh kiện"
 
 #
 msgid "Disassemble"
@@ -8682,8 +8682,8 @@ msgid "All warehouse"
 msgstr "Tất cả kho hàng"
 
 #
-msgid "Material / Component"
-msgstr "Vật liệu / Linh kiện"
+msgid "Material/Component"
+msgstr "Vật liệu/Linh kiện"
 
 #
 msgid "Tool"
@@ -8700,3 +8700,19 @@ msgstr "Tổng"
 #
 msgid "Outsourcing"
 msgstr "Gửi gia công"
+
+#
+msgid "Do you want to change?"
+msgstr "Bạn có chắc muốn thay đổi?"
+
+#
+msgid "All data will be reloaded."
+msgstr "Mọi dữ liệu sẽ được tải lại."
+
+#
+msgid "Select replacement material/component"
+msgstr "Chọn vật liệu/linh kiện thay thế"
+
+#
+msgid "Please select main material/component first!"
+msgstr "Hãy chọn vật liệu/linh kiện chính trước!"

@@ -102,7 +102,7 @@ class MenusCompanySystem:
 class MenusCoreConfigurations:
     SYSTEM_CONFIG = MenuCommon(
         name='System', code='menu_system', view_name='#',
-        icon='<i class="fas fa-cog"></i>',
+        icon='<i class="fas fa-cogs"></i>',
         child=[
             MenuCommon(
                 name='Posting periods', code='id_menu_master_data_periods_config', view_name='PeriodsConfigList',
@@ -838,7 +838,7 @@ class SpaceItem:
         'core-configurations': SpaceCommon(
             'Settings',
             'core-configurations',
-            icon='<i class="fa-solid fa-screwdriver-wrench"></i>',
+            icon='<i class="fas fa-cog"></i>',
             menus=[
                 MenusCoreConfigurations.SYSTEM_CONFIG,
                 MenusCoreConfigurations.MASTER_DATA_CONFIG,

@@ -244,8 +244,18 @@ class HomeChart {
         let $prjChart = $('#prj_chart_year')
         var pieOpt = {
             series: [],
-            colors: ['#0663D1', '#FB7308', '#14245C', '#F3F3F3', '#DDAE8A', '#A3817C', '#99AFD0', '#FCBB48', '#F0D1BB',
-                '#B4B4B9'],
+            colors: [
+                '#0064CD',
+                '#192D73',
+                '#FFA500',
+                '#F0552D',
+                '#FFD700',
+                '#FF8C00',
+                '#93C572',
+                '#66B2FF',
+                '#E5C3D1',
+                '#9467BD'
+            ],
             chart: {
                 height: 380,
                 type: 'line',
@@ -319,13 +329,13 @@ class HomeChart {
     static runChartPStatus(data){
         /*Donut Chart*/
         let $prjStatus = $('#prj_chart_status'),
-            colors = ['#0663D1', '#FB7308', '#14245C', '#F3F3F3'];
+            colors = ['#0064CD', '#192D73', '#FFA500', '#F0552D'];
 
         const _prjStatus = {
             1: $.fn.gettext('Created'),
             2: $.fn.gettext('Added'),
             3: $.fn.gettext('Finish'),
-            4: $.fn.gettext('Cancel'),
+            4: $.fn.gettext('Closed'),
         }
         var optionsStt = {
             series: [0, 0, 0, 0],
@@ -360,8 +370,16 @@ class HomeChart {
     }
 
     static runChartPExpense(data){
-        let colors = ['#0663D1', '#FB7308', '#14245C', '#F3F3F3', '#DDAE8A', '#A3817C', '#99AFD0', '#FCBB48', '#F0D1BB',
-                '#B4B4B9'],
+        let colors = ['#0064CD',
+                '#192D73',
+                '#FFA500',
+                '#F0552D',
+                '#FFD700',
+                '#FF8C00',
+                '#93C572',
+                '#66B2FF',
+                '#E5C3D1',
+                '#9467BD'],
             $expChart = $('#prj_chart_expense');
         /*******************/
         // cách tính columnwith

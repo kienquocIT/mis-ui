@@ -1309,7 +1309,7 @@ class APHandle {
 
         frm.dataForm['title'] = $('#title').val();
 
-        frm.dataForm['supplier'] = supplierEle.val();
+        frm.dataForm['supplier_id'] = supplierEle.val();
 
         frm.dataForm['advance_payment_type'] = parseInt(APTypeEle.val())
 
@@ -1349,8 +1349,8 @@ class APHandle {
                 }
             }
 
-            frm.dataForm['employee_inherit'] = $('#employee_inherit_id').val();
-            if (!frm.dataForm['employee_inherit']) {
+            frm.dataForm['employee_inherit_id'] = $('#employee_inherit_id').val();
+            if (!frm.dataForm['employee_inherit_id']) {
                 $.fn.notifyB({description: 'Employee Inherit must not be NULL'}, 'failure');
                 return false;
             }

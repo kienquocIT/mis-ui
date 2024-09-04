@@ -1,9 +1,9 @@
 $(document).ready(function () {
-    new GoodsIssueLoadPage().load();
+    new GISHandle().load();
     let pk = $.fn.getPkDetail();
     let frmUpdate = $('#frmUpdate');
 
-    GoodsIssueLoadPage.loadGoodsIssueDetail(frmUpdate, pk, 'update');
+    GISHandle.loadGoodsIssueDetail(frmUpdate, pk, 'update');
     new SetupFormSubmit(frmUpdate).validate({
         rules: {
             title: {
@@ -13,9 +13,9 @@ $(document).ready(function () {
         },
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
-            frm.dataForm['goods_issue_type'] = $('#box-good-issue-type').val()
+            frm.dataForm['goods_issue_type'] = 0
             if (frm.dataForm['goods_issue_type'] === '0') {
-                let frm_data_temp = GoodsIssueLoadPage.getDataProductForIAUpdate(frm.dataForm);
+                let frm_data_temp = GISHandle.getDataProductForIAUpdate(frm.dataForm);
                 if (frm_data_temp) {
                     frm.dataForm = frm_data_temp
                 }
@@ -25,7 +25,7 @@ $(document).ready(function () {
                 }
             }
             else {
-                frm.dataForm = GoodsIssueLoadPage.getDataProductForLiquidation(frm.dataForm);
+                frm.dataForm = GISHandle.getDataProductForLiquidation(frm.dataForm);
             }
             WFRTControl.callWFSubmitForm(frm);
         }

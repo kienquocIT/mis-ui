@@ -5830,7 +5830,7 @@ msgstr "Theo đơn mua hàng"
 
 #
 msgid "For inventory adjustment"
-msgstr "Theo điều chỉnh tồn kho"
+msgstr "Cho điều chỉnh tồn kho"
 
 #
 msgid "For production"
@@ -8716,3 +8716,11 @@ msgstr "Chọn vật liệu/linh kiện thay thế"
 #
 msgid "Please select main material/component first!"
 msgstr "Hãy chọn vật liệu/linh kiện chính trước!"
+
+#
+msgid "Select production order"
+msgstr "Chọn lệnh sản xuất"
+
+#
+msgid "Select detail"
+msgstr "Chọn cụ thể"

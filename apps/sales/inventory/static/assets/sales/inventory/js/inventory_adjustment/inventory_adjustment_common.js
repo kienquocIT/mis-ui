@@ -404,7 +404,7 @@ function LoadDetailIA(option) {
                             <td data-id="${data_row?.['warehouse_mapped'].id}" class="warehouse_id_td"><i class="fas fa-warehouse"></i> ${data_row?.['warehouse_mapped'].title}</td>
                             <td data-id="${data_row?.['uom_mapped'].id}" class="uom_id_td">${data_row?.['uom_mapped'].title}</td>
                             <td class="quantity-td">${data_row?.['book_quantity']}</td>
-                            <td><input ${disabled_select} class="form-control count-input" type="text" placeholder="Number" value="${data_row?.['count']}"></td>
+                            <td><input ${disabled_select} class="form-control count-input" type="number" placeholder="Number" value="${data_row?.['count']}"></td>
                             <td class="text-center difference_td">${difference}</td>
                             <td class="text-center">
                                 <span class="form-check">

@@ -1,7 +1,7 @@
 $(document).ready(function () {
-    new GoodsIssueLoadPage().load();
+    new GISHandle().load();
     let pk = $.fn.getPkDetail();
     let frmDetail = $('#frmDetail');
 
-    GoodsIssueLoadPage.loadGoodsIssueDetail(frmDetail, pk, 'detail');
+    GISHandle.loadGoodsIssueDetail(frmDetail, pk, 'detail');
 })

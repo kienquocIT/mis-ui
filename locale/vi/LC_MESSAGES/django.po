@@ -3108,6 +3108,10 @@ msgid "Sign Out"
 msgstr "Đăng Xuất"
 
 #
+msgid "Sign out"
+msgstr "Đăng xuất"
+
+#
 msgid "Raise a ticket"
 msgstr "Xảy ra một vấn đề"
 

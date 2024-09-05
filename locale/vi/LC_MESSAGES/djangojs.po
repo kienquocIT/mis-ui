@@ -104,3 +104,7 @@ msgstr "Quy trình này yêu cầu xác minh hai bước (2FA)"
 #
 msgid "2FA verification page"
 msgstr "Trang xác minh hai bước (2FA)"
+
+#
+msgid "Today"
+msgstr "Hôm nay"

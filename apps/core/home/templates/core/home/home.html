@@ -585,7 +585,7 @@
                     })
                 })
 
-                const taskReportHightGroup$ = $('#task-report-high-group');
+                const taskReportHighGroup$ = $('#task-report-high-group');
                 const taskReportGroup$ = $("#task-report-group");
                 const taskReportCollapse$ = $("#task-report-collapse");
                 const taskReportExpand$ = $("#task-report-expand");
@@ -856,25 +856,27 @@
 
                     inpRangeReportByDay$.on('change', () => {
                         $.fn.callAjax2({
-                        url: canvasTaskReportCountByDay$.attr('data-url') + '?' + $.param({
-                            'range': inpRangeReportByDay$.val(),
-                        }),
-                        method: 'GET',
-                    }).then(
-                            resp => {
-                                const data = $.fn.switcherResp(resp);
-                                if (data && data.hasOwnProperty('my_task_report')) {
-                                    const my_task_report = data['my_task_report'];
-                                    if (my_task_report) {
-                                        // initMixedChartSumBy7Day(my_task_report?.['by_day'] || []);
-                                        // initChartMyTaskReportRatio(my_task_report?.['ratio'] || []);
-                                        initChartMyTaskReportCountByDay(my_task_report?.['by_day'] || []);
+                            url: canvasTaskReportCountByDay$.attr('data-url') + '?' + $.param({
+                                'range': inpRangeReportByDay$.val(),
+                            }),
+                            method: 'GET',
+                            isLoading: true,
+                        }).then(
+                                resp => {
+                                    const data = $.fn.switcherResp(resp);
+                                    if (data && data.hasOwnProperty('my_task_report')) {
+                                        const my_task_report = data['my_task_report'];
+                                        if (my_task_report) {
+                                            // initMixedChartSumBy7Day(my_task_report?.['by_day'] || []);
+                                            // initChartMyTaskReportRatio(my_task_report?.['ratio'] || []);
+                                            initChartMyTaskReportCountByDay(my_task_report?.['by_day'] || []);
+                                        }
                                     }
-                                }
-                            },
-                            errs => $.fn.switcherResp(errs)
-                        )
-                    }).trigger('change');
+                                },
+                                errs => $.fn.switcherResp(errs)
+                            )
+                        }
+                    ).trigger('change');
 
                     const canvasTaskByStatus$ = $('#my-task-by-status');
                     const canvasTaskSummaryReport$ = $('#my-task-summary-report');
@@ -974,7 +976,7 @@
                                 taskReportGroup$.slideUp(0);
                                 taskReportExpand$.show(0);
                                 $(taskReportCollapse$).hide(0);
-                                taskReportHightGroup$.addClass('collapsed');
+                                taskReportHighGroup$.addClass('collapsed');
                             }
                         }
                     );
@@ -1002,7 +1004,7 @@
                 } else {
                     taskReportGroup$.slideUp(0);
                     taskReportExpand$.show(0);
-                    taskReportHightGroup$.addClass('collapsed')
+                    taskReportHighGroup$.addClass('collapsed')
                 }
             }
         )

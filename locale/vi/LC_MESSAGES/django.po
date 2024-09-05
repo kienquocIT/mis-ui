@@ -7649,10 +7649,6 @@ msgid "Project PM"
 msgstr "Quản lý dự án"
 
 #
-msgid "Project owner"
-msgstr "Phụ trách dự án"
-
-#
 msgid "Allow view this project"
 msgstr "Quyền xem dự án"
 

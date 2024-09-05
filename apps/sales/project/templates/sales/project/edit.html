@@ -31,15 +31,6 @@
                 <div class="col-xs-12 col-md-6 form-group">
                     <label for="titleInput" class="form-label required">{% trans 'Title' %}</label>
                     <input type="text" name="title" id="titleInput" class="form-control" required>
-{#                    <div class="input-group">#}
-{#                        <span class="input-group-text choice-bor">#}
-{#                            <i class="bi bi-journal-bookmark"></i>#}
-{#                            <i class="bi bi-journal-bookmark-fill" hidden></i>#}
-{#                        </span>#}
-{#                        <div class="dropdown_custom">#}
-{#                            {% include 'sales/project/extends/bor-modal.html' %}#}
-{#                        </div>#}
-{#                    </div>#}
                 </div>
                 <div class="col-xs-12 col-md-6 d-flex align-items-center">
                     {{ data.employee_info|json_script:'current_info'}}
@@ -118,6 +109,12 @@
             <a class="nav-link" data-bs-toggle="tab" href="#tab_members">
                 <i class="fa-solid fa-address-card"></i>
                 <span class="nav-link-text">{% trans 'Teams' %}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_work_expense">
+                <i class="fa-solid fa-money-check-dollar"></i>
+                <span class="nav-link-text">{% trans 'Work expense' %}</span>
             </a>
         </li>
         <li class="nav-item">
@@ -249,10 +246,11 @@
                 <tbody></tbody>
             </table>
         </div>
-        <div class="tab-pane fade" id="tab_attachment">
-{#            <div id="assigner_attachment">#}
-{#                {% include 'extends/files/all.html' %}#}
-{#            </div>#}
+        <div class="tab-pane fade" id="tab_assignee_attach">
+            <input type="hidden" id="task_assignee_attach">
+            <div id="assigner_attachment">
+                {% include 'extends/files/all.html' %}
+            </div>
         </div>
     </div>
     <!-- End Tabs -->

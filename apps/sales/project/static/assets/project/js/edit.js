@@ -173,6 +173,7 @@ $(document).ready(function () {
         }
         $tblUser.DataTable().clear().rows.add(tblData).draw();
     });
+
     // delete user member
     $(document).on('card.action.close.confirm', '.member-item .card', function () {
         let eleCard = $(this);
@@ -210,4 +211,8 @@ $(document).ready(function () {
         new_gantt.change_view_mode(mode)
     })
 
+    if (typeof dragElement === "function")
+        $('.init_drag_modal').each(function(){
+            dragElement($(this)[0])
+        })
 });

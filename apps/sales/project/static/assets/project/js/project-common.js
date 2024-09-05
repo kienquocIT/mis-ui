@@ -85,8 +85,8 @@ $(document).ready(function () {
         validWeight(this)
     }, 500));
 
-    // run action click icon load popup BOR
-    action_select_bor()
+    // run action click icon load popup BOM
+    action_select_bom()
 });
 
 function reGetDetail(gantt_obj) {
@@ -518,7 +518,7 @@ function animating_number(number, elm) {
     requestAnimationFrame(animationStep);
 }
 
-function action_select_bor(){
+function action_select_bom(){
     const $bor = $('#bor_select'), $serv = $('#service_select');
     $('#bor_select, #service_select').each(function(){
         $(this).initSelect2()

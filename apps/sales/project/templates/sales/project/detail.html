@@ -122,6 +122,12 @@
                 <span class="nav-link-text">{% trans 'Work expense' %}</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_assignee_attach">
+                <i class="fas fa-paperclip"></i>
+                <span class="nav-link-text">{% trans 'Assignee attachment' %}</span>
+            </a>
+        </li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade show active" id="tab_detail">
@@ -225,6 +231,12 @@
                 <tbody>
                 </tbody>
             </table>
+        </div>
+        <div class="tab-pane fade" id="tab_assignee_attach">
+            <input type="hidden" id="task_assignee_attach">
+            <div id="assigner_attachment">
+                {% include 'extends/files/all.html' with is_show_dad=False %}
+            </div>
         </div>
     </div>
     <!-- End Tabs -->

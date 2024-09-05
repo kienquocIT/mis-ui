@@ -332,8 +332,8 @@
                                             {% include 'extends/breadcrumb.html' %}
                                         </div>
                                     </div>
-                                    <div class="blog-options-wrap" id="idxPageAction">
-                                        <div class="{% if pk %}hidden{% endif %}" id="idxRealAction">
+                                    <div class="blog-options-wrap" id="idxPageAction" style="display: flex; align-items: center;">
+                                        <div class="{% if pk %}hidden{% endif %} mr-1" id="idxRealAction">
                                             {% block pageAction %}{% endblock %}
                                         </div>
 {#                                        <div class="ml-1">#}

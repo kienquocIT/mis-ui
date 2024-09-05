@@ -108,3 +108,15 @@ msgstr "Trang xác minh hai bước (2FA)"
 #
 msgid "Today"
 msgstr "Hôm nay"
+
+#
+msgid "1 day ago"
+msgstr "1 ngày trước"
+
+#
+msgid "2 day ago"
+msgstr "2 ngày trước"
+
+#
+msgid "3 day ago"
+msgstr "3 ngày trước"

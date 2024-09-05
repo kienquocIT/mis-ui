@@ -730,22 +730,30 @@ class NotifyController {
                     'callback': function (data) {
                         const dateStr = data['objDT'].toDate().toISOString().substring(0, 10);
                         const eleSubTmp$ = notifyGroup$.find(`.notify-bell-item-sub[data-value="${dateStr}"]`);
-                        if (eleSubTmp$.length === 0){
-                            const sub$ = $(itemSub$.prop('outerHTML')).removeAttr('id').attr('data-value', dateStr);
-                            if (DateTimeControl.isSameDay(data['objDT'].toDate(), nowDate)){
-                                sub$.find('p').text($.fn.gettext('Today'));
-                            } else {
-                                sub$.find('p').text(date_to_str(data['objDT'].toDate()));
-                            }
-                            body$.append(sub$);
+                        let dateShow = null;
+                        switch (DateTimeControl.diffDay(data['objDT'].toDate(), nowDate)) {
+                            case 0:
+                                dateShow = $.fn.gettext('Today');
+                            case 1:
+                                if (dateShow === null) dateShow = $.fn.gettext('1 day ago');
+                            case 2:
+                                if (dateShow === null) dateShow = $.fn.gettext('2 day ago');
+                            case 3:
+                                if (dateShow === null) dateShow = $.fn.gettext('3 day ago');
+                                if (eleSubTmp$.length === 0){
+                                    const sub$ = $(itemSub$.prop('outerHTML')).removeAttr('id').attr('data-value', dateStr);
+                                    sub$.find('p').text(dateShow);
+                                    body$.append(sub$);
+                                }
+                                return `<small>${data.relate}</small> ● <small>${data.output}</small>`;
+                            default:
+                                if (eleSubTmp$.length === 0){
+                                    const sub$ = $(itemSub$.prop('outerHTML')).removeAttr('id').attr('data-value', dateStr);
+                                    sub$.find('p').text(date_to_str(data['objDT'].toDate()));
+                                    body$.append(sub$);
+                                }
+                                return `<small>${data.output}</small>`;
                         }
-                        if (DateTimeControl.isSameDay(data['objDT'].toDate(), nowDate)){
-                            // base$.attr('title', data.output);
-                            return `<small>${data.relate}</small> ● <small>${data.output}</small>`;
-                        } else {
-                            return `<small>${data.output}</small>`;
-                        }
-
                     }
                 })
             );
@@ -5728,6 +5736,14 @@ class DateTimeControl {
       return date1.getDate() === date2.getDate() &&
              date1.getMonth() === date2.getMonth() &&
              date1.getFullYear() === date2.getFullYear();
+    }
+
+    static diffDay(date1, date2){
+        const rDate1 = new Date(date1.getYear(), date1.getMonth(), date1.getDate());
+        const rDate2 = new Date(date2.getYear(), date2.getMonth(), date2.getDate());
+
+        const timeDifference = Math.abs(rDate2 - rDate1);
+        return Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
     }
 }
 

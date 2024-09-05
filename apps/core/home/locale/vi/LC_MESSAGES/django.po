@@ -48,3 +48,15 @@ msgstr "Công việc bắt đầu từ hôm nay"
 #
 msgid "Task report"
 msgstr "Báo cáo công việc"
+
+#
+msgid "7 days"
+msgstr "7 ngày"
+
+#
+msgid "14 days"
+msgstr "14 ngày"
+
+#
+msgid "30 days"
+msgstr "30 ngày"

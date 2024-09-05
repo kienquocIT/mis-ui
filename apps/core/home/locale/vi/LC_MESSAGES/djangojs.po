@@ -48,3 +48,7 @@ msgstr "Ẩn dữ liệu này trong tương lai"
 #
 msgid "Confirm"
 msgstr "Xác nhận"
+
+#
+msgid "Task status log by day"
+msgstr "Nhật ký trạng thái nhiệm vụ theo ngày"

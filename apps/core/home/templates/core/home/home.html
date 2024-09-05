@@ -97,6 +97,43 @@
             display: block;
         }
     </style>
+    <style>
+        #group-range-day-report-task-status {
+            width: 100%;
+            display: flex;
+            max-width: 600px;
+            height: 32px;
+        }
+
+        #group-range-day-report-task-status > div {
+            padding: 5px;
+            text-align: center;
+            height: 100%;
+            vertical-align: middle;
+            background-color: #009659;
+            color: white;
+            margin: 1px;
+            transition: background-color 0.2s, color 0.2s;
+            cursor: pointer;
+            flex: 1 1 auto;
+        }
+
+        #group-range-day-report-task-status > div.active {
+            background-color: #007d88;
+        }
+
+        #group-range-day-report-task-status > div:not(.active):hover {
+            background-color: #74cb2b;
+        }
+
+        #group-range-day-report-task-status > div:first-child {
+            border-radius: 5px 0 0 5px;
+        }
+
+        #group-range-day-report-task-status > div:last-child {
+            border-radius: 0 5px 5px 0;
+        }
+    </style>
 {% endblock %}
 
 {% block pageContent %}
@@ -162,18 +199,21 @@
                     </div>
                     <div class="w-100" style="background-color: #c7e2e5;border-radius: 0 0 5px 5px;">
                         <div class="row" style="padding: 10px;">
-                            <div class="col-lg-4 col-md-6 col-sm-12" id="my-task-by-status">
+                            <div
+                                    class="col-md-4 col-sm-12 d-flex justify-content-center align-items-center"
+                                    id="my-task-by-status"
+                            >
                                 <div
                                         class="w-100"
                                         style="border: 1px solid #ebf5f5; padding: 10px 20px;background-color: #fff;"
                                 >
                                     <canvas
-                                            style="max-height: 250px;max-width: 400px;"
+                                            style="max-height: calc(250px + 32px + 10px);max-width: 400px;"
                                     ></canvas>
                                     <p>{% trans "Current task data is being collected." %}</p>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="hidden">
                                 <div
                                         class="w-100"
                                         style="border: 1px solid #ebf5f5; padding: 10px 20px;background-color: #fff;"
@@ -184,11 +224,19 @@
                                     ></canvas>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-md-12 col-sm-12">
+                            <div class="col-md-8 col-sm-12 d-flex justify-content-center align-items-center">
                                 <div
                                         class="w-100"
-                                        style="border: 1px solid #ebf5f5; padding: 10px 20px;background-color: #fff;"
+                                        style="border: 1px solid #ebf5f5; padding: 10px 20px;background-color: #fff;margin-bottom: 10px;"
                                 >
+                                    <div class="w-100 d-flex justify-content-center">
+                                        <select id="inp-range-day-report-task-status" class="d-none">
+                                            <option value="7" selected>{% trans '7 days' %}</option>
+                                            <option value="14">{% trans '14 days' %}</option>
+                                            <option value="30">{% trans '30 days' %}</option>
+                                        </select>
+                                        <div id="group-range-day-report-task-status"></div>
+                                    </div>
                                     <canvas
                                             id="my-task-report-by-date"
                                             data-url="{% url 'MyTaskReportAPI' %}"
@@ -198,6 +246,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="w-100 hidden">
+                    <canvas id="task-status-log-by-day" style="max-height: 250px"></canvas>
                 </div>
             </div>
         </div>
@@ -517,6 +568,23 @@
     <script src="{% static 'vendors/chartjs/plugins/chartjs-plugin-datalabels@2.0.0.js' %}"></script>
     <script>
         $(document).ready(function () {
+                const inpRangeReportByDay$ = $('#inp-range-day-report-task-status');
+                const groupRangeReportByDay$ = $('#group-range-day-report-task-status');
+
+                groupRangeReportByDay$.empty();
+                inpRangeReportByDay$.find('option').each(function (){
+                    const ele$ = $(`<div>${$(this).text()}</div>`);
+                    const selected = $(this).prop('selected');
+                    ele$.attr('data-value', $(this).val());
+                    if (selected === true) ele$.addClass('active');
+                    groupRangeReportByDay$.append(ele$);
+                    ele$.on('click', function (){
+                        groupRangeReportByDay$.children().not($(this)).removeClass('active');
+                        $(this).addClass('active');
+                        inpRangeReportByDay$.val($(this).attr('data-value')).trigger('change');
+                    })
+                })
+
                 const taskReportHightGroup$ = $('#task-report-high-group');
                 const taskReportGroup$ = $("#task-report-group");
                 const taskReportCollapse$ = $("#task-report-collapse");
@@ -633,7 +701,7 @@
 
                     function initChartMyTaskReportCountByDay(data) {
                         const config = {
-                            type: 'bar',
+                            type: 'line',
                             data: {
                                 labels: data.map(row => $x.fn.parseDate(row.date)),
                                 datasets: [
@@ -684,10 +752,12 @@
                                         display: true,
                                         text: $.fn.gettext('Assigned and Completed task by day'),
                                         color: '#00585f',
+                                        position: 'top',
                                     },
                                     datalabels: {
                                         formatter: (value, ctx) => {
-                                            return value > 0 ? value : null;
+                                            // return value > 0 ? value : null;
+                                            return null;
                                         },
                                         color: '#ff9100',
                                     },
@@ -701,22 +771,110 @@
                         );
                     }
 
-                    $.fn.callAjax2({
-                        url: canvasTaskReportCountByDay$.attr('data-url'),
+                    let mixedChartTaskStatusByDay;
+
+                    function initMixedChartSumBy7Day(data) {
+                        if (mixedChartTaskStatusByDay) mixedChartTaskStatusByDay.destroy();
+
+                        let arrTaskStatus = new Set([]);
+                        let statusMap = {};
+                        data.map(row => {
+                            row.details.map(detail => {
+                                arrTaskStatus.add(detail.task_status);
+                                statusMap[detail.task_status] = detail;
+                            })
+                        });
+                        const config = {
+                            data: {
+                                labels: data.map(row => $x.fn.parseDate(row.date)),
+                                datasets: [
+                                    {
+                                        "type": "line",
+                                        "label": $.fn.gettext('Assigned'),
+                                        "data": data.map(
+                                            row => row.details
+                                                .filter(detail => detail.task_status === 'ASSIGN_TASK')
+                                                .reduce((acc, detail) => acc + detail.count, 0)
+                                        ),
+                                    },
+                                    {
+                                        "type": "line",
+                                        "label": $.fn.gettext('Finished'),
+                                        "data": data.map(
+                                            row => row.details
+                                                .filter(detail => detail.task_status === 'FINISH_TASK')
+                                                .reduce((acc, detail) => acc + detail.count, 0)
+                                        ),
+                                    },
+                                    ...Array.from(arrTaskStatus).filter((taskStatus) => taskStatus !== 'ASSIGN_TASK' && taskStatus !== 'FINISH_TASK').map((task_status) => {
+                                        return {
+                                            "type": "bar",
+                                            "label": statusMap[task_status].task_status_translate ? statusMap[task_status].task_status_translate : statusMap[task_status].task_status,
+                                            "data": data.map(
+                                                row => row.details
+                                                    .filter(detail => detail.task_status === task_status)
+                                                    .reduce((acc, detail) => acc + detail.count, 0)
+                                            )
+                                        }
+                                    }),
+                                ],
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: {
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                        beginAtZero: true,
+                                        max: (ctx) => Math.max(
+                                            ...ctx.chart.data.datasets.reduce((acc, currentValue) => acc.concat(currentValue.data), [])
+                                        ) + 1,
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: $.fn.gettext('Task status log by day'),
+                                        color: '#00585f',
+                                    },
+                                    datalabels: {
+                                        formatter: (value, ctx) => {
+                                            if (ctx.dataset.type === 'line') return null;
+                                            return value > 0 ? value : null;
+                                        },
+                                        color: '#ff9100',
+                                    },
+                                }
+                            },
+                        }
+                        mixedChartTaskStatusByDay = new Chart($('#task-status-log-by-day')[0], config);
+                    }
+
+                    inpRangeReportByDay$.on('change', () => {
+                        $.fn.callAjax2({
+                        url: canvasTaskReportCountByDay$.attr('data-url') + '?' + $.param({
+                            'range': inpRangeReportByDay$.val(),
+                        }),
                         method: 'GET',
                     }).then(
-                        resp => {
-                            const data = $.fn.switcherResp(resp);
-                            if (data && data.hasOwnProperty('my_task_report')) {
-                                const my_task_report = data['my_task_report'];
-                                if (my_task_report) {
-                                    initChartMyTaskReportRatio(my_task_report?.['ratio'] || []);
-                                    initChartMyTaskReportCountByDay(my_task_report?.['by_day'] || []);
+                            resp => {
+                                const data = $.fn.switcherResp(resp);
+                                if (data && data.hasOwnProperty('my_task_report')) {
+                                    const my_task_report = data['my_task_report'];
+                                    if (my_task_report) {
+                                        // initMixedChartSumBy7Day(my_task_report?.['by_day'] || []);
+                                        // initChartMyTaskReportRatio(my_task_report?.['ratio'] || []);
+                                        initChartMyTaskReportCountByDay(my_task_report?.['by_day'] || []);
+                                    }
                                 }
-                            }
-                        },
-                        errs => $.fn.switcherResp(errs)
-                    )
+                            },
+                            errs => $.fn.switcherResp(errs)
+                        )
+                    }).trigger('change');
 
                     const canvasTaskByStatus$ = $('#my-task-by-status');
                     const canvasTaskSummaryReport$ = $('#my-task-summary-report');

@@ -732,16 +732,16 @@ class NotifyController {
                         const eleSubTmp$ = notifyGroup$.find(`.notify-bell-item-sub[data-value="${dateStr}"]`);
                         if (eleSubTmp$.length === 0){
                             const sub$ = $(itemSub$.prop('outerHTML')).removeAttr('id').attr('data-value', dateStr);
-                            if (data['objDT'].toDate() === nowDate){
-                                sub$.find('p').text('Today');
+                            if (DateTimeControl.isSameDay(data['objDT'].toDate(), nowDate)){
+                                sub$.find('p').text($.fn.gettext('Today'));
                             } else {
                                 sub$.find('p').text(date_to_str(data['objDT'].toDate()));
                             }
                             body$.append(sub$);
                         }
-                        if (data['objDT'].toDate() === nowDate){
-                            base$.attr('title', data.output);
-                            return `<small>${data.relate}</small><small>${data.output}</small>`;
+                        if (DateTimeControl.isSameDay(data['objDT'].toDate(), nowDate)){
+                            // base$.attr('title', data.output);
+                            return `<small>${data.relate}</small> ● <small>${data.output}</small>`;
                         } else {
                             return `<small>${data.output}</small>`;
                         }
@@ -5722,6 +5722,12 @@ class DateTimeControl {
             return moment(data, fromFormat).format(toFormat);
         }
         return defaultIsEmpty;
+    }
+
+    static isSameDay(date1, date2) {
+      return date1.getDate() === date2.getDate() &&
+             date1.getMonth() === date2.getMonth() &&
+             date1.getFullYear() === date2.getFullYear();
     }
 }
 

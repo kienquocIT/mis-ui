@@ -10,6 +10,7 @@ const done_sn = $('#select-detail-table-sn-done')
 const done_lot = $('#select-detail-table-lot-done')
 const detail_modal = $('#select-detail-modal')
 let DetailBtn = null
+let IS_DETAIL_PAGE = false
 
 class GISLoadPage {
     static LoadDateCreated() {
@@ -159,7 +160,7 @@ class GISLoadTab {
             ],
         })
     }
-    static DrawTableIAItemsLOT(data_list=[]) {
+    static DrawTableIAItemsLOT(data_list=[], selected_list=[]) {
         LOTTable.DataTable().clear().destroy()
         LOTTable.DataTableDefault({
             dom: 't',
@@ -204,13 +205,22 @@ class GISLoadTab {
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<input data-lot-id="${row?.['id']}" type="number" class="form-control lot-input" value="0">`;
+                        let lot_selected_quantity = 0
+                        for (let i = 0; i < selected_list.length; i++) {
+                            if (selected_list[i]?.['lot_id'] === row?.['id']) {
+                                lot_selected_quantity = selected_list[i]?.['quantity']
+                            }
+                        }
+                        return `<input ${IS_DETAIL_PAGE ? 'disabled readonly' : ''} data-lot-id="${row?.['id']}" type="number" class="form-control lot-input" value="${lot_selected_quantity}">`;
                     }
                 },
             ],
+            initComplete: function () {
+                $('.lot-input').trigger('change')
+            }
         })
     }
-    static DrawTableIAItemsSN(data_list=[]) {
+    static DrawTableIAItemsSN(data_list=[], selected_list=[]) {
         SNTable.DataTable().clear().destroy()
         SNTable.DataTableDefault({
             dom: 't',
@@ -266,13 +276,17 @@ class GISLoadTab {
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
+                        let is_checked = selected_list.includes(row?.['id'])
                         return `<div class="form-check">
-                                    <input data-sn-id="${row?.['id']}" type="checkbox" class="form-check-input sn-checkbox">
+                                    <input ${is_checked ? 'checked': ''} data-sn-id="${row?.['id']}" type="checkbox" class="form-check-input sn-checkbox">
                                     <label class="form-check-label"></label>
                                 </div>`;
                     }
                 },
             ],
+            initComplete: function () {
+                $('.sn-checkbox').trigger('change')
+            }
         })
     }
 }
@@ -306,6 +320,7 @@ class GISHandle {
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
                     console.log(data)
+                    IS_DETAIL_PAGE = option === 'detail'
 
                     $('#title').val(data?.['title'])
                     $('#date_created').val(moment(data?.['date_created'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
@@ -318,11 +333,8 @@ class GISHandle {
                         GISLoadTab.DrawTableIAItems(data?.['detail_data_ia'])
                     }
                     else if (data?.['goods_issue_type'] === 1) {
-                        $('#for-liquidation').prop('checked', true)
                     }
                     else if (data?.['goods_issue_type'] === 2) {
-                        $('#for-production').prop('checked', true)
-                        $('#production-order-select-space').prop('hidden', false)
                     }
 
                     GISAction.DisabledDetailPage(option);
@@ -428,7 +440,8 @@ $(document).on("click", '.select-detail', function () {
                         filter_lot.push(results[0][i])
                     }
                 }
-                GISLoadTab.DrawTableIAItemsLOT(filter_lot)
+                let selected_list = DetailBtn.closest('tr').find('.lot-data-script').text() ? JSON.parse(DetailBtn.closest('tr').find('.lot-data-script').text()) : []
+                GISLoadTab.DrawTableIAItemsLOT(filter_lot, selected_list)
             })
     }
     else if ($(this).attr('data-type') === '2') {
@@ -459,7 +472,8 @@ $(document).on("click", '.select-detail', function () {
                 done_lot.prop('hidden', true)
                 $('#amount-balance-sn').text($(this).attr('data-difference') + ' ' + $(this).attr('data-uom-title')).attr('data-value', $(this).attr('data-difference'))
                 LOTTable.DataTable().clear().destroy()
-                GISLoadTab.DrawTableIAItemsSN(results[0])
+                let selected_list = DetailBtn.closest('tr').find('.sn-data-script').text() ? JSON.parse(DetailBtn.closest('tr').find('.sn-data-script').text()) : []
+                GISLoadTab.DrawTableIAItemsSN(results[0], selected_list)
             })
     }
 })
@@ -479,10 +493,10 @@ $(document).on("change", '.sn-checkbox', function () {
     $('#amount-selected-sn').text(selected)
     if (selected >= limit) {
         $('.sn-checkbox').prop('disabled', true)
-        $('.sn-checkbox:checked').prop('disabled', false)
+        $('.sn-checkbox:checked').prop('disabled', IS_DETAIL_PAGE)
     }
     else {
-        $('.sn-checkbox').prop('disabled', false)
+        $('.sn-checkbox').prop('disabled', IS_DETAIL_PAGE)
     }
 })
 

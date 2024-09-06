@@ -8740,3 +8740,7 @@ msgstr "SL xuất"
 #
 msgid "For liquidation"
 msgstr "Cho thanh lý"
+
+#
+msgid "Bill of material"
+msgstr "Hóa đơn nguyên vật liệu"

@@ -8744,3 +8744,11 @@ msgstr "Cho thanh lý"
 #
 msgid "Bill of material"
 msgstr "Hóa đơn nguyên vật liệu"
+
+#
+msgid "Finished"
+msgstr "Đã hoàn thành"
+
+#
+msgid "Not finished"
+msgstr "Chưa hoàn thành"

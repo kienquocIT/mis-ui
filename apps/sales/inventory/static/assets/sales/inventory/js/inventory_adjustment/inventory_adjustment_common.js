@@ -122,12 +122,6 @@ selectAllProductBtn.on('click', function () {
     }
 })
 
-function LoadStatus(data) {
-    if (data) {
-        statusInput.val(data).prop('disabled', true).prop('readonly', true);
-    }
-}
-
 function LoadWarehouseSelectBox(data) {
     warehouseSelectBox.initSelect2({
         ajax: {
@@ -306,7 +300,6 @@ function getDataFormUpdate() {
 
 class InventoryAdjustmentHandle {
     load() {
-        LoadStatus();
         LoadWarehouseSelectBox();
         LoadInChargeSelectBox();
     }
@@ -370,7 +363,7 @@ function LoadDetailIA(option) {
 
                 titleInput.val(data.title);
                 dateInput.val(moment(data?.['date_created'].split(' ')[0]).format('DD/MM/YYYY'));
-                LoadStatus(data.state);
+                statusInput.val(data.state ? statusInput.attr('data-trans-finished') : statusInput.attr('data-trans-opening'));
                 LoadWarehouseSelectBox(data?.['warehouses']);
                 LoadInChargeSelectBox(data?.['employees_in_charge']);
 

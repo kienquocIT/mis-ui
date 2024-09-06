@@ -2928,10 +2928,6 @@ msgid "Receive"
 msgstr "Tiếp nhận"
 
 #
-msgid "To do"
-msgstr "To do"
-
-#
 msgid "is"
 msgstr "là"
 

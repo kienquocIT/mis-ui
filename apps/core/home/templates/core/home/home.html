@@ -142,7 +142,6 @@
     </style>
 
     <link href="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.css' %}" rel="stylesheet">
-    <script src="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.js' %}" defer></script>
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/themes/themes.light.min.css' %}">
     <style>
         #idxPageContent {
@@ -263,7 +262,7 @@
         <div class="col-12 mb-3">
             <div class="card card-border mb-0 h-100">
                 <div class="card-header card-header-action">
-                    <ul class="nav nav-pills nav-pills-rounded nav-light">
+                    <ul class="nav nav-light nav-tabs nav-segmented-tabs">
                         <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#tab-task">
                                 <span class="nav-link-text">{% trans 'To do' %}</span>
@@ -543,6 +542,7 @@
     </script>
     <script src="{% static 'assets/js/core_home/home.js' %}"></script>
 
+    <script src="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.js' %}" defer></script>
     <script src="{% static 'vendors/chartjs/chart.umd.min.js' %}"></script>
     <script src="{% static 'vendors/chartjs/plugins/chartjs-plugin-datalabels@2.0.0.js' %}"></script>
     <script>

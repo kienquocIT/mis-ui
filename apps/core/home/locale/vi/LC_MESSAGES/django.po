@@ -60,3 +60,15 @@ msgstr "14 ngày"
 #
 msgid "30 days"
 msgstr "30 ngày"
+
+#
+msgid "To do"
+msgstr "Chưa thực hiện"
+
+#
+msgid "Following"
+msgstr "Đang theo dõi"
+
+#
+msgid "Pined"
+msgstr "Đã ghim"

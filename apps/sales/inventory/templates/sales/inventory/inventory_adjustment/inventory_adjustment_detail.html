@@ -5,6 +5,11 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        .highlight-border-left-primary {
+            border-left: solid 5px #c7e2e5; !important;
+        }
+    </style>
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'InventoryAdjustmentUpdate' pk=pk %}">

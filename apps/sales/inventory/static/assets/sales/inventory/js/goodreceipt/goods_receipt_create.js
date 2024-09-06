@@ -49,20 +49,13 @@ $(function () {
         // Action on change dropdown PO
         GRLoadDataHandle.POSelectEle.on('change', function () {
             GRLoadDataHandle.loadChangePO($(this));
+            GRLoadDataHandle.loadClearModalAreas();
+            GRLoadDataHandle.loadCallAjaxProduct();
             btnEdit.click();
         });
 
-        btnEdit.on('click', function () {
-            GRLoadDataHandle.loadClearModalAreas();
-            GRLoadDataHandle.loadModalProduct();
-        });
-
-        btnAdd.on('click', function () {
-            GRLoadDataHandle.loadAddRowLineDetail();
-        });
-
         btnConfirmAdd.on('click', function () {
-            GRStoreDataHandle.storeDataAll();
+            GRStoreDataHandle.storeDataProduct();
             GRLoadDataHandle.loadLineDetail();
         });
 
@@ -80,7 +73,7 @@ $(function () {
         });
 
         GRDataTableHandle.tablePR.on('click', '.table-row-checkbox', function () {
-            GRLoadDataHandle.loadCheckPR(this);
+            GRLoadDataHandle.loadCheckPR();
         });
 
         GRDataTableHandle.tablePR.on('change', '.table-row-import', function () {
@@ -110,10 +103,12 @@ $(function () {
                 this.value =  '0';
                 GRLoadDataHandle.loadQuantityImport();
             }
+            GRStoreDataHandle.storeDataProduct();
         });
 
         GRDataTableHandle.tableWH.on('click', '.table-row-checkbox-additional', function () {
             GRLoadDataHandle.loadCheckIsAdditional(this);
+            GRStoreDataHandle.storeDataProduct();
         });
 
         GRLoadDataHandle.btnAddLot.on('click', function () {
@@ -154,6 +149,7 @@ $(function () {
                 this.value = '0';
                 GRLoadDataHandle.loadQuantityImport();
             }
+            GRStoreDataHandle.storeDataProduct();
         });
 
         GRDataTableHandle.tableLot.on('change', '.table-row-expire-date, .table-row-manufacture-date', function () {
@@ -174,6 +170,7 @@ $(function () {
             // validate serial exist
             GRValidateHandle.validateSerialNumber(this);
             GRValidateHandle.validateSerialNumberExistRow(this);
+            GRStoreDataHandle.storeDataProduct();
         });
 
         GRDataTableHandle.tableLineDetailPO.on('change', '.table-row-price, .table-row-tax', function () {
@@ -321,7 +318,7 @@ $(function () {
                 'remarks',
                 'date_received',
                 // tab product
-                'goods_receipt_product',
+                'gr_products_data',
                 // attachment
                 'attachment',
                 // abstract

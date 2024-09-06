@@ -154,7 +154,6 @@ class ProdOrderLoadDataHandle {
         ProdOrderDataTableHandle.$tableMain.DataTable().rows.add(data).draw();
         ProdOrderLoadDataHandle.loadDD(ProdOrderDataTableHandle.$tableMain);
         ProdOrderLoadDataHandle.loadSetCollapse();
-        // ProdOrderLoadDataHandle.loadTime();
         return true;
     };
 
@@ -532,11 +531,14 @@ class ProdOrderDataTableHandle {
                         if (row?.['is_task'] === true) {
                             return ``;
                         }
+                        let checked = '';
+                        if (row?.['is_all_warehouse'] === true) {
+                            checked = 'checked';
+                        }
                         return `<div class="form-check">
-                                    <input type="checkbox" id="customRadio1" name="customRadio" class="form-check-input check-all-wh">
+                                    <input type="checkbox" id="customRadio1" name="customRadio" class="form-check-input check-all-wh" ${checked}>
                                     <label class="form-check-label" for="customRadio1">${ProdOrderLoadDataHandle.$trans.attr('data-all-wh')}</label>
                                 </div><select class="form-select table-row-warehouse" data-url="${ProdOrderLoadDataHandle.$urls.attr('data-md-warehouse')}" data-method="GET" data-keyResp="warehouse_list"></select>`;
-                        // return `<select class="form-select table-row-warehouse" data-url="${ProdOrderLoadDataHandle.$urls.attr('data-md-warehouse')}" data-method="GET" data-keyResp="warehouse_list"></select>`;
                     }
                 },
                 {

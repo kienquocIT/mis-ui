@@ -168,7 +168,6 @@ function loadTabTodo() {
     let appList = JSON.parse($('#app_list').text())
     if (!dataLoaded) {
         tbl.attr('data-loaded', true);
-        WindowControl.showLoadingWaitResponse(tbl);
         let frm = new SetupFormSubmit(tbl);
         tbl.DataTableDefault({
             pageLength: 5,
@@ -183,7 +182,6 @@ function loadTabTodo() {
                 },
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    WindowControl.hideLoadingWaitResponse(tbl);
                     if (data && data.hasOwnProperty('task_list')) {
                         return resp.data['task_list'] ? resp.data['task_list'] : [];
                     }

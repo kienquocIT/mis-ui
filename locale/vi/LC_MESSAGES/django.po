@@ -7653,10 +7653,6 @@ msgid "Project PM"
 msgstr "Quản lý dự án"
 
 #
-msgid "Project owner"
-msgstr "Phụ trách dự án"
-
-#
 msgid "Allow view this project"
 msgstr "Quyền xem dự án"
 
@@ -8720,3 +8716,7 @@ msgstr "Chọn vật liệu/linh kiện thay thế"
 #
 msgid "Please select main material/component first!"
 msgstr "Hãy chọn vật liệu/linh kiện chính trước!"
+
+#
+msgid "Assignee attachment"
+msgstr "Tệp của người nhận việc"

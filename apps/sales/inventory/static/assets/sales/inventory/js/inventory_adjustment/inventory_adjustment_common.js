@@ -123,7 +123,9 @@ selectAllProductBtn.on('click', function () {
 })
 
 function LoadStatus(data) {
-    statusInput.val(data).prop('disabled', true).prop('readonly', true);
+    if (data) {
+        statusInput.val(data).prop('disabled', true).prop('readonly', true);
+    }
 }
 
 function LoadWarehouseSelectBox(data) {

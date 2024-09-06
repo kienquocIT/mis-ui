@@ -25,6 +25,9 @@
     <div class="row">
         <div class="col-12">
             <table id="dtbGoodsIssue"
+                   data-trans-ia="{% trans 'For inventory adjustment' %}"
+                   data-trans-liquidation="{% trans 'For liquidation' %}"
+                   data-trans-production="{% trans 'For production' %}"
                    class="table nowrap w-100 mb-5"
                    data-url="{% url 'GoodsIssueListAPI' %}"
                    data-url-detail="{% url 'GoodsIssueDetail' pk=0 %}"

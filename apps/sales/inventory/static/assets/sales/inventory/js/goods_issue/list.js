@@ -38,7 +38,8 @@ $(document).ready(function () {
                         data: 'goods_issue_type',
                         className: 'wrap-text w-20',
                         render: (data) => {
-                            return `<span class="badge badge-blue">${data}</span>`
+                            let type_trans = [$table.attr('data-trans-ia'), $table.attr('data-trans-liquidation'), $table.attr('data-trans-production')]
+                            return `<span class="text-muted fst-italic">${type_trans[data]}</span>`
                         }
                     },
                     {

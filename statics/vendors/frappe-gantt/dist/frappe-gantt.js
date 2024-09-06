@@ -1176,40 +1176,6 @@ var Gantt = (function () {
             this.change_view_mode();
         }
 
-        update_data(data){
-            // clone old task list to temp
-            jQuery('.gantt-left .gantt-left-outerwrap').remove()
-            let temps = []
-            for (let item of this.tasks){
-                for (let val of data){
-                    if (val.id === item.id){
-                        item.name = val.name
-                        item.start = val.start
-                        item.end = val.end
-                        item.progress = val.progress
-                        item.weight = val.weight
-                        item.order = val.order
-                        if (val.hasOwnProperty('is_group')){
-                            item.is_group = val.is_group
-                            item.is_toggle = val.is_toggle
-                        }
-                        else{
-                            item.child_of_group = val.child_of_group
-                            item.child_group_id = val.child_group_id
-                            item.is_show = val.is_show
-                            item.relationships_type = val.relationships_type
-                            item.work_status = val.work_status
-                            item.dependencies = val.dependencies
-                        }
-                    }
-                }
-                temps.push(item)
-            }
-            this.setup_tasks(temps)
-            this.change_view_mode()
-
-        }
-
         change_view_mode(mode = this.options.view_mode) {
             jQuery('.gantt-left .gantt-left-outerwrap').remove()
             this.update_view_scale(mode);
@@ -2065,7 +2031,7 @@ var Gantt = (function () {
                     else if (value.code === 'start' || value.code === 'end')
                         item_html.append(moment(item[value.code], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     else if (value.code === 'weight' || value.code === 'progress')
-                        item_html.append(`${item[value.code]}%`)
+                        item_html.append(`<span title="${item[value.code]}%">${item[value.code]}%</span>`)
                     else if (value.code === 'work_status' && item[value.code]){
                         item_html.append(`<span class="badge badge-${WORK_STT_COL_TXT[item[value.code]['value']]} badge-indicator-processing badge-indicator"></span> ${item[value.code]['txt']}`)
                     }

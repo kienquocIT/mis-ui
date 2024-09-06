@@ -145,6 +145,12 @@ $(document).ready(function () {
                 animating_number(data['completion_rate'], $('.completion_rate_block .heading span'))
                 if (data['completion_rate'] !== 100)
                     $('#complete_project span span:nth-child(2)').text($.fn.gettext('Close Project'))
+
+
+                new $x.cls.file($('#project_assign_attach')).init({
+                    enable_edit: false,
+                    data: data['assignee_attachment'],
+                })
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )
@@ -173,6 +179,7 @@ $(document).ready(function () {
         }
         $tblUser.DataTable().clear().rows.add(tblData).draw();
     });
+
     // delete user member
     $(document).on('card.action.close.confirm', '.member-item .card', function () {
         let eleCard = $(this);
@@ -210,4 +217,8 @@ $(document).ready(function () {
         new_gantt.change_view_mode(mode)
     })
 
+    if (typeof dragElement === "function")
+        $('.init_drag_modal').each(function(){
+            dragElement($(this)[0])
+        })
 });

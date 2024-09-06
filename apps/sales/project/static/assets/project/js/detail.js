@@ -85,6 +85,10 @@ $(document).ready(function () {
                     $('#open_project').prop('hidden', false)
                     $('#complete_project').prop('hidden', true)
                 }
+                new $x.cls.file($('#project_assign_attach')).init({
+                    enable_edit: false,
+                    data: project['assignee_attachment'],
+                })
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )

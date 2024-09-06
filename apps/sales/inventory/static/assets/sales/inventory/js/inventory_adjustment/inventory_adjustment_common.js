@@ -364,6 +364,7 @@ function LoadDetailIA(option) {
                 new PrintTinymceControl().render('c5de0a7d-bea3-4f39-922f-06a40a060aba', data, false);
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
+                console.log(data)
 
                 titleInput.val(data.title);
                 dateInput.val(moment(data?.['date_created'].split(' ')[0]).format('DD/MM/YYYY'));
@@ -400,7 +401,7 @@ function LoadDetailIA(option) {
                     }
                     tableLineDetailTbody.append(`
                         <tr class="${class_ctn}">
-                            <td data-item-id="${data_row?.['id']}" data-product-warehouse-id="${data_row?.['product_warehouse_mapped'].id}" data-id="${data_row?.['product_mapped'].id}" class="text-primary product_id_td">${data_row?.['product_mapped'].title}</td>
+                            <td data-item-id="${data_row?.['id']}" data-product-warehouse-id="${data_row?.['product_warehouse_mapped_id']}" data-id="${data_row?.['product_mapped'].id}" class="text-primary product_id_td">${data_row?.['product_mapped'].title}</td>
                             <td data-id="${data_row?.['warehouse_mapped'].id}" class="warehouse_id_td"><i class="fas fa-warehouse"></i> ${data_row?.['warehouse_mapped'].title}</td>
                             <td data-id="${data_row?.['uom_mapped'].id}" class="uom_id_td">${data_row?.['uom_mapped'].title}</td>
                             <td class="quantity-td">${data_row?.['book_quantity']}</td>

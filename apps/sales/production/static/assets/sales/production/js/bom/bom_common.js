@@ -15,6 +15,7 @@ const replacement_material_table = $('#replacement-material-table')
 const replacement_material_table_warning = $('#replacement-material-table-warning')
 const normal_production_space = $('#normal-production-space')
 const outsourcing_production_space = $('#outsourcing-production-space')
+let NOW_BOM_TYPE = $('#for-production')
 
 //// COMMON
 
@@ -22,6 +23,23 @@ class BOMLoadPage {
     static LoadFinishProduct(ele, data) {
         ele.initSelect2({
             ajax: {
+                data: {'general_product_types_mapped__is_finished_goods': true},
+                url: ele.attr('data-url'),
+                method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                return resp.data[keyResp];
+            },
+            data: (data ? data : null),
+            keyResp: 'product_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
+    static LoadServiceProduct(ele, data) {
+        ele.initSelect2({
+            ajax: {
+                data: {'general_product_types_mapped__is_service': true},
                 url: ele.attr('data-url'),
                 method: 'GET',
             },
@@ -412,9 +430,9 @@ class BOMLoadTab {
                         className: 'w-5 text-center',
                         'render': (data, type, row) => {
                             return `<div class="form-check">
-                            <input type="checkbox" data-material-id="${row?.['id']}" class="form-check-input replacement-checkbox">
-                            <label class="form-check-label"></label>
-                        </div>`;
+                                        <input type="checkbox" data-material-id="${row?.['id']}" class="form-check-input replacement-checkbox">
+                                        <label class="form-check-label"></label>
+                                    </div>`;
                         }
                     },
                     {
@@ -802,8 +820,12 @@ class BOMHandle {
     }
     static CombinesDataForProductionBOM(frmEle) {
         let frm = new SetupFormSubmit($(frmEle))
-
-        frm.dataForm['bom_type'] = 0
+        if ($('#for-production').prop('checked') ) {
+            frm.dataForm['bom_type'] = 0
+        }
+        if ($('#for-service').prop('checked')) {
+            frm.dataForm['bom_type'] = 1
+        }
         frm.dataForm['product_id'] = productEle.val()
         frm.dataForm['sum_price'] = priceEle.attr('value')
         frm.dataForm['sum_time'] = timeEle.val()
@@ -904,6 +926,13 @@ class BOMHandle {
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
                     console.log(data)
+
+                    if (data?.['bom_type'] === 0) {
+                        $('#for-production').prop('checked', true)
+                    }
+                    if (data?.['bom_type'] === 1) {
+                        $('#for-service').prop('checked', true)
+                    }
 
                     BOMLoadPage.LoadFinishProduct(productEle, data?.['product'])
                     priceEle.attr('value', data?.['sum_price'])
@@ -1016,6 +1045,49 @@ is_outsourcing.on('change', function () {
         else {
             let check = is_outsourcing.prop('checked')
             is_outsourcing.prop('checked', !check)
+        }
+	})
+})
+
+$('input[name="bom-type"]').on('change', function() {
+    Swal.fire({
+		html: `<h5 class="text-blue">${script_trans.attr('data-trans-change-type')}</h5><p class="small">${script_trans.attr('data-trans-reload-data')}</p>`,
+		customClass: {
+			confirmButton: 'btn text-blue',
+			cancelButton: 'btn text-gray',
+			container:'swal2-has-bg',
+			actions:'w-100'
+		},
+		showCancelButton: true,
+		buttonsStyling: false,
+		confirmButtonText: script_trans.attr('data-trans-change-ok'),
+		cancelButtonText: script_trans.attr('data-trans-change-no'),
+		reverseButtons: true
+	}).then((result) => {
+		if (result.value) {
+            if ($('#for-production').prop('checked') || $('#for-service').prop('checked')) {
+                if ($('#for-service').prop('checked')) {
+                    BOMLoadPage.LoadServiceProduct(productEle)
+                }
+                if ($('#for-production').prop('checked')) {
+                    BOMLoadPage.LoadFinishProduct(productEle)
+                }
+                NOW_BOM_TYPE = $('input[name="bom-type"]:checked')
+                normal_production_space.prop('hidden', false)
+                is_outsourcing.prop('checked', false)
+                outsourcing_production_space.prop('hidden', true)
+                BOMLoadTab.LoadOutsourcingMaterialTable()
+                BOMLoadTab.LoadProcessDescriptionTable()
+                BOMLoadTab.LoadLaborSummaryTable()
+                material_table.find('tbody').html('')
+                tools_table.find('tbody').html('')
+                priceEle.attr('value', 0)
+                timeEle.val(0)
+                $.fn.initMaskMoney2()
+            }
+		}
+        else {
+            NOW_BOM_TYPE.prop('checked', true)
         }
 	})
 })
@@ -1134,3 +1206,7 @@ $(document).on("click", '.del-row-material-outsourcing', function () {
     let row_index = $(this).closest('tr').find('td:eq(0)').text()
     BOMAction.BOMDeleteRow($(this).closest('table'), row_index)
 })
+
+// SERVICE
+
+

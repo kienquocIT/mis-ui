@@ -8724,3 +8724,15 @@ msgstr "Chọn lệnh sản xuất"
 #
 msgid "Select detail"
 msgstr "Chọn cụ thể"
+
+#
+msgid "Selected"
+msgstr "Đã chọn"
+
+#
+msgid "Issue quantity"
+msgstr "SL xuất"
+
+#
+msgid "For liquidation"
+msgstr "Cho thanh lý"

@@ -27,7 +27,7 @@
     </style>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frmUpdate">
+    <button class="btn btn-outline-primary" type="submit" form="frmDetail">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -37,7 +37,7 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form id="frmUpdate" data-method="PUT" data-url="{% url 'GoodsIssueDetailAPI' pk=pk %}"
+    <form id="frmDetail" data-method="PUT" data-url="{% url 'GoodsIssueDetailAPI' pk=pk %}"
           data-url-redirect="{% url 'GoodsIssueList' %}">
         <div class="collapse multi-collapse show" id="collapse-area">
             <div class="row">

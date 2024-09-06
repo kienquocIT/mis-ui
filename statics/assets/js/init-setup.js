@@ -730,51 +730,81 @@ class NotifyController {
                     'callback': function (data) {
                         const dateStr = data['objDT'].toDate().toISOString().substring(0, 10);
                         const eleSubTmp$ = notifyGroup$.find(`.notify-bell-item-sub[data-value="${dateStr}"]`);
-                        if (eleSubTmp$.length === 0){
-                            const sub$ = $(itemSub$.prop('outerHTML')).removeAttr('id').attr('data-value', dateStr);
-                            if (data['objDT'].toDate() === nowDate){
-                                sub$.find('p').text('Today');
-                            } else {
-                                sub$.find('p').text(date_to_str(data['objDT'].toDate()));
-                            }
-                            body$.append(sub$);
+                        let dateShow = null;
+                        switch (DateTimeControl.diffDay(data['objDT'].toDate(), nowDate)) {
+                            case 0:
+                                dateShow = $.fn.gettext('Today');
+                            case 1:
+                                if (dateShow === null) dateShow = $.fn.gettext('1 day ago');
+                            case 2:
+                                if (dateShow === null) dateShow = $.fn.gettext('2 day ago');
+                            case 3:
+                                if (dateShow === null) dateShow = $.fn.gettext('3 day ago');
+                                if (eleSubTmp$.length === 0){
+                                    const sub$ = $(itemSub$.prop('outerHTML')).removeAttr('id').attr('data-value', dateStr);
+                                    sub$.find('p').text(dateShow);
+                                    body$.append(sub$);
+                                }
+                                return `<small>${data.relate}</small> ● <small>${data.output}</small>`;
+                            default:
+                                if (eleSubTmp$.length === 0){
+                                    const sub$ = $(itemSub$.prop('outerHTML')).removeAttr('id').attr('data-value', dateStr);
+                                    sub$.find('p').text(date_to_str(data['objDT'].toDate()));
+                                    body$.append(sub$);
+                                }
+                                return `<small>${data.output}</small>`;
                         }
-                        if (data['objDT'].toDate() === nowDate){
-                            base$.attr('title', data.output);
-                            return `<small>${data.relate}</small><small>${data.output}</small>`;
-                        } else {
-                            return `<small>${data.output}</small>`;
-                        }
-
                     }
                 })
             );
             if (data.is_done !== true) base$.addClass('unread');
             else base$.removeClass('unread');
 
-            const mentionId = data?.['comment_mentions_id'];
-            const employeeSenderData = data?.['employee_sender_data'];
-            if (mentionId && $x.fn.checkUUID4(mentionId)) {
-                base$.addClass('mention');
-                base$.find('.item-image-sub-icon').addClass('bg-neon').append('<i class="fa-solid fa-quote-left text-white"></i>');
-                if (employeeSenderData){
-                    const itemImage$ = base$.find('.item-image');
-                    const full_name = employeeSenderData?.['full_name'] || '';
-                    const email = employeeSenderData?.['email'] || '';
-                    if (full_name) {
-                        itemImage$
-                            .find('img')
-                            .attr('data-bs-toogle', 'tooltip')
-                            .attr('title', full_name + ' - ' + email)
-                            .removeClass('img-filter-opacity-50');
+            const notifyType = data?.['notify_type'] || 0;
+            switch (notifyType) {
+                case 0:
+                    break
+                case 10:
+                    // WF NEW TASK
+                    base$.find('.item-image-sub-icon').addClass('bg-yellow').empty().append('<i class="fa-solid fa-bolt text-white"></i>');
+                    break
+                case 11:
+                    // WF RETURN
+                    base$.find('.item-image-sub-icon').addClass('bg-violet').empty().append('<i class="fa-solid fa-rotate-left text-white"></i>');
+                    break
+                case 12:
+                    // WF END
+                    base$.find('.item-image-sub-icon').addClass('bg-green').empty().append('<i class="fa-solid fa-flag text-white"></i>');
+                    break
+                case 20:
+                    // COMMENT MENTIONS
+                    const mentionId = data?.['comment_mentions_id'];
+                    if (mentionId && $x.fn.checkUUID4(mentionId)) {
+                        base$.addClass('mention');
+                        base$.find('.item-image-sub-icon').addClass('bg-neon').empty().append('<i class="fa-solid fa-quote-left text-white"></i>');
+                        const employeeSenderData = data?.['employee_sender_data'];
+                        if (employeeSenderData){
+                            const itemImage$ = base$.find('.item-image');
+                            const full_name = employeeSenderData?.['full_name'] || '';
+                            const email = employeeSenderData?.['email'] || '';
+                            if (full_name) {
+                                itemImage$
+                                    .find('img')
+                                    .attr('data-bs-toogle', 'tooltip')
+                                    .attr('title', full_name + ' - ' + email)
+                                    .removeClass('img-filter-opacity-50');
+                            }
+                            const avatar_img = employeeSenderData?.['avatar_img'] || '';
+                            if (avatar_img) itemImage$.find('img').attr('src', avatar_img);
+                        }
+                    } else {
+                        base$.removeClass('mention');
                     }
-                    const avatar_img = employeeSenderData?.['avatar_img'] || '';
-                    if (avatar_img) itemImage$.find('img').attr('src', avatar_img);
-                }
-            } else {
-                base$.removeClass('mention');
+                    break
             }
-            body$.append(base$)
+            body$.append(base$);
+
+            ListeningEventController.listenImageLoad($(base$).find('img'));
         }
 
         loadMore$.on('click', function (){
@@ -1774,6 +1804,7 @@ class ListeningEventController {
                 $(this).attr('data-toggle', 'tooltip');
                 $(this).attr('title', resolve_title_tooltip($(this)));
                 $(this).attr('src', imgReplace);
+                $(this).addClass('img-filter-opacity-50');
             });
         })
     }
@@ -5699,6 +5730,20 @@ class DateTimeControl {
             return moment(data, fromFormat).format(toFormat);
         }
         return defaultIsEmpty;
+    }
+
+    static isSameDay(date1, date2) {
+      return date1.getDate() === date2.getDate() &&
+             date1.getMonth() === date2.getMonth() &&
+             date1.getFullYear() === date2.getFullYear();
+    }
+
+    static diffDay(date1, date2){
+        const rDate1 = new Date(date1.getYear(), date1.getMonth(), date1.getDate());
+        const rDate2 = new Date(date2.getYear(), date2.getMonth(), date2.getDate());
+
+        const timeDifference = Math.abs(rDate2 - rDate1);
+        return Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
     }
 }
 

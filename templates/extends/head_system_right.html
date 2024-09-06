@@ -5,10 +5,15 @@
         width: 100%;
         height: 100vh;
         position: absolute;
-        top: var(--blog-header-height);
+        top: 0;
         left: 0;
-        background-color: rgba(216, 216, 216, 0.3);
         z-index: 1055;
+    }
+
+    #notify-bell-list .notify-bell-content-group {
+        margin-top: var(--blog-header-height);
+        background-color: rgba(216, 216, 216, 0.5);
+        height: 100%;
     }
 
     #notify-bell-item-base,
@@ -18,7 +23,7 @@
 
     @media screen and (max-width: 576px) {
         #notify-bell-list .notify-bell-content {
-            width: 100%;
+            width: 99%;
             max-width: unset;
         }
 
@@ -91,7 +96,7 @@
         font-size: 0.825rem;
     }
 
-    .notify-bell-item:hover {
+    .notify-bell-item:not(.notify-bell-item-sub):hover {
         background-color: rgba(153, 203, 207, 0.1);
     }
 
@@ -159,15 +164,20 @@
 
     .notify-bell-item .item-image .item-image-sub-icon {
         position: absolute;
-        bottom: 5px;
-        right: 5px;
-        height: 20px;
-        width: 20px;
+        bottom: 0;
+        right: 0;
+        height: 1.5rem;
+        width: 1.5rem;
         border-radius: 100%;
         overflow: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    .notify-bell-item .item-image .item-image-sub-icon > * {
+        font-size: 0.825rem;
+        margin-top: 0.1rem;
     }
 
     .notify-bell-item .item-data .item-data-app {
@@ -218,8 +228,14 @@
         border-radius: 50%;
     }
 
+    .img-filter-opacity-25 {
+        filter: opacity(0.25);
+    }
     .img-filter-opacity-50 {
         filter: opacity(0.5);
+    }
+    .img-filter-opacity-75 {
+        filter: opacity(0.75);
     }
 
     @-webkit-keyframes NotifyLoadMore {
@@ -344,7 +360,8 @@
             style="display:none;"
             data-url-done-notify="{% url 'ResolveNotifyItemAPI' pk='__pk__' %}"
     >
-        <div class="notify-bell-content" style="display:none;">
+        <div class="notify-bell-content-group">
+            <div class="notify-bell-content" style="display:none;">
             <div class="notify-bell-list-head">
                 <p class="mr-2">{% trans 'Notifications' %}</p>
                 <select
@@ -386,7 +403,7 @@
             <div id="notify-bell-item-sub-base" class="notify-bell-item notify-bell-item-sub"><p></p></div>
             <div
                     id="notify-bell-item-base"
-                    class="notify-bell-item unread"
+                    class="notify-bell-item"
                     data-bs-toggle="tooltip"
                     title=""
             >
@@ -464,6 +481,7 @@
                 <a href="{% url 'MyNotifyPageView' %}">{% trans 'See all recent notifications' %}</a>
             </div>
         </div>
+        </div>
     </div>
     <div class="dropdown-menu dropdown-menu-end p-0">
         <h6 class="dropdown-header px-4 fs-6">
@@ -525,7 +543,7 @@
             data-bs-auto-close="outside"
             aria-expanded="false"
     >
-        <div style="max-width: 2rem; max-height: 2rem;overflow: hidden;">
+        <div style="max-width: 2rem; max-height: 2rem;overflow: hidden;border-radius: 100%;">
             {{ base|render_avatar_tag:True|safe }}
         </div>
     </button>

@@ -110,11 +110,13 @@ class AuthLogin(APIView):
                 }
 
                 #
-                token = jwt.decode(user.access_token, options={"verify_signature": False})
-                is_2fa_verified = token.get(settings.JWT_KEY_2FA_VERIFIED, False)
-                is_2fa_enabled = token.get(settings.JWT_KEY_2FA_ENABLED, False)
-                if is_2fa_enabled is True and is_2fa_verified is False:
-                    ctx['redirect_to'] = reverse('TwoFAVerifyView')
+                need_verify_2fa = resp.result.get('need_verify_2fa', True)
+                if need_verify_2fa is True:
+                    token = jwt.decode(user.access_token, options={"verify_signature": False})
+                    is_2fa_verified = token.get(settings.JWT_KEY_2FA_VERIFIED, False)
+                    is_2fa_enabled = token.get(settings.JWT_KEY_2FA_ENABLED, False)
+                    if is_2fa_enabled is True and is_2fa_verified is False:
+                        ctx['redirect_to'] = reverse('TwoFAVerifyView')
 
                 return ctx, status.HTTP_200_OK
             return {'detail': AuthMsg.login_exc, 'data': resp.result}, status.HTTP_400_BAD_REQUEST

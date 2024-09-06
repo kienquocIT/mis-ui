@@ -27,78 +27,7 @@
         {% include 'sales/inventory/goods_issue/common/information.html' %}
         {% include 'sales/inventory/goods_issue/common/tabs.html' %}
     </form>
-
-    <div class="modal fade" id="select-detail-modal" tabindex="-1" role="dialog" aria-labelledby="select-detail-modal" aria-hidden="true">
-        <div class="modal-dialog modal-lg" style="min-width: 75%" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Select detail' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table hidden
-                           class="table nowrap w-100"
-                           id="select-detail-table-sn"
-                           data-sn-url="{% url 'WarehouseSerialListAPI' %}">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>{% trans 'Vendor serial no.' %}</th>
-                                <th>{% trans 'Serial no.' %}</th>
-                                <th>{% trans 'Expiration date' %}</th>
-                                <th>{% trans 'Mfr date' %}</th>
-                                <th>{% trans 'Warranty start' %}</th>
-                                <th>{% trans 'Warranty end' %}</th>
-                                <th>
-                                    <span class="fst-italic text-muted">{% trans 'Selected' %}: <span class="text-muted" id="amount-selected-sn">0</span>/<span class="text-muted" data-value="" id="amount-balance-sn"></span></span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                    <table hidden
-                           class="table nowrap w-100"
-                           id="select-detail-table-lot"
-                           data-lot-url="{% url 'WarehouseLotListAPI' %}">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>{% trans 'Lot number' %}</th>
-                                <th>{% trans 'Quantity' %}</th>
-                                <th>{% trans 'Expiration date' %}</th>
-                                <th>{% trans 'Mfr date' %}</th>
-                                <th>
-                                    <span class="fst-italic text-muted">{% trans 'Selected' %}: <span class="text-muted" id="amount-selected-lot">0</span>/<span class="text-muted" data-value="" id="amount-balance-lot"></span></span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                    <div hidden id="select-detail-table-none" class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="stock-quantity" class="form-label">{% trans 'Stock quantity' %}</label>
-                                <input disabled readonly id="stock-quantity" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="issue-quantity" class="form-label">{% trans 'Issue quantity' %}</label>
-                                <input type="number" value="0" id="issue-quantity" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" hidden class="btn btn-primary" id="select-detail-table-none-done">{% trans 'Done' %}</button>
-                    <button type="button" hidden class="btn btn-primary" id="select-detail-table-sn-done">{% trans 'Done' %}</button>
-                    <button type="button" hidden class="btn btn-primary" id="select-detail-table-lot-done">{% trans 'Done' %}</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'sales/inventory/goods_issue/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

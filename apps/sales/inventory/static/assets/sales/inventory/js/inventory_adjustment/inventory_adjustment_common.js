@@ -78,7 +78,7 @@ $(document).on('input', '.count-input', function () {
     let difference = parseFloat(count) - parseFloat(quantity);
     let action_type = '';
     if (difference === 0) {
-        $(this).closest('tr').removeClass('bg-primary bg-opacity-10');
+        $(this).closest('tr').removeClass('bg-primary-light-5');
         $(this).closest('tr').find('.selected_for_actions').prop('checked', false);
         $(this).closest('tr').find('.selected_for_actions').attr('disabled', true);
     }
@@ -378,7 +378,7 @@ function LoadDetailIA(option) {
                     let class_ctn = '';
                     if (data_row?.['select_for_action']) {
                         checked = 'checked';
-                        class_ctn = 'bg-primary bg-opacity-10';
+                        class_ctn = 'bg-primary-light-5';
                     }
                     let done = '';
                     if (data_row?.['action_status']) {
@@ -497,5 +497,5 @@ get_decrease_items_btn.on('click', function () {
 })
 
 $(document).on('input', '.selected_for_actions', function () {
-    $(this).closest('tr').toggleClass('bg-primary bg-opacity-10', $(this).is(':checked'));
+    $(this).closest('tr').toggleClass('bg-primary-light-5', $(this).is(':checked'));
 })

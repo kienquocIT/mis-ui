@@ -274,7 +274,7 @@ class GISLoadTab {
                     }
                 },
                 {
-                    className: 'wrap-text',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         let is_checked = selected_list.includes(row?.['id'])
                         return `<div class="form-check">
@@ -392,7 +392,6 @@ $('input[name="issue-type"]').on('change', function () {
 
 $(document).on("click", '.select-detail', function () {
     DetailBtn = $(this)
-    let dataParam = {'product_warehouse_id': $(this).attr('data-prd-wh-id')}
     if ($(this).attr('data-type') === '0') {
         let stock_quantity = $(this).attr('data-stock-quantity')
         $('#stock-quantity').val(stock_quantity)
@@ -407,6 +406,9 @@ $(document).on("click", '.select-detail', function () {
         $('#issue-quantity').val($(this).closest('tr').find('.selected-quantity').val())
     }
     else if ($(this).attr('data-type') === '1') {
+        let dataParam = {
+            'product_warehouse_id': $(this).attr('data-prd-wh-id')
+        }
         let prd_wh_lot = $.fn.callAjax2({
             url: LOTTable.attr('data-lot-url'),
             data: dataParam,
@@ -445,6 +447,10 @@ $(document).on("click", '.select-detail', function () {
             })
     }
     else if ($(this).attr('data-type') === '2') {
+        let dataParam = {
+            'product_warehouse_id': $(this).attr('data-prd-wh-id'),
+            'is_delete': false
+        }
         let prd_wh_serial = $.fn.callAjax2({
             url: SNTable.attr('data-sn-url'),
             data: dataParam,
@@ -464,6 +470,7 @@ $(document).on("click", '.select-detail', function () {
 
         Promise.all([prd_wh_serial]).then(
             (results) => {
+                console.log(results[0])
                 NONETable.prop('hidden', true)
                 SNTable.prop('hidden', false)
                 LOTTable.prop('hidden', true)

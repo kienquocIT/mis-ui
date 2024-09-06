@@ -5,6 +5,11 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        .highlight-border-left-primary {
+            border-left: solid 5px #c7e2e5; !important;
+        }
+    </style>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="frm_inventory_adjustment_create">
@@ -26,115 +31,11 @@
           data-method="POST"
           id="frm_inventory_adjustment_create">
         {% csrf_token %}
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label for="title" class="form-label required">{% trans 'Title' %}</label>
-                    <input type="text" class="form-control" id="title" placeholder="Inventory adjustment in January">
-                </div>
-                <div class="form-group">
-                    <label for="warehouse-select-box" class="form-label required">{% trans 'Warehouse' %}</label>
-                    <select class="form-select select2 select-multiple"
-                            data-url="{% url 'WareHouseListAPI' %}"
-                            data-method="GET"
-                            id="warehouse-select-box" multiple>
-                    </select>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <label for="date" class="form-label required">{% trans 'Date' %}</label>
-                            <input type="text" class="form-control" id="date">
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6" hidden>
-                        <div class="form-group">
-                            <label for="status" class="form-label required">{% trans 'Status' %}</label>
-                            <input type="text" class="form-control" id="status">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="in-charge-select-box" class="form-label required">{% trans 'In charge' %}</label>
-                    <select class="form-select select2 select-multiple"
-                            data-url="{% url 'EmployeeListAPI' %}"
-                            data-method="GET"
-                            id="in-charge-select-box" multiple>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-4">
-            <ul class="nav nav-tabs nav-icon nav-light">
-                <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_line_detail">
-                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-justify-left"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Line Detail' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tab_block_attachment">
-                        <span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="file-text"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Attachment' %}</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="tab_block_line_detail">
-                    <div class="row">
-                        <div class="col-12">
-                            <button id="btn-add-row-line-detail" class="btn btn-soft-primary mb-3" type="button"
-                                    data-bs-toggle="offcanvas"
-                                    data-bs-target="#select-items-modal"
-                                    aria-controls="offcanvasExample">
-                                <span>
-                                    <span>{% trans 'Select products' %}</span>
-                                    <span class="icon">
-                                        <i class="bi bi-check-circle-fill"></i>
-                                    </span>
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
-                            <table data-url="{% url "WareHouseListAPI" %}"
-                                   data-warehouse-product-list="{% url 'WarehouseGetProductsListAPI' %}"
-                                   data-uom-list="{% url 'UnitOfMeasureListAPI' %}"
-                                   data-method="GET"
-                                   class="table nowrap w-100" id="table-line-detail">
-                                <thead>
-                                <tr>
-                                    <th>{% trans 'Product name' %}</th>
-                                    <th>{% trans 'Warehouse' %}</th>
-                                    <th>{% trans 'Unit Of Measure' %}</th>
-                                    <th>{% trans 'Booked quantity' %}</th>
-                                    <th class="required">{% trans 'Counted quantity' %}</th>
-                                    <th class="text-center">{% trans 'Difference' %}</th>
-                                    <th class="text-center">{% trans 'Select for actions' %}</th>
-                                    <th class="text-center">{% trans 'Action type' %}</th>
-                                    <th class="text-center">{% trans 'Action status' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="tab_block_attachment">
-                    <div class="row">
-                        <div class="col-12">
-                            <input type="file" id="input-file-now" class="dropify">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% include 'sales/inventory/inventory_adjustment/common/information.html' %}
+        {% include 'sales/inventory/inventory_adjustment/common/tabs.html' %}
     </form>
 
-    <div class="offcanvas offcanvas-end mt-9 w-60" tabindex="-1" id="select-items-modal" aria-labelledby="offcanvasTopLabel">
+    <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="select-items-modal" aria-labelledby="offcanvasTopLabel">
         <div class="offcanvas-header row">
             <div class="col-9"><h5 id="offcanvasRightLabel">{% trans 'Select products from warehouses' %}</h5></div>
             <div class="col-2"><button id="btn-select-product" type="button" class="btn btn-primary w-100" data-bs-dismiss="offcanvas">{% trans 'Select' %}</button></div>

@@ -1,0 +1,102 @@
+{% load i18n %}
+
+<div class="accordion accordion-card accordion-soft accordion-icon" id="accordionPanelsStayOpenExampleOne">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                <span class="d-flex align-items-center">
+                    <i class="fas fa-info-circle mr-2 text-primary"></i>
+                    <span>
+                        <span>{% trans 'Information' %}</span>
+                    </span>
+                </span>
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+            <div class="accordion-body">
+                <div class="row">
+                    <div class="col-6 col-md-6 col-lg-2">
+                        <div class="border border rounded p-2 mb-2">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <div class="form-check">
+                                        <input type="radio" id="for-ia" name="issue-type" class="form-check-input" checked>
+                                        <label class="form-check-label" for="for-ia">{% trans 'For inventory adjustment' %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-6 col-lg-2" hidden>
+                        <div class="border border rounded p-2 mb-2">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <div class="form-check">
+                                        <input type="radio" id="for-liquidation" name="issue-type" class="form-check-input">
+                                        <label class="form-check-label" for="for-liquidation">{% trans 'For liquidation' %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-6 col-lg-2" hidden>
+                        <div class="border border rounded p-2 mb-2">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <div class="form-check">
+                                        <input type="radio" id="for-production" name="issue-type" class="form-check-input">
+                                        <label class="form-check-label" for="for-production">{% trans 'For production' %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 col-md-8 col-lg-8">
+                        <div class="row">
+                            <div class="col-12 col-md-9 col-lg-9">
+                                <div class="form-group">
+                                    <label class="form-label required" for="title">{% trans 'Title' %}</label>
+                                    <input type="text" class="form-control" id="title" required>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3 col-lg-3">
+                                <div class="form-group">
+                                    <label for="date_created" class="form-label">{% trans 'Created date' %}</label>
+                                    <input disabled readonly id="date_created" class="form-control">
+                                </div>
+                            </div>
+                            <div id="inventory-adjustment-select-space" class="col-12 col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <label for="box-select-ia" class="form-label required">{% trans 'Select inventory adjustment' %}</label>
+                                    <select id="box-select-ia"
+                                            class="form-select"
+                                            data-method="GET"
+                                            data-url="{% url 'InventoryAdjustmentListAPI' %}"
+                                    ></select>
+                                </div>
+                            </div>
+                            <div hidden id="production-order-select-space" class="col-12 col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <label for="box-select-production-order" class="form-label required">{% trans 'Select production order' %}</label>
+                                    <select id="box-select-production-order"
+                                            class="form-select select2"
+                                            data-method="GET"
+                                            data-url="{% url 'ProductionOrderListAPI' %}"
+                                    ></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label" for="note">{% trans 'Note' %}</label>
+                            <textarea type="text" class="form-control" id="note" name="note"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

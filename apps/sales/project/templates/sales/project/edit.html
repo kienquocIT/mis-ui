@@ -118,9 +118,9 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab_work_expense">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_assignee_attach">
                 <i class="fa-solid fa-money-check-dollar"></i>
-                <span class="nav-link-text">{% trans 'Work expense' %}</span>
+                <span class="nav-link-text">{% trans 'Assignee attachment' %}</span>
             </a>
         </li>
     </ul>
@@ -247,8 +247,7 @@
             </table>
         </div>
         <div class="tab-pane fade" id="tab_assignee_attach">
-            <input type="hidden" id="task_assignee_attach">
-            <div id="assigner_attachment">
+            <div id="project_assign_attach">
                 {% include 'extends/files/all.html' %}
             </div>
         </div>

@@ -13,6 +13,15 @@ function resetFormTask() {
     window.editor.setData('')
     $('.create-task').attr('disabled', false)
     $('.btn-log_work').removeClass('.disabled')
+
+    const $attachElm = $('#assigner_attachment'), $attachElmAssignee = $('#assignee_attachment');
+    $attachElm.find('.dm-uploader').dmUploader("reset")
+    $attachElm.find('.dm-uploader-result-list').html('');
+    $attachElm.find('.dm-uploader-no-files').css({ 'display': 'block'});
+
+    $attachElmAssignee.find('.dm-uploader').dmUploader("reset")
+    $attachElmAssignee.find('.dm-uploader-result-list').html('');
+    $attachElmAssignee.find('.dm-uploader-no-files').css({ 'display': 'block'});
 }
 
 function isValidString(inputString) {
@@ -171,11 +180,8 @@ function TaskSubmitFunc(platform) {
         })
     })
 
-    if ($('[name="attach"]').val()) {
-        let list = []
-        list.push($('[name="attach"]').val())
-        formData.attach = list
-    }
+    formData.attach = $x.cls.file.get_val(formData.attach, []);
+    formData.attach_assignee = $x.cls.file.get_val(formData.attach_assignee, []);
 
     formData.work = $('input[name="work_id"]', platform).val()
     formData.project = $('#id').val()
@@ -477,8 +483,9 @@ class Task_in_project {
             });
         });
 
-        // init attachment
-        new $x.cls.file($('#attachment')).init({'name': 'attach'});
+        // init attachment file
+        new $x.cls.file($('#assigner_attachment')).init({'name': 'attach'});
+        new $x.cls.file($('#assignee_attachment')).init({'name': 'attach_assignee'});
 
         // init more employee
         Task_in_project.initExpenseLabor()
@@ -534,8 +541,31 @@ class Task_in_project {
                     window.checklist.render()
 
                     if (data.attach) {
-                        const fileDetail = data.attach[0]?.['files']
-                        FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
+                        let $elmAttAssign = $('#assigner_attachment'),
+                            $elmAttachAssignee = $('#assignee_attachment'),
+                            _lstAssigner = [],
+                            _lstAssignee = [];
+                        for (let item of data.attach){
+                            if (item['is_assignee_file'] === true) _lstAssignee.push(item)
+                            else _lstAssigner.push(item)
+                        }
+                        // load attachments of assigner
+                        $elmAttAssign.find('.dm-uploader').dmUploader("destroy")
+                        new $x.cls.file(
+                            $elmAttAssign
+                        ).init({
+                            enable_edit: true,
+                            data: _lstAssigner,
+                        })
+
+                        // load attachment if assignee
+                        $elmAttachAssignee.find('.dm-uploader').dmUploader("destroy")
+                        new $x.cls.file(
+                            $elmAttachAssignee
+                        ).init({
+                            enable_edit: true,
+                            data: _lstAssignee,
+                        })
                     }
                     Task_in_project.initTableLogWork(data?.['task_log_work'])
                     Task_in_project.renderSubtask(data.id, data?.['sub_task_list'])

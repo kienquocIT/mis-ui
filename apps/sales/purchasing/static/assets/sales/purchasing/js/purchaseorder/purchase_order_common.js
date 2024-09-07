@@ -2415,6 +2415,7 @@ class POSubmitHandle {
                                 'quantity_order': rowData['stock'],
                                 'uom_stock': rowData['uom_order_request'],
                                 'is_stock': true,
+                                'gr_remain_quantity': rowData['stock'],
                             })
                         }
                     }

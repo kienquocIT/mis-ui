@@ -1601,7 +1601,7 @@ class GRDataTableHandle {
                                             data-id="${row?.['purchase_order_request_product_id']}" 
                                         >
                                     </div>
-                                    <span class="table-row-item">${row?.['purchase_request_data']?.['code'] ? row?.['purchase_request_data']?.['code'] : 'Stock'}</span>
+                                    <span class="table-row-item">${row?.['purchase_request_data']?.['code'] ? row?.['purchase_request_data']?.['code'] : GRLoadDataHandle.transEle.attr('data-stock')}</span>
                                 </div>`;
                     }
                 },
@@ -3526,7 +3526,7 @@ class GRSubmitHandle {
                         // If PO have PR
                         let pr_product_submit_list = [];
                         for (let pr_product of dataRow?.['pr_products_data'] ? dataRow?.['pr_products_data'] : []) {
-                            if (pr_product?.['quantity_import'] > 0 && pr_product?.['purchase_request_product_id']) {
+                            if (pr_product?.['quantity_import'] > 0) {
                                 GRSubmitHandle.setupDataWHLotSerial(pr_product);
                                 pr_product_submit_list.push(pr_product);
                                 let field_list = [

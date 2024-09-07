@@ -1354,6 +1354,7 @@ class GRLoadDataHandle {
                         if (data) {
                             if (data.hasOwnProperty('purchase_order_product_list') && Array.isArray(data.purchase_order_product_list)) {
                                 for (let dataPOPro of data.purchase_order_product_list) {
+                                    let isDetail = false;
                                     for (let dataProduct of dataProducts) {
                                         if (dataProduct?.['purchase_order_product_id'] === dataPOPro?.['purchase_order_product_id']) {
                                             dataProduct['gr_completed_quantity'] = dataPOPro?.['gr_completed_quantity'];
@@ -1367,8 +1368,12 @@ class GRLoadDataHandle {
                                                     }
                                                 }
                                             }
+                                            isDetail = true;
                                             break;
                                         }
+                                    }
+                                    if (isDetail === false) {
+                                        dataProducts.push(dataPOPro);
                                     }
                                 }
                                 GRDataTableHandle.tablePOProduct.DataTable().clear().draw();

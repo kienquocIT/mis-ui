@@ -1312,9 +1312,13 @@ class GRLoadDataHandle {
             if (formSubmit.attr('data-method') === 'GET') {
                 GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLineDetailPO);
             }
-            GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
-            GRDataTableHandle.tablePOProduct.DataTable().rows.add(data?.['gr_products_data']).draw();
-            GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePOProduct);
+
+            // GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
+            // GRDataTableHandle.tablePOProduct.DataTable().rows.add(data?.['gr_products_data']).draw();
+            // GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePOProduct);
+
+
+            GRLoadDataHandle.loadDetailProducts(data?.['gr_products_data']);
         }
         if (idAreaShow === '2') {  // GR by IA
             GRLoadDataHandle.loadDetailIAWHLotSerial(data);
@@ -1327,6 +1331,49 @@ class GRLoadDataHandle {
             GRDataTableHandle.tableIAProduct.DataTable().clear().draw();
             GRDataTableHandle.tableIAProduct.DataTable().rows.add(data?.['inventory_adjustment_data']?.['inventory_adjustment_product']).draw();
         }
+    };
+
+    static loadDetailProducts(dataProducts) {
+        let frm = new SetupFormSubmit(GRDataTableHandle.tablePOProduct);
+        if (GRLoadDataHandle.POSelectEle.val()) {
+                $.fn.callAjax2({
+                        'url': frm.dataUrl,
+                        'method': frm.dataMethod,
+                        'data': {'purchase_order_id': GRLoadDataHandle.POSelectEle.val()},
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('purchase_order_product_list') && Array.isArray(data.purchase_order_product_list)) {
+                                for (let dataPOPro of data.purchase_order_product_list) {
+                                    for (let dataProduct of dataProducts) {
+                                        if (dataProduct?.['purchase_order_product_id'] === dataPOPro?.['purchase_order_product_id']) {
+                                            dataProduct['gr_completed_quantity'] = dataPOPro?.['gr_completed_quantity'];
+                                            dataProduct['gr_remain_quantity'] = dataPOPro?.['gr_remain_quantity'];
+                                            for (let dataPOPRPro of dataPOPro?.['pr_products_data']) {
+                                                for (let dataPRProduct of dataProduct?.['pr_products_data']) {
+                                                    if (dataPRProduct?.['purchase_order_request_product_id'] === dataPOPRPro?.['purchase_order_request_product_id']) {
+                                                        dataPRProduct['gr_completed_quantity'] = dataPOPRPro?.['gr_completed_quantity'];
+                                                        dataPRProduct['gr_remain_quantity'] = dataPOPRPro?.['gr_remain_quantity'];
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                                GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
+                                GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
+                                GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePOProduct);
+                            }
+                        }
+                    }
+                )
+        }
+        return true;
     };
 
     static loadDetailIAWHLotSerial(data) {
@@ -3409,7 +3456,6 @@ class GRSubmitHandle {
                     quantityImport = parseFloat(row.querySelector('.table-row-import').value);
                 }
                 if (quantityImport > 0) {
-                    dataRow['purchase_order_product_id'] = dataRow?.['id'];
                     dataRow['quantity_import'] = quantityImport;
                     dataRow['order'] = order;
                     let data_id = dataRow?.['id'];
@@ -3436,8 +3482,6 @@ class GRSubmitHandle {
                             'tax_data',
                             'warehouse_id',
                             'product_quantity_order_actual',
-                            'gr_remain_quantity',
-                            'gr_completed_quantity',
                             'quantity_import',
                             'product_title',
                             'product_code',
@@ -3485,8 +3529,6 @@ class GRSubmitHandle {
                                     'purchase_request_data',
                                     'uom_data',
                                     'quantity_order',
-                                    'gr_remain_quantity',
-                                    'gr_completed_quantity',
                                     'quantity_import',
                                     'is_stock',
                                     'gr_warehouse_data',

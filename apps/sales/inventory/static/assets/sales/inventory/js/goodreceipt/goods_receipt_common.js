@@ -715,29 +715,31 @@ class GRLoadDataHandle {
 
     static loadQuantityImport() {
         let elePOChecked = GRDataTableHandle.tablePOProduct[0]?.querySelector('.table-row-checkbox:checked');
-        let elePRChecked = GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked');
         let eleWHChecked = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked');
-        if (elePOChecked && elePRChecked && eleWHChecked) {
+        if (elePOChecked && eleWHChecked) {
             let rowPO = elePOChecked.closest('tr');
             let rowPOIdx = GRDataTableHandle.tablePOProduct.DataTable().row(rowPO).index();
             let $rowPO = GRDataTableHandle.tablePOProduct.DataTable().row(rowPOIdx);
             let dataPO = $rowPO.data();
 
-            let rowPR = elePRChecked.closest('tr');
-            let rowPRIdx = GRDataTableHandle.tablePR.DataTable().row(rowPR).index();
-            let $rowPR = GRDataTableHandle.tablePR.DataTable().row(rowPRIdx);
-            let dataPR = $rowPR.data();
+            let elePRChecked = GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked');
+            let valuePROrderRemain = 0;
+            let dataPR = {};
+            if (elePRChecked) {
+                let rowPR = elePRChecked.closest('tr');
+                let rowPRIdx = GRDataTableHandle.tablePR.DataTable().row(rowPR).index();
+                let $rowPR = GRDataTableHandle.tablePR.DataTable().row(rowPRIdx);
+                dataPR = $rowPR.data();
+                let eleRemainPR = elePRChecked?.closest('tr')?.querySelector('.table-row-gr-remain');
+                if (eleRemainPR) {
+                    valuePROrderRemain = parseFloat(eleRemainPR.innerHTML);
+                }
+            }
 
             let eleRemainPO = elePOChecked?.closest('tr')?.querySelector('.table-row-gr-remain');
-            let eleRemainPR = elePRChecked?.closest('tr')?.querySelector('.table-row-gr-remain');
-
             let valuePOOrderRemain = 0;
             if (eleRemainPO) {
                 valuePOOrderRemain = parseFloat(eleRemainPO.innerHTML);
-            }
-            let valuePROrderRemain = 0;
-            if (eleRemainPR) {
-                valuePROrderRemain = parseFloat(eleRemainPR.innerHTML);
             }
 
             if (!GRDataTableHandle.tableLot[0].querySelector('.dataTables_empty')) {
@@ -763,19 +765,23 @@ class GRLoadDataHandle {
                 }
                 eleWHChecked.closest('tr').querySelector('.table-row-import').value = String(valueWHNew);
             }
-            let valuePRNew = 0;
-            for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
-                valuePRNew += parseFloat(eleImport.value);
-            }
-            if (valuePROrderRemain >= 0) {
-                if (valuePRNew <= valuePROrderRemain) {
-                    elePRChecked.closest('tr').querySelector('.table-row-import').innerHTML = String(valuePRNew);
-                } else {
-                    eleWHChecked.closest('tr').querySelector('.table-row-import').value = '0';
-                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
-                    return false
+
+            if (elePRChecked) {
+                let valuePRNew = 0;
+                for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
+                    valuePRNew += parseFloat(eleImport.value);
+                }
+                if (valuePROrderRemain >= 0) {
+                    if (valuePRNew <= valuePROrderRemain) {
+                        elePRChecked.closest('tr').querySelector('.table-row-import').innerHTML = String(valuePRNew);
+                    } else {
+                        eleWHChecked.closest('tr').querySelector('.table-row-import').value = '0';
+                        $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
+                        return false
+                    }
                 }
             }
+
             let valuePONew = 0;
             if (valuePROrderRemain) { // If PO have PR
                 for (let eleImport of GRDataTableHandle.tablePR[0].querySelectorAll('.table-row-import')) {

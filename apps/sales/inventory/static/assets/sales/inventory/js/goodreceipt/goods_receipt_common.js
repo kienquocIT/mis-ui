@@ -116,7 +116,7 @@ class GRLoadDataHandle {
     static loadChangeByType(type) {
         if (type === "1") {
             if (!GRLoadDataHandle.POSelectEle.val()) {
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.POSelectEle, [], {'is_all_receipted': false, 'system_status': 3});
+                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.POSelectEle, [], {'receipt_status__in': [0, 1, 2].join(','), 'system_status': 3});
             }
             if (!GRLoadDataHandle.supplierSelectEle.val()) {
                 GRLoadDataHandle.loadInitS2(GRLoadDataHandle.supplierSelectEle);
@@ -1304,7 +1304,7 @@ class GRLoadDataHandle {
         }
         GRLoadDataHandle.loadCustomAreaByType();
         if (idAreaShow === '1') {  // GR by PO
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.POSelectEle, [data?.['purchase_order_data']], {'is_all_receipted': false, 'system_status': 3});
+            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.POSelectEle, [data?.['purchase_order_data']], {'receipt_status__in': [0, 1, 2].join(','), 'system_status': 3});
             GRLoadDataHandle.loadInitS2(GRLoadDataHandle.supplierSelectEle, [data?.['supplier_data']]);
             GRLoadDataHandle.loadDataShowPR(data?.['purchase_requests']);
             GRDataTableHandle.tableLineDetailPO.DataTable().rows.add(data?.['gr_products_data']).draw();

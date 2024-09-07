@@ -1048,7 +1048,7 @@ class NodeDataTableHandle {
                                             <div class="btn-group dropdown">
                                                 <button 
                                                     type="button"
-                                                    class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover"
+                                                    class="btn btn-icon btn-soft-light"
                                                     data-bs-toggle="dropdown" 
                                                     aria-haspopup="true" 
                                                     aria-expanded="false"
@@ -1072,7 +1072,7 @@ class NodeDataTableHandle {
                                         <div class="col-8">
                                             <button 
                                                 type="button"
-                                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover"
+                                                class="btn btn-icon btn-soft-light"
                                                 disabled
                                             >
                                             <span class="icon"><i class="fas fa-tasks"></i></span>
@@ -1101,7 +1101,7 @@ class NodeDataTableHandle {
                                         <div class="col-8">
                                             <button 
                                                 type="button"
-                                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-node-collab"
+                                                class="btn btn-icon btn-soft-light btn-node-collab"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                             >
@@ -1380,7 +1380,7 @@ class NodeDataTableHandle {
                                         <div class="col-8">
                                             <button 
                                                 type="button"
-                                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-node-collab"
+                                                class="btn btn-icon btn-soft-light btn-node-collab"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                             >
@@ -1430,7 +1430,7 @@ class NodeDataTableHandle {
                                         <div class="col-8">
                                             <button 
                                                 type="button"
-                                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-node-collab"
+                                                class="btn btn-icon btn-soft-light btn-node-collab"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                                 disabled

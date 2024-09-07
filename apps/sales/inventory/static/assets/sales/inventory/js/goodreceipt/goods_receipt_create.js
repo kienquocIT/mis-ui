@@ -112,12 +112,7 @@ $(function () {
         });
 
         GRLoadDataHandle.btnAddLot.on('click', function () {
-            if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
-                GRLoadDataHandle.loadAddRowLot();
-            } else {
-                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-no-warehouse')}, 'failure');
-                return false
-            }
+            GRLoadDataHandle.loadAddRowLot();
         });
 
         GRDataTableHandle.tableLot.on('click', '.dropdown-item-lot', function () {
@@ -158,18 +153,18 @@ $(function () {
         });
 
         GRLoadDataHandle.btnAddSerial.on('click', function () {
-            if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
-                GRLoadDataHandle.loadAddRowSerial();
-            } else {
-                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-no-warehouse')}, 'failure');
-                return false
-            }
+            GRLoadDataHandle.loadAddRowSerial();
         });
 
         GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {
             // validate serial exist
             GRValidateHandle.validateSerialNumber(this);
             GRValidateHandle.validateSerialNumberExistRow(this);
+            let importResult = GRLoadDataHandle.loadQuantityImport();
+            if (importResult === false) {
+                this.value = '0';
+                GRLoadDataHandle.loadQuantityImport();
+            }
             GRStoreDataHandle.storeDataProduct();
         });
 

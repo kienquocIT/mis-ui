@@ -4,8 +4,8 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'QuotationUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary" id="btn-enable-edit" hidden>
+    <a href="{% url 'ContractUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
             <span>
                 <span>{% trans 'Edit' %}</span>
                 <span class="icon">

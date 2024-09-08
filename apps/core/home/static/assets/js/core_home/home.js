@@ -23,7 +23,8 @@ function renderCollaborationHTML(data) {
 
 function renderActions(doc_pin_id, runtime_id, doc_id, is_diagram = true, is_mute = true, is_pin = true, btn_unpin = false) {
     let empty = $(``);
-    let box = $(`<div class="d-flex align-items-center justify-content-end"></div>`);
+    // let box = $(`<div class="d-flex align-items-center justify-content-end"></div>`);
+    let box = $(`<div></div>`);
     let btnViewDiagram = is_diagram && doc_id && runtime_id ? $(`
                 <button
                     data-drawer-target="#drawer_log_data"
@@ -167,11 +168,12 @@ function loadTabTodo() {
     let appList = JSON.parse($('#app_list').text())
     if (!dataLoaded) {
         tbl.attr('data-loaded', true);
-        WindowControl.showLoadingWaitResponse(tbl);
         let frm = new SetupFormSubmit(tbl);
         tbl.DataTableDefault({
             pageLength: 5,
             rowIdx: false,
+            scrollX: '100vh',
+            scrollCollapse: true,
             ajax: {
                 url: frm.dataUrl,
                 type: frm.dataMethod,
@@ -180,7 +182,6 @@ function loadTabTodo() {
                 },
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    WindowControl.hideLoadingWaitResponse(tbl);
                     if (data && data.hasOwnProperty('task_list')) {
                         return resp.data['task_list'] ? resp.data['task_list'] : [];
                     }
@@ -191,7 +192,6 @@ function loadTabTodo() {
                 {
                     data: 'doc_title',
                     className: 'wrap-text',
-                    width: "20%",
                     render: (data, type, row) => {
                         let stage__runtime = row['stage__runtime'];
                         let urlData = UrlGatewayReverse.get_url(
@@ -204,7 +204,6 @@ function loadTabTodo() {
                 },
                 {
                     className: 'wrap-text',
-                    width: "10%",
                     data: 'app_code',
                     render: (data, type, row) => {
                         let temp = data.toLowerCase().split('.')
@@ -213,28 +212,24 @@ function loadTabTodo() {
                     }
                 }, {
                     className: 'wrap-text',
-                    width: "10%",
                     data: 'stage',
                     render: (data, type, row) => {
                         return data ? `<span class="badge badge-warning">${data['title']}</span>` : '';
                     }
                 }, {
                     className: 'wrap-text',
-                    width: "25%",
                     data: 'employee',
                     render: (data, type, row) => {
                         return $x.fn.renderAvatar(data);
                     }
                 }, {
                     className: 'wrap-text',
-                    width: "25%",
                     data: "date_created",
                     render: (data, type, row)=>{
                         return $x.fn.displayRelativeTime(data);
                     }
                 }, {
-                    className: 'wrap-text',
-                    width: "10%",
+                    className: 'wrap-text text-center',
                     data: 'stage__runtime',
                     render: (data, type, row) => {
                         return renderActions(data?.['doc_pined_id'], data?.['id'], data?.['doc_id']);

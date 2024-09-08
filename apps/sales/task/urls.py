@@ -1,7 +1,10 @@
 from django.urls import path
 
-from apps.sales.task.views import OpportunityTaskConfig, OpportunityTaskConfigAPI, OpportunityTaskList, \
-    OpportunityTaskListAPI, OpportunityTaskStatusAPI, OpportunityTaskDetailAPI, OpportunityTaskLogTimeAPI
+from apps.sales.task.views import (
+    OpportunityTaskConfig, OpportunityTaskConfigAPI, OpportunityTaskList,
+    OpportunityTaskListAPI, OpportunityTaskStatusAPI, OpportunityTaskDetailAPI, OpportunityTaskLogTimeAPI,
+    MyTaskReportAPI, MyTaskSummaryReport,
+)
 
 urlpatterns = [
     path('config', OpportunityTaskConfig.as_view(), name='OpportunityTaskConfig'),
@@ -11,4 +14,7 @@ urlpatterns = [
     path('list/api', OpportunityTaskListAPI.as_view(), name='OpportunityTaskListAPI'),
     path('detail/<str:pk>', OpportunityTaskDetailAPI.as_view(), name='OpportunityTaskDetailAPI'),
     path('task/log-time', OpportunityTaskLogTimeAPI.as_view(), name='OpportunityTaskLogTimeAPI'),
+
+    path('my-report', MyTaskReportAPI.as_view(), name='MyTaskReportAPI'),
+    path('my-summary-report', MyTaskSummaryReport.as_view(), name='MyTaskSummaryReport'),
 ]

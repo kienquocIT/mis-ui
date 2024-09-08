@@ -15,12 +15,12 @@ from rest_framework.views import APIView
 
 import jwt
 
-from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, ServerMsg, TypeCheck
+from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, TypeCheck
 from apps.core.account.models import User
 
 from .forms import AuthLoginForm, ForgotPasswordForm, ForgotPasswordValidOTPForm, ForgotPasswordResendOTP
 from apps.shared.csrf import CSRFCheckSessionAuthentication, APIAllowAny
-from apps.shared.decorators import OutLayoutRender, session_flush
+from apps.shared.decorators import OutLayoutRender, session_flush, MyJWTClient
 
 
 def check_home_domain(request):
@@ -110,11 +110,13 @@ class AuthLogin(APIView):
                 }
 
                 #
-                token = jwt.decode(user.access_token, options={"verify_signature": False})
-                is_2fa_verified = token.get(settings.JWT_KEY_2FA_VERIFIED, False)
-                is_2fa_enabled = token.get(settings.JWT_KEY_2FA_ENABLED, False)
-                if is_2fa_enabled is True and is_2fa_verified is False:
-                    ctx['redirect_to'] = reverse('TwoFAVerifyView')
+                need_verify_2fa = resp.result.get('need_verify_2fa', True)
+                if need_verify_2fa is True:
+                    token = jwt.decode(user.access_token, options={"verify_signature": False})
+                    is_2fa_verified = token.get(settings.JWT_KEY_2FA_VERIFIED, False)
+                    is_2fa_enabled = token.get(settings.JWT_KEY_2FA_ENABLED, False)
+                    if is_2fa_enabled is True and is_2fa_verified is False:
+                        ctx['redirect_to'] = reverse('TwoFAVerifyView')
 
                 return ctx, status.HTTP_200_OK
             return {'detail': AuthMsg.login_exc, 'data': resp.result}, status.HTTP_400_BAD_REQUEST
@@ -124,7 +126,17 @@ class AuthLogin(APIView):
 class AuthLogout(View):
     authentication_classes = [AllowAny]
 
+    @mask_view(
+        login_require=False,
+        auth_require=False,
+        template='auths/logout.html',
+    )
     def get(self, request, *args, **kwargs):
+        if request.user and request.user.is_authenticated and not isinstance(request.user, AnonymousUser):
+            resp = ServerAPI(request=request, user=request.user, url=ApiURL.logout, has_refresh_token=True).delete()
+            if resp.state is False:
+                pass
+                # return resp.errors, status.HTTP_200_OK
         try:
             session_flush(request=request)
             logout(request)
@@ -273,7 +285,10 @@ class ChangePasswordView(View):
         breadcrumb='USER_CHANGE_PASSWORD',
     )
     def get(self, request, *args, **kwargs):
-        ctx = {}
+        ctx = {'include_otp': False}
+        token_cls = MyJWTClient(user=request.user)
+        if token_cls.get_2fa_enabled() is True:
+            ctx['include_otp'] = True
         return ctx, status.HTTP_200_OK
 
 
@@ -282,3 +297,17 @@ class ChangePasswordAPI(APIView):
     def put(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.USER_CHANGE_PASSWORD).put(data=request.data)
         return resp.auto_return()
+
+
+class AuthLogsAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.AUTH_LOGS).get()
+        return resp.auto_return(key_success='auth_logs')
+
+
+class AuthLogReportsAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.AUTH_LOGS_REPORT).get()
+        return resp.auto_return(key_success='auth_logs')

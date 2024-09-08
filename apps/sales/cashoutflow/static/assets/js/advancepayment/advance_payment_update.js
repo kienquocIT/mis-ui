@@ -1,12 +1,12 @@
 $(document).ready(function () {
-    new AdvancePaymentHandle().load()
+    APHandle.LoadPage()
     WFRTControl.setWFInitialData('advancepayment', 'PUT')
-    LoadDetailAP('update');
+    APHandle.LoadDetailAP('update');
 
     // SUBMIT FORM UPDATE ADVANCE PAYMENT
     $('#form-detail-advance').submit(function (event) {
         event.preventDefault();
-        let form = new AdvancePaymentHandle().combinesData($(this), true);
+        let form = APHandle.CombinesData($(this), true);
         if (form) {
             WFRTControl.callWFSubmitForm(form);
         }

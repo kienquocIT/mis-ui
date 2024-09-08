@@ -15,7 +15,7 @@ $(function () {
         GRDataTableHandle.dataTableGoodReceiptIAWHSerial();
         GRDataTableHandle.dataTableGoodReceiptLineDetailIA();
 
-        // call ajax get info quotation detail
+        // call ajax get detail from API
         $.fn.callAjax2({
                 'url': $form.data('url'),
                 'method': 'GET',

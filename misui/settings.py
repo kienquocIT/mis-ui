@@ -244,7 +244,7 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'account.User'
 
-SESSION_COOKIE_AGE = 7 * 24 * 60 * 60  # 3 days expires
+SESSION_COOKIE_AGE = 1 * 24 * 60 * 60  # 3 days expires
 
 # CELERY + RABBITMQ CONFIG
 CELERY_BROKER_URL = None  # 'amqp://guest:guest@127.0.0.1:5672//'
@@ -312,6 +312,7 @@ MEDIA_TIMEOUT = int(os.environ.get('MEDIA_TIMEOUT', '0'))  # seconds
 # Key return resp after call API
 API_KEY_AUTH = 'Authorization'
 API_PREFIX_TOKEN = 'Bearer'
+API_KEY_AUTH_REFRESH = 'Authorization_Refresh'
 API_KEY_RESPONSE_DATA = 'result'
 API_KEY_RESPONSE_ERRORS = 'errors'
 API_KEY_RESPONSE_STATUS = 'status'

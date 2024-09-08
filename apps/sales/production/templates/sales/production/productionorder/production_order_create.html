@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frm_production_order">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            data-url="{% url 'ProductionOrderListAPI' %}"
+            data-url-redirect="{% url 'ProductionOrderList' %}"
+            data-method="POST"
+            id="frm_production_order"
+            method="post"
+    >
+        {% csrf_token %}
+        <div class="collapse show" id="collapseInfo">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label required" for="contract-title">{% trans 'Title' %}</label>
+                        <input
+                                type="text" class="form-control"
+                                name="title"
+                                id="title"
+                                required
+                        >
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-type">{% trans 'Type' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="box-type"
+                                    data-url=""
+                                    data-method="GET"
+                                    data-link-detail=""
+                                    name="type"
+                                    data-keyResp=""
+                                    required
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-product">{% trans 'Product' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="box-product"
+                                    data-url="{% url "ProductForSaleListAPI" %}"
+                                    data-method="GET"
+                                    name="product"
+                                    data-keyResp="product_sale_list"
+                                    required
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label required" for="quantity">{% trans 'Quantity' %}</label>
+                                <input type="text" class="form-control valid-number" id="quantity" value="1" required>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-uom">{% trans 'UOM' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="box-uom"
+                                    data-url="{% url "UnitOfMeasureListAPI" %}"
+                                    data-method="GET"
+                                    data-link-detail=""
+                                    name="uom"
+                                    data-keyResp="unit_of_measure"
+                                    required
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-warehouse">{% trans 'Warehouse' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="box-warehouse"
+                                    data-url="{% url "WareHouseListAPI" %}"
+                                    data-method="GET"
+                                    data-link-detail=""
+                                    name="warehouse"
+                                    data-keyResp="warehouse_list"
+                                    required
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="box-so">{% trans 'Sale order' %}</label>
+                        <select
+                            class="form-select"
+                            id="box-so"
+                            data-url="{% url "SaleOrderListAPI" %}"
+                            data-method="GET"
+                            data-link-detail=""
+                            name="sale_order"
+                            data-keyResp="sale_order_list"
+                            data-keyText="code"
+                            multiple
+                        ></select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="date-created">{% trans 'Date Created' %}</label>
+                                <p class="mt-2 border-bottom" id="date-created">21/08/2024</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-status">{% trans 'Status' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="box-status"
+                                    data-url=""
+                                    data-method="GET"
+                                    data-link-detail=""
+                                    name="status"
+                                    data-keyResp=""
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="date-start">{% trans 'Start date' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="start-date" id="date-start"
+                                           class="form-control date-picker" autocomplete="off" required>
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="date-end">{% trans 'End date' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="end-date" id="date-end"
+                                           class="form-control date-picker" autocomplete="off" required>
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-group">{% trans 'Production group' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="box-group"
+                                    data-url="{% url "GroupListAPI" %}"
+                                    data-method="GET"
+                                    data-link-detail=""
+                                    name="group"
+                                    data-keyResp="group_list"
+                                    required
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="time">{% trans 'Time' %}</label>
+                                <p class="mt-2 border-bottom" id="time" data-time-bom="0">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-sm" id="btn-collapse" data-bs-toggle="collapse" data-bs-target="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo"><span class="icon"><i class="fas fa-angle-double-up collapse-icon"></i></span></button>
+        </div>
+
+
+
+        <div class="row">
+            <table
+                    id="table_production_order"
+                    class="table nowrap min-w-1280p w-100 mb-5"
+                    data-url="{% url 'ReportRevenueListAPI' %}"
+                    data-method="get"
+            >
+                <thead>
+                <tr class="bg-light">
+                    <th></th>
+                    <th>{% trans 'Task' %}</th>
+                    <th>{% trans 'UOM' %}</th>
+                    <th>{% trans 'Quantity' %}</th>
+                    <th>{% trans 'Warehouse' %}</th>
+                    <th>{% trans 'Stock' %}</th>
+                    <th>{% trans 'Available' %}</th>
+                    <th>{% trans 'Labor' %}</th>
+                    <th>{% trans 'Tools' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+        data-production="{% trans 'Production' %}"
+        data-assembly="{% trans 'Assembly' %}"
+        data-disassembly="{% trans 'Disassembly' %}"
+        data-planned="{% trans 'Planned' %}"
+        data-in-production="{% trans 'In production' %}"
+        data-done="{% trans 'Done' %}"
+        data-all-wh="{% trans 'All warehouse' %}"
+    >
+    <input
+        type="text"
+        id="app-urls-factory"
+        data-md-bom="{% url 'BOMOrderListAPI' %}"
+        data-md-product="{% url 'ProductForSaleListAPI' %}"
+        data-md-uom="{% url 'UnitOfMeasureListAPI' %}"
+        data-md-warehouse="{% url 'WareHouseListAPI' %}"
+        data-md-pwh="{% url 'WarehouseGetProductsListAPI' %}"
+    >
+    <input type="text" id="data-bom">
+    {{ data.employee_current|json_script:'employee_current' }}
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/productionorder/production_order_common.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/productionorder/production_order_create.js' %}"></script>
+{% endblock %}

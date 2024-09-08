@@ -19,6 +19,13 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script id="trans-script"
+            data-trans-for-production="{% trans 'For production' %}"
+            data-trans-for-service="{% trans 'For service' %}"
+            data-trans-for-sale="{% trans 'For sale' %}"
+            data-trans-for-internal-expense="{% trans 'For internal expense' %}"
+            data-trans-outsourcing="{% trans 'Outsourcing' %}">
+    </script>
     <div class="row">
         <div class="col-12">
             <table class="table nowrap w-100"
@@ -32,6 +39,7 @@
                     <td></td>
                     <td>{% trans 'Code' %}</td>
                     <td>{% trans 'Product/Service name' %}</td>
+                    <td>{% trans 'Type' %}</td>
                     <td>{% trans 'Sum time' %}</td>
                     <td>{% trans 'Sum price' %}</td>
                     <td>{% trans 'System status' %}</td>

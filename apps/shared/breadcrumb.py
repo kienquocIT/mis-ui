@@ -32,6 +32,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     HOME_PAGE = BreadcrumbChildren(
         _('Home Page'), 'HomeView'
     )
+    NOTIFICATIONS_PAGE = BreadcrumbChildren(_('Notifications'))
 
     # base
     BASTION_LIST = BreadcrumbChildren(_('List'))
@@ -383,6 +384,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Zones
     ZONES_LIST_PAGE = BreadcrumbChildren(_('Zones'), 'ZonesList')
 
+    # Contract
+    CONTRACT_LIST_PAGE = BreadcrumbChildren(_('Contract approval'), 'ContractList')
+
+    # Production
+    PRODUCTION_ORDER_LIST_PAGE = BreadcrumbChildren(_('Production order'), '')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -461,6 +468,7 @@ class BreadcrumbView:
     HOME_PAGE = [
         BreadcrumbItem.HOME_PAGE,
     ]
+    NOTIFICATIONS_PAGE = [BreadcrumbItem.NOTIFICATIONS_PAGE]
 
     EMPLOYEE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
@@ -973,3 +981,18 @@ class BreadcrumbView:
         BreadcrumbItem.ZONES_LIST_PAGE
     ]
 
+    # Contract
+    CONTRACT_LIST_PAGE = [
+        BreadcrumbItem.CONTRACT_LIST_PAGE
+    ]
+    CONTRACT_CREATE_PAGE = CONTRACT_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    CONTRACT_DETAIL_PAGE = CONTRACT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    CONTRACT_UPDATE_PAGE = CONTRACT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Production
+    PRODUCTION_ORDER_LIST_PAGE = [
+        BreadcrumbItem.PRODUCTION_ORDER_LIST_PAGE
+    ]
+    PRODUCTION_ORDER_CREATE_PAGE = PRODUCTION_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    PRODUCTION_ORDER_DETAIL_PAGE = PRODUCTION_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    PRODUCTION_ORDER_UPDATE_PAGE = PRODUCTION_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

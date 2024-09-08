@@ -1,95 +1,82 @@
-let transEle = $('#trans-factory');
-let urlEle = $('#url-factory');
+const initEmployee = JSON.parse($('#employee_current').text());
+const creatorEle = $('#creator-select-box')
+const advancePaymentEle = $('#chooseAdvancePayment')
+const chooseBeneficiaryEle = $('#chooseBeneficiary')
+const returnAP_method_Ele =$('#box-method-payment')
+const returnAP_method_default_data = [
+    {'value': 0, 'title': returnAP_method_Ele.attr('data-trans-cash')},
+    {'value': 1, 'title': returnAP_method_Ele.attr('data-trans-bank-transfer')},
+]
 
-function loadDetailBeneficiary(id) {
-    let ele = $('[name="employee_created_id"]');
-    let frm = new SetupFormSubmit(ele);
-    $.fn.callAjax2({
-        'url': frm.getUrlDetail(id),
-        'method': frm.dataMethod
-    }).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee')) {
-                let dropdown = $('#dropdownBeneficiary');
-                dropdown.find('[name="beneficiary-name"]').text(data.employee.full_name);
-                dropdown.find('[name="beneficiary-code"]').text(data.employee.code);
-                dropdown.find('[name="beneficiary-department"]').text(data.employee.group.title);
-                let oldHref = dropdown.find('a').attr('href');
-                let newHref = oldHref.replace(0, id)
-                dropdown.find('a').attr('href', newHref);
-            }
-        }
-    }, (errs) => {
-    },)
-}
-
-function loadCreator(id) {
-    let ele = $('[name="employee_created_id"]');
-    let frm = new SetupFormSubmit(ele);
-    if (!id) {
-        id = ele.attr('data-id')
+class ReturnAPLoadPage {
+    static LoadCreatedDate() {
+        $('#created_date').daterangepicker({
+            singleDatePicker: true,
+            timePicker: true,
+            showDropdowns: false,
+            minYear: 1901,
+            "cancelClass": "btn-secondary",
+            maxYear: parseInt(moment().format('YYYY'), 10)
+        });
     }
-    $.fn.callAjax2({
-        'url': frm.getUrlDetail(id),
-        'method': frm.dataMethod
-    }).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee')) {
-                ele.val(data.employee.full_name);
-                let dropdown = $('#dropdownCreator');
-                dropdown.find('[name="creator-name"]').text(data.employee.full_name);
-                dropdown.find('[name="creator-code"]').text(data.employee.code);
-                dropdown.find('[name="creator-department"]').text(data.employee.group.title);
-                let oldHref = dropdown.find('a').attr('href');
-                let newHref = oldHref.replace(0, data.employee.id)
-                dropdown.find('a').attr('href', newHref);
-            }
-        }
-    }, (errs) => {
-    },)
+    static LoadCreator(data) {
+        creatorEle.val(data?.['full_name'])
+        creatorEle.prop('readonly', true).prop('disabled', true)
+    }
+    static LoadCreatorInfor(data) {
+        let btn_detail = $('#btn-detail-creator-tab');
+        $('#creator-detail-span').prop('hidden', false);
+        $('#creator-name').text(data?.['full_name']);
+        $('#creator-code').text(data?.['code']);
+        $('#creator-department').text(data?.['group']['title']);
+        let url = btn_detail.attr('data-url').replace('0', data?.['id']);
+        btn_detail.attr('href', url);
+    }
+    static LoadAdvancePayment(data, params) {
+        advancePaymentEle.initSelect2({
+            allowClear: data === null,
+            ajax: {
+                data: params,
+                url: advancePaymentEle.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'advance_payment_list',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {
+            let selected_ap = SelectDDControl.get_data_from_idx(advancePaymentEle, advancePaymentEle.val())
+            ReturnAPLoadTab.LoadDetailAdvancePayment(selected_ap)
+            $('#inp-sale-code').val(selected_ap?.['sale_code'])
+        })
+    }
+    static LoadMethod(data) {
+        returnAP_method_Ele.initSelect2({
+            data: data ? data : returnAP_method_default_data,
+            keyId: 'value',
+            keyText: 'title',
+        })
+    }
+    static LoadBeneficiary(data) {
+        chooseBeneficiaryEle.val(data?.['full_name'])
+    }
+    static LoadBeneficiaryInfor(data) {
+        let btn_detail = $('#btn-move-to-beneficiary');
+        $('#dropdownBeneficiary').prop('hidden', false);
+        $('#beneficiary-name').text(data?.['full_name']);
+        $('#beneficiary-code').text(data?.['code']);
+        $('#beneficiary-department').text(data?.['group']['title']);
+        let url = btn_detail.attr('data-url').replace('0', data?.['id']);
+        btn_detail.attr('href', url);
+    }
 }
 
-function loadCostTable(data) {
-    let table = $('#dtbProduct').DataTable();
-    table.clear().draw();
-    let dict_cost = JSON.parse($('#data-costs').text());
-    data.map(function (item) {
-        if (dict_cost[item.id]) {
-            item['remain_total'] += dict_cost[item.id].return_value;
-        }
-        table.row.add(item).draw();
-    })
-}
-
-function loadDetailAdvancePayment(id, type = 'create') {
-    let url = urlEle.data('url-detail-ap').format_url_with_uuid(id);
-    $.fn.callAjax2({
-        'url': url,
-        'method': "GET"
-    }).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
-                let ele_beneficiary = $('#chooseBeneficiary');
-                ele_beneficiary.empty();
-                ReturnAdvanceLoadPage.loadBeneficiary(ele_beneficiary, data?.['advance_payment_detail'].employee_inherit)
-                loadDetailBeneficiary(data?.['advance_payment_detail'].employee_inherit.id);
-
-                if (type === 'create') {
-                    loadCostTable(data?.['advance_payment_detail']?.['expense_items'])
-                }
-            }
-        }
-    }, (errs) => {
-    },)
-}
-
-function loadDataTableCost(data, is_detail = false) {
-    if (!$.fn.DataTable.isDataTable('#dtbProduct')) {
+class ReturnAPLoadTab {
+    static DrawTableCost(data=[], option = 'create') {
         let $table = $('#dtbProduct')
+        $table.DataTable().clear().destroy()
         $table.DataTableDefault({
+            styleDom: 'hide-foot',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
@@ -98,7 +85,7 @@ function loadDataTableCost(data, is_detail = false) {
                 {
                     targets: 0,
                     className: 'wrap-text',
-                    render: (data, type, row) => {
+                    render: () => {
                         return ``
                     }
                 },
@@ -114,7 +101,7 @@ function loadDataTableCost(data, is_detail = false) {
                     data: 'expense_type',
                     targets: 2,
                     className: 'wrap-text',
-                    render: (data, type, row) => {
+                    render: (data) => {
                         return `<span class="row-expense-type" data-id="${data.id}">${data.title}</span>`
                     }
                 },
@@ -122,182 +109,120 @@ function loadDataTableCost(data, is_detail = false) {
                     data: 'remain_total',
                     targets: 3,
                     className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<span class="mask-money" data-init-money="${data}"></span>`
+                    render: (data) => {
+                        return `<span class="mask-money remain-price" data-init-money="${data}"></span>`
                     }
                 },
                 {
                     data: 'return_value',
                     targets: 4,
-                    render: (data, type, row) => {
+                    render: (data) => {
                         let value = data !== undefined ? data : '';
-                        if (is_detail) {
-                            return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${value}" name="cost" disabled>`
-                        } else {
-                            return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${value}" name="cost">`
-                        }
+                        return `<input class="mask-money form-control return-price" value="${value ? value : 0}" name="cost" ${option === 'detail' ? 'disabled readonly' : ''}>`
                     }
                 },
             ],
         });
     }
-}
-
-class ReturnAdvanceLoadPage {
-    load() {
-        $('input[name="date_created"]').daterangepicker({
-            singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: false,
-            minYear: 1901,
-            "cancelClass": "btn-secondary",
-            maxYear: parseInt(moment().format('YYYY'), 10)
-        });
-        $('.daterangepicker').remove();
-
-        $(document).on('change', '.return-price', function () {
-            let total = 0;
-            let ele = $(this).closest('tr').find('span.mask-money');
-            if ($(this).valCurrency() > ele.attr('data-init-money')) {
-                $.fn.notifyB({description: $('#trans-factory').data('trans-greater-remain')}, 'failure');
-                $(this).attr('value', '');
-            }
-            $('.return-price').each(function () {
-                total += $(this).valCurrency();
-            })
-            $('#total-value').attr('data-init-money', total);
-            $.fn.initMaskMoney2();
+    static LoadCostTable(data) {
+        let table = $('#dtbProduct').DataTable();
+        table.clear().draw();
+        data.map(function (item) {
+            table.row.add(item).draw();
         })
     }
-
-    static saleCodeEle = $('#inp-sale-code');
-    static methodPaymentEle = $('#box-method-payment')
-
-    static loadAdvancePayment(ele, data, params) {
-        ele.initSelect2({
-            data: params.advance_payment ? params.advance_payment : data,
-            disabled: !(ele.attr('data-url')),
-            'dataParams': params,
-            callbackDataResp(resp, keyResp) {
-                let list_result = []
-                if (params?.['advance_payment']) {
-                    resp.data[keyResp].map(function (item) {
-                        if (item.id === params?.['advance_payment'].id && item?.['system_status'] === 3) {
-                            list_result.push(item)
-                        }
-                    })
-                } else if (params?.['opportunity']) {
-                    resp.data[keyResp].map(function (item) {
-                        if (item?.['opportunity_id'] === params?.['opportunity'].id && item?.['system_status'] === 3) {
-                            list_result.push(item)
-                        }
-                    })
-                } else {
-                    resp.data[keyResp].map(function (item) {
-                        if (item?.['system_status'] === 3) {
-                            list_result.push(item)
-                        }
-                    })
-                }
-                return list_result
-            }
-        }).on('change', function () {
-            let obj_selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-            let sale_code_mapped = null
-            if (Object.keys(obj_selected?.['opportunity_mapped']).length !== 0) {
-                sale_code_mapped = obj_selected?.['opportunity_mapped']
-                if (obj_selected?.['opportunity_mapped']?.['is_close']) {
-                    $.fn.notifyB({description: `Opportunity ${obj_selected?.['opportunity_mapped']?.['code']} has been closed. Can not select.`}, 'failure');
-                    $(this).find('option').remove();
-                    return;
-                }
-            }
-            if (Object.keys(obj_selected?.['quotation_mapped']).length !== 0) {
-                sale_code_mapped = obj_selected?.['quotation_mapped']
-            }
-            if (Object.keys(obj_selected?.['sale_order_mapped']).length !== 0) {
-                sale_code_mapped = obj_selected?.['sale_order_mapped']
-            }
-            if (sale_code_mapped) {
-                $('#inp-sale-code').val(sale_code_mapped.code)
-            }
-            loadDetailAdvancePayment($(this).val())
-        });
-    }
-
-    static loadBeneficiary(ele, data) {
-        ele.initSelect2({
-            data: data,
-            keyText: 'full_name',
-        })
-    }
-
-    static loadMethodPayment() {
-        let data = [
-            {
-                'id': 0,
-                'title': transEle.data('trans-cash'),
-            },
-            {
-                'id': 1,
-                'title': transEle.data('trans-bank-transfer'),
-            }
-        ]
-        ReturnAdvanceLoadPage.methodPaymentEle.initSelect2({
-            data: data,
-        })
-    }
-}
-
-function loadDetail(id, frmDetail) {
-    let frm = new SetupFormSubmit(frmDetail);
-    let choose_AP_ele = $('#chooseAdvancePayment');
-    $.fn.callAjax2({
-        url: frm.getUrlDetail(id),
-        method: 'GET'
-    }).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            WFRTControl.setWFRuntimeID(data?.['return_advance']?.['workflow_runtime_id'])
-            let return_advance_detail = data?.['return_advance'];
-            console.log(data?.['return_advance'])
-            $x.fn.renderCodeBreadcrumb(return_advance_detail);
-            $.fn.compareStatusShowPageAction(return_advance_detail);
-            $('.header-code').text(return_advance_detail.code);
-            $('[name="title"]').val(return_advance_detail.title);
-            ReturnAdvanceLoadPage.loadAdvancePayment(choose_AP_ele, return_advance_detail.advance_payment, {});
-            let sale_code_mapped =null;
-            if (Object.keys(return_advance_detail.advance_payment?.['opportunity_mapped']).length !== 0) {
-                sale_code_mapped = return_advance_detail.advance_payment?.['opportunity_mapped']
-            }
-            if (Object.keys(return_advance_detail.advance_payment?.['quotation_mapped']).length !== 0) {
-                sale_code_mapped = return_advance_detail.advance_payment?.['quotation_mapped']
-            }
-            if (Object.keys(return_advance_detail.advance_payment?.['sale_order_mapped']).length !== 0) {
-                sale_code_mapped = return_advance_detail.advance_payment?.['sale_order_mapped']
-            }
-            if (sale_code_mapped) {
-                $('#inp-sale-code').val(sale_code_mapped.code)
-            }
-            loadDetailAdvancePayment(return_advance_detail.advance_payment.id, 'detail');
-            loadCreator(return_advance_detail.employee_created);
-            $('[name="date_created"]').val(return_advance_detail.date_created.split(" ")[0]);
-            ReturnAdvanceLoadPage.methodPaymentEle.val(return_advance_detail.method).trigger('change');
-
-            let script_costs = $('#data-costs');
-            let dict_cost = JSON.parse(script_costs.text());
-
-            loadCostTable(return_advance_detail.cost);
-            return_advance_detail.cost.map(function (item) {
-                dict_cost[item?.['id']] = item;
-            })
-            script_costs.text(JSON.stringify(dict_cost));
-            $('#total-value').attr('data-init-money', return_advance_detail?.['return_total']);
-            if (return_advance_detail.money_received) {
-                let money_received_ele = $('#money-received')
-                money_received_ele.prop('checked', true);
-            }
+    static LoadDetailAdvancePayment(advance_payment_detail, type = 'create') {
+        ReturnAPLoadPage.LoadBeneficiary(advance_payment_detail?.['employee_inherit'])
+        ReturnAPLoadPage.LoadBeneficiaryInfor(advance_payment_detail?.['employee_inherit'])
+        if (type === 'create') {
+            ReturnAPLoadTab.LoadCostTable(advance_payment_detail?.['expense_items'])
         }
-    }, (errs) => {
-    },)
+    }
 }
+
+class ReturnAPAction {
+    static DisabledDetailPage(option) {
+        if (option === 'detail') {
+            $('.form-control').prop('readonly', true);
+            $('.form-select').prop('disabled', true);
+            $('.select2').prop('disabled', true);
+            $('input').prop('disabled', true);
+        }
+    }
+}
+
+class ReturnAPHandle {
+    static LoadPage() {
+        ReturnAPLoadPage.LoadCreatedDate()
+        ReturnAPLoadPage.LoadCreator(initEmployee)
+        ReturnAPLoadPage.LoadCreatorInfor(initEmployee)
+        ReturnAPLoadPage.LoadAdvancePayment(null, {'system_status': 3})
+        ReturnAPLoadPage.LoadMethod()
+        ReturnAPLoadTab.DrawTableCost()
+    }
+    static CombinesData(frmEle) {
+        let frm = new SetupFormSubmit($(frmEle));
+        frm.dataForm['title'] = $('#title').val()
+        frm.dataForm['method'] = returnAP_method_Ele.val()
+        frm.dataForm['advance_payment_id'] = advancePaymentEle.val();
+        frm.dataForm['money_received'] = $('#money-received').prop('checked');
+        let tbProduct = $('#dtbProduct');
+        let returned_list = []
+        tbProduct.find('tbody tr').each(function () {
+            returned_list.push({
+                'advance_payment_cost_id': $(this).find('.row-expense').data('id'),
+                'expense_name': $(this).find('.row-expense').text(),
+                'expense_type_id': $(this).find('.row-expense-type').data('id'),
+                'remain_value': parseFloat($(this).find('.remain-price').attr('data-init-money')),
+                'return_value': $(this).find('.return-price').attr('value'),
+            })
+        })
+        frm.dataForm['returned_list'] = returned_list;
+
+        // console.log(frm)
+        return frm
+    }
+    static LoadDetail(option) {
+        let url_loaded = $('#frmDetail').attr('data-url');
+        $.fn.callAjax(url_loaded, 'GET').then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    data = data['return_advance'];
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
+                    $.fn.compareStatusShowPageAction(data);
+                    $x.fn.renderCodeBreadcrumb(data);
+                    console.log(data)
+
+                    $('#title').val(data?.['title']);
+                    $('#created_date').val(moment(data?.['date_created'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
+                    ReturnAPLoadPage.LoadCreator(data?.['employee_created'])
+                    ReturnAPLoadPage.LoadCreatorInfor(data?.['employee_created'])
+                    ReturnAPLoadPage.LoadAdvancePayment(data?.['advance_payment'], {'system_status': 3})
+                    ReturnAPLoadPage.LoadMethod({
+                        'value': data.method,
+                        'title': [
+                            returnAP_method_Ele.attr('data-trans-cash'),
+                            returnAP_method_Ele.attr('data-trans-bank-transfer')
+                        ][data.method]
+                    })
+                    ReturnAPLoadPage.LoadBeneficiary(data?.['employee_inherit'])
+                    ReturnAPLoadPage.LoadBeneficiaryInfor(data?.['employee_inherit'])
+                    $('#inp-sale-code').val(data?.['advance_payment']?.['sale_code'])
+                    ReturnAPLoadTab.DrawTableCost(data?.['returned_list'], option)
+                    $('#total-value').attr('value', data?.['return_total'])
+                    $('#money-received').prop('checked', data?.['money_received'])
+                    ReturnAPAction.DisabledDetailPage(option)
+                }
+            })
+    }
+}
+
+$(document).on("change", '.return-price', function () {
+    let return_total = 0
+    $('#dtbProduct').find('tbody tr').each(function () {
+        return_total += parseFloat($(this).find('.return-price').attr('value'))
+    })
+    $('#total-value').attr('value', return_total)
+    $.fn.initMaskMoney2()
+})

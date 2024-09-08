@@ -77,12 +77,18 @@ $(document).ready(function () {
                 Task_in_project.init(project)
                 ProjectWorkExpenseHandle.init(work)
                 animating_number(project['completion_rate'], $('.completion_rate_block .heading span'))
+                if (data['completion_rate'] !== 100)
+                    $('#complete_project span span:nth-child(2)').text($.fn.gettext('Close Project'))
                 if (project.system_status <= 2)
                     $('.btn-edit-page, #create_baseline').prop('hidden', false)
                 else{
                     $('#open_project').prop('hidden', false)
                     $('#complete_project').prop('hidden', true)
                 }
+                new $x.cls.file($('#project_assign_attach')).init({
+                    enable_edit: false,
+                    data: project['assignee_attachment'],
+                })
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )

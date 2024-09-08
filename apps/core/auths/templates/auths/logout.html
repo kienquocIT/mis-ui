@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block pageContent %}
+    <div style="width: 100%;margin-top: 2rem;display: flex; justify-content: center; align-items: center;">
+        <div style="text-align: center;">
+            <p class="h3" style="color: #ff9100;">{% trans 'There are some problems with the logout process.' %}</p>
+            <div>
+                {% for key, value in data.items %}
+                    {% if key != 'status' %}
+                        <p class="h5" style="color: #ff0000;">{{ value }}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

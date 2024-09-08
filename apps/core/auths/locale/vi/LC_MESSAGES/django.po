@@ -128,3 +128,31 @@ msgstr "Cài đặt ứng dụng tại"
 #
 msgid "My profile"
 msgstr "Hồ sơ của tôi"
+
+#
+msgid "Authentication logs"
+msgstr "Nhật ký xác thực"
+
+#
+msgid "Authentication log data is only stored for the last 30 days."
+msgstr "Dữ liệu nhật ký xác thực chỉ được lưu trữ trong 30 ngày gần nhất."
+
+#
+msgid "Date range data show in chart"
+msgstr "Độ dài dữ liệu hiển thị trên biểu đồ"
+
+#
+msgid "Times"
+msgstr "Thời gian"
+
+#
+msgid "Service"
+msgstr "Dịch vụ"
+
+#
+msgid "Get traffics"
+msgstr "Lấy thông tin"
+
+#
+msgid "There are some problems with the logout process."
+msgstr "Có một số vấn đề với quá trình đăng xuất."

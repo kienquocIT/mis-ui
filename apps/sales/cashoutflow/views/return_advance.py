@@ -26,9 +26,13 @@ class ReturnAdvanceCreate(View):
         menu_active='menu_return_advance_list',
     )
     def get(self, request, *args, **kwargs):
+        resp1 = ServerAPI(
+            user=request.user,
+            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
+        ).get()
         return {
-                   'employee_current_id': request.user.employee_current_data.get('id', None),
-               }, status.HTTP_200_OK
+           'data': {'employee_current': resp1.result},
+        }, status.HTTP_200_OK
 
 
 class ReturnAdvanceListAPI(APIView):
@@ -62,10 +66,13 @@ class ReturnAdvanceDetail(View):
         menu_active='menu_return_advance_list'
     )
     def get(self, request, *args, **kwargs):
-        result = {
-            'employee_current_id': request.user.employee_current_data.get('id', None),
-        }
-        return result, status.HTTP_200_OK
+        resp1 = ServerAPI(
+            user=request.user,
+            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
+        ).get()
+        return {
+            'data': {'employee_current': resp1.result},
+        }, status.HTTP_200_OK
 
 
 class ReturnAdvanceUpdate(View):
@@ -76,11 +83,12 @@ class ReturnAdvanceUpdate(View):
         menu_active='menu_return_advance_list'
     )
     def get(self, request, *args, **kwargs):
-        input_mapping_properties = InputMappingProperties.CASHOUTFLOW_RETURN_ADVANCE
+        resp1 = ServerAPI(
+            user=request.user,
+            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
+        ).get()
         return {
-            'employee_current_id': request.user.employee_current_data.get('id', None),
-            'input_mapping_properties': input_mapping_properties,
-            'form_id': 'frmUpdate'
+            'data': {'employee_current': resp1.result},
         }, status.HTTP_200_OK
 
 
@@ -100,4 +108,18 @@ class ReturnAdvanceDetailAPI(APIView):
     )
     def put(self, request, pk, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.RETURN_ADVANCE_DETAIL.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.RETURN_PAYMENT_UPDATE
         return resp.auto_return()
+
+
+class APListForReturnAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.AP_LIST_FOR_RETURN).get(params)
+        return resp.auto_return(key_success='advance_payment_list')

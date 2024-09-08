@@ -28,44 +28,39 @@
                 {#        create date#}
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
-                            <label class="form-label required" for="created_date_id">{% trans "Created date" %}</label>
-                            <input class="form-control" id="created_date_id" style="color: #6f6f6f">
+                            <label class="form-label" for="created_date_id">{% trans "Created date" %}</label>
+                            <input class="form-control form-control-line" id="created_date_id" style="color: #6f6f6f">
                         </div>
                     </div>
                 {#        creator#}
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
-                            <label class="form-label required" for="creator-select-box">{% trans "Creator" %}</label>
+                            <label class="form-label" for="creator-select-box">{% trans "Creator" %}</label>
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="creator-detail-span">
                                     <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
-                                        <span class="row">
+                                        <span class="row small">
                                             <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
                                             <a id="btn-detail-creator-tab" class="col-5 text-right" href="{% url 'EmployeeDetail' '0' %}" data-url="{% url 'EmployeeDetail' '0' %}" target="_blank">
                                                 <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
                                             </a>
                                         </span>
-                                        <span class="dropdown-divider"></span>
-                                        <span class="row">
+                                        <span class="row small">
                                             <span class="col-5" style="font-style: italic">{% trans "Employee" %}</span>
                                             <span class="col-7 text-primary" id="creator-name"></span>
                                         </span>
-                                        <span class="row">
+                                        <span class="row small">
                                             <span class="col-5" style="font-style: italic">{% trans "Code" %}</span>
                                             <span class="col-7 text-primary" id="creator-code"></span>
                                         </span>
-                                        <span class="row">
+                                        <span class="row small">
                                             <span class="col-5" style="font-style: italic">{% trans "Department" %}</span>
                                             <span class="col-7 text-primary" id="creator-department"></span>
                                         </span>
                                     </span>
                                 </span>
-                                <select class="form-select"
-                                        style="color: black"
-                                        id="creator-select-box"
-                                        data-method="GET"
-                                        data-url="{% url 'EmployeeListAPI' %}"></select>
+                                <input class="form-control form-control-line" id="creator-select-box">
                             </span>
                         </div>
                     </div>

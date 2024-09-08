@@ -5,26 +5,264 @@
 {% endblock %}
 {% block cssHeader %}
     <link href="{% static 'assets/css/core_home/home.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        #my-task-summary-report {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            color: #00717a;
+            border-radius: 10px;
+            border: 1px solid #c7e2e5;
+        }
+
+        #my-task-summary-report .summary-item {
+            flex: 1 1 auto;
+            padding: 10px;
+            text-align: center;
+            flex-wrap: wrap;
+            text-overflow: ellipsis;
+        }
+
+        .summary-item .summary-title {
+            font-size: 1rem;
+        }
+
+        .summary-item .summary-value {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* animate increment number */
+        @property --num {
+            syntax: "<integer>";
+            initial-value: 0;
+            inherits: false;
+        }
+
+        .summary-value {
+            transition: --num 0.7s;
+            counter-set: num var(--num);
+        }
+
+        .summary-value::after {
+            content: counter(num);
+        }
+
+        #task-report-high-group {
+            padding: 7px 10px;
+            background-color: #007d88;
+            border-radius: 5px 5px 0 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #task-report-high-group.collapsed {
+            border-radius: 5px !important;
+        }
+
+    </style>
+    <style>
+        #my-task-summary-report > p {
+            display: none;
+            color: #ff9100;
+        }
+
+        #my-task-summary-report.collecting > .summary-item {
+            display: none;
+        }
+
+        #my-task-summary-report.collecting > p {
+            display: block;
+        }
+
+        #my-task-by-status {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            border: 1px solid #f1f1f1;
+            padding: 5px;
+        }
+
+        #my-task-by-status canvas {
+            display: block;
+        }
+
+        #my-task-by-status p {
+            display: none;
+            color: #ff9100;
+        }
+
+        #my-task-by-status.collecting canvas {
+            display: none;
+        }
+
+        #my-task-by-status.collecting p {
+            display: block;
+        }
+    </style>
+    <style>
+        #group-range-day-report-task-status {
+            width: 100%;
+            display: flex;
+            max-width: 600px;
+            height: 32px;
+        }
+
+        #group-range-day-report-task-status > div {
+            padding: 5px;
+            text-align: center;
+            height: 100%;
+            vertical-align: middle;
+            background-color: #00ab66;
+            color: white;
+            margin: 1px;
+            transition: background-color 0.2s, color 0.2s;
+            cursor: pointer;
+            flex: 1 1 auto;
+        }
+
+        #group-range-day-report-task-status > div.active {
+            background-color: #00804c;
+        }
+
+        #group-range-day-report-task-status > div:not(.active):hover {
+            background-color: #74cb2b;
+        }
+
+        #group-range-day-report-task-status > div:first-child {
+            border-radius: 5px 0 0 5px;
+        }
+
+        #group-range-day-report-task-status > div:last-child {
+            border-radius: 0 5px 5px 0;
+        }
+    </style>
+    <style>
+        #idxPageContent {
+            background-color: #f1f1f1;
+            background: linear-gradient(270deg, #aed5be, #a9b7e0);
+        }
+    </style>
+
+    <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/themes/themes.light.min.css' %}">
 {% endblock %}
 
+{% block pageAction %}{% endblock %}
+
 {% block pageContent %}
-    <div class="row">
-        <div class="col-lg-12 col-0">
-            <div id="welcome-group" class="border border-light rounded-5 p-3 mb-3">
-                <div id="welcome-body">
-                    <h5>{% trans 'Welcome to' %} BFlow!</h5>
-                    <p id="idx-welcome-txt"></p>
+    <div class="row mb-3">
+        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-9 mb-3">
+            <div
+                    id="my-task-summary-report"
+                    class="w-100 mb-3 p-3"
+                    data-url="{% url 'MyTaskSummaryReport' %}"
+                    style="background-color: #ebf5f5;color: #00585f;"
+            >
+                <div class="w-100 d-flex justify-content-center align-items-start">
+                    <div class="summary-item" data-item="actives">
+                        <p class="summary-value"></p>
+                        <p class="summary-title">{% trans 'Actives Task' %}</p>
+                    </div>
+                    <div class="summary-item" data-item="overdue">
+                        <p class="summary-value"></p>
+                        <p class="summary-title">{% trans 'Overdue Task' %}</p>
+                    </div>
+                    <div class="summary-item" data-item="upcoming_today">
+                        <p class="summary-value"></p>
+                        <p class="summary-title">{% trans 'Upcoming Today Task' %}</p>
+                    </div>
+                    <div class="summary-item" data-item="upcoming_soon">
+                        <p class="summary-value"></p>
+                        <p class="summary-title">{% trans 'Upcoming 3 days Task' %}</p>
+                    </div>
                 </div>
-                <button id="welcome-close" class="btn btn-xs btn-soft-light rounded-circle"><i class="fa-solid fa-xmark"></i></button>
-                <canvas id="welcome-canvas" class="mt-1"></canvas>
+                <p>{% trans "Current task data is being collected." %}</p>
+            </div>
+            <div class="row p-0">
+                <div class="col-lg-12 col-xl-4 mb-3">
+                    <div
+                            class="w-100 d-flex justify-content-center align-items-center"
+                            id="my-task-by-status"
+                            style="background-color: #fff"
+                    >
+                        <div
+                                class="w-100 h-100"
+                                style="padding: 10px 20px;height: 300px;display: flex; justify-content: center;min-height: 200px;max-height: 400px;"
+                        >
+                            <canvas style="width: 100%;"></canvas>
+                            <p>{% trans "Current task data is being collected." %}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-xl-8 mb-3">
+                    <div
+                            class="w-100"
+                            style="border: 1px solid #f1f1f1; border-radius: 10px; padding: 10px 20px;background-color: #fff;min-height: 200px;"
+                    >
+                        <canvas
+                                id="my-task-report-by-date"
+                                data-url="{% url 'MyTaskReportAPI' %}"
+                                style="width: 100%;"
+                        ></canvas>
+                        <div class="w-100 mt-3 mb-3 d-flex justify-content-center">
+                            <select id="inp-range-day-report-task-status" class="d-none">
+                                <option value="7" selected>{% trans '7 days' %}</option>
+                                <option value="14">{% trans '14 days' %}</option>
+                                <option value="30">{% trans '30 days' %}</option>
+                            </select>
+                            <div id="group-range-day-report-task-status"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3 mb-3">
+            <div
+                    class="w-100 p-3 mb-3"
+                    style="padding: 5px;border-radius: 10px;border: 1px solid #f1f1f1;background-color: #fff;"
+            >
+                <div class="w-100 d-flex justify-content-center mb-1 overflow-hidden">
+                    <div id="calendar" class="w-100"></div>
+                </div>
+                <div class="w-100 pt-2 d-none" style="border-top: 1px solid #f1f1f1;">
+                    <h6>{% trans 'Today' %}</h6>
+                </div>
+            </div>
+            <div
+                    class="w-100"
+                    style="padding: 15px;border-radius: 10px;border: 1px solid #f1f1f1;background-color: #fff;"
+            >
+                <h6>{% trans 'Bookmarks' %}</h6>
+                <div
+                        id="boxBookmarkDisplay"
+                        data-url="{% url 'BookMarkListAPI' %}"
+                        data-url-delete="{% url 'BookMarkDetailAPI' pk=1 %}"
+                >
+                    <div class="row d-flex justify-content-start flex-wrap" id="boxBookmarkDisplayData">
+                        <div
+                                id="boxBtnAddNewBM" class="bookmark-item d-15 m-2" data-bs-toggle="modal"
+                                data-bs-target="#modalAddBookMark"
+                        >
+                            <div class="bg-blue-light-4 text-light rounded-5 d-10 d-flex flex-column justify-content-center align-items-center overflow-hidden">
+                                <span class="mb-1">
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-xxl-8 col-lg-12 mb-md-4 mb-3">
+    <div class="row mb-3">
+        <div class="col-12 mb-3">
             <div class="card card-border mb-0 h-100">
                 <div class="card-header card-header-action">
-                    <ul class="nav nav-pills nav-pills-rounded nav-light">
+                    <ul class="nav nav-light nav-tabs nav-segmented-tabs">
                         <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#tab-task">
                                 <span class="nav-link-text">{% trans 'To do' %}</span>
@@ -52,19 +290,20 @@
                         <div class="tab-pane fade show active" id="tab-task">
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table nowrap table-advance w-100"
-                                       id="tbl_my_task"
-                                       data-url="{% url 'FlowRuntimeTaskListAPI' %}"
-                                       data-method="GET"
+                                    <table
+                                            class="table nowrap table-advance w-100"
+                                            id="tbl_my_task"
+                                            data-url="{% url 'FlowRuntimeTaskListAPI' %}"
+                                            data-method="GET"
                                     >
                                         <thead>
                                         <tr>
-                                            <th>{% trans 'Title' %}</th>
-                                            <th>{% trans 'Application' %}</th>
-                                            <th>{% trans 'Node' %}</th>
-                                            <th>{% trans 'Assignee' %}</th>
-                                            <th>{% trans 'Date receive' %}</th>
-                                            <th>{% trans 'Actions' %}</th>
+                                            <th style="min-width: 150px">{% trans 'Title' %}</th>
+                                            <th style="min-width: 100px">{% trans 'Application' %}</th>
+                                            <th style="min-width: 100px">{% trans 'Node' %}</th>
+                                            <th style="min-width: 150px">{% trans 'Assignee' %}</th>
+                                            <th style="min-width: 100px">{% trans 'Date receive' %}</th>
+                                            <th style="min-width: 150px">{% trans 'Actions' %}</th>
                                         </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -75,10 +314,11 @@
                         <div class="tab-pane fade" id="tab-owner">
                             <div class="row">
                                 <div class="col-12">
-                                    <table id="tbl_following_data"
-                                           class="table nowrap table-advance w-100"
-                                           data-url="{% url 'FlowRuntimeMeListAPI' %}"
-                                           data-method="GET"
+                                    <table
+                                            id="tbl_following_data"
+                                            class="table nowrap table-advance w-100"
+                                            data-url="{% url 'FlowRuntimeMeListAPI' %}"
+                                            data-method="GET"
                                     >
                                         <thead>
                                         <tr>
@@ -98,11 +338,12 @@
                         <div class="tab-pane fade" id="tab-pined">
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table nowrap table- w-100"
-                                           id="tbl_block_doc_pined"
-                                           data-url="{% url 'DocPinedListAPI' %}"
-                                           data-url-detail="{% url 'DocPinedDetailAPI' pk=1 %}"
-                                           data-method="GET"
+                                    <table
+                                            class="table nowrap table- w-100"
+                                            id="tbl_block_doc_pined"
+                                            data-url="{% url 'DocPinedListAPI' %}"
+                                            data-url-detail="{% url 'DocPinedDetailAPI' pk=1 %}"
+                                            data-method="GET"
                                     >
                                         <thead>
                                         <tr>
@@ -124,12 +365,12 @@
                                 <div class="col-12">
                                     <table id="datable_my_draft_list" class="table table-advance nowrap w-100 mb-5">
                                         <thead>
-                                            <tr>
-                                                <th>{% trans 'Title' %}</th>
-                                                <th>{% trans 'Application' %}</th>
-                                                <th>{% trans 'Date Created' %}</th>
-                                                <th></th>
-                                            </tr>
+                                        <tr>
+                                            <th>{% trans 'Title' %}</th>
+                                            <th>{% trans 'Application' %}</th>
+                                            <th>{% trans 'Date Created' %}</th>
+                                            <th></th>
+                                        </tr>
                                         </thead>
                                         <tbody></tbody>
                                     </table>
@@ -140,140 +381,148 @@
                 </div>
             </div>
         </div>
-        <div class="col-xxl-4 col-lg-12 mb-md-4 mb-3">
-            <div class="card card-border mb-0 h-100">
-                <div class="card-header card-header-action">
-                    <h6>{% trans 'Bookmarks' %}</h6>
+    </div>
+    <div
+            class="modal fade" id="modalAddBookMark" tabindex="-1" role="dialog" aria-labelledby="modalAddBookMark"
+            aria-hidden="true"
+    >
+        <div class="modal-dialog modal-lg mt-15" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    {% trans 'New Book Mark' as titleModalBM %}
+                    <h5 class="modal-title">{{ titleModalBM|title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="card-body">
-                    <div id="boxBookmarkDisplay"
-                         data-url="{% url 'BookMarkListAPI' %}"
-                         data-url-delete="{% url 'BookMarkDetailAPI' pk=1 %}"
-                    >
-                        <div class="row d-flex justify-content-start flex-wrap" id="boxBookmarkDisplayData">
-                            <div id="boxBtnAddNewBM" class="bookmark-item d-15 m-2" data-bs-toggle="modal" data-bs-target="#modalAddBookMark">
-                                <div class="bg-blue-light-4 text-light rounded-5 d-10 d-flex flex-column justify-content-center align-items-center overflow-hidden">
-                                    <span class="mb-1">
-                                        <i class="fa-solid fa-plus"></i>
-                                    </span>
+                <div class="modal-body">
+                    <form id="frmAddNewBookMark" data-url="{% url 'HomeView' %}" data-method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4">
+                                <div class="form-group">
+                                    <label
+                                            for="newBookMarkType" class="form-label required"
+                                    >{% trans 'Type' %}</label>
+                                    <select name="kind" id="newBookMarkType" class="form-control">
+                                        <option value="0" selected>{% trans 'Available URL' %}</option>
+                                        <option value="1">{% trans 'Customize URL' %}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="form-group">
+                                    <label
+                                            for="newBookMarkApplication" class="form-label required"
+                                    >{% trans 'Application' %}</label>
+                                    <select
+                                            name="view_name" id="newBookMarkApplication" class="form-select"
+                                            data-url="{% url 'GatewayViewNameListView' %}"
+                                            data-method="GET"
+                                            data-keyResp="views_name"
+                                            data-keyId="view_name"
+                                            data-keyText="title"
+                                            required
+                                    ></select>
+                                    <small class="text-muted">{% trans 'Application of link' %}</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="form-group">
+                                    <label
+                                            for="newBookMarkCustomURL" class="form-label required"
+                                    >{% trans 'URL' %}</label>
+                                    <input
+                                            type="text" name="customize_url" id="newBookMarkCustomURL"
+                                            class="form-control" required disabled
+                                    />
+                                    <small class="text-muted">{% trans 'Link to page' %}</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group">
+                                    <label
+                                            for="newBookMarkTitle" class="form-label required"
+                                    >{% trans 'Title' %}</label>
+                                    <input
+                                            type="text" name="title" id="newBookMarkTitle" class="form-control"
+                                            maxlength="20" required
+                                    />
+                                    <small class="text-muted">{% trans 'Application rename' %}, {% trans 'Maximum characters' %}:
+                                        20</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group">
+                                    <label
+                                            for="selectIconNewBookMark" class="form-label required"
+                                    >{% trans 'Icon' %}</label>{% icon_choices as icon_list %}
+                                    <select
+                                            class="form-control" id="selectIconNewBookMark"
+                                            name="box_style__icon_cls"
+                                            required
+                                            data-select2-placeholder="{% trans 'Choose' %}..."
+                                            data-select2-allowClear="true"
+                                    >
+                                        <option></option>
+                                        {% for item in icon_list %}
+                                            <option value='{{ item.0 }}'>{{ item.1|title|replace_str:"-, " }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small class="text-muted">{% trans 'Icon' %}</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="newBMSelectBG" class="form-label required">
+                                        {% trans 'Background Color' %}
+                                    </label>
+                                    <select name="box_style__bg_cls" id="newBMSelectBG" class="form-select">
+                                        {% bg_choices as bg_list %}
+                                        {% for item in bg_list %}
+                                            <option value="{{ item }}">{{ item|title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="newBMSelectTextColor" class="form-label required">
+                                        {% trans "Text Color" %}
+                                    </label>
+                                    <select
+                                            name="box_style__text_cls" id="newBMSelectTextColor" class="form-select"
+                                    >
+                                        {% text_color_choices as text_color_list %}
+                                        {% for item in text_color_list %}
+                                            <option value="{{ item }}">{{ item|title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans 'Preview' %}</label>
+                                    <div
+                                            class="d-17 bg-light text-dark rounded-5 m-1 d-17 d-flex flex-column justify-content-center align-items-center overflow-hidden"
+                                            id="newBMBlockPreview"
+                                    >
+                                        <span class="text-center mb-1" id="previewBMTitle"></span>
+                                        <span class="mb-1" id="previewBMSelectIcon"></span>
+                                        <small class="text-center"></small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
-            </div>
-        </div>
-        <div class="modal fade" id="modalAddBookMark" tabindex="-1" role="dialog" aria-labelledby="modalAddBookMark" aria-hidden="true">
-            <div class="modal-dialog modal-lg mt-15" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        {% trans 'New Book Mark' as titleModalBM %}
-                        <h5 class="modal-title">{{ titleModalBM|title }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="frmAddNewBookMark" data-url="{% url 'HomeView' %}" data-method="POST">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="col-sm-12 col-md-4">
-                                    <div class="form-group">
-                                        <label for="newBookMarkType" class="form-label required">{% trans 'Type' %}</label>
-                                        <select name="kind" id="newBookMarkType" class="form-control">
-                                            <option value="0" selected>{% trans 'Available URL' %}</option>
-                                            <option value="1">{% trans 'Customize URL' %}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-4">
-                                    <div class="form-group">
-                                        <label for="newBookMarkApplication" class="form-label required">{% trans 'Application' %}</label>
-                                        <select name="view_name" id="newBookMarkApplication" class="form-select"
-                                                data-url="{% url 'GatewayViewNameListView' %}"
-                                                data-method="GET"
-                                                data-keyResp="views_name"
-                                                data-keyId="view_name"
-                                                data-keyText="title"
-                                                required
-                                        ></select>
-                                        <small class="text-muted">{% trans 'Application of link' %}</small>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-4">
-                                    <div class="form-group">
-                                        <label for="newBookMarkCustomURL" class="form-label required">{% trans 'URL' %}</label>
-                                        <input type="text" name="customize_url" id="newBookMarkCustomURL" class="form-control" required disabled/>
-                                        <small class="text-muted">{% trans 'Link to page' %}</small>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-6">
-                                    <div class="form-group">
-                                        <label for="newBookMarkTitle" class="form-label required">{% trans 'Title' %}</label>
-                                        <input type="text" name="title" id="newBookMarkTitle" class="form-control" maxlength="20" required/>
-                                        <small class="text-muted">{% trans 'Application rename' %}, {% trans 'Maximum characters' %}: 20</small>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-6">
-                                    <div class="form-group">
-                                        <label for="selectIconNewBookMark" class="form-label required">{% trans 'Icon' %}</label>{% icon_choices as icon_list %}
-                                        <select class="form-control" id="selectIconNewBookMark"
-                                                name="box_style__icon_cls"
-                                                required
-                                                data-select2-placeholder="{% trans 'Choose' %}..."
-                                                data-select2-allowClear="true"
-                                        >
-                                            <option></option>
-                                            {% for item in icon_list %}
-                                                <option value='{{ item.0 }}'>{{ item.1|title|replace_str:"-, " }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <small class="text-muted">{% trans 'Icon' %}</small>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-6">
-                                    <div class="form-group">
-                                        <label for="newBMSelectBG" class="form-label required">
-                                            {% trans 'Background Color' %}
-                                        </label>
-                                        <select name="box_style__bg_cls" id="newBMSelectBG" class="form-select">
-                                            {% bg_choices as bg_list %}
-                                            {% for item in bg_list %}
-                                                <option value="{{ item }}">{{ item|title }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-6">
-                                    <div class="form-group">
-                                        <label for="newBMSelectTextColor" class="form-label required">
-                                            {% trans "Text Color" %}
-                                        </label>
-                                        <select name="box_style__text_cls" id="newBMSelectTextColor" class="form-select">
-                                            {% text_color_choices as text_color_list %}
-                                            {% for item in text_color_list %}
-                                                <option value="{{ item }}">{{ item|title }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Preview' %}</label>
-                                        <div class="d-17 bg-light text-dark rounded-5 m-1 d-17 d-flex flex-column justify-content-center align-items-center overflow-hidden" id="newBMBlockPreview">
-                                            <span class="text-center mb-1" id="previewBMTitle"></span>
-                                            <span class="mb-1" id="previewBMSelectIcon"></span>
-                                            <small class="text-center"></small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                        <button type="submit" form="frmAddNewBookMark" class="btn btn-primary">{% trans 'Save' %}</button>
-                    </div>
+                <div class="modal-footer">
+                    <button
+                            type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                    >{% trans 'Close' %}</button>
+                    <button
+                            type="submit" form="frmAddNewBookMark" class="btn btn-primary"
+                    >{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>
@@ -281,6 +530,9 @@
 {% endblock %}
 {% block dataHiddenGroup %}
     {{ data.app_name_list|json_script:'app_list' }}
+{% endblock %}
+{% block jsHeaderUnCompress %}
+    <script src="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.js' %}" defer></script>
 {% endblock %}
 {% block jsFooter %}
     <script>
@@ -293,17 +545,492 @@
     </script>
     <script src="{% static 'assets/js/core_home/home.js' %}"></script>
 
+    <script src="{% static 'vendors/chartjs/chart.umd.min.js' %}"></script>
+    <script src="{% static 'vendors/chartjs/plugins/chartjs-plugin-datalabels@2.0.0.js' %}"></script>
     <script>
-        let currentHours = new Date().getHours();
-        let welcomeTxt = '';
-        if (currentHours >= 0 && currentHours < 12) {
-            styleDaily = 'morning-soon';
-            welcomeTxt = `{% trans 'Good morning' %} {{ base.last_name }} {{ base.first_name }}! {% trans 'Have a wonderful day.' %}`;
-        } else if (currentHours >= 12 && currentHours < 18) {
-            welcomeTxt = `{% trans 'Good afternoon' %} {{ base.last_name }} {{ base.first_name }}! {% trans "Hope you're having a great day." %}`;
-        } else {
-            welcomeTxt = `{% trans 'Good evening' %} {{ base.last_name }} {{ base.first_name }}! {% trans 'Have a relaxing and enjoyable evening.' %}`
-        }
+        $(document).ready(function () {
+                const inpRangeReportByDay$ = $('#inp-range-day-report-task-status');
+                const groupRangeReportByDay$ = $('#group-range-day-report-task-status');
+
+                groupRangeReportByDay$.empty();
+                inpRangeReportByDay$.find('option').each(function () {
+                    const ele$ = $(`<div>${$(this).text()}</div>`);
+                    const selected = $(this).prop('selected');
+                    ele$.attr('data-value', $(this).val());
+                    if (selected === true) ele$.addClass('active');
+                    groupRangeReportByDay$.append(ele$);
+                    ele$.on('click', function () {
+                        groupRangeReportByDay$.children().not($(this)).removeClass('active');
+                        $(this).addClass('active');
+                        inpRangeReportByDay$.val($(this).attr('data-value')).trigger('change');
+                    })
+                })
+
+                const taskReportHighGroup$ = $('#task-report-high-group');
+                const taskReportGroup$ = $("#task-report-group");
+                const taskReportCollapse$ = $("#task-report-collapse");
+                const taskReportExpand$ = $("#task-report-expand");
+                const keyTaskReportShow = 'home__task__show';
+                const stateShow = localStorage.getItem(keyTaskReportShow);
+
+                function activeReportShow() {
+                    Chart.register(ChartDataLabels);
+
+                    function getRandomColor() {
+                        let letters = '0123456789ABCDEF';
+                        let color = '#';
+                        for (let i = 0; i < 6; i++) {
+                            color += letters[Math.floor(Math.random() * 16)];
+                        }
+                        console.log('color:', color);
+                        return color;
+                    }
+
+                    function random_rgba(opacities = [100]) {
+                        let o = Math.round, r = Math.random, s = 255;
+                        const rData = o(r() * s);
+                        const gData = o(r() * s);
+                        const bData = o(r() * s);
+                        if (Array.isArray(opacities)) {
+                            if (opacities.length > 1) {
+                                return opacities.map(
+                                    opacity => `rgba(${rData}, ${gData}, ${bData}, ${opacity / 100})`
+                                )
+                            }
+                            return `rgba(${rData}, ${gData}, ${bData}, ${opacities[0] / 100})`
+                        }
+                        return `rgba(${rData}, ${gData}, ${bData}, ${opacities / 100})`
+                    }
+
+                    function colorHex2Rgb(hexColor, opacity = 100) {
+                        if (hexColor.startsWith('#')) {
+                            hexColor = hexColor.slice(1);
+                        }
+                        const rData = parseInt(hexColor.substring(0, 2), 16)
+                        const gData = parseInt(hexColor.substring(2, 4), 16)
+                        const bData = parseInt(hexColor.substring(4, 6), 16);
+                        return `rgba(${rData}, ${gData}, ${bData}, ${opacity / 100})`;
+                    }
+
+                    let chartObjRatio;
+                    const canvasTaskReportRatio$ = $('#my-task-report');
+
+                    function initChartMyTaskReportRatio(data) {
+                        const ratioColorMap = data.map(row => {
+                            if (row.task_color) return [colorHex2Rgb(row.task_color, 30), colorHex2Rgb(row.task_color, 100)];
+                            switch (row.task_status) {
+                                case 'ASSIGN_TASK':
+                                    return ['rgba(129,226,48,0.2)', 'rgba(129,226,48,1)'];
+                                case 'FINISH_TASK':
+                                    return ['rgba(0,125,136,0.2)', 'rgba(0,125,136,1)'];
+                                default:
+                                    return random_rgba([20, 100]);
+                            }
+                        })
+
+                        const config = {
+                            type: 'polarArea',
+                            data: {
+                                labels: data.map(row => {
+                                    switch (row.task_status) {
+                                        case 'ASSIGN_TASK':
+                                            return $.fn.gettext('Assign task');
+                                        case 'FINISH_TASK':
+                                            return $.fn.gettext('Finish task');
+                                        default:
+                                            return row?.['task_status_translate'] ? row['task_status_translate'] : row.task_status;
+                                    }
+                                }),
+                                datasets: [
+                                    {
+                                        "data": data.map(row => row.count),
+                                        "backgroundColor": ratioColorMap.map(row => row[0]),
+                                        "borderWidth": 0,
+                                        "borderColor": ratioColorMap.map(row => row[1]),
+                                    }
+                                ],
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'right',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: $.fn.gettext('Task status in 7 days'),
+                                        color: '#00585f',
+                                    },
+                                    datalabels: {
+                                        formatter: (value, ctx) => {
+                                            return value;
+                                        },
+                                        color: '#ff9100',
+                                    }
+                                }
+                            },
+                        }
+                        if (chartObjRatio) chartObjRatio.destroy();
+                        chartObjRatio = new Chart(
+                            canvasTaskReportRatio$[0],
+                            config
+                        );
+                    }
+
+                    let chartObjCount;
+                    const canvasTaskReportCountByDay$ = $('#my-task-report-by-date');
+
+                    function initChartMyTaskReportCountByDay(data) {
+                        const config = {
+                            type: 'line',
+                            data: {
+                                labels: data.map(row => $x.fn.parseDate(row.date)),
+                                datasets: [
+                                    {
+                                        "label": $.fn.gettext('Finished'),
+                                        "data": data.map(
+                                            row => row.details
+                                                .filter(detail => detail.task_status === 'FINISH_TASK')
+                                                .reduce((acc, detail) => acc + detail.count, 0)
+                                        ),
+                                        "borderWidth": 1,
+                                        "borderColor": 'rgb(184, 187, 255)',
+                                        "backgroundColor": 'rgb(184, 187, 255, 0.3)',
+                                        "borderRadius": 5,
+                                    },
+                                    {
+                                        "label": $.fn.gettext('Assigned'),
+                                        "data": data.map(
+                                            row => row.details
+                                                .filter(detail => detail.task_status === 'ASSIGN_TASK')
+                                                .reduce((acc, detail) => acc + detail.count, 0)
+                                        ),
+                                        "borderWidth": 1,
+                                        "borderColor": 'rgb(254, 182, 222)',
+                                        "backgroundColor": 'rgb(254, 182, 222, 0.3)',
+                                        "borderRadius": 5,
+                                    },
+                                ],
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: {
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                        beginAtZero: true,
+                                        max: (ctx) => Math.max(
+                                            ...ctx.chart.data.datasets.reduce((acc, currentValue) => acc.concat(currentValue.data), [])
+                                        ) + 1,
+                                    },
+                                    x: {
+                                        ticks: {
+                                            autoSkip: true,  // Bỏ bớt nhãn khi quá nhiều
+                                            maxRotation: 0,
+                                            minRotation: 0
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: $.fn.gettext('Assigned and Completed task by day'),
+                                        color: '#00585f',
+                                        position: 'top',
+                                    },
+                                    datalabels: {
+                                        formatter: (value, ctx) => {
+                                            // return value > 0 ? value : null;
+                                            return null;
+                                        },
+                                        color: '#ff9100',
+                                    },
+                                }
+                            },
+                        }
+                        if (chartObjCount) chartObjCount.destroy();
+                        chartObjCount = new Chart(
+                            canvasTaskReportCountByDay$[0],
+                            config
+                        );
+                    }
+
+                    let mixedChartTaskStatusByDay;
+
+                    function initMixedChartSumBy7Day(data) {
+                        if (mixedChartTaskStatusByDay) mixedChartTaskStatusByDay.destroy();
+
+                        let arrTaskStatus = new Set([]);
+                        let statusMap = {};
+                        data.map(row => {
+                            row.details.map(detail => {
+                                arrTaskStatus.add(detail.task_status);
+                                statusMap[detail.task_status] = detail;
+                            })
+                        });
+                        const config = {
+                            data: {
+                                labels: data.map(row => $x.fn.parseDate(row.date)),
+                                datasets: [
+                                    {
+                                        "type": "line",
+                                        "label": $.fn.gettext('Assigned'),
+                                        "data": data.map(
+                                            row => row.details
+                                                .filter(detail => detail.task_status === 'ASSIGN_TASK')
+                                                .reduce((acc, detail) => acc + detail.count, 0)
+                                        ),
+                                    },
+                                    {
+                                        "type": "line",
+                                        "label": $.fn.gettext('Finished'),
+                                        "data": data.map(
+                                            row => row.details
+                                                .filter(detail => detail.task_status === 'FINISH_TASK')
+                                                .reduce((acc, detail) => acc + detail.count, 0)
+                                        ),
+                                    },
+                                    ...Array.from(arrTaskStatus).filter((taskStatus) => taskStatus !== 'ASSIGN_TASK' && taskStatus !== 'FINISH_TASK').map((task_status) => {
+                                        return {
+                                            "type": "bar",
+                                            "label": statusMap[task_status].task_status_translate ? statusMap[task_status].task_status_translate : statusMap[task_status].task_status,
+                                            "data": data.map(
+                                                row => row.details
+                                                    .filter(detail => detail.task_status === task_status)
+                                                    .reduce((acc, detail) => acc + detail.count, 0)
+                                            )
+                                        }
+                                    }),
+                                ],
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: {
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                        beginAtZero: true,
+                                        max: (ctx) => Math.max(
+                                            ...ctx.chart.data.datasets.reduce((acc, currentValue) => acc.concat(currentValue.data), [])
+                                        ) + 1,
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: $.fn.gettext('Task status log by day'),
+                                        color: '#00585f',
+                                    },
+                                    datalabels: {
+                                        formatter: (value, ctx) => {
+                                            if (ctx.dataset.type === 'line') return null;
+                                            return value > 0 ? value : null;
+                                        },
+                                        color: '#ff9100',
+                                    },
+                                }
+                            },
+                        }
+                        mixedChartTaskStatusByDay = new Chart($('#task-status-log-by-day')[0], config);
+                    }
+
+                    inpRangeReportByDay$.on('change', () => {
+                            $.fn.callAjax2({
+                                url: canvasTaskReportCountByDay$.attr('data-url') + '?' + $.param({
+                                    'range': inpRangeReportByDay$.val(),
+                                }),
+                                method: 'GET',
+                                isLoading: true,
+                            }).then(
+                                resp => {
+                                    const data = $.fn.switcherResp(resp);
+                                    if (data && data.hasOwnProperty('my_task_report')) {
+                                        const my_task_report = data['my_task_report'];
+                                        if (my_task_report) {
+                                            // initMixedChartSumBy7Day(my_task_report?.['by_day'] || []);
+                                            // initChartMyTaskReportRatio(my_task_report?.['ratio'] || []);
+                                            initChartMyTaskReportCountByDay(my_task_report?.['by_day'] || []);
+                                        }
+                                    }
+                                },
+                                errs => $.fn.switcherResp(errs)
+                            )
+                        }
+                    ).trigger('change');
+
+                    const canvasTaskByStatus$ = $('#my-task-by-status');
+                    const canvasTaskSummaryReport$ = $('#my-task-summary-report');
+                    const eleNewToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="new_today"] .summary-value');
+                    const eleStartToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="start_today"] .summary-value');
+                    const eleOverdue$ = canvasTaskSummaryReport$.find('.summary-item[data-item="overdue"] .summary-value');
+                    const eleUpcomingToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="upcoming_today"] .summary-value');
+                    const eleUpcomingSoon$ = canvasTaskSummaryReport$.find('.summary-item[data-item="upcoming_soon"] .summary-value');
+                    const eleActives$ = canvasTaskSummaryReport$.find('.summary-item[data-item="actives"] .summary-value');
+                    $.fn.callAjax2({
+                        url: canvasTaskSummaryReport$.attr('data-url'),
+                        method: 'GET'
+                    }).then(
+                        resp => {
+                            const respData = $.fn.switcherResp(resp);
+                            if (respData && respData.hasOwnProperty('my_task_summary_report')) {
+                                const summaryDatas = respData?.['my_task_summary_report'] || {};
+                                if (summaryDatas?.['state'] === 'READY') {
+                                    const data = summaryDatas?.['data'] || {};
+                                    eleNewToday$.css('--num', data?.['today_created'] || 0);
+                                    eleStartToday$.css('--num', data?.['start_today'] || 0)
+                                    eleOverdue$.css('--num', data?.['overdue'] || 0);
+                                    eleUpcomingToday$.css('--num', data?.['upcoming_today'] || 0);
+                                    eleUpcomingSoon$.css('--num', data?.['upcoming_soon'] || 0);
+                                    eleActives$.css('--num', data?.['actives'] || 0);
+
+                                    const byStatus = data?.['by_status'] || [];
+                                    const colorMap = byStatus.map(
+                                        row => {
+                                            const pieColor = row.task_color ? row.task_color : getRandomColor();
+                                            return [
+                                                colorHex2Rgb(pieColor, 30),
+                                                colorHex2Rgb(pieColor, 100),
+                                            ]
+                                        }
+                                    );
+                                    new Chart(
+                                        canvasTaskByStatus$.find('canvas')[0],
+                                        {
+                                            type: 'pie',
+                                            data: {
+                                                labels: byStatus.map(row => row?.['translate_name'] ? row['translate_name'] : row.title),
+                                                datasets: [
+                                                    {
+                                                        "data": byStatus.map(row => row.count),
+                                                        "backgroundColor": colorMap.map(row => row[0]),
+                                                        "borderColor": colorMap.map(row => row[0]),
+                                                        "borderWidth": 0,
+                                                    }
+                                                ],
+                                            },
+                                            options: {
+                                                responsive: true,
+                                                plugins: {
+                                                    legend: {
+                                                        position: 'right',
+                                                    },
+                                                    title: {
+                                                        display: true,
+                                                        text: $.fn.gettext('Task by status'),
+                                                        color: '#00585f',
+                                                    },
+                                                    datalabels: {
+                                                        formatter: (value, ctx) => {
+                                                            return value > 0 ? value : null;
+                                                        },
+                                                        color: '#ff9100',
+                                                    },
+                                                }
+                                            },
+                                        }
+                                    )
+                                } else {
+                                    canvasTaskByStatus$.addClass('collecting');
+                                    canvasTaskSummaryReport$.addClass('collecting');
+                                }
+                            }
+                        },
+                        errs => {
+                        },
+                    )
+                }
+
+                taskReportCollapse$.on('click', async function () {
+                    const {value: accept} = await Swal.fire({
+                        title: $.fn.gettext('Task report'),
+                        input: "checkbox",
+                        inputValue: 1,
+                        inputPlaceholder: $.fn.gettext('Hide this data for the future'),
+                        confirmButtonText: `${$.fn.gettext('Confirm')}&nbsp;<i class="fa fa-arrow-right"></i>`,
+                    }).then(
+                        (result) => {
+                            if (result.isConfirmed) {
+                                if (result.value) {
+                                    localStorage.setItem(keyTaskReportShow, 'false');
+                                }
+                                taskReportGroup$.slideUp(0);
+                                taskReportExpand$.show(0);
+                                $(taskReportCollapse$).hide(0);
+                                taskReportHighGroup$.addClass('collapsed');
+                            }
+                        }
+                    );
+                })
+                taskReportExpand$.on('click', function () {
+                    localStorage.setItem(keyTaskReportShow, 'true');
+                    taskReportCollapse$.show(0);
+                    $(taskReportExpand$).hide(0);
+                    $x.fn.showLoadingPage({
+                        didOpenEnd: function () {
+                            setTimeout(
+                                () => window.location.reload(),
+                                200
+                            )
+                        }
+                    });
+
+                })
+
+                if (stateShow !== 'false') {
+                    taskReportGroup$.slideDown(0);
+                    taskReportCollapse$.show(0);
+
+                    activeReportShow();
+                } else {
+                    taskReportGroup$.slideUp(0);
+                    taskReportExpand$.show(0);
+                    taskReportHighGroup$.addClass('collapsed')
+                }
+            }
+        )
     </script>
-    <script src="{% static 'assets/js/core_home/canvas_home.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            const config = {
+                type: 'default',
+                settings: {
+                    visibility: {
+                        theme: 'light',
+                    },
+                    lang: 'define',
+                },
+                // locale: {
+                //    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                //    weekday: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                // },
+                locale: {
+                    months: [
+                        'Tháng 1',
+                        'Tháng 2',
+                        'Tháng 3',
+                        'Tháng 4',
+                        'Tháng 5',
+                        'Tháng 6',
+                        'Tháng 7',
+                        'Tháng 8',
+                        'Tháng 9',
+                        'Tháng 10',
+                        'Tháng 11',
+                        'Tháng 12'
+                    ],
+                    weekday: ['CN', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'],
+                },
+            };
+            const calendar = new VanillaCalendar('#calendar', config);
+            calendar.init();
+        })
+    </script>
 {% endblock %}

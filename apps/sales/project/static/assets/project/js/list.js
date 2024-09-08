@@ -103,11 +103,12 @@ $(document).ready(function(){
                 width: '8%',
                 class: 'text-center',
                 render: (row, type, data) => {
-                    const status_data = [
-                        {txt: $.fn.gettext("Created"), cls: "soft-primary"},
-                        {txt: $.fn.gettext("Added"), cls: "soft-warning"},
-                        {txt: $.fn.gettext("Finish"), cls: "soft-success"},
-                    ]
+                    const status_data = {
+                        1: {txt: $.fn.gettext("Created"), cls: "soft-primary"},
+                        2: {txt: $.fn.gettext("Added"), cls: "soft-warning"},
+                        3: {txt: $.fn.gettext("Finish"), cls: "soft-success"},
+                        4: {txt: $.fn.gettext("Closed"), cls: "soft-danger"},
+                    }
                     return `<span class="badge badge-${status_data[row]['cls']}">${status_data[row]['txt']}</span>`;
                 }
             },

@@ -3,6 +3,7 @@ import datetime
 
 from functools import wraps
 
+import jwt
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
@@ -10,7 +11,6 @@ from django.db import models
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from django.apps import apps
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -29,6 +29,7 @@ from .utils import RandomGenerate
 __all__ = [
     'mask_view',
     'session_flush',
+    'MyJWTClient',
     'OutLayoutRender',
 ]
 
@@ -181,6 +182,34 @@ def session_flush(request):
     return False
 
 
+class MyJWTClient:
+    def __init__(self, user):
+        user_model = get_user_model()
+        if not (user and isinstance(user, user_model)):
+            raise ValueError(f'The user must be is object of User Model: {str(user_model.__name__)}')
+        if not (user.is_authenticated and not isinstance(user, AnonymousUser)):
+            raise ValueError('The user must be authenticated')
+        self.user = user
+        self._token_parsed = {}
+
+    @property
+    def token_parsed(self) -> dict:
+        access_token = getattr(self.user, 'access_token', None)
+        if access_token:
+            try:
+                token_parsed = jwt.decode(access_token, options={"verify_signature": False})
+            except jwt.exceptions.DecodeError:
+                token_parsed = {}
+            self._token_parsed = token_parsed
+        return self._token_parsed
+
+    def get_2fa_enabled(self):
+        token_parsed = self.token_parsed
+        if isinstance(token_parsed, dict):
+            return token_parsed.get(settings.JWT_KEY_2FA_ENABLED, False)
+        return False
+
+
 def mask_view(**parent_kwargs):
     """mask func before api method call form client to UI"""
     # is_api: default False
@@ -290,6 +319,7 @@ def mask_view(**parent_kwargs):
                             return Response(
                                 {
                                     'data': AuthMsg.AUTH_EXPIRE,
+                                    **data,
                                     'status': status.HTTP_401_UNAUTHORIZED
                                 },
                                 status=status.HTTP_401_UNAUTHORIZED
@@ -323,6 +353,9 @@ def mask_view(**parent_kwargs):
                     if request.user and not isinstance(request.user, AnonymousUser) and request.user.is_authenticated:
                         match http_status:
                             case status.HTTP_401_UNAUTHORIZED:
+                                url_redirect = data.get('__url_redirect', None)
+                                if url_redirect:
+                                    return redirect(url_redirect)
                                 session_flush(request=request)
                                 return redirect(reverse('AuthLogin'))
                             case status.HTTP_500_INTERNAL_SERVER_ERROR:

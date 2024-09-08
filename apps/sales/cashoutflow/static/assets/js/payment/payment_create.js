@@ -15,12 +15,12 @@ $(document).ready(function () {
     sale_order_object = sale_order_object !== 'undefined' ? JSON.parse(decodeURIComponent(sale_order_object)) : null;
     ap_mapped_id = ap_mapped_id !== 'undefined' ? JSON.parse(decodeURIComponent(ap_mapped_id)) : null;
 
-    new PaymentHandle().load(sale_code_mapped, type, quotation_object, sale_order_object, ap_mapped_id);
+    PaymentHandle.LoadPage(sale_code_mapped, type, quotation_object, sale_order_object, ap_mapped_id);
     WFRTControl.setWFInitialData('payment', 'POST')
 
     $('#form-create-payment').submit(function (event) {
         event.preventDefault();
-        let form = new PaymentHandle().combinesData($(this));
+        let form = PaymentHandle.CombinesData($(this));
         if (form) {
             WFRTControl.callWFSubmitForm(form);
         }

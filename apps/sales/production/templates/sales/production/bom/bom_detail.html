@@ -3,8 +3,12 @@
 {% load static %}
 {% block title %}{% trans 'Bill of material detail' %}{% endblock %}
 {% block cssHeader %}
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/rowgroup/1.3.1/css/rowGroup.dataTables.min.css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <style>
+        table .select2-selection__rendered {
+            max-width: 250px;
+        }
+    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -30,6 +34,10 @@
     <script id="script-trans"
             data-trans-select-one="{% trans 'Select one' %}"
             data-trans-can-not-select="{% trans "Can't be selected due to different UOM" %}"
+            data-trans-change-type="{% trans 'Do you want to change?' %}"
+            data-trans-reload-data="{% trans 'All data will be reloaded.' %}"
+            data-trans-change-ok="{% trans 'Change' %}"
+            data-trans-change-no="{% trans 'Cancel' %}"
     ></script>
     <form id="form-detail-bom"
           data-url="{% url 'BOMDetailAPI' pk=pk %}"
@@ -44,7 +52,6 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/rowgroup/1.3.1/js/dataTables.rowGroup.min.js"></script>
     <script src="{% static 'assets/sales/production/js/bom/bom_common.js' %}"></script>
     <script src="{% static 'assets/sales/production/js/bom/bom_detail.js' %}"></script>
 {% endblock %}

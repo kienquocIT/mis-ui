@@ -242,7 +242,17 @@ $.fn.extend({
                 return {};
             },
             '401': (respData, configData) => {
-                WindowControl.showUnauthenticated(configData.swalOpts,true);
+                const auth_error_code = respData?.['auth_error_code'];
+                if (auth_error_code === "authentication_2fa_failed"){
+                    WindowControl.showUnauthenticated({
+                        ...configData.swalOpts,
+                        title: $.fn.gettext('2FA verification request process'),
+                        confirmButtonText: $.fn.gettext('2FA verification page'),
+                        'redirect_url': () => $x.fn.redirectVerify2FA(),
+                    },true);
+                } else {
+                    WindowControl.showUnauthenticated(configData.swalOpts,true);
+                }
                 return {};
             },
             '403': (respData, configData) => {

@@ -27,7 +27,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text w-15',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
                             return `<a href="${link}" class="badge badge-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
@@ -35,18 +35,19 @@ $(document).ready(function () {
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text w-35',
+                        className: 'wrap-text w-30',
                         render: (data, type, row) => {
-                            return `<span><b>` + row.title + `</b></span>`
+                            const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            return `<a href="${link}"><span class="text-primary fw-bold">${row.title}</span></a>`
                         }
                     },
                     {
                         data: 'warehouses',
-                        className: 'wrap-text w-20',
+                        className: 'wrap-text w-30',
                         render: (data, type, row) => {
                             let html = ``;
                             for (let i = 0; i < row?.['warehouses'].length; i++) {
-                                html = html + `<span class="badge badge-blue mr-1 mb-1">${row?.['warehouses'][i]['warehouse_title']}</span>`
+                                html = html + `<span class="badge badge-light mr-1 mb-1">${row?.['warehouses'][i]['warehouse_title']}</span>`
                             }
                             return html;
                         }
@@ -55,14 +56,14 @@ $(document).ready(function () {
                         data: 'date_created',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<span>` + row.date_created.split(' ')[0] + `</span>`
+                            return `${moment(row.date_created.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY')}`
                         }
                     },
                     {
                         data: 'state',
-                        className: 'wrap-text w-10',
+                        className: 'wrap-text text-center w-10',
                         render: (data, type, row) => {
-                            return `<span class="badge-primary badge">${data}</span>`
+                            return `<span class="${['badge-soft-light', 'badge-soft-success'][data]} badge w-100">${[dtb.attr('data-trans-opening'), dtb.attr('data-trans-finished')][data]}</span>`
                         }
                     },
                 ],

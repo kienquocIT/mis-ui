@@ -13,8 +13,8 @@
   "paginate": {
     "first": "First",
     "last": "Last",
-    "next": "Next",
-    "previous": "Previous"
+    "next": "<i class=\"ri-arrow-right-s-line\"></i>",
+    "previous": "<i class=\"ri-arrow-left-s-line\"></i>"
   },
   "aria": {
     "sortAscending": ": activate to sort column ascending",

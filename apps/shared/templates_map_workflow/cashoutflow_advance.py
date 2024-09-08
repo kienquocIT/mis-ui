@@ -16,8 +16,8 @@ ADVANCE_DATA_MAP = {
     'return_date': FieldMapCommon(
         name_mapping=['return_date'],
     ).data,
-    'expense_valid_list': FieldMapCommon(
-        name_mapping=['expense_valid_list'],
+    'ap_item_list': FieldMapCommon(
+        name_mapping=['ap_item_list'],
     ).data,
     'money_gave': FieldMapCommon(
         name_mapping=['money_gave'],

@@ -6,7 +6,7 @@ $(document).ready(function () {
     // SUBMIT FORM UPDATE ADVANCE PAYMENT
     $('#form-detail-advance').submit(function (event) {
         event.preventDefault();
-        let form = APHandle.CombinesData($(this), true);
+        let form = APHandle.CombinesData($(this));
         if (form) {
             WFRTControl.callWFSubmitForm(form);
         }

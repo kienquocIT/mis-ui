@@ -140,16 +140,15 @@
             border-radius: 0 5px 5px 0;
         }
     </style>
-
-    <link href="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.css' %}" rel="stylesheet">
-    <script src="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.js' %}" defer></script>
-    <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/themes/themes.light.min.css' %}">
     <style>
         #idxPageContent {
             background-color: #f1f1f1;
             background: linear-gradient(270deg, #aed5be, #a9b7e0);
         }
     </style>
+
+    <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/themes/themes.light.min.css' %}">
 {% endblock %}
 
 {% block pageAction %}{% endblock %}
@@ -227,7 +226,7 @@
                     style="padding: 5px;border-radius: 10px;border: 1px solid #f1f1f1;background-color: #fff;"
             >
                 <div class="w-100 d-flex justify-content-center mb-1 overflow-hidden">
-                    <div id="calendar"></div>
+                    <div id="calendar" class="w-100"></div>
                 </div>
                 <div class="w-100 pt-2 d-none" style="border-top: 1px solid #f1f1f1;">
                     <h6>{% trans 'Today' %}</h6>
@@ -263,7 +262,7 @@
         <div class="col-12 mb-3">
             <div class="card card-border mb-0 h-100">
                 <div class="card-header card-header-action">
-                    <ul class="nav nav-pills nav-pills-rounded nav-light">
+                    <ul class="nav nav-light nav-tabs nav-segmented-tabs">
                         <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#tab-task">
                                 <span class="nav-link-text">{% trans 'To do' %}</span>
@@ -531,6 +530,9 @@
 {% endblock %}
 {% block dataHiddenGroup %}
     {{ data.app_name_list|json_script:'app_list' }}
+{% endblock %}
+{% block jsHeaderUnCompress %}
+    <script src="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.js' %}" defer></script>
 {% endblock %}
 {% block jsFooter %}
     <script>
@@ -1024,7 +1026,7 @@
                         'Tháng 11',
                         'Tháng 12'
                     ],
-                    weekday: ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'],
+                    weekday: ['CN', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'],
                 },
             };
             const calendar = new VanillaCalendar('#calendar', config);

@@ -235,6 +235,7 @@
         {% endif %}
         {% block cssHeader %}{% endblock %}
     {% endcompress %}
+    {% block cssHeaderUncompress %}{% endblock %}
 
     {% compress js %}
         <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>

@@ -140,15 +140,15 @@
             border-radius: 0 5px 5px 0;
         }
     </style>
-
-    <link href="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/themes/themes.light.min.css' %}">
     <style>
         #idxPageContent {
             background-color: #f1f1f1;
             background: linear-gradient(270deg, #aed5be, #a9b7e0);
         }
     </style>
+
+    <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/themes/themes.light.min.css' %}">
 {% endblock %}
 
 {% block pageAction %}{% endblock %}
@@ -531,6 +531,9 @@
 {% block dataHiddenGroup %}
     {{ data.app_name_list|json_script:'app_list' }}
 {% endblock %}
+{% block jsHeaderUnCompress %}
+    <script src="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.js' %}" defer></script>
+{% endblock %}
 {% block jsFooter %}
     <script>
         const msgChangeCompany = "{% trans 'Change Company' %}";
@@ -542,7 +545,6 @@
     </script>
     <script src="{% static 'assets/js/core_home/home.js' %}"></script>
 
-    <script src="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.js' %}" defer></script>
     <script src="{% static 'vendors/chartjs/chart.umd.min.js' %}"></script>
     <script src="{% static 'vendors/chartjs/plugins/chartjs-plugin-datalabels@2.0.0.js' %}"></script>
     <script>
@@ -1024,7 +1026,7 @@
                         'Tháng 11',
                         'Tháng 12'
                     ],
-                    weekday: ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'],
+                    weekday: ['CN', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'],
                 },
             };
             const calendar = new VanillaCalendar('#calendar', config);

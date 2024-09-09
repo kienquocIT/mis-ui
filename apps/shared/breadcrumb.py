@@ -388,7 +388,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     CONTRACT_LIST_PAGE = BreadcrumbChildren(_('Contract approval'), 'ContractList')
 
     # Production
-    PRODUCTION_ORDER_LIST_PAGE = BreadcrumbChildren(_('Production order'), '')
+    PRODUCTION_ORDER_LIST_PAGE = BreadcrumbChildren(_('Production order'), 'ProductionOrderList')
+    PRODUCTION_REPORT_LIST_PAGE = BreadcrumbChildren(_('Production report'), '')
 
 
 class BreadcrumbView:
@@ -996,3 +997,10 @@ class BreadcrumbView:
     PRODUCTION_ORDER_CREATE_PAGE = PRODUCTION_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     PRODUCTION_ORDER_DETAIL_PAGE = PRODUCTION_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     PRODUCTION_ORDER_UPDATE_PAGE = PRODUCTION_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    PRODUCTION_REPORT_LIST_PAGE = [
+        BreadcrumbItem.PRODUCTION_REPORT_LIST_PAGE
+    ]
+    PRODUCTION_REPORT_CREATE_PAGE = PRODUCTION_REPORT_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    PRODUCTION_REPORT_DETAIL_PAGE = PRODUCTION_REPORT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    PRODUCTION_REPORT_UPDATE_PAGE = PRODUCTION_REPORT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

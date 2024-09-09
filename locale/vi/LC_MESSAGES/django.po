@@ -8712,3 +8712,15 @@ msgstr "Số lượng hoàn thành"
 #
 msgid "Not good quantity"
 msgstr "Số lượng không đạt"
+
+#
+msgid "Production report"
+msgstr "Báo cáo sản xuất"
+
+#
+msgid "Production report create successfully"
+msgstr "Tạo báo cáo sản xuất thành công"
+
+#
+msgid "Production report update successfully"
+msgstr "Cập nhật báo cáo sản xuất thành công"

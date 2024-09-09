@@ -1,12 +1,15 @@
 // Load data
 class ProdReportLoadDataHandle {
-    static $form = $('#frm_production_order');
+    static $form = $('#frm_production_report');
     static $title = $('#title');
+    static $dateCreated = $('#date-created');
     static $quantity = $('#quantity');
+    static $quantityFinished = $('#quantity-finished');
     static $quantityNG = $('#quantity-ng');
     static $boxProductionOrder = $('#box-production-order');
-    static $boxUOM = $('#box-uom');
-    static $boxProduct = $('#box-product');
+    static $product = $('#product');
+    static $uom= $('#uom');
+    static $warehouse = $('#warehouse');
     static $trans = $('#app-trans-factory');
     static $urls = $('#app-urls-factory');
 
@@ -39,12 +42,13 @@ class ProdReportLoadDataHandle {
     };
 
     static loadInitPage() {
-        ProdReportLoadDataHandle.loadEventValidNum(ProdReportLoadDataHandle.$quantity[0]);
+        // Date
+        ProdReportLoadDataHandle.$dateCreated.val(ProdReportCommonHandle.getCurrentDate());
+        // Num
+        ProdReportLoadDataHandle.loadEventValidNum(ProdReportLoadDataHandle.$quantityFinished[0]);
         ProdReportLoadDataHandle.loadEventValidNum(ProdReportLoadDataHandle.$quantityNG[0]);
         // select2
         ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxProductionOrder, [], {'system_status': 3});
-        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxProduct);
-        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxUOM);
         // date picker
         $('.date-picker').each(function () {
             $(this).daterangepicker({
@@ -77,13 +81,19 @@ class ProdReportLoadDataHandle {
         let data = SelectDDControl.get_data_from_idx(ProdReportLoadDataHandle.$boxProductionOrder, ProdReportLoadDataHandle.$boxProductionOrder.val());
         if (data) {
             if (data?.['product_data']) {
-                ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxProduct, [data?.['product_data']]);
-            }
-            if (data?.['uom_data']) {
-                ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxUOM, [data?.['uom_data']]);
+                ProdReportLoadDataHandle.$product.val(data?.['product_data']?.['title']);
+                ProdReportLoadDataHandle.$product.attr('data-detail', JSON.stringify(data?.['product_data']))
             }
             if (data?.['quantity']) {
                 ProdReportLoadDataHandle.$quantity.val(data?.['quantity']);
+            }
+            if (data?.['uom_data']) {
+                ProdReportLoadDataHandle.$uom.val(data?.['uom_data']?.['title']);
+                ProdReportLoadDataHandle.$uom.attr('data-detail', JSON.stringify(data?.['uom_data']))
+            }
+            if (data?.['warehouse_data']) {
+                ProdReportLoadDataHandle.$warehouse.val(data?.['warehouse_data']?.['title']);
+                ProdReportLoadDataHandle.$warehouse.attr('data-detail', JSON.stringify(data?.['warehouse_data']))
             }
             ProdReportLoadDataHandle.loadAddDtbRows(data?.['task_data']);
         }
@@ -159,9 +169,38 @@ class ProdReportLoadDataHandle {
         return true;
     };
 
+    // Detail
+    static loadDetail(data) {
+        ProdReportLoadDataHandle.$title.val(data?.['title']);
+        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxProductionOrder, [data?.['production_order_data']], {'system_status': 3});
+        if (data?.['product_data']) {
+            ProdReportLoadDataHandle.$product.val(data?.['product_data']?.['title']);
+            ProdReportLoadDataHandle.$product.attr('data-detail', JSON.stringify(data?.['product_data']))
+        }
+        ProdReportLoadDataHandle.$quantity.val(data?.['quantity']);
+        if (data?.['uom_data']) {
+            ProdReportLoadDataHandle.$uom.val(data?.['uom_data']?.['title']);
+            ProdReportLoadDataHandle.$uom.attr('data-detail', JSON.stringify(data?.['uom_data']))
+        }
+        if (data?.['warehouse_data']) {
+            ProdReportLoadDataHandle.$warehouse.val(data?.['warehouse_data']?.['title']);
+            ProdReportLoadDataHandle.$warehouse.attr('data-detail', JSON.stringify(data?.['warehouse_data']))
+        }
+        ProdReportLoadDataHandle.$quantityFinished.val(data?.['quantity_finished']);
+        ProdReportLoadDataHandle.$quantityNG.val(data?.['quantity_ng']);
+        let date_created = '';
+        if (data?.['date_created']) {
+            date_created = data?.['date_created'];
+            ProdReportLoadDataHandle.$dateCreated.val(moment(date_created).format('DD/MM/YYYY'));
+        }
+        ProdReportLoadDataHandle.loadAddDtbRows(data?.['task_data']);
+        ProdReportLoadDataHandle.loadReadonlyDisabled();
+        return true;
+    };
+
     static loadReadonlyDisabled() {
-        if (ProdOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            ProdOrderDataTableHandle.$tableMain.DataTable().rows().every(function () {
+        if (ProdReportLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            ProdReportDataTableHandle.$tableMain.DataTable().rows().every(function () {
                 let row = this.node();
                 for (let ele of row.querySelectorAll('.table-row-item')) {
                     ele.setAttribute('disabled', 'true');
@@ -169,14 +208,11 @@ class ProdReportLoadDataHandle {
                 for (let ele of row.querySelectorAll('.table-row-uom')) {
                     ele.setAttribute('disabled', 'true');
                 }
-                for (let ele of row.querySelectorAll('.check-all-wh')) {
-                    ele.setAttribute('disabled', 'true');
+                for (let ele of row.querySelectorAll('.table-row-labor-actual')) {
+                    ele.setAttribute('readonly', 'true');
                 }
-                for (let ele of row.querySelectorAll('.table-row-warehouse')) {
-                    ele.setAttribute('disabled', 'true');
-                }
-                for (let ele of row.querySelectorAll('.table-row-tool')) {
-                    ele.setAttribute('disabled', 'true');
+                for (let ele of row.querySelectorAll('.table-row-quantity-actual')) {
+                    ele.setAttribute('readonly', 'true');
                 }
                 return true;
             });
@@ -258,9 +294,9 @@ class ProdReportDataTableHandle {
                     width: '10%',
                     render: (data, type, row) => {
                         if (row?.['is_task'] === true) {
-                            return `<input type="text" class="form-control valid-number table-row-labor-actual" value="0">`;
+                            return `<input type="text" class="form-control valid-number table-row-labor-actual" value="${row?.['quantity_actual']}">`;
                         }
-                        return `<input type="text" class="form-control valid-number table-row-quantity-actual" value="0">`;
+                        return `<input type="text" class="form-control valid-number table-row-quantity-actual" value="${row?.['quantity_actual']}">`;
                     }
                 },
             ],
@@ -327,7 +363,7 @@ class ProdReportStoreHandle {
                     'order',
                 ]
                 if (dataRow) {
-                    ProdOrderCommonHandle.filterFieldList(submitFields, dataRow);
+                    ProdReportCommonHandle.filterFieldList(submitFields, dataRow);
                 }
                 row.querySelector('.table-row-order').setAttribute('data-row', JSON.stringify(dataRow));
             }
@@ -346,11 +382,11 @@ class ProdReportStoreHandle {
 }
 
 // Submit Form
-class ProdOrderSubmitHandle {
+class ProdReportSubmitHandle {
 
     static setupTask() {
         let result = [];
-        ProdOrderDataTableHandle.$tableMain.DataTable().rows().every(function () {
+        ProdReportDataTableHandle.$tableMain.DataTable().rows().every(function () {
             let row = this.node();
             if (row.querySelector('.table-row-order')) {
                 if (row.querySelector('.table-row-order').getAttribute('data-row')) {
@@ -362,107 +398,51 @@ class ProdOrderSubmitHandle {
     };
 
     static setupDataSubmit(_form) {
-        if (ProdOrderLoadDataHandle.$dataBOM.val()) {
-            let dataBom = JSON.parse(ProdOrderLoadDataHandle.$dataBOM.val());
-            _form.dataForm['bom_id'] = dataBom?.['id'];
-            _form.dataForm['bom_data'] = dataBom;
-
-            if (ProdOrderLoadDataHandle.$boxType.val()) {
-                _form.dataForm['type_production'] = parseInt(ProdOrderLoadDataHandle.$boxType.val());
+        if (ProdReportLoadDataHandle.$boxProductionOrder.val()) {
+            _form.dataForm['production_order_id'] = ProdReportLoadDataHandle.$boxProductionOrder.val();
+            let data = SelectDDControl.get_data_from_idx(ProdReportLoadDataHandle.$boxProductionOrder, ProdReportLoadDataHandle.$boxProductionOrder.val());
+            if (data) {
+                _form.dataForm['production_order_data'] = data;
             }
-            if (ProdOrderLoadDataHandle.$boxProd.val()) {
-                _form.dataForm['product_id'] = ProdOrderLoadDataHandle.$boxProd.val();
-                let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxProd, ProdOrderLoadDataHandle.$boxProd.val());
+            if (ProdReportLoadDataHandle.$product.attr('data-detail')) {
+                let data = JSON.parse(ProdReportLoadDataHandle.$product.attr('data-detail'));
                 if (data) {
+                    _form.dataForm['product_id'] = data?.['id'];
                     _form.dataForm['product_data'] = data;
                 }
             }
-            if (ProdOrderLoadDataHandle.$quantity.val()) {
-                _form.dataForm['quantity'] = parseFloat(ProdOrderLoadDataHandle.$quantity.val());
+            if (ProdReportLoadDataHandle.$quantity.val()) {
+                _form.dataForm['quantity'] = parseFloat(ProdReportLoadDataHandle.$quantity.val());
             }
-            if (ProdOrderLoadDataHandle.$boxUOM.val()) {
-                _form.dataForm['uom_id'] = ProdOrderLoadDataHandle.$boxUOM.val();
-                let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxUOM, ProdOrderLoadDataHandle.$boxUOM.val());
+            if (ProdReportLoadDataHandle.$uom.attr('data-detail')) {
+                let data = JSON.parse(ProdReportLoadDataHandle.$uom.attr('data-detail'));
                 if (data) {
+                    _form.dataForm['uom_id'] = data?.['id'];
                     _form.dataForm['uom_data'] = data;
                 }
             }
-            if (ProdOrderLoadDataHandle.$boxWH.val()) {
-                _form.dataForm['warehouse_id'] = ProdOrderLoadDataHandle.$boxWH.val();
-                let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxWH, ProdOrderLoadDataHandle.$boxWH.val());
+            if (ProdReportLoadDataHandle.$warehouse.attr('data-detail')) {
+                let data = JSON.parse(ProdReportLoadDataHandle.$warehouse.attr('data-detail'));
                 if (data) {
+                    _form.dataForm['warehouse_id'] = data?.['id'];
                     _form.dataForm['warehouse_data'] = data;
                 }
             }
-            if (ProdOrderLoadDataHandle.$boxSO.val()) {
-                let dataSO = [];
-                for (let val of ProdOrderLoadDataHandle.$boxSO.val()) {
-                    let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxSO, val);
-                    if (data) {
-                        dataSO.push(data);
-                    }
-                }
-                _form.dataForm['sale_order_data'] = dataSO;
+            if (ProdReportLoadDataHandle.$quantityFinished.val()) {
+                _form.dataForm['quantity'] = parseFloat(ProdReportLoadDataHandle.$quantityFinished.val());
             }
-            if (ProdOrderLoadDataHandle.$dateStart.val()) {
-                _form.dataForm['date_start'] = String(moment(ProdOrderLoadDataHandle.$dateStart.val(), 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD'));
+            if (ProdReportLoadDataHandle.$quantityNG.val()) {
+                _form.dataForm['quantity'] = parseFloat(ProdReportLoadDataHandle.$quantityNG.val());
             }
-            if (ProdOrderLoadDataHandle.$dateEnd.val()) {
-                _form.dataForm['date_end'] = String(moment(ProdOrderLoadDataHandle.$dateEnd.val(), 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD'));
-            }
-            if (ProdOrderLoadDataHandle.$boxGroup.val()) {
-                _form.dataForm['group_id'] = ProdOrderLoadDataHandle.$boxGroup.val();
-                let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxGroup, ProdOrderLoadDataHandle.$boxGroup.val());
-                if (data) {
-                    _form.dataForm['group_data'] = data;
-                }
-            }
-            if (ProdOrderLoadDataHandle.$time.html()) {
-                _form.dataForm['time'] = parseInt(ProdOrderLoadDataHandle.$time.html());
-            }
-
-            ProdOrderStoreHandle.storeAll();
-            _form.dataForm['task_data'] = ProdOrderSubmitHandle.setupTask();
+            ProdReportStoreHandle.storeAll();
+            _form.dataForm['task_data'] = ProdReportSubmitHandle.setupTask();
 
         }
     };
 }
 
 // Common
-class ProdOrderCommonHandle {
-    static commonDeleteRow(currentRow, $table) {
-        ProdOrderCommonHandle.deleteRow(currentRow, $table);
-        ProdOrderCommonHandle.reOrderTbl($table);
-        return true;
-    };
-
-    static reOrderTbl($table) {
-        let itemCount = $table[0].querySelectorAll('.table-row-order').length;
-        if (itemCount === 0) {
-            $table.DataTable().clear().draw();
-        } else {
-            let order = 1;
-            for (let eleOrder of $table[0].querySelectorAll('.table-row-order')) {
-                if (eleOrder.getAttribute('data-row')) {
-                    let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
-                    dataRow['order'] = order;
-                }
-                eleOrder.innerHTML = order;
-                order++
-                if (order > itemCount) {
-                    break;
-                }
-            }
-        }
-        return true;
-    };
-
-    static deleteRow(currentRow, $table) {
-        let rowIdx = $table.DataTable().row(currentRow).index();
-        let row = $table.DataTable().row(rowIdx);
-        row.remove().draw();
-        return true;
-    };
+class ProdReportCommonHandle {
 
     static getCurrentDate() {
         let currentDate = new Date();
@@ -470,13 +450,12 @@ class ProdOrderCommonHandle {
         let month = String(currentDate.getMonth() + 1).padStart(2, '0');
         let year = currentDate.getFullYear();
         return `${day}/${month}/${year}`;
-    }
+    };
 
     static filterFieldList(field_list, data_json) {
         for (let key in data_json) {
             if (!field_list.includes(key)) delete data_json[key]
         }
         return data_json;
-    }
-
+    };
 }

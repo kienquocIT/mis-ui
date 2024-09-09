@@ -17,9 +17,9 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'ProductionReportListAPI' %}"
+            data-url="{% url 'ProductionReportDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'ProductionReportList' %}"
-            data-method="POST"
+            data-method="PUT"
             id="frm_production_report"
             method="post"
     >
@@ -149,4 +149,5 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/sales/production/js/productionreport/production_report_common.js' %}"></script>
     <script src="{% static 'assets/sales/production/js/productionreport/production_report_create.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/productionreport/production_report_detail.js' %}"></script>
 {% endblock %}

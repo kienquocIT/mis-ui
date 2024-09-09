@@ -18,12 +18,11 @@ $(function () {
         formSubmit.submit(function (e) {
             e.preventDefault();
             let _form = new SetupFormSubmit(formSubmit);
-            ProdOrderSubmitHandle.setupDataSubmit(_form);
+            ProdReportSubmitHandle.setupDataSubmit(_form);
             let submitFields = [
                 'title',
-                'bom_id',
-                'bom_data',
-                'type_production',
+                'production_order_id',
+                'production_order_data',
                 'product_id',
                 'product_data',
                 'quantity',
@@ -31,19 +30,36 @@ $(function () {
                 'uom_data',
                 'warehouse_id',
                 'warehouse_data',
-                'sale_order_data',
-                'status_production',
-                'date_start',
-                'date_end',
-                'group_id',
-                'group_data',
-                'time',
+                'quantity_finished',
+                'quantity_ng',
                 'task_data',
             ]
             if (_form.dataForm) {
-                ProdOrderCommonHandle.filterFieldList(submitFields, _form.dataForm);
+                ProdReportCommonHandle.filterFieldList(submitFields, _form.dataForm);
             }
-            WFRTControl.callWFSubmitForm(_form);
+            WindowControl.showLoading();
+            $.fn.callAjax2(
+                {
+                    'url': _form.dataUrl,
+                    'method': _form.dataMethod,
+                    'data': _form.dataForm,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        setTimeout(() => {
+                            window.location.replace(_form.dataUrlRedirect);
+                        }, 3000);
+                    }
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                }
+            )
         });
 
 

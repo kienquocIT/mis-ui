@@ -5,7 +5,7 @@ $(function () {
         let urlsEle = $('#app-urls-factory');
 
         function loadDbl() {
-            let $table = $('#table_production_order_list')
+            let $table = $('#table_production_report_list')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 useDataServer: true,
@@ -14,8 +14,8 @@ $(function () {
                     type: frm.dataMethod,
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
-                        if (data && resp.data.hasOwnProperty('production_order_list')) {
-                            return resp.data['production_order_list'] ? resp.data['production_order_list'] : []
+                        if (data && resp.data.hasOwnProperty('production_report_list')) {
+                            return resp.data['production_report_list'] ? resp.data['production_report_list'] : []
                         }
                         throw Error('Call data raise errors.')
                     },
@@ -50,21 +50,6 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '10%',
-                        render: (data, type, row) => {
-                            let sttTxt = JSON.parse($('#stt_sys').text())
-                            let sttData = [
-                                "light",
-                                "primary",
-                                "info",
-                                "success",
-                                "danger",
-                            ]
-                            return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
-                        }
-                    },
-                    {
-                        targets: 4,
                         className: 'action-center',
                         width: '5%',
                         render: (data, type, row) => {

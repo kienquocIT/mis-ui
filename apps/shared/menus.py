@@ -671,7 +671,7 @@ class MenusProduction:
             MenuCommon(
                 name='Production report',
                 code='menu_production_report_list',
-                view_name='ProductionReportCreate',
+                view_name='ProductionReportList',
                 icon='<i class="fas fa-boxes"></i>',
             ),
         ],

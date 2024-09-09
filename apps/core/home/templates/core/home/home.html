@@ -146,6 +146,79 @@
             background: linear-gradient(270deg, #aed5be, #a9b7e0);
         }
     </style>
+    <style>
+        #event-at-day {
+            padding: 5px;
+        }
+
+        #event-at-day .event-at-item {
+            background-color: #eef6ff;
+            color: #00585f;
+            border: 1px solid #c7e2e5;
+            margin-bottom: 5px;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .event-at-item .event-at-head {
+            display: flex;
+        }
+
+        .event-at-head .event-at-title {
+            font-weight: bold;
+            flex-basis: 45%;
+        }
+
+        .event-at-item .event-at-head .event-at-date-group-in-title {
+            display: inline-block;
+            flex-basis: 45%;
+        }
+
+        .event-at-item.active .event-at-head .event-at-date-group-in-title {
+            display: none;
+        }
+
+        .event-at-head .event-at-show-more-group {
+            margin-left: auto;
+        }
+
+        .event-at-head .event-at-show-more i {
+            transition: transform 0.2s;
+        }
+
+        .event-at-head .event-at-show-more.active i {
+            transform: rotate(180deg);
+        }
+
+        .event-at-item .event-at-body-more {
+            display: none;
+        }
+
+        .event-at-item .event-at-body-icon {
+            margin-right: 5px;
+        }
+
+        .event-at-btn-all {
+            color: #007d88;
+            padding: 0 10px;
+        }
+
+        #event-at-day-base {
+            display: none;
+        }
+
+        #event-at-empty {
+            width: 100%;
+            text-align: center;
+            color: #003eb3;
+        }
+
+        #event-at-day-selected-date {
+            color: #55717c;
+            padding: 0 5px;
+            font-size: 0.9rem;
+        }
+    </style>
 
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/themes/themes.light.min.css' %}">
@@ -228,8 +301,78 @@
                 <div class="w-100 d-flex justify-content-center mb-1 overflow-hidden">
                     <div id="calendar" class="w-100"></div>
                 </div>
-                <div class="w-100 pt-2 d-none" style="border-top: 1px solid #f1f1f1;">
-                    <h6>{% trans 'Today' %}</h6>
+                <div class="w-100 pt-2" style="border-top: 1px solid #f1f1f1;">
+                    <div class="d-flex">
+                        <div
+                                id="event-at-day-selected-date"
+                                data-text-today="{% trans 'Today' %}"
+                                data-bs-toggle="tooltip"
+                                title="{% trans 'There is a delay in updating the data with new changes. Estimated within 5 minutes of change.' %}"
+                        ></div>
+                        <div style="margin-left: auto;display: flex; align-items: start;">
+                            <button
+                                    class="btn btn-xs btn-soft-primary event-at-btn-all mr-1"
+                                    id="event-at-expand-all"
+                                    data-bs-toggle="tooltip"
+                                    title="{% trans 'Expand all' %}"
+                            >
+                                <i class="fa-solid fa-chevron-down fa-xs"></i>
+                            </button>
+                            <button
+                                    class="btn btn-xs btn-soft-primary event-at-btn-all"
+                                    id="event-at-collapse-all"
+                                    data-bs-toggle="tooltip"
+                                    title="{% trans 'Collapse all' %}"
+                            >
+                                <i class="fa-solid fa-chevron-up fa-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="event-at-day" data-url="{% url 'HomeCalendarAPI' %}">
+                        <div id="event-at-empty">{% trans 'A quiet day!' %}</div>
+                        <div class="event-at-item" id="event-at-day-base">
+                            <div class="event-at-head">
+                                <span class="event-at-title"></span>
+                                <div class="event-at-date-group-in-title ml-3">
+                                    <span class="event-at-body-icon"><i class="fa-solid fa-flag"></i></span>
+                                    <span class="event-at-date-start"></span>
+                                    <span class="ml-1 mr-1"><i class="fa-solid fa-arrow-right-long"></i></span>
+                                    <span class="event-at-date-end"></span>
+                                </div>
+                                <div class="event-at-show-more-group">
+                                    <button
+                                            class="btn btn-xs btn-soft-primary event-at-show-more"
+                                            data-bs-toggle="tooltip"
+                                            title="{% trans 'Expand / Collapse' %}"
+                                    >
+                                        <i class="fa-solid fa-chevron-down fa-2xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="event-at-body">
+                                <div class="event-at-body-more">
+                                    <div>
+                                        <span class="event-at-body-icon"><i class="fa-solid fa-tag"></i></span>
+                                        <span class="event-at-category-title"></span>
+                                    </div>
+                                    <div>
+                                        <span class="event-at-body-icon"><i class="fa-solid fa-location-dot"></i></span>
+                                        <span class="event-at-location"></span>
+                                    </div>
+                                    <div>
+                                        <span class="event-at-body-icon"><i class="fa-solid fa-circle-info"></i></span>
+                                        <span class="event-at-remark"></span>
+                                    </div>
+                                    <div class="event-at-date-group-in-body">
+                                        <span class="event-at-body-icon"><i class="fa-solid fa-flag"></i></span>
+                                        <span class="event-at-date-start"></span>
+                                        <span class="ml-1 mr-1"><i class="fa-solid fa-arrow-right-long"></i></span>
+                                        <span class="event-at-date-end"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div
@@ -582,7 +725,6 @@
                         for (let i = 0; i < 6; i++) {
                             color += letters[Math.floor(Math.random() * 16)];
                         }
-                        console.log('color:', color);
                         return color;
                     }
 
@@ -999,6 +1141,140 @@
     </script>
     <script>
         $(document).ready(function () {
+            const eventAtDay$ = $('#event-at-day');
+            const eventItemBase$ = $('#event-at-day-base');
+            const dateSelected$ = $('#event-at-day-selected-date');
+            const itemEmpty$ = $('#event-at-empty');
+
+            function keepNumberHasTwoChar(numberData) {
+                return numberData >= 10 ? numberData.toString() : '0' + numberData;
+            }
+
+            function renderEventItem(data) {
+                const ele$ = $(eventItemBase$.prop('outerHTML'));
+                ele$.removeAttr('id');
+
+                let iconApp = $('<i class="fa-solid fa-calendar-day"></i>');
+                switch (data?.['category']) {
+                    case 'Opportunity Meeting':
+                        iconApp = $('<i class="fa-regular fa-lightbulb"></i>');
+                        break
+                    case 'EOffice Meeting':
+                        iconApp = $('<i class="fas fa-chalkboard-teacher"></i>');
+                        break
+                    case 'Business Trip':
+                        iconApp = $('<i class="fa-solid fa-business-time"></i>');
+                        break
+                    case 'Leave':
+                        iconApp = $('<i class="fa-solid fa-arrow-right-from-bracket"></i>');
+                        break
+                }
+
+                if (data?.['category']) {
+                    iconApp.addClass("mr-2").attr('data-bs-toggle', 'tooltip').attr('title', $.fn.gettext(data['category']));
+                    ele$.find('.event-at-category-title').text($.fn.gettext(data['category']));
+                } else {
+                    ele$.find('.event-at-category-title').text('');
+                }
+                ele$.find('.event-at-title').html(iconApp.prop('outerHTML') + `<span>${data?.['title'] || ''}</span>`);
+                if (data?.['location_title'] && data?.['location_address']){
+                    ele$.find('.event-at-location').html(`${data['location_address']} - ${data['location_title']}`);
+                } else if (data?.['location_address']) {
+                    ele$.find('.event-at-location').text(data['location_address']);
+                } else if (data?.['location_title']) {
+                    ele$.find('.event-at-location').text(data['location_title']);
+                } else {
+                    ele$.find('.event-at-location').text('').parent().addClass('d-none');
+                }
+                if (data?.['remark']) {
+                    ele$.find('.event-at-remark').text(data['remark']);
+                } else {
+                    ele$.find('.event-at-remark').text('').parent().addClass('d-none');
+                }
+                ele$.find('.event-at-date-start').text(data?.['start_date'] || '');
+                ele$.find('.event-at-date-end').text(data?.['end_date'] || '');
+
+                const start_date = data?.['start_date'] ? moment(data['start_date'], 'YYYY-MM-DDTHH:mm:ss') : null;
+                const end_date = data?.['end_date'] ? moment(data['end_date'], 'YYYY-MM-DDTHH:mm:ss') : null;
+                if (start_date && end_date){
+                    if (start_date.format('YYYY-MM-DD') === end_date.format('YYYY-MM-DD')) {
+                        ele$.find('.event-at-date-start').text(`${keepNumberHasTwoChar(start_date.hours())}:${keepNumberHasTwoChar(start_date.minutes())}`);
+                        ele$.find('.event-at-date-end').text(`${keepNumberHasTwoChar(end_date.hours())}:${keepNumberHasTwoChar(end_date.minutes())}`);
+                    } else {
+                        ele$.find('.event-at-date-start').text(start_date.format('DD / MM / YYYY HH:mm'));
+                        ele$.find('.event-at-date-end').text(end_date.format('DD / MM / YYYY HH:mm'));
+                    }
+                } else if (start_date || end_date) {
+                    ele$.find('.event-at-date-start').text(start_date ? start_date.format('DD / MM / YYYY HH:mm') : "-");
+                    ele$.find('.event-at-date-end').text(end_date ? end_date.format('DD / MM / YYYY HH:mm') : "-");
+                } else {
+                    ele$.find('.event-at-date-start').text("");
+                    ele$.find('.event-at-date-end').text("");
+                    ele$.find('.event-at-date-group-in-title').addClass('d-none');
+                    ele$.find('.event-at-date-group-in-body').addClass('d-none');
+                }
+                eventAtDay$.append(ele$);
+                ele$.find('[data-bs-toggle="tooltip"]').tooltip();
+            }
+
+            function loadEventAtDay(dateStr = null) {
+                eventAtDay$.children().not(eventItemBase$).not(itemEmpty$).remove();
+                let param = {}
+
+                const dateObj = dateStr ? new Date(Date.parse(dateStr)) : new Date();
+                if (dateObj.toUTCString().slice(0, 10) !== new Date().toUTCString().slice(0, 10)) {
+                    param['day'] = dateStr;
+                    const dateObj = new Date(Date.parse(dateStr));
+                    const dateStrReParsed = `${dateObj.getDate()} / ${dateObj.getMonth() + 1} / ${dateObj.getFullYear()}`
+                    dateSelected$.text(dateStrReParsed)
+                } else {
+                    dateSelected$.text(dateSelected$.attr('data-text-today'));
+                    param['day'] = new Date().toISOString().slice(0, 10);
+                }
+
+                $.fn.callAjax2({
+                    url: eventAtDay$.attr('data-url') + '?' + $.param(param),
+                    method: 'GET',
+                    isLoading: true,
+                    sweetAlertOpts: {'allowOutsideClick': true},
+                }).then(
+                    resp => {
+                        const data = $.fn.switcherResp(resp);
+                        const homeCalendar = data?.['home_calendar'] || {};
+                        if (homeCalendar) {
+                            const EOfficeMeet = homeCalendar?.['meeting'] || [];
+                            const OppMeet = homeCalendar?.['meeting_opp'] || [];
+                            const OppBusinessTrip = homeCalendar?.['business_trip'] || [];
+                            const OppLeave = homeCalendar?.['leave'] || [];
+                            let MeetingData = [
+                                ...EOfficeMeet,
+                                ...OppMeet,
+                                ...OppBusinessTrip,
+                                ...OppLeave,
+                            ]
+                            if (MeetingData.length > 0) {
+                                itemEmpty$.hide(0);
+                                [...MeetingData].sort(
+                                    (a, b) => {
+                                        if (a.start_date && b.start_date) {
+                                            return new Date(a.start_date) - new Date(b.start_date);
+                                        }
+                                        return false;
+                                    }
+                                ).map(
+                                    item => {
+                                        renderEventItem(item);
+                                    }
+                                )
+                            } else {
+                                itemEmpty$.show(0);
+                            }
+                        }
+                    },
+                    errs => {},
+                )
+            }
+
             const config = {
                 type: 'default',
                 settings: {
@@ -1028,9 +1304,51 @@
                     ],
                     weekday: ['CN', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'],
                 },
+                actions: {
+                    clickDay(e, self) {
+                        loadEventAtDay(self.selectedDates[0]);
+                    },
+                },
             };
             const calendar = new VanillaCalendar('#calendar', config);
             calendar.init();
+
+            eventAtDay$.on('click', '.event-at-show-more', function (event, data) {
+                const btn$ = $(this);
+
+                btn$.prop('disabled', true);
+                setTimeout(
+                    () => btn$.prop('disabled', false),
+                    200
+                )
+                const direct = data?.['direct'] || null;
+                const item$ = $(this).closest('.event-at-item');
+                if (item$.length > 0) {
+                    if (direct === 'open') {
+                        item$.addClass('active').find('.event-at-body-more').slideDown();
+                        btn$.addClass('active');
+                    } else if (direct === 'close') {
+                        item$.removeClass('active').find('.event-at-body-more').slideUp();
+                        btn$.removeClass('active');
+                    } else {
+                        item$.toggleClass('active').find('.event-at-body-more').slideToggle();
+                        btn$.toggleClass('active');
+                    }
+                }
+            })
+
+            $('#event-at-collapse-all').on('click', function (){
+                eventAtDay$.find('.event-at-item').not(eventItemBase$).each(function (){
+                    $(this).find('.event-at-show-more').trigger('click', {'direct': 'close'});
+                })
+            });
+            $('#event-at-expand-all').on('click', function (){
+                eventAtDay$.find('.event-at-item').not(eventItemBase$).each(function (){
+                    $(this).find('.event-at-show-more').trigger('click', {'direct': 'open'});
+                })
+            });
+
+            loadEventAtDay();
         })
     </script>
 {% endblock %}

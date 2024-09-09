@@ -6,8 +6,12 @@ from apps.sales.cashoutflow.views import (
     PaymentList, PaymentCreate, PaymentListAPI, PaymentDetailAPI, PaymentDetail, PaymentCostItemsListAPI, PaymentUpdate,
     ReturnAdvanceUpdate, PaymentConfigList, PaymentConfigListAPI, AdvancePaymentCostListAPI, APListForReturnAPI
 )
+from apps.sales.cashoutflow.views.cashoutflow_common import CashOutflowQuotationListAPI, CashOutflowSaleOrderListAPI
 
 urlpatterns = [
+    path('cashoutflow/quotation-list', CashOutflowQuotationListAPI.as_view(), name='CashOutflowQuotationListAPI'),
+    path('cashoutflow/sale-order-list', CashOutflowSaleOrderListAPI.as_view(), name='CashOutflowSaleOrderListAPI'),
+
     path('advances-payments', AdvancePaymentList.as_view(), name='AdvancePaymentList'),
     path('advances-payments/api', AdvancePaymentListAPI.as_view(), name='AdvancePaymentListAPI'),
     path('advance-payment/create', AdvancePaymentCreate.as_view(), name='AdvancePaymentCreate'),

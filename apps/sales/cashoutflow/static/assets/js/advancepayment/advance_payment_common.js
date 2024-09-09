@@ -18,6 +18,7 @@ const ap_method_default_data = [
     {'value': 0, 'title': ap_method_Ele.attr('data-trans-cash')},
     {'value': 1, 'title': ap_method_Ele.attr('data-trans-bank-transfer')},
 ]
+let ap_for = null
 
 class APLoadPage {
     static LoadCreatedDate() {
@@ -53,28 +54,30 @@ class APLoadPage {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            quotation_mapped_select.empty();
-            sale_order_mapped_select.empty();
+            quotation_mapped_select.empty()
+            sale_order_mapped_select.empty()
             if (opp_mapped_select.val()) {
-                let opp_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
-                if (opp_mapped_opp?.['is_close']) {
-                    $.fn.notifyB({description: `Opportunity ${opp_mapped_opp?.['code']} has been closed. Can not select.`}, 'failure');
-                    opp_mapped_select.find('option').remove();
+                let selected = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
+                if (selected?.['is_close']) {
+                    $.fn.notifyB({description: `Opportunity ${selected?.['code']} has been closed. Can not select.`}, 'failure');
+                    opp_mapped_select.empty()
+                    ap_for = null
                 }
                 else {
-                    sale_order_mapped_select.prop('disabled', true);
-                    quotation_mapped_select.prop('disabled', true);
-
-                    let quo_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
-                    let so_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
-                    APLoadPage.LoadQuotation(quo_mapped_opp)
-                    APLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quo_mapped_opp?.['id'])
-                    APLoadPage.LoadSaleOrder(so_mapped_opp);
+                    sale_order_mapped_select.prop('disabled', true)
+                    quotation_mapped_select.prop('disabled', true)
+                    let quo_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
+                    let so_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
+                    APLoadPage.LoadQuotation(quo_mapped)
+                    APLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quo_mapped?.['id'])
+                    APLoadPage.LoadSaleOrder(so_mapped);
+                    ap_for = 'opportunity'
                 }
             }
             else {
-                quotation_mapped_select.prop('disabled', false);
-                sale_order_mapped_select.prop('disabled', false);
+                quotation_mapped_select.prop('disabled', false)
+                sale_order_mapped_select.prop('disabled', false)
+                ap_for = null
             }
         })
     }
@@ -85,15 +88,6 @@ class APLoadPage {
                 url: quotation_mapped_select.attr('data-url'),
                 method: 'GET',
             },
-            callbackDataResp: function (resp, keyResp) {
-                let result = [];
-                for (let i = 0; i < resp.data[keyResp].length; i++) {
-                    if (Object.keys(resp.data[keyResp][i]?.['opportunity']).length === 0 && resp.data[keyResp][i].system_status === 3) {
-                        result.push(resp.data[keyResp][i])
-                    }
-                }
-                return result;
-            },
             data: (data ? data : null),
             keyResp: 'quotation_list',
             keyId: 'id',
@@ -102,40 +96,17 @@ class APLoadPage {
             opp_mapped_select.empty();
             sale_order_mapped_select.empty();
             if (quotation_mapped_select.val()) {
-                opp_mapped_select.prop('disabled', true);
-                sale_order_mapped_select.prop('disabled', true);
-
-                let dataParam = {'quotation_id': quotation_mapped_select.val()}
-                let ap_mapped_item = $.fn.callAjax2({
-                    url: sale_order_mapped_select.attr('data-url'),
-                    data: dataParam,
-                    method: 'GET'
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && typeof data === 'object' && data.hasOwnProperty('sale_order_list')) {
-                            return data?.['sale_order_list'];
-                        }
-                        return {};
-                    },
-                    (errs) => {
-                        console.log(errs);
-                    }
-                )
-
-                Promise.all([ap_mapped_item]).then(
-                    (results) => {
-                        let so_mapped_opp = results[0];
-                        if (so_mapped_opp.length > 0) {
-                            APLoadPage.LoadSaleOrder(so_mapped_opp[0]);
-                        }
-                    })
-
-                APLoadTab.LoadPlanQuotationOnly($(this).val());
+                opp_mapped_select.prop('disabled', true)
+                sale_order_mapped_select.prop('disabled', true)
+                let selected = SelectDDControl.get_data_from_idx(quotation_mapped_select, quotation_mapped_select.val())
+                APLoadPage.LoadSaleOrder(selected?.['sale_order'])
+                APLoadTab.LoadPlanQuotationOnly($(this).val())
+                ap_for = 'quotation'
             }
             else {
-                opp_mapped_select.prop('disabled', false);
-                sale_order_mapped_select.prop('disabled', false);
+                opp_mapped_select.prop('disabled', false)
+                sale_order_mapped_select.prop('disabled', false)
+                ap_for = null
             }
         })
     }
@@ -146,33 +117,25 @@ class APLoadPage {
                 url: sale_order_mapped_select.attr('data-url'),
                 method: 'GET',
             },
-            callbackDataResp: function (resp, keyResp) {
-                let result = [];
-                for (let i = 0; i < resp.data[keyResp].length; i++) {
-                    if (Object.keys(resp.data[keyResp][i]?.['opportunity']).length === 0 && resp.data[keyResp][i].system_status === 3) {
-                        result.push(resp.data[keyResp][i])
-                    }
-                }
-                return result;
-            },
             data: (data ? data : null),
             keyResp: 'sale_order_list',
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            opp_mapped_select.empty();
-            quotation_mapped_select.empty();
+            opp_mapped_select.empty()
+            quotation_mapped_select.empty()
             if (sale_order_mapped_select.val()) {
-                opp_mapped_select.prop('disabled', true);
-                quotation_mapped_select.prop('disabled', true);
-    
-                let quo_mapped_opp = SelectDDControl.get_data_from_idx(sale_order_mapped_select, sale_order_mapped_select.val())['quotation'];
-                APLoadPage.LoadQuotation(quo_mapped_opp)
-                APLoadTab.LoadPlanSaleOrderOnly($(this).val());
+                opp_mapped_select.prop('disabled', true)
+                quotation_mapped_select.prop('disabled', true)
+                let selected = SelectDDControl.get_data_from_idx(sale_order_mapped_select, sale_order_mapped_select.val())
+                APLoadPage.LoadQuotation(selected?.['quotation'])
+                APLoadTab.LoadPlanSaleOrderOnly($(this).val())
+                ap_for = 'saleorder'
             }
             else {
-                opp_mapped_select.prop('disabled', false);
-                quotation_mapped_select.prop('disabled', false);
+                opp_mapped_select.prop('disabled', false)
+                quotation_mapped_select.prop('disabled', false)
+                ap_for = null
             }
         })
     }
@@ -1304,59 +1267,36 @@ class APHandle {
             }
         }
     }
-    static CombinesData(frmEle, for_update=false) {
+    static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
-        frm.dataForm['title'] = $('#title').val();
-
-        frm.dataForm['supplier_id'] = supplierEle.val();
-
-        frm.dataForm['advance_payment_type'] = parseInt(APTypeEle.val())
-
-        frm.dataForm['method'] = parseInt(ap_method_Ele.val());
-
-        frm.dataForm['return_date'] = moment($('#return_date_id').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
-
-        if (!for_update) {
-            frm.dataForm['sale_code_type'] = 0;
-            let opportunity_mapped = opp_mapped_select.val();
-            let quotation_mapped = quotation_mapped_select.val();
-            let sale_order_mapped = sale_order_mapped_select.val();
-            if (opp_mapped_select.prop('disabled') && quotation_mapped_select.prop('disabled') && sale_order_mapped_select.prop('disabled')) {
-                const urlParams = new URLSearchParams(window.location.search);
-                let type = urlParams.get('type');
-                if (type) {
-                    if (opportunity_mapped && type === '0') {
-                        frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
-                    } else if (quotation_mapped && type === '1') {
-                        frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
-                    } else if (sale_order_mapped && type === '2') {
-                        frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
-                    } else {
-                        $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
-                        return false;
-                    }
-                }
-            } else {
-                if (opportunity_mapped && !opp_mapped_select.prop('disabled')) {
-                    frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
-                } else if (quotation_mapped && !quotation_mapped_select.prop('disabled')) {
-                    frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
-                } else if (sale_order_mapped && !sale_order_mapped_select.prop('disabled')) {
-                    frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
-                } else {
-                    frm.dataForm['sale_code_type'] = 2;
-                }
-            }
-
-            frm.dataForm['employee_inherit_id'] = $('#employee_inherit_id').val();
-            if (!frm.dataForm['employee_inherit_id']) {
-                $.fn.notifyB({description: 'Employee Inherit must not be NULL'}, 'failure');
-                return false;
-            }
+        frm.dataForm['title'] = $('#title').val()
+        if (ap_for === 'opportunity') {
+            frm.dataForm['opportunity_mapped_id'] = opp_mapped_select.val()
+            frm.dataForm['sale_code_type'] = 0
         }
+        else if (ap_for === 'quotation') {
+            frm.dataForm['quotation_mapped_id'] = quotation_mapped_select.val()
+            frm.dataForm['sale_code_type'] = 0
+        }
+        else if (ap_for === 'saleorder') {
+            frm.dataForm['sale_order_mapped_id'] = sale_order_mapped_select.val()
+            frm.dataForm['sale_code_type'] = 0
+        }
+        else {
+            frm.dataForm['opportunity_mapped_id'] = null
+            frm.dataForm['quotation_mapped_id'] = null
+            frm.dataForm['sale_order_mapped_id'] = null
+            frm.dataForm['sale_code_type'] = 2
+        }
+        frm.dataForm['employee_inherit_id'] = $('#employee_inherit_id').val()
+        frm.dataForm['advance_payment_type'] = APTypeEle.val()
+        frm.dataForm['supplier_id'] = supplierEle.val() ? supplierEle.val() : null
+        frm.dataForm['method'] = ap_method_Ele.val()
+        frm.dataForm['return_date'] = moment($('#return_date_id').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
+        frm.dataForm['money_gave'] = money_gave.prop('checked')
 
-        let expense_valid_list = [];
+        let ap_item_list = []
         tableLineDetail.find('tbody tr').each(function () {
             let row = $(this);
             let expense_name = row.find('.expense-name-input').val();
@@ -1373,7 +1313,7 @@ class APHandle {
                 tax_rate = parseFloat(tax_selected?.['rate']);
             }
             if (!isNaN(expense_subtotal_price) && !isNaN(expense_after_tax_price)) {
-                expense_valid_list.push({
+                ap_item_list.push({
                     'expense_name': expense_name,
                     'expense_type_id': expense_type,
                     'expense_uom_name': expense_uom_name,
@@ -1386,10 +1326,7 @@ class APHandle {
                 })
             }
         })
-
-        frm.dataForm['expense_valid_list'] = expense_valid_list;
-        frm.dataForm['money_gave'] = money_gave.prop('checked');
-        frm.dataForm['status'] = frm.dataForm['money_gave'];
+        frm.dataForm['ap_item_list'] = ap_item_list
 
         // console.log(frm)
         return frm
@@ -1428,6 +1365,7 @@ class APHandle {
                         }).init();
                         APLoadPage.LoadQuotation(data?.['opportunity_mapped']?.['quotation_mapped'])
                         APLoadTab.LoadPlanQuotation(opp_mapped_select.val(), data?.['opportunity_mapped']?.['quotation_mapped']?.['id'])
+                        ap_for = 'opportunity'
                     }
                     else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
                         new $x.cls.bastionField({
@@ -1472,12 +1410,13 @@ class APHandle {
                             })
 
                         APLoadTab.LoadPlanQuotationOnly(data?.['quotation_mapped']?.['id'])
+                        ap_for = 'quotation'
                     }
                     else if (Object.keys(data?.['sale_order_mapped']).length !== 0) {
                         APLoadPage.LoadSaleOrder(data?.['sale_order_mapped'])
                         APLoadPage.LoadQuotation(data?.['sale_order_mapped']?.['quotation_mapped'])
-
                         APLoadTab.LoadPlanSaleOrderOnly(data?.['sale_order_mapped']?.['id'])
+                        ap_for = 'saleorder'
                     }
                     else {
                         new $x.cls.bastionField({
@@ -1493,6 +1432,7 @@ class APHandle {
                                 "selected": true,
                             }],
                         }).init();
+                        ap_for = null
                     }
 
                     $('#title').val(data.title);

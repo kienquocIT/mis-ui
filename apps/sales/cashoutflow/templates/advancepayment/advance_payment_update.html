@@ -53,13 +53,4 @@
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static "assets/js/advancepayment/advance_payment_common.js" %}"></script>
     <script src="{% static "assets/js/advancepayment/advance_payment_update.js" %}"></script>
-
-    <script src="{% static 'printer/print.js' %}"></script>
-    <script>
-        $(document).ready(function () {
-            $('#print-document').on('click', function () {
-                PrintTinymceControl.open_modal();
-            });
-        })
-    </script>
 {% endblock %}

@@ -303,6 +303,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_VARIANT_LIST = StringUrl('saledata/products-variants')
 
     # advance payment
+    CASHOUTFLOW_QUOTATION_LIST = StringUrl('cashoutflow/quotation-list')
+    CASHOUTFLOW_SALE_ORDER_LIST = StringUrl('cashoutflow/sale-order-list')
     ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advances-payments')
     ADVANCE_PAYMENT_DETAIL = StringUrl('cashoutflow/advances-payments/{pk}')
     ADVANCE_PAYMENT_COST_LIST = StringUrl('cashoutflow/advances-payments-cost-list/lists')

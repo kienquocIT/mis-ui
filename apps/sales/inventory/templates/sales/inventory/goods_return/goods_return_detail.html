@@ -29,13 +29,13 @@
     <form id="frm_goods_return_detail" data-url="{% url 'GoodsReturnDetailAPI' pk=pk %}">
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
-            <div class="row mb-3">
-                <div class="col-12">
-                    <button type="button" class="btn btn-sm btn-gradient-primary" id="print-document"
-                            data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Print' %}"
-                    >
-                        <i class="bi bi-printer"></i>
-                    </button>
+            <div class="row">
+                <div class="col-12 text-right">
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="{% trans 'Print' %}">
+                            <button type="button" class="btn btn-outline-light btn-sm" id="print-document"><i class="fas fa-print"></i></button>
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="row">

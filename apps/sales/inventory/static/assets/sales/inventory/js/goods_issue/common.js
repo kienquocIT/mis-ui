@@ -1,7 +1,11 @@
 const script_url = $('#script-url')
 const script_trans = $('#script-trans')
 const IAEle = $('#box-select-ia')
+const POEle = $('#box-select-production-order')
 const IAItemTable = $('#dtbProductIA')
+const POItemTable = $('#dtbProductProduction')
+const IAItemTableDiv = $('#table-for-ia')
+const POItemTableDiv = $('#table-for-production')
 const NONETable = $('#select-detail-table-none')
 const SNTable = $('#select-detail-table-sn')
 const LOTTable = $('#select-detail-table-lot')
@@ -31,15 +35,9 @@ class GISLoadPage {
         IAEle.initSelect2({
             data: data,
             ajax: {
+                data: {'system_status': 3},
                 url: IAEle.attr('data-url'),
                 method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                let result = [];
-                for (let i = 0; i < resp.data[keyResp].length; i++) {
-                    result.push(resp.data[keyResp][i])
-                }
-                return result;
             },
             keyResp: 'inventory_adjustment_list',
             keyId: 'id',
@@ -79,6 +77,50 @@ class GISLoadPage {
                         else {
                             GISLoadTab.DrawTableIAItems(decrease_list)
                         }
+                    })
+            }
+        })
+    }
+    static LoadPO(data) {
+        POEle.initSelect2({
+            data: data,
+            ajax: {
+                data: {'system_status': 3},
+                url: POEle.attr('data-url'),
+                method: 'GET',
+            },
+            keyResp: 'production_order_list',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {
+            if (POEle.val()) {
+                let dataParam = {}
+                let po_list_ajax = $.fn.callAjax2({
+                    url: `${script_url.attr('data-url-po').replace('/0', `/${POEle.val()}`)}`,
+                    data: dataParam,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('production_order_detail')) {
+                            return data?.['production_order_detail'];
+                        }
+                        return {};
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+
+                Promise.all([po_list_ajax]).then(
+                    (results) => {
+                        let production_order_data = []
+                        for (let i = 0; i < results[0]?.['task_data'].length; i++) {
+                            if (!results[0]?.['task_data'][i]?.['is_task']) {
+                                production_order_data.push(results[0]?.['task_data'][i])
+                            }
+                        }
+                        GISLoadTab.DrawTablePOItems(production_order_data)
                     })
             }
         })
@@ -136,8 +178,8 @@ class GISLoadTab {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['quantity'] ? row?.['quantity'] : 0}">
-                                    <button data-stock-quantity="${row?.['stock_quantity']}"
-                                            data-difference="${row?.['limit_quantity']}"
+                                    <button data-stock-quantity="${row?.['stock_quantity'] ? row?.['stock_quantity'] : 0}"
+                                            data-difference="${row?.['limit_quantity'] ? row?.['limit_quantity'] : 0}"
                                             data-uom-title="${row?.['uom_mapped']?.['title']}"
                                             data-type="${row?.['product_mapped']?.['general_traceability_method']}"
                                             data-prd-wh-id="${row?.['product_warehouse_mapped_id']}"
@@ -160,7 +202,89 @@ class GISLoadTab {
             ],
         })
     }
-    static DrawTableIAItemsLOT(data_list=[], selected_list=[]) {
+    static DrawTablePOItems(data_list=[]) {
+        POItemTable.DataTable().clear().destroy()
+        POItemTable.DataTableDefault({
+            dom: 't',
+            rowIdx: true,
+            reloadCurrency: true,
+            scrollX: '100vh',
+            scrollCollapse: true,
+            paging: false,
+            data: data_list,
+            columns: [
+                {
+                    className: 'wrap-text',
+                    render: () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'wrap-text',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-light">${row?.['product_data']?.['code']}</span> ${row?.['product_data']?.['title']}`;
+                    }
+                },
+                {
+                    className: 'wrap-text',
+                    render: (data, type, row) => {
+                        return `<textarea disabled readonly class="form-control small" rows="2" cols="8">${row?.['product_data']?.['description']}</textarea>`;
+                    }
+                },
+                {
+                    className: 'wrap-text text-center',
+                    render: (data, type, row) => {
+                        return `${row?.['uom_data']?.['title']}`;
+                    }
+                },
+                {
+                    className: 'wrap-text text-center',
+                    render: (data, type, row) => {
+                        return `<span class="limit-quantity">${row?.['quantity']}</span>`;
+                    }
+                },
+                {
+                    className: 'wrap-text text-center',
+                    render: (data, type, row) => {
+                        return `<span class="before-quantity">${row?.['issued_quantity'] ? row?.['issued_quantity'] : 0}</span>`;
+                    }
+                },
+                {
+                    className: 'wrap-text',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-sm badge-soft-primary">${row?.['warehouse_data']?.['code']}</span> ${row?.['warehouse_data']?.['title']}`;
+                    }
+                },
+                {
+                    className: 'wrap-text',
+                    render: (data, type, row) => {
+                        return `<div class="input-group">
+                                    <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['selected_quantity'] ? row?.['selected_quantity'] : 0}">
+                                    <button data-po-quantity="${row?.['quantity'] ? row?.['quantity'] : 0}"
+                                            data-issued-quantity="${row?.['issued_quantity'] ? row?.['issued_quantity'] : 0}"
+                                            data-uom-title="${row?.['uom_data']?.['title']}"
+                                            data-type="0"
+                                            // data-type="${row?.['product_data']?.['general_information']?.['general_traceability_method']}"
+                                            data-prd-id="${row?.['product_data']?.['id']}"
+                                            data-wh-id="${row?.['warehouse_data']?.['id']}"
+                                            data-uom-id="${row?.['uom_data']?.['id']}"
+                                            data-po-item-order="${row?.['task_order']}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#select-detail-modal"
+                                            type="button"
+                                            class="btn btn-sm btn-outline-secondary select-detail">
+                                        <i class="bi bi-list-check"></i>
+                                    </button>
+                                </div>
+                                <script class="lot-data-script">${row?.['lot_data'] ? JSON.stringify(row?.['lot_data']) : JSON.stringify([])}</script>
+                                <script class="sn-data-script">${row?.['sn_data'] ? JSON.stringify(row?.['sn_data']) : JSON.stringify([])}</script>
+                        `;
+                    }
+                },
+            ],
+        })
+    }
+    static DrawTableItemsLOT(data_list=[], selected_list=[]) {
         LOTTable.DataTable().clear().destroy()
         LOTTable.DataTableDefault({
             dom: 't',
@@ -220,7 +344,7 @@ class GISLoadTab {
             }
         })
     }
-    static DrawTableIAItemsSN(data_list=[], selected_list=[]) {
+    static DrawTableItemsSN(data_list=[], selected_list=[]) {
         SNTable.DataTable().clear().destroy()
         SNTable.DataTableDefault({
             dom: 't',
@@ -306,8 +430,7 @@ class GISHandle {
     static LoadPage() {
         GISLoadPage.LoadDateCreated()
         GISLoadPage.LoadIA()
-        GISLoadTab.DrawTableIAItemsLOT()
-        GISLoadTab.DrawTableIAItemsSN()
+        GISLoadTab.DrawTableIAItems()
     }
     static LoadGoodsIssueDetail(option) {
         let url_loaded = $('#frmDetail').attr('data-url');
@@ -354,7 +477,7 @@ class GISHandle {
         else if ($('#for-production').prop('checked')) {
             frm.dataForm['goods_issue_type'] = 2
         }
-        frm.dataForm['inventory_adjustment_id'] = $('#box-select-ia').val()
+        frm.dataForm['inventory_adjustment_id'] = IAEle.val()
         frm.dataForm['note'] = $('#note').val()
 
         let detail_data_ia = [];
@@ -381,12 +504,20 @@ class GISHandle {
 
 $('input[name="issue-type"]').on('change', function () {
     if ($('#for-ia').prop('checked')) {
+        GISLoadPage.LoadIA()
+        GISLoadTab.DrawTableIAItems()
         $('#inventory-adjustment-select-space').prop('hidden', false)
         $('#production-order-select-space').prop('hidden', true)
+        IAItemTableDiv.prop('hidden', false)
+        POItemTableDiv.prop('hidden', true)
     }
     else if ($('#for-production').prop('checked')) {
+        GISLoadPage.LoadPO()
+        GISLoadTab.DrawTablePOItems()
         $('#inventory-adjustment-select-space').prop('hidden', true)
         $('#production-order-select-space').prop('hidden', false)
+        IAItemTableDiv.prop('hidden', true)
+        POItemTableDiv.prop('hidden', false)
     }
 })
 
@@ -395,15 +526,40 @@ $(document).on("click", '.select-detail', function () {
     if ($(this).attr('data-type') === '0') {
         let stock_quantity = $(this).attr('data-stock-quantity')
         $('#stock-quantity').val(stock_quantity)
-        LOTTable.DataTable().clear().destroy()
-        SNTable.DataTable().clear().destroy()
-        NONETable.prop('hidden', false)
-        SNTable.prop('hidden', true)
-        LOTTable.prop('hidden', true)
-        done_none.prop('hidden', false)
-        done_sn.prop('hidden', true)
-        done_lot.prop('hidden', true)
-        $('#issue-quantity').val($(this).closest('tr').find('.selected-quantity').val())
+        let dataParam = {
+            'product_id': $(this).attr('data-prd-id'),
+            'warehouse_id': $(this).attr('data-wh-id')
+        }
+        let prd_wh = $.fn.callAjax2({
+            url: NONETable.attr('data-url-prd-wh'),
+            data: dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('warehouse_products_list')) {
+                    return data?.['warehouse_products_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([prd_wh]).then(
+            (results) => {
+                console.log(results[0])
+                LOTTable.DataTable().clear().destroy()
+                SNTable.DataTable().clear().destroy()
+                NONETable.prop('hidden', false)
+                SNTable.prop('hidden', true)
+                LOTTable.prop('hidden', true)
+                done_none.prop('hidden', false)
+                done_sn.prop('hidden', true)
+                done_lot.prop('hidden', true)
+                $('#issue-quantity').val($(this).closest('tr').find('.selected-quantity').val())
+            })
     }
     else if ($(this).attr('data-type') === '1') {
         let dataParam = {
@@ -443,7 +599,7 @@ $(document).on("click", '.select-detail', function () {
                     }
                 }
                 let selected_list = DetailBtn.closest('tr').find('.lot-data-script').text() ? JSON.parse(DetailBtn.closest('tr').find('.lot-data-script').text()) : []
-                GISLoadTab.DrawTableIAItemsLOT(filter_lot, selected_list)
+                GISLoadTab.DrawTableItemsLOT(filter_lot, selected_list)
             })
     }
     else if ($(this).attr('data-type') === '2') {
@@ -480,7 +636,7 @@ $(document).on("click", '.select-detail', function () {
                 $('#amount-balance-sn').text($(this).attr('data-difference') + ' ' + $(this).attr('data-uom-title')).attr('data-value', $(this).attr('data-difference'))
                 LOTTable.DataTable().clear().destroy()
                 let selected_list = DetailBtn.closest('tr').find('.sn-data-script').text() ? JSON.parse(DetailBtn.closest('tr').find('.sn-data-script').text()) : []
-                GISLoadTab.DrawTableIAItemsSN(results[0], selected_list)
+                GISLoadTab.DrawTableItemsSN(results[0], selected_list)
             })
     }
 })

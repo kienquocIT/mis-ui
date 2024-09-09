@@ -4337,7 +4337,7 @@ class DTBControl {
             let setupServerSide = {
                 processing: true,
                 serverSide: true,
-                ordering: false,
+                // ordering: false,
                 // ordering: true,
                 searchDelay: 1000,
                 order: [],

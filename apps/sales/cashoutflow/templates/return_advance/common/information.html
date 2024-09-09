@@ -71,11 +71,12 @@
                     <div class="col-12 col-md-2 col-lg-2">
                         <div class="form-group">
                             <label for="box-method-payment" class="form-label required">{% trans "Method" %}</label>
-                            <select data-trans-cash="{% trans "Cash" %}"
-                                    data-trans-bank-transfer="{% trans "Bank transfer" %}"
-                                    id="box-method-payment"
+                            <select id="box-method-payment"
                                     class="form-select"
-                                    name="method"></select>
+                                    name="method">
+                                <option value="0">{% trans "Cash" %}</option>
+                                <option value="1">{% trans "Bank transfer" %}</option>
+                            </select>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">

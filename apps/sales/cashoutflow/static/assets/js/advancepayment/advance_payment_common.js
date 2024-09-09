@@ -10,14 +10,6 @@ const opp_mapped_select = $('#opportunity_id')
 const script_url = $('#script-url')
 const ap_method_Ele = $('#ap-method')
 const tab_plan_datatable = $('#tab_plan_datatable')
-const ap_type_default_data = [
-    {'value': 0, 'title': APTypeEle.attr('data-trans-to-emp')},
-    {'value': 1, 'title': APTypeEle.attr('data-trans-to-sup')},
-]
-const ap_method_default_data = [
-    {'value': 0, 'title': ap_method_Ele.attr('data-trans-cash')},
-    {'value': 1, 'title': ap_method_Ele.attr('data-trans-bank-transfer')},
-]
 let ap_for = null
 
 class APLoadPage {
@@ -78,6 +70,7 @@ class APLoadPage {
                 quotation_mapped_select.prop('disabled', false)
                 sale_order_mapped_select.prop('disabled', false)
                 ap_for = null
+                APLoadTab.DrawTablePlan()
             }
         })
     }
@@ -107,6 +100,7 @@ class APLoadPage {
                 opp_mapped_select.prop('disabled', false)
                 sale_order_mapped_select.prop('disabled', false)
                 ap_for = null
+                APLoadTab.DrawTablePlan()
             }
         })
     }
@@ -136,23 +130,7 @@ class APLoadPage {
                 opp_mapped_select.prop('disabled', false)
                 quotation_mapped_select.prop('disabled', false)
                 ap_for = null
-            }
-        })
-    }
-    static LoadType(data) {
-        APTypeEle.initSelect2({
-            data: data ? data : ap_type_default_data,
-            keyId: 'value',
-            keyText: 'title',
-        }).on('change', function () {
-            if (APTypeEle.val() === '1') {
-                supplierEle.prop('disabled', false);
-                $('#supplier-label').addClass('required');
-                APLoadPage.LoadSupplier();
-            }
-            else {
-                supplierEle.prop('disabled', true);
-                $('#supplier-label').removeClass('required');
+                APLoadTab.DrawTablePlan()
             }
         })
     }
@@ -194,13 +172,6 @@ class APLoadPage {
         let url = btn_detail.attr('data-url').replace('0', data?.['id']);
         btn_detail.attr('href', url);
     }
-    static LoadMethod(data) {
-        ap_method_Ele.initSelect2({
-            data: data ? data : ap_method_default_data,
-            keyId: 'value',
-            keyText: 'title',
-        })
-    }
     static LoadReturnDate() {
         $('#return_date_id').daterangepicker({
             singleDatePicker: true,
@@ -231,10 +202,11 @@ class APLoadTab {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            $(this).closest('tr').find('.expense-unit-price-input').attr('value', '');
+            $(this).closest('tr').find('.expense-unit-price-input').attr('value', 0);
             $(this).closest('tr').find('.expense_quantity').val(1);
-            $(this).closest('tr').find('.expense-subtotal-price').attr('value', '');
-            $(this).closest('tr').find('.expense-subtotal-price-after-tax').attr('value', '');
+            $(this).closest('tr').find('.expense-subtotal-price').attr('value', 0);
+            $(this).closest('tr').find('.expense-subtotal-price-after-tax').attr('value', 0);
+            $.fn.initMaskMoney2()
         })
     }
     static LoadExpenseTax(ele, data) {
@@ -1339,9 +1311,12 @@ class APHandle {
                 if (data) {
                     data = data['advance_payment_detail'];
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
-                    new PrintTinymceControl().render('57725469-8b04-428a-a4b0-578091d0e4f5', data, false);
+                    if (option === 'detail') {
+                        new PrintTinymceControl().render('57725469-8b04-428a-a4b0-578091d0e4f5', data, false);
+                    }
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
+                    console.log(data)
 
                     if (Object.keys(data?.['opportunity_mapped']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
                         new $x.cls.bastionField({
@@ -1438,23 +1413,10 @@ class APHandle {
                     $('#title').val(data.title);
 
                     APTypeEle.val(data.advance_payment_type);
-                    APLoadPage.LoadType({
-                        'value': data.advance_payment_type,
-                        'title': [
-                            APTypeEle.attr('data-trans-to-emp'),
-                            APTypeEle.attr('data-trans-to-sup')
-                        ][data.advance_payment_type]
-                    })
 
                     APLoadPage.LoadSupplier(data.supplier);
 
-                    APLoadPage.LoadMethod({
-                        'value': data.method,
-                        'title': [
-                            ap_method_Ele.attr('data-trans-cash'),
-                            ap_method_Ele.attr('data-trans-bank-transfer')
-                        ][data.method]
-                    })
+                    ap_method_Ele.val(data.method)
 
                     $('#created_date_id').val(data.date_created.split(' ')[0]).prop('readonly', true)
 
@@ -1487,6 +1449,18 @@ class APHandle {
             })
     }
 }
+
+APTypeEle.on('change', function () {
+    if (APTypeEle.val() === '1') {
+        supplierEle.prop('disabled', false);
+        $('#supplier-label').addClass('required');
+        APLoadPage.LoadSupplier();
+    }
+    else {
+        supplierEle.prop('disabled', true);
+        $('#supplier-label').removeClass('required');
+    }
+})
 
 $(document).on("click", '#btn-add-row-line-detail', function () {
     APAction.AddRow(tableLineDetail, {})

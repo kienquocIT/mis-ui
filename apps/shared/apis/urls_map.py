@@ -545,6 +545,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Goods issue
     GOODS_ISSUE_LIST = StringUrl('inventory/goods-issue/list')
     GOODS_ISSUE_DETAIL = StringUrl('inventory/goods-issue/{pk}')
+    GIS_PRODUCTION_ORDER_LIST = StringUrl('inventory/production-order-for-gis/list')
+    GIS_PRODUCTION_ORDER_DETAIL = StringUrl('inventory/production-order-for-gis/{pk}')
 
     # Sale Order List for Purchasing Staff
     SALE_ORDER_LIST_FOR_PURCHASING_STAFF = StringUrl('saleorder/purchasing-staff/list')

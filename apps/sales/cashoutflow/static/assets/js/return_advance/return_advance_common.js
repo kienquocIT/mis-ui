@@ -3,10 +3,6 @@ const creatorEle = $('#creator-select-box')
 const advancePaymentEle = $('#chooseAdvancePayment')
 const chooseBeneficiaryEle = $('#chooseBeneficiary')
 const returnAP_method_Ele =$('#box-method-payment')
-const returnAP_method_default_data = [
-    {'value': 0, 'title': returnAP_method_Ele.attr('data-trans-cash')},
-    {'value': 1, 'title': returnAP_method_Ele.attr('data-trans-bank-transfer')},
-]
 
 class ReturnAPLoadPage {
     static LoadCreatedDate() {
@@ -32,7 +28,7 @@ class ReturnAPLoadPage {
         let url = btn_detail.attr('data-url').replace('0', data?.['id']);
         btn_detail.attr('href', url);
     }
-    static LoadAdvancePayment(data, params) {
+    static LoadAdvancePayment(data, params={'system_status': 3}) {
         advancePaymentEle.initSelect2({
             allowClear: data === null,
             ajax: {
@@ -47,14 +43,7 @@ class ReturnAPLoadPage {
         }).on('change', function () {
             let selected_ap = SelectDDControl.get_data_from_idx(advancePaymentEle, advancePaymentEle.val())
             ReturnAPLoadTab.LoadDetailAdvancePayment(selected_ap)
-            $('#inp-sale-code').val(selected_ap?.['sale_code'])
-        })
-    }
-    static LoadMethod(data) {
-        returnAP_method_Ele.initSelect2({
-            data: data ? data : returnAP_method_default_data,
-            keyId: 'value',
-            keyText: 'title',
+            $('#inp-sale-code').val(selected_ap?.['sale_code'] !== 'null' ? selected_ap?.['sale_code'] : '')
         })
     }
     static LoadBeneficiary(data) {
@@ -131,11 +120,42 @@ class ReturnAPLoadTab {
             table.row.add(item).draw();
         })
     }
-    static LoadDetailAdvancePayment(advance_payment_detail, type = 'create') {
-        ReturnAPLoadPage.LoadBeneficiary(advance_payment_detail?.['employee_inherit'])
-        ReturnAPLoadPage.LoadBeneficiaryInfor(advance_payment_detail?.['employee_inherit'])
-        if (type === 'create') {
-            ReturnAPLoadTab.LoadCostTable(advance_payment_detail?.['expense_items'])
+    static LoadDetailAdvancePayment(advance_payment_mapped, type = 'create') {
+        if (advance_payment_mapped?.['employee_inherit']) {
+            ReturnAPLoadPage.LoadBeneficiary(advance_payment_mapped?.['employee_inherit'])
+            ReturnAPLoadPage.LoadBeneficiaryInfor(advance_payment_mapped?.['employee_inherit'])
+            if (type === 'create') {
+                ReturnAPLoadTab.LoadCostTable(advance_payment_mapped?.['expense_items'])
+            }
+        }
+        else {
+            let dataParam = {'id': advance_payment_mapped?.['id'], 'system_status': 3}
+            let ap_mapped_item = $.fn.callAjax2({
+                url: advancePaymentEle.attr('data-url'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('advance_payment_list')) {
+                        return data?.['advance_payment_list'].length > 0 ? data?.['advance_payment_list'][0] : null;
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([ap_mapped_item]).then(
+                (results) => {
+                    advance_payment_mapped = results[0]
+                    ReturnAPLoadPage.LoadBeneficiary(advance_payment_mapped?.['employee_inherit'])
+                    ReturnAPLoadPage.LoadBeneficiaryInfor(advance_payment_mapped?.['employee_inherit'])
+                    if (type === 'create') {
+                        ReturnAPLoadTab.LoadCostTable(advance_payment_mapped?.['expense_items'])
+                    }
+                })
         }
     }
 }
@@ -152,12 +172,14 @@ class ReturnAPAction {
 }
 
 class ReturnAPHandle {
-    static LoadPage() {
+    static LoadPage(advance_payment) {
         ReturnAPLoadPage.LoadCreatedDate()
         ReturnAPLoadPage.LoadCreator(initEmployee)
         ReturnAPLoadPage.LoadCreatorInfor(initEmployee)
-        ReturnAPLoadPage.LoadAdvancePayment(null, {'system_status': 3})
-        ReturnAPLoadPage.LoadMethod()
+        ReturnAPLoadPage.LoadAdvancePayment(advance_payment ? advance_payment : null)
+        if (advance_payment) {
+            advancePaymentEle.trigger('change')
+        }
         ReturnAPLoadTab.DrawTableCost()
     }
     static CombinesData(frmEle) {
@@ -192,20 +214,14 @@ class ReturnAPHandle {
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    console.log(data)
+                    // console.log(data)
 
                     $('#title').val(data?.['title']);
                     $('#created_date').val(moment(data?.['date_created'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     ReturnAPLoadPage.LoadCreator(data?.['employee_created'])
                     ReturnAPLoadPage.LoadCreatorInfor(data?.['employee_created'])
                     ReturnAPLoadPage.LoadAdvancePayment(data?.['advance_payment'], {'system_status': 3})
-                    ReturnAPLoadPage.LoadMethod({
-                        'value': data.method,
-                        'title': [
-                            returnAP_method_Ele.attr('data-trans-cash'),
-                            returnAP_method_Ele.attr('data-trans-bank-transfer')
-                        ][data.method]
-                    })
+                    returnAP_method_Ele.val(data.method)
                     ReturnAPLoadPage.LoadBeneficiary(data?.['employee_inherit'])
                     ReturnAPLoadPage.LoadBeneficiaryInfor(data?.['employee_inherit'])
                     $('#inp-sale-code').val(data?.['advance_payment']?.['sale_code'])

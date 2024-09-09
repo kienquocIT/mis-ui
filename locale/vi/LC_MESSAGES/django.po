@@ -8748,3 +8748,11 @@ msgstr "Đã hoàn thành"
 #
 msgid "Not finished"
 msgstr "Chưa hoàn thành"
+
+#
+msgid "Production order number"
+msgstr "SL theo Lệnh SX"
+
+#
+msgid "Issued before"
+msgstr "Xuất trước đó"

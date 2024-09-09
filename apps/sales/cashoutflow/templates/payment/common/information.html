@@ -65,10 +65,7 @@
                         <div class="form-group">
                             <label for="quotation_mapped_select" class="form-label">{% trans "Quotation" %}</label>
                             <select class="select2 form-select"
-                                    data-url="{% url 'QuotationListAPI' %}"
-                                    data-url-opp-detail="{% url 'OpportunityDetailAPI' pk=0 %}"
-                                    data-url-quo-detail="{% url 'QuotationDetailAPI' pk=0 %}"
-                                    data-url-so-detail="{% url 'SaleOrderDetailAPI' pk=0 %}"
+                                    data-url="{% url 'CashOutflowQuotationListAPI' %}"
                                     id="quotation_mapped_select">
                             </select>
                         </div>
@@ -76,7 +73,9 @@
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label for="sale_order_mapped_select" class="form-label">{% trans "Sale Order" %}</label>
-                            <select class="select2 form-select" data-url="{% url 'SaleOrderListAPI' %}" id="sale_order_mapped_select"></select>
+                            <select class="select2 form-select"
+                                    data-url="{% url 'CashOutflowSaleOrderListAPI' %}"
+                                    id="sale_order_mapped_select"></select>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
@@ -152,7 +151,7 @@
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label for="payment-method" class="form-label required">{% trans "Method" %}</label>
-                            <select class="form-select select2" id="payment-method">
+                            <select class="form-select" id="payment-method">
                                 <option value="0">{% trans "None" %}</option>
                                 <option value="1">{% trans "Cash" %}</option>
                                 <option value="2">{% trans "Bank transfer" %}</option>

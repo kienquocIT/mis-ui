@@ -8759,3 +8759,7 @@ msgstr "SL theo Lệnh SX"
 #
 msgid "Issued before"
 msgstr "Xuất trước đó"
+
+#
+msgid "Filter for expiring return advance"
+msgstr "Lọc lấy phiếu sắp đến hạn hoàn ứng"

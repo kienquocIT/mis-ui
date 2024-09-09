@@ -199,15 +199,15 @@ $(function () {
         GRLoadDataHandle.IASelectEle.on('change', function () {
             if ($(this).val()) {
                 let dataSelected = SelectDDControl.get_data_from_idx(GRLoadDataHandle.IASelectEle, $(this).val());
-                for (let dataIAProduct of dataSelected?.['inventory_adjustment_product']) {
-                    if (dataIAProduct?.['product']?.['general_traceability_method'] !== 0) {
+                for (let dataIAProduct of dataSelected?.['gr_products_data']) {
+                    if (dataIAProduct?.['product_data']?.['general_traceability_method'] !== 0) {
                         dataIAProduct['quantity_import'] = 0;
                     }
                 }
-                GRDataTableHandle.tableIAProduct.DataTable().clear().draw();
-                GRDataTableHandle.tableIAProduct.DataTable().rows.add(dataSelected?.['inventory_adjustment_product']).draw();
+                GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
+                GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataSelected?.['gr_products_data']).draw();
             }
-            btnIAEdit.click();
+            btnEdit.click();
         });
 
         GRDataTableHandle.tableIAProduct.on('click', '.table-row-checkbox', function () {

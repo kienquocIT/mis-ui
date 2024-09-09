@@ -5,7 +5,7 @@ class GRLoadDataHandle {
     static POSelectEle = $('#box-good-receipt-purchase-order');
     static supplierSelectEle = $('#box-good-receipt-supplier');
     static IASelectEle = $('#box-good-receipt-inventory-adjustment');
-    static $boxProduction = $('#box-production-order');
+    static $boxProduction = $('#box-production-report');
     static initPOProductEle = $('#data-init-purchase-order-products');
     static PRDataEle = $('#purchase_requests_data');
     static btnAddLot = $('#btn-add-manage-lot');
@@ -1208,8 +1208,9 @@ class GRLoadDataHandle {
             eleCheck.checked = false;
         }
         $('#scroll-table-pr')[0].setAttribute('hidden', 'true');
-        $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
         GRDataTableHandle.tableWH.DataTable().clear().draw();
+        $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
+        return true;
     };
 
     static loadCheckIsAdditional(ele) {

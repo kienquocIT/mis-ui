@@ -668,6 +668,12 @@ class MenusProduction:
                 view_name='ProductionOrderList',
                 icon='<i class="fas fa-boxes"></i>',
             ),
+            MenuCommon(
+                name='Production report',
+                code='menu_production_report_list',
+                view_name='ProductionReportCreate',
+                icon='<i class="fas fa-boxes"></i>',
+            ),
         ],
     )
 

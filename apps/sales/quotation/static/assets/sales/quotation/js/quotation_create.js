@@ -242,7 +242,6 @@ $(function () {
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
-                    $(elePrice).addClass('text-primary');
                     $(elePrice).attr('value', String(priceVal));
                     $.fn.initMaskMoney2();
                     QuotationCalculateCaseHandle.commonCalculate(tableProduct, row);

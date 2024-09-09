@@ -301,7 +301,7 @@ class QuotationLoadDataHandle {
         let month = String(currentDate.getMonth() + 1).padStart(2, '0');
         let year = currentDate.getFullYear();
         let formattedDate = `${day}/${month}/${year}`;
-        $('#quotation-create-date-created').html(formattedDate)
+        $('#quotation-create-date-created').val(formattedDate)
     }
 
     static loadBoxQuotationPrice() {
@@ -430,7 +430,6 @@ class QuotationLoadDataHandle {
                 if (price && priceList) {
                     let lastPrice = QuotationLoadDataHandle.loadPriceProduct(ele[0]);
                     $(price).attr('value', String(lastPrice));
-                    $(price).addClass('text-primary');
                 }
                 // load TAX
                 if (tax && data?.['tax']) {
@@ -958,10 +957,13 @@ class QuotationLoadDataHandle {
             row.querySelector('.table-row-uom').setAttribute('disabled', 'true');
         }
         if (row.querySelector('.table-row-quantity')) {
-            row.querySelector('.table-row-quantity').setAttribute('disabled', 'true');
+            row.querySelector('.table-row-quantity').setAttribute('readonly', 'true');
         }
         if (row.querySelector('.table-row-price')) {
-            row.querySelector('.table-row-price').setAttribute('disabled', 'true');
+            row.querySelector('.table-row-price').setAttribute('readonly', 'true');
+        }
+        if (row.querySelector('.input-group-price')) {
+            row.querySelector('.input-group-price').setAttribute('disabled', 'true');
         }
         if (row.querySelector('.table-row-discount')) {
             row.querySelector('.table-row-discount').setAttribute('disabled', 'true');
@@ -1768,7 +1770,7 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(data?.['quotation']));
         }
         if (data?.['date_created']) {
-            $('#quotation-create-date-created').html(moment(data?.['date_created']).format('DD/MM/YYYY'));
+            $('#quotation-create-date-created').val(moment(data?.['date_created']).format('DD/MM/YYYY'));
         }
         if (data?.['is_customer_confirm'] && is_copy === false) {
             $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
@@ -4177,8 +4179,7 @@ class promotionHandle {
         $.fn.callAjax2({  // promotion for all
                 'url': $ele.attr('data-url'),
                 'method': $ele.attr('data-method'),
-                // 'data': {'customer_type': 0, 'valid_date_start__lte': currentDate, 'valid_date_end__gte': currentDate},
-                'data': {'customer_type': 0},
+                'data': {'customer_type': 0, 'valid_date_start__lte': currentDate, 'valid_date_end__gte': currentDate},
                 'isDropdown': true,
             }
         ).then(
@@ -4640,7 +4641,7 @@ class promotionHandle {
                         }
                     } else if (times_condition === 2) { // IN CURRENT WEEK
                         let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM'));
-                        let dateCurrent = new Date(moment($('#quotation-create-date-created')[0].innerHTML).format('YYYY-MM'));
+                        let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM'));
                         const weekNumber1 = promotionHandle.getWeekNumber(dateToCheck);
                         const weekNumber2 = promotionHandle.getWeekNumber(dateCurrent);
                         if (weekNumber1 === weekNumber2) {
@@ -4648,7 +4649,7 @@ class promotionHandle {
                         }
                     } else if (times_condition === 3) { // IN CURRENT MONTH
                         let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM')).getTime();
-                        let dateCurrent = new Date(moment($('#quotation-create-date-created')[0].innerHTML).format('YYYY-MM')).getTime();
+                        let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM')).getTime();
                         if (dateToCheck === dateCurrent) {
                             check_use_count++
                         }

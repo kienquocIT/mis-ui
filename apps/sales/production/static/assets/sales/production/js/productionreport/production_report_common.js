@@ -4,8 +4,9 @@ class ProdReportLoadDataHandle {
     static $title = $('#title');
     static $quantity = $('#quantity');
     static $quantityNG = $('#quantity-ng');
-    static $uom = $('#uom');
     static $boxProductionOrder = $('#box-production-order');
+    static $boxUOM = $('#box-uom');
+    static $boxProduct = $('#box-product');
     static $trans = $('#app-trans-factory');
     static $urls = $('#app-urls-factory');
 
@@ -42,6 +43,8 @@ class ProdReportLoadDataHandle {
         ProdReportLoadDataHandle.loadEventValidNum(ProdReportLoadDataHandle.$quantityNG[0]);
         // select2
         ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxProductionOrder, [], {'system_status': 3});
+        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxProduct);
+        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxUOM);
         // date picker
         $('.date-picker').each(function () {
             $(this).daterangepicker({
@@ -73,8 +76,14 @@ class ProdReportLoadDataHandle {
     static loadChangeProductionOrder() {
         let data = SelectDDControl.get_data_from_idx(ProdReportLoadDataHandle.$boxProductionOrder, ProdReportLoadDataHandle.$boxProductionOrder.val());
         if (data) {
-            if (data?.['uom_data']?.['title']) {
-                ProdReportLoadDataHandle.$uom.empty().html(data?.['uom_data']?.['title']);
+            if (data?.['product_data']) {
+                ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxProduct, [data?.['product_data']]);
+            }
+            if (data?.['uom_data']) {
+                ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxUOM, [data?.['uom_data']]);
+            }
+            if (data?.['quantity']) {
+                ProdReportLoadDataHandle.$quantity.val(data?.['quantity']);
             }
             ProdReportLoadDataHandle.loadAddDtbRows(data?.['task_data']);
         }
@@ -183,7 +192,6 @@ class ProdReportDataTableHandle {
     static $tableMain = $('#table_production_report');
 
     static dataTableMain(data) {
-        let multi = 1;
         ProdReportDataTableHandle.$tableMain.DataTableDefault({
             data: data ? data : [],
             ordering: false,

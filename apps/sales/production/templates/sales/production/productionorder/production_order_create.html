@@ -60,7 +60,7 @@
                                     id="box-product"
                                     data-url="{% url "ProductForSaleListAPI" %}"
                                     data-method="GET"
-                                    name="product"
+                                    name="product_id"
                                     data-keyResp="product_sale_list"
                                     required
                                 ></select>
@@ -83,7 +83,7 @@
                                     data-url="{% url "UnitOfMeasureListAPI" %}"
                                     data-method="GET"
                                     data-link-detail=""
-                                    name="uom"
+                                    name="uom_id"
                                     data-keyResp="unit_of_measure"
                                     required
                                 ></select>
@@ -98,7 +98,7 @@
                                     data-url="{% url "WareHouseListAPI" %}"
                                     data-method="GET"
                                     data-link-detail=""
-                                    name="warehouse"
+                                    name="warehouse_id"
                                     data-keyResp="warehouse_list"
                                     required
                                 ></select>
@@ -139,7 +139,7 @@
                                     data-url="{% url "GroupListAPI" %}"
                                     data-method="GET"
                                     data-link-detail=""
-                                    name="group"
+                                    name="group_id"
                                     data-keyResp="group_list"
                                     required
                                 ></select>
@@ -148,7 +148,7 @@
                         <div class="col-12 col-md-2 col-lg-2">
                             <div class="form-group">
                                 <label class="form-label" for="time">{% trans 'Time' %}</label>
-                                <p class="mt-2 border-bottom" id="time" data-time-bom="0">--</p>
+                                <input type="text" class="form-control form-control-line mt-1" id="time" readonly>
                             </div>
                         </div>
                     </div>
@@ -158,7 +158,7 @@
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label class="form-label" for="date-created">{% trans 'Date Created' %}</label>
-                                <p class="mt-2 border-bottom" id="date-created">21/08/2024</p>
+                                <input type="text" class="form-control form-control-line mt-1" id="date-created" readonly>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">

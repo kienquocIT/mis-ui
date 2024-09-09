@@ -6,6 +6,7 @@ class ProdOrderLoadDataHandle {
     static $time = $('#time');
     static $dateStart = $('#date-start');
     static $dateEnd = $('#date-end');
+    static $dateCreated = $('#date-created');
     static $boxType = $('#box-type');
     static $boxStatus = $('#box-status');
     static $boxProd = $('#box-product');
@@ -100,7 +101,7 @@ class ProdOrderLoadDataHandle {
                                 if (ProdOrderLoadDataHandle.$quantity) {
                                     multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
                                 }
-                                ProdOrderLoadDataHandle.$time.empty().html(`${data.bom_order_list[0]?.['sum_time'] * multi}`);
+                                ProdOrderLoadDataHandle.$time.val(`${data.bom_order_list[0]?.['sum_time'] * multi}`);
                                 ProdOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data.bom_order_list[0]));
                             }
                         }
@@ -421,7 +422,12 @@ class ProdOrderLoadDataHandle {
             date_end = data?.['date_end'];
             ProdOrderLoadDataHandle.$dateEnd.val(moment(date_end).format('DD/MM/YYYY'));
         }
-        ProdOrderLoadDataHandle.$time.empty().html(data?.['time']);
+        ProdOrderLoadDataHandle.$time.val(data?.['time']);
+        let date_created = '';
+        if (data?.['date_created']) {
+            date_created = data?.['date_created'];
+            ProdOrderLoadDataHandle.$dateCreated.val(moment(date_created).format('DD/MM/YYYY'));
+        }
         ProdOrderLoadDataHandle.loadAddDtbRows(data?.['task_data']);
         ProdOrderLoadDataHandle.loadReadonlyDisabled();
         return true;
@@ -765,8 +771,8 @@ class ProdOrderSubmitHandle {
                     _form.dataForm['group_data'] = data;
                 }
             }
-            if (ProdOrderLoadDataHandle.$time.html()) {
-                _form.dataForm['time'] = parseInt(ProdOrderLoadDataHandle.$time.html());
+            if (ProdOrderLoadDataHandle.$time.val()) {
+                _form.dataForm['time'] = parseInt(ProdOrderLoadDataHandle.$time.val());
             }
 
             ProdOrderStoreHandle.storeAll();

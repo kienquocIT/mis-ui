@@ -9,6 +9,11 @@ $(function () {
             ProdReportLoadDataHandle.loadChangeProductionOrder();
         });
 
+        ProdReportDataTableHandle.$tableMain.on('change', '.table-row-labor-actual, .table-row-quantity-actual', function () {
+            let row = this.closest('tr');
+           ProdReportStoreHandle.storeRow(row);
+        });
+
 // SUBMIT FORM
         formSubmit.submit(function (e) {
             e.preventDefault();

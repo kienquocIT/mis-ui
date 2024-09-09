@@ -3345,7 +3345,7 @@ msgstr "Lưu cập nhật trên phần vùng quy trình, sau đó gọi chuyển
 
 #
 msgid "Collapse"
-msgstr "Thu gọn/Mở rộng"
+msgstr "Thu gọn"
 
 #
 msgid "Collapse All"
@@ -7982,7 +7982,10 @@ msgstr "Nhóm đơn vị"
 
 #
 msgid "Edit zone"
-msgstr "Chỉnh sửa vùng dữ liệu"msgid "Expand / Collapse"
+msgstr "Chỉnh sửa vùng dữ liệu"
+
+#
+msgid "Expand / Collapse"
 msgstr "Thu gọn / Mở rộng"
 
 #

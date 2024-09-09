@@ -45,6 +45,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     AUTH_LOGS = 'auth/logs'
     AUTH_LOGS_REPORT = 'auth/logs/report'
 
+    # home
+    HOME_CALENDAR = 'auth/calendar'
+
     #
     USER_CHANGE_PASSWORD = StringUrl('auth/change-password')
     USER_FORGOT_PASSWORD = StringUrl('auth/forgot-password')

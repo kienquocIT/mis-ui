@@ -235,6 +235,7 @@
         {% endif %}
         {% block cssHeader %}{% endblock %}
     {% endcompress %}
+    {% block cssHeaderUncompress %}{% endblock %}
 
     {% compress js %}
         <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
@@ -332,8 +333,8 @@
                                             {% include 'extends/breadcrumb.html' %}
                                         </div>
                                     </div>
-                                    <div class="blog-options-wrap" id="idxPageAction">
-                                        <div class="{% if pk %}hidden{% endif %}" id="idxRealAction">
+                                    <div class="blog-options-wrap" id="idxPageAction" style="display: flex; align-items: center;">
+                                        <div class="{% if pk %}hidden{% endif %} mr-1" id="idxRealAction">
                                             {% block pageAction %}{% endblock %}
                                         </div>
 {#                                        <div class="ml-1">#}
@@ -839,6 +840,47 @@
                 } else {
                 }
             }
+
+            // language
+            $('#link-language').on('click', function () {
+                let currentLanguage = $(this).attr('data-value');
+                let urlUpdateLanguage = $(this).attr('data-url');
+                let html = `
+                    <div class="d-flex justify-content-center">
+                        <select class="form-select w-250p" id="sel-change-language-to">
+                            <option value="vi" ${currentLanguage === 'vi' ? 'selected' : ''}>Tiếng Việt</option>
+                            <option value="en" ${currentLanguage === 'en' ? 'selected' : ''}>English</option>
+                        </select>
+                    </div>
+                `;
+                Swal.fire({
+                    title: "{% trans 'Change language to' %}",
+                    html: html,
+                    showCancelButton: true,
+                    confirmButtonText: "{% trans 'Yes, update it!' %}",
+                    cancelButtonText: "{% trans 'Cancel' %}",
+                    showLoaderOnConfirm: true,
+                    allowOutsideClick: () => !Swal.isLoading()
+                }).then(
+                    (result) => {
+                        if (result.isConfirmed) {
+                            $.fn.callAjax2({
+                                url: urlUpdateLanguage,
+                                method: 'PUT',
+                                data: {
+                                    'language': $('#sel-change-language-to').val(),
+                                },
+                                isLoading: true,
+                            }).then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    window.location.reload();
+                                }
+                            )
+                        }
+                    }
+                )
+            })
         })
 
         function onLoadDropdownInfoInherit(eleInfo, eleInfoData, selectedData) {
@@ -854,47 +896,6 @@
             eleInfoData.find('.opp-info-detail-code').val(selectedData['code']);
             return eleInfo;
         }
-
-        {# Language #}
-        $('#link-language').on('click', function () {
-            let currentLanguage = $(this).attr('data-value');
-            let urlUpdateLanguage = $(this).attr('data-url');
-            let html = `
-                <div class="d-flex justify-content-center">
-                    <select class="form-select w-250p" id="sel-change-language-to">
-                        <option value="vi" ${currentLanguage === 'vi' ? 'selected' : ''}>Tiếng Việt</option>
-                        <option value="en" ${currentLanguage === 'en' ? 'selected' : ''}>English</option>
-                    </select>
-                </div>
-            `;
-            Swal.fire({
-                title: "{% trans 'Change language to' %}",
-                html: html,
-                showCancelButton: true,
-                confirmButtonText: "{% trans 'Yes, update it!' %}",
-                cancelButtonText: "{% trans 'Cancel' %}",
-                showLoaderOnConfirm: true,
-                allowOutsideClick: () => !Swal.isLoading()
-            }).then(
-                (result) => {
-                    if (result.isConfirmed) {
-                        $.fn.callAjax2({
-                            url: urlUpdateLanguage,
-                            method: 'PUT',
-                            data: {
-                                'language': $('#sel-change-language-to').val(),
-                            },
-                            isLoading: true,
-                        }).then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                window.location.reload();
-                            }
-                        )
-                    }
-                }
-            )
-        })
 
         {# Bubble #}
         $(function () {

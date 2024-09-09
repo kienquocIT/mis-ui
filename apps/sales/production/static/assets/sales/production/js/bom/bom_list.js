@@ -44,7 +44,7 @@ $(document).ready(function () {
                         className: 'wrap-text w-20',
                         'render': (data, type, row) => {
                             if (row?.['bom_type'] === 0) {
-                                return `<span class="fst-italic">${trans_script.attr('data-trans-for-production')} (${row?.['for_outsourcing'] ? trans_script.attr('data-trans-outsourcing') : ''})</span>`;
+                                return `<span class="fst-italic">${trans_script.attr('data-trans-for-production')} ${row?.['for_outsourcing'] ? `<span class="text-primary">(${trans_script.attr('data-trans-outsourcing')})</span>` : ''}</span>`;
                             }
                             else if (row?.['bom_type'] === 1) {
                                 return `<span class="fst-italic">${trans_script.attr('data-trans-for-service')}</span>`;

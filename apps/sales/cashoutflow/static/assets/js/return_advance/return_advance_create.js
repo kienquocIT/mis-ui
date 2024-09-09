@@ -1,5 +1,6 @@
 $(document).ready(function () {
     ReturnAPHandle.LoadPage()
+    WFRTControl.setWFInitialData('returnadvance', 'POST')
 
     // SUBMIT FORM CREATE ADVANCE PAYMENT
     $('#frmCreate').submit(function (event) {

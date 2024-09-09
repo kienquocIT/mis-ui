@@ -209,8 +209,8 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#2D4777', '#0082A6', '#3CAD99', '#096344',
-                '#2D4777', '#0082A6', '#3CAD99', '#096344',
+                '#4885e1', '#ff7676', '#69d5a0', '#e3cc64',
+                '#4885e1', '#ff7676', '#69d5a0', '#e3cc64',
             ],
             dataLabels: {
                 enabled: true,
@@ -482,8 +482,8 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#2D4777', '#0082A6', '#3CAD99', '#096344',
-                '#2D4777', '#0082A6', '#3CAD99', '#096344',
+                '#4885e1', '#ff7676', '#69d5a0', '#e3cc64',
+                '#4885e1', '#ff7676', '#69d5a0', '#e3cc64',
             ],
             plotOptions: {
                 bar: {
@@ -760,7 +760,7 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#21839A', '#3BCBB2', '#3CAD99'
+                '#4885e1', '#00ab57', '#e3cc64'
             ],
             plotOptions: {
                 bar: {
@@ -1233,7 +1233,7 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#FF6F5E', '#F7AF25', '#18A4E0', '#A3DCBE'
+                '#e58196', '#e3cc64', '#4885e1', '#69d5a0'
             ],
             responsive: [{
                 breakpoint: 480,

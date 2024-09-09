@@ -2928,10 +2928,6 @@ msgid "Receive"
 msgstr "Tiếp nhận"
 
 #
-msgid "To do"
-msgstr "To do"
-
-#
 msgid "is"
 msgstr "là"
 
@@ -3106,6 +3102,10 @@ msgstr "Cài Đặt"
 #
 msgid "Sign Out"
 msgstr "Đăng Xuất"
+
+#
+msgid "Sign out"
+msgstr "Đăng xuất"
 
 #
 msgid "Raise a ticket"
@@ -5830,7 +5830,7 @@ msgstr "Theo đơn mua hàng"
 
 #
 msgid "For inventory adjustment"
-msgstr "Theo điều chỉnh tồn kho"
+msgstr "Cho điều chỉnh tồn kho"
 
 #
 msgid "For production"
@@ -7649,10 +7649,6 @@ msgid "Project PM"
 msgstr "Quản lý dự án"
 
 #
-msgid "Project owner"
-msgstr "Pháp nhân dự án"
-
-#
 msgid "Allow view this project"
 msgstr "Quyền xem dự án"
 
@@ -8447,7 +8443,7 @@ msgstr "Chi phí dự án"
 
 #
 msgid "Project Owner"
-msgstr "Pháp nhân dự án"
+msgstr "Phụ trách dự án"
 
 #
 msgid "Project per years"
@@ -8566,8 +8562,8 @@ msgid "Process description"
 msgstr "Mô tả quy trình"
 
 #
-msgid "Materials / Components"
-msgstr "Vật liệu / Linh kiện"
+msgid "Materials/Components"
+msgstr "Vật liệu/Linh kiện"
 
 #
 msgid "Disassemble"
@@ -8682,8 +8678,8 @@ msgid "All warehouse"
 msgstr "Tất cả kho hàng"
 
 #
-msgid "Material / Component"
-msgstr "Vật liệu / Linh kiện"
+msgid "Material/Component"
+msgstr "Vật liệu/Linh kiện"
 
 #
 msgid "Tool"
@@ -8700,6 +8696,58 @@ msgstr "Tổng"
 #
 msgid "Outsourcing"
 msgstr "Gửi gia công"
+
+#
+msgid "Do you want to change?"
+msgstr "Bạn có chắc muốn thay đổi?"
+
+#
+msgid "All data will be reloaded."
+msgstr "Mọi dữ liệu sẽ được tải lại."
+
+#
+msgid "Select replacement material/component"
+msgstr "Chọn vật liệu/linh kiện thay thế"
+
+#
+msgid "Please select main material/component first!"
+msgstr "Hãy chọn vật liệu/linh kiện chính trước!"
+
+#
+msgid "Assignee attachment"
+msgstr "Tệp của người nhận việc"
+
+#
+msgid "Select production order"
+msgstr "Chọn lệnh sản xuất"
+
+#
+msgid "Select detail"
+msgstr "Chọn cụ thể"
+
+#
+msgid "Selected"
+msgstr "Đã chọn"
+
+#
+msgid "Issue quantity"
+msgstr "SL xuất"
+
+#
+msgid "For liquidation"
+msgstr "Cho thanh lý"
+
+#
+msgid "Bill of material"
+msgstr "Hóa đơn nguyên vật liệu"
+
+#
+msgid "Finished"
+msgstr "Đã hoàn thành"
+
+#
+msgid "Not finished"
+msgstr "Chưa hoàn thành"
 
 #
 msgid "Estimated delivery date"

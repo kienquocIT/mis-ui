@@ -27,7 +27,7 @@
     </style>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frmUpdate">
+    <button class="btn btn-outline-primary" type="submit" form="frmDetail">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -37,187 +37,20 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form id="frmUpdate" data-method="PUT" data-url="{% url 'GoodsIssueDetailAPI' pk=pk %}"
-          data-url-redirect="{% url 'GoodsIssueList' %}">
-        <div class="collapse multi-collapse show" id="collapse-area">
-            <div class="row">
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="form-group">
-                        <label class="form-label required" for="box-good-issue-type">{% trans 'Goods receipt type' %}</label>
-                        <div class="input-group">
-                            <div class="input-affix-wrapper">
-                                <div class="input-prefix">
-                                    <i class="fas fa-file-import text-primary"></i>
-                                </div>
-                                <select class="select2 form-select" id="box-good-issue-type"
-                                        data-url="" data-method="GET" data-link-detail=""
-                                        name="goods_issue_type" data-keyResp="" required disabled readonly
-                                >
-                                    <option value="0">{% trans 'For inventory adjustment' %}</option>
-{#                                    <option value="1">{% trans 'For liquidation' %}</option>#}
-{#                                    <option value="2">{% trans 'For production' %}</option>#}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="form-group">
-                        <label class="form-label required" for="date_issue">{% trans 'Date' %}</label>
-                        <div class="input-affix-wrapper">
-                            <input id="date_issue" name="date_issue" class="form-control" disabled readonly>
-                            <span class="input-suffix">
-                                <i class="bi bi-calendar-week"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="form-group">
-                        <label for="title" class="form-label required">{% trans 'Title' %}</label>
-                        <input id="title" type="text" class="form-control" name="title">
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="form-group">
-                        <label class="form-label" for="note">{% trans 'Note' %}</label>
-                        <textarea type="text" class="form-control" name="note" id="note"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="form-group">
-                        <label for="box-select-ia" class="form-label required">{% trans 'Select inventory adjustment' %}</label>
-                        <select id="box-select-ia"
-                                class="form-select"
-                                name="inventory_adjustment"
-                                data-method="GET"
-                                data-url="{% url 'InventoryAdjustmentListAPI' %}"
-                                data-keyResp="inventory_adjustment_list"
-                                disabled readonly
-                        ></select>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="text-primary btn btn-animated btn-icon btn-xs w-100"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Expand / Collapse' %}"><i class="fas fa-angle-double-up text-primary"></i></span></button>
-
-        <div class="row">
-            <div class="col-12">
-                <ul class="nav nav-light nav-tabs" id="tab-select">
-                    <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#tab-line-detail">
-                            <span class="nav-link-text">{% trans 'Line Detail' %}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" data-bs-toggle="tab" href="#tab-attachment" id="link-tab-sale">
-                            <span class="nav-link-text">{% trans 'Attachment' %}</span>
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content mt-3">
-                    <div class="tab-pane fade show active" id="tab-line-detail">
-                        <table
-                                id="dtbProductIA"
-                                class="table nowrap w-100"
-                                data-url="{% url 'WarehouseGetProductsListAPI' %}"
-                                data-method="GET">
-                            <thead>
-                            <tr>
-                                <th>{% trans 'Product' %}</th>
-                                <th>{% trans 'Description' %}</th>
-                                <th>{% trans 'UoM' %}</th>
-                                <th>{% trans 'Quantity' %}</th>
-                                <th>{% trans 'Warehouse' %}</th>
-                                <th>{% trans 'Unit price' %}</th>
-                                <th>{% trans 'Subtotal price' %}</th>
-                                <th>{% trans 'Select detail' %}</th>
-                            </tr>
-                            </thead>
-                        </table>
-                    </div>
-                    <div class="tab-pane fade" id="tab-attachment">
-                    </div>
-                </div>
-            </div>
-        </div>
+    <script id="script-url"
+            data-url-ia="{% url 'InventoryAdjustmentDetailAPI' '0' %}"
+    ></script>
+    <script id="script-trans"></script>
+    <form id="frmDetail"
+          data-method="PUT"
+          data-url="{% url 'GoodsIssueDetailAPI' pk=pk %}"
+          data-url-redirect="{% url 'GoodsIssueDetail' pk=pk %}">
+        {% include 'sales/inventory/goods_issue/common/information.html' %}
+        {% include 'sales/inventory/goods_issue/common/tabs.html' %}
     </form>
-
-    <div class="modal fade" id="select-detail-modal" tabindex="-1" role="dialog" aria-labelledby="select-detail-modal" aria-hidden="true">
-        <div class="modal-dialog modal-lg min-w-1000p" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Select detail' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <span>{% trans 'Different' %}: <span class="text-danger" id="amount-balance"></span></span>
-                    <div class="custom-scroll mt-1">
-                        <div class="table-wrap" style="max-height: 50vh">
-                            <table hidden class="table nowrap w-100 fixed_header"
-                                   id="select-detail-table-sn"
-                                   data-sn-url="{% url 'WarehouseSerialListAPI' %}"
-                                   >
-                                <thead class="row-fixed">
-                                <tr class="bg-primary">
-                                    <th class="text-white">{% trans 'Vendor serial no.' %}</th>
-                                    <th class="text-white">{% trans 'Serial no.' %}</th>
-                                    <th class="text-white">{% trans 'Expiration date' %}</th>
-                                    <th class="text-white">{% trans 'Mfr date' %}</th>
-                                    <th class="text-white">{% trans 'Warranty start' %}</th>
-                                    <th class="text-white">{% trans 'Warranty end' %}</th>
-                                    <th class="text-white">{% trans 'Select' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody style="max-height: 400px"></tbody>
-                            </table>
-                            <table hidden class="table nowrap w-100 fixed_header"
-                                   id="select-detail-table-lot"
-                                   data-lot-url="{% url 'WarehouseLotListAPI' %}"
-                                   >
-                                <thead class="row-fixed">
-                                <tr class="bg-primary">
-                                    <th class="text-white">{% trans 'Lot number' %}</th>
-                                    <th class="text-white">{% trans 'System quantity' %}</th>
-                                    <th class="text-white">{% trans 'Expiration date' %}</th>
-                                    <th class="text-white">{% trans 'Mfr date' %}</th>
-                                    <th class="text-white">{% trans 'Reality quantity' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody style="max-height: 400px"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-{#                <div class="modal-footer">#}
-{#                    <button type="button" hidden class="btn btn-primary" id="select-detail-table-sn-done">{% trans 'Done' %}</button>#}
-{#                    <button type="button" hidden class="btn btn-primary" id="select-detail-table-lot-done">{% trans 'Done' %}</button>#}
-{#                </div>#}
-            </div>
-        </div>
-    </div>
-
-    <script type="application/json" id="data-ia-product">{}</script>
-{% endblock %}
-{% block dataHiddenGroup %}
-    <input id="url-factory"
-           data-url-ia-product="{% url 'InventoryAdjustmentProductListAPI' ia_id=0 %}"
-           data-url-warehouse="{% url 'WareHouseListAPI' %}"
-           data-url-warehouse-product="{% url 'WarehouseGetProductsListAPI' %}"
-    />
-    <input id="trans-factory"
-           data-trans-fail-quantity="{% trans 'System only records {0} products in stock' %}"
-    />
+    {% include 'sales/inventory/goods_issue/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
-
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>

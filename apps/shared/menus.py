@@ -71,7 +71,7 @@ class MenusCompanySystem:
     )
     WORKING_CALENDAR = MenuCommon(
         name='Working calendar', code='menu_working_calendar', view_name='WorkingCalendarConfig',
-        icon='<i class="fa-regular fa-calendar-days"></i>',
+        icon='<i class="far fa-calendar"></i>',
     )
     WORKFLOW_PROCESS = MenuCommon(
         name='Process Management', code='menu_process_management', icon='<i class="fab fa-stumbleupon-circle"></i>',
@@ -102,7 +102,7 @@ class MenusCompanySystem:
 class MenusCoreConfigurations:
     SYSTEM_CONFIG = MenuCommon(
         name='System', code='menu_system', view_name='#',
-        icon='<i class="fas fa-cog"></i>',
+        icon='<i class="fas fa-cogs"></i>',
         child=[
             MenuCommon(
                 name='Posting periods', code='id_menu_master_data_periods_config', view_name='PeriodsConfigList',
@@ -249,21 +249,21 @@ class MenusCRM:
     )
     DASHBOARD = MenuCommon(
         name='Dashboard', code='id_menu_dashboard', view_name='#',
-        icon='<i class="fas fa-chart-bar"></i>',
+        icon='<i class="fas fa-chart-column"></i>',
         child=[
             MenuCommon(
                 name='General', code='id_menu_dashboard_general', view_name='DashboardGeneralList',
-                icon='<i class="far fa-eye"></i>',
+                icon='<i class="fas fa-square-poll-vertical"></i>',
             ),
             MenuCommon(
                 name='Pipeline', code='id_menu_dashboard_pipeline', view_name='DashboardPipelineList',
-                icon='<i class="fas fa-stream"></i>',
+                icon='<i class="fas fa-chart-bar"></i>',
             ),
         ],
     )
     REVENUE_PLAN = MenuCommon(
         name='Revenue plan', code='menu_revenue_plan_list', view_name='RevenuePlanList',
-        icon='<i class="fas fa-hand-holding-usd"></i>',
+        icon='<i class="fas fa-circle-dollar-to-slot"></i>',
     )
     BUDGET_PLAN = MenuCommon(
         name='Budget plan', code='menu_budget_plan_list', view_name='BudgetPlanList',
@@ -271,11 +271,11 @@ class MenusCRM:
     )
     LEAD = MenuCommon(
         name='Lead', code='menu_lead_list', view_name='LeadList',
-        icon='<i class="fa-solid fa-fire"></i>',
+        icon='<i class="far fa-star"></i>',
     )
     CALENDAR = MenuCommon(
         name='Calendar', code='menu_calendar', view_name='ProgrammeList',
-        icon='<i class="fa-regular fa-calendar-days"></i>',
+        icon='<i class="far fa-calendar"></i>',
     )
     CONTACT = MenuCommon(
         name='Contact', code='id_menu_contact', view_name='ContactList',
@@ -283,7 +283,7 @@ class MenusCRM:
     )
     ACCOUNT = MenuCommon(
         name='Account', code='id_menu_account', view_name='AccountList',
-        icon='<i class="bi bi-person-rolodex"></i>',
+        icon='<i class="fas fa-book-open-reader"></i>',
     )
     OPPORTUNITY = MenuCommon(
         name='Opportunity', code='menu_opportunity_list', view_name='OpportunityList',
@@ -488,7 +488,7 @@ class MenuEOffice:
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     CALENDAR = MenuCommon(
-        name='Calendar', code='menu_calendar', view_name='ProgrammeList', icon='<i class="fa-regular fa-calendar-days"></i>',
+        name='Calendar', code='menu_calendar', view_name='ProgrammeList', icon='<i class="far fa-calendar"></i>',
     )
     LEAVE = MenuCommon(
         name='Leave', code='menu_leave', icon='<i class="fa-solid fa-arrow-right-from-bracket"></i>',
@@ -844,7 +844,7 @@ class SpaceItem:
         'core-configurations': SpaceCommon(
             'Settings',
             'core-configurations',
-            icon='<i class="fa-solid fa-screwdriver-wrench"></i>',
+            icon='<i class="fas fa-cog"></i>',
             menus=[
                 MenusCoreConfigurations.SYSTEM_CONFIG,
                 MenusCoreConfigurations.MASTER_DATA_CONFIG,

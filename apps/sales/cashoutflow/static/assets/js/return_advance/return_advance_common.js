@@ -163,6 +163,7 @@ class ReturnAPHandle {
     static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
         frm.dataForm['title'] = $('#title').val()
+        frm.dataForm['method'] = returnAP_method_Ele.val()
         frm.dataForm['advance_payment_id'] = advancePaymentEle.val();
         frm.dataForm['money_received'] = $('#money-received').prop('checked');
         let tbProduct = $('#dtbProduct');

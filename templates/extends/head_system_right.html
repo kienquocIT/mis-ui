@@ -5,10 +5,15 @@
         width: 100%;
         height: 100vh;
         position: absolute;
-        top: var(--blog-header-height);
+        top: 0;
         left: 0;
-        background-color: rgba(216, 216, 216, 0.3);
         z-index: 1055;
+    }
+
+    #notify-bell-list .notify-bell-content-group {
+        margin-top: var(--blog-header-height);
+        background-color: rgba(216, 216, 216, 0.5);
+        height: 100%;
     }
 
     #notify-bell-item-base,
@@ -16,9 +21,20 @@
         display: none;
     }
 
+    #notify-bell-list .notify-bell-content {
+        margin-top: 5px;
+        margin-right: 5px;
+        margin-left: auto;
+        width: 100%;
+        min-width: 200px;
+        max-height: calc(100vh - 50px - 5px - 10px);
+        background-color: #fff;
+        border-radius: 5px;
+    }
+
     @media screen and (max-width: 576px) {
         #notify-bell-list .notify-bell-content {
-            width: 100%;
+            width: 98%;
             max-width: unset;
         }
 
@@ -38,17 +54,6 @@
             width: 70px;
             height: 70px;
         }
-    }
-
-    #notify-bell-list .notify-bell-content {
-        margin-top: 5px;
-        margin-right: 5px;
-        margin-left: auto;
-        width: 100%;
-        min-width: 200px;
-        max-height: calc(100vh - 50px - 5px - 10px);
-        background-color: #fff;
-        border-radius: 5px;
     }
 
     #notify-bell-list .notify-bell-list-head {
@@ -91,7 +96,7 @@
         font-size: 0.825rem;
     }
 
-    .notify-bell-item:hover {
+    .notify-bell-item:not(.notify-bell-item-sub):hover {
         background-color: rgba(153, 203, 207, 0.1);
     }
 
@@ -115,6 +120,7 @@
     .notify-bell-item .data-btn-detail-item {
         display: none;
     }
+
     .notify-bell-item .data-btn-read-item {
         display: none;
     }
@@ -158,15 +164,20 @@
 
     .notify-bell-item .item-image .item-image-sub-icon {
         position: absolute;
-        bottom: 5px;
-        right: 5px;
-        height: 20px;
-        width: 20px;
+        bottom: 0;
+        right: 0;
+        height: 1.5rem;
+        width: 1.5rem;
         border-radius: 100%;
         overflow: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    .notify-bell-item .item-image .item-image-sub-icon > * {
+        font-size: 0.825rem;
+        margin-top: 0.1rem;
     }
 
     .notify-bell-item .item-data .item-data-app {
@@ -197,9 +208,11 @@
     .notify-bell-load-more.active {
         display: flex !important;
     }
+
     .notify-bell-load-more:hover {
         cursor: pointer;
     }
+
     .notify-bell-load-more:hover i {
         transition: 0.2s;
         animation: NotifyLoadMore 1s linear infinite;
@@ -208,6 +221,21 @@
     .notify-mention-person {
         color: #007d88;
         font-weight: bold;
+    }
+
+
+    .notify-item-img {
+        border-radius: 50%;
+    }
+
+    .img-filter-opacity-25 {
+        filter: opacity(0.25);
+    }
+    .img-filter-opacity-50 {
+        filter: opacity(0.5);
+    }
+    .img-filter-opacity-75 {
+        filter: opacity(0.75);
     }
 
     @-webkit-keyframes NotifyLoadMore {
@@ -332,10 +360,14 @@
             style="display:none;"
             data-url-done-notify="{% url 'ResolveNotifyItemAPI' pk='__pk__' %}"
     >
-        <div class="notify-bell-content" style="display:none;">
+        <div class="notify-bell-content-group">
+            <div class="notify-bell-content" style="display:none;">
             <div class="notify-bell-list-head">
                 <p class="mr-2">{% trans 'Notifications' %}</p>
-                <select class="form-select form-select-sm" style="display: inline-block;width: 100px" id="notify-bell-filter">
+                <select
+                        class="form-select form-select-sm" style="display: inline-block;width: 100px"
+                        id="notify-bell-filter"
+                >
                     <option value="unseen" selected>{% trans 'Not seen' %}</option>
                     <option value="seen">{% trans 'Seen' %}</option>
                     <option value="all">{% trans 'All' %}</option>
@@ -371,7 +403,7 @@
             <div id="notify-bell-item-sub-base" class="notify-bell-item notify-bell-item-sub"><p></p></div>
             <div
                     id="notify-bell-item-base"
-                    class="notify-bell-item unread"
+                    class="notify-bell-item"
                     data-bs-toggle="tooltip"
                     title=""
             >
@@ -379,8 +411,9 @@
                     <div class="item-image">
                         <span class="item-image-unread"></span>
                         <img
+                                class="notify-item-img img-filter-opacity-50"
                                 src="{% static 'assets/images/systems/person-avt.png' %}" alt=""
-                                style="width: 100%;height: 100%;filter: opacity(0.5);"
+                                style="width: 100%;height: 100%;"
                         />
                         <span class="item-image-sub-icon"></span>
                     </div>
@@ -438,12 +471,16 @@
                     </div>
                 </div>
             </div>
-            <div class="notify-bell-load-more" data-bs-toggle="tooltip" title="{% trans 'Click here to load more notifications' %}">
+            <div
+                    class="notify-bell-load-more" data-bs-toggle="tooltip"
+                    title="{% trans 'Click here to load more notifications' %}"
+            >
                 <i class="fa-solid fa-angles-down fa-xs"></i>
             </div>
             <div class="notify-bell-list-foot">
                 <a href="{% url 'MyNotifyPageView' %}">{% trans 'See all recent notifications' %}</a>
             </div>
+        </div>
         </div>
     </div>
     <div class="dropdown-menu dropdown-menu-end p-0">
@@ -506,7 +543,7 @@
             data-bs-auto-close="outside"
             aria-expanded="false"
     >
-        <div style="max-width: 2rem; max-height: 2rem;overflow: hidden;">
+        <div style="max-width: 2rem; max-height: 2rem;overflow: hidden;border-radius: 100%;">
             {{ base|render_avatar_tag:True|safe }}
         </div>
     </button>
@@ -690,3 +727,79 @@
 {#                                                    <i class="fa-solid fa-chevron-down fa-sm d-none"></i>#}
 {#                                                </span>#}
 {#                                            </button>#}
+
+<div
+        class="modal fade" id="switchMyCompany" tabindex="-1" role="dialog"
+        aria-labelledby="switchMyCompany" aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Switch Company' %}</h5>
+                <button
+                        type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"
+                >
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div>
+                        {% csrf_token %}
+                        {% for item in base.companies_data %}
+                            <div class="company_switch_item p-3">
+                                <div class="form-check d-flex align-items-center">
+                                    {% if item.id == base.company_current_data.id %}
+                                        <input
+                                                id="company_switch_id_{{ item.id }}"
+                                                name="switch_current_company"
+                                                class="form-check-input"
+                                                value="{{ item.id }}"
+                                                checked="checked" type="radio"
+                                        >
+                                        <b><label
+                                                class="form-check-label"
+                                                for="company_switch_id_{{ item.id }}"
+                                        >
+                                            {% if item.logo %}
+                                                <img
+                                                        class="brand-img img-fluid" src="{{ item.logo }}" alt="brand"
+                                                        style="height: 3rem; margin: 0 1rem;"
+                                                >
+                                            {% endif %}
+                                            {{ item.title }}
+                                        </label></b>
+                                    {% else %}
+                                        <input
+                                                id="company_switch_id_{{ item.id }}"
+                                                name="switch_current_company"
+                                                class="form-check-input"
+                                                value="{{ item.id }}"
+                                                type="radio"
+                                        >
+                                        <label
+                                                class="form-check-label"
+                                                for="company_switch_id_{{ item.id }}"
+                                        >{{ item.code }} - {{ item.title }}</label>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button
+                        type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                >{% trans 'Close' %}</button>
+                <button
+                        id="btn-call-switch-company"
+                        data-url="{% url 'SwitchCompanyCurrentView' %}"
+                        data-method="PUT"
+                        type="button" class="btn btn-primary"
+                >{% trans 'Save' %}</button>
+            </div>
+        </div>
+    </div>
+</div>

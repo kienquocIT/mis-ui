@@ -78,7 +78,7 @@ $(document).on('input', '.count-input', function () {
     let difference = parseFloat(count) - parseFloat(quantity);
     let action_type = '';
     if (difference === 0) {
-        $(this).closest('tr').removeClass('bg-primary bg-opacity-10');
+        $(this).closest('tr').removeClass('highlight-border-left-primary');
         $(this).closest('tr').find('.selected_for_actions').prop('checked', false);
         $(this).closest('tr').find('.selected_for_actions').attr('disabled', true);
     }
@@ -121,10 +121,6 @@ selectAllProductBtn.on('click', function () {
         })
     }
 })
-
-function LoadStatus(data) {
-    statusInput.val(data).prop('disabled', true).prop('readonly', true);
-}
 
 function LoadWarehouseSelectBox(data) {
     warehouseSelectBox.initSelect2({
@@ -304,7 +300,6 @@ function getDataFormUpdate() {
 
 class InventoryAdjustmentHandle {
     load() {
-        LoadStatus();
         LoadWarehouseSelectBox();
         LoadInChargeSelectBox();
     }
@@ -364,10 +359,11 @@ function LoadDetailIA(option) {
                 new PrintTinymceControl().render('c5de0a7d-bea3-4f39-922f-06a40a060aba', data, false);
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
+                console.log(data)
 
                 titleInput.val(data.title);
                 dateInput.val(moment(data?.['date_created'].split(' ')[0]).format('DD/MM/YYYY'));
-                LoadStatus(data.state);
+                statusInput.val(data.state ? statusInput.attr('data-trans-finished') : statusInput.attr('data-trans-opening'));
                 LoadWarehouseSelectBox(data?.['warehouses']);
                 LoadInChargeSelectBox(data?.['employees_in_charge']);
 
@@ -377,7 +373,7 @@ function LoadDetailIA(option) {
                     let class_ctn = '';
                     if (data_row?.['select_for_action']) {
                         checked = 'checked';
-                        class_ctn = 'bg-primary bg-opacity-10';
+                        class_ctn = 'highlight-border-left-primary';
                     }
                     let done = '';
                     if (data_row?.['action_status']) {
@@ -400,11 +396,11 @@ function LoadDetailIA(option) {
                     }
                     tableLineDetailTbody.append(`
                         <tr class="${class_ctn}">
-                            <td data-item-id="${data_row?.['id']}" data-product-warehouse-id="${data_row?.['product_warehouse_mapped'].id}" data-id="${data_row?.['product_mapped'].id}" class="text-primary product_id_td">${data_row?.['product_mapped'].title}</td>
+                            <td data-item-id="${data_row?.['id']}" data-product-warehouse-id="${data_row?.['product_warehouse_mapped_id']}" data-id="${data_row?.['product_mapped'].id}" class="text-primary product_id_td">${data_row?.['product_mapped'].title}</td>
                             <td data-id="${data_row?.['warehouse_mapped'].id}" class="warehouse_id_td"><i class="fas fa-warehouse"></i> ${data_row?.['warehouse_mapped'].title}</td>
                             <td data-id="${data_row?.['uom_mapped'].id}" class="uom_id_td">${data_row?.['uom_mapped'].title}</td>
                             <td class="quantity-td">${data_row?.['book_quantity']}</td>
-                            <td><input ${disabled_select} class="form-control count-input" type="text" placeholder="Number" value="${data_row?.['count']}"></td>
+                            <td><input ${disabled_select} class="form-control count-input" type="number" placeholder="Number" value="${data_row?.['count']}"></td>
                             <td class="text-center difference_td">${difference}</td>
                             <td class="text-center">
                                 <span class="form-check">
@@ -496,5 +492,5 @@ get_decrease_items_btn.on('click', function () {
 })
 
 $(document).on('input', '.selected_for_actions', function () {
-    $(this).closest('tr').toggleClass('bg-primary bg-opacity-10', $(this).is(':checked'));
+    $(this).closest('tr').toggleClass('highlight-border-left-primary', $(this).is(':checked'));
 })

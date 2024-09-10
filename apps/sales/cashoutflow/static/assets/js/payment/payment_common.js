@@ -460,6 +460,7 @@ class PaymentLoadTab {
                 if (data_list.length > 0) {
                     tableLineDetail.find('tbody tr').each(function (index) {
                         $(this).attr('id', `row-${index+1}`)
+                        console.log(data_list[index])
                         PaymentLoadTab.LoadExpenseItem($(this).find('.expense-type-select-box'), data_list[index]?.['expense_type'])
                         PaymentLoadTab.LoadTax($(this).find('.expense-tax-select-box'), data_list[index]?.['expense_tax'])
                         PaymentAction.CheckAndOpenExpandRow($(this), data_list[index])
@@ -553,7 +554,7 @@ class PaymentLoadTab {
                                     if (item?.['opportunity_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['opportunity_mapped']?.['id'])
                                     if (item?.['quotation_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['quotation_mapped']?.['id'])
                                     if (item?.['sale_order_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['sale_order_mapped']?.['id'])
-                                    if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === initEmployee.id) {
+                                    if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === $('#employee_inherit_id').val()) {
                                         if (current_sale_code.length > 0 && this_sale_code.length > 0) {
                                             if (current_sale_code[0] === this_sale_code[0] && item?.['system_status'] === 3) {
                                                 result.push(item)
@@ -573,7 +574,7 @@ class PaymentLoadTab {
                                     if (item?.['opportunity_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['opportunity_mapped']?.['id'])
                                     if (item?.['quotation_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['quotation_mapped']?.['id'])
                                     if (item?.['sale_order_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['sale_order_mapped']?.['id'])
-                                    if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === initEmployee.id && item?.['id'] === AP_filter) {
+                                    if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === $('#employee_inherit_id').val() && item?.['id'] === AP_filter) {
                                         if (current_sale_code.length > 0 && this_sale_code.length > 0) {
                                             if (current_sale_code[0] === this_sale_code[0] && item?.['system_status'] === 3) {
                                                 result.push(item)
@@ -1583,11 +1584,10 @@ class PaymentHandle {
                     if (option === 'detail') {
                         new PrintTinymceControl().render('1010563f-7c94-42f9-ba99-63d5d26a1aca', data, false);
                     }
-                    console.log(data)
+                    // console.log(data)
                     DETAIL_DATA = data;
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    console.log(data)
 
                     new $x.cls.bastionField({
                         has_opp: true,

@@ -142,11 +142,11 @@
                                 <select
                                         class="form-select"
                                         id="box-good-receipt-inventory-adjustment"
-                                        data-url="{% url 'InventoryAdjustmentOtherListAPI' %}"
+                                        data-url="{% url 'InventoryAdjustmentGRListAPI' %}"
                                         data-method="GET"
                                         data-link-detail=""
                                         name="inventory_adjustment"
-                                        data-keyResp="inventory_adjustment_other_list"
+                                        data-keyResp="inventory_adjustment_gr"
                                         required
                                 >
                                 </select>
@@ -279,44 +279,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row custom-line-detail" id="custom-line-detail-2" hidden>
-                            <div class="row">
-                                <table
-                                    id="datable-good-receipt-line-detail-ia"
-                                    class="table nowrap min-w-1500p w-100 mb-5"
-                                    data-url=""
-                                    data-method="get"
-                                >
-                                    <thead>
-                                    <tr class="bg-light">
-                                        <th></th>
-                                        <th>{% trans 'Product' %}</th>
-                                        <th>{% trans 'Description' %}</th>
-                                        <th>{% trans 'UOM' %}</th>
-                                        <th>{% trans 'Quantity' %}</th>
-                                        <th>{% trans 'Warehouse' %}</th>
-                                        <th>{% trans 'Unit cost' %}</th>
-                                        <th>{% trans 'Subtotal Price' %}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-12 col-md-6 col-lg-6">
-                                    <button
-                                        type="button"
-                                        class="btn btn-outline-primary"
-                                        id="btn-edit-ia-product-good-receipt"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#productIAModalCenter"
-                                    >
-                                        <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>{% trans 'Edit' %}</span></span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
                         <div class="row custom-line-detail" id="custom-line-detail-3" hidden>
                             <div class="row">
                                 <table
@@ -379,7 +341,7 @@
                                             <table
                                                 id="datable-good-receipt-po-product"
                                                 class="table nowrap w-100"
-                                                data-url="{% url "PurchaseOrderProductListAPI" %}"
+                                                data-url="{% url "PurchaseOrderProductGRListAPI" %}"
                                                 data-method="GET"
                                             >
                                                 <thead>

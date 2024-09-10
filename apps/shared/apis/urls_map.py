@@ -458,7 +458,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_ORDER_DETAIL_PK = StringUrl('purchasing/purchase-order/{pk}')
     PURCHASE_REQUEST_LIST_FOR_PQR = StringUrl('purchasing/purchase-request-for-pqr/list')
     PURCHASE_REQUEST_PRODUCT_LIST = StringUrl('purchasing/purchase-request-product/list')
-    PURCHASE_ORDER_PRODUCT_LIST = StringUrl('purchasing/purchase-order-product/list')
+    PURCHASE_ORDER_PRODUCT_GR_LIST = StringUrl('purchasing/purchase-order-product-gr/list')
     PURCHASE_ORDER_SALE_LIST = StringUrl('purchasing/purchase-order/list-sale')
     PURCHASE_REQUEST_SALE_LIST = StringUrl('purchasing/purchase-request/list-sale')
     PURCHASE_QUOTATION_SALE_LIST = StringUrl('purchasing/purchase-quotation/list-sale')
@@ -495,7 +495,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     INVENTORY_ADJUSTMENT_LIST = StringUrl('inventory/inventory-adjustments')
     INVENTORY_ADJUSTMENT_DETAIL = StringUrl('inventory/inventory-adjustment/{pk}')
     INVENTORY_ADJUSTMENT_PRODUCT_LIST = StringUrl('inventory/inventory-adjustment/product/list/{ia_id}')
-    INVENTORY_ADJUSTMENT_OTHER_LIST = StringUrl('inventory/inventory-adjustments-other')
+    INVENTORY_ADJUSTMENT_GR_LIST = StringUrl('inventory/inventory-adjustments-gr')
 
     # Application for Opportunity permission
     APPLICATION_OPPORTUNITY_PERMISSION = StringUrl('base/applications-opportunity-permit')

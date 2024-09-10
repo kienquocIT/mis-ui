@@ -143,11 +143,11 @@
                                 <select
                                         class="form-select"
                                         id="box-good-receipt-inventory-adjustment"
-                                        data-url="{% url 'InventoryAdjustmentOtherListAPI' %}"
+                                        data-url="{% url 'InventoryAdjustmentGRListAPI' %}"
                                         data-method="GET"
                                         data-link-detail=""
                                         name="inventory_adjustment"
-                                        data-keyResp="inventory_adjustment_other_list"
+                                        data-keyResp="inventory_adjustment_gr"
                                         disabled
                                 >
                                 </select>
@@ -367,7 +367,7 @@
                                             <table
                                                 id="datable-good-receipt-po-product"
                                                 class="table nowrap w-100"
-                                                data-url="{% url "PurchaseOrderProductListAPI" %}"
+                                                data-url="{% url "PurchaseOrderProductGRListAPI" %}"
                                                 data-method="GET"
                                             >
                                                 <thead>

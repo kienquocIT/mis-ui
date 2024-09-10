@@ -1765,7 +1765,7 @@ class QuotationLoadDataHandle {
         }
         if (data?.['quotation'] && data?.['sale_person']) {
             if (data?.['quotation']?.['title']) {
-                QuotationLoadDataHandle.quotationSelectEle.empty().html(data?.['quotation']?.['title']);
+                QuotationLoadDataHandle.quotationSelectEle.val(data?.['quotation']?.['title']);
             }
             QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(data?.['quotation']));
         }
@@ -1797,7 +1797,7 @@ class QuotationLoadDataHandle {
                 'title': data?.['title'],
                 'code': data?.['code'],
             }
-            QuotationLoadDataHandle.quotationSelectEle.empty().html(data?.['title']);
+            QuotationLoadDataHandle.quotationSelectEle.val(data?.['title']);
             QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(dataQuotationCopy));
 
         }
@@ -2366,7 +2366,7 @@ class QuotationDataTableHandle {
                                             <div class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></div>
                                         </div>
                                         </div>
-                                        <div role="menu" class="dropdown-menu table-row-price-list w-500p">
+                                        <div role="menu" class="dropdown-menu table-row-price-list w-400p">
                                         <a class="dropdown-item" data-value=""></a>
                                         </div>
                                     </div>
@@ -2611,7 +2611,7 @@ class QuotationDataTableHandle {
                                                 <div class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></div>
                                             </div>
                                             </div>
-                                            <div role="menu" class="dropdown-menu table-row-cost-list w-500p">
+                                            <div role="menu" class="dropdown-menu table-row-cost-list w-400p">
                                             <a class="dropdown-item" data-value=""></a>
                                             </div>
                                         </div>
@@ -5931,7 +5931,7 @@ class QuotationSubmitHandle {
             quotation_logistic_data = 'sale_order_logistic_data';
             quotation_indicators_data = 'sale_order_indicators_data';
 
-            if (QuotationLoadDataHandle.quotationSelectEle && QuotationLoadDataHandle.quotationSelectEle.length >0) {
+            if (QuotationLoadDataHandle.quotationSelectEle && QuotationLoadDataHandle.quotationSelectEle.length > 0) {
                 if (QuotationLoadDataHandle.quotationSelectEle.attr('data-detail')) {
                     let dataQuotation = JSON.parse(QuotationLoadDataHandle.quotationSelectEle.attr('data-detail'));
                     _form.dataForm['quotation'] = dataQuotation?.['id'];

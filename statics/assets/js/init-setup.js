@@ -717,12 +717,13 @@ class NotifyController {
 
         function appendNotifyItem(data){
             itemEmpty$.hide(0);
+            const notifyId = data?.['id'];
             const docId = data?.['doc_id'];
             const docApp = data?.['doc_app'];
             const base$ = $(itemBase$.prop('outerHTML')).removeAttr('id');
             base$.data('notifyItemData', data);
             base$.addClass('detail');
-            base$.find('.data-btn-detail-item').attr('href', UrlGatewayReverse.get_url(docId, docApp, {'redirect': true}))
+            base$.find('.data-btn-detail-item').attr('href', UrlGatewayReverse.get_url(docId, docApp, {'redirect': true, 'notify_id': notifyId}))
             base$.find('.item-data-msg').html(decorate_msg(data.msg) || '');
             base$.find('.item-data-app').text(resolve_app_name(data.doc_app));
             base$.find('.item-data-time').html(

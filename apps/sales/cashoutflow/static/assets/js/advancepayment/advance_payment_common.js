@@ -31,6 +31,7 @@ class APLoadPage {
         APLoadPage.LoadCreatorInfor(data)
     }
     static LoadCreatorInfor(data) {
+        console.log(data)
         let btn_detail = $('#btn-detail-creator-tab');
         $('#creator-detail-span').prop('hidden', false);
         $('#creator-name').text(data?.['full_name']);
@@ -1223,19 +1224,20 @@ class APHandle {
         APLoadPage.LoadReturnDate()
         APLoadTab.LoadLineDetailTable()
         APLoadTab.DrawTablePlan()
-        if (opportunity_obj) {
-            if (type === 0) {
-                APLoadPage.LoadOpportunity(opportunity_obj)
-                tableLineDetail.find('tbody').html('');
-                quotation_mapped_select.empty();
-                quotation_mapped_select.prop('disabled', true);
-                sale_order_mapped_select.empty();
-                sale_order_mapped_select.prop('disabled', true);
-                APLoadPage.LoadQuotation(quotation_object)
-                APLoadPage.LoadSaleOrder(sale_order_object)
-                APLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quotation_object?.['id'])
-            }
-        }
+        // if (opportunity_obj) {
+        //     if (type === 0) {
+        //         APLoadPage.LoadOpportunity(opportunity_obj)
+        //         ap_for = 'opportunity'
+        //         tableLineDetail.find('tbody').html('');
+        //         quotation_mapped_select.empty();
+        //         quotation_mapped_select.prop('disabled', true);
+        //         sale_order_mapped_select.empty();
+        //         sale_order_mapped_select.prop('disabled', true);
+        //         APLoadPage.LoadQuotation(quotation_object)
+        //         APLoadPage.LoadSaleOrder(sale_order_object)
+        //         APLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quotation_object?.['id'])
+        //     }
+        // }
     }
     static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));

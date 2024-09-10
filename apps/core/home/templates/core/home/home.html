@@ -218,6 +218,13 @@
             padding: 0 5px;
             font-size: 0.9rem;
         }
+
+        .event-item-holiday {
+            background: linear-gradient(135deg, #ff0000, #ffd800);
+            background-size: 100% 100%;
+            border: 0 !important;
+            color: #fff !important;
+        }
     </style>
 
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.css' %}">
@@ -299,7 +306,7 @@
                     style="padding: 5px;border-radius: 10px;border: 1px solid #f1f1f1;background-color: #fff;"
             >
                 <div class="w-100 d-flex justify-content-center mb-1 overflow-hidden">
-                    <div id="calendar" class="w-100"></div>
+                    <div id="calendar" class="w-100 p-0"></div>
                 </div>
                 <div class="w-100 pt-2" style="border-top: 1px solid #f1f1f1;">
                     <div class="d-flex">
@@ -1150,7 +1157,7 @@
                 return numberData >= 10 ? numberData.toString() : '0' + numberData;
             }
 
-            function renderEventItem(data) {
+            function _renderEventItem(data) {
                 const ele$ = $(eventItemBase$.prop('outerHTML'));
                 ele$.removeAttr('id');
 
@@ -1167,6 +1174,10 @@
                         break
                     case 'Leave':
                         iconApp = $('<i class="fa-solid fa-arrow-right-from-bracket"></i>');
+                        break
+                    case 'Holiday':
+                        ele$.addClass('event-item-holiday');
+                        iconApp = $('<i class="fa-solid fa-umbrella-beach"></i>');
                         break
                 }
 
@@ -1216,6 +1227,19 @@
                 eventAtDay$.append(ele$);
                 ele$.find('[data-bs-toggle="tooltip"]').tooltip();
             }
+            function renderEventItem(data) {
+                switch (data.category) {
+                    case 'EOffice Meeting':
+                    case 'Opportunity Meeting':
+                    case 'Business Trip':
+                    case 'Leave Register':
+                        _renderEventItem(data);
+                        break
+                    case 'Holiday':
+                        _renderEventItem(data);
+                        break
+                }
+            }
 
             function loadEventAtDay(dateStr = null) {
                 eventAtDay$.children().not(eventItemBase$).not(itemEmpty$).remove();
@@ -1242,15 +1266,12 @@
                         const data = $.fn.switcherResp(resp);
                         const homeCalendar = data?.['home_calendar'] || {};
                         if (homeCalendar) {
-                            const EOfficeMeet = homeCalendar?.['meeting'] || [];
-                            const OppMeet = homeCalendar?.['meeting_opp'] || [];
-                            const OppBusinessTrip = homeCalendar?.['business_trip'] || [];
-                            const OppLeave = homeCalendar?.['leave'] || [];
                             let MeetingData = [
-                                ...EOfficeMeet,
-                                ...OppMeet,
-                                ...OppBusinessTrip,
-                                ...OppLeave,
+                                ...homeCalendar?.['meeting'] || [],
+                                ...homeCalendar?.['meeting_opp'] || [],
+                                ...homeCalendar?.['business_trip'] || [],
+                                ...homeCalendar?.['leave'] || [],
+                                ...homeCalendar?.['holiday'] || [],
                             ]
                             if (MeetingData.length > 0) {
                                 itemEmpty$.hide(0);

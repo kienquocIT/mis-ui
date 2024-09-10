@@ -157,20 +157,44 @@
                 <div class="row custom-area" id="custom-area-3" hidden>
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label" for="box-production-report">{% trans 'Production report' %}</label>
-                                <select
-                                        class="form-select"
-                                        id="box-production-report"
-                                        data-url="{% url 'ProductionReportDDListAPI' %}"
-                                        data-method="GET"
-                                        data-link-detail=""
-                                        name="production_report_id"
-                                        data-keyResp="production_report_dd"
-                                        required
-                                >
-                                </select>
+                            <div class="row">
+                                <div class="col-12 col-md-7 col-lg-7">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-production-order">{% trans 'Production order' %}</label>
+                                        <select
+                                                class="form-select"
+                                                id="box-production-order"
+                                                data-url="{% url 'ProductionOrderDDListAPI' %}"
+                                                data-method="GET"
+                                                data-link-detail=""
+                                                name="production_order_id"
+                                                data-keyResp="production_order_dd"
+                                                required
+                                        >
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-5 col-lg-5">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-production-report">{% trans 'Production report' %}</label>
+                                        <select
+                                                class="form-select"
+                                                id="box-production-report"
+                                                data-url="{% url 'ProductionReportGRListAPI' %}"
+                                                data-method="GET"
+                                                data-link-detail=""
+                                                name="production_report_id"
+                                                data-keyResp="production_report_gr"
+                                                multiple
+                                                required
+                                                disabled
+                                        >
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
+
+
                         </div>
                     </div>
                 </div>

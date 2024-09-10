@@ -206,11 +206,27 @@ $(function () {
         });
 
         // PRODUCTION BEGIN
-        GRLoadDataHandle.$boxProductionReport.on('change', function () {
-            if (GRLoadDataHandle.$boxProductionReport.val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxProductionReport, GRLoadDataHandle.$boxProductionReport.val());
-
+        GRLoadDataHandle.$boxProductionOrder.on('change', function () {
+            if (GRLoadDataHandle.$boxProductionOrder.val()) {
+                let data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxProductionOrder, GRLoadDataHandle.$boxProductionOrder.val());
+                GRLoadDataHandle.$boxProductionReport.removeAttr('disabled');
+                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport, [], {'production_order_id': data?.['id']});
             }
+        });
+
+        GRLoadDataHandle.$boxProductionReport.on('change', function () {
+            if (GRLoadDataHandle.$boxProductionReport.val() && GRLoadDataHandle.$boxProductionReport.val().length > 0) {
+                let dataProducts = [];
+                for (let idx of GRLoadDataHandle.$boxProductionReport.val()) {
+                    let data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxProductionReport, idx);
+                    if (data?.['product_data']?.['product_choice'].includes(1)) {
+                        dataProducts.push(data);
+                    }
+                }
+                GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
+                GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
+            }
+            btnEdit.click();
         });
 
 // SUBMIT FORM

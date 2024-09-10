@@ -7,7 +7,7 @@ from apps.sales.production.views import (
 )
 from apps.sales.production.views.production_report import ProductionReportCreate, ProductionReportList, \
     ProductionReportListAPI, ProductionReportDetail, ProductionReportDetailAPI, ProductionReportUpdate, \
-    ProductionReportDDListAPI
+    ProductionReportDDListAPI, ProductionReportGRListAPI
 
 urlpatterns = [
     path('bill-of-material/list', BOMList.as_view(), name='BOMList'),
@@ -41,4 +41,5 @@ urlpatterns = [
     path('production-report/detail-api/<str:pk>', ProductionReportDetailAPI.as_view(), name='ProductionReportDetailAPI'),
     path('production-report/update/<str:pk>', ProductionReportUpdate.as_view(), name='ProductionReportUpdate'),
     path('production-report-dd/api/list', ProductionReportDDListAPI.as_view(), name='ProductionReportDDListAPI'),
+    path('production-report-gr/api/list', ProductionReportGRListAPI.as_view(), name='ProductionReportGRListAPI'),
 ]

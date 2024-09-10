@@ -45,6 +45,8 @@ class ProdOrderLoadDataHandle {
     };
 
     static loadInitPage() {
+        // date
+        ProdOrderLoadDataHandle.$dateCreated.val(ProdOrderCommonHandle.getCurrentDate());
         // select2
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxType, ProdOrderLoadDataHandle.dataType);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, ProdOrderLoadDataHandle.dataStatus);
@@ -824,7 +826,7 @@ class ProdOrderCommonHandle {
         let month = String(currentDate.getMonth() + 1).padStart(2, '0');
         let year = currentDate.getFullYear();
         return `${day}/${month}/${year}`;
-    }
+    };
 
     static filterFieldList(field_list, data_json) {
         for (let key in data_json) {

@@ -42,7 +42,7 @@ class ProdReportLoadDataHandle {
     };
 
     static loadInitPage() {
-        // Date
+        // date
         ProdReportLoadDataHandle.$dateCreated.val(ProdReportCommonHandle.getCurrentDate());
         // Num
         ProdReportLoadDataHandle.loadEventValidNum(ProdReportLoadDataHandle.$quantityFinished[0]);
@@ -94,6 +94,9 @@ class ProdReportLoadDataHandle {
             if (data?.['warehouse_data']) {
                 ProdReportLoadDataHandle.$warehouse.val(data?.['warehouse_data']?.['title']);
                 ProdReportLoadDataHandle.$warehouse.attr('data-detail', JSON.stringify(data?.['warehouse_data']))
+            }
+            for (let task of data?.['task_data']) {
+                task['quantity_actual'] = task?.['quantity'];
             }
             ProdReportLoadDataHandle.loadAddDtbRows(data?.['task_data']);
         }
@@ -429,10 +432,11 @@ class ProdReportSubmitHandle {
                 }
             }
             if (ProdReportLoadDataHandle.$quantityFinished.val()) {
-                _form.dataForm['quantity'] = parseFloat(ProdReportLoadDataHandle.$quantityFinished.val());
+                _form.dataForm['quantity_finished'] = parseFloat(ProdReportLoadDataHandle.$quantityFinished.val());
+                _form.dataForm['gr_remain_quantity'] = parseFloat(ProdReportLoadDataHandle.$quantityFinished.val());
             }
             if (ProdReportLoadDataHandle.$quantityNG.val()) {
-                _form.dataForm['quantity'] = parseFloat(ProdReportLoadDataHandle.$quantityNG.val());
+                _form.dataForm['quantity_ng'] = parseFloat(ProdReportLoadDataHandle.$quantityNG.val());
             }
             ProdReportStoreHandle.storeAll();
             _form.dataForm['task_data'] = ProdReportSubmitHandle.setupTask();

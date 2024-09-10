@@ -5,6 +5,7 @@ class GRLoadDataHandle {
     static POSelectEle = $('#box-good-receipt-purchase-order');
     static supplierSelectEle = $('#box-good-receipt-supplier');
     static IASelectEle = $('#box-good-receipt-inventory-adjustment');
+    static $boxProductionOrder = $('#box-production-order');
     static $boxProductionReport = $('#box-production-report');
     static initPOProductEle = $('#data-init-purchase-order-products');
     static PRDataEle = $('#purchase_requests_data');
@@ -122,7 +123,10 @@ class GRLoadDataHandle {
             }
         }
         if (type === "3") {
-            if (!GRLoadDataHandle.$boxProductionReport.val()) {
+            if (!GRLoadDataHandle.$boxProductionOrder.val()) {
+                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionOrder);
+            }
+            if (GRLoadDataHandle.$boxProductionReport.val().length === 0) {
                 GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport);
             }
         }
@@ -468,13 +472,16 @@ class GRLoadDataHandle {
                 let idWH = eleWHChecked.getAttribute('data-id');
                 let elePRChecked = GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked');
                 if (elePRChecked) {
+                    let idPR = elePRChecked.getAttribute('data-id');
                     if (dataStore?.['pr_products_data']) {
                         for (let prProductData of dataStore?.['pr_products_data']) {
-                            if (prProductData?.['gr_warehouse_data']) {
-                                for (let grWHData of prProductData?.['gr_warehouse_data']) {
-                                    if (grWHData?.['warehouse_id'] === idWH) {
-                                        dataStore = grWHData;
-                                        break;
+                            if (prProductData?.['purchase_order_request_product_id'] === idPR) {
+                                if (prProductData?.['gr_warehouse_data']) {
+                                    for (let grWHData of prProductData?.['gr_warehouse_data']) {
+                                        if (grWHData?.['warehouse_id'] === idWH) {
+                                            dataStore = grWHData;
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -546,13 +553,22 @@ class GRLoadDataHandle {
                     GRLoadDataHandle.loadQuantityImport();
                 }
                 if (eleExpire) {
-                    eleExpire.value = moment(dataLot?.['expire_date']).format('DD/MM/YYYY');
+                    let date = '';
+                    if (dataLot?.['expire_date']) {
+                        date = moment(dataLot?.['expire_date']).format('DD/MM/YYYY');
+                    }
+                    eleExpire.value = date;
                 }
                 if (eleManufacture) {
-                    eleManufacture.value = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY');
+                    let date = '';
+                    if (dataLot?.['manufacture_date']) {
+                        date = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY');
+                    }
+                    eleManufacture.value = date;
                 }
             }
         }
+        return true;
     };
 
     static loadUnCheckLotDDItem(row) {
@@ -593,13 +609,16 @@ class GRLoadDataHandle {
                 let idWH = eleWHChecked.getAttribute('data-id');
                 let elePRChecked = GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked');
                 if (elePRChecked) {
+                    let idPR = elePRChecked.getAttribute('data-id');
                     if (dataStore?.['pr_products_data']) {
                         for (let prProductData of dataStore?.['pr_products_data']) {
-                            if (prProductData?.['gr_warehouse_data']) {
-                                for (let grWHData of prProductData?.['gr_warehouse_data']) {
-                                    if (grWHData?.['warehouse_id'] === idWH) {
-                                        dataStore = grWHData;
-                                        break;
+                            if (prProductData?.['purchase_order_request_product_id'] === idPR) {
+                                if (prProductData?.['gr_warehouse_data']) {
+                                    for (let grWHData of prProductData?.['gr_warehouse_data']) {
+                                        if (grWHData?.['warehouse_id'] === idWH) {
+                                            dataStore = grWHData;
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -1038,7 +1057,6 @@ class GRDataTableHandle {
     static productInitEle = $('#data-init-product');
     static uomInitEle = $('#data-init-uom');
     static taxInitEle = $('#data-init-tax');
-    static warehouseInitEle = $('#data-init-warehouse');
 
     static tablePOProduct = $('#datable-good-receipt-po-product');
     static tablePR = $('#datable-good-receipt-purchase-request');
@@ -1050,13 +1068,6 @@ class GRDataTableHandle {
     static tableIAProduct = $('#datable-good-receipt-ia-product');
     static tableIALot = $('#datable-good-receipt-ia-lot');
     static tableIASerial = $('#datable-good-receipt-ia-serial');
-    static tableLineDetailIA = $('#datable-good-receipt-line-detail-ia');
-
-    static tableProductionProduct = $('#datable-good-receipt-production-product');
-    static tableProductionWH = $('#datable-good-receipt-production-warehouse');
-    static tableProductionLot = $('#datable-good-receipt-production-lot');
-    static tableProductionSerial = $('#datable-good-receipt-production-serial');
-    static tableLineDetailProduction = $('#datable-good-receipt-line-detail-production');
 
     // PO
     static dataTableGoodReceiptPOProduct(data) {
@@ -1108,14 +1119,7 @@ class GRDataTableHandle {
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        if (row?.['product_data']?.['product_choice'].includes(1) || row?.['pr_products_data'].length > 0) { // If PO Product have inventory choice or PO have PR
-                            return `<b><span class="table-row-import text-primary">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span></b>`;
-                        } else { // If PO Product doesn't have inventory choice and PO doesn't have PR
-                            return `<div class="row">
-                                        <input type="text" class="form-control table-row-import validated-number text-primary" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}">
-                                    </div>`;
-                        }
-
+                        return `<b><span class="table-row-import text-primary">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span></b>`;
                     }
                 },
             ],
@@ -1845,119 +1849,6 @@ class GRStoreDataHandle {
         return true;
     };
 
-    // IA
-    static storeIADataLot() {
-        let new_data = [];
-        let table = GRDataTableHandle.tableIALot;
-        let tableIAProduct = GRDataTableHandle.tableIAProduct;
-        if (!table[0].querySelector('.dataTables_empty')) {
-            let IAProductID = null;
-            let quantityImportTotal = 0;
-            table.DataTable().rows().every(function () {
-                let row = this.node();
-                let lotChecked = row.querySelector(".dropdown-item-lot[data-checked='true']");
-                let lotNumber = row.querySelector('.table-row-lot-number').value;
-                let quantityImport = parseFloat(row.querySelector('.table-row-import').value);
-                let expireDate = row.querySelector('.table-row-expire-date').value;
-                let manufactureDate = row.querySelector('.table-row-manufacture-date').value;
-                let dataRowRaw = row.querySelector('.table-row-lot-number')?.getAttribute('data-row');
-                if (dataRowRaw) {
-                    if (lotNumber && quantityImport > 0) {
-                        let dataRow = JSON.parse(dataRowRaw);
-                        if (lotChecked) {
-                            dataRow['lot'] = lotChecked.getAttribute('data-id');
-                        }
-                        dataRow['lot_number'] = lotNumber;
-                        dataRow['quantity_import'] = quantityImport;
-                        quantityImportTotal += quantityImport;
-                        dataRow['expire_date'] = expireDate;
-                        dataRow['manufacture_date'] = manufactureDate;
-                        IAProductID = dataRow?.['product_id'];
-                        new_data.push(dataRow);
-                    }
-                }
-            });
-            if (IAProductID) {
-                let dataIAProductCheckedRaw = tableIAProduct[0].querySelector(`.table-row-checkbox[data-id="${IAProductID}"]`)?.getAttribute('data-row');
-                if (dataIAProductCheckedRaw) {
-                    let dataIAProductChecked = JSON.parse(dataIAProductCheckedRaw);
-                    dataIAProductChecked['lot_data'] = new_data;
-                    dataIAProductChecked['quantity_import'] = quantityImportTotal;
-                    let rowChecked = tableIAProduct[0].querySelector(`.table-row-checkbox[data-id="${IAProductID}"]`)?.closest('tr');
-                    tableIAProduct[0].querySelector(`.table-row-checkbox[data-id="${IAProductID}"]`).setAttribute('data-row', JSON.stringify(dataIAProductChecked));
-                    // store new row data & redraw row
-                    let rowIndex = tableIAProduct.DataTable().row(rowChecked).index();
-                    let $row = tableIAProduct.DataTable().row(rowIndex);
-                    let rowData = $row.data();
-                    rowData['lot_data'] = new_data;
-                    rowData['quantity_import'] = quantityImportTotal;
-                    tableIAProduct.DataTable().row(rowIndex).data(rowData).draw();
-                    tableIAProduct[0].querySelector(`.table-row-checkbox[data-id="${IAProductID}"]`).checked = true;
-                }
-            }
-        }
-        return true
-    };
-
-    static storeIADataSerial() {
-        let new_data = [];
-        let table = GRDataTableHandle.tableIASerial;
-        let tableIAProduct= GRDataTableHandle.tableIAProduct;
-        if (!table[0].querySelector('.dataTables_empty')) {
-            let IAProductID = null;
-            let quantityImportTotal = 0;
-            table.DataTable().rows().every(function () {
-                let row = this.node();
-                let vendorSerialNumber = row.querySelector('.table-row-vendor-serial-number').value;
-                let serialNumber = row.querySelector('.table-row-serial-number').value;
-                let expireDate = row.querySelector('.table-row-expire-date').value;
-                let manufactureDate = row.querySelector('.table-row-manufacture-date').value;
-                let warrantyStart = row.querySelector('.table-row-warranty-start').value;
-                let warrantyEnd = row.querySelector('.table-row-warranty-end').value;
-                let dataRowRaw = row.querySelector('.table-row-vendor-serial-number')?.getAttribute('data-row');
-                if (dataRowRaw) {
-                    if (vendorSerialNumber && serialNumber) {
-                        let dataRow = JSON.parse(dataRowRaw);
-                        quantityImportTotal++
-                        dataRow['vendor_serial_number'] = vendorSerialNumber;
-                        dataRow['serial_number'] = serialNumber;
-                        dataRow['expire_date'] = expireDate;
-                        dataRow['manufacture_date'] = manufactureDate;
-                        dataRow['warranty_start'] = warrantyStart;
-                        dataRow['warranty_end'] = warrantyEnd;
-                        IAProductID = dataRow?.['product_id'];
-                        new_data.push(dataRow);
-                    }
-                }
-            });
-            if (IAProductID) {
-                let dataIAProductCheckedRaw = tableIAProduct[0].querySelector(`.table-row-checkbox[data-id="${IAProductID}"]`)?.getAttribute('data-row');
-                if (dataIAProductCheckedRaw) {
-                    let dataIAProductChecked = JSON.parse(dataIAProductCheckedRaw);
-                    dataIAProductChecked['serial_data'] = new_data;
-                    dataIAProductChecked['quantity_import'] = quantityImportTotal;
-                    let rowChecked = tableIAProduct[0].querySelector(`.table-row-checkbox[data-id="${IAProductID}"]`)?.closest('tr');
-                    tableIAProduct[0].querySelector(`.table-row-checkbox[data-id="${IAProductID}"]`).setAttribute('data-row', JSON.stringify(dataIAProductChecked));
-                    // store new row data & redraw row
-                    let rowIndex = tableIAProduct.DataTable().row(rowChecked).index();
-                    let $row = tableIAProduct.DataTable().row(rowIndex);
-                    let rowData = $row.data();
-                    rowData['serial_data'] = new_data;
-                    rowData['quantity_import'] = quantityImportTotal;
-                    tableIAProduct.DataTable().row(rowIndex).data(rowData).draw();
-                    tableIAProduct[0].querySelector(`.table-row-checkbox[data-id="${IAProductID}"]`).checked = true;
-                }
-            }
-        }
-        return true
-    };
-
-    static storeIADataAll() {
-        GRStoreDataHandle.storeIADataSerial();
-        GRStoreDataHandle.storeIADataLot();
-        return true;
-    }
-
 }
 
 // Validate
@@ -2311,7 +2202,6 @@ class GRSubmitHandle {
                             'uom_data',
                             'tax_id',
                             'tax_data',
-                            'warehouse_id',
                             'product_quantity_order_actual',
                             'quantity_import',
                             'product_title',
@@ -2322,7 +2212,7 @@ class GRSubmitHandle {
                             'product_subtotal_price_after_tax',
                             'order',
                             'pr_products_data',
-                            'gr_warehouse_data'
+                            'gr_warehouse_data',
                         ]
                         filterFieldList(field_list, dataRow);
                         GRDataTableHandle.tableLineDetailPO.DataTable().rows().every(function () {

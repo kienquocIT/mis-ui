@@ -672,7 +672,7 @@ class MenusProduction:
                 name='Production report',
                 code='menu_production_report_list',
                 view_name='ProductionReportList',
-                icon='<i class="fas fa-boxes"></i>',
+                icon='<i class="fas fa-file-alt"></i>',
             ),
         ],
     )

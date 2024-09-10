@@ -33,6 +33,7 @@ $(function () {
                 'quantity_finished',
                 'quantity_ng',
                 'task_data',
+                'gr_remain_quantity',
             ]
             if (_form.dataForm) {
                 ProdReportCommonHandle.filterFieldList(submitFields, _form.dataForm);

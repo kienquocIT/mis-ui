@@ -498,6 +498,10 @@
 </div>
 <!-- /Wrapper -->
 
+<!-- Modal -->
+{% block modalData %}{% endblock %}
+<!-- /Modal -->
+
 {% block jsCatalog %}
     {% if jsi18n %}
         <script src="{% url 'javascript-catalog' packages=jsi18n %}"></script>

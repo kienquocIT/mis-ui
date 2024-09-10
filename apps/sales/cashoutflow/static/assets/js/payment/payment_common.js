@@ -554,7 +554,7 @@ class PaymentLoadTab {
                                     if (item?.['opportunity_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['opportunity_mapped']?.['id'])
                                     if (item?.['quotation_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['quotation_mapped']?.['id'])
                                     if (item?.['sale_order_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['sale_order_mapped']?.['id'])
-                                    if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === initEmployee.id) {
+                                    if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === $('#employee_inherit_id').val()) {
                                         if (current_sale_code.length > 0 && this_sale_code.length > 0) {
                                             if (current_sale_code[0] === this_sale_code[0] && item?.['system_status'] === 3) {
                                                 result.push(item)
@@ -574,7 +574,7 @@ class PaymentLoadTab {
                                     if (item?.['opportunity_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['opportunity_mapped']?.['id'])
                                     if (item?.['quotation_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['quotation_mapped']?.['id'])
                                     if (item?.['sale_order_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['sale_order_mapped']?.['id'])
-                                    if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === initEmployee.id && item?.['id'] === AP_filter) {
+                                    if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === $('#employee_inherit_id').val() && item?.['id'] === AP_filter) {
                                         if (current_sale_code.length > 0 && this_sale_code.length > 0) {
                                             if (current_sale_code[0] === this_sale_code[0] && item?.['system_status'] === 3) {
                                                 result.push(item)

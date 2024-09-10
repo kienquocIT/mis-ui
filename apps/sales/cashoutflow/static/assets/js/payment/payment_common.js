@@ -460,6 +460,7 @@ class PaymentLoadTab {
                 if (data_list.length > 0) {
                     tableLineDetail.find('tbody tr').each(function (index) {
                         $(this).attr('id', `row-${index+1}`)
+                        console.log(data_list[index])
                         PaymentLoadTab.LoadExpenseItem($(this).find('.expense-type-select-box'), data_list[index]?.['expense_type'])
                         PaymentLoadTab.LoadTax($(this).find('.expense-tax-select-box'), data_list[index]?.['expense_tax'])
                         PaymentAction.CheckAndOpenExpandRow($(this), data_list[index])
@@ -1583,11 +1584,10 @@ class PaymentHandle {
                     if (option === 'detail') {
                         new PrintTinymceControl().render('1010563f-7c94-42f9-ba99-63d5d26a1aca', data, false);
                     }
-                    console.log(data)
+                    // console.log(data)
                     DETAIL_DATA = data;
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    console.log(data)
 
                     new $x.cls.bastionField({
                         has_opp: true,

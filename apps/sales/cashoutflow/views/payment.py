@@ -29,12 +29,8 @@ class PaymentCreate(View):
         menu_active='menu_advance_payment_list',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(
-            user=request.user,
-            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
-        ).get()
         return {
-                   'data': {'employee_current': resp1.result},
+                   'data': {'employee_current': request.user.employee_current_data},
                    'list_from_app': 'cashoutflow.payment.create',
                }, status.HTTP_200_OK
 
@@ -73,12 +69,8 @@ class PaymentDetail(View):
         menu_active='menu_payment_detail',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(
-            user=request.user,
-            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
-        ).get()
         return {
-                   'data': {'employee_current': resp1.result}
+                   'data': {'employee_current': request.user.employee_current_data}
                }, status.HTTP_200_OK
 
 
@@ -93,12 +85,8 @@ class PaymentUpdate(View):
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.CASHOUTFLOW_PAYMENT
-        resp1 = ServerAPI(
-            user=request.user,
-            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
-        ).get()
         return {
-            'data': {'employee_current': resp1.result},
+            'data': {'employee_current': request.user.employee_current_data},
             'input_mapping_properties': input_mapping_properties,
             'form_id': 'form-detail-payment'
         }, status.HTTP_200_OK

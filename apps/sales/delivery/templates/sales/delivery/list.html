@@ -69,6 +69,23 @@
         </thead>
         <tbody></tbody>
     </table>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    {{ data.state_choices|json_script:"dataStateChoices" }}
+    <input type="hidden" id="url-factory"
+           data-page-detail="{% url 'OrderDeliveryDetail' 1 %}"
+           data-page-edit="{% url 'OrderDeliveryEdit' 1 %}"
+           data-sale-order="{% url 'SaleOrderListAPI' %}"
+           data-create-delivery="{% url 'SaleOrderDetailDeliveryAPI' 1 %}"
+           data-picking="{% url 'OrderPickingList' %}"
+    >
+    <input type="hidden" id="app-trans-factory"
+    data-edit="{% trans 'Edit' %}">
+    {{ data.stt_sys|json_script:'stt_sys' }}
+{% endblock %}
+
+{% block modalData %}
     <div class="modal fade" id="sale_order_select" tabindex="-1" role="dialog"
          aria-labelledby="sale_order_select" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -99,20 +116,6 @@
             </div>
         </div>
     </div>
-{% endblock %}
-
-{% block dataHiddenGroup %}
-    {{ data.state_choices|json_script:"dataStateChoices" }}
-    <input type="hidden" id="url-factory"
-           data-page-detail="{% url 'OrderDeliveryDetail' 1 %}"
-           data-page-edit="{% url 'OrderDeliveryEdit' 1 %}"
-           data-sale-order="{% url 'SaleOrderListAPI' %}"
-           data-create-delivery="{% url 'SaleOrderDetailDeliveryAPI' 1 %}"
-           data-picking="{% url 'OrderPickingList' %}"
-    >
-    <input type="hidden" id="app-trans-factory"
-    data-edit="{% trans 'Edit' %}">
-    {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 
 {% block jsFooter %}

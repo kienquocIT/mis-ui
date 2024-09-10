@@ -356,7 +356,9 @@ function LoadDetailIA(option) {
             if (data) {
                 WFRTControl.setWFRuntimeID(data['inventory_adjustment_detail']?.['workflow_runtime_id']);
                 data = data['inventory_adjustment_detail'];
-                new PrintTinymceControl().render('c5de0a7d-bea3-4f39-922f-06a40a060aba', data, false);
+                if (option === 'detail') {
+                    new PrintTinymceControl().render('c5de0a7d-bea3-4f39-922f-06a40a060aba', data, false);
+                }
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
                 console.log(data)

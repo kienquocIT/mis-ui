@@ -49,12 +49,17 @@
                 <tr>
                     <th style="min-width: 50px"></th>
                     <th style="min-width: 150px">{% trans "Code" %}</th>
-                    <th style="min-width: 250px">{% trans "Name" %}</th>
+                    <th style="min-width: 250px">{% trans "Title" %}</th>
                     <th style="min-width: 150px">{% trans "Type" %}</th>
                     <th style="min-width: 150px">{% trans "Employee inherit" %}</th>
                     <th style="min-width: 200px">{% trans "Sale code" %}</th>
                     <th style="min-width: 150px">{% trans "Created date" %}</th>
-                    <th style="min-width: 150px">{% trans "Return date" %}</th>
+                    <th style="min-width: 150px">
+                        {% trans "Return date" %}
+                        <button type="button" id="expiring-sort" class="btn btn-xs text-red" data-bs-toggle="tooltip" title="{% trans 'Filter for expiring return advance' %}">
+                            <i class="fas fa-hourglass-half"></i>
+                        </button>
+                    </th>
                     <th style="min-width: 300px">{% trans "Advance Payment value" %}</th>
                     <th style="min-width: 300px">{% trans "Returned value" %}</th>
                     <th style="min-width: 200px">{% trans "AP status" %}</th>

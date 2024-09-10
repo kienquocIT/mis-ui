@@ -181,6 +181,8 @@ function loadGeneralProductType(product_type_list) {
     }).on('change', function () {
         if (generalProductTypeEle.val().length === 0) {
             check_tab_inventory.prop('checked', false).prop('disabled', false)
+            check_tab_sale.prop('checked', false).prop('disabled', false)
+            check_tab_purchase.prop('checked', false).prop('disabled', false)
         }
         else {
             let has_finished_goods = false
@@ -195,12 +197,7 @@ function loadGeneralProductType(product_type_list) {
             }
             if (has_finished_goods && has_service) {
                 $.fn.notifyB({description: 'Can not select both Finished goods and Service at the same time'}, 'failure');
-                check_tab_inventory.prop('checked', false).prop('disabled', false)
                 generalProductTypeEle.empty()
-            }
-            else if (has_finished_goods) {
-                $.fn.notifyB({description: 'Inventory management is required for finished goods'}, 'warning');
-                check_tab_inventory.prop('checked', true).prop('disabled', true)
             }
             else if (has_service) {
                 $.fn.notifyB({description: 'Inventory management is not allowed for service'}, 'warning');
@@ -208,6 +205,8 @@ function loadGeneralProductType(product_type_list) {
             }
             else {
                 check_tab_inventory.prop('checked', false).prop('disabled', false)
+                check_tab_sale.prop('checked', false).prop('disabled', false)
+                check_tab_purchase.prop('checked', false).prop('disabled', false)
             }
         }
     })

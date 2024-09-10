@@ -568,7 +568,7 @@
                                 'g_recaptcha_response': $(document).find(':input[name="g-recaptcha-response"]').val(),
                             };
 
-                            if (window.ggCaptChaEnabled === 'True' && !bodyData.dataForm['g_recaptcha_response']) {
+                            if (window.ggCaptChaEnabled === 'True' && !bodyData['g_recaptcha_response']) {
                                 authNotifyB({
                                     'description': authGettext('Please solve the captcha.'),
                                 }, 'failure');

@@ -3345,7 +3345,7 @@ msgstr "Lưu cập nhật trên phần vùng quy trình, sau đó gọi chuyển
 
 #
 msgid "Collapse"
-msgstr "Thu gọn/Mở rộng"
+msgstr "Thu gọn"
 
 #
 msgid "Collapse All"
@@ -7982,7 +7982,10 @@ msgstr "Nhóm đơn vị"
 
 #
 msgid "Edit zone"
-msgstr "Chỉnh sửa vùng dữ liệu"msgid "Expand / Collapse"
+msgstr "Chỉnh sửa vùng dữ liệu"
+
+#
+msgid "Expand / Collapse"
 msgstr "Thu gọn / Mở rộng"
 
 #
@@ -8748,3 +8751,15 @@ msgstr "Đã hoàn thành"
 #
 msgid "Not finished"
 msgstr "Chưa hoàn thành"
+
+#
+msgid "Production order number"
+msgstr "SL theo Lệnh SX"
+
+#
+msgid "Issued before"
+msgstr "Xuất trước đó"
+
+#
+msgid "Filter for expiring return advance"
+msgstr "Lọc lấy phiếu sắp đến hạn hoàn ứng"

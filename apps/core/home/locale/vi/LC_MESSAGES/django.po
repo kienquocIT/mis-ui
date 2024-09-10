@@ -72,3 +72,19 @@ msgstr "Đang theo dõi"
 #
 msgid "Pined"
 msgstr "Đã ghim"
+
+#
+msgid "Collapse all"
+msgstr "Đóng tất cả"
+
+#
+msgid "Expand all"
+msgstr "Mở tất cả"
+
+#
+msgid "A quiet day!"
+msgstr "Một ngày yên tĩnh!"
+
+#
+msgid "There is a delay in updating the data with new changes. Estimated within 5 minutes of change."
+msgstr "Có sự chậm trễ trong việc cập nhật những thay đổi mới. Ước tính trong vòng 5 phút kể từ khi có thay đổi."

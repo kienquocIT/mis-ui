@@ -315,33 +315,33 @@ class MenusCRM:
         child=[
             MenuCommon(
                 name='Price List', code='id_menu_pricing_list', view_name='PriceList',
-                icon='<i class="far fa-money-bill-alt"></i>',
+                icon='<i class="fas fa-list-ol"></i>',
             ),
             MenuCommon(
                 name='Shipping list', code='id_menu_shipping_list', view_name='ShippingList',
-                icon='<i class="fas fa-truck"></i>',
+                icon='<i class="fas fa-shipping-fast"></i>',
             ),
             MenuCommon(
                 name='Promotion List', code='id_menu_promotion_list', view_name='PromotionList',
-                icon='<i class="fas fa-shopping-cart"></i>',
+                icon='<i class="fas fa-percent"></i>',
             ),
         ]
     )
     CASH_OUTFLOW = MenuCommon(
         name='Cashflow', code='menu_cash_outflow', view_name='',
-        icon='<i class="bi bi-currency-exchange"></i>',
+        icon='<i class="fas fa-coins"></i>',
         child=[
             MenuCommon(
                 name='Advance payment', code='id_menu_advance_payment', view_name='AdvancePaymentList',
-                icon='<i class="bi bi-piggy-bank-fill"></i>',
+                icon='<i class="fas fa-hand-holding-usd"></i>',
             ),
             MenuCommon(
                 name='Payment', code='id_menu_payment', view_name='PaymentList',
-                icon='<i class="bi bi-credit-card-fill"></i>',
+                icon='<i class="far fa-credit-card"></i>',
             ),
             MenuCommon(
                 name='Return advance', code='id_menu_return_advance', view_name='ReturnAdvanceList',
-                icon='<i class="bi bi-piggy-bank"></i>',
+                icon='<i class="fas fa-hand-holding-usd fa-flip-horizontal"></i>',
             ),
         ],
     )

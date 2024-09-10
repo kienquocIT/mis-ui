@@ -1033,7 +1033,9 @@ function LoadDetailGoodsReturn(option) {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 data = data['good_return_detail'];
-                new PrintTinymceControl().render('0242ba77-8b02-4589-8ed9-239788083f2b', data, false);
+                if (option === 'detail') {
+                    new PrintTinymceControl().render('0242ba77-8b02-4589-8ed9-239788083f2b', data, false);
+                }
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);

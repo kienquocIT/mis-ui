@@ -273,3 +273,10 @@ class ResolveNotifyItemAPI(APIView):
     def get(self, request, *args, pk, **kwargs):
         ReverseUrlCommon.update_done_notify(request.user, pk)
         return {}, status.HTTP_200_OK
+
+
+class HomeCalendarAPI(APIView):
+    @mask_view(is_api=True, login_require=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.HOME_CALENDAR).get()
+        return resp.auto_return(key_success='home_calendar')

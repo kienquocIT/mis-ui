@@ -4,7 +4,16 @@ $(document).ready(function () {
             let dtb = $('#datatable_advance_list');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
-                useDataServer: true,
+                // ordering: true,
+                // "order": [[7, 'desc']],
+                // columnDefs: [{
+                //     orderable: true,
+                //     targets: "sort"
+                // }, {
+                //     orderable: false,
+                //     targets: ""
+                // }],
+                useDataServer: false,
                 rowIdx: true,
                 reloadCurrency: true,
                 scrollX: '100vh',
@@ -40,6 +49,7 @@ $(document).ready(function () {
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
                             let sale_code_code = row.opportunity_mapped.code || row.quotation_mapped.code || row.sale_order_mapped.code || null
+                            // return data
                             return `<a href="${link}"><span class="text-primary ap_info" data-sale-code-code="${sale_code_code}" data-id="${row.id}" data-title="${row.title}" data-code="${row.code}"><b>${row.title}</b></span></a>`
                         }
                     },
@@ -60,7 +70,7 @@ $(document).ready(function () {
                         data: 'employee_inherit',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="text-blue">${data?.['full_name']}</span>`
+                            return `${data?.['full_name']}`
                         }
                     },
                     {
@@ -91,6 +101,7 @@ $(document).ready(function () {
                         }
                     },
                     {
+                        targets: 7,
                         data: 'return_date',
                         className: 'wrap-text',
                         render: (data, type, row) => {
@@ -176,34 +187,30 @@ $(document).ready(function () {
                         data: '',
                         className: 'wrap-text text-center',
                         render: (data, type, row) => {
-                            if (row?.['system_status_raw'] !== 3 || !row.money_gave) {
+                            if (row?.['system_status'] !== 3 || row?.['opportunity_mapped']?.['is_closed']) {
                                 return ``;
                             }
                             else {
                                 let sale_code_id = null;
                                 let sale_code_title = null;
-                                let sale_code_CODE = null;
-                                let is_close = false;
+                                let sale_code_CODE = '';
                                 let flag = null;
                                 if (Object.keys(row?.['opportunity_mapped']).length !== 0) {
-                                    sale_code_id = row?.['opportunity_mapped'].id;
-                                    sale_code_title = row?.['opportunity_mapped'].title;
-                                    sale_code_CODE = row?.['opportunity_mapped'].code;
-                                    is_close = row?.['opportunity_mapped']['is_close'];
+                                    sale_code_id = row?.['opportunity_mapped']?.['id'];
+                                    sale_code_title = row?.['opportunity_mapped']?.['title'];
+                                    sale_code_CODE = row?.['opportunity_mapped']?.['code'];
                                     flag = 0;
                                 }
                                 else if (Object.keys(row?.['quotation_mapped']).length !== 0) {
-                                    sale_code_id = row?.['quotation_mapped'].id;
-                                    sale_code_title = row?.['quotation_mapped'].title;
-                                    sale_code_CODE = row?.['quotation_mapped'].code;
-                                    is_close = row?.['quotation_mapped']['is_close'];
+                                    sale_code_id = row?.['quotation_mapped']?.['id'];
+                                    sale_code_title = row?.['quotation_mapped']?.['title'];
+                                    sale_code_CODE = row?.['quotation_mapped']?.['code'];
                                     flag = 1;
                                 }
                                 else if (Object.keys(row?.['sale_order_mapped']).length !== 0) {
-                                    sale_code_id = row?.['sale_order_mapped'].id;
-                                    sale_code_title = row?.['sale_order_mapped'].title;
-                                    sale_code_CODE = row?.['sale_order_mapped'].code;
-                                    is_close = row?.['sale_order_mapped']['is_close'];
+                                    sale_code_id = row?.['sale_order_mapped']?.['id'];
+                                    sale_code_title = row?.['sale_order_mapped']?.['title'];
+                                    sale_code_CODE = row?.['sale_order_mapped']?.['code'];
                                     flag = 2;
                                 }
 
@@ -212,7 +219,7 @@ $(document).ready(function () {
                                              data-ap-id="${row.id}"
                                              data-sale-code-id="${sale_code_id}"
                                              data-sale-code-title="${sale_code_title}"
-                                             data-sale-code-CODE="${sale_code_CODE}"
+                                             data-sale-code-CODE="${sale_code_CODE ? sale_code_CODE : ''}"
                                              data-flag="${flag}">
                                             <a type="button"
                                                data-bs-toggle="dropdown"><i class="fas fa-stream text-primary"></i></a>
@@ -359,22 +366,257 @@ $(document).on("click", '.ap-shortcut', function() {
         }
     }
 
-    let opp_mapped = {};
-    if ($(this).attr('data-flag') === '0') {
-        opp_mapped = JSON.stringify({'id': $(this).attr('data-sale-code-id'), 'title': $(this).attr('data-sale-code-title'), 'code': $(this).attr('data-sale-code-CODE')});
-    }
-    let opp_obj = encodeURIComponent(opp_mapped);
-
-
-    let ap_id = $(this).closest('tr').find('.ap_info').attr('data-id');
-    let ap_code = $(this).closest('tr').find('.ap_info').attr('data-code');
-    let ap_title = $(this).closest('tr').find('.ap_info').attr('data-title');
-    let sale_code_code = $(this).closest('tr').find('.ap_info').attr('data-sale-code-code');
-    let advance_payment_obj= encodeURIComponent(JSON.stringify({'id': ap_id, 'title': ap_title, 'code': ap_code, 'sale_code_code': sale_code_code}));
-    let html_return = `
-        <a class="dropdown-item" href="${$('#datatable_advance_list').attr('data-return')}?advance_payment=${advance_payment_obj}&opportunity=${opp_obj}">
+    let advance_payment_obj= encodeURIComponent(
+        JSON.stringify({
+            'id': $(this).closest('tr').find('.ap_info').attr('data-id'),
+            'code': $(this).closest('tr').find('.ap_info').attr('data-code'),
+            'title': $(this).closest('tr').find('.ap_info').attr('data-title'),
+            'sale_code': $(this).closest('tr').find('.ap_info').attr('data-sale-code-code')
+        })
+    )
+    $(this).find('.dropdown-menu').append(`
+        <a class="dropdown-item" href="${$('#datatable_advance_list').attr('data-return')}?advance_payment=${advance_payment_obj}">
             <button type="button" class="btn btn-soft-primary w-100">${$('#datatable_advance_list').attr('data-type-translate-return')}</button>
         </a>
-    `;
-    $(this).find('.dropdown-menu').append(html_return)
+    `)
+});
+
+$(document).on("click", '#expiring-sort', function() {
+    let dtb = $('#datatable_advance_list');
+    dtb.DataTable().clear().destroy()
+    let frm = new SetupFormSubmit(dtb);
+    dtb.DataTableDefault({
+        // ordering: true,
+        // "order": [[7, 'desc']],
+        // columnDefs: [{
+        //     orderable: true,
+        //     targets: "sort"
+        // }, {
+        //     orderable: false,
+        //     targets: ""
+        // }],
+        useDataServer: false,
+        rowIdx: true,
+        reloadCurrency: true,
+        scrollX: '100vh',
+        scrollCollapse: true,
+        ajax: {
+            data: {'return_date_expiring_sort': 1},
+            url: frm.dataUrl,
+            type: frm.dataMethod,
+            dataSrc: function (resp) {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    let advance_payment_list = []
+                    for (let i= 0; i < resp.data['advance_payment_list'].length; i++) {
+                        if (parseFloat(resp.data['advance_payment_list'][i]?.['remain_value']) > 0) {
+                            advance_payment_list.push(resp.data['advance_payment_list'][i])
+                        }
+                    }
+                    return advance_payment_list
+                }
+                return [];
+            },
+        },
+        columns: [
+            {
+                'render': () => {
+                    return ``;
+                }
+            },
+            {
+                data: 'code',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    const link = dtb.attr('data-url-detail').replace('0', row.id);
+                    return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                }
+            },
+            {
+                data: 'title',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    const link = dtb.attr('data-url-detail').replace('0', row.id);
+                    let sale_code_code = row.opportunity_mapped.code || row.quotation_mapped.code || row.sale_order_mapped.code || null
+                    // return data
+                    return `<a href="${link}"><span class="text-primary ap_info" data-sale-code-code="${sale_code_code}" data-id="${row.id}" data-title="${row.title}" data-code="${row.code}"><b>${row.title}</b></span></a>`
+                }
+            },
+            {
+                data: 'advance_payment_type',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    let to_employee_trans = dtb.attr('data-type-translate-employee')
+                    let to_supplier_trans = dtb.attr('data-type-translate-supplier')
+                    if (row.advance_payment_type === 'To Employee') {
+                        return `<i class="bi bi-person"></i>&nbsp;${to_employee_trans}`
+                    } else if (row.advance_payment_type === 'To Supplier') {
+                        return `<i class="bi bi-truck"></i>&nbsp;${to_supplier_trans}`
+                    }
+                }
+            },
+            {
+                data: 'employee_inherit',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `${data?.['full_name']}`
+                }
+            },
+            {
+                data: 'sale_code',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    if (Object.keys(row.opportunity_mapped).length !== 0) {
+                        return `Opp <span><a class="link-secondary underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row.opportunity_mapped.id)}"><b>${row.opportunity_mapped.title}</b></a></span>`
+                    }
+                    else if (Object.keys(row.quotation_mapped).length !== 0) {
+                        return `Quo <span><a class="link-secondary underline_hover" target="_blank" href="${dtb.attr('data-url-quo-detail').replace('0', row.quotation_mapped.id)}"><b>${row.quotation_mapped.title}</b></a></span>`
+                    }
+                    else if (Object.keys(row.sale_order_mapped).length !== 0) {
+                        return `SO <span><a class="link-secondary underline_hover" target="_blank" href="${dtb.attr('data-url-so-detail').replace('0', row.sale_order_mapped.id)}"><b>${row.sale_order_mapped.title}</b></a></span>`
+                    }
+                    else {
+                        return ''
+                    }
+                }
+            },
+            {
+                data: 'date_created',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return $x.fn.displayRelativeTime(data, {
+                        'outputFormat': 'DD-MM-YYYY',
+                    });
+                }
+            },
+            {
+                targets: 7,
+                data: 'return_date',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return $x.fn.displayRelativeTime(data, {
+                        'outputFormat': 'DD-MM-YYYY',
+                    });
+                }
+            },
+            {
+                data: 'advance_value',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `
+                        <span class="mask-money text-primary" data-init-money="${row?.['advance_value']}"></span>
+                        <br>
+                        (${dtb.attr('data-type-translate-to-payment')}: <span class="mask-money text-primary" data-init-money="${row?.['to_payment']}"></span>)
+                    `
+                }
+            },
+            {
+                data: 'return_value',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `
+                            <span class="mask-money text-primary" data-init-money="${row?.['return_value']}"></span>
+                            <br>
+                            <span>(${dtb.attr('data-type-translate-remain-ap')}: <span class="mask-money text-primary" data-init-money="${row?.['remain_value']}"></span>)</span>
+                    `
+                }
+            },
+            {
+                data: 'ap_status',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    if (row.money_gave) {
+                        return `<div>
+                                <span class="badge-status">
+                                    <span class="badge badge-primary badge-indicator"></span>
+                                    <span class="badge-label">${dtb.attr('data-type-translate-gave')}</span>
+                                </span>
+                            </div>`
+                    }
+                    else {
+                        return `<div>
+                                <span class="badge-status">
+                                    <span class="badge badge-primary badge-indicator"></span>
+                                    <span class="badge-label">${dtb.attr('data-type-translate-waiting')}</span>
+                                </span>
+                            </div>`
+                    }
+                }
+            },
+            {
+                data: 'status',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    let approved_trans = ``
+                    let text_color = ``
+                    if (row?.['system_status'] === 0) {
+                        approved_trans = 'Draft'
+                        text_color = 'badge-soft-secondary'
+                    }
+                    else if (row?.['system_status'] === 1) {
+                        approved_trans = 'Created'
+                        text_color = 'badge-soft-primary'
+                    }
+                    else if (row?.['system_status'] === 2) {
+                        approved_trans = 'Added'
+                        text_color = 'badge-soft-blue'
+                    }
+                    else if (row?.['system_status'] === 3) {
+                        approved_trans = 'Finish'
+                        text_color = 'badge-soft-success'
+                    }
+                    else if (row?.['system_status'] === 4) {
+                        approved_trans = 'Cancel'
+                        text_color = 'badge-soft-danger'
+                    }
+                    return `<span class="w-100 badge ${text_color}">` + approved_trans + `</span>`
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text text-center',
+                render: (data, type, row) => {
+                    if (row?.['system_status'] !== 3 || row?.['opportunity_mapped']?.['is_closed']) {
+                        return ``;
+                    }
+                    else {
+                        let sale_code_id = null;
+                        let sale_code_title = null;
+                        let sale_code_CODE = '';
+                        let flag = null;
+                        if (Object.keys(row?.['opportunity_mapped']).length !== 0) {
+                            sale_code_id = row?.['opportunity_mapped']?.['id'];
+                            sale_code_title = row?.['opportunity_mapped']?.['title'];
+                            sale_code_CODE = row?.['opportunity_mapped']?.['code'];
+                            flag = 0;
+                        }
+                        else if (Object.keys(row?.['quotation_mapped']).length !== 0) {
+                            sale_code_id = row?.['quotation_mapped']?.['id'];
+                            sale_code_title = row?.['quotation_mapped']?.['title'];
+                            sale_code_CODE = row?.['quotation_mapped']?.['code'];
+                            flag = 1;
+                        }
+                        else if (Object.keys(row?.['sale_order_mapped']).length !== 0) {
+                            sale_code_id = row?.['sale_order_mapped']?.['id'];
+                            sale_code_title = row?.['sale_order_mapped']?.['title'];
+                            sale_code_CODE = row?.['sale_order_mapped']?.['code'];
+                            flag = 2;
+                        }
+
+                        return `<div data-money-gave="${row.money_gave}"
+                                     class="dropdown ap-shortcut"
+                                     data-ap-id="${row.id}"
+                                     data-sale-code-id="${sale_code_id}"
+                                     data-sale-code-title="${sale_code_title}"
+                                     data-sale-code-CODE="${sale_code_CODE ? sale_code_CODE : ''}"
+                                     data-flag="${flag}">
+                                    <a type="button"
+                                       data-bs-toggle="dropdown"><i class="fas fa-stream text-primary"></i></a>
+                                    <div class="dropdown-menu"></div>
+                                </div>`;
+                    }
+                }
+            }
+        ],
+    });
 });

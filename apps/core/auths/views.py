@@ -1,3 +1,4 @@
+import json
 from uuid import uuid4
 
 from django.conf import settings
@@ -15,7 +16,7 @@ from rest_framework.views import APIView
 
 import jwt
 
-from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, TypeCheck
+from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, TypeCheck, CustomizeEncoder
 from apps.core.account.models import User
 
 from .forms import AuthLoginForm, ForgotPasswordForm, ForgotPasswordValidOTPForm, ForgotPasswordResendOTP
@@ -92,9 +93,11 @@ class AuthLogin(APIView):
                 if not frm.cleaned_data.get('remember'):
                     request.session.set_expiry(0)
                 # random DEVICE_ID
-                request.session.update({
-                    ServerAPI.KEY_SESSION_DEVICE_ID: uuid4().hex
-                })
+                request.session.update(
+                    {
+                        ServerAPI.KEY_SESSION_DEVICE_ID: uuid4().hex
+                    }
+                )
                 # call login to system with register session credential to request
                 login(request, user)
 
@@ -264,16 +267,19 @@ class ForgotPasswordDetailAPI(APIView):
 
     @mask_view(login_require=False, is_api=True)
     def put(self, request, *args, pk, **kwargs):
-        frm = ForgotPasswordValidOTPForm(data={
-            **request.data,
-            'pk': pk,
-        })
+        frm = ForgotPasswordValidOTPForm(
+            data={
+                **request.data,
+                'pk': pk,
+            }
+        )
         frm.is_valid()
         # enter OTP
         if pk and TypeCheck.check_uuid(pk):
+            body_data = json.loads(json.dumps(frm.cleaned_data, cls=CustomizeEncoder))
             resp = ServerAPI(
                 request=request, user=request.user, url=ApiURL.USER_FORGOT_PASSWORD_DETAIL.fill_key(pk=pk)
-            ).put(data=frm.cleaned_data)
+            ).put(data=body_data)
             return resp.auto_return()
         return OutLayoutRender(request=request).render_404()
 

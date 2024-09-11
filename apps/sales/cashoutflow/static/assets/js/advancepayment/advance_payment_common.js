@@ -8,6 +8,7 @@ const quotation_mapped_select = $('#quotation_mapped_select')
 const sale_order_mapped_select = $('#sale_order_mapped_select')
 const opp_mapped_select = $('#opportunity_id')
 const script_url = $('#script-url')
+const script_trans = $('#script-trans')
 const ap_method_Ele = $('#ap-method')
 const tab_plan_datatable = $('#tab_plan_datatable')
 let ap_for = null
@@ -987,26 +988,26 @@ class APLoadTab {
     }
     // bank info
     static LoadBankInfo(data) {
-        let ele = $('#list-bank-account-information');
-        ele.html(``);
         if (data.length > 0) {
-            $('#notify-none-bank-account').prop('hidden', true);
+            $('#notify-none-bank-account').prop('hidden', true)
+            let bank_cards = ``
             for (let i = 0; i < data.length; i++) {
                 let bank_account = data[i];
-                ele.append(`<div class="row">
-                    <div class="col-12">
-                        Bank account name: <span class="bank_account_name"><b>${bank_account?.['bank_account_name']}</b></span>
-                        Bank name: <span class="bank_name"><b>${bank_account?.['bank_name']}</b></span>
-                        Bank account number: <span class="${bank_account?.['is_default'] ? 'text-blue' : ''} bank_account_number"><b>${bank_account?.['bank_account_number']}</b></span>
-                        Country ID: <span class="bank_country_id"><b>${bank_account?.['bank_country_id']}</b></span>
-                        Bank code: <span class="bank_code"><b>${bank_account?.['bank_code']}</b></span>
-                        BIC/SWIFT Code: <span class="bic_swift_code"><b>${bank_account?.['bic_swift_code']}</b></span>
+                bank_cards += `<div class="col-12 col-md-6 col-lg-3 mb-2">
+                    <div class="border border-secondary rounded p-3 min-h-200p">
+                        <div class="text-center"><i class="bi bi-bank"></i></div>
+                        ${bank_account?.['bank_account_name'] ? `<div class="bank_account_name text-muted text-center">${bank_account?.['is_default'] ? '<i class="text-blue fas fa-thumbtack fa-rotate-by" style="--fa-rotate-angle: -45deg;""></i>' : ''} <b>${bank_account?.['bank_account_name'].toUpperCase()}</b></div>` : ''}
+                        ${bank_account?.['bank_account_number'] ? `<div class="bank_account_number text-muted text-center mb-3">${script_trans.attr('data-trans-bank-account-no')}: <b>${bank_account?.['bank_account_number']}</b></div>` : ''}
+                        ${bank_account?.['bank_name'] ? `<div class="bank_name text-muted text-center">${script_trans.attr('data-trans-bank-name')}: <b>${bank_account?.['bank_name']}</b></div>` : ''}
+                        ${bank_account?.['bank_code'] ? `<div class="bank_code text-muted text-center">${script_trans.attr('data-trans-bank-code')}: <b>${bank_account?.['bank_code'].toUpperCase()}</b></div>` : ''}
+                        ${bank_account?.['bic_swift_code'] ? `<div class="bic_swift_code text-muted text-center">${script_trans.attr('data-trans-BICSWIFT-code')}: <b>${bank_account?.['bic_swift_code'].toUpperCase()}</b></div>` : ''}
                     </div>
-                </div>`)
+                </div>`
             }
+            $('#list-bank-account-information').append(`<div class="row">${bank_cards}</div>`)
         }
         else {
-            $('#notify-none-bank-account').prop('hidden', false);
+            $('#notify-none-bank-account').prop('hidden', false)
         }
     }
 }

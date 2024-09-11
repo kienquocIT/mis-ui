@@ -159,7 +159,7 @@ class PaymentLoadPage {
         }).on('change', function () {
             let obj_selected = JSON.parse($('#' + supplierEle.attr('data-idx-data-loaded')).text())[supplierEle.val()];
             PaymentLoadPage.LoadInforSupplier(obj_selected);
-            PaymentLoadTab.LoadBankInfor(obj_selected?.['bank_accounts_mapped']);
+            PaymentLoadTab.LoadBankInfo(obj_selected?.['bank_accounts_mapped']);
         })
     }
     static LoadInforSupplier(data) {
@@ -410,7 +410,7 @@ class PaymentLoadTab {
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-document-number">${row?.['document_number'] ? row?.['document_number'] : ''}</textarea>`;
+                        return `<input ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-document-number" value="${row?.['document_number'] ? row?.['document_number'] : ''}">`;
                     }
                 },
                 {
@@ -1334,55 +1334,27 @@ class PaymentLoadTab {
         }
     }
     // bank info
-    static LoadBankInfor(data) {
-        let ele = $('#list-bank-account-information');
-        ele.html(``);
+    static LoadBankInfo(data) {
         if (data.length > 0) {
-            $('#notify-none-bank-account').prop('hidden', true);
+            $('#notify-none-bank-account').prop('hidden', true)
+            let bank_cards = ``
             for (let i = 0; i < data.length; i++) {
                 let bank_account = data[i];
-                let default_card_color = '';
-                let checked = '';
-                if (bank_account?.['is_default'] === true) {
-                    default_card_color = 'bg-primary text-dark bg-opacity-10';
-                    checked = 'checked';
-                }
-                ele.append(
-                    `<div class="card ${default_card_color} close-over col-12 col-lg-5 col-md-5 mr-5">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-1">
-                                    <div class="card-text">
-                                        <input disabled class="radio_select_default_bank_account" name="bank_account_default" type="radio" ${checked}>                 
-                                    </div>
-                                </div>
-                                <div class="col-11">
-                                    <div class="card-text">
-                                        Bank account name: <span class="bank_account_name"><b>${bank_account?.['bank_account_name']}</b></span>
-                                    </div>
-                                    <div class="card-text">
-                                        Bank name: <span class="bank_name"><b>${bank_account?.['bank_name']}</b></span>
-                                    </div>
-                                    <div class="card-text">
-                                        Bank account number: <span class="bank_account_number"><b>${bank_account?.['bank_account_number']}</b></span>
-                                    </div>
-                                    <div class="card-text" hidden>
-                                        Country ID: <span class="bank_country_id"><b>${bank_account?.['bank_country_id']}</b></span>
-                                    </div>
-                                    <div class="card-text" hidden>
-                                        Bank code: <span class="bank_code"><b>${bank_account?.['bank_code']}</b></span>
-                                    </div>
-                                    <div class="card-text" hidden>
-                                        BIC/SWIFT Code: <span class="bic_swift_code"><b>${bank_account?.['bic_swift_code']}</b></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`
-                )
+                bank_cards += `<div class="col-12 col-md-6 col-lg-3 mb-2">
+                    <div class="border border-secondary rounded p-3 min-h-200p">
+                        <div class="text-center"><i class="bi bi-bank"></i></div>
+                        ${bank_account?.['bank_account_name'] ? `<div class="bank_account_name text-muted text-center">${bank_account?.['is_default'] ? '<i class="text-blue fas fa-thumbtack fa-rotate-by" style="--fa-rotate-angle: -45deg;""></i>' : ''} <b>${bank_account?.['bank_account_name'].toUpperCase()}</b></div>` : ''}
+                        ${bank_account?.['bank_account_number'] ? `<div class="bank_account_number text-muted text-center mb-3">${script_trans.attr('data-trans-bank-account-no')}: <b>${bank_account?.['bank_account_number']}</b></div>` : ''}
+                        ${bank_account?.['bank_name'] ? `<div class="bank_name text-muted text-center">${script_trans.attr('data-trans-bank-name')}: <b>${bank_account?.['bank_name']}</b></div>` : ''}
+                        ${bank_account?.['bank_code'] ? `<div class="bank_code text-muted text-center">${script_trans.attr('data-trans-bank-code')}: <b>${bank_account?.['bank_code'].toUpperCase()}</b></div>` : ''}
+                        ${bank_account?.['bic_swift_code'] ? `<div class="bic_swift_code text-muted text-center">${script_trans.attr('data-trans-BICSWIFT-code')}: <b>${bank_account?.['bic_swift_code'].toUpperCase()}</b></div>` : ''}
+                    </div>
+                </div>`
             }
-        } else {
-            $('#notify-none-bank-account').prop('hidden', false);
+            $('#list-bank-account-information').append(`<div class="row">${bank_cards}</div>`)
+        }
+        else {
+            $('#notify-none-bank-account').prop('hidden', false)
         }
     }
 }
@@ -1630,7 +1602,7 @@ class PaymentHandle {
                         if (Object.keys(data?.['supplier']).length !== 0) {
                             PaymentLoadPage.LoadSupplier(data?.['supplier'])
                             PaymentLoadPage.LoadInforSupplier(data?.['supplier']);
-                            PaymentLoadTab.LoadBankInfor(data?.['supplier']?.['bank_accounts_mapped']);
+                            PaymentLoadTab.LoadBankInfo(data?.['supplier']?.['bank_accounts_mapped']);
                         }
                     }
 

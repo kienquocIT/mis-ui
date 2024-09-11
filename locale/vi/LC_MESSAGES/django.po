@@ -1539,19 +1539,19 @@ msgid "Country"
 msgstr "Quốc gia"
 
 #
-msgid "Bank Name"
-msgstr "Tên ngân hàng"
+msgid "Bank name"
+msgstr "Tên NH"
 
 #
-msgid "Bank Code"
-msgstr "Mã ngân hàng"
+msgid "Bank code"
+msgstr "Mã NH"
 
 #
-msgid "Account Number"
+msgid "Account number"
 msgstr "Số tài khoản"
 
 #
-msgid "BIC/SWIFT Code"
+msgid "BIC/SWIFT code"
 msgstr "Mã BIC/SWIFT"
 
 #
@@ -7015,10 +7015,6 @@ msgstr "Tên người mua hàng"
 #
 msgid "Billing address"
 msgstr "Địa chỉ xuất hoá đơn"
-
-#
-msgid "Bank code"
-msgstr "Mã ngân hàng"
 
 #
 msgid "Bank number"

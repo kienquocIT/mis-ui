@@ -37,7 +37,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm-detail">
+    <button class="btn btn-outline-primary" id="update-OPP-btn" type="submit" form="frm-detail">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -53,6 +53,7 @@
             data-trans-alert-warn-call-log="{% trans 'This call log cannot be reactivated.' %}"
             data-trans-alert-cancel-meeting="{% trans 'Cancel this meeting ?' %}"
             data-trans-alert-warn-meeting="{% trans 'This meeting cannot be reactivated.' %}"
+            data-trans-notify-update-permission="{% trans 'Please save Update Opportunity page to apply all the permissions!' %}"
     ></script>
     <script id="script-url"
             data-url-opp-list="{% url "OpportunityListAPI" %}"

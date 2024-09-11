@@ -40,41 +40,6 @@ class APLoadPage {
         let url = btn_detail.attr('data-url').replace('0', data?.['id']);
         btn_detail.attr('href', url);
     }
-    static LoadOpportunity(data) {
-        opp_mapped_select.initSelect2({
-            allowClear: true,
-            data: data,
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            quotation_mapped_select.empty()
-            sale_order_mapped_select.empty()
-            if (opp_mapped_select.val()) {
-                let selected = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
-                if (selected?.['is_close']) {
-                    $.fn.notifyB({description: `Opportunity ${selected?.['code']} has been closed. Can not select.`}, 'failure');
-                    opp_mapped_select.empty()
-                    ap_for = null
-                }
-                else {
-                    sale_order_mapped_select.prop('disabled', true)
-                    quotation_mapped_select.prop('disabled', true)
-                    let quo_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
-                    let so_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
-                    APLoadPage.LoadQuotation(quo_mapped)
-                    APLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quo_mapped?.['id'])
-                    APLoadPage.LoadSaleOrder(so_mapped);
-                    ap_for = 'opportunity'
-                }
-            }
-            else {
-                quotation_mapped_select.prop('disabled', false)
-                sale_order_mapped_select.prop('disabled', false)
-                ap_for = null
-                APLoadTab.DrawTablePlan()
-            }
-        })
-    }
     static LoadQuotation(data) {
         quotation_mapped_select.initSelect2({
             allowClear: true,
@@ -1214,30 +1179,15 @@ class APAction {
 }
 
 class APHandle {
-    static LoadPage(opportunity_obj, quotation_object, sale_order_object, type) {
+    static LoadPage() {
         APLoadPage.LoadCreatedDate()
         APLoadPage.LoadCreator(initEmployee)
-        APLoadPage.LoadOpportunity()
         APLoadPage.LoadQuotation()
         APLoadPage.LoadSaleOrder()
         APLoadPage.LoadSupplier()
         APLoadPage.LoadReturnDate()
         APLoadTab.LoadLineDetailTable()
         APLoadTab.DrawTablePlan()
-        // if (opportunity_obj) {
-        //     if (type === 0) {
-        //         APLoadPage.LoadOpportunity(opportunity_obj)
-        //         ap_for = 'opportunity'
-        //         tableLineDetail.find('tbody').html('');
-        //         quotation_mapped_select.empty();
-        //         quotation_mapped_select.prop('disabled', true);
-        //         sale_order_mapped_select.empty();
-        //         sale_order_mapped_select.prop('disabled', true);
-        //         APLoadPage.LoadQuotation(quotation_object)
-        //         APLoadPage.LoadSaleOrder(sale_order_object)
-        //         APLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quotation_object?.['id'])
-        //     }
-        // }
     }
     static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
@@ -1316,7 +1266,12 @@ class APHandle {
                     }
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    console.log(data)
+                    // console.log(data)
+
+                    opp_mapped_select.prop('disabled', true)
+                    quotation_mapped_select.prop('disabled', true)
+                    sale_order_mapped_select.prop('disabled', true)
+                    $('#employee_inherit_id').prop('disabled', true)
 
                     if (Object.keys(data?.['opportunity_mapped']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
                         new $x.cls.bastionField({
@@ -1443,12 +1398,39 @@ class APHandle {
                     })
 
                     APAction.DisabledDetailPage(option);
-                    quotation_mapped_select.attr('disabled', true);
-                    sale_order_mapped_select.attr('disabled', true);
                 }
             })
     }
 }
+
+opp_mapped_select.on('change', function () {
+    quotation_mapped_select.empty()
+    sale_order_mapped_select.empty()
+    if (opp_mapped_select.val()) {
+        let selected = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
+        if (selected?.['is_close']) {
+            $.fn.notifyB({description: `Opportunity ${selected?.['code']} has been closed. Can not select.`}, 'failure');
+            opp_mapped_select.empty()
+            ap_for = null
+        }
+        else {
+            sale_order_mapped_select.prop('disabled', true)
+            quotation_mapped_select.prop('disabled', true)
+            let quo_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
+            let so_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
+            APLoadPage.LoadQuotation(quo_mapped)
+            APLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quo_mapped?.['id'])
+            APLoadPage.LoadSaleOrder(so_mapped);
+            ap_for = 'opportunity'
+        }
+    }
+    else {
+        quotation_mapped_select.prop('disabled', false)
+        sale_order_mapped_select.prop('disabled', false)
+        ap_for = null
+        APLoadTab.DrawTablePlan()
+    }
+})
 
 APTypeEle.on('change', function () {
     if (APTypeEle.val() === '1') {

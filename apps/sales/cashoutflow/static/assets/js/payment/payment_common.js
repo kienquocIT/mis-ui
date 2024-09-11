@@ -45,41 +45,6 @@ class PaymentLoadPage {
         let url = btn_detail.attr('data-url').replace('0', data?.['id']);
         btn_detail.attr('href', url);
     }
-    static LoadOpportunity(data) {
-        opp_mapped_select.initSelect2({
-            allowClear: true,
-            data: data,
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            // quotation_mapped_select.empty()
-            // sale_order_mapped_select.empty()
-            // if (opp_mapped_select.val()) {
-            //     let selected = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
-            //     if (selected?.['is_close']) {
-            //         $.fn.notifyB({description: `Opportunity ${selected?.['code']} has been closed. Can not select.`}, 'failure');
-            //         opp_mapped_select.empty()
-            //         payment_for = null
-            //     }
-            //     else {
-            //         sale_order_mapped_select.prop('disabled', true)
-            //         quotation_mapped_select.prop('disabled', true)
-            //         let quo_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
-            //         let so_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
-            //         PaymentLoadPage.LoadQuotation(quo_mapped)
-            //         PaymentLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quo_mapped?.['id'])
-            //         PaymentLoadPage.LoadSaleOrder(so_mapped);
-            //         payment_for = 'opportunity'
-            //     }
-            // }
-            // else {
-            //     quotation_mapped_select.prop('disabled', false)
-            //     sale_order_mapped_select.prop('disabled', false)
-            //     payment_for = null
-            //     PaymentLoadTab.DrawTablePlan()
-            // }
-        })
-    }
     static LoadQuotation(data) {
         quotation_mapped_select.initSelect2({
             allowClear: true,
@@ -460,7 +425,6 @@ class PaymentLoadTab {
                 if (data_list.length > 0) {
                     tableLineDetail.find('tbody tr').each(function (index) {
                         $(this).attr('id', `row-${index+1}`)
-                        console.log(data_list[index])
                         PaymentLoadTab.LoadExpenseItem($(this).find('.expense-type-select-box'), data_list[index]?.['expense_type'])
                         PaymentLoadTab.LoadTax($(this).find('.expense-tax-select-box'), data_list[index]?.['expense_tax'])
                         PaymentAction.CheckAndOpenExpandRow($(this), data_list[index])
@@ -1424,61 +1388,15 @@ class PaymentLoadTab {
 }
 
 class PaymentHandle {
-    static LoadPage(sale_code_mapped, type, quotation_object, sale_order_object, ap_mapped_id) {
+    static LoadPage() {
         PaymentLoadPage.LoadCreatedDate()
         PaymentLoadPage.LoadCreator(initEmployee)
-        PaymentLoadPage.LoadOpportunity()
         PaymentLoadPage.LoadQuotation()
         PaymentLoadPage.LoadSaleOrder()
         PaymentLoadPage.LoadSupplier()
         PaymentLoadPage.LoadEmployee()
         PaymentLoadTab.DrawLineDetailTable()
         PaymentLoadTab.DrawTablePlan()
-
-        // if (sale_code_mapped) {
-        //     if (type === 0) {
-        //         PaymentLoadPage.LoadOpportunity(sale_code_mapped)
-        //         payment_for = 'opportunity'
-        //         $('#employee_inherit_id').empty()
-        //         tableLineDetail.find('tbody').html('');
-        //         quotation_mapped_select.find('option').remove();
-        //         sale_order_mapped_select.find('option').remove();
-        //         quotation_mapped_select.prop('disabled', true);
-        //         sale_order_mapped_select.prop('disabled', true);
-        //
-        //         PaymentLoadPage.LoadQuotation(quotation_object)
-        //         PaymentLoadPage.LoadSaleOrder(sale_order_object)
-        //         AP_filter = ap_mapped_id?.['id'];
-        //
-        //         PaymentLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quotation_object?.['id'])
-        //     } else if (type === 1) {
-        //         tableLineDetail.find('tbody').html('');
-        //         opp_mapped_select.find('option').remove();
-        //         quotation_mapped_select.find('option').remove();
-        //         sale_order_mapped_select.find('option').remove();
-        //         opp_mapped_select.prop('disabled', true);
-        //         quotation_mapped_select.prop('disabled', true);
-        //         sale_order_mapped_select.prop('disabled', true);
-        //
-        //         PaymentLoadPage.LoadQuotation(sale_code_mapped)
-        //         payment_for = 'quotation'
-        //         quotation_mapped_select.change()
-        //         AP_filter = ap_mapped_id?.['id'];
-        //     } else if (type === 2) {
-        //         tableLineDetail.find('tbody').html('');
-        //         opp_mapped_select.find('option').remove();
-        //         quotation_mapped_select.find('option').remove();
-        //         sale_order_mapped_select.find('option').remove();
-        //         opp_mapped_select.prop('disabled', true);
-        //         quotation_mapped_select.prop('disabled', true);
-        //         sale_order_mapped_select.prop('disabled', true);
-        //
-        //         PaymentLoadPage.LoadSaleOrder(sale_code_mapped)
-        //         payment_for = 'saleorder'
-        //         sale_order_mapped_select.change()
-        //         AP_filter = ap_mapped_id?.['id'];
-        //     }
-        // }
     }
     static CombinesData(frmEle, for_update = false) {
         let frm = new SetupFormSubmit($(frmEle));
@@ -1588,34 +1506,41 @@ class PaymentHandle {
                     if (option === 'detail') {
                         new PrintTinymceControl().render('1010563f-7c94-42f9-ba99-63d5d26a1aca', data, false);
                     }
-                    // console.log(data)
+                    console.log(data)
                     DETAIL_DATA = data;
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
 
-                    new $x.cls.bastionField({
-                        has_opp: true,
-                        has_inherit: true,
-                        data_inherit: [{
-                            "id": data?.['employee_inherit']?.['id'],
-                            "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                            "first_name": data?.['employee_inherit']?.['first_name'] || '',
-                            "last_name": data?.['employee_inherit']?.['last_name'] || '',
-                            "email": data?.['employee_inherit']?.['email'] || '',
-                            "is_active": data?.['employee_inherit']?.['is_active'] || false,
-                            "selected": true,
-                        }],
-                        data_opp: [{
-                            "id": data?.['opportunity_mapped']?.['id'] || '',
-                            "title": data?.['opportunity_mapped']?.['title'] || '',
-                            "code": data?.['opportunity_mapped']?.['code'] || '',
-                            "selected": true,
-                        }]
-                    }).init();
+                    opp_mapped_select.prop('disabled', true)
+                    quotation_mapped_select.prop('disabled', true)
+                    sale_order_mapped_select.prop('disabled', true)
+                    $('#employee_inherit_id').prop('disabled', true)
+
                     if (Object.keys(data?.['opportunity_mapped']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
+                        new $x.cls.bastionField({
+                            has_opp: true,
+                            has_inherit: true,
+                            data_inherit: [{
+                                "id": data?.['employee_inherit']?.['id'],
+                                "full_name": data?.['employee_inherit']?.['full_name'] || '',
+                                "first_name": data?.['employee_inherit']?.['first_name'] || '',
+                                "last_name": data?.['employee_inherit']?.['last_name'] || '',
+                                "email": data?.['employee_inherit']?.['email'] || '',
+                                "is_active": data?.['employee_inherit']?.['is_active'] || false,
+                                "selected": true,
+                            }],
+                            data_opp: [{
+                                "id": data?.['opportunity_mapped']?.['id'] || '',
+                                "title": data?.['opportunity_mapped']?.['title'] || '',
+                                "code": data?.['opportunity_mapped']?.['code'] || '',
+                                "selected": true,
+                            }]
+                        }).init();
                         PaymentLoadPage.LoadQuotation(data?.['opportunity_mapped']?.['quotation_mapped'])
                         PaymentLoadTab.LoadPlanQuotation(opp_mapped_select.val(), data?.['opportunity_mapped']?.['quotation_mapped']?.['id'])
-                    } else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
+                        payment_for = 'opportunity'
+                    }
+                    else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
                         PaymentLoadPage.LoadQuotation(data?.['quotation_mapped'])
 
                         let dataParam = {'quotation_id': quotation_mapped_select.val()}
@@ -1645,15 +1570,36 @@ class PaymentHandle {
                             })
 
                         PaymentLoadTab.LoadPlanQuotationOnly(data?.['quotation_mapped']?.['id'])
-                    } else if (Object.keys(data?.['sale_order_mapped']).length !== 0) {
+                        payment_for = 'quotation'
+                    }
+                    else if (Object.keys(data?.['sale_order_mapped']).length !== 0) {
                         PaymentLoadPage.LoadSaleOrder(data?.['sale_order_mapped'])
                         PaymentLoadPage.LoadQuotation(data?.['sale_order_mapped']?.['quotation_mapped'])
 
                         PaymentLoadTab.LoadPlanSaleOrderOnly(data?.['sale_order_mapped']?.['id'])
+                        payment_for = 'saleorder'
+                    }
+                    else {
+                        new $x.cls.bastionField({
+                            has_opp: false,
+                            has_inherit: true,
+                            data_inherit: [{
+                                "id": data?.['employee_inherit']?.['id'],
+                                "full_name": data?.['employee_inherit']?.['full_name'] || '',
+                                "first_name": data?.['employee_inherit']?.['first_name'] || '',
+                                "last_name": data?.['employee_inherit']?.['last_name'] || '',
+                                "email": data?.['employee_inherit']?.['email'] || '',
+                                "is_active": data?.['employee_inherit']?.['is_active'] || false,
+                                "selected": true,
+                            }],
+                        }).init();
+                        payment_for = null
                     }
 
                     $('#title').val(data?.['title']);
+
                     $('#created_date_id').val(data?.['date_created'].split(' ')[0]).prop('readonly', true);
+
                     PaymentLoadPage.LoadCreator(data?.['employee_created'])
 
                     if (data?.['is_internal_payment']) {
@@ -1685,6 +1631,7 @@ class PaymentHandle {
                             PaymentLoadTab.LoadBankInfor(data?.['supplier']?.['bank_accounts_mapped']);
                         }
                     }
+
                     $('#payment-method').val(data?.['method']).trigger('change')
 
                     PaymentLoadTab.DrawLineDetailTable(data?.['expense_items'], option)
@@ -1697,12 +1644,39 @@ class PaymentHandle {
                     })
 
                     PaymentAction.DisabledDetailPage(option);
-                    quotation_mapped_select.attr('disabled', true).attr('readonly', true);
-                    sale_order_mapped_select.attr('disabled', true).attr('readonly', true);
                 }
             })
     }
 }
+
+opp_mapped_select.on('change', function () {
+    quotation_mapped_select.empty()
+    sale_order_mapped_select.empty()
+    if (opp_mapped_select.val()) {
+        let selected = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
+        if (selected?.['is_close']) {
+            $.fn.notifyB({description: `Opportunity ${selected?.['code']} has been closed. Can not select.`}, 'failure');
+            opp_mapped_select.empty()
+            payment_for = null
+        }
+        else {
+            sale_order_mapped_select.prop('disabled', true)
+            quotation_mapped_select.prop('disabled', true)
+            let quo_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
+            let so_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
+            PaymentLoadPage.LoadQuotation(quo_mapped)
+            PaymentLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quo_mapped?.['id'])
+            PaymentLoadPage.LoadSaleOrder(so_mapped);
+            payment_for = 'opportunity'
+        }
+    }
+    else {
+        quotation_mapped_select.prop('disabled', false)
+        sale_order_mapped_select.prop('disabled', false)
+        payment_for = null
+        PaymentLoadTab.DrawTablePlan()
+    }
+})
 
 checkbox_internal.on('change', function () {
     if ($(this).prop('checked')) {

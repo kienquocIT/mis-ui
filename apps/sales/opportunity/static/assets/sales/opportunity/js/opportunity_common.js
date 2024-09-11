@@ -640,6 +640,7 @@ class OpportunityLoadDetail {
         });
 
         $('#btnSavePermitMember').on('click', function () {
+            WindowControl.showLoading()
             let bodyData = {
                 'permit_view_this_opp': eleViewOppMember.prop('checked'),
                 'permit_add_member': eleAddOppMember.prop('checked'),
@@ -658,14 +659,28 @@ class OpportunityLoadDetail {
                             'description': $.fn.transEle.attr('data-success'),
                         }, 'success')
                         OpportunityLoadDetail.clickEditMember(boxEditPermitEle.data('id'), memberEditEle, boxEditPermitEle, eleViewOppMember, eleAddOppMember);
+                        WindowControl.hideLoading()
+                        Swal.fire({
+                            html:
+                            '<span class="text-primary">Please save Update Opportunity page to apply all the permissions!</span>',
+                            customClass: {
+                                confirmButton: 'btn btn-sm btn-primary',
+                                actions: '',
+                            },
+                            buttonsStyling: false,
+                        })
                     } else {
                         $.fn.notifyB({
                             'description': $.fn.transEle.attr('data-fail'),
                         }, 'failure')
+                        WindowControl.hideLoading()
                     }
                 },
                 (errs) => {
-
+                    $.fn.notifyB({
+                            'description': $.fn.transEle.attr('data-fail'),
+                        }, 'failure')
+                    WindowControl.hideLoading()
                 }
             )
         });

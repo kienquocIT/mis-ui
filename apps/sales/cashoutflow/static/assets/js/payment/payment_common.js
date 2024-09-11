@@ -1593,29 +1593,32 @@ class PaymentHandle {
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
 
-                    new $x.cls.bastionField({
-                        has_opp: true,
-                        has_inherit: true,
-                        data_inherit: [{
-                            "id": data?.['employee_inherit']?.['id'],
-                            "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                            "first_name": data?.['employee_inherit']?.['first_name'] || '',
-                            "last_name": data?.['employee_inherit']?.['last_name'] || '',
-                            "email": data?.['employee_inherit']?.['email'] || '',
-                            "is_active": data?.['employee_inherit']?.['is_active'] || false,
-                            "selected": true,
-                        }],
-                        data_opp: [{
-                            "id": data?.['opportunity_mapped']?.['id'] || '',
-                            "title": data?.['opportunity_mapped']?.['title'] || '',
-                            "code": data?.['opportunity_mapped']?.['code'] || '',
-                            "selected": true,
-                        }]
-                    }).init();
+
                     if (Object.keys(data?.['opportunity_mapped']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
+                        new $x.cls.bastionField({
+                            has_opp: true,
+                            has_inherit: true,
+                            data_inherit: [{
+                                "id": data?.['employee_inherit']?.['id'],
+                                "full_name": data?.['employee_inherit']?.['full_name'] || '',
+                                "first_name": data?.['employee_inherit']?.['first_name'] || '',
+                                "last_name": data?.['employee_inherit']?.['last_name'] || '',
+                                "email": data?.['employee_inherit']?.['email'] || '',
+                                "is_active": data?.['employee_inherit']?.['is_active'] || false,
+                                "selected": true,
+                            }],
+                            data_opp: [{
+                                "id": data?.['opportunity_mapped']?.['id'] || '',
+                                "title": data?.['opportunity_mapped']?.['title'] || '',
+                                "code": data?.['opportunity_mapped']?.['code'] || '',
+                                "selected": true,
+                            }]
+                        }).init();
                         PaymentLoadPage.LoadQuotation(data?.['opportunity_mapped']?.['quotation_mapped'])
                         PaymentLoadTab.LoadPlanQuotation(opp_mapped_select.val(), data?.['opportunity_mapped']?.['quotation_mapped']?.['id'])
-                    } else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
+                        payment_for = 'opportunity'
+                    }
+                    else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
                         PaymentLoadPage.LoadQuotation(data?.['quotation_mapped'])
 
                         let dataParam = {'quotation_id': quotation_mapped_select.val()}
@@ -1645,15 +1648,36 @@ class PaymentHandle {
                             })
 
                         PaymentLoadTab.LoadPlanQuotationOnly(data?.['quotation_mapped']?.['id'])
-                    } else if (Object.keys(data?.['sale_order_mapped']).length !== 0) {
+                        payment_for = 'quotation'
+                    }
+                    else if (Object.keys(data?.['sale_order_mapped']).length !== 0) {
                         PaymentLoadPage.LoadSaleOrder(data?.['sale_order_mapped'])
                         PaymentLoadPage.LoadQuotation(data?.['sale_order_mapped']?.['quotation_mapped'])
 
                         PaymentLoadTab.LoadPlanSaleOrderOnly(data?.['sale_order_mapped']?.['id'])
+                        payment_for = 'saleorder'
+                    }
+                    else {
+                        new $x.cls.bastionField({
+                            has_opp: false,
+                            has_inherit: true,
+                            data_inherit: [{
+                                "id": data?.['employee_inherit']?.['id'],
+                                "full_name": data?.['employee_inherit']?.['full_name'] || '',
+                                "first_name": data?.['employee_inherit']?.['first_name'] || '',
+                                "last_name": data?.['employee_inherit']?.['last_name'] || '',
+                                "email": data?.['employee_inherit']?.['email'] || '',
+                                "is_active": data?.['employee_inherit']?.['is_active'] || false,
+                                "selected": true,
+                            }],
+                        }).init();
+                        payment_for = null
                     }
 
                     $('#title').val(data?.['title']);
+
                     $('#created_date_id').val(data?.['date_created'].split(' ')[0]).prop('readonly', true);
+
                     PaymentLoadPage.LoadCreator(data?.['employee_created'])
 
                     if (data?.['is_internal_payment']) {
@@ -1685,6 +1709,7 @@ class PaymentHandle {
                             PaymentLoadTab.LoadBankInfor(data?.['supplier']?.['bank_accounts_mapped']);
                         }
                     }
+
                     $('#payment-method').val(data?.['method']).trigger('change')
 
                     PaymentLoadTab.DrawLineDetailTable(data?.['expense_items'], option)

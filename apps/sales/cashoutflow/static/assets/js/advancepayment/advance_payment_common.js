@@ -1179,7 +1179,7 @@ class APAction {
 }
 
 class APHandle {
-    static LoadPage(opportunity_obj, quotation_object, sale_order_object, type) {
+    static LoadPage() {
         APLoadPage.LoadCreatedDate()
         APLoadPage.LoadCreator(initEmployee)
         APLoadPage.LoadQuotation()

@@ -30,9 +30,10 @@ class PaymentCreate(View):
     )
     def get(self, request, *args, **kwargs):
         return {
-                   'data': {'employee_current': request.user.employee_current_data},
-                   'list_from_app': 'cashoutflow.payment.create',
-               }, status.HTTP_200_OK
+            'data': {'employee_current': request.user.employee_current_data},
+            'list_from_app': 'cashoutflow.payment.create',
+            'form_id': 'form-create-payment'
+        }, status.HTTP_200_OK
 
 
 class PaymentListAPI(APIView):
@@ -70,8 +71,9 @@ class PaymentDetail(View):
     )
     def get(self, request, *args, **kwargs):
         return {
-                   'data': {'employee_current': request.user.employee_current_data}
-               }, status.HTTP_200_OK
+            'data': {'employee_current': request.user.employee_current_data},
+            'form_id': 'form-detail-payment'
+        }, status.HTTP_200_OK
 
 
 class PaymentUpdate(View):

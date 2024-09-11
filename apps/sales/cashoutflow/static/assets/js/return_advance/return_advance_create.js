@@ -9,7 +9,7 @@ $(document).ready(function () {
     WFRTControl.setWFInitialData('returnadvance', 'POST')
 
     // SUBMIT FORM CREATE ADVANCE PAYMENT
-    $('#frmCreate').submit(function (event) {
+    $('#form-create-return-ap').submit(function (event) {
         event.preventDefault();
         let form = ReturnAPHandle.CombinesData($(this));
         if (form) {

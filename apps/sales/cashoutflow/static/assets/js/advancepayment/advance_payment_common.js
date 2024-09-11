@@ -1254,7 +1254,7 @@ class APHandle {
         })
         frm.dataForm['ap_item_list'] = ap_item_list
 
-        // console.log(frm)
+        console.log(frm)
         return frm
     }
     static LoadDetailAP(option) {

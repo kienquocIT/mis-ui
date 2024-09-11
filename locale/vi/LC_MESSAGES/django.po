@@ -2277,7 +2277,7 @@ msgstr "Mã phiếu tạm ứng"
 
 #
 msgid "Return Status"
-msgstr "Trạng thái hoàn trả"
+msgstr "TT hoàn trả"
 
 #
 msgid "Opportunity list"

@@ -56,9 +56,9 @@ function InitAdvancePaymentTable(data_param={}) {
                 render: (data, type, row) => {
                     let to_employee_trans = dtb.attr('data-type-translate-employee')
                     let to_supplier_trans = dtb.attr('data-type-translate-supplier')
-                    if (row.advance_payment_type === 'To Employee') {
+                    if (row?.['advance_payment_type'] === 0) {
                         return `<span class="small text-muted">${to_employee_trans}</span>`
-                    } else if (row.advance_payment_type === 'To Supplier') {
+                    } else if (row?.['advance_payment_type'] === 1) {
                         return `<span class="small text-muted">${to_supplier_trans}</span>`
                     }
                 }
@@ -68,13 +68,13 @@ function InitAdvancePaymentTable(data_param={}) {
                 className: 'wrap-text',
                 render: (data, type, row) => {
                     if (row?.['opportunity_mapped']?.['id']) {
-                        return `<span><a class="link-secondary underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['opportunity_mapped']?.['id'])}"><b>${row?.['sale_code'] ? row?.['sale_code'] : ''}</b></a></span>`
+                        return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['opportunity_mapped']?.['id'])}"><b>${row?.['sale_code'] ? row?.['sale_code'] : ''}</b></a></span>`
                     }
                     else if (row?.['quotation_mapped']?.['id']) {
-                        return `<span><a class="link-secondary underline_hover" target="_blank" href="${dtb.attr('data-url-quo-detail').replace('0', row?.['quotation_mapped']?.['id'])}"><b>${row?.['sale_code'] ? row?.['sale_code'] : ''}</b></a></span>`
+                        return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-quo-detail').replace('0', row?.['quotation_mapped']?.['id'])}"><b>${row?.['sale_code'] ? row?.['sale_code'] : ''}</b></a></span>`
                     }
                     else if (row?.['sale_order_mapped']?.['id']) {
-                        return `<span><a class="link-secondary underline_hover" target="_blank" href="${dtb.attr('data-url-so-detail').replace('0', row?.['sale_order_mapped']?.['id'])}"><b>${row?.['sale_code'] ? row?.['sale_code'] : ''}</b></a></span>`
+                        return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-so-detail').replace('0', row?.['sale_order_mapped']?.['id'])}"><b>${row?.['sale_code'] ? row?.['sale_code'] : ''}</b></a></span>`
                     }
                     else {
                         return ''

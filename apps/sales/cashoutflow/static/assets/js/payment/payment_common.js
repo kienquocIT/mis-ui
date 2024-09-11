@@ -52,32 +52,32 @@ class PaymentLoadPage {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            // quotation_mapped_select.empty()
-            // sale_order_mapped_select.empty()
-            // if (opp_mapped_select.val()) {
-            //     let selected = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
-            //     if (selected?.['is_close']) {
-            //         $.fn.notifyB({description: `Opportunity ${selected?.['code']} has been closed. Can not select.`}, 'failure');
-            //         opp_mapped_select.empty()
-            //         payment_for = null
-            //     }
-            //     else {
-            //         sale_order_mapped_select.prop('disabled', true)
-            //         quotation_mapped_select.prop('disabled', true)
-            //         let quo_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
-            //         let so_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
-            //         PaymentLoadPage.LoadQuotation(quo_mapped)
-            //         PaymentLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quo_mapped?.['id'])
-            //         PaymentLoadPage.LoadSaleOrder(so_mapped);
-            //         payment_for = 'opportunity'
-            //     }
-            // }
-            // else {
-            //     quotation_mapped_select.prop('disabled', false)
-            //     sale_order_mapped_select.prop('disabled', false)
-            //     payment_for = null
-            //     PaymentLoadTab.DrawTablePlan()
-            // }
+            quotation_mapped_select.empty()
+            sale_order_mapped_select.empty()
+            if (opp_mapped_select.val()) {
+                let selected = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
+                if (selected?.['is_close']) {
+                    $.fn.notifyB({description: `Opportunity ${selected?.['code']} has been closed. Can not select.`}, 'failure');
+                    opp_mapped_select.empty()
+                    payment_for = null
+                }
+                else {
+                    sale_order_mapped_select.prop('disabled', true)
+                    quotation_mapped_select.prop('disabled', true)
+                    let quo_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
+                    let so_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
+                    PaymentLoadPage.LoadQuotation(quo_mapped)
+                    PaymentLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quo_mapped?.['id'])
+                    PaymentLoadPage.LoadSaleOrder(so_mapped);
+                    payment_for = 'opportunity'
+                }
+            }
+            else {
+                quotation_mapped_select.prop('disabled', false)
+                sale_order_mapped_select.prop('disabled', false)
+                payment_for = null
+                PaymentLoadTab.DrawTablePlan()
+            }
         })
     }
     static LoadQuotation(data) {

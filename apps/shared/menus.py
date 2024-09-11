@@ -712,7 +712,7 @@ class SpaceCommon:
 class SpaceItem:
     mapping = {
         'crm': SpaceCommon(
-            'CRM',
+            'Sales',
             'crm',
             icon='<i class="fa-solid fa-users-gear"></i>',
             menus=[

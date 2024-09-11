@@ -254,6 +254,27 @@ class GRLoadDataHandle {
         return true;
     };
 
+    static loadSetupProduction() {
+        let dataProduct = {};
+        let dataPRProducts = [];
+        for (let idx of GRLoadDataHandle.$boxProductionReport.val()) {
+            let data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxProductionReport, idx);
+            if (data?.['product_data']?.['product_choice'].includes(1)) {
+                if (Object.keys(dataProduct).length === 0) {
+                    for (let key in data) {
+                        dataProduct[key] = data?.[key];
+                    }
+                } else {
+                    dataProduct['product_quantity_order_actual'] += data?.['product_quantity_order_actual'];
+                    dataProduct['gr_remain_quantity'] += data?.['gr_remain_quantity'];
+                }
+                dataPRProducts.push(data);
+            }
+        }
+        dataProduct['pr_products_data'] = dataPRProducts;
+        return dataProduct;
+    };
+
     static loadCheckPOProduct(ele) {
         let tablePO = GRDataTableHandle.tablePOProduct;
         let rowChecked = ele.closest('tr');
@@ -850,10 +871,9 @@ class GRLoadDataHandle {
         return true;
     };
 
-    static loadClearModalAreas() {
-        for (let eleCheck of GRDataTableHandle.tablePOProduct[0].querySelectorAll('.table-row-checkbox')) {
-            eleCheck.checked = false;
-        }
+    static loadClearModal() {
+        GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
+        GRDataTableHandle.tablePR.DataTable().clear().draw();
         $('#scroll-table-pr')[0].setAttribute('hidden', 'true');
         GRDataTableHandle.tableWH.DataTable().clear().draw();
         $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
@@ -1065,10 +1085,6 @@ class GRDataTableHandle {
     static tableSerial = $('#datable-good-receipt-manage-serial');
     static tableLineDetailPO = $('#datable-good-receipt-line-detail-po');
 
-    static tableIAProduct = $('#datable-good-receipt-ia-product');
-    static tableIALot = $('#datable-good-receipt-ia-lot');
-    static tableIASerial = $('#datable-good-receipt-ia-serial');
-
     // PO
     static dataTableGoodReceiptPOProduct(data) {
         GRDataTableHandle.tablePOProduct.not('.dataTable').DataTableDefault({
@@ -1140,6 +1156,18 @@ class GRDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
+                        let typeGR = GRLoadDataHandle.typeSelectEle.val();
+                        let pr = GRLoadDataHandle.transEle.attr('data-stock');
+                        if (typeGR === '1') {
+                            if (row?.['purchase_request_data']?.['code']) {
+                                pr = row?.['purchase_request_data']?.['code'];
+                            }
+                        }
+                        if (typeGR === '3') {
+                            if (row?.['production_report_data']?.['code']) {
+                                pr = row?.['production_report_data']?.['code'];
+                            }
+                        }
                         return `<div class="d-flex align-items-center ml-2">
                                     <div class="form-check">
                                         <input 
@@ -1148,7 +1176,7 @@ class GRDataTableHandle {
                                             data-id="${row?.['purchase_order_request_product_id']}" 
                                         >
                                     </div>
-                                    <span class="table-row-item">${row?.['purchase_request_data']?.['code'] ? row?.['purchase_request_data']?.['code'] : GRLoadDataHandle.transEle.attr('data-stock')}</span>
+                                    <span class="table-row-item">${pr}</span>
                                 </div>`;
                     }
                 },
@@ -1912,65 +1940,6 @@ class GRValidateHandle {
         return true
     };
 
-    static validateIALotNumber(ele) {
-        let lot_number = ele.value;
-        if (lot_number !== '') {
-            let dataIAProductCheckedRaw = GRDataTableHandle.tableIAProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
-            if (dataIAProductCheckedRaw) {
-                let dataIAProductChecked = JSON.parse(dataIAProductCheckedRaw);
-                if (dataIAProductChecked) {
-                    let productID = dataIAProductChecked?.['product']?.['id'];
-                    let whID = dataIAProductChecked?.['warehouse']?.['id'];
-                    $.fn.callAjax2({
-                            'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-lot'),
-                            'method': 'GET',
-                            'data': {
-                                'product_warehouse__product_id': dataIAProductChecked?.['product']?.['id'],
-                                'lot_number': lot_number
-                            },
-                            'isDropdown': true,
-                        }
-                    ).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
-                                    for (let wh_lot of data?.['warehouse_lot_list']) {
-                                        if (wh_lot?.['product_warehouse']) {
-                                            if (wh_lot?.['product_warehouse']?.['product'] && wh_lot?.['product_warehouse']?.['warehouse']) {
-                                                if (wh_lot?.['product_warehouse']?.['product']?.['id'] === productID && wh_lot?.['product_warehouse']?.['warehouse']?.['id'] === whID) {
-                                                    ele.value = '';
-                                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
-                                                    if (eleImport) {
-                                                        eleImport.value = '0';
-                                                    }
-                                                    GRLoadDataHandle.loadIAQuantityImport();
-                                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
-                                                    return false
-                                                }
-                                                if (wh_lot?.['product_warehouse']?.['product']?.['id'] !== productID) {
-                                                    ele.value = '';
-                                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
-                                                    if (eleImport) {
-                                                        eleImport.value = '0';
-                                                    }
-                                                    GRLoadDataHandle.loadIAQuantityImport();
-                                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
-                                                    return false
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    )
-                }
-            }
-        }
-        return true
-    };
-
     static validateSerialNumber(ele) {
         let serial_number = ele.value;
         let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
@@ -2016,51 +1985,6 @@ class GRValidateHandle {
         return true
     };
 
-    static validateIASerialNumber(ele) {
-        let serial_number = ele.value;
-        let dataProductCheckedRaw = GRDataTableHandle.tableIAProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
-        if (dataProductCheckedRaw) {
-            let dataProductChecked = JSON.parse(dataProductCheckedRaw);
-            $.fn.callAjax2({
-                    'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-serial'),
-                    'method': 'GET',
-                    'data': {
-                        'product_warehouse__product_id': dataProductChecked?.['product']?.['id'],
-                        'serial_number': serial_number
-                    },
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('warehouse_serial_list') && Array.isArray(data.warehouse_serial_list)) {
-                            if (data.warehouse_serial_list.length > 0) {
-                                ele.value = '';
-                                // update quantity import by serial
-                                GRLoadDataHandle.loadIAQuantityImport();
-                                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-serial-exist')}, 'failure');
-                                return false
-                            } else {
-                                // update quantity import by serial
-                                let importResult = GRLoadDataHandle.loadIAQuantityImport();
-                                if (importResult === false) {
-                                    // Get the index of the current row within the DataTable
-                                    let rowIndex = GRDataTableHandle.tableIASerial.DataTable().row(ele.closest('tr')).index();
-                                    let row = GRDataTableHandle.tableIASerial.DataTable().row(rowIndex);
-                                    // Delete current row
-                                    row.remove().draw();
-                                    GRLoadDataHandle.loadIAQuantityImport();
-                                }
-                            }
-                        }
-                    }
-                }
-            )
-        }
-        return true
-    };
-
     static validateLotNumberExistRow(ele) {
         if (ele.value !== '') {
             let checkNum = 0;
@@ -2078,44 +2002,10 @@ class GRValidateHandle {
         return true;
     };
 
-    static validateIALotNumberExistRow(ele) {
-        if (ele.value !== '') {
-            let checkNum = 0;
-            for (let eleLotNumber of GRDataTableHandle.tableIALot[0].querySelectorAll(".table-row-lot-number")) {
-                if (ele.value === eleLotNumber.value) {
-                    checkNum++;
-                }
-            }
-            if (checkNum > 1) {
-                ele.value = '';
-                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-different')}, 'failure');
-                return false
-            }
-        }
-        return true;
-    };
-
     static validateSerialNumberExistRow(ele) {
         if (ele.value !== '') {
             let checkNum = 0;
             for (let eleSerialNumber of GRDataTableHandle.tableSerial[0].querySelectorAll(".table-row-serial-number")) {
-                if (ele.value === eleSerialNumber.value) {
-                    checkNum++;
-                }
-            }
-            if (checkNum > 1) {
-                ele.value = '';
-                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-serial-different')}, 'failure');
-                return false
-            }
-        }
-        return true;
-    };
-
-    static validateIASerialNumberExistRow(ele) {
-        if (ele.value !== '') {
-            let checkNum = 0;
-            for (let eleSerialNumber of GRDataTableHandle.tableIASerial[0].querySelectorAll(".table-row-serial-number")) {
                 if (ele.value === eleSerialNumber.value) {
                     checkNum++;
                 }

@@ -44,7 +44,7 @@ $(function () {
         // Action on change dropdown PO
         GRLoadDataHandle.POSelectEle.on('change', function () {
             GRLoadDataHandle.loadChangePO($(this));
-            GRLoadDataHandle.loadClearModalAreas();
+            GRLoadDataHandle.loadClearModal();
             GRLoadDataHandle.loadCallAjaxProduct();
             btnEdit.click();
         });
@@ -207,6 +207,7 @@ $(function () {
 
         // PRODUCTION BEGIN
         GRLoadDataHandle.$boxProductionOrder.on('change', function () {
+            GRLoadDataHandle.loadClearModal();
             if (GRLoadDataHandle.$boxProductionOrder.val()) {
                 let data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxProductionOrder, GRLoadDataHandle.$boxProductionOrder.val());
                 GRLoadDataHandle.$boxProductionReport.removeAttr('disabled');
@@ -216,15 +217,8 @@ $(function () {
 
         GRLoadDataHandle.$boxProductionReport.on('change', function () {
             if (GRLoadDataHandle.$boxProductionReport.val() && GRLoadDataHandle.$boxProductionReport.val().length > 0) {
-                let dataProducts = [];
-                for (let idx of GRLoadDataHandle.$boxProductionReport.val()) {
-                    let data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxProductionReport, idx);
-                    if (data?.['product_data']?.['product_choice'].includes(1)) {
-                        dataProducts.push(data);
-                    }
-                }
                 GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
-                GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
+                GRDataTableHandle.tablePOProduct.DataTable().rows.add([GRLoadDataHandle.loadSetupProduction()]).draw();
             }
             btnEdit.click();
         });

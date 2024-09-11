@@ -2229,7 +2229,7 @@ msgstr "Tạm ứng"
 
 #
 msgid "Sale Code"
-msgstr "Mã giao dịch bán hàng"
+msgstr "Mã GD bán hàng"
 
 #
 msgid "More information"

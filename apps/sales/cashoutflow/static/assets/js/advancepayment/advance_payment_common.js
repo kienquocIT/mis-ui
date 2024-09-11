@@ -1189,29 +1189,33 @@ class APHandle {
         APLoadTab.LoadLineDetailTable()
         APLoadTab.DrawTablePlan()
     }
-    static CombinesData(frmEle) {
+    static CombinesData(frmEle, option) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['title'] = $('#title').val()
-        if (ap_for === 'opportunity') {
-            frm.dataForm['opportunity_mapped_id'] = opp_mapped_select.val()
-            frm.dataForm['sale_code_type'] = 0
+
+        if (option === 'create') {
+            if (ap_for === 'opportunity') {
+                frm.dataForm['opportunity_mapped_id'] = opp_mapped_select.val()
+                frm.dataForm['sale_code_type'] = 0
+            }
+            else if (ap_for === 'quotation') {
+                frm.dataForm['quotation_mapped_id'] = quotation_mapped_select.val()
+                frm.dataForm['sale_code_type'] = 0
+            }
+            else if (ap_for === 'saleorder') {
+                frm.dataForm['sale_order_mapped_id'] = sale_order_mapped_select.val()
+                frm.dataForm['sale_code_type'] = 0
+            }
+            else {
+                frm.dataForm['opportunity_mapped_id'] = null
+                frm.dataForm['quotation_mapped_id'] = null
+                frm.dataForm['sale_order_mapped_id'] = null
+                frm.dataForm['sale_code_type'] = 2
+            }
+            frm.dataForm['employee_inherit_id'] = $('#employee_inherit_id').val()
         }
-        else if (ap_for === 'quotation') {
-            frm.dataForm['quotation_mapped_id'] = quotation_mapped_select.val()
-            frm.dataForm['sale_code_type'] = 0
-        }
-        else if (ap_for === 'saleorder') {
-            frm.dataForm['sale_order_mapped_id'] = sale_order_mapped_select.val()
-            frm.dataForm['sale_code_type'] = 0
-        }
-        else {
-            frm.dataForm['opportunity_mapped_id'] = null
-            frm.dataForm['quotation_mapped_id'] = null
-            frm.dataForm['sale_order_mapped_id'] = null
-            frm.dataForm['sale_code_type'] = 2
-        }
-        frm.dataForm['employee_inherit_id'] = $('#employee_inherit_id').val()
+
         frm.dataForm['advance_payment_type'] = APTypeEle.val()
         frm.dataForm['supplier_id'] = supplierEle.val() ? supplierEle.val() : null
         frm.dataForm['method'] = ap_method_Ele.val()

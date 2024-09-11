@@ -1398,29 +1398,31 @@ class PaymentHandle {
         PaymentLoadTab.DrawLineDetailTable()
         PaymentLoadTab.DrawTablePlan()
     }
-    static CombinesData(frmEle, for_update = false) {
+    static CombinesData(frmEle, option) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['title'] = $('#title').val()
-        if (payment_for === 'opportunity') {
-            frm.dataForm['opportunity_mapped_id'] = opp_mapped_select.val()
-            frm.dataForm['sale_code_type'] = 0
+        if (option === 'create') {
+            if (payment_for === 'opportunity') {
+                frm.dataForm['opportunity_mapped_id'] = opp_mapped_select.val()
+                frm.dataForm['sale_code_type'] = 0
+            }
+            else if (payment_for === 'quotation') {
+                frm.dataForm['quotation_mapped_id'] = quotation_mapped_select.val()
+                frm.dataForm['sale_code_type'] = 0
+            }
+            else if (payment_for === 'saleorder') {
+                frm.dataForm['sale_order_mapped_id'] = sale_order_mapped_select.val()
+                frm.dataForm['sale_code_type'] = 0
+            }
+            else {
+                frm.dataForm['opportunity_mapped_id'] = null
+                frm.dataForm['quotation_mapped_id'] = null
+                frm.dataForm['sale_order_mapped_id'] = null
+                frm.dataForm['sale_code_type'] = 2
+            }
+            frm.dataForm['employee_inherit_id'] = $('#employee_inherit_id').val()
         }
-        else if (payment_for === 'quotation') {
-            frm.dataForm['quotation_mapped_id'] = quotation_mapped_select.val()
-            frm.dataForm['sale_code_type'] = 0
-        }
-        else if (payment_for === 'saleorder') {
-            frm.dataForm['sale_order_mapped_id'] = sale_order_mapped_select.val()
-            frm.dataForm['sale_code_type'] = 0
-        }
-        else {
-            frm.dataForm['opportunity_mapped_id'] = null
-            frm.dataForm['quotation_mapped_id'] = null
-            frm.dataForm['sale_order_mapped_id'] = null
-            frm.dataForm['sale_code_type'] = 2
-        }
-        frm.dataForm['employee_inherit_id'] = $('#employee_inherit_id').val()
         frm.dataForm['supplier_id'] = supplierEle.val()
         frm.dataForm['is_internal_payment'] = checkbox_internal.prop('checked')
         frm.dataForm['employee_payment_id'] = employeeEle.val()

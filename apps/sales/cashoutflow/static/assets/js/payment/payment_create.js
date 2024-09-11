@@ -6,7 +6,7 @@ $(document).ready(function () {
 
     $('#form-create-payment').submit(function (event) {
         event.preventDefault();
-        let form = PaymentHandle.CombinesData($(this));
+        let form = PaymentHandle.CombinesData($(this), 'create');
         if (form) {
             WFRTControl.callWFSubmitForm(form);
         }

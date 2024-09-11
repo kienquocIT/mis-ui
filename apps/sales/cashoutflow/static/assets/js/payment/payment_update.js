@@ -5,7 +5,7 @@ $(document).ready(function () {
 
     $('#form-detail-payment').submit(function (event) {
         event.preventDefault();
-        let form = PaymentHandle.CombinesData($(this), true);
+        let form = PaymentHandle.CombinesData($(this), 'update');
         if (form) {
             WFRTControl.callWFSubmitForm(form);
         }

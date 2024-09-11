@@ -8759,3 +8759,7 @@ msgstr "Xuất trước đó"
 #
 msgid "Filter for expiring return advance"
 msgstr "Lọc lấy phiếu sắp đến hạn hoàn ứng"
+
+#
+msgid "Please save Update Opportunity page to apply all the permissions!"
+msgstr "Lưu Cơ Hội Kinh Doanh để các quyền được áp dụng!"

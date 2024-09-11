@@ -662,7 +662,7 @@ class OpportunityLoadDetail {
                         WindowControl.hideLoading()
                         Swal.fire({
                             html:
-                            '<span class="text-primary">Please save Update Opportunity page to apply all the permissions!</span>',
+                            `<h6 class="text-primary">${$('#trans-script').attr('data-trans-notify-update-permission')}</h6>`,
                             customClass: {
                                 confirmButton: 'btn btn-sm btn-primary',
                                 actions: '',

@@ -73,8 +73,6 @@ class ProdReportLoadDataHandle {
         $('#btn-collapse').click(function () {
             $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
-        // init WF
-        // WFRTControl.setWFInitialData('productionorder', ProdOrderLoadDataHandle.$form.attr('data-method'));
     };
 
     static loadChangeProductionOrder() {

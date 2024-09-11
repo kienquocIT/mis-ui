@@ -37,7 +37,7 @@ $(function () {
                     if ($form[0].classList.contains('sale-order')) {
                         appCode = 'saleorder';
                     }
-                    WFRTControl.setWFInitialData(appCode, $form.attr('data-method'));
+                    WFRTControl.setWFInitialData(appCode);
 
                     // init diagram
                     DiagramControl.setBtnDiagram('saleorder.saleorder');

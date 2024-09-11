@@ -66,7 +66,7 @@ $(function () {
         if (formSubmit[0].classList.contains('sale-order')) {
             appCode = 'saleorder';
         }
-        WFRTControl.setWFInitialData(appCode, formSubmit.attr('data-method'));
+        WFRTControl.setWFInitialData(appCode);
 
 
 // Action on change dropdown opportunity

@@ -324,9 +324,13 @@ class GRLoadDataHandle {
             if (elePRChecked) {
                 if (elePRChecked.getAttribute('data-id')) {
                     let idPR = elePRChecked.getAttribute('data-id');
+                    let keyCheck = 'purchase_order_request_product_id';
+                    if (typeGR === '3') {
+                        keyCheck = 'production_report_id';
+                    }
                     if (dataStore?.['pr_products_data']) {
                         for (let prProductData of dataStore?.['pr_products_data']) {
-                            if (prProductData?.['purchase_order_request_product_id'] === idPR) {
+                            if (prProductData?.[keyCheck] === idPR) {
                                 dataStore = prProductData;
                                 break;
                             }
@@ -1157,15 +1161,18 @@ class GRDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let typeGR = GRLoadDataHandle.typeSelectEle.val();
-                        let pr = GRLoadDataHandle.transEle.attr('data-stock');
+                        let prTxt = GRLoadDataHandle.transEle.attr('data-stock');
+                        let prID = '';
                         if (typeGR === '1') {
                             if (row?.['purchase_request_data']?.['code']) {
-                                pr = row?.['purchase_request_data']?.['code'];
+                                prID = row?.['purchase_order_request_product_id'];
+                                prTxt = row?.['purchase_request_data']?.['code'];
                             }
                         }
                         if (typeGR === '3') {
                             if (row?.['production_report_data']?.['code']) {
-                                pr = row?.['production_report_data']?.['code'];
+                                prID = row?.['production_report_id'];
+                                prTxt = row?.['production_report_data']?.['code'];
                             }
                         }
                         return `<div class="d-flex align-items-center ml-2">
@@ -1173,10 +1180,10 @@ class GRDataTableHandle {
                                         <input 
                                             type="radio" 
                                             class="form-check-input table-row-checkbox" 
-                                            data-id="${row?.['purchase_order_request_product_id']}" 
+                                            data-id="${prID}" 
                                         >
                                     </div>
-                                    <span class="table-row-item">${pr}</span>
+                                    <span class="table-row-item">${prTxt}</span>
                                 </div>`;
                     }
                 },
@@ -2045,7 +2052,7 @@ class GRSubmitHandle {
 
     static setupDataShowLineDetail(is_submit = false) {
         let result = [];
-        if (GRLoadDataHandle.POSelectEle.val() || GRLoadDataHandle.IASelectEle.val()) {
+        if (GRLoadDataHandle.POSelectEle.val() || GRLoadDataHandle.IASelectEle.val() || GRLoadDataHandle.$boxProductionOrder.val()) {
             let table = GRDataTableHandle.tablePOProduct;
             let order = 0;
             table.DataTable().rows().every(function () {
@@ -2086,6 +2093,7 @@ class GRSubmitHandle {
                         let field_list = [
                             'purchase_order_product_id',
                             'ia_item_id',
+                            'production_order_id',
                             'product_id',
                             'product_data',
                             'uom_id',
@@ -2140,6 +2148,8 @@ class GRSubmitHandle {
                                     'purchase_order_request_product_id',
                                     'purchase_request_product_id',
                                     'purchase_request_data',
+                                    'production_report_id',
+                                    'production_report_data',
                                     'uom_data',
                                     'quantity_order',
                                     'quantity_import',

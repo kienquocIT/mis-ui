@@ -1044,16 +1044,16 @@ class NodeDataTableHandle {
                         }
                         if (is_approved_complete === false) {
                             return `<div class="row align-items-center">
-                                        <div class="col-8">
-                                            <div class="btn-group dropdown">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="dropdown">
                                                 <button 
                                                     type="button"
-                                                    class="btn btn-icon btn-soft-light"
+                                                    class="btn btn-outline-primary"
                                                     data-bs-toggle="dropdown" 
                                                     aria-haspopup="true" 
                                                     aria-expanded="false"
                                                 >
-                                                <span class="icon"><i class="fas fa-tasks" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add action"></i></span>
+                                                <span><span class="icon"><i class="fas fa-tasks" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add action"></i></span><span>${NodeLoadDataHandle.transEle.attr('data-actions')}</span></span>
                                                 </button>
                                                 <div class="dropdown-menu w-250p">
                                                     <div data-simplebar class="h-260p nicescroll-bar">
@@ -1061,24 +1061,20 @@ class NodeDataTableHandle {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-4">
                                             <span class="check-done-action" hidden><i class="fas fa-check mt-2 text-green"></i></span>
                                             <span class="check-fail-action"><i class="fas fa-times mt-2 text-red"></i></span>
                                         </div>
                                     </div>`;
                         } else {
                             return `<div class="row align-items-center">
-                                        <div class="col-8">
+                                        <div class="d-flex align-items-center justify-content-between">
                                             <button 
                                                 type="button"
-                                                class="btn btn-icon btn-soft-light"
+                                                class="btn btn-outline-primary"
                                                 disabled
                                             >
-                                            <span class="icon"><i class="fas fa-tasks"></i></span>
+                                            <span><span class="icon"><i class="fas fa-tasks" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add action"></i></span><span>${NodeLoadDataHandle.transEle.attr('data-actions')}</span></span>
                                             </button>
-                                        </div>
-                                        <div class="col-4">
                                             <span class="check-done-action"><i class="fas fa-check mt-2 text-green"></i></span>
                                             <span class="check-fail-action" hidden><i class="fas fa-times mt-2 text-red"></i></span>
                                         </div>
@@ -1098,14 +1094,14 @@ class NodeDataTableHandle {
                         }
                         if (is_system === false) {
                             return `<div class="row align-items-center">
-                                        <div class="col-8">
+                                        <div class="d-flex align-items-center justify-content-between">
                                             <button 
                                                 type="button"
-                                                class="btn btn-icon btn-soft-light btn-node-collab"
+                                                class="btn btn-outline-primary btn-node-collab"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                             >
-                                            <span class="icon"><i class="fas fa-users" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i></span>
+                                            <span><span class="icon"><i class="fas fa-users" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i></span><span>${NodeLoadDataHandle.transEle.attr('data-collaborators')}</span></span>
                                             </button>
                                             <div
                                                 class="modal fade" id="${idModal}" tabindex="-1" role="dialog"
@@ -1368,8 +1364,6 @@ class NodeDataTableHandle {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-4">
                                             <span class="check-done-collab" hidden><i class="fas fa-check mt-2 text-green"></i></span>
                                             <span class="check-fail-collab"><i class="fas fa-times mt-2 text-red"></i></span>
                                         </div>
@@ -1377,14 +1371,14 @@ class NodeDataTableHandle {
                         } else {
                             if (row?.['code'] === 'initial') {
                                 return `<div class="row align-items-center">
-                                        <div class="col-8">
+                                        <div class="d-flex align-items-center justify-content-between">
                                             <button 
                                                 type="button"
-                                                class="btn btn-icon btn-soft-light btn-node-collab"
+                                                class="btn btn-outline-primary btn-node-collab"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                             >
-                                            <span class="icon"><i class="fas fa-users" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i></span>
+                                            <span><span class="icon"><i class="fas fa-users" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i></span><span>${NodeLoadDataHandle.transEle.attr('data-collaborators')}</span></span>
                                             </button>
                                             <div
                                                 class="modal fade" id="${idModal}" tabindex="-1" role="dialog"
@@ -1419,23 +1413,21 @@ class NodeDataTableHandle {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-4">
                                             <span class="check-done-collab"><i class="fas fa-check mt-2 text-green"></i></span>
                                             <span class="check-fail-collab" hidden><i class="fas fa-times mt-2 text-red"></i></span>
                                         </div>
                                     </div>`;
                             } else {
                                 return `<div class="row align-items-center">
-                                        <div class="col-8">
+                                        <div class="d-flex align-items-center justify-content-between">
                                             <button 
                                                 type="button"
-                                                class="btn btn-icon btn-soft-light btn-node-collab"
+                                                class="btn btn-outline-primary btn-node-collab"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                                 disabled
                                             >
-                                            <span class="icon"><i class="fas fa-users" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i></span>
+                                            <span><span class="icon"><i class="fas fa-users" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i></span><span>${NodeLoadDataHandle.transEle.attr('data-collaborators')}</span></span>
                                             </button>
                                             <div
                                                 class="modal fade" id="${idModal}" tabindex="-1" role="dialog"
@@ -1471,8 +1463,6 @@ class NodeDataTableHandle {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-4">
                                             <span class="check-done-collab"><i class="fas fa-check mt-2 text-green"></i></span>
                                             <span class="check-fail-collab" hidden><i class="fas fa-times mt-2 text-red"></i></span>
                                         </div>
@@ -1487,7 +1477,7 @@ class NodeDataTableHandle {
                         if (row?.['is_system'] === true) {
                             return ``;
                         } else {
-                            return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                            return `<div class="d-flex justify-content-end"><button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button></div>`;
                         }
                     }
                 },

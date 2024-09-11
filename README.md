@@ -418,9 +418,8 @@ def view(...)
             WFRTControl.callWFSubmitForm(_form);
         });
     
-    Thêm WFRTControl.setWFInitialData(modelName, $form.attr('data-method')) khi init page
-    VD: Page create: WFRTControl.setWFInitialData('leaverequest', 'post');
-        Page update: WFRTControl.setWFInitialData('leaverequest', 'put');
+    Thêm WFRTControl.setWFInitialData(modelName) khi init page
+    VD: WFRTControl.setWFInitialData('leaverequest');
         
 2/ Page detail/update:
       Thêm  $x.fn.renderCodeBreadcrumb(data), 

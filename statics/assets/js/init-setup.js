@@ -2338,7 +2338,7 @@ class WFRTControl {
         for (let collab of collabOutForm) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
                                 <div class="d-flex align-items-center">
-                                    <i class="fas fa-user mr-2 fs-7"></i>
+                                    <i class="fas fa-user mr-2"></i>
                                     <span class="mr-2">${collab?.['full_name']}</span>
                                     <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
                                 </div>
@@ -2501,7 +2501,7 @@ class WFRTControl {
     }
 
     static setWFInitialData(app_code, data_method) {
-        if (app_code && data_method) {
+        if (app_code) {
             let btn = $('#btnLogShow');
             btn.removeClass('hidden');
             let url = btn.attr('data-url-current-wf');

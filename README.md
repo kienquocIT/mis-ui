@@ -441,6 +441,23 @@ def view(...)
                 }
             }
         )
+
+3/ views.py:
+    Thêm 'form_id' vào data render page update
+    VD:
+        class QuotationUpdate(View):
+            @mask_view(
+              auth_require=True,
+              template='sales/quotation/quotation_update.html',
+              breadcrumb='QUOTATION_UPDATE_PAGE',
+              menu_active='menu_quotation_list',
+            )
+            def get(self, request, pk, *args, **kwargs):
+              ctx = {
+                  'data': {'doc_id': pk},
+                  'form_id': 'frm_quotation_create',
+              }
+              return ctx, status.HTTP_200_OK
 ```
 
 9. Mọi z-index đều nhỏ hơn 9999

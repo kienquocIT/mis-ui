@@ -55,7 +55,7 @@ class PaymentLoadPage {
             data: (data ? data : null),
             keyResp: 'quotation_list',
             keyId: 'id',
-            keyText: 'title',
+            keyText: 'code',
         }).on('change', function () {
             opp_mapped_select.empty();
             sale_order_mapped_select.empty();
@@ -85,7 +85,7 @@ class PaymentLoadPage {
             data: (data ? data : null),
             keyResp: 'sale_order_list',
             keyId: 'id',
-            keyText: 'title',
+            keyText: 'code',
         }).on('change', function () {
             opp_mapped_select.empty()
             quotation_mapped_select.empty()

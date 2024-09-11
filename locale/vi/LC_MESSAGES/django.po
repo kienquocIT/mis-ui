@@ -2165,7 +2165,7 @@ msgstr "Thông tin ngân hàng"
 
 #
 msgid "To payment"
-msgstr "Thanh toán"
+msgstr "Dùng cho TT"
 
 #
 msgid "Attachment"
@@ -2186,10 +2186,6 @@ msgstr "Kế hoạch sau thuế"
 #
 msgid "AP Approved"
 msgstr "Đã tạm ứng"
-
-#
-msgid "To Payment"
-msgstr "Thanh toán"
 
 #
 msgid "Other Payment"
@@ -3785,7 +3781,7 @@ msgstr "Chọn chi phí"
 
 #
 msgid "To employee"
-msgstr "Cho nhân viên"
+msgstr "Cho NV"
 
 #
 msgid "To supplier"
@@ -3813,11 +3809,7 @@ msgstr "Giá trị thanh toán"
 
 #
 msgid "Advance Payment value"
-msgstr "Giá trị phiếu tạm ứng"
-
-#
-msgid "To payment value"
-msgstr "Đã thanh toán"
+msgstr "Giá trị tạm ứng"
 
 #
 msgid "Remain AP"
@@ -8070,7 +8062,7 @@ msgstr "Thay đổi chế độ xem"
 
 #
 msgid "Received money"
-msgstr "Trạng thái nhận tiền"
+msgstr "Đã nhận tiền"
 
 #
 msgid "Google app password"

@@ -6149,10 +6149,6 @@ msgid "Descriptions of file"
 msgstr "Mô tả của tập tin"
 
 #
-msgid "AP Status"
-msgstr "Trạng thái tạm ứng"
-
-#
 msgid "Asset, Tools"
 msgstr "Tài sản, Công cụ"
 
@@ -8073,8 +8069,8 @@ msgid "Change view mode"
 msgstr "Thay đổi chế độ xem"
 
 #
-msgid "AP status"
-msgstr "Trạng thái tạm ứng"
+msgid "Received money"
+msgstr "Trạng thái nhận tiền"
 
 #
 msgid "Google app password"

@@ -65,7 +65,6 @@ class GISLoadPage {
                 Promise.all([ia_list_ajax]).then(
                     (results) => {
                         let decrease_list = []
-                        console.log(results[0]?.['inventory_adjustment_item_mapped'])
                         for (let i = 0; i < results[0]?.['inventory_adjustment_item_mapped'].length; i++) {
                             let ia_item = results[0]?.['inventory_adjustment_item_mapped'][i]
                             if (ia_item?.['action_type'] === 1) {
@@ -115,8 +114,13 @@ class GISLoadPage {
 
                 Promise.all([po_list_ajax]).then(
                     (results) => {
-                        console.log(results[0]?.['task_data'])
-                        return results[0] ? GISLoadTab.DrawTablePOItems(results[0]?.['task_data']) : GISLoadTab.DrawTablePOItems([])
+                        let production_order_data = []
+                        for (let i = 0; i < results[0]?.['task_data'].length; i++) {
+                            if (!results[0]?.['task_data'][i]?.['is_task']) {
+                                production_order_data.push(results[0]?.['task_data'][i])
+                            }
+                        }
+                        GISLoadTab.DrawTablePOItems(production_order_data)
                     })
             }
         })
@@ -160,7 +164,7 @@ class GISLoadTab {
                 {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `<span class="max-issued-quantity">${row?.['max_issued_quantity']}</span>`;
+                        return `<span class="limit-quantity">${row?.['limit_quantity']}</span>`;
                     }
                 },
                 {
@@ -173,19 +177,16 @@ class GISLoadTab {
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<div class="input-group">
-                                    <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity'] ? row?.['issued_quantity'] : 0}">
-                                    <button data-uom-id="${row?.['uom_mapped']?.['id']}"
-                                            data-uom-code="${row?.['uom_mapped']?.['code']}"
+                                    <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['quantity'] ? row?.['quantity'] : 0}">
+                                    <button data-stock-quantity="${row?.['stock_quantity'] ? row?.['stock_quantity'] : 0}"
+                                            data-difference="${row?.['limit_quantity'] ? row?.['limit_quantity'] : 0}"
                                             data-uom-title="${row?.['uom_mapped']?.['title']}"
+                                            data-type="${row?.['product_mapped']?.['general_traceability_method']}"
+                                            data-prd-wh-id="${row?.['product_warehouse_mapped_id']}"
                                             data-prd-id="${row?.['product_mapped']?.['id']}"
-                                            data-prd-code="${row?.['product_mapped']?.['code']}"
-                                            data-prd-title="${row?.['product_mapped']?.['title']}"
-                                            data-prd-type="${row?.['product_mapped']?.['general_traceability_method']}"
                                             data-wh-id="${row?.['warehouse_mapped']?.['id']}"
-                                            data-wh-code="${row?.['warehouse_mapped']?.['code']}"
-                                            data-wh-title="${row?.['warehouse_mapped']?.['title']}"
-                                            data-max-quantity="${row?.['max_issued_quantity'] ? row?.['max_issued_quantity'] : 0}"
-                                            data-item-id="${row?.['id']}"
+                                            data-uom-id="${row?.['uom_mapped']?.['id']}"
+                                            data-ia-item-id="${row?.['id']}"
                                             data-bs-toggle="modal"
                                             data-bs-target="#select-detail-modal"
                                             type="button"
@@ -221,56 +222,53 @@ class GISLoadTab {
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-light">${row?.['product_mapped']?.['code']}</span> ${row?.['product_mapped']?.['title']}`;
+                        return `<span class="badge badge-light">${row?.['product_data']?.['code']}</span> ${row?.['product_data']?.['title']}`;
                     }
                 },
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<textarea disabled readonly class="form-control small" rows="2" cols="8">${row?.['product_mapped']?.['description']}</textarea>`;
+                        return `<textarea disabled readonly class="form-control small" rows="2" cols="8">${row?.['product_data']?.['description']}</textarea>`;
                     }
                 },
                 {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `${row?.['uom_mapped']?.['title']}`;
+                        return `${row?.['uom_data']?.['title']}`;
                     }
                 },
                 {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `<span class="max-issued-quantity">${row?.['max_issued_quantity']}</span>`;
+                        return `<span class="limit-quantity">${row?.['quantity']}</span>`;
                     }
                 },
                 {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `<span class="before-issued-quantity">${row?.['sum_issued_quantity'] ? row?.['sum_issued_quantity'] : 0}</span>`;
+                        return `<span class="before-quantity">${row?.['issued_quantity'] ? row?.['issued_quantity'] : 0}</span>`;
                     }
                 },
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-primary">${row?.['warehouse_mapped']?.['code']}</span> ${row?.['warehouse_mapped']?.['title']}`;
+                        return `<span class="badge badge-sm badge-soft-primary">${row?.['warehouse_data']?.['code']}</span> ${row?.['warehouse_data']?.['title']}`;
                     }
                 },
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<div class="input-group">
-                                    <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity'] ? row?.['issued_quantity'] : 0}">
-                                    <button data-uom-id="${row?.['uom_mapped']?.['id']}"
-                                            data-uom-code="${row?.['uom_mapped']?.['code']}"
-                                            data-uom-title="${row?.['uom_mapped']?.['title']}"
-                                            data-prd-id="${row?.['product_mapped']?.['id']}"
-                                            data-prd-code="${row?.['product_mapped']?.['code']}"
-                                            data-prd-title="${row?.['product_mapped']?.['title']}"
-                                            data-prd-type="${row?.['product_mapped']?.['general_traceability_method']}"
-                                            data-wh-id="${row?.['warehouse_mapped']?.['id']}"
-                                            data-wh-code="${row?.['warehouse_mapped']?.['code']}"
-                                            data-wh-title="${row?.['warehouse_mapped']?.['title']}"
-                                            data-max-quantity="${row?.['max_issued_quantity'] ? row?.['max_issued_quantity'] : 0}"
-                                            data-item-id="${row?.['id']}"
+                                    <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['selected_quantity'] ? row?.['selected_quantity'] : 0}">
+                                    <button data-po-quantity="${row?.['quantity'] ? row?.['quantity'] : 0}"
+                                            data-issued-quantity="${row?.['issued_quantity'] ? row?.['issued_quantity'] : 0}"
+                                            data-uom-title="${row?.['uom_data']?.['title']}"
+                                            data-type="0"
+                                            // data-type="${row?.['product_data']?.['general_information']?.['general_traceability_method']}"
+                                            data-prd-id="${row?.['product_data']?.['id']}"
+                                            data-wh-id="${row?.['warehouse_data']?.['id']}"
+                                            data-uom-id="${row?.['uom_data']?.['id']}"
+                                            data-po-item-order="${row?.['task_order']}"
                                             data-bs-toggle="modal"
                                             data-bs-target="#select-detail-modal"
                                             type="button"
@@ -313,7 +311,7 @@ class GISLoadTab {
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="max-issued-quantity">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span>`;
+                        return `<span class="limit-quantity">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span>`;
                     }
                 },
                 {
@@ -460,60 +458,43 @@ class GISHandle {
                     else if (data?.['goods_issue_type'] === 1) {
                     }
                     else if (data?.['goods_issue_type'] === 2) {
-                        $('#for-production').prop('checked', true)
-                        GISLoadPage.LoadPO(data?.['inventory_adjustment'])
-                        $('#inventory-adjustment-select-space').prop('hidden', true)
-                        $('#production-order-select-space').prop('hidden', false)
-                        // GISLoadTab.DrawTableIAItems(data?.['detail_data_ia'])
                     }
 
                     GISAction.DisabledDetailPage(option);
                 }
             })
     }
-    static CombinesDataGoodsIssue(frmEle) {
+    static CombinesDataForIA(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['title'] = $('#title').val()
-        let detail_data_ia = []
         if ($('#for-ia').prop('checked')) {
             frm.dataForm['goods_issue_type'] = 0
-            frm.dataForm['inventory_adjustment_id'] = IAEle.val()
-            IAItemTable.find('tbody tr').each(function () {
-                let row = $(this);
-                detail_data_ia.push({
-                    'inventory_adjustment_item_id': row.find('.select-detail').attr('data-ia-item-id'),
-                    'product_id': row.find('.select-detail').attr('data-prd-id'),
-                    'warehouse_id': row.find('.select-detail').attr('data-wh-id'),
-                    'uom_id': row.find('.select-detail').attr('data-uom-id'),
-                    'max_issued_quantity': row.find('.max-issued-quantity').text(),
-                    'quantity': row.find('.selected-quantity').val(),
-                    'lot_data': row.find('.lot-data-script').text() ? JSON.parse(row.find('.lot-data-script').text()) : [],
-                    'sn_data': row.find('.sn-data-script').text() ? JSON.parse(row.find('.sn-data-script').text()) : []
-                })
-            })
         }
         else if ($('#for-liquidation').prop('checked')) {
             frm.dataForm['goods_issue_type'] = 1
         }
         else if ($('#for-production').prop('checked')) {
             frm.dataForm['goods_issue_type'] = 2
-            frm.dataForm['production_order_id'] = POEle.val()
-            POItemTable.find('tbody tr').each(function () {
-                let row = $(this);
-                detail_data_ia.push({
-                    'production_order_item_id': row.find('.select-detail').attr('data-ia-item-id'),
-                    'product_id': row.find('.select-detail').attr('data-prd-id'),
-                    'warehouse_id': row.find('.select-detail').attr('data-wh-id'),
-                    'uom_id': row.find('.select-detail').attr('data-uom-id'),
-                    'max_issued_quantity': row.find('.max-issued-quantity').text(),
-                    'quantity': row.find('.selected-quantity').val(),
-                    'lot_data': row.find('.lot-data-script').text() ? JSON.parse(row.find('.lot-data-script').text()) : [],
-                    'sn_data': row.find('.sn-data-script').text() ? JSON.parse(row.find('.sn-data-script').text()) : []
-                })
-            })
         }
+        frm.dataForm['inventory_adjustment_id'] = IAEle.val()
         frm.dataForm['note'] = $('#note').val()
+
+        let detail_data_ia = [];
+        IAItemTable.find('tbody tr').each(function () {
+            let row = $(this);
+            detail_data_ia.push({
+                'inventory_adjustment_item_id': row.find('.select-detail').attr('data-ia-item-id'),
+                'product_warehouse_id': row.find('.select-detail').attr('data-prd-wh-id'),
+                'product_id': row.find('.select-detail').attr('data-prd-id'),
+                'warehouse_id': row.find('.select-detail').attr('data-wh-id'),
+                'uom_id': row.find('.select-detail').attr('data-uom-id'),
+                'limit_quantity': row.find('.limit-quantity').text(),
+                'quantity': row.find('.selected-quantity').val(),
+                'lot_data': row.find('.lot-data-script').text() ? JSON.parse(row.find('.lot-data-script').text()) : [],
+                'sn_data': row.find('.sn-data-script').text() ? JSON.parse(row.find('.sn-data-script').text()) : []
+            })
+        })
         frm.dataForm['detail_data_ia'] = detail_data_ia;
 
         // console.log(frm)
@@ -542,7 +523,9 @@ $('input[name="issue-type"]').on('change', function () {
 
 $(document).on("click", '.select-detail', function () {
     DetailBtn = $(this)
-    if ($(this).attr('data-prd-type') === '0') {
+    if ($(this).attr('data-type') === '0') {
+        let stock_quantity = $(this).attr('data-stock-quantity')
+        $('#stock-quantity').val(stock_quantity)
         let dataParam = {
             'product_id': $(this).attr('data-prd-id'),
             'warehouse_id': $(this).attr('data-wh-id')
@@ -575,14 +558,12 @@ $(document).on("click", '.select-detail', function () {
                 done_none.prop('hidden', false)
                 done_sn.prop('hidden', true)
                 done_lot.prop('hidden', true)
-                $('#stock-quantity').val(results[0].length ? results[0][0]?.['stock_amount'] : 0)
                 $('#issue-quantity').val($(this).closest('tr').find('.selected-quantity').val())
             })
     }
-    else if ($(this).attr('data-prd-type') === '1') {
+    else if ($(this).attr('data-type') === '1') {
         let dataParam = {
-            'product_warehouse__product_id': $(this).attr('data-prd-id'),
-            'product_warehouse__warehouse_id': $(this).attr('data-wh-id'),
+            'product_warehouse_id': $(this).attr('data-prd-wh-id')
         }
         let prd_wh_lot = $.fn.callAjax2({
             url: LOTTable.attr('data-lot-url'),
@@ -609,7 +590,7 @@ $(document).on("click", '.select-detail', function () {
                 done_none.prop('hidden', true)
                 done_sn.prop('hidden', true)
                 done_lot.prop('hidden', false)
-                $('#amount-balance-lot').text($(this).attr('data-max-quantity') + ' ' + $(this).attr('data-uom-title')).attr('data-value', $(this).attr('data-max-quantity'))
+                $('#amount-balance-lot').text($(this).attr('data-difference') + ' ' + $(this).attr('data-uom-title')).attr('data-value', $(this).attr('data-difference'))
                 SNTable.DataTable().clear().destroy()
                 let filter_lot = []
                 for (let i = 0; i < results[0].length; i++) {
@@ -621,10 +602,9 @@ $(document).on("click", '.select-detail', function () {
                 GISLoadTab.DrawTableItemsLOT(filter_lot, selected_list)
             })
     }
-    else if ($(this).attr('data-prd-type') === '2') {
+    else if ($(this).attr('data-type') === '2') {
         let dataParam = {
-            'product_warehouse__product_id': $(this).attr('data-prd-id'),
-            'product_warehouse__warehouse_id': $(this).attr('data-wh-id'),
+            'product_warehouse_id': $(this).attr('data-prd-wh-id'),
             'is_delete': false
         }
         let prd_wh_serial = $.fn.callAjax2({
@@ -653,7 +633,7 @@ $(document).on("click", '.select-detail', function () {
                 done_none.prop('hidden', true)
                 done_sn.prop('hidden', false)
                 done_lot.prop('hidden', true)
-                $('#amount-balance-sn').text($(this).attr('data-max-quantity') + ' ' + $(this).attr('data-uom-title')).attr('data-value', $(this).attr('data-max-quantity'))
+                $('#amount-balance-sn').text($(this).attr('data-difference') + ' ' + $(this).attr('data-uom-title')).attr('data-value', $(this).attr('data-difference'))
                 LOTTable.DataTable().clear().destroy()
                 let selected_list = DetailBtn.closest('tr').find('.sn-data-script').text() ? JSON.parse(DetailBtn.closest('tr').find('.sn-data-script').text()) : []
                 GISLoadTab.DrawTableItemsSN(results[0], selected_list)
@@ -662,7 +642,7 @@ $(document).on("click", '.select-detail', function () {
 })
 
 $('#issue-quantity').on('change', function () {
-    const limit = parseFloat(DetailBtn.closest('tr').find('.max-issued-quantity').text())
+    const limit = parseFloat(DetailBtn.closest('tr').find('.limit-quantity').text())
     let selected = parseFloat($(this).val())
     if (selected > limit) {
         $.fn.notifyB({description: "Issue quantity is invalid."}, 'warning')
@@ -701,8 +681,8 @@ $(document).on("change", '.lot-input', function () {
 done_none.on('click', function () {
     let issue_quantity = parseFloat($('#issue-quantity').val())
     let stock_quantity = parseFloat($('#stock-quantity').val())
-    let max_issued_quantity = parseFloat(DetailBtn.closest('tr').find('.max-issued-quantity').text())
-    if (issue_quantity <= stock_quantity && issue_quantity <= max_issued_quantity) {
+    let limit_quantity = parseFloat(DetailBtn.closest('tr').find('.limit-quantity').text())
+    if (issue_quantity <= stock_quantity && issue_quantity <= limit_quantity) {
         DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
         detail_modal.modal('hide')
     }
@@ -713,8 +693,8 @@ done_none.on('click', function () {
 
 done_sn.on('click', function () {
     let issue_quantity = $('.sn-checkbox:checked').length
-    let max_issued_quantity = parseFloat(DetailBtn.closest('tr').find('.max-issued-quantity').text())
-    if (issue_quantity <= max_issued_quantity) {
+    let limit_quantity = parseFloat(DetailBtn.closest('tr').find('.limit-quantity').text())
+    if (issue_quantity <= limit_quantity) {
         DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
         let sn_data = []
         $('.sn-checkbox:checked').each(function () {
@@ -733,13 +713,13 @@ done_lot.on('click', function () {
     $('.lot-input').each(function () {
         issue_quantity += $(this).val() ? parseFloat($(this).val()) : 0
     })
-    let max_issued_quantity = parseFloat(DetailBtn.closest('tr').find('.max-issued-quantity').text())
-    if (issue_quantity <= max_issued_quantity) {
+    let limit_quantity = parseFloat(DetailBtn.closest('tr').find('.limit-quantity').text())
+    if (issue_quantity <= limit_quantity) {
         DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
         let lot_data = []
         $('.lot-input').each(function () {
             let quantity = $(this).val() ? parseFloat($(this).val()) : 0
-            let old_quantity = $(this).closest('tr').find('.max-issued-quantity').text() ? parseFloat($(this).closest('tr').find('.max-issued-quantity').text()) : 0
+            let old_quantity = $(this).closest('tr').find('.limit-quantity').text() ? parseFloat($(this).closest('tr').find('.limit-quantity').text()) : 0
             if (quantity > 0) {
                 lot_data.push({
                     'lot_id': $(this).attr('data-lot-id'),

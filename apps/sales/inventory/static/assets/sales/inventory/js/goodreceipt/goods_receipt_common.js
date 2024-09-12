@@ -1102,7 +1102,6 @@ class GRLoadDataHandle {
         }
         if (idAreaShow === '3') {
             GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionOrder, [data?.['production_order_data']], {'system_status': 3});
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport, data?.['production_reports_data'], {'production_order_id': data?.['production_order_data']?.['id']});
             // GRLoadDataHandle.$boxProductionReport.removeAttr('disabled');
         }
         GRDataTableHandle.tableLineDetailPO.DataTable().rows.add(data?.['gr_products_data']).draw();
@@ -1180,7 +1179,57 @@ class GRLoadDataHandle {
             GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
             GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePOProduct);
         }
-        if (typeGR === '3' && GRLoadDataHandle.$boxProductionOrder.val() && GRLoadDataHandle.$boxProductionReport.val().length > 0) {
+        if (typeGR === '3' && GRLoadDataHandle.$boxProductionOrder.val()) {
+            let idList = [];
+            if (dataProducts.length > 0) {
+                for (let report of dataProducts[0]?.['pr_products_data']) {
+                    idList.push(report?.['production_report_id']);
+                }
+            }
+
+            $.fn.callAjax2({
+                    'url': GRLoadDataHandle.$boxProductionReport.attr('data-url'),
+                    'method': 'GET',
+                    'data': {'id__in': idList.join(',')},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('production_report_gr') && Array.isArray(data.production_report_gr)) {
+                            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport, data.production_report_gr, {'production_order_id': GRLoadDataHandle.$boxProductionOrder.val()});
+                            if (GRLoadDataHandle.$boxProductionReport.val().length > 0) {
+                                let dataProductionPro = GRLoadDataHandle.loadSetupProduction();
+                                let isDetail = false;
+                                for (let dataProduct of dataProducts) {
+                                    if (dataProduct?.['production_order_id'] === dataProductionPro?.['production_order_id']) {
+                                        dataProduct['gr_completed_quantity'] = dataProductionPro?.['gr_completed_quantity'];
+                                        dataProduct['gr_remain_quantity'] = dataProductionPro?.['gr_remain_quantity'];
+                                        for (let dataPOPRPro of dataProductionPro?.['pr_products_data']) {
+                                            for (let dataPRProduct of dataProduct?.['pr_products_data']) {
+                                                if (dataPRProduct?.['production_report_id'] === dataPOPRPro?.['production_report_id']) {
+                                                    dataPRProduct['gr_completed_quantity'] = dataPOPRPro?.['gr_completed_quantity'];
+                                                    dataPRProduct['gr_remain_quantity'] = dataPOPRPro?.['gr_remain_quantity'];
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        isDetail = true;
+                                        break;
+                                    }
+                                }
+                                if (isDetail === false) {
+                                    dataProducts.push(dataProductionPro);
+                                }
+                                GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
+                                GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
+                                GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePOProduct);
+                            }
+                        }
+                    }
+                }
+            )
         }
         return true;
     };

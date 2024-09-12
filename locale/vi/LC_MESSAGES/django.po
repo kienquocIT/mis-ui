@@ -8726,7 +8726,7 @@ msgstr "Cho thanh lý"
 
 #
 msgid "Bill of material"
-msgstr "Hóa đơn nguyên vật liệu"
+msgstr "Định mức nguyên vật liệu"
 
 #
 msgid "Finished"

@@ -40,7 +40,7 @@
                                 >
                             </div>
                             <div class="row">
-                                <div class="col-12 col-md-6 col-lg-6">
+                                <div class="col-12 col-md-7 col-lg-7">
                                     <div class="form-group" id="good-receipt-type-area">
                                         <label class="form-label required" for="box-good-receipt-type">{% trans 'Goods receipt type' %}</label>
                                         <div class="input-group">
@@ -63,7 +63,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-lg-6">
+                                <div class="col-12 col-md-5 col-lg-5">
                                     <div class="form-group">
                                         <label class="form-label required" for="good-receipt-date-received">{% trans 'Date' %}</label>
                                         <div class="input-affix-wrapper">
@@ -89,7 +89,7 @@
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="row">
-                                <div class="col-12 col-md-6 col-lg-6">
+                                <div class="col-12 col-md-7 col-lg-7">
                                     <div class="form-group">
                                         <label class="form-label required" for="box-good-receipt-purchase-order">{% trans 'Purchase order' %}</label>
                                         <select
@@ -104,7 +104,7 @@
                                         ></select>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-lg-6">
+                                <div class="col-12 col-md-5 col-lg-5">
                                     <div class="form-group">
                                         <label class="form-label">{% trans 'Purchase Request' %}</label>
                                         <div class="input-group">
@@ -157,20 +157,44 @@
                 <div class="row custom-area" id="custom-area-3" hidden>
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label" for="box-production-order">{% trans 'Production order' %}</label>
-                                <select
-                                        class="form-select"
-                                        id="box-production-order"
-                                        data-url="{% url 'ProductionOrderDDListAPI' %}"
-                                        data-method="GET"
-                                        data-link-detail=""
-                                        name="production_order_id"
-                                        data-keyResp="production_order_dd"
-                                        required
-                                >
-                                </select>
+                            <div class="row">
+                                <div class="col-12 col-md-7 col-lg-7">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-production-order">{% trans 'Production order' %}</label>
+                                        <select
+                                                class="form-select"
+                                                id="box-production-order"
+                                                data-url="{% url 'ProductionOrderDDListAPI' %}"
+                                                data-method="GET"
+                                                data-link-detail=""
+                                                name="production_order"
+                                                data-keyResp="production_order_dd"
+                                                required
+                                        >
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-5 col-lg-5">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-production-report">{% trans 'Production report' %}</label>
+                                        <select
+                                                class="form-select"
+                                                id="box-production-report"
+                                                data-url="{% url 'ProductionReportGRListAPI' %}"
+                                                data-method="GET"
+                                                data-link-detail=""
+                                                name="production_report"
+                                                data-keyResp="production_report_gr"
+                                                multiple
+                                                required
+                                                disabled
+                                        >
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
+
+
                         </div>
                     </div>
                 </div>
@@ -178,6 +202,7 @@
             <div class="d-flex justify-content-end">
                 <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-sm" id="btn-collapse" data-bs-toggle="collapse" data-bs-target="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo"><span class="icon"><i class="fas fa-angle-double-up collapse-icon"></i></span></button>
             </div>
+
 
 
             <div class="row">
@@ -248,7 +273,7 @@
                                                     <input type="text" class="form-control good-receipt-product-taxes-raw" value="0" hidden>
                                                 </div>
                                             </div>
-                                            <hr class="bg-dark">
+                                            <hr class="bg-teal">
                                             <div class="row">
                                                 <div class="col-6">
                                                     <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
@@ -278,10 +303,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row custom-line-detail" id="custom-line-detail-2" hidden>
+                        <div class="row custom-line-detail" id="custom-line-detail-3" hidden>
                             <div class="row">
                                 <table
-                                    id="datable-good-receipt-line-detail-ia"
+                                    id="datable-good-receipt-line-detail-production"
                                     class="table nowrap min-w-1500p w-100 mb-5"
                                     data-url=""
                                     data-method="get"
@@ -307,38 +332,13 @@
                                     <button
                                         type="button"
                                         class="btn btn-outline-primary"
-                                        id="btn-edit-ia-product-good-receipt"
+                                        id="btn-edit-production-good-receipt"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#productIAModalCenter"
+                                        data-bs-target="#productionModalCenter"
                                     >
                                         <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>{% trans 'Edit' %}</span></span>
                                     </button>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row custom-line-detail" id="custom-line-detail-3" hidden>
-                            <div class="row">
-                                <table
-                                    id="datable-good-receipt-line-detail-production"
-                                    class="table nowrap min-w-1500p w-100 mb-5"
-                                    data-url=""
-                                    data-method="get"
-                                >
-                                    <thead>
-                                    <tr class="bg-light">
-                                        <th></th>
-                                        <th>{% trans 'Product' %}</th>
-                                        <th>{% trans 'Description' %}</th>
-                                        <th>{% trans 'UOM' %}</th>
-                                        <th>{% trans 'Quantity' %}</th>
-                                        <th>{% trans 'Warehouse' %}</th>
-                                        <th>{% trans 'Unit cost' %}</th>
-                                        <th>{% trans 'Subtotal Price' %}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
                     </div>
@@ -515,42 +515,45 @@
             data-for-product="{% trans 'For production' %}"
             data-ia-quantity-valid="{% trans 'Please enter sufficient quantity' %}"
             data-stock="{% trans 'Stock' %}"
-        >
-        <input
+    >
+    <input
             type="text"
             id="data-init-product"
             data-url="{% url "ProductForSaleListAPI" %}"
             data-link-detail="{% url "ProductDetail" 1 %}"
             data-method="GET"
-        >
-        <input
+    >
+    <input
             type="text"
             id="data-init-uom"
             data-url="{% url "UnitOfMeasureListAPI" %}"
             data-method="GET"
-        >
-        <input
+    >
+    <input
             type="text"
             id="data-init-tax"
             data-url="{% url "TaxListAPI" %}"
             data-method="GET"
-        >
-        <input
+    >
+    <input
+            type="text"
+            id="data-init-warehouse"
+            data-url="{% url "WareHouseListAPI" %}?interact=1"
+            data-method="GET"
+    >
+    <input
             type="text"
             id="data-init-purchase-order-products"
-        >
-        <input
+    >
+    <input
             type="text"
             id="data-submit-pr-warehouse"
-        >
-        <input
-            type="text"
-            id="data-detail-page"
-        >
-        <input type="text" id="url-factory"
-           data-product-warehouse-lot="{% url 'WarehouseLotListAPI' %}"
-           data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
-        >
+    >
+    <input
+            type="text" id="url-factory"
+            data-product-warehouse-lot="{% url 'WarehouseLotListAPI' %}"
+            data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
+    >
 {% endblock %}
 
 {% block jsFooter %}

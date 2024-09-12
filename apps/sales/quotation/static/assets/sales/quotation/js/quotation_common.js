@@ -1731,9 +1731,11 @@ class QuotationLoadDataHandle {
                     'allowClear': true,
                 });
         }
-        QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
-        QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
-        QuotationLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
+        if ($(form).attr('data-method').toLowerCase() !== 'get') {
+            QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
+            QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
+            QuotationLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
+        }
         if (Object.keys(data?.['opportunity']).length > 0) {
             if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
                 if (form.getAttribute('data-method').toLowerCase() === 'get') {
@@ -2081,16 +2083,16 @@ class QuotationLoadDataHandle {
 
     static loadTableDisabled(table) {
         for (let ele of table[0].querySelectorAll('.table-row-item')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-labor-item')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-expense-title')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-uom')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-quantity')) {
             ele.setAttribute('readonly', 'true');
@@ -2102,7 +2104,7 @@ class QuotationLoadDataHandle {
             ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-tax')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.input-group-price')) {
             ele.setAttribute('disabled', 'true');
@@ -2120,13 +2122,13 @@ class QuotationLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-term')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-ratio')) {
             ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-due-date')) {
             ele.setAttribute('disabled', 'true');
@@ -2141,7 +2143,7 @@ class QuotationLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-supplied-by')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
     };
 

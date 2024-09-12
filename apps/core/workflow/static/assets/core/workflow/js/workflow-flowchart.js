@@ -278,7 +278,7 @@ class JSPlumbsHandle {
             // declare style connection type
             instance.registerConnectionTypes({
                 "pink-connection": {
-                    paintStyle: {stroke: "#eaeaea", strokeWidth: 4},
+                    paintStyle: {stroke: "#eaeaea", strokeWidth: 3},
                     hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4}
                 }
             })
@@ -489,7 +489,7 @@ class JSPlumbsHandle {
                         anchors: ["Bottom", "Top"],
                         endpoint: ["Dot", {radius: 4}],
                         endpointStyle: {fill: "#374986", opacity: ".8"},
-                        paintStyle: {stroke: "#eaeaea", strokeWidth: 4},
+                        paintStyle: {stroke: "#eaeaea", strokeWidth: 3},
                         hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
                         connectionType: "pink-connection",
                         connector: ["Flowchart", {cornerRadius: 5}],

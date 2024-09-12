@@ -1131,20 +1131,17 @@ class POLoadDataHandle {
             POLoadDataHandle.loadTableDisabled(tablePaymentStage);
         }
         return true;
-    }
+    };
 
     static loadTableDisabled(table) {
         for (let ele of table[0].querySelectorAll('.table-row-item')) {
-            ele.setAttribute('disabled', 'true');
-            ele.classList.add('disabled-custom-show');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-uom-order-actual')) {
-            ele.setAttribute('disabled', 'true');
-            ele.classList.add('disabled-custom-show');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-quantity-order-actual')) {
-            ele.setAttribute('disabled', 'true');
-            ele.classList.add('disabled-custom-show');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-price')) {
             ele.setAttribute('disabled', 'true');
@@ -1154,23 +1151,22 @@ class POLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-tax')) {
-            ele.setAttribute('disabled', 'true');
-            ele.classList.add('disabled-custom-show');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-checkbox')) {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-quantity-order')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.del-row')) {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-remark')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-ratio')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-value-after-tax')) {
             ele.setAttribute('disabled', 'true');

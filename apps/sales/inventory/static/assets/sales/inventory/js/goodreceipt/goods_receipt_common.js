@@ -948,6 +948,11 @@ class GRLoadDataHandle {
         if (idAreaShow === '2') {  // GR by IA
             GRLoadDataHandle.loadInitS2(GRLoadDataHandle.IASelectEle, [data?.['inventory_adjustment_data']], {'state': false});
         }
+        if (idAreaShow === '3') {
+            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionOrder, [data?.['production_order_data']], {'system_status': 3});
+            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport, data?.['production_reports_data'], {'production_order_id': data?.['production_order_data']?.['id']});
+            // GRLoadDataHandle.$boxProductionReport.removeAttr('disabled');
+        }
         GRDataTableHandle.tableLineDetailPO.DataTable().rows.add(data?.['gr_products_data']).draw();
         GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetailPO);
         if (formSubmit.attr('data-method') === 'GET') {
@@ -958,8 +963,9 @@ class GRLoadDataHandle {
     };
 
     static loadDetailProducts(dataProducts) {
+        let typeGR = GRLoadDataHandle.typeSelectEle.val();
         let frm = new SetupFormSubmit(GRDataTableHandle.tablePOProduct);
-        if (GRLoadDataHandle.POSelectEle.val()) {
+        if (typeGR === '1' && GRLoadDataHandle.POSelectEle.val()) {
             $.fn.callAjax2({
                     'url': frm.dataUrl,
                     'method': frm.dataMethod,
@@ -1002,7 +1008,7 @@ class GRLoadDataHandle {
                 }
             )
         }
-        if (GRLoadDataHandle.IASelectEle.val()) {
+        if (typeGR === '2' && GRLoadDataHandle.IASelectEle.val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(GRLoadDataHandle.IASelectEle, $(this).val());
             for (let dataIAPro of dataSelected?.['gr_products_data']) {
                 let isDetail = false;
@@ -1022,42 +1028,44 @@ class GRLoadDataHandle {
             GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
             GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePOProduct);
         }
+        if (typeGR === '3' && GRLoadDataHandle.$boxProductionOrder.val() && GRLoadDataHandle.$boxProductionReport.val().length > 0) {
+        }
         return true;
     };
 
     static loadTableDisabled(table) {
         for (let ele of table[0].querySelectorAll('.table-row-item')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-description')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-uom')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-price')) {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-tax')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-import')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.del-row')) {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-lot-number')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-import')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-vendor-serial-number')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-serial-number')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-expire-date')) {
             ele.setAttribute('disabled', 'true');
@@ -2266,19 +2274,47 @@ class GRSubmitHandle {
     static setupDataSubmit(_form) {
         let type = GRLoadDataHandle.typeSelectEle.val();
         if (type === '1') {
-            _form.dataForm['inventory_adjustment'] = null;
             if (GRLoadDataHandle.POSelectEle.val()) {
-                _form.dataForm['purchase_order_data'] = SelectDDControl.get_data_from_idx(GRLoadDataHandle.POSelectEle, GRLoadDataHandle.POSelectEle.val());
+                _form.dataForm['purchase_order_id'] = GRLoadDataHandle.POSelectEle.val();
+                let data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.POSelectEle, GRLoadDataHandle.POSelectEle.val());
+                if (data) {
+                    _form.dataForm['purchase_order_data'] = data;
+                }
             }
             if (GRLoadDataHandle.supplierSelectEle.val()) {
-                _form.dataForm['supplier_data'] = SelectDDControl.get_data_from_idx(GRLoadDataHandle.supplierSelectEle, GRLoadDataHandle.supplierSelectEle.val());
+                _form.dataForm['supplier_id'] = GRLoadDataHandle.supplierSelectEle.val();
+                let data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.supplierSelectEle, GRLoadDataHandle.supplierSelectEle.val());
+                if (data) {
+                    _form.dataForm['supplier_data'] = data;
+                }
             }
         }
         if (type === '2') {
-            _form.dataForm['purchase_order'] = null;
-            _form.dataForm['supplier'] = null;
             if (GRLoadDataHandle.IASelectEle.val()) {
-                _form.dataForm['inventory_adjustment_data'] = SelectDDControl.get_data_from_idx(GRLoadDataHandle.IASelectEle, GRLoadDataHandle.IASelectEle.val());
+                _form.dataForm['inventory_adjustment_id'] = GRLoadDataHandle.IASelectEle.val();
+                let data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.IASelectEle, GRLoadDataHandle.IASelectEle.val());
+                if (data) {
+                    _form.dataForm['inventory_adjustment_data'] = data;
+                }
+            }
+        }
+        if (type === '3') {
+            if (GRLoadDataHandle.$boxProductionOrder.val()) {
+                _form.dataForm['production_order_id'] = GRLoadDataHandle.$boxProductionOrder.val();
+                let data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxProductionOrder, GRLoadDataHandle.$boxProductionOrder.val());
+                if (data) {
+                    _form.dataForm['production_order_data'] = data;
+                }
+            }
+            if (GRLoadDataHandle.$boxProductionReport.val() && GRLoadDataHandle.$boxProductionReport.val().length > 0) {
+                let dataList = [];
+                for (let idx of GRLoadDataHandle.$boxProductionReport.val()) {
+                    let data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxProductionReport, idx);
+                    if (data) {
+                        dataList.push(data);
+                    }
+                }
+                _form.dataForm['production_reports_data'] = dataList;
             }
         }
         _form.dataForm['goods_receipt_type'] = (parseInt(type) - 1);

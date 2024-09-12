@@ -1048,7 +1048,7 @@ class NodeDataTableHandle {
                                             <div class="dropdown">
                                                 <button 
                                                     type="button"
-                                                    class="btn btn-outline-primary"
+                                                    class="btn btn-outline-light"
                                                     data-bs-toggle="dropdown" 
                                                     aria-haspopup="true" 
                                                     aria-expanded="false"
@@ -1070,7 +1070,7 @@ class NodeDataTableHandle {
                                         <div class="d-flex align-items-center justify-content-between">
                                             <button 
                                                 type="button"
-                                                class="btn btn-outline-primary"
+                                                class="btn btn-outline-light"
                                                 disabled
                                             >
                                             <span><span class="icon"><i class="fas fa-tasks" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add action"></i></span><span>${NodeLoadDataHandle.transEle.attr('data-actions')}</span></span>
@@ -1097,7 +1097,7 @@ class NodeDataTableHandle {
                                         <div class="d-flex align-items-center justify-content-between">
                                             <button 
                                                 type="button"
-                                                class="btn btn-outline-primary btn-node-collab"
+                                                class="btn btn-outline-light btn-node-collab"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                             >
@@ -1374,7 +1374,7 @@ class NodeDataTableHandle {
                                         <div class="d-flex align-items-center justify-content-between">
                                             <button 
                                                 type="button"
-                                                class="btn btn-outline-primary btn-node-collab"
+                                                class="btn btn-outline-light btn-node-collab"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                             >
@@ -1422,7 +1422,7 @@ class NodeDataTableHandle {
                                         <div class="d-flex align-items-center justify-content-between">
                                             <button 
                                                 type="button"
-                                                class="btn btn-outline-primary btn-node-collab"
+                                                class="btn btn-outline-light btn-node-collab"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                                 disabled

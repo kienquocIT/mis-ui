@@ -143,7 +143,18 @@ class ProductionOrderDetailAPIForGIS(APIView):
         return resp.auto_return(key_success='production_order_detail')
 
 
-class WarehouseLotListAPIForGIS(APIView):
+class ProductWarehouseListAPIForGIS(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GIS_NONE_LIST).get(data)
+        return resp.auto_return(key_success='warehouse_products_list')
+
+
+class ProductWarehouseLotListAPIForGIS(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
@@ -154,7 +165,7 @@ class WarehouseLotListAPIForGIS(APIView):
         return resp.auto_return(key_success='warehouse_lot_list')
 
 
-class WarehouseSerialListAPIForGIS(APIView):
+class ProductWarehouseSerialListAPIForGIS(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,

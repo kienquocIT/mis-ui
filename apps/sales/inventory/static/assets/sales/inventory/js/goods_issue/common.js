@@ -176,7 +176,8 @@ class GISLoadTab {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity'] ? row?.['issued_quantity'] : 0}">
-                                    <button data-uom-id="${row?.['uom_mapped']?.['id']}"
+                                    <button ${(row?.['product_mapped']?.['general_traceability_method'] === 0 && IS_DONE_GIS ||  row?.['issued_quantity'] === 0) ? 'disabled' : ''}
+                                            data-uom-id="${row?.['uom_mapped']?.['id']}"
                                             data-uom-code="${row?.['uom_mapped']?.['code']}"
                                             data-uom-title="${row?.['uom_mapped']?.['title']}"
                                             data-prd-id="${row?.['product_mapped']?.['id']}"
@@ -223,7 +224,7 @@ class GISLoadTab {
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-light">${row?.['product_mapped']?.['code']}</span> ${row?.['product_mapped']?.['title']}`;
+                        return `<span class="badge badge-light">${row?.['product_mapped']?.['code'] ? row?.['product_mapped']?.['code'] : ''}</span> ${row?.['product_mapped']?.['title'] ? row?.['product_mapped']?.['title'] : ''}`;
                     }
                 },
                 {
@@ -241,19 +242,25 @@ class GISLoadTab {
                 {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `<span class="limit-quantity">${row?.['limit_quantity']}</span>`;
+                        return `<span class="sum-quantity">${row?.['sum_quantity'] ? row?.['sum_quantity'] : 0}</span>`;
                     }
                 },
                 {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `<span class="before-issued-quantity">${row?.['sum_issued_quantity'] ? row?.['sum_issued_quantity'] : 0}</span>`;
+                        return `<span class="before-quantity">${row?.['before_quantity'] ? row?.['before_quantity'] : 0}</span>`;
+                    }
+                },
+                {
+                    className: 'wrap-text text-center',
+                    render: (data, type, row) => {
+                        return `<span class="remain-quantity">${row?.['remain_quantity'] ? row?.['remain_quantity'] : 0}</span>`;
                     }
                 },
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-primary">${row?.['warehouse_mapped']?.['code']}</span> ${row?.['warehouse_mapped']?.['title']}`;
+                        return `<span class="badge badge-sm badge-soft-primary">${row?.['warehouse_mapped']?.['code'] ? row?.['warehouse_mapped']?.['code'] : ''}</span> ${row?.['warehouse_mapped']?.['title'] ? row?.['warehouse_mapped']?.['title'] : ''}`;
                     }
                 },
                 {
@@ -271,7 +278,7 @@ class GISLoadTab {
                                             data-wh-id="${row?.['warehouse_mapped']?.['id']}"
                                             data-wh-code="${row?.['warehouse_mapped']?.['code']}"
                                             data-wh-title="${row?.['warehouse_mapped']?.['title']}"
-                                            data-remain-quantity="${row?.['limit_quantity'] ? row?.['limit_quantity'] : 0}"
+                                            data-remain-quantity="${row?.['remain_quantity'] ? row?.['remain_quantity'] : 0}"
                                             data-item-id="${row?.['id']}"
                                             data-bs-toggle="modal"
                                             data-bs-target="#select-detail-modal"
@@ -347,6 +354,7 @@ class GISLoadTab {
                     $('.lot-input').trigger('change')
                 }
                 else {
+                    $('.limit-quantity').text('--')
                     $('#amount-selected-lot').text(selected_list.reduce((acc, item) => acc + (item?.['quantity'] ? parseFloat(item?.['quantity']) : 0), 0))
                     $('#amount-balance-lot').text(DetailBtn.closest('tr').find('.before-quantity').text())
                 }
@@ -707,7 +715,7 @@ $(document).on("click", '.select-detail', function () {
 })
 
 $('#issue-quantity').on('change', function () {
-    const limit = parseFloat(DetailBtn.closest('tr').find('.limit-quantity').text())
+    const limit = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
     let selected = parseFloat($(this).val())
     if (selected > limit) {
         $.fn.notifyB({description: "Issue quantity is invalid."}, 'warning')
@@ -746,7 +754,7 @@ $(document).on("change", '.lot-input', function () {
 done_none.on('click', function () {
     let issue_quantity = parseFloat($('#issue-quantity').val())
     let stock_quantity = parseFloat($('#stock-quantity').val())
-    let limit_quantity = parseFloat(DetailBtn.closest('tr').find('.limit-quantity').text())
+    let limit_quantity = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
     if (issue_quantity <= stock_quantity && issue_quantity <= limit_quantity) {
         DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
         detail_modal.modal('hide')

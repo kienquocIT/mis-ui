@@ -150,6 +150,12 @@ class GISLoadTab {
                 {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
+                        return `<span class="sum-quantity">${row?.['sum_quantity'] ? row?.['sum_quantity'] : 0}</span>`;
+                    }
+                },
+                {
+                    className: 'wrap-text text-center',
+                    render: (data, type, row) => {
                         return `<span class="before-quantity">${row?.['before_quantity'] ? row?.['before_quantity'] : 0}</span>`;
                     }
                 },
@@ -337,7 +343,13 @@ class GISLoadTab {
                 },
             ],
             initComplete: function () {
-                $('.lot-input').trigger('change')
+                if (!IS_DONE_GIS) {
+                    $('.lot-input').trigger('change')
+                }
+                else {
+                    $('#amount-selected-lot').text(selected_list.reduce((acc, item) => acc + (item?.['quantity'] ? parseFloat(item?.['quantity']) : 0), 0))
+                    $('#amount-balance-lot').text(DetailBtn.closest('tr').find('.before-quantity').text())
+                }
             }
         })
     }
@@ -442,6 +454,11 @@ class GISHandle {
                     // console.log(data)
                     IS_DETAIL_PAGE = option === 'detail'
                     IS_DONE_GIS = data?.['system_status'] === 3
+                    if (IS_DONE_GIS) {
+                        done_none.remove()
+                        done_sn.remove()
+                        done_lot.remove()
+                    }
 
                     $('#title').val(data?.['title'])
                     $('#date_created').val(moment(data?.['date_created'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
@@ -578,60 +595,73 @@ $(document).on("click", '.select-detail', function () {
             })
     }
     else if ($(this).attr('data-prd-type') === '1') {
+        let flag = true
         let dataParam = {}
         if (IS_DONE_GIS) {
             let detail_string_list = $(this).closest('td').find('.lot-data-script').text() ? JSON.parse($(this).closest('td').find('.lot-data-script').text()) : []
-            let detail_string_list_id = []
-            for (let i = 0; i < detail_string_list.length; i++) {
-                detail_string_list_id.push(detail_string_list[i]?.['lot_id'])
+            if (detail_string_list.length === 0) {
+                flag = false
             }
-            dataParam['detail_list'] = JSON.stringify(detail_string_list_id).slice(1, -1).replaceAll('"', '')
+            else {
+                let detail_string_list_id = []
+                for (let i = 0; i < detail_string_list.length; i++) {
+                    detail_string_list_id.push(detail_string_list[i]?.['lot_id'])
+                }
+                dataParam['detail_list'] = JSON.stringify(detail_string_list_id).slice(1, -1).replaceAll('"', '')
+            }
         }
         else {
             dataParam['product_warehouse__product_id'] = $(this).attr('data-prd-id')
             dataParam['product_warehouse__warehouse_id'] = $(this).attr('data-wh-id')
         }
-        let prd_wh_lot = $.fn.callAjax2({
-            url: LOTTable.attr('data-lot-url'),
-            data: dataParam,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('warehouse_lot_list')) {
-                    return data?.['warehouse_lot_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
 
-        Promise.all([prd_wh_lot]).then(
-            (results) => {
-                NONETable.prop('hidden', true)
-                SNTable.prop('hidden', true)
-                LOTTable.prop('hidden', false)
-                done_none.prop('hidden', true)
-                done_sn.prop('hidden', true)
-                done_lot.prop('hidden', false)
-                $('#amount-balance-lot').text($(this).attr('data-remain-quantity') + ' ' + $(this).attr('data-uom-title')).attr('data-value', $(this).attr('data-remain-quantity'))
-                SNTable.DataTable().clear().destroy()
-                let filter_lot = []
-                for (let i = 0; i < results[0].length; i++) {
-                    if (results[0][i]?.['quantity_import'] > 0) {
-                        filter_lot.push(results[0][i])
+        if (flag) {
+            let prd_wh_lot = $.fn.callAjax2({
+                url: LOTTable.attr('data-lot-url'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('warehouse_lot_list')) {
+                        return data?.['warehouse_lot_list'];
                     }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
                 }
-                let selected_list = DetailBtn.closest('tr').find('.lot-data-script').text() ? JSON.parse(DetailBtn.closest('tr').find('.lot-data-script').text()) : []
-                GISLoadTab.DrawTableItemsLOT(filter_lot, selected_list)
-            })
+            )
+
+            Promise.all([prd_wh_lot]).then(
+                (results) => {
+                    NONETable.prop('hidden', true)
+                    SNTable.prop('hidden', true)
+                    LOTTable.prop('hidden', false)
+                    done_none.prop('hidden', true)
+                    done_sn.prop('hidden', true)
+                    done_lot.prop('hidden', false)
+                    $('#amount-balance-lot').text($(this).attr('data-remain-quantity') + ' ' + $(this).attr('data-uom-title')).attr('data-value', $(this).attr('data-remain-quantity'))
+                    SNTable.DataTable().clear().destroy()
+                    let filter_lot = []
+                    for (let i = 0; i < results[0].length; i++) {
+                        if (results[0][i]?.['quantity_import'] > 0) {
+                            filter_lot.push(results[0][i])
+                        }
+                    }
+                    let selected_list = DetailBtn.closest('tr').find('.lot-data-script').text() ? JSON.parse(DetailBtn.closest('tr').find('.lot-data-script').text()) : []
+                    GISLoadTab.DrawTableItemsLOT(filter_lot, selected_list)
+                })
+        }
     }
     else if ($(this).attr('data-prd-type') === '2') {
+        let flag = true
         let dataParam = {}
         if (IS_DONE_GIS) {
             let detail_string_list = $(this).closest('td').find('.sn-data-script').text() ? JSON.parse($(this).closest('td').find('.sn-data-script').text()) : []
+            if (detail_string_list.length === 0) {
+                flag = false
+            }
             dataParam['detail_list'] = JSON.stringify(detail_string_list).slice(1, -1).replaceAll('"', '')
         }
         else {
@@ -639,37 +669,40 @@ $(document).on("click", '.select-detail', function () {
             dataParam['product_warehouse__warehouse_id'] = $(this).attr('data-wh-id')
             dataParam['is_delete'] = false
         }
-        let prd_wh_serial = $.fn.callAjax2({
-            url: SNTable.attr('data-sn-url'),
-            data: dataParam,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('warehouse_serial_list')) {
-                    return data?.['warehouse_serial_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
 
-        Promise.all([prd_wh_serial]).then(
-            (results) => {
-                console.log(results[0])
-                NONETable.prop('hidden', true)
-                SNTable.prop('hidden', false)
-                LOTTable.prop('hidden', true)
-                done_none.prop('hidden', true)
-                done_sn.prop('hidden', false)
-                done_lot.prop('hidden', true)
-                $('#amount-balance-sn').text($(this).attr('data-remain-quantity') + ' ' + $(this).attr('data-uom-title')).attr('data-value', $(this).attr('data-remain-quantity'))
-                LOTTable.DataTable().clear().destroy()
-                let selected_list = DetailBtn.closest('tr').find('.sn-data-script').text() ? JSON.parse(DetailBtn.closest('tr').find('.sn-data-script').text()) : []
-                GISLoadTab.DrawTableItemsSN(results[0], selected_list)
-            })
+        if (flag) {
+            let prd_wh_serial = $.fn.callAjax2({
+                url: SNTable.attr('data-sn-url'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('warehouse_serial_list')) {
+                        return data?.['warehouse_serial_list'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([prd_wh_serial]).then(
+                (results) => {
+                    console.log(results[0])
+                    NONETable.prop('hidden', true)
+                    SNTable.prop('hidden', false)
+                    LOTTable.prop('hidden', true)
+                    done_none.prop('hidden', true)
+                    done_sn.prop('hidden', false)
+                    done_lot.prop('hidden', true)
+                    $('#amount-balance-sn').text($(this).attr('data-remain-quantity') + ' ' + $(this).attr('data-uom-title')).attr('data-value', $(this).attr('data-remain-quantity'))
+                    LOTTable.DataTable().clear().destroy()
+                    let selected_list = DetailBtn.closest('tr').find('.sn-data-script').text() ? JSON.parse(DetailBtn.closest('tr').find('.sn-data-script').text()) : []
+                    GISLoadTab.DrawTableItemsSN(results[0], selected_list)
+                })
+        }
     }
 })
 

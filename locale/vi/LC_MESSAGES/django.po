@@ -8775,3 +8775,15 @@ msgstr "Tạo báo cáo sản xuất thành công"
 #
 msgid "Production report update successfully"
 msgstr "Cập nhật báo cáo sản xuất thành công"
+
+#
+msgid "Discount before tax"
+msgstr "Giảm giá trước thuế"
+
+#
+msgid "Discount after tax"
+msgstr "Giảm giá sau thuế"
+
+#
+msgid "Discount on product"
+msgstr "Giảm giá sản phẩm"

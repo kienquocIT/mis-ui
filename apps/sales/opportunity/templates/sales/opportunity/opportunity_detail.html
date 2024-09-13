@@ -45,7 +45,7 @@
             data-url-ap-detail="{% url "AdvancePaymentDetail" '0' %}"
             data-url-payment-detail="{% url "PaymentDetail" '0' %}"
             data-url-return-detail="{% url "ReturnAdvanceDetail" '0' %}"
-            data-url-bom-detail="{% url "BOMDetail" '0' %}"
+            data-url-bom-detail="{% url "ProjectBOMDetail" '0' %}"
     ></script>
     <div id="json-data">
         <input id="emp-current-id" class="hidden" value="{{ request.user.employee_current_data.id }}">
@@ -645,7 +645,7 @@
             data-url-advance-detail="{% url 'AdvancePaymentDetail' pk=0 %}"
             data-url-payment-detail="{% url 'PaymentDetail' pk=0 %}"
             data-url-return-detail="{% url 'ReturnAdvanceDetail' pk=0 %}"
-            data-url-bom-detail="{% url "BOMDetail" '0' %}"
+            data-url-bom-detail="{% url "ProjectBOMDetail" '0' %}"
     ></script>
     <script
             type="text" id="trans-factory"

@@ -7,6 +7,7 @@ __all__ = [
     'RandomGenerate',
     'TypeCheck',
     'FORMATTING',
+    'CustomizeEncoder',
 ]
 
 from datetime import datetime, date
@@ -14,6 +15,7 @@ from typing import Union
 from uuid import UUID
 
 from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
 
 
 class RandomGenerate:
@@ -123,7 +125,9 @@ class RandomGenerate:
 
             # generate
             if start_letter:
-                result = random.choice(string.ascii_letters) + "".join([random.choice(arr_choices) for _idx in range(0, length - 1)])
+                result = random.choice(string.ascii_letters) + "".join(
+                    [random.choice(arr_choices) for _idx in range(0, length - 1)]
+                )
             else:
                 result = "".join([random.choice(arr_choices) for _idx in range(0, length)])
 
@@ -275,3 +279,10 @@ class FORMATTING:
             if isinstance(value_str, str):
                 return datetime.strptime(value_str, cls.DATE)
         return None
+
+
+class CustomizeEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (UUID, datetime)):
+            return str(obj)
+        return super().default(obj)

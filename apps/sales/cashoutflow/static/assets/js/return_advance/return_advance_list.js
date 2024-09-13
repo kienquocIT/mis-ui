@@ -13,7 +13,7 @@ $(document).ready(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            console.log(resp.data['return_advances'])
+                            // console.log(resp.data['return_advances'])
                             return resp.data['return_advances'] ? resp.data['return_advances'] : [];
                         }
                         return [];
@@ -29,58 +29,71 @@ $(document).ready(function () {
                     {
                         data: 'code',
                         className: 'wrap-text w-10',
-                        render: (data, type, row, meta) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}" class="badge badge-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                        render: (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                            return `<a href="${link}" class="badge badge-primary w-70">${row?.['code']}</a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
                         data: 'title',
                         className: 'wrap-text w-25',
-                        render: (data, type, row, meta) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="text-primary"><b>${row.title}</b></span></a>`
+                        render: (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                            return `<a href="${link}"><span class="text-primary"><b>${row?.[['title']]}</b></span></a>`
                         }
                     },
                     {
-                        className: 'wrap-text w-15',
-                        render: (data, type, row, meta) => {
-                            return `<a class="link-danger underline_hover" target="_blank" href="` + $('#dtbReturnAdvance').attr('data-url-detail-ap').replace('0', row.advance_payment.id) + `">` + row.advance_payment.code + `</a>`
+                        className: 'wrap-text w-10',
+                        render: (data, type, row) => {
+                            return `<a class="badge badge-light w-70" target="_blank" href="${dtb.attr('data-url-detail-ap').replace('0', row?.['advance_payment']?.['id'])}">${row?.['advance_payment']?.['code']}</a>`
+                        }
+                    },
+                    {
+                        className: 'wrap-text w-10',
+                        render: (data, type, row) => {
+                            if (row?.['advance_payment']?.['opportunity_mapped']?.['id']) {
+                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['advance_payment']?.['opportunity_mapped']?.['id'])}"><b>${row?.['advance_payment']?.['opportunity_mapped']?.['code']}</b></a></span>`
+                            }
+                            else if (row?.['advance_payment']?.['quotation_mapped']?.['id']) {
+                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-quo-detail').replace('0', row?.['advance_payment']?.['quotation_mapped']?.['id'])}"><b>${row?.['advance_payment']?.['quotation_mapped']?.['code']}</b></a></span>`
+                            }
+                            else if (row?.['advance_payment']?.['sale_order_mapped']?.['id']) {
+                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-so-detail').replace('0', row?.['advance_payment']?.['sale_order_mapped']?.['id'])}"><b>${row?.['advance_payment']?.['sale_order_mapped']?.['code']}</b></a></span>`
+                            }
+                            else {
+                                return ''
+                            }
                         }
                     },
                     {
                         data: 'date_created',
                         className: 'wrap-text w-10',
-                        render: (data, type, row, meta) => {
-                            return $x.fn.displayRelativeTime(data, {
-                                'outputFormat': 'DD-MM-YYYY',
-                            });
+                        render: (data) => {
+                            return $x.fn.displayRelativeTime(data, {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
                         data: 'return_total',
                         className: 'wrap-text w-15',
-                        render: (data, type, row, meta) => {
-                            return `<span class="mask-money text-primary" data-init-money="{0}"></span>`.format_by_idx(
-                                data
-                            )
+                        render: (data, type, row) => {
+                            return `<span class="mask-money text-primary" data-init-money="${row?.['return_total']}"></span>`
                         }
                     },
                     {
                         data: 'money_received',
-                        className: 'wrap-text w-15',
-                        render: (data, type, row, meta) => {
-                            return `<div>
-                                        <span class="badge-status">
-                                            <span class="badge badge-primary badge-indicator"></span>
-                                            <span class="badge-label">${row.money_received}</span>
-                                        </span>
-                                    </div>`
+                        className: 'wrap-text w-10',
+                        render: (data, type, row,) => {
+                            if (row?.['money_received']) {
+                                return `<span class="text-muted small">${dtb.attr('data-type-translate-received')}</span>`
+                            }
+                            else {
+                                return `<span class="text-muted small">${dtb.attr('data-type-translate-waiting')}</span>`
+                            }
                         }
                     },
                     {
                         data: 'status',
-                        className: 'wrap-text text-center w-10',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             let approved_trans = ``
                             let text_color = ``

@@ -96,3 +96,26 @@ class GoodsIssueUpdate(View):
         return {
             'input_mapping_properties': input_mapping_properties, 'form_id': 'frmUpdate'
         }, status.HTTP_200_OK
+
+
+# related apiview
+class ProductionOrderListAPIForGIS(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GIS_PRODUCTION_ORDER_LIST).get(data)
+        return resp.auto_return(key_success='production_order_list')
+
+
+class ProductionOrderDetailAPIForGIS(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.GIS_PRODUCTION_ORDER_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='production_order_detail')

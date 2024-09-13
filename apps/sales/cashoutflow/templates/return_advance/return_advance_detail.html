@@ -21,15 +21,12 @@
 {% endblock %}
 {% block pageContent %}
     {{ data.data.employee_current | json_script:"employee_current" }}
-    <script id="script-url"
-
-    >
+    <script id="script-url">
     </script>
-    <form id="frmDetail"
+    <form id="form-detail-return-ap"
           data-url="{% url "ReturnAdvanceDetailAPI" pk=pk %}"
           data-url-redirect="{% url "ReturnAdvanceList" %}"
-          data-method="PUT"
-    >
+          data-method="PUT">
         {% csrf_token %}
         {% include 'return_advance/common/information.html' %}
     </form>

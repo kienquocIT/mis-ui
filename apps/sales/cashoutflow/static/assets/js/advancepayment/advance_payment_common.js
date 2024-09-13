@@ -8,16 +8,9 @@ const quotation_mapped_select = $('#quotation_mapped_select')
 const sale_order_mapped_select = $('#sale_order_mapped_select')
 const opp_mapped_select = $('#opportunity_id')
 const script_url = $('#script-url')
+const script_trans = $('#script-trans')
 const ap_method_Ele = $('#ap-method')
 const tab_plan_datatable = $('#tab_plan_datatable')
-const ap_type_default_data = [
-    {'value': 0, 'title': APTypeEle.attr('data-trans-to-emp')},
-    {'value': 1, 'title': APTypeEle.attr('data-trans-to-sup')},
-]
-const ap_method_default_data = [
-    {'value': 0, 'title': ap_method_Ele.attr('data-trans-cash')},
-    {'value': 1, 'title': ap_method_Ele.attr('data-trans-bank-transfer')},
-]
 let ap_for = null
 
 class APLoadPage {
@@ -39,6 +32,7 @@ class APLoadPage {
         APLoadPage.LoadCreatorInfor(data)
     }
     static LoadCreatorInfor(data) {
+        console.log(data)
         let btn_detail = $('#btn-detail-creator-tab');
         $('#creator-detail-span').prop('hidden', false);
         $('#creator-name').text(data?.['full_name']);
@@ -46,40 +40,6 @@ class APLoadPage {
         $('#creator-department').text(data?.['group']['title']);
         let url = btn_detail.attr('data-url').replace('0', data?.['id']);
         btn_detail.attr('href', url);
-    }
-    static LoadOpportunity(data) {
-        opp_mapped_select.initSelect2({
-            allowClear: true,
-            data: data,
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            quotation_mapped_select.empty()
-            sale_order_mapped_select.empty()
-            if (opp_mapped_select.val()) {
-                let selected = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
-                if (selected?.['is_close']) {
-                    $.fn.notifyB({description: `Opportunity ${selected?.['code']} has been closed. Can not select.`}, 'failure');
-                    opp_mapped_select.empty()
-                    ap_for = null
-                }
-                else {
-                    sale_order_mapped_select.prop('disabled', true)
-                    quotation_mapped_select.prop('disabled', true)
-                    let quo_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
-                    let so_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
-                    APLoadPage.LoadQuotation(quo_mapped)
-                    APLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quo_mapped?.['id'])
-                    APLoadPage.LoadSaleOrder(so_mapped);
-                    ap_for = 'opportunity'
-                }
-            }
-            else {
-                quotation_mapped_select.prop('disabled', false)
-                sale_order_mapped_select.prop('disabled', false)
-                ap_for = null
-            }
-        })
     }
     static LoadQuotation(data) {
         quotation_mapped_select.initSelect2({
@@ -91,7 +51,7 @@ class APLoadPage {
             data: (data ? data : null),
             keyResp: 'quotation_list',
             keyId: 'id',
-            keyText: 'title',
+            keyText: 'code',
         }).on('change', function () {
             opp_mapped_select.empty();
             sale_order_mapped_select.empty();
@@ -107,6 +67,7 @@ class APLoadPage {
                 opp_mapped_select.prop('disabled', false)
                 sale_order_mapped_select.prop('disabled', false)
                 ap_for = null
+                APLoadTab.DrawTablePlan()
             }
         })
     }
@@ -120,7 +81,7 @@ class APLoadPage {
             data: (data ? data : null),
             keyResp: 'sale_order_list',
             keyId: 'id',
-            keyText: 'title',
+            keyText: 'code',
         }).on('change', function () {
             opp_mapped_select.empty()
             quotation_mapped_select.empty()
@@ -136,23 +97,7 @@ class APLoadPage {
                 opp_mapped_select.prop('disabled', false)
                 quotation_mapped_select.prop('disabled', false)
                 ap_for = null
-            }
-        })
-    }
-    static LoadType(data) {
-        APTypeEle.initSelect2({
-            data: data ? data : ap_type_default_data,
-            keyId: 'value',
-            keyText: 'title',
-        }).on('change', function () {
-            if (APTypeEle.val() === '1') {
-                supplierEle.prop('disabled', false);
-                $('#supplier-label').addClass('required');
-                APLoadPage.LoadSupplier();
-            }
-            else {
-                supplierEle.prop('disabled', true);
-                $('#supplier-label').removeClass('required');
+                APLoadTab.DrawTablePlan()
             }
         })
     }
@@ -194,13 +139,6 @@ class APLoadPage {
         let url = btn_detail.attr('data-url').replace('0', data?.['id']);
         btn_detail.attr('href', url);
     }
-    static LoadMethod(data) {
-        ap_method_Ele.initSelect2({
-            data: data ? data : ap_method_default_data,
-            keyId: 'value',
-            keyText: 'title',
-        })
-    }
     static LoadReturnDate() {
         $('#return_date_id').daterangepicker({
             singleDatePicker: true,
@@ -231,10 +169,11 @@ class APLoadTab {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            $(this).closest('tr').find('.expense-unit-price-input').attr('value', '');
+            $(this).closest('tr').find('.expense-unit-price-input').attr('value', 0);
             $(this).closest('tr').find('.expense_quantity').val(1);
-            $(this).closest('tr').find('.expense-subtotal-price').attr('value', '');
-            $(this).closest('tr').find('.expense-subtotal-price-after-tax').attr('value', '');
+            $(this).closest('tr').find('.expense-subtotal-price').attr('value', 0);
+            $(this).closest('tr').find('.expense-subtotal-price-after-tax').attr('value', 0);
+            $.fn.initMaskMoney2()
         })
     }
     static LoadExpenseTax(ele, data) {
@@ -1049,55 +988,26 @@ class APLoadTab {
     }
     // bank info
     static LoadBankInfo(data) {
-        let ele = $('#list-bank-account-information');
-        ele.html(``);
         if (data.length > 0) {
-            $('#notify-none-bank-account').prop('hidden', true);
+            $('#notify-none-bank-account').prop('hidden', true)
+            let bank_cards = ``
             for (let i = 0; i < data.length; i++) {
                 let bank_account = data[i];
-                let default_card_color = '';
-                let checked = '';
-                if (bank_account?.['is_default'] === true) {
-                    default_card_color = 'bg-primary text-dark bg-opacity-10';
-                    checked = 'checked';
-                }
-                ele.append(
-                    `<div class="card ${default_card_color} close-over col-12 col-lg-5 col-md-5 mr-5">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-1">
-                                    <div class="card-text">
-                                        <input disabled class="radio_select_default_bank_account" name="bank_account_default" type="radio" ${checked}>                 
-                                    </div>
-                                </div>
-                                <div class="col-11">
-                                    <div class="card-text">
-                                        Bank account name: <span class="bank_account_name"><b>${bank_account?.['bank_account_name']}</b></span>
-                                    </div>
-                                    <div class="card-text">
-                                        Bank name: <span class="bank_name"><b>${bank_account?.['bank_name']}</b></span>
-                                    </div>
-                                    <div class="card-text">
-                                        Bank account number: <span class="bank_account_number"><b>${bank_account?.['bank_account_number']}</b></span>
-                                    </div>
-                                    <div class="card-text" hidden>
-                                        Country ID: <span class="bank_country_id"><b>${bank_account?.['bank_country_id']}</b></span>
-                                    </div>
-                                    <div class="card-text" hidden>
-                                        Bank code: <span class="bank_code"><b>${bank_account?.['bank_code']}</b></span>
-                                    </div>
-                                    <div class="card-text" hidden>
-                                        BIC/SWIFT Code: <span class="bic_swift_code"><b>${bank_account?.['bic_swift_code']}</b></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`
-                )
+                bank_cards += `<div class="col-12 col-md-6 col-lg-3 mb-2">
+                    <div class="border border-secondary rounded p-3 min-h-200p">
+                        <div class="text-center"><i class="bi bi-bank"></i></div>
+                        ${bank_account?.['bank_account_name'] ? `<div class="bank_account_name text-muted text-center">${bank_account?.['is_default'] ? '<i class="text-blue fas fa-thumbtack fa-rotate-by" style="--fa-rotate-angle: -45deg;""></i>' : ''} <b>${bank_account?.['bank_account_name'].toUpperCase()}</b></div>` : ''}
+                        ${bank_account?.['bank_account_number'] ? `<div class="bank_account_number text-muted text-center mb-3">${script_trans.attr('data-trans-bank-account-no')}: <b>${bank_account?.['bank_account_number']}</b></div>` : ''}
+                        ${bank_account?.['bank_name'] ? `<div class="bank_name text-muted text-center">${script_trans.attr('data-trans-bank-name')}: <b>${bank_account?.['bank_name']}</b></div>` : ''}
+                        ${bank_account?.['bank_code'] ? `<div class="bank_code text-muted text-center">${script_trans.attr('data-trans-bank-code')}: <b>${bank_account?.['bank_code'].toUpperCase()}</b></div>` : ''}
+                        ${bank_account?.['bic_swift_code'] ? `<div class="bic_swift_code text-muted text-center">${script_trans.attr('data-trans-BICSWIFT-code')}: <b>${bank_account?.['bic_swift_code'].toUpperCase()}</b></div>` : ''}
+                    </div>
+                </div>`
             }
+            $('#list-bank-account-information').append(`<div class="row">${bank_cards}</div>`)
         }
         else {
-            $('#notify-none-bank-account').prop('hidden', false);
+            $('#notify-none-bank-account').prop('hidden', false)
         }
     }
 }
@@ -1241,55 +1151,43 @@ class APAction {
 }
 
 class APHandle {
-    static LoadPage(opportunity_obj, quotation_object, sale_order_object, type) {
+    static LoadPage() {
         APLoadPage.LoadCreatedDate()
         APLoadPage.LoadCreator(initEmployee)
-        APLoadPage.LoadOpportunity()
         APLoadPage.LoadQuotation()
         APLoadPage.LoadSaleOrder()
-        APLoadPage.LoadType()
         APLoadPage.LoadSupplier()
-        APLoadPage.LoadMethod()
         APLoadPage.LoadReturnDate()
         APLoadTab.LoadLineDetailTable()
         APLoadTab.DrawTablePlan()
-        if (opportunity_obj) {
-            if (type === 0) {
-                APLoadPage.LoadOpportunity(opportunity_obj)
-                tableLineDetail.find('tbody').html('');
-                quotation_mapped_select.empty();
-                quotation_mapped_select.prop('disabled', true);
-                sale_order_mapped_select.empty();
-                sale_order_mapped_select.prop('disabled', true);
-                APLoadPage.LoadQuotation(quotation_object)
-                APLoadPage.LoadSaleOrder(sale_order_object)
-                APLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quotation_object?.['id'])
-            }
-        }
     }
-    static CombinesData(frmEle) {
+    static CombinesData(frmEle, option) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['title'] = $('#title').val()
-        if (ap_for === 'opportunity') {
-            frm.dataForm['opportunity_mapped_id'] = opp_mapped_select.val()
-            frm.dataForm['sale_code_type'] = 0
+
+        if (option === 'create') {
+            if (ap_for === 'opportunity') {
+                frm.dataForm['opportunity_mapped_id'] = opp_mapped_select.val()
+                frm.dataForm['sale_code_type'] = 0
+            }
+            else if (ap_for === 'quotation') {
+                frm.dataForm['quotation_mapped_id'] = quotation_mapped_select.val()
+                frm.dataForm['sale_code_type'] = 0
+            }
+            else if (ap_for === 'saleorder') {
+                frm.dataForm['sale_order_mapped_id'] = sale_order_mapped_select.val()
+                frm.dataForm['sale_code_type'] = 0
+            }
+            else {
+                frm.dataForm['opportunity_mapped_id'] = null
+                frm.dataForm['quotation_mapped_id'] = null
+                frm.dataForm['sale_order_mapped_id'] = null
+                frm.dataForm['sale_code_type'] = 2
+            }
+            frm.dataForm['employee_inherit_id'] = $('#employee_inherit_id').val()
         }
-        else if (ap_for === 'quotation') {
-            frm.dataForm['quotation_mapped_id'] = quotation_mapped_select.val()
-            frm.dataForm['sale_code_type'] = 0
-        }
-        else if (ap_for === 'saleorder') {
-            frm.dataForm['sale_order_mapped_id'] = sale_order_mapped_select.val()
-            frm.dataForm['sale_code_type'] = 0
-        }
-        else {
-            frm.dataForm['opportunity_mapped_id'] = null
-            frm.dataForm['quotation_mapped_id'] = null
-            frm.dataForm['sale_order_mapped_id'] = null
-            frm.dataForm['sale_code_type'] = 2
-        }
-        frm.dataForm['employee_inherit_id'] = $('#employee_inherit_id').val()
+
         frm.dataForm['advance_payment_type'] = APTypeEle.val()
         frm.dataForm['supplier_id'] = supplierEle.val() ? supplierEle.val() : null
         frm.dataForm['method'] = ap_method_Ele.val()
@@ -1328,7 +1226,7 @@ class APHandle {
         })
         frm.dataForm['ap_item_list'] = ap_item_list
 
-        // console.log(frm)
+        console.log(frm)
         return frm
     }
     static LoadDetailAP(option) {
@@ -1339,9 +1237,17 @@ class APHandle {
                 if (data) {
                     data = data['advance_payment_detail'];
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
-                    new PrintTinymceControl().render('57725469-8b04-428a-a4b0-578091d0e4f5', data, false);
+                    if (option === 'detail') {
+                        new PrintTinymceControl().render('57725469-8b04-428a-a4b0-578091d0e4f5', data, false);
+                    }
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
+                    // console.log(data)
+
+                    opp_mapped_select.prop('disabled', true)
+                    quotation_mapped_select.prop('disabled', true)
+                    sale_order_mapped_select.prop('disabled', true)
+                    $('#employee_inherit_id').prop('disabled', true)
 
                     if (Object.keys(data?.['opportunity_mapped']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
                         new $x.cls.bastionField({
@@ -1438,23 +1344,10 @@ class APHandle {
                     $('#title').val(data.title);
 
                     APTypeEle.val(data.advance_payment_type);
-                    APLoadPage.LoadType({
-                        'value': data.advance_payment_type,
-                        'title': [
-                            APTypeEle.attr('data-trans-to-emp'),
-                            APTypeEle.attr('data-trans-to-sup')
-                        ][data.advance_payment_type]
-                    })
 
                     APLoadPage.LoadSupplier(data.supplier);
 
-                    APLoadPage.LoadMethod({
-                        'value': data.method,
-                        'title': [
-                            ap_method_Ele.attr('data-trans-cash'),
-                            ap_method_Ele.attr('data-trans-bank-transfer')
-                        ][data.method]
-                    })
+                    ap_method_Ele.val(data.method)
 
                     $('#created_date_id').val(data.date_created.split(' ')[0]).prop('readonly', true)
 
@@ -1481,12 +1374,51 @@ class APHandle {
                     })
 
                     APAction.DisabledDetailPage(option);
-                    quotation_mapped_select.attr('disabled', true);
-                    sale_order_mapped_select.attr('disabled', true);
                 }
             })
     }
 }
+
+opp_mapped_select.on('change', function () {
+    quotation_mapped_select.empty()
+    sale_order_mapped_select.empty()
+    if (opp_mapped_select.val()) {
+        let selected = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
+        if (selected?.['is_close']) {
+            $.fn.notifyB({description: `Opportunity ${selected?.['code']} has been closed. Can not select.`}, 'failure');
+            opp_mapped_select.empty()
+            ap_for = null
+        }
+        else {
+            sale_order_mapped_select.prop('disabled', true)
+            quotation_mapped_select.prop('disabled', true)
+            let quo_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
+            let so_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
+            APLoadPage.LoadQuotation(quo_mapped)
+            APLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quo_mapped?.['id'])
+            APLoadPage.LoadSaleOrder(so_mapped);
+            ap_for = 'opportunity'
+        }
+    }
+    else {
+        quotation_mapped_select.prop('disabled', false)
+        sale_order_mapped_select.prop('disabled', false)
+        ap_for = null
+        APLoadTab.DrawTablePlan()
+    }
+})
+
+APTypeEle.on('change', function () {
+    if (APTypeEle.val() === '1') {
+        supplierEle.prop('disabled', false);
+        $('#supplier-label').addClass('required');
+        APLoadPage.LoadSupplier();
+    }
+    else {
+        supplierEle.prop('disabled', true);
+        $('#supplier-label').removeClass('required');
+    }
+})
 
 $(document).on("click", '#btn-add-row-line-detail', function () {
     APAction.AddRow(tableLineDetail, {})

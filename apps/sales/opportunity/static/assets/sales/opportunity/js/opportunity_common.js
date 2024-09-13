@@ -640,6 +640,7 @@ class OpportunityLoadDetail {
         });
 
         $('#btnSavePermitMember').on('click', function () {
+            WindowControl.showLoading()
             let bodyData = {
                 'permit_view_this_opp': eleViewOppMember.prop('checked'),
                 'permit_add_member': eleAddOppMember.prop('checked'),
@@ -658,14 +659,28 @@ class OpportunityLoadDetail {
                             'description': $.fn.transEle.attr('data-success'),
                         }, 'success')
                         OpportunityLoadDetail.clickEditMember(boxEditPermitEle.data('id'), memberEditEle, boxEditPermitEle, eleViewOppMember, eleAddOppMember);
+                        WindowControl.hideLoading()
+                        Swal.fire({
+                            html:
+                            `<h6 class="text-primary">${$('#trans-script').attr('data-trans-notify-update-permission')}</h6>`,
+                            customClass: {
+                                confirmButton: 'btn btn-sm btn-primary',
+                                actions: '',
+                            },
+                            buttonsStyling: false,
+                        })
                     } else {
                         $.fn.notifyB({
                             'description': $.fn.transEle.attr('data-fail'),
                         }, 'failure')
+                        WindowControl.hideLoading()
                     }
                 },
                 (errs) => {
-
+                    $.fn.notifyB({
+                            'description': $.fn.transEle.attr('data-fail'),
+                        }, 'failure')
+                    WindowControl.hideLoading()
                 }
             )
         });

@@ -806,7 +806,9 @@ function LoadDetailGoodsTransfer(option='detail') {
                 DOC_DONE = [2, 3].includes(data?.['goods_transfer_detail']?.['system_status'])
 
                 data = data?.['goods_transfer_detail'];
-                new PrintTinymceControl().render('866f163d-b724-404d-942f-4bc44dc2e2ed', data, false);
+                if (option === 'detail') {
+                    new PrintTinymceControl().render('866f163d-b724-404d-942f-4bc44dc2e2ed', data, false);
+                }
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
@@ -966,7 +968,7 @@ class GoodsTransferHandle {
                         'product_warehouse': prd_wh?.['id'],
                         'warehouse': wh?.['id'],
                         'product': prd_wh?.['product']?.['id'],
-                        'sale_order': row.find('.row_sale_order').val(),
+                        'sale_order': row.find('.row_sale_order').val() ? row.find('.row_sale_order').val() : null,
                         'end_warehouse': target_wh?.['id'],
                         'uom': prd_wh?.['uom']?.['id'],
                         'lot_data': lot_changes,

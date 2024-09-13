@@ -4,7 +4,7 @@ $(document).ready(function () {
     ReturnAPHandle.LoadDetail('update');
 
     // SUBMIT FORM CREATE ADVANCE PAYMENT
-    $('#frmDetail').submit(function (event) {
+    $('#form-detail-return-ap').submit(function (event) {
         event.preventDefault();
         let form = ReturnAPHandle.CombinesData($(this));
         if (form) {

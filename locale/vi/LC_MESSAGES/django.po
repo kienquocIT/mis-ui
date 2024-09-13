@@ -1539,19 +1539,19 @@ msgid "Country"
 msgstr "Quốc gia"
 
 #
-msgid "Bank Name"
-msgstr "Tên ngân hàng"
+msgid "Bank name"
+msgstr "Tên NH"
 
 #
-msgid "Bank Code"
-msgstr "Mã ngân hàng"
+msgid "Bank code"
+msgstr "Mã NH"
 
 #
-msgid "Account Number"
+msgid "Account number"
 msgstr "Số tài khoản"
 
 #
-msgid "BIC/SWIFT Code"
+msgid "BIC/SWIFT code"
 msgstr "Mã BIC/SWIFT"
 
 #
@@ -2165,7 +2165,7 @@ msgstr "Thông tin ngân hàng"
 
 #
 msgid "To payment"
-msgstr "Thanh toán"
+msgstr "Dùng cho TT"
 
 #
 msgid "Attachment"
@@ -2186,10 +2186,6 @@ msgstr "Kế hoạch sau thuế"
 #
 msgid "AP Approved"
 msgstr "Đã tạm ứng"
-
-#
-msgid "To Payment"
-msgstr "Thanh toán"
 
 #
 msgid "Other Payment"
@@ -2229,7 +2225,7 @@ msgstr "Tạm ứng"
 
 #
 msgid "Sale Code"
-msgstr "Mã giao dịch bán hàng"
+msgstr "Mã GD bán hàng"
 
 #
 msgid "More information"
@@ -2281,7 +2277,7 @@ msgstr "Mã phiếu tạm ứng"
 
 #
 msgid "Return Status"
-msgstr "Trạng thái hoàn trả"
+msgstr "TT hoàn trả"
 
 #
 msgid "Opportunity list"
@@ -3345,7 +3341,7 @@ msgstr "Lưu cập nhật trên phần vùng quy trình, sau đó gọi chuyển
 
 #
 msgid "Collapse"
-msgstr "Thu gọn/Mở rộng"
+msgstr "Thu gọn"
 
 #
 msgid "Collapse All"
@@ -3785,7 +3781,7 @@ msgstr "Chọn chi phí"
 
 #
 msgid "To employee"
-msgstr "Cho nhân viên"
+msgstr "Cho NV"
 
 #
 msgid "To supplier"
@@ -3813,11 +3809,7 @@ msgstr "Giá trị thanh toán"
 
 #
 msgid "Advance Payment value"
-msgstr "Giá trị phiếu tạm ứng"
-
-#
-msgid "To payment value"
-msgstr "Đã thanh toán"
+msgstr "Giá trị tạm ứng"
 
 #
 msgid "Remain AP"
@@ -6149,10 +6141,6 @@ msgid "Descriptions of file"
 msgstr "Mô tả của tập tin"
 
 #
-msgid "AP Status"
-msgstr "Trạng thái tạm ứng"
-
-#
 msgid "Asset, Tools"
 msgstr "Tài sản, Công cụ"
 
@@ -7027,10 +7015,6 @@ msgstr "Tên người mua hàng"
 #
 msgid "Billing address"
 msgstr "Địa chỉ xuất hoá đơn"
-
-#
-msgid "Bank code"
-msgstr "Mã ngân hàng"
 
 #
 msgid "Bank number"
@@ -7982,7 +7966,10 @@ msgstr "Nhóm đơn vị"
 
 #
 msgid "Edit zone"
-msgstr "Chỉnh sửa vùng dữ liệu"msgid "Expand / Collapse"
+msgstr "Chỉnh sửa vùng dữ liệu"
+
+#
+msgid "Expand / Collapse"
 msgstr "Thu gọn / Mở rộng"
 
 #
@@ -8070,8 +8057,8 @@ msgid "Change view mode"
 msgstr "Thay đổi chế độ xem"
 
 #
-msgid "AP status"
-msgstr "Trạng thái tạm ứng"
+msgid "Received money"
+msgstr "Đã nhận tiền"
 
 #
 msgid "Google app password"
@@ -8739,7 +8726,7 @@ msgstr "Cho thanh lý"
 
 #
 msgid "Bill of material"
-msgstr "Hóa đơn nguyên vật liệu"
+msgstr "Định mức nguyên vật liệu"
 
 #
 msgid "Finished"
@@ -8748,6 +8735,22 @@ msgstr "Đã hoàn thành"
 #
 msgid "Not finished"
 msgstr "Chưa hoàn thành"
+
+#
+msgid "Production order number"
+msgstr "SL theo Lệnh SX"
+
+#
+msgid "Issued before"
+msgstr "Xuất trước đó"
+
+#
+msgid "Filter for expiring return advance"
+msgstr "Lọc lấy phiếu sắp đến hạn hoàn ứng"
+
+#
+msgid "Please save Update Opportunity page to apply all the permissions!"
+msgstr "Lưu Cơ Hội Kinh Doanh để các quyền được áp dụng!"
 
 #
 msgid "Estimated delivery date"

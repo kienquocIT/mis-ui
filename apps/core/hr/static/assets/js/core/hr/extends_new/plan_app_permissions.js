@@ -1012,7 +1012,7 @@ class HandlePlanAppNew {
         }
         if (HandlePlanAppNew.editEnabled === true) {
             if (HandlePlanAppNew.manual_app_list_and_not_plan_app === true) {
-                $x.fn.showLoadingPage();
+                // $x.fn.showLoadingPage();
                 $.fn.callAjax2({
                     url: elePermit.newRowAppEle.attr('data-url'),
                     type: 'GET',
@@ -1024,7 +1024,7 @@ class HandlePlanAppNew {
                     }
                 }).then(
                     (resp) => {
-                        $x.fn.hideLoadingPage();
+                        // $x.fn.hideLoadingPage();
                         let data = $.fn.switcherResp(resp);
                         let keyResp = elePermit.newRowAppEle.attr('data-keyResp');
                         if (data && typeof data === 'object' && data.hasOwnProperty(keyResp)) {
@@ -1037,7 +1037,7 @@ class HandlePlanAppNew {
                     },
                     (errs) => {
                         clsThis.renderTablePermissionSelected(instance_id);
-                        $x.fn.hideLoadingPage();
+                        // $x.fn.hideLoadingPage();
                     }
                 )
             }

@@ -6,7 +6,7 @@ from apps.core.home.views import (
     BookMarkListAPI, BookMarkDetailAPI,
     DocPinedListAPI, DocPinedDetailAPI,
     GatewayMiddleListView, GatewayMiddleDetailView, GatewayViewNameListView, GatewayViewNameParseView, DefaultDataView,
-    OutLayoutNotFoundView, OutLayoutServerOff, ResolveNotifyItemAPI, GatewayPKMiddleDetailView,
+    OutLayoutNotFoundView, OutLayoutServerOff, ResolveNotifyItemAPI, GatewayPKMiddleDetailView, HomeCalendarAPI,
 )
 
 urlpatterns = [
@@ -44,7 +44,10 @@ urlpatterns = [
     ),
     path(
         'gateway/done-notify/<str:pk>', ResolveNotifyItemAPI.as_view(), name='ResolveNotifyItemAPI',
-    )
+    ),
+
+    # home calendar
+    path('home/calendar', HomeCalendarAPI.as_view(), name='HomeCalendarAPI'),
 ]
 
 if settings.DEBUG is True:

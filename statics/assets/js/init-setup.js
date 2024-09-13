@@ -5855,14 +5855,18 @@ class FileControl {
     ui_multi_add_file(id, file) {
         // Creates a new file and add it to our list
         let base64Capture = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzVweCIgaGVpZ2h0PSIzNXB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGc+CiAgICA8cGF0aCBkPSJNMTkgOVYxNy44QzE5IDE4LjkyMDEgMTkgMTkuNDgwMiAxOC43ODIgMTkuOTA4QzE4LjU5MDMgMjAuMjg0MyAxOC4yODQzIDIwLjU5MDMgMTcuOTA4IDIwLjc4MkMxNy40ODAyIDIxIDE2LjkyMDEgMjEgMTUuOCAyMUg4LjJDNy4wNzk4OSAyMSA2LjUxOTg0IDIxIDYuMDkyMDIgMjAuNzgyQzUuNzE1NjkgMjAuNTkwMyA1LjQwOTczIDIwLjI4NDMgNS4yMTc5OSAxOS45MDhDNSAxOS40ODAyIDUgMTguOTIwMSA1IDE3LjhWNi4yQzUgNS4wNzk4OSA1IDQuNTE5ODQgNS4yMTc5OSA0LjA5MjAyQzUuNDA5NzMgMy43MTU2OSA1LjcxNTY5IDMuNDA5NzMgNi4wOTIwMiAzLjIxNzk5QzYuNTE5ODQgMyA3LjA3OTkgMyA4LjIgM0gxM00xOSA5TDEzIDNNMTkgOUgxNEMxMy40NDc3IDkgMTMgOC41NTIyOCAxMyA4VjMiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICA8L2c+Cjwvc3ZnPgo=';
-        let template = this.ele$.find('.pattern-file-text-plain').text()
-            .replace('%%filename%%', file.name)
-            .replace('%%fileid%%', id)
-            .replace('%%fileinfo%%', FileControl.parse_size(file.size))
-            .replace('%%filecapture%%', base64Capture)
-            .replace('%%fileremark%%', file.remarks || '')
-        ;
-
+        let template = $(
+            this.ele$.find('.pattern-file-text-plain').text()
+                .replace('%%filename%%', file.name)
+                .replace('%%fileid%%', id)
+                .replace('%%fileinfo%%', FileControl.parse_size(file.size))
+                .replace('%%filecapture%%', base64Capture)
+                .replace('%%fileremark%%', file.remarks || '')
+        );
+        const elePreview$ = template.find('.file-preview-link');
+        if (elePreview$.length > 0){
+            elePreview$.attr('href', elePreview$.attr('href').replaceAll('__pk__', id));
+        }
         this.ele$.find('.dm-uploader-no-files').hide();
 
         this.ele$.find('.dm-uploader-result-list').prepend(template).fadeIn();
@@ -6451,7 +6455,29 @@ class FileControl {
         }
     }
 
-    static download(pk){
+    static download(pk, successCallback=null){
+        function active_download(data, status, xhr){
+            const disposition = xhr.getResponseHeader('Content-Disposition');
+            let filename = '';
+            if (disposition && disposition.indexOf('attachment') !== -1) {
+                const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
+                if (matches != null && matches[1]) {
+                    filename = matches[1].replace(/['"]/g, '');
+                }
+            }
+
+            const url = window.URL.createObjectURL(data);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        if (!successCallback || typeof successCallback !== 'function'){
+            successCallback = active_download
+        }
+
         $.fn.callAjax2({
             url: `/attachment/download/${pk}`,
             method: 'GET',
@@ -6460,24 +6486,7 @@ class FileControl {
             },
             successOnly: true,
             isLoading: true,
-            success: function(data, status, xhr) {
-                const disposition = xhr.getResponseHeader('Content-Disposition');
-                let filename = '';
-                if (disposition && disposition.indexOf('attachment') !== -1) {
-                    const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
-                    if (matches != null && matches[1]) {
-                        filename = matches[1].replace(/['"]/g, '');
-                    }
-                }
-
-                const url = window.URL.createObjectURL(data);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-            },
+            success: successCallback,
         }).then(
             resp => resp,
             errs => {

@@ -48,6 +48,16 @@ class AttachmentDownload(APIView):
         return RespData.resp_404()
 
 
+class AttachmentPreview(View):
+    @mask_view(
+        login_require=True,
+        template='core/attachment/preview.html',
+        jsi18n='attachment',
+    )
+    def get(self, request, *args, pk, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class FilesUnusedAPI(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):

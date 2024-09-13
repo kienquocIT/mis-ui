@@ -86,7 +86,17 @@
                         alt="Preview"
                 >
                 <div class="media-body mb-1">
-                    <p class="f-item-name">%%filename%%</p>
+                    <div class="d-flex">
+                        <p class="f-item-name">%%filename%%</p>
+                        <a
+                                class="file-preview-link ml-2"
+                                href="{% url 'AttachmentPreview' pk='__pk__' %}"
+                                target="_blank"
+                        >
+                            <i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i>
+                        </a>
+                    </div>
+
                     <small class="f-item-info">%%fileinfo%%</small>
                     <input type="text" class="form-control-plaintext file-txt-remark" placeholder="" value="%%fileremark%%" readonly disabled>
                 </div>

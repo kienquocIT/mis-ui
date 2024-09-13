@@ -27,7 +27,7 @@ $(function () {
             }
             let dataBOM = ProdOrderLoadDataHandle.loadGetDataBOM();
             if (dataBOM?.['sum_time']) {
-                ProdOrderLoadDataHandle.$time.html(`${parseInt(dataBOM?.['sum_time']) * multi}`);
+                ProdOrderLoadDataHandle.$time.val(`${parseInt(dataBOM?.['sum_time']) * multi}`);
             }
         });
 

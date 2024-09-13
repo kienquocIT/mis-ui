@@ -5,11 +5,11 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg
 from apps.shared.constant import SYSTEM_STATUS
 
 
-def create_production_order(request, url, msg):
+def create_production_report(request, url, msg):
     resp = ServerAPI(user=request.user, url=url).post(request.data)
     if resp.state:
         resp.result['message'] = msg
@@ -17,7 +17,7 @@ def create_production_order(request, url, msg):
     return resp.auto_return()
 
 
-def update_production_order(request, url, pk, msg):
+def update_production_report(request, url, pk, msg):
     resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
     if resp.state:
         resp.result['message'] = msg
@@ -25,61 +25,61 @@ def update_production_order(request, url, pk, msg):
     return resp.auto_return()
 
 
-class ProductionOrderList(View):
+class ProductionReportList(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
-        template='sales/production/productionorder/production_order_list.html',
-        menu_active='menu_production_order_list',
-        breadcrumb='PRODUCTION_ORDER_LIST_PAGE',
+        template='sales/production/productionreport/production_report_list.html',
+        menu_active='menu_production_report_list',
+        breadcrumb='PRODUCTION_REPORT_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
 
 
-class ProductionOrderCreate(View):
+class ProductionReportCreate(View):
     @mask_view(
         auth_require=True,
-        template='sales/production/productionorder/production_order_create.html',
+        template='sales/production/productionreport/production_report_create.html',
         menu_active='',
-        breadcrumb='PRODUCTION_ORDER_CREATE_PAGE',
+        breadcrumb='PRODUCTION_REPORT_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         ctx = {}
         return ctx, status.HTTP_200_OK
 
 
-class ProductionOrderListAPI(APIView):
+class ProductionReportListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCTION_ORDER_LIST).get(data)
-        return resp.auto_return(key_success='production_order_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCTION_REPORT_LIST).get(data)
+        return resp.auto_return(key_success='production_report_list')
 
     @mask_view(
         auth_require=True,
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        return create_production_order(
+        return create_production_report(
             request=request,
-            url=ApiURL.PRODUCTION_ORDER_LIST,
-            msg=SaleMsg.PRODUCTION_ORDER_CREATE
+            url=ApiURL.PRODUCTION_REPORT_LIST,
+            msg=SaleMsg.PRODUCTION_REPORT_CREATE
         )
 
 
-class ProductionOrderDetail(View):
+class ProductionReportDetail(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
-        template='sales/production/productionorder/production_order_detail.html',
-        menu_active='menu_production_order_list',
-        breadcrumb='PRODUCTION_ORDER_DETAIL_PAGE',
+        template='sales/production/productionreport/production_report_detail.html',
+        menu_active='menu_production_report_list',
+        breadcrumb='PRODUCTION_REPORT_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         return {
@@ -87,12 +87,12 @@ class ProductionOrderDetail(View):
                }, status.HTTP_200_OK
 
 
-class ProductionOrderUpdate(View):
+class ProductionReportUpdate(View):
     @mask_view(
         auth_require=True,
-        template='sales/production/productionorder/production_order_update.html',
-        menu_active='menu_production_order_list',
-        breadcrumb='PRODUCTION_ORDER_UPDATE_PAGE',
+        template='sales/production/productionreport/production_report_update.html',
+        menu_active='menu_production_report_list',
+        breadcrumb='PRODUCTION_REPORT_UPDATE_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         ctx = {
@@ -101,14 +101,14 @@ class ProductionOrderUpdate(View):
         return ctx, status.HTTP_200_OK
 
 
-class ProductionOrderDetailAPI(APIView):
+class ProductionReportDetailAPI(APIView):
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCTION_ORDER_DETAIL.push_id(pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCTION_REPORT_DETAIL.push_id(pk)).get()
         return resp.auto_return()
 
     @mask_view(
@@ -116,20 +116,31 @@ class ProductionOrderDetailAPI(APIView):
         is_api=True
     )
     def put(self, request, *args, pk, **kwargs):
-        return update_production_order(
+        return update_production_report(
             request=request,
-            url=ApiURL.PRODUCTION_ORDER_DETAIL,
+            url=ApiURL.PRODUCTION_REPORT_DETAIL,
             pk=pk,
-            msg=SaleMsg.PRODUCTION_ORDER_UPDATE
+            msg=SaleMsg.PRODUCTION_REPORT_UPDATE
         )
 
 
-class ProductionOrderDDListAPI(APIView):
+class ProductionReportDDListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCTION_ORDER_DD_LIST).get(data)
-        return resp.auto_return(key_success='production_order_dd')
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCTION_REPORT_DD_LIST).get(data)
+        return resp.auto_return(key_success='production_report_dd')
+
+
+class ProductionReportGRListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCTION_REPORT_GR_LIST).get(data)
+        return resp.auto_return(key_success='production_report_gr')

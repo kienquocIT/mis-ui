@@ -2138,13 +2138,13 @@ class WFRTControl {
 
     static callWFSubmitForm(_form) {
         let IDRuntime = WFRTControl.getRuntimeWF();
-        let eleDocChange = $('#documentCR');
+        let eleStatus = $('#systemStatus');
         let $eleCode = $('#documentCode');
         let currentEmployee = $x.fn.getEmployeeCurrentID();
-        if (eleDocChange.attr('data-status') === '5' && eleDocChange.attr('data-inherit') === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {  // change document after finish
+        if (eleStatus.attr('data-status-cr') === '5' && eleStatus.attr('data-inherit') === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {  // change document after finish
             let $eleForm = $(`#${globeFormMappedZone}`);
-            let docRootID = eleDocChange.attr('data-doc-root-id');
-            let docChangeOrder = eleDocChange.attr('data-doc-change-order');
+            let docRootID = eleStatus.attr('data-doc-root-id');
+            let docChangeOrder = eleStatus.attr('data-doc-change-order');
             if ($eleForm && $eleForm.length > 0 && docRootID) {
                 _form.dataMethod = 'POST';
                 _form.dataUrl = $eleForm.attr('data-url-cr');
@@ -2339,7 +2339,7 @@ class WFRTControl {
         for (let collab of collabOutForm) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
                                 <div class="d-flex align-items-center">
-                                    <i class="fas fa-user mr-2 fs-7"></i>
+                                    <i class="fas fa-user mr-2"></i>
                                     <span class="mr-2">${collab?.['full_name']}</span>
                                     <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
                                 </div>
@@ -2355,8 +2355,8 @@ class WFRTControl {
         let htmlCustom = ``;
         let statusList = [0, 1];
         let statusMapIcon = {
-            0: "far fa-list-alt mr-2 fs-7",
-            1: "fas fa-sitemap mr-2 fs-7",
+            0: "far fa-list-alt mr-2",
+            1: "fas fa-sitemap mr-2",
         };
         let statusMapText = {
             0: $.fn.transEle.attr('data-save-draft'),
@@ -2465,9 +2465,8 @@ class WFRTControl {
                         if (window.location.href.includes('/update/')) {  // page update
                             // active btn save change and back if current employee is owner, status is finished
                             let isCR = false;
-                            let eleDocCR = $('#documentCR');
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
-                            if (eleDocCR.attr('data-status') === '5' && eleDocCR.attr('data-inherit') === currentEmployee) {
+                            if (eleStatus.attr('data-status-cr') === '5' && eleStatus.attr('data-inherit') === currentEmployee) {
                                 WFRTControl.setBtnWFAfterFinishUpdate();
                                 isCR = true;
                             }
@@ -2494,7 +2493,7 @@ class WFRTControl {
                             }
                         }
                         // collab out form handler
-                        WFRTControl.setCollabOutFormData(actionMySelf['collab_out_form']);
+                        WFRTControl.setCollabOFRuntime(actionMySelf['collab_out_form']);
                     }
                 }
             })
@@ -2503,88 +2502,70 @@ class WFRTControl {
     }
 
     static setWFInitialData(app_code, data_method) {
-        if (app_code && data_method) {
-            let isCheck = false;
-            if (data_method.toLowerCase() === 'post') {
-                isCheck = true;
-            }
-            if (data_method.toLowerCase() === 'put') {
-                let eleCR = $('#documentCR');
-                if (eleCR) {
-                    if (eleCR.attr('data-status') === '5') {
-                        isCheck = true;
-                    }
-                }
-                let runtimeID = WFRTControl.getWFRuntimeID();
-                if (!runtimeID) {
-                    isCheck = true;
-                }
-            }
-            if (isCheck === true) {
-                let btn = $('#btnLogShow');
-                btn.removeClass('hidden');
-                let url = btn.attr('data-url-current-wf');
-                $.fn.callAjax2({
-                    'url': url,
-                    'method': 'GET',
-                    'data': {'code': app_code},
-                }).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('app_list') && Array.isArray(data.app_list)) {
-                            if (data?.['app_list'].length === 1) {  // check only 1 wf config for application
-                                let WFconfig = data?.['app_list'][0];
-                                if (WFconfig?.['mode'] !== 0) {  // check if wf mode is not unapply (!== 0)
-                                    let workflow_current = WFconfig?.['workflow_currently'];
-                                    if (workflow_current) {
-                                        // zones handler
-                                        if (window.location.href.includes('/create/')) {
-                                            WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
-                                        }
-                                        // collab out form handler
-                                        WFRTControl.setCollabOutFormData(workflow_current['collab_out_form']);
+        if (app_code) {
+            let btn = $('#btnLogShow');
+            btn.removeClass('hidden');
+            let url = btn.attr('data-url-current-wf');
+            $.fn.callAjax2({
+                'url': url,
+                'method': 'GET',
+                'data': {'code': app_code},
+            }).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('app_list') && Array.isArray(data.app_list)) {
+                        if (data?.['app_list'].length === 1) {  // check only 1 wf config for application
+                            let WFconfig = data?.['app_list'][0];
+                            if (WFconfig?.['mode'] !== 0) {  // check if wf mode is not unapply (!== 0)
+                                let workflow_current = WFconfig?.['workflow_currently'];
+                                if (workflow_current) {
+                                    // zones handler
+                                    if (window.location.href.includes('/create')) {
+                                        WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
                                     }
+                                    // collab out form handler
+                                    WFRTControl.setCollabOFCreate(workflow_current['collab_out_form']);
                                 }
-                                if (WFconfig?.['mode'] === 0) {
-                                    let url = btn.attr('data-url-app-emp-config');
-                                    let currentEmployee = $x.fn.getEmployeeCurrentID();
-                                    $.fn.callAjax2({
-                                        'url': url,
-                                        'method': 'GET',
-                                        'data': {
-                                            'application__model_code': app_code,
-                                            'employee_created_id': currentEmployee
-                                        },
-                                    }).then((resp) => {
-                                        let data = $.fn.switcherResp(resp);
-                                        if (data) {
-                                            if (data.hasOwnProperty('app_emp_config_list') && Array.isArray(data.app_emp_config_list)) {
-                                                if (data?.['app_emp_config_list'].length > 0) {
-                                                    let zonesData = [];
-                                                    let zonesHiddenData = [];
-                                                    for (let appEmpConfig of data?.['app_emp_config_list']) {
-                                                        for (let zone of appEmpConfig?.['zones_editing_data']) {
-                                                            for (let property of zone?.['properties_data']) {
-                                                                zonesData.push(property);
-                                                            }
-                                                        }
-                                                        for (let zone of appEmpConfig?.['zones_hidden_data']) {
-                                                            for (let property of zone?.['properties_data']) {
-                                                                zonesHiddenData.push(property);
-                                                            }
+                            }
+                            if (WFconfig?.['mode'] === 0) {
+                                let url = btn.attr('data-url-app-emp-config');
+                                let currentEmployee = $x.fn.getEmployeeCurrentID();
+                                $.fn.callAjax2({
+                                    'url': url,
+                                    'method': 'GET',
+                                    'data': {
+                                        'application__model_code': app_code,
+                                        'employee_created_id': currentEmployee
+                                    },
+                                }).then((resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    if (data) {
+                                        if (data.hasOwnProperty('app_emp_config_list') && Array.isArray(data.app_emp_config_list)) {
+                                            if (data?.['app_emp_config_list'].length > 0) {
+                                                let zonesData = [];
+                                                let zonesHiddenData = [];
+                                                for (let appEmpConfig of data?.['app_emp_config_list']) {
+                                                    for (let zone of appEmpConfig?.['zones_editing_data']) {
+                                                        for (let property of zone?.['properties_data']) {
+                                                            zonesData.push(property);
                                                         }
                                                     }
-                                                    WFRTControl.activeBtnOpenZone(zonesData, zonesHiddenData, false);
+                                                    for (let zone of appEmpConfig?.['zones_hidden_data']) {
+                                                        for (let property of zone?.['properties_data']) {
+                                                            zonesHiddenData.push(property);
+                                                        }
+                                                    }
                                                 }
+                                                WFRTControl.activeBtnOpenZone(zonesData, zonesHiddenData, false);
                                             }
                                         }
-                                    })
-                                }
+                                    }
+                                })
                             }
                         }
                     }
-                })
-            }
+                }
+            })
         }
     }
 
@@ -2910,11 +2891,35 @@ class WFRTControl {
     }
 
     static getCollabOutFormData() {
-        let itemEle = $('#idxCollabOutFormData');
-        if (itemEle && itemEle.length > 0) {
-            return JSON.parse(itemEle.text());
+        // typeWF 0: dataCreate, 1: dataRuntime
+        let typeWF = 0;
+        if (window.location.href.includes('/detail/')) {
+            typeWF = 1;
         }
-        return [];
+        if (window.location.href.includes('/update/')) {
+            let eleStatus = $('#systemStatus');
+            if (eleStatus && eleStatus.length > 0) {
+                if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
+                    typeWF = 1;
+                }
+            }
+        }
+        let $collabOFCreate = $('#idxCollabOFCreate');
+        let dataCreate = [];
+        let $collabOFRuntime = $('#idxCollabOFRuntime');
+        let dataRuntime = [];
+        if ($collabOFCreate && $collabOFCreate.length > 0) {
+            dataCreate = JSON.parse($collabOFCreate.text());
+        }
+        if ($collabOFRuntime && $collabOFRuntime.length > 0) {
+            dataRuntime = JSON.parse($collabOFRuntime.text());
+        }
+        if (typeWF === 0) {
+            return dataCreate;
+        }
+        if (typeWF === 1) {
+            return dataRuntime;
+        }
     }
 
     static getZoneKeyData() {
@@ -2967,9 +2972,25 @@ class WFRTControl {
         $('html').append(`<script class="hidden" id="idxIsEditAllZone">${isEditAllZone}</script>`);
     }
 
-    static setCollabOutFormData(collabOutFormData) {
+    static setCollabOFRuntime(collabOutFormData) {
         if (collabOutFormData && Array.isArray(collabOutFormData)) {
-            $('html').append(`<script class="hidden" id="idxCollabOutFormData">${JSON.stringify(collabOutFormData)}</script>`);
+            let $collab = $('#idxCollabOFRuntime');
+            if ($collab && $collab.length > 0) {
+                $collab.empty().html(`${JSON.stringify(collabOutFormData)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxCollabOFRuntime">${JSON.stringify(collabOutFormData)}</script>`);
+            }
+        }
+    }
+
+    static setCollabOFCreate(collabOutFormData) {
+        if (collabOutFormData && Array.isArray(collabOutFormData)) {
+            let $collab = $('#idxCollabOFCreate');
+            if ($collab && $collab.length > 0) {
+                $collab.empty().html(`${JSON.stringify(collabOutFormData)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxCollabOFCreate">${JSON.stringify(collabOutFormData)}</script>`);
+            }
         }
     }
 
@@ -5289,11 +5310,11 @@ class DocumentControl {
                 }
                 if (window.location.href.includes('/update/') && dataStatus === 3) {
                     $breadcrumbCode.append(
-                        `<span class="badge badge-soft-blue" id="documentCR" data-status="${dataStatus + 2}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
+                        `<span class="badge badge-soft-blue" id="systemStatus" data-status="${dataStatus}" data-status-cr="${dataStatus + 2}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
                     ).removeClass('hidden');
                 } else {
                     $breadcrumbCode.append(
-                        `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
+                        `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-status-cr="" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
                     ).removeClass('hidden');
                 }
             }
@@ -7370,8 +7391,8 @@ class DiagramControl {
             let urlDiagram = globeDiagramList;
             if ($btnLog && $btnLog.length > 0) {
                 let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
-                                <div class="offcanvas offcanvas-end w-95 mt-5" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
-                                    <div class="offcanvas-body mt-3">
+                                <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
+                                    <div class="offcanvas-body mt-2">
                                         <div class="d-flex justify-content-between mt-5 mb-2 border-bottom">
                                             <h5 id="offcanvasTopLabel">Diagram</h5>
                                             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">

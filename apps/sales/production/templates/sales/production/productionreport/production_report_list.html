@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Goods receipt list' %}{% endblock %}
+{% block title %}{% trans 'Production report list' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 
 {% block pageAction %}
-    <a href="{% url 'GoodsReceiptCreate' %}"
+    <a href="{% url 'ProductionReportCreate' %}"
        data-bs-toggle="tooltip"
        data-bs-placement="top"
-       title="{% trans 'Create Goods Receipt' %}"
-       id="create_goods_receipt_button"
-       data-bs-original-title="Add Goods Receipt">
+       title="{% trans 'Create production report' %}"
+       id="create_production_report_button"
+       data-bs-original-title="Add Product Report">
             <button type="button" class="btn btn-outline-primary">
                 <span>
                     <span>{% trans 'Add' %}</span>
@@ -24,9 +24,9 @@
 
 {% block pageContent %}
     <table
-            id="datable_goods_receipt_list"
+            id="table_production_report_list"
             class="table nowrap w-100 mb-5"
-            data-url="{% url 'GoodsReceiptListAPI' %}"
+            data-url="{% url 'ProductionReportListAPI' %}"
             data-method="get"
     >
         <thead>
@@ -34,10 +34,6 @@
             <th></th>
             <th>{% trans 'Code' %}</th>
             <th>{% trans 'Name' %}</th>
-            <th>{% trans 'Type' %}</th>
-            <th>{% trans 'Code' %} {% trans 'PO/IA' %}</th>
-            <th>{% trans 'Received date' %}</th>
-            <th>{% trans 'Status' %}</th>
             <th></th>
         </tr>
         </thead>
@@ -45,12 +41,12 @@
         </tbody>
     </table>
 {% endblock %}
-
 {% block dataHiddenGroup %}
     <input
-            type="text" id="goods-receipt-link"
-            data-link-update="{% url 'GoodsReceiptDetail' 1 %}"
-            data-link-list="{% url 'GoodsReceiptList' %}"
+            type="text" id="app-urls-factory"
+            data-link-detail="{% url 'ProductionReportDetail' 1 %}"
+            data-link-update="{% url 'ProductionReportUpdate' 1 %}"
+            data-link-list="{% url 'ProductionReportList' %}"
     >
     <input
             type="text"
@@ -59,10 +55,9 @@
             data-change="{% trans 'Change' %}"
             data-cancel="{% trans 'Cancel' %}"
     >
-    {{ data.stt_sys|json_script:'stt_sys' }}
-    {{ data.gr_type|json_script:'gr_type' }}
 {% endblock %}
-
 {% block jsFooter %}
-    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_list.js' %}"></script>
+
+
+    <script src="{% static 'assets/sales/production/js/productionreport/production_report_list.js' %}"></script>
 {% endblock %}

@@ -41,7 +41,7 @@
                                             type="text" class="form-control"
                                             name="title"
                                             id="purchase-order-title"
-                                            disabled
+                                            readonly
                                         >
                                     </div>
                                 </div>
@@ -52,12 +52,12 @@
                                 <label class="form-label">{% trans 'Purchase Request' %}</label>
                                 <div class="input-group input-group-wth-btn">
                                     <div class="input-affix-wrapper">
-                                        <div class="form-control div-input border-green" id="purchase-order-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
+                                        <div class="form-control div-input" id="purchase-order-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}" readonly></div>
                                         <input type="hidden" id="purchase_requests_data">
                                         <div class="input-suffix">
                                             <button
                                                 type="button"
-                                                class="btn btn-icon btn-outline-primary btn-xs"
+                                                class="btn btn-icon btn-soft-light btn-xs"
                                                 id="btn-purchase-request-modal"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#purchaseRequestModalCenter"
@@ -73,12 +73,12 @@
                                 <label class="form-label">{% trans 'Purchase quotation' %}</label>
                                 <div class="input-group input-group-wth-btn">
                                     <div class="input-affix-wrapper">
-                                        <div class="form-control div-input border-green" id="purchase-order-purchase-quotation" data-link-detail="{% url "PurchaseQuotationDetail" 1 %}"></div>
+                                        <div class="form-control div-input" id="purchase-order-purchase-quotation" data-link-detail="{% url "PurchaseQuotationDetail" 1 %}" readonly></div>
                                         <input type="hidden" id="purchase_quotations_data">
                                         <div class="input-suffix">
                                             <button
                                                 type="button"
-                                                class="btn btn-icon btn-outline-primary btn-xs"
+                                                class="btn btn-icon btn-soft-light btn-xs"
                                                 id="btn-purchase-quotation-modal"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#purchaseQuotationModalCenter"
@@ -103,7 +103,7 @@
                                         name="supplier"
                                         data-keyResp="account_sale_list"
                                         data-keyText="name"
-                                        disabled
+                                        readonly
                                 ></select>
                             </div>
                         </div>
@@ -119,13 +119,13 @@
                                         name="contact"
                                         data-keyResp="contact_list"
                                         data-keyText="fullname"
-                                        disabled
+                                        readonly
                                 ></select>
                             </div>
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
+                                <label class="form-label" for="purchase-order-date-delivered">{% trans 'Estimated delivery date' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" name="delivered-date" id="purchase-order-date-delivered"
                                            class="form-control date-picker" autocomplete="off" disabled>
@@ -336,11 +336,11 @@
         <div class="modal fade" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
                 <div class="modal-content">
-                    <div class="modal-header h-65p">
+                    <div class="modal-header">
                         <h5 class="modal-title text-primary ml-4"><b>{% trans 'Select items from purchase request' %}</b></h5>
                         <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                     </div>
-                    <div class="modal-body modal-body-custom">
+                    <div class="modal-body">
                         <div class="row mb-1">
                             <div class="col-4"></div>
                             <div class="col-8">

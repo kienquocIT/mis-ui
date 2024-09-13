@@ -193,7 +193,13 @@ class JSPlumbsHandle {
         if (Object.keys(DEFAULT_NODE_LIST).length > 0) {
             for (let val in DEFAULT_NODE_LIST) {
                 let item = DEFAULT_NODE_LIST[val];
-                strHTMLDragNode += `<div class="control" id="drag-${item.order}" data-drag="${item.order}" `
+                let clsSys = '';
+                let bg = '';
+                if (item?.['is_system'] === true) {
+                    clsSys = 'control-system'
+                    bg = 'bg-blue-light-5';
+                }
+                strHTMLDragNode += `<div class="control ${clsSys} ${bg}" id="drag-${item.order}" data-drag="${item.order}" `
                     + `title="${item.title}">` + `<p class="drag-title" contentEditable="true" `
                     + `title="${item.remark}">${item.title}</p></div>`;
             }
@@ -243,7 +249,11 @@ class JSPlumbsHandle {
                     wrap_w = wrap_w + 300
                     $wrapWF.css("width", wrap_w);
                 }
-                HTML_temp += `<div class="clone" data-drag="${val}" title="${item.title}" id="control-${val}" `
+                let bg = '';
+                if (item?.['is_system'] === true) {
+                    bg = 'bg-blue-light-5';
+                }
+                HTML_temp += `<div class="clone ${bg}" data-drag="${val}" title="${item.title}" id="control-${val}" `
                     + `style="left:${left_coord}px;top:${top_coord}px"><p class="drag-title">${item.title}</p></div>`;
 
                 // get and set commit code to list in case detail page
@@ -268,14 +278,20 @@ class JSPlumbsHandle {
             // declare style connection type
             instance.registerConnectionTypes({
                 "pink-connection": {
-                    paintStyle: {stroke: "#f3c6f2", strokeWidth: 4},
+                    paintStyle: {stroke: "#eaeaea", strokeWidth: 3},
                     hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4}
                 }
             })
             // init drag node
             $('#node_dragbox .control').draggable({
                 helper: function () {
-                    return `<div class="clone" data-drag="${$(this).attr('data-drag')}" `
+                    let clsSys = '';
+                    let bg = '';
+                    if (this.classList.contains('control-system')) {
+                        clsSys = 'clone-system'
+                        bg = 'bg-blue-light-5';
+                    }
+                    return `<div class="clone ${clsSys} ${bg}" data-drag="${$(this).attr('data-drag')}" `
                         + `title="${$(this).find('.drag-title').text()}">`
                         + `<p class="drag-title">${$(this).find('.drag-title').text()}</p></div>`;
                 },
@@ -473,7 +489,7 @@ class JSPlumbsHandle {
                         anchors: ["Bottom", "Top"],
                         endpoint: ["Dot", {radius: 4}],
                         endpointStyle: {fill: "#374986", opacity: ".8"},
-                        paintStyle: {stroke: "#f3c6f2", strokeWidth: 4},
+                        paintStyle: {stroke: "#eaeaea", strokeWidth: 3},
                         hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
                         connectionType: "pink-connection",
                         connector: ["Flowchart", {cornerRadius: 5}],

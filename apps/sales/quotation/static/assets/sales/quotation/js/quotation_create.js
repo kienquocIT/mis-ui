@@ -66,7 +66,7 @@ $(function () {
         if (formSubmit[0].classList.contains('sale-order')) {
             appCode = 'saleorder';
         }
-        WFRTControl.setWFInitialData(appCode, formSubmit.attr('data-method'));
+        WFRTControl.setWFInitialData(appCode);
 
 
 // Action on change dropdown opportunity
@@ -242,7 +242,6 @@ $(function () {
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
-                    $(elePrice).addClass('text-primary');
                     $(elePrice).attr('value', String(priceVal));
                     $.fn.initMaskMoney2();
                     QuotationCalculateCaseHandle.commonCalculate(tableProduct, row);
@@ -619,7 +618,7 @@ $(function () {
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)
         $('#btn-check-promotion').on('click', function () {
-            promotionHandle.callPromotion(0);
+            QuotationPromotionHandle.callPromotion(0);
         });
 
 // Action click Apply Promotion
@@ -630,7 +629,7 @@ $(function () {
             QuotationCalculateCaseHandle.updateTotal(tableProduct[0]);
             // get promotion condition to apply
             let promotionData = JSON.parse($(this)[0].getAttribute('data-promotion'));
-            let promotionParse = promotionHandle.getPromotionResult(promotionData);
+            let promotionParse = QuotationPromotionHandle.getPromotionResult(promotionData);
             let TotalOrder = tableProduct[0].querySelectorAll('.table-row-order').length;
             let TotalGroup = tableProduct[0].querySelectorAll('.table-row-group').length;
             let order = (TotalOrder - TotalGroup) + 1;
@@ -659,65 +658,47 @@ $(function () {
                 "shipping": {},
             };
             if (promotionParse?.['is_discount'] === true) { // DISCOUNT
-                if (promotionParse?.['row_apply_index'] !== null) { // on Specific product
+                if (promotionParse?.['row_apply_index'] !== null) { // on product
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-                    // Get the desired position
                     let afterRow = tableProduct.DataTable().row(promotionParse?.['row_apply_index']).node();
-                    // Remove the new row and re-insert it at the desired position
                     $(newRow).detach().insertAfter(afterRow);
-                    // Re Calculate all data
                     QuotationCalculateCaseHandle.commonCalculate(tableProduct, newRow);
-                    // Load disabled
                     QuotationLoadDataHandle.loadRowDisabled(newRow);
-                    // store data
                     QuotationStoreDataHandle.storeProduct(newRow);
-                } else { // on Whole order
+                } else { // on whole order
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-                    // Re Calculate all data
                     QuotationCalculateCaseHandle.commonCalculate(tableProduct, newRow);
-                    // Re Calculate Tax on Total
                     if (promotionParse.hasOwnProperty('discount_rate_on_order')) {
                         if (promotionParse.discount_rate_on_order !== null) {
                             if (promotionParse.is_before_tax === true) {
-                                promotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price']);
+                                QuotationPromotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price']);
                             } else {
-                                promotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price'], false)
+                                QuotationPromotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price'], false)
                             }
                         }
                     }
-                    // Load disabled
                     QuotationLoadDataHandle.loadRowDisabled(newRow);
-                    // store data
                     QuotationStoreDataHandle.storeProduct(newRow);
                 }
             } else if (promotionParse?.['is_gift'] === true) { // GIFT
-                if (promotionParse?.['row_apply_index'] !== null) { // on Specific product
+                if (promotionParse?.['row_apply_index'] !== null) { // on product
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-                    // Get the desired position
                     let afterRow = tableProduct.DataTable().row(promotionParse?.['row_apply_index']).node();
-                    // Remove the new row and re-insert it at the desired position
                     $(newRow).detach().insertAfter(afterRow);
-                    // load data dropdown
-                    // QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')));
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-                    // Load disabled
                     QuotationLoadDataHandle.loadRowDisabled(newRow);
-                    // store data
                     QuotationStoreDataHandle.storeProduct(newRow);
-                } else { // on Whole order
+                } else { // on whole order
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-                    // Load disabled
                     QuotationLoadDataHandle.loadRowDisabled(newRow);
-                    // store data
                     QuotationStoreDataHandle.storeProduct(newRow);
                 }
             }
-            // ReOrder STT
             reOrderSTT(tableProduct);
         });
 
@@ -856,7 +837,7 @@ $(function () {
         formSubmit.submit(function (e) {
             e.preventDefault();
             if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method') === "POST") { // HAS PROMOTION => Check condition again
-                promotionHandle.callPromotion(1);
+                QuotationPromotionHandle.callPromotion(1);
                 // Check promotion then Submit Form
                 submitCheckPromotion();
             } else { // NO PROMOTION => submit normal

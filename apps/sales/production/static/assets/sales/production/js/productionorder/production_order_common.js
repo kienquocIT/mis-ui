@@ -6,6 +6,7 @@ class ProdOrderLoadDataHandle {
     static $time = $('#time');
     static $dateStart = $('#date-start');
     static $dateEnd = $('#date-end');
+    static $dateCreated = $('#date-created');
     static $boxType = $('#box-type');
     static $boxStatus = $('#box-status');
     static $boxProd = $('#box-product');
@@ -44,6 +45,8 @@ class ProdOrderLoadDataHandle {
     };
 
     static loadInitPage() {
+        // date
+        ProdOrderLoadDataHandle.$dateCreated.val(ProdOrderCommonHandle.getCurrentDate());
         // select2
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxType, ProdOrderLoadDataHandle.dataType);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, ProdOrderLoadDataHandle.dataStatus);
@@ -77,7 +80,7 @@ class ProdOrderLoadDataHandle {
             $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
         // init WF
-        WFRTControl.setWFInitialData('productionorder', ProdOrderLoadDataHandle.$form.attr('data-method'));
+        WFRTControl.setWFInitialData('productionorder');
     };
 
     static loadBOM() {
@@ -100,7 +103,7 @@ class ProdOrderLoadDataHandle {
                                 if (ProdOrderLoadDataHandle.$quantity) {
                                     multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
                                 }
-                                ProdOrderLoadDataHandle.$time.empty().html(`${data.bom_order_list[0]?.['sum_time'] * multi}`);
+                                ProdOrderLoadDataHandle.$time.val(`${data.bom_order_list[0]?.['sum_time'] * multi}`);
                                 ProdOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data.bom_order_list[0]));
                             }
                         }
@@ -154,7 +157,6 @@ class ProdOrderLoadDataHandle {
         ProdOrderDataTableHandle.$tableMain.DataTable().rows.add(data).draw();
         ProdOrderLoadDataHandle.loadDD(ProdOrderDataTableHandle.$tableMain);
         ProdOrderLoadDataHandle.loadSetCollapse();
-        // ProdOrderLoadDataHandle.loadTime();
         return true;
     };
 
@@ -422,7 +424,12 @@ class ProdOrderLoadDataHandle {
             date_end = data?.['date_end'];
             ProdOrderLoadDataHandle.$dateEnd.val(moment(date_end).format('DD/MM/YYYY'));
         }
-        ProdOrderLoadDataHandle.$time.empty().html(data?.['time']);
+        ProdOrderLoadDataHandle.$time.val(data?.['time']);
+        let date_created = '';
+        if (data?.['date_created']) {
+            date_created = data?.['date_created'];
+            ProdOrderLoadDataHandle.$dateCreated.val(moment(date_created).format('DD/MM/YYYY'));
+        }
         ProdOrderLoadDataHandle.loadAddDtbRows(data?.['task_data']);
         ProdOrderLoadDataHandle.loadReadonlyDisabled();
         return true;
@@ -532,11 +539,14 @@ class ProdOrderDataTableHandle {
                         if (row?.['is_task'] === true) {
                             return ``;
                         }
+                        let checked = '';
+                        if (row?.['is_all_warehouse'] === true) {
+                            checked = 'checked';
+                        }
                         return `<div class="form-check">
-                                    <input type="checkbox" id="customRadio1" name="customRadio" class="form-check-input check-all-wh">
+                                    <input type="checkbox" id="customRadio1" name="customRadio" class="form-check-input check-all-wh" ${checked}>
                                     <label class="form-check-label" for="customRadio1">${ProdOrderLoadDataHandle.$trans.attr('data-all-wh')}</label>
                                 </div><select class="form-select table-row-warehouse" data-url="${ProdOrderLoadDataHandle.$urls.attr('data-md-warehouse')}" data-method="GET" data-keyResp="warehouse_list"></select>`;
-                        // return `<select class="form-select table-row-warehouse" data-url="${ProdOrderLoadDataHandle.$urls.attr('data-md-warehouse')}" data-method="GET" data-keyResp="warehouse_list"></select>`;
                     }
                 },
                 {
@@ -763,8 +773,8 @@ class ProdOrderSubmitHandle {
                     _form.dataForm['group_data'] = data;
                 }
             }
-            if (ProdOrderLoadDataHandle.$time.html()) {
-                _form.dataForm['time'] = parseInt(ProdOrderLoadDataHandle.$time.html());
+            if (ProdOrderLoadDataHandle.$time.val()) {
+                _form.dataForm['time'] = parseInt(ProdOrderLoadDataHandle.$time.val());
             }
 
             ProdOrderStoreHandle.storeAll();
@@ -816,7 +826,7 @@ class ProdOrderCommonHandle {
         let month = String(currentDate.getMonth() + 1).padStart(2, '0');
         let year = currentDate.getFullYear();
         return `${day}/${month}/${year}`;
-    }
+    };
 
     static filterFieldList(field_list, data_json) {
         for (let key in data_json) {

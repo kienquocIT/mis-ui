@@ -258,7 +258,7 @@ $(document).ready(function () {
     expenseItemTable.init()
     const $FormElm = $('#business_trip_form')
     // init func workflow change request
-    WFRTControl.setWFInitialData('businessrequest', 'post');
+    WFRTControl.setWFInitialData('businessrequest');
     function submitHandleFunc() {
         const frm = new SetupFormSubmit($FormElm);
         let formData = frm.dataForm;

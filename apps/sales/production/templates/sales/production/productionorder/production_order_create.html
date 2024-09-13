@@ -60,7 +60,7 @@
                                     id="box-product"
                                     data-url="{% url "ProductForSaleListAPI" %}"
                                     data-method="GET"
-                                    name="product"
+                                    name="product_id"
                                     data-keyResp="product_sale_list"
                                     required
                                 ></select>
@@ -83,7 +83,7 @@
                                     data-url="{% url "UnitOfMeasureListAPI" %}"
                                     data-method="GET"
                                     data-link-detail=""
-                                    name="uom"
+                                    name="uom_id"
                                     data-keyResp="unit_of_measure"
                                     required
                                 ></select>
@@ -98,9 +98,81 @@
                                     data-url="{% url "WareHouseListAPI" %}"
                                     data-method="GET"
                                     data-link-detail=""
-                                    name="warehouse"
+                                    name="warehouse_id"
                                     data-keyResp="warehouse_list"
                                     required
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label required" for="date-start">{% trans 'Start date' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="start-date" id="date-start"
+                                           class="form-control date-picker" autocomplete="off" required>
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label required" for="date-end">{% trans 'End date' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="end-date" id="date-end"
+                                           class="form-control date-picker" autocomplete="off" required>
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-group">{% trans 'Production group' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="box-group"
+                                    data-url="{% url "GroupListAPI" %}"
+                                    data-method="GET"
+                                    data-link-detail=""
+                                    name="group_id"
+                                    data-keyResp="group_list"
+                                    required
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-2 col-lg-2">
+                            <div class="form-group">
+                                <label class="form-label" for="time">{% trans 'Time' %}</label>
+                                <input type="text" class="form-control form-control-line mt-1" id="time" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="date-created">{% trans 'Date Created' %}</label>
+                                <input type="text" class="form-control form-control-line mt-1" id="date-created" readonly>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-status">{% trans 'Status' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="box-status"
+                                    data-url=""
+                                    data-method="GET"
+                                    data-link-detail=""
+                                    name="status"
+                                    data-keyResp=""
+                                    disabled
                                 ></select>
                             </div>
                         </div>
@@ -120,79 +192,6 @@
                         ></select>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label" for="date-created">{% trans 'Date Created' %}</label>
-                                <p class="mt-2 border-bottom" id="date-created">21/08/2024</p>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="box-status">{% trans 'Status' %}</label>
-                                <select
-                                    class="form-select"
-                                    id="box-status"
-                                    data-url=""
-                                    data-method="GET"
-                                    data-link-detail=""
-                                    name="status"
-                                    data-keyResp=""
-                                ></select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="date-start">{% trans 'Start date' %}</label>
-                                <div class="input-affix-wrapper">
-                                    <input type="text" name="start-date" id="date-start"
-                                           class="form-control date-picker" autocomplete="off" required>
-                                    <div class="input-suffix">
-                                        <i class="fas fa-calendar-alt"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="date-end">{% trans 'End date' %}</label>
-                                <div class="input-affix-wrapper">
-                                    <input type="text" name="end-date" id="date-end"
-                                           class="form-control date-picker" autocomplete="off" required>
-                                    <div class="input-suffix">
-                                        <i class="fas fa-calendar-alt"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="box-group">{% trans 'Production group' %}</label>
-                                <select
-                                    class="form-select"
-                                    id="box-group"
-                                    data-url="{% url "GroupListAPI" %}"
-                                    data-method="GET"
-                                    data-link-detail=""
-                                    name="group"
-                                    data-keyResp="group_list"
-                                    required
-                                ></select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label" for="time">{% trans 'Time' %}</label>
-                                <p class="mt-2 border-bottom" id="time" data-time-bom="0">--</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="d-flex justify-content-end">
@@ -205,8 +204,6 @@
             <table
                     id="table_production_order"
                     class="table nowrap min-w-1280p w-100 mb-5"
-                    data-url="{% url 'ReportRevenueListAPI' %}"
-                    data-method="get"
             >
                 <thead>
                 <tr class="bg-light">

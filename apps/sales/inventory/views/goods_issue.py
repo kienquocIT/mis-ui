@@ -99,6 +99,28 @@ class GoodsIssueUpdate(View):
 
 
 # related apiview
+class InventoryAdjustmentListAPIForGIS(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GIS_IA_LIST).get(data)
+        return resp.auto_return(key_success='inventory_adjustment_list')
+
+
+class InventoryAdjustmentDetailAPIForGIS(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.GIS_IA_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='inventory_adjustment_detail')
+
+
 class ProductionOrderListAPIForGIS(APIView):
     @mask_view(
         auth_require=True,
@@ -119,3 +141,25 @@ class ProductionOrderDetailAPIForGIS(APIView):
     def get(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.GIS_PRODUCTION_ORDER_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='production_order_detail')
+
+
+class WarehouseLotListAPIForGIS(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GIS_LOT_LIST).get(data)
+        return resp.auto_return(key_success='warehouse_lot_list')
+
+
+class WarehouseSerialListAPIForGIS(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GIS_SERIAL_LIST).get(data)
+        return resp.auto_return(key_success='warehouse_serial_list')

@@ -7,7 +7,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url "BOMCreate" %}">
+    <a href="{% url "ProjectBOMCreate" %}">
         <button class="btn btn-outline-primary" type="button">
             <span>
                 <span>{% trans 'Add' %}</span>
@@ -24,15 +24,17 @@
             data-trans-for-service="{% trans 'For service' %}"
             data-trans-for-sale="{% trans 'For sale' %}"
             data-trans-for-internal-expense="{% trans 'For internal expense' %}"
+            data-trans-for-project="{% trans 'For project' %}"
             data-trans-outsourcing="{% trans 'Outsourcing' %}">
     </script>
     <div class="row">
         <div class="col-12">
             <table class="table nowrap w-100"
-                   id="bom-list-table"
+                   id="prj-bom-list-table"
                    data-method="GET"
-                   data-url="{% url 'BOMListAPI' %}"
-                   data-url-detail="{% url 'BOMDetail' '0' %}"
+                   data-url="{% url 'ProjectBOMListAPI' %}"
+                   data-url-detail="{% url 'ProjectBOMDetail' '0' %}"
+                   data-url-opp-detail="{% url 'OpportunityDetail' '0' %}"
             >
                 <thead>
                 <tr>
@@ -40,6 +42,7 @@
                     <th>{% trans 'Code' %}</th>
                     <th>{% trans 'Product/Service name' %}</th>
                     <th>{% trans 'Type' %}</th>
+                    <th>{% trans 'Project' %}</th>
                     <th>{% trans 'Sum time' %}</th>
                     <th>{% trans 'Sum price' %}</th>
                     <th>{% trans 'System status' %}</th>
@@ -53,5 +56,5 @@
 {% block jsFooterUnCompress %}
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/sales/production/js/bom/bom_list.js' %}"></script>
+    <script src="{% static 'assets/sales/projectproduction/js/projectbom/projectbom_list.js' %}"></script>
 {% endblock %}

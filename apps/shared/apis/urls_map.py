@@ -548,8 +548,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Goods issue
     GOODS_ISSUE_LIST = StringUrl('inventory/goods-issue/list')
     GOODS_ISSUE_DETAIL = StringUrl('inventory/goods-issue/{pk}')
+    GIS_IA_LIST = StringUrl('inventory/inventory-adjustment-for-gis/list')
+    GIS_IA_DETAIL = StringUrl('inventory/inventory-adjustment-for-gis/{pk}')
     GIS_PRODUCTION_ORDER_LIST = StringUrl('inventory/production-order-for-gis/list')
     GIS_PRODUCTION_ORDER_DETAIL = StringUrl('inventory/production-order-for-gis/{pk}')
+    GIS_LOT_LIST = StringUrl('inventory/lot-list-for-gis/list')
+    GIS_SERIAL_LIST = StringUrl('inventory/serial-list-for-gis/list')
 
     # Sale Order List for Purchasing Staff
     SALE_ORDER_LIST_FOR_PURCHASING_STAFF = StringUrl('saleorder/purchasing-staff/list')

@@ -22,7 +22,8 @@ from apps.sales.inventory.views import (
     GReItemBorrowDetailAPI,
     GReItemListAPI, GReItemAvailableQuantityAPI, GoodsRegisBorrowListAPI, NoneGReItemBorrowListAPI,
     NoneGReItemBorrowDetailAPI, NoneGReItemAvailableQuantityAPI, ProductionOrderListAPIForGIS,
-    ProductionOrderDetailAPIForGIS
+    ProductionOrderDetailAPIForGIS, InventoryAdjustmentListAPIForGIS, InventoryAdjustmentDetailAPIForGIS,
+    WarehouseSerialListAPIForGIS, WarehouseLotListAPIForGIS
 )
 
 urlpatterns = [
@@ -66,7 +67,17 @@ urlpatterns += [
     path('goods-issue/list/api', GoodsIssueListAPI.as_view(), name='GoodsIssueListAPI'),
     path('goods-issue/detail/api/<str:pk>', GoodsIssueDetailAPI.as_view(), name='GoodsIssueDetailAPI'),
     path('goods-issue/update/<str:pk>', GoodsIssueUpdate.as_view(), name='GoodsIssueUpdate'),
-    # Production order for GIS
+    # related url
+    path(
+        'inventory-adjustment-for-gis/list/api',
+        InventoryAdjustmentListAPIForGIS.as_view(),
+        name='InventoryAdjustmentListAPIForGIS'
+    ),
+    path(
+        'inventory-adjustment-for-gis/detail/api/<str:pk>',
+        InventoryAdjustmentDetailAPIForGIS.as_view(),
+        name='InventoryAdjustmentDetailAPIForGIS'
+    ),
     path(
         'production-order-for-gis/list/api',
         ProductionOrderListAPIForGIS.as_view(),
@@ -76,6 +87,16 @@ urlpatterns += [
         'production-order-for-gis/detail/api/<str:pk>',
         ProductionOrderDetailAPIForGIS.as_view(),
         name='ProductionOrderDetailAPIForGIS'
+    ),
+    path(
+        'lot-list-for-gis/list/api',
+        WarehouseLotListAPIForGIS.as_view(),
+        name='WarehouseLotListAPIForGIS'
+    ),
+    path(
+        'serial-list-for-gis/list/api',
+        WarehouseSerialListAPIForGIS.as_view(),
+        name='WarehouseSerialListAPIForGIS'
     ),
 ]
 

@@ -8751,3 +8751,11 @@ msgstr "Lọc lấy phiếu sắp đến hạn hoàn ứng"
 #
 msgid "Please save Update Opportunity page to apply all the permissions!"
 msgstr "Lưu Cơ Hội Kinh Doanh để các quyền được áp dụng!"
+
+#
+msgid "Project bill of material"
+msgstr "Định mức nguyên vật liệu dự án"
+
+#
+msgid "For project"
+msgstr "Cho dự án"

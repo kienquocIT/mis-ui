@@ -1,14 +1,14 @@
 function resetFormTask() {
     // clean html select etc.
-    const $taskForm = $('#formOpportunityTask')
+    const $taskForm = $('#formOpportunityTask'), $inputAssigner = $('#inputAssigner');
     $taskForm.trigger('reset').removeClass('task_edit')
-    $('#inputAssigner').val($('#inputAssigner').attr('data-name'))
+    $inputAssigner.val($inputAssigner.attr('data-name'))
     $('#employee_inherit_id').val(null).trigger('change').removeClass('is-invalid');
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
     $('#inputLabel').val(null);
     $('#rangeValue').text(0)
     $('#percent_completed').val(0)
-    $('[name="id"], input[name="work_id"], [name="parent_n"], #employee_inherit_id-error', $taskForm).remove();
+    $('[name="id"], input[name="work_id"], [name="parent_n"], #employee_inherit_id-error, [name="bom_id"]', $taskForm).remove();
     $('.create-subtask').addClass('hidden');
     window.editor.setData('')
     $('.create-task').attr('disabled', false)
@@ -22,6 +22,12 @@ function resetFormTask() {
     $attachElmAssignee.find('.dm-uploader').dmUploader("reset")
     $attachElmAssignee.find('.dm-uploader-result-list').html('');
     $attachElmAssignee.find('.dm-uploader-no-files').css({ 'display': 'block'});
+
+    const is_val = $('[name="bom_id"]', $taskForm).val();
+    if (!is_val){
+        $('.choice-bor, .dropdown_custom', $taskForm).addClass('hidden').removeClass('is_selected')
+        $('#inputTextTitle').attr('readonly', false)
+    }
 }
 
 function isValidString(inputString) {
@@ -489,6 +495,39 @@ class Task_in_project {
 
         // init more employee
         Task_in_project.initExpenseLabor()
+
+        // render BOM HTML Service for title
+        const $BomHTML = $(`
+        <div class="input-suffix choice-bor hidden"><i class="fa-solid fa-font"></i><span></span><i class="fa-solid fa-clipboard-list"></i></div>
+        <div class="dropdown_custom hidden"><select class="form-select task_bom_service"></select></div>`)
+        $form.find('#inputTextTitle').parent().append($BomHTML)
+        $($BomHTML[0]).on('click', function () {
+            $($BomHTML[2]).toggleClass('is_active')
+            const _bom_ID = $(this).prev('[name="bom_id"]').val();
+            Task_in_project.loadServiceOfBOM(_bom_ID)
+        });
+        // run dropdown on change select BOM service
+        $('.task_bom_service', $BomHTML[2]).on('change', function(){
+            let thisSelect = this.value, _dataStore = $(this).data('save_bom_detail');
+            if (thisSelect){
+                $('#inputTextTitle').val(this.textContent).attr('readonly', true)
+                $($BomHTML[2]).removeClass('is_active').prev('.choice-bor').addClass(
+                    'is_selected')
+                let thisVal = null
+                for (let item of _dataStore){
+                    if (item.order === parseInt(thisSelect)){
+                        thisVal = item
+                        break;
+                    }
+                }
+                window.editor.setData(thisVal.note)
+            }
+            else{
+                $('#inputTextTitle').val('').attr('readonly', false)
+                $(this).closest('.dropdown_custom').toggleClass('is_active').prev('.choice-bor').removeClass(
+                    'is_selected')
+            }
+        });
     }
 
     static loadTask(task_info) {
@@ -679,6 +718,32 @@ class Task_in_project {
             $('#check_expense_modal').toggleClass('hidden')
         }).tooltip()
         if (typeof dragElement === "function") dragElement($('#check_expense_modal')[0])
+    }
+
+    static loadServiceOfBOM(ID){
+        let $sltElm = $('.task_bom_service'), _crtElm = $sltElm.attr('data-id');
+        if(ID && _crtElm !== ID){
+            $sltElm.html('')
+            $.fn.callAjax2({
+                'url': $('#url-factory').attr('data-bom_detail').format_url_with_uuid(ID),
+                'method': 'GET',
+                'sweetAlertOpts': {'allowOutsideClick': true}
+            }).then(
+                (resp) => {
+                    const data = $.fn.switcherResp(resp);
+                    let process_data = data['bom_detail']['bom_process_data'];
+                    if (data){
+                        let htmlOpt = '<option value=""></option>';
+                        for (let item of process_data){
+                            htmlOpt += `<option value="${item.order}">${item.task_name}</option>`
+                        }
+                        $sltElm.append(htmlOpt).attr('data-id', ID)
+                        $sltElm.data('save_bom_detail', process_data)
+                    }
+                },
+                (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+            )
+        }
     }
 }
 

@@ -53,7 +53,8 @@ class fGanttCustom {
                 relationships_type: item.relationships_type,
                 order: item.order,
                 work_status: {value: item.work_status, txt: WSttList[item.work_status]},
-                dependencies: item['dependencies_parent']
+                dependencies: item['dependencies_parent'],
+                bom_data: item['bom_data']
             }
         });
         // sort ds của works và group
@@ -67,14 +68,16 @@ class fGanttCustom {
     }
 
     static setup_init_create(){
+        const $wrapElm = $('.gantt-left-outerwrap')
+
         $('.btn-gaw-group').on('click', function(){
             fGanttCustom.addGroup();
         });
         $('.btn-gaw-work').on('click', function(){
             fGanttCustom.addWork();
         })
-        if ($('.gantt-left-outerwrap').children('.btn-save-sort-idx').length === 0){
-            $('.gantt-left-outerwrap').append(`<button class="btn hidden btn-save-sort-idx btn-outline-primary btn-sm ml-2" type="button">${$.fn.gettext('Save')}</button>`)
+        if ($wrapElm.children('.btn-save-sort-idx').length === 0){
+            $wrapElm.append(`<button class="btn hidden btn-save-sort-idx btn-outline-primary btn-sm ml-2" type="button">${$.fn.gettext('Save')}</button>`)
             $('.btn-save-sort-idx').on('click', function(e) {
                 e.preventDefault();
                 let work_lst = [], group_lst = [];
@@ -122,9 +125,11 @@ class fGanttCustom {
     }
 
     static addWork(){
-        $('#workTitle, #workStartDate, #workEndDate, #workWeight, #workRate, #select_project_group, #select_relationships_type, #select_project_work').val('').trigger('change');
+        $('#workTitle, #workStartDate, #workEndDate, #workWeight, #workRate, #select_project_group,' +
+            '#select_relationships_type, #select_project_work').val('').trigger('change').attr('readonly', false);
         $('#btn-work-add').text($.fn.gettext('Add'))
         $('#work_id').remove()
+        $('.choice-bor').removeClass('is_selected')
         $('#work_modal').modal('show')
     }
 
@@ -173,19 +178,26 @@ class fGanttCustom {
     }
 
     static load_detail_work(work_ID){
-        const check_page_version = $('#project_form').hasClass('baseline_version');
+        const $prjElm = $('#project_form'), check_page_version = $prjElm.hasClass('baseline_version');
 
         function loadWorkDetail(res){
             let date_from = res?.w_start_date, date_end = res?.w_end_date, depen_type = res?.work_dependencies_type,
-            $sltWork = $('#select_project_work'), $sltGroup = $('#select_project_group');
+            $sltWork = $('#select_project_work'), $sltGroup = $('#select_project_group'), $workElm = $('#workTitle'),
+            $BorBtnElm = $('.choice-bor');
             if (date_from === undefined) date_from = res.date_from
             if (date_end === undefined) date_end = res['date_end']
             if (depen_type === undefined) depen_type = res.relationships_type
 
             $sltGroup.val('').trigger('change')
+            $BorBtnElm.removeClass('is_selected').next().removeClass('is_active')
             $('#work_modal #work_id, #work_modal #work_status, #work_modal #work_order').remove()
 
-            $('#workTitle').val(res.title)
+            $workElm.val(res.title).attr('readonly', false)
+            if ('id' in res.bom_data){
+                $workElm.val(res.bom_data.title).attr('readonly', true)
+                $BorBtnElm.addClass('is_selected')
+                $('#bor_select_data').data('bor_data', res.bom_data)
+            }
             $('#workStartDate').val(moment(date_from, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
             $('#workEndDate').val(moment(date_end, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
             let $wID = $('<input id="work_id" type="hidden"/>'), $wSTT = $('<input id="work_status" type="hidden"/>'),
@@ -198,7 +210,7 @@ class fGanttCustom {
             $('#work_modal .modal-body').append($wID).append($wSTT).append($wORDER)
             $('#work_modal #btn-work-add').text($.fn.gettext('Save'))
             if (res.group.hasOwnProperty('id'))
-                $('#select_project_group').attr('data-onload', JSON.stringify(res.group))
+                $sltGroup.attr('data-onload', JSON.stringify(res.group))
                     .append(`<option value="${res.group.id}">${res.group.title}</option>`)
                     .val(res.group.id).trigger('change')
             if (depen_type !== null)
@@ -228,12 +240,11 @@ class fGanttCustom {
             )
         }
         else{
-            let data = $('#project_form').data('baseline_data').project_data
+            let data = $prjElm.data('baseline_data').project_data
             for (let item of data.work){
                 if (item.id === work_ID) loadWorkDetail(item)
             }
         }
-
     }
 
     static delete_row(row){

@@ -181,6 +181,9 @@ function saveWork(gantt_obj) {
                 'w_end_date': moment($startE.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
                 'order': childIdx
             };
+        const bom_data = $('#bor_select_data').data('bor_data')
+        if (bom_data) data.bom_service = bom_data
+
         if (workParent.val())
             data.work_dependencies_parent = workParent.val()
         else data.work_dependencies_parent = null
@@ -519,34 +522,37 @@ function animating_number(number, elm) {
 }
 
 function action_select_bom(){
-    const $bor = $('#bor_select'), $serv = $('#service_select');
-    $('#bor_select, #service_select').each(function(){
-        $(this).initSelect2()
-    });
-    // click show modal BOR service
+    const $bor = $('#bor_select'), $WElmTitle = $('#workTitle'), $borData = $('#bor_select_data');
+    $bor.initSelect2({
+        callbackDataResp(resp, keyResp) {
+            let list_result = resp.data[keyResp],
+                _bor_lst = $borData.data('bor_data');
+            if (_bor_lst) list_result.filter(item => !(item.id in _bor_lst))
+            return list_result
+        },
+    })
+    // click show modal BOM service
     $('.choice-bor').on('click', function(){
         $(this).next('.dropdown_custom').toggleClass('is_active')
     });
     // BOR list on change
     $bor.on('select2:select', function(e){
-        let data = e.params.data.data
-        $serv.val('').trigger('change')
-            .attr('data-params', JSON.stringify({'group': data.id}))
-        $('.choice-bor i:nth-child(1)').attr('hidden', false)
-        $('.choice-bor i:nth-child(2)').attr('hidden', true)
-        $('.wrap-bor').addClass('bor_selected')
-    })
-    $serv.on('select2:select', function(e){
-        let data = e.params.data.data
-        $(this).closest('.dropdown_custom').toggleClass('is_active')
-        $('.choice-bor i:nth-child(1)').attr('hidden', true)
-        $('.choice-bor i:nth-child(2)').attr('hidden', false)
+        let data = e.params.data.data;
+        if (data){
+            $WElmTitle.val(data.product.title).attr('readonly', true)
+            $(this).closest('.dropdown_custom').toggleClass('is_active')
+
+            $borData.data('bor_data', data.id)
+            $(this).closest('.input-group').find('.choice-bor').addClass('is_selected')
+        }
+        else $WElmTitle.val('')
     });
 
-    $('#prev_choice').on('click', function(e){
-        e.preventDefault()
-        $('.wrap-bor').removeClass('bor_selected')
-    })
+    $bor.on('select2:unselect', function(e){
+        $WElmTitle.val('').attr('readonly', false)
+        $borData.data('bor_data', '')
+        $(this).closest('.input-group').find('.choice-bor').removeClass('is_selected')
+    });
 }
 
 class ProjectTeamsHandle {

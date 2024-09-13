@@ -184,8 +184,11 @@ $(function () {
 
         GRLoadDataHandle.$boxProductionReport.on('change', function () {
             if (GRLoadDataHandle.$boxProductionReport.val() && GRLoadDataHandle.$boxProductionReport.val().length > 0) {
-                GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
-                GRDataTableHandle.tablePOProduct.DataTable().rows.add([GRLoadDataHandle.loadSetupProduction()]).draw();
+                let dataProduction = GRLoadDataHandle.loadSetupProduction();
+                if (dataProduction?.['product_data']) {
+                    GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
+                    GRDataTableHandle.tablePOProduct.DataTable().rows.add([dataProduction]).draw();
+                }
             }
             btnEdit.click();
         });

@@ -257,6 +257,8 @@ class GRLoadDataHandle {
     static loadSetupProduction() {
         let dataProduct = {};
         let dataPRProducts = [];
+        let quantityCompleted = 0;
+        let quantityRemain = 0;
         for (let idx of GRLoadDataHandle.$boxProductionReport.val()) {
             let data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxProductionReport, idx);
             if (data?.['product_data']?.['product_choice'].includes(1)) {
@@ -269,9 +271,13 @@ class GRLoadDataHandle {
                     dataProduct['gr_remain_quantity'] += data?.['gr_remain_quantity'];
                 }
                 dataPRProducts.push(data);
+                quantityCompleted += data?.['gr_completed_quantity'];
+                quantityRemain += data?.['gr_remain_quantity'];
             }
         }
         dataProduct['pr_products_data'] = dataPRProducts;
+        dataProduct['gr_completed_quantity'] = quantityCompleted;
+        dataProduct['gr_remain_quantity'] = quantityRemain;
         return dataProduct;
     };
 
@@ -1974,10 +1980,16 @@ class GRStoreDataHandle {
                         }
                     }
                     if (eleWarrantyStart) {
-                        rowData['warranty_start'] = eleWarrantyStart.value;
+                        if (eleWarrantyStart.value) {
+                            rowData['warranty_start'] = moment(eleWarrantyStart.value,
+                                'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                        }
                     }
                     if (eleWarrantyEnd) {
-                        rowData['warranty_end'] = eleWarrantyEnd.value;
+                        if (eleWarrantyEnd.value) {
+                            rowData['warranty_end'] = moment(eleWarrantyEnd.value,
+                                'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                        }
                     }
                     tableSerial.DataTable().row(rowIndex).data(rowData).draw();
                     for (let ele of row.querySelectorAll('.date-picker')) {

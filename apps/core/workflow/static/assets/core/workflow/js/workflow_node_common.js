@@ -728,6 +728,17 @@ class NodeLoadDataHandle {
         }
     };
 
+    static loadCssToDtb(tableID) {
+        let tableIDWrapper = tableID + '_wrapper';
+        let tableWrapper = document.getElementById(tableIDWrapper);
+        if (tableWrapper) {
+            let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+            if (headerToolbar) {
+                headerToolbar.classList.add('hidden');
+            }
+        }
+    };
+
     // LOAD DETAIL PAGE
     static loadDetailNode(data) {
         NodeDataTableHandle.dataTableNode();
@@ -1044,8 +1055,8 @@ class NodeDataTableHandle {
                         }
                         if (is_approved_complete === false) {
                             return `<div class="row align-items-center">
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div class="dropdown">
+                                        <div class="d-flex align-items-center">
+                                            <div class="dropdown mr-4">
                                                 <button 
                                                     type="button"
                                                     class="btn btn-outline-light"
@@ -1067,10 +1078,10 @@ class NodeDataTableHandle {
                                     </div>`;
                         } else {
                             return `<div class="row align-items-center">
-                                        <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
                                             <button 
                                                 type="button"
-                                                class="btn btn-outline-light"
+                                                class="btn btn-outline-light mr-4"
                                                 disabled
                                             >
                                             <span><span class="icon"><i class="fas fa-tasks" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add action"></i></span><span>${NodeLoadDataHandle.transEle.attr('data-actions')}</span></span>
@@ -1094,10 +1105,10 @@ class NodeDataTableHandle {
                         }
                         if (is_system === false) {
                             return `<div class="row align-items-center">
-                                        <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
                                             <button 
                                                 type="button"
-                                                class="btn btn-outline-light btn-node-collab"
+                                                class="btn btn-outline-light btn-node-collab mr-4"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                             >
@@ -1371,10 +1382,10 @@ class NodeDataTableHandle {
                         } else {
                             if (row?.['code'] === 'initial') {
                                 return `<div class="row align-items-center">
-                                        <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
                                             <button 
                                                 type="button"
-                                                class="btn btn-outline-light btn-node-collab"
+                                                class="btn btn-outline-light btn-node-collab mr-4"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                             >
@@ -1419,10 +1430,10 @@ class NodeDataTableHandle {
                                     </div>`;
                             } else {
                                 return `<div class="row align-items-center">
-                                        <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
                                             <button 
                                                 type="button"
-                                                class="btn btn-outline-light btn-node-collab"
+                                                class="btn btn-outline-light btn-node-collab mr-4"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#${idModal}"
                                                 disabled
@@ -1483,6 +1494,8 @@ class NodeDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                NodeLoadDataHandle.loadCssToDtb('datable-workflow-node-create');
             },
         });
     };

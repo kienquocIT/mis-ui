@@ -2236,6 +2236,7 @@ class GRSubmitHandle {
                                     'purchase_request_data',
                                     'production_report_id',
                                     'production_report_data',
+                                    'uom_id',
                                     'uom_data',
                                     'quantity_order',
                                     'quantity_import',

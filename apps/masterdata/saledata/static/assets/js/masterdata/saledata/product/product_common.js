@@ -644,7 +644,7 @@ function loadWareHouseOverViewDetail(data_overview=[]) {
                 data: 'production_amount',
                 className: 'wrap-text text-center w-20',
                 render: (data, type, row) => {
-                    let production_amount = row?.['production_amount'] ? row?.['production_amount'] : 0
+                    let production_amount = row?.['sum_production'] ? row?.['sum_production'] : 0
                     return `<span class="fw-bold ${production_amount > 0 ? 'text-primary' : 'text-danger'}">${production_amount}</span>`
                 }
             },
@@ -1023,11 +1023,13 @@ function LoadDetailProduct(option) {
                     let sum_stock = product_detail?.['stock_amount'] ? product_detail?.['stock_amount'] : 0;
                     let sum_wait_for_delivery = product_detail?.['wait_delivery_amount'] ? product_detail?.['wait_delivery_amount'] : 0;
                     let sum_wait_for_receipt = product_detail?.['wait_receipt_amount'] ? product_detail?.['wait_receipt_amount'] : 0;
+                    let sum_production = product_detail?.['production_amount'] ? product_detail?.['production_amount'] : 0;
                     let sum_available_value = product_detail?.['available_amount'] ? product_detail?.['available_amount'] : 0;
                     data_overview.push({
                         'sum_stock': sum_stock,
                         'sum_wait_for_delivery': sum_wait_for_delivery,
                         'sum_wait_for_receipt': sum_wait_for_receipt,
+                        'sum_production': sum_production,
                         'sum_available_value': sum_available_value
                     })
                     loadWareHouseOverViewDetail(data_overview);

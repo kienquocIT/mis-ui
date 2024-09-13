@@ -122,6 +122,10 @@ class RespData:
         self._page_previous = _page_previous if _page_previous is not None else 0
 
     @property
+    def real_resp(self):
+        return self._resp
+
+    @property
     def state(self) -> bool:
         """property state"""
         if isinstance(self._state, int):
@@ -278,6 +282,8 @@ class RespData:
             return self.resp_404()
         elif self.status == 405:
             return self.resp_403()
+        elif self.status == 429:
+            return self.resp_429()
         elif self.status >= 500:
             return self.resp_500()
         if callback_errors:
@@ -306,6 +312,10 @@ class RespData:
     @classmethod
     def resp_403(cls):
         return {'render_api_status': 1403}, status.HTTP_403_FORBIDDEN
+
+    def resp_429(self):
+        retry_after = self.real_resp.headers.get('retry-after', 0)
+        return {'render_api_status': 1429, 'retry_after': retry_after}, status.HTTP_429_TOO_MANY_REQUESTS
 
     @classmethod
     def resp_404(cls):

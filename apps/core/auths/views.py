@@ -156,6 +156,8 @@ class TenantLoginChoice(APIView):
         resp = ServerAPI(request=request, user=None, url=ApiURL.tenants).get()
         if resp.state:
             return Response({'result': resp.result}, status=200)
+        elif resp.status == 429:
+            return resp.resp_429()
         return Response({'result': []}, status=200)
 
 

@@ -361,7 +361,14 @@
                             }
                         }
                     },
-                    (err) => {
+                    (errs) => {
+                        if (errs['status'] === 429){
+                            const msg = authGettext("Request was throttled. Expected available in {time_sec} seconds.").replaceAll("{time_sec}", errs?.['data']?.['retry_after'] || '');
+                            $.fn.notifyBLogin({
+                                'description': msg,
+                            }, 'failure');
+                        }
+                        tenantSelEle.attr('data-loaded-throttled', 'true');
                         tenantSelEle.attr('data-loaded', false);
                     }
                 )
@@ -398,9 +405,11 @@
                                 tenantSelEle.val(tenantCode);
 
                                 {#redirectToSelectTenant();#}
-                                $.fn.notifyBLogin({
-                                    'description': 'The tenant is not found or was disabled! Auto redirect to selection of tenant page.',
-                                }, 'failure')
+                                if (tenantSelEle.attr('data-loaded-throttled') !== 'true'){
+                                    $.fn.notifyBLogin({
+                                        'description': authGettext("The tenant is not found or was disabled!"),
+                                    }, 'failure');
+                                }
                                 {#setTimeout(#}
                                 {#    () => {#}
                                 {#        redirectToSelectTenant();#}

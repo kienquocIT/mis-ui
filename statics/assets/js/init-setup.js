@@ -4892,31 +4892,40 @@ class WindowControl {
     }
 
     static showTimeOut(props) {
-        if (Swal.isVisible()) Swal.close();  // force close when another showing
-
         let {
             callback,
+            checkVisible,
             ...opts
         } = {
+            'checkVisible': function (){
+                if (Swal.isVisible()) {
+                    Swal.close();  // force close when another showing
+                }
+                return true;
+            },
             'callback': function () {
             },
             ...props
         };
-        Swal.fire({
-            timer: 400,
-            timerProgressBar: false,
-            showConfirmButton: false,
-            didOpen: () => {
-                Swal.showLoading();
-                $('.swal2-actions.swal2-loading').css('margin-top', 0);
-                $('.swal2-popup').css('background', 'unset');
-            },
-            ...opts,
-        }).then((result) => {
-            setTimeout(() => {
-                callback();
+        const state = checkVisible();
+        if (state !== false){
+            Swal.fire({
+                icon: 'warning',
+                timer: 400,
+                timerProgressBar: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                    $('.swal2-actions.swal2-loading').css('margin-top', 0);
+                    $('.swal2-popup').css('background', 'unset');
+                },
+                ...opts,
+            }).then((result) => {
+                setTimeout(() => {
+                    callback();
+                });
             });
-        });
+        }
     }
 
     static showUnauthenticated(opts, isRedirect = true) {

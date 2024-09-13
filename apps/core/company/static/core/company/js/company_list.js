@@ -76,6 +76,7 @@ $(function () {
                 }
             }, {
                 className: 'action-center w-10',
+                visible: false,
                 render: (data, type, row, meta) => {
                     let btnOpenWebsite = `
                         <a href="${generate_ui_url(row?.['sub_domain'] || '')}" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btnRedirectToWebsite">
@@ -87,7 +88,7 @@ $(function () {
                     return `<div>${btnOpenWebsite}</div>`;
                 }
             },
-        ]
+        ],
     });
 
     function generate_ui_url(sub_domain) {

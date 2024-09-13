@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.views import View
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
@@ -5,7 +6,7 @@ from rest_framework.views import APIView
 
 from requests_toolbelt import MultipartEncoder
 
-from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared import mask_view, ServerAPI, ApiURL, TypeCheck
 from apps.shared.apis import RespData
 from apps.shared.msg import CoreMsg
 
@@ -31,6 +32,20 @@ class AttachmentUpload(APIView):
             ).post(data=m)
             return resp.auto_return(key_success='file_detail')
         return RespData.resp_400(errors_data={'file': 'Not found'})
+
+
+class AttachmentDownload(APIView):
+    @mask_view(login_require=True, auth_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            url = ApiURL.FILE_DOWNLOAD.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url, return_response_origin=True).get(stream=True)
+            response = HttpResponse(resp.content, content_type=resp.headers['Content-Type'])
+            response['Content-Disposition'] = resp.headers.get(
+                'Content-Disposition', 'attachment; filename="default_filename"'
+            )
+            return response
+        return RespData.resp_404()
 
 
 class FilesUnusedAPI(APIView):

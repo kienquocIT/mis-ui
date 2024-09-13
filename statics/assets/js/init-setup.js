@@ -5999,6 +5999,17 @@ class FileControl {
         }
     }
 
+    ui_on_click_download(parentEle=null){
+        if (this.init_opts.enable_download === true){
+            const clsThis = this;
+            const itemEle = parentEle ? parentEle : clsThis.ele$.find('dm-uploader-result-item');
+            itemEle.find('.btn-download-file').on('click', function (){
+                let itemEle = $(this).closest('.dm-uploader-result-item');
+                FileControl.download(itemEle.attr('data-file-id'));
+            })
+        }
+    }
+
     ui_on_show_file_cloud() {
         // Call ajax (DTB) when fist open modal
         let clsThis = this;
@@ -6160,6 +6171,9 @@ class FileControl {
                 this.ui_on_click_remove(
                     this.ele$.find(`.dm-uploader-result-item[data-file-id="${fileData.id}"]`)
                 )
+                this.ui_on_click_download(
+                    this.ele$.find(`.dm-uploader-result-item[data-file-id="${fileData.id}"]`)
+                )
                 this.ui_add_id(fileData.id);
             } else {
                 Swal.fire({
@@ -6276,6 +6290,7 @@ class FileControl {
             opts = {
                 'name': '',
                 'data': [],
+                enable_download: false,
                 ...(
                     opts?.['enable_edit'] === true || opts?.['enable_edit'] === undefined ? {
                         'readonly': false,
@@ -6344,6 +6359,7 @@ class FileControl {
                                 eleItem.attr('data-file-id', data);
                                 eleItem.find('input.file-txt-remark').val(fileData.remarks);
                                 clsThis.ui_on_click_remove(eleItem);
+                                clsThis.ui_on_click_download(eleItem);
                                 clsThis.ui_add_id(fileData.id);
                             } else {
                                 Swal.fire({
@@ -6395,6 +6411,9 @@ class FileControl {
                             if (!opts.enable_remove) {
                                 clsThis.ele$.find('button.btn-destroy-file').remove()
                             }
+                            if (!opts.enable_download) {
+                                clsThis.ele$.find('button.btn-download-file').remove()
+                            }
                         },
                         onFileTypeError: function (file) {
                             let templateTitle = clsThis.ele$.find('.template-title-error-type').html();
@@ -6430,6 +6449,42 @@ class FileControl {
                 }
             });
         }
+    }
+
+    static download(pk){
+        $.fn.callAjax2({
+            url: `/attachment/download/${pk}`,
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob',
+            },
+            successOnly: true,
+            isLoading: true,
+            success: function(data, status, xhr) {
+                const disposition = xhr.getResponseHeader('Content-Disposition');
+                let filename = '';
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
+                    if (matches != null && matches[1]) {
+                        filename = matches[1].replace(/['"]/g, '');
+                    }
+                }
+
+                const url = window.URL.createObjectURL(data);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            },
+        }).then(
+            resp => resp,
+            errs => {
+                $.fn.switcherResp(errs);
+                return null;
+            },
+        )
     }
 }
 

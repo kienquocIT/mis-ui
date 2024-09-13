@@ -394,8 +394,9 @@ class APIUtil:
     key_response_page_next = settings.API_KEY_RESPONSE_PAGE_NEXT
     key_response_page_previous = settings.API_KEY_RESPONSE_PAGE_PREVIOUS
 
-    def __init__(self, user_obj: Model = None):
+    def __init__(self, user_obj: Model = None, response_origin: bool = False):
         self.user_obj = user_obj
+        self.response_origin = response_origin
 
     @classmethod
     def key_authenticated(cls, access_token: str) -> dict:
@@ -484,37 +485,40 @@ class APIUtil:
             _resp=resp,
         )
 
-    def handle_expired_token(self, resp_parsed_before: RespData) -> (bool, dict or RespData):
-        auth_error_code = resp_parsed_before.errors.get('auth_error_code', None)
-        if auth_error_code == 'authentication_2fa_failed':
-            pass
+    def handle_expired_token(self, resp_parsed_before: RespData = None) -> (bool, dict or RespData):
+        if resp_parsed_before:
+            auth_error_code = resp_parsed_before.errors.get('auth_error_code', None)
+            if auth_error_code == 'authentication_2fa_failed':
+                pass
         headers_upgrade = self.refresh_token(user_obj=self.user_obj)
         if headers_upgrade:
             return True, headers_upgrade
         return False, None
 
-    def call_get(self, safe_url: str, headers: dict) -> RespData:
+    def call_get(self, safe_url: str, headers: dict, **kwargs) -> RespData:
         """
         Support ServerAPI call to server get data (refresh token after recall if token is expires)
         Args:
             safe_url: (string) url parsed
-            headers: (dict) headers add to request
+            headers: (dict) headers add to
 
         Returns: RespData object have attribute state, result, errors
             state: (bool) True if status_code is range (200, 300) else False : Is success call
             result: (dict or list) : is Response Data from API
             errors: (dict) : is Error Data from API
         """
-        resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT)
-        resp_parsed = self.get_data_from_resp(resp)
+        resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT, **kwargs)
+        resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         if resp.status_code == 401:
             if self.user_obj:
-                state_refresh, headers_upgrade = self.handle_expired_token(resp_parsed_before=resp_parsed)
+                state_refresh, headers_upgrade = self.handle_expired_token(
+                    resp_parsed_before=resp_parsed if self.response_origin is False else None
+                )
                 if state_refresh and headers_upgrade:
                     # refresh token
                     headers.update(headers_upgrade)
-                    resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT)
-                    resp_parsed = self.get_data_from_resp(resp)
+                    resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT, **kwargs)
+                    resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         return resp_parsed
 
     def call_post(
@@ -522,6 +526,7 @@ class APIUtil:
             safe_url: str,
             headers: dict,
             data: Union[dict, MultipartEncoder],
+            **kwargs
     ) -> RespData:
         """
         Support ServerAPI call to server with POST method.
@@ -547,6 +552,7 @@ class APIUtil:
             'url': safe_url,
             'headers': headers,
             'timeout': REQUEST_TIMEOUT,
+            **kwargs
         }
 
         if content_type:
@@ -562,10 +568,12 @@ class APIUtil:
             config['data'] = data
 
         resp = requests.post(**config)
-        resp_parsed = self.get_data_from_resp(resp)
+        resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         if resp.status_code == 401:
             if self.user_obj:
-                state_refresh, headers_upgrade = self.handle_expired_token(resp_parsed_before=resp_parsed)
+                state_refresh, headers_upgrade = self.handle_expired_token(
+                    resp_parsed_before=resp_parsed if self.response_origin is False else None
+                )
                 if state_refresh and headers_upgrade:
                     # refresh token
                     headers.update(headers_upgrade)
@@ -573,10 +581,10 @@ class APIUtil:
                         url=safe_url, headers=headers, json=data,
                         timeout=REQUEST_TIMEOUT
                     )
-                    resp_parsed = self.get_data_from_resp(resp)
+                    resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         return resp_parsed
 
-    def call_put(self, safe_url: str, headers: dict, data: dict) -> RespData:
+    def call_put(self, safe_url: str, headers: dict, data: dict, **kwargs) -> RespData:
         """
         Support ServerAPI call to server with PUT method.
         (refresh token after recall if token is expires)
@@ -601,6 +609,7 @@ class APIUtil:
             'url': safe_url,
             'headers': headers,
             'timeout': REQUEST_TIMEOUT,
+            **kwargs
         }
 
         if content_type:
@@ -620,10 +629,12 @@ class APIUtil:
         #     timeout=REQUEST_TIMEOUT
         # )
         resp = requests.put(**config)
-        resp_parsed = self.get_data_from_resp(resp)
+        resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         if resp.status_code == 401:
             if self.user_obj:
-                state_refresh, headers_upgrade = self.handle_expired_token(resp_parsed_before=resp_parsed)
+                state_refresh, headers_upgrade = self.handle_expired_token(
+                    resp_parsed_before=resp_parsed if self.response_origin is False else None
+                )
                 if state_refresh and headers_upgrade:
                     # refresh token
                     headers.update(headers_upgrade)
@@ -631,10 +642,10 @@ class APIUtil:
                         url=safe_url, headers=headers, json=data,
                         timeout=REQUEST_TIMEOUT
                     )
-                    resp_parsed = self.get_data_from_resp(resp)
+                    resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         return resp_parsed
 
-    def call_delete(self, safe_url: str, headers: dict, data: dict) -> RespData:
+    def call_delete(self, safe_url: str, headers: dict, data: dict, **kwargs) -> RespData:
         """
         Support ServerAPI call to server with DELETE method.
         (refresh token after recall if token is expires)
@@ -650,20 +661,24 @@ class APIUtil:
         """
         resp = requests.delete(
             url=safe_url, headers=headers, json=data,
-            timeout=REQUEST_TIMEOUT
+            timeout=REQUEST_TIMEOUT,
+            **kwargs
         )
-        resp_parsed = self.get_data_from_resp(resp)
+        resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         if resp.status_code == 401:
             if self.user_obj:
-                state_refresh, headers_upgrade = self.handle_expired_token(resp_parsed_before=resp_parsed)
+                state_refresh, headers_upgrade = self.handle_expired_token(
+                    resp_parsed_before=resp_parsed if self.response_origin is False else None
+                )
                 if state_refresh and headers_upgrade:
                     # refresh token
                     headers.update(headers_upgrade)
                     resp = requests.delete(
                         url=safe_url, headers=headers, json=data,
-                        timeout=REQUEST_TIMEOUT
+                        timeout=REQUEST_TIMEOUT,
+                        **kwargs
                     )
-                    resp_parsed = self.get_data_from_resp(resp)
+                    resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
                 elif isinstance(headers_upgrade, RespData):
                     return headers_upgrade
         return resp_parsed
@@ -691,6 +706,7 @@ class ServerAPI:
         self.request = kwargs.get('request', None)
         self.is_check_perm = kwargs.get('is_check_perm', False)
         self.has_refresh_token = kwargs.get('has_refresh_token', False)
+        self.response_origin = kwargs.get('return_response_origin', False)
 
         if self.request:
             self.query_params = getattr(self.request, 'query_params', {})
@@ -780,7 +796,14 @@ class ServerAPI:
             }
         return ctx
 
-    def get(self, data=None):
+    @property
+    def api_cls(self) -> APIUtil:
+        return APIUtil(
+            user_obj=self.user,
+            response_origin=self.response_origin,
+        )
+
+    def get(self, data=None, **kwargs):
         """
         Support call request API with GET method.
         Args:
@@ -796,9 +819,9 @@ class ServerAPI:
 
         url_encode = [f"{str(key)}={parse.quote(str(val))}" for key, val in params.items()]
         safe_url = self.url + f'?{"&".join(url_encode)}'
-        return APIUtil(user_obj=self.user).call_get(safe_url=safe_url, headers=self.headers)
+        return self.api_cls.call_get(safe_url=safe_url, headers=self.headers, **kwargs)
 
-    def post(self, data) -> RespData:
+    def post(self, data, **kwargs) -> RespData:
         """
         Support call request API with POST method.
         Args:
@@ -807,14 +830,14 @@ class ServerAPI:
         Returns: APIUtil --> call_post()
         """
         if isinstance(data, (dict, MultipartEncoder)):
-            return APIUtil(user_obj=self.user).call_post(
+            return self.api_cls.call_post(
                 safe_url=self.url,
                 headers=self.headers,
-                data=data
+                data=data, **kwargs
             )
         raise ValueError('Body data for POST request must be dictionary or MultipartEncoder')
 
-    def put(self, data) -> RespData:
+    def put(self, data, **kwargs) -> RespData:
         """
         Support call request API with PUT method.
         Args:
@@ -823,14 +846,14 @@ class ServerAPI:
         Returns: APIUtil --> call_put()
         """
         if isinstance(data, (dict, MultipartEncoder)):
-            return APIUtil(user_obj=self.user).call_put(
+            return self.api_cls.call_put(
                 safe_url=self.url,
                 headers=self.headers,
-                data=data
+                data=data, **kwargs
             )
         raise ValueError('Body data for POST request must be dictionary')
 
-    def delete(self, data: dict = dict) -> RespData:
+    def delete(self, data: dict = dict, **kwargs) -> RespData:
         """
         Support call request API with DELETE method.
         Args:
@@ -838,10 +861,11 @@ class ServerAPI:
 
         Returns: APIUtil --> call_delete()
         """
-        return APIUtil(user_obj=self.user).call_delete(
+        return self.api_cls.call_delete(
             safe_url=self.url,
             headers=self.headers,
-            data=data if data and isinstance(data, dict) else {}
+            data=data if data and isinstance(data, dict) else {},
+            **kwargs
         )
 
     @classmethod

@@ -1369,6 +1369,7 @@ class APHandle {
                     $.fn.initMaskMoney2();
 
                     new $x.cls.file($('#attachment')).init({
+                        enable_download: option === 'detail',
                         enable_edit: option !== 'detail',
                         data: data.attachment,
                     })

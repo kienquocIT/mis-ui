@@ -95,6 +95,7 @@ $(function () {
                 'group_data',
                 'time',
                 'task_data',
+                'gr_remain_quantity',
             ]
             if (_form.dataForm) {
                 ProdOrderCommonHandle.filterFieldList(submitFields, _form.dataForm);

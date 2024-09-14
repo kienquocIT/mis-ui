@@ -8815,3 +8815,7 @@ msgstr "Số dư đầu kì sẽ được chèn bắt đầu từ tháng sử d�
 #
 msgid "If the data changes after the time of starting to use the software (not recommended). Re-run all reports from that month to now to update them correctly."
 msgstr "Nếu dữ liệu có sự thay đổi sau thời gian bắt đầu sử dụng phần mềm (không khuyến khích). Hãy chạy lại tất cả các báo cáo từ tháng đó đến nay để cập nhập lại chính xác."
+
+#
+msgid "Pretax value"
+msgstr "Giá trị trước thuế"

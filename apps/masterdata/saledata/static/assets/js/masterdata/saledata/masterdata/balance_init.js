@@ -144,33 +144,7 @@ $(document).ready(function () {
         }
         LoadProduct()
 
-        $(document).on("change", '.item-value', function () {
-            let sum = 0
-            $('.item-value').each(function (index, item) {
-                let value = $(item).attr('value')
-                let quantity = $(item).closest('tr').find('.item-quantity').val()
-
-                if (quantity && value) {
-                    sum += parseFloat($(item).attr('value'))
-                }
-            })
-            $('#modal-total-value').attr('data-init-money', sum)
-            $.fn.initMaskMoney2()
-        });
-
         $(document).on("change", '.item-quantity', function () {
-            let sum = 0
-            $('.item-value').each(function (index, item) {
-                let value = $(item).attr('value')
-                let quantity = $(item).closest('tr').find('.item-quantity').val()
-
-                if (quantity && value) {
-                    sum += parseFloat($(item).attr('value'))
-                }
-            })
-            $('#modal-total-value').attr('data-init-money', sum)
-            $.fn.initMaskMoney2()
-
             let item_obj_ele = $(this).closest('tr').find('.item-obj')
             let selected = SelectDDControl.get_data_from_idx(item_obj_ele, item_obj_ele.val())
             if (selected?.['general_traceability_method'] === 2) {
@@ -444,9 +418,6 @@ $(document).ready(function () {
 
                 $('.data-sn').last().text(JSON.stringify(data_sn))
                 $('.data-lot').last().text(JSON.stringify(data_lot))
-
-                $('#modal-total-value').attr('data-init-money', 0)
-                $.fn.initMaskMoney2()
 
                 modal_add_balance.modal('hide')
                 selectWH_Ele.empty()

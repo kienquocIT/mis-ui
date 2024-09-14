@@ -4892,31 +4892,40 @@ class WindowControl {
     }
 
     static showTimeOut(props) {
-        if (Swal.isVisible()) Swal.close();  // force close when another showing
-
         let {
             callback,
+            checkVisible,
             ...opts
         } = {
+            'checkVisible': function (){
+                if (Swal.isVisible()) {
+                    Swal.close();  // force close when another showing
+                }
+                return true;
+            },
             'callback': function () {
             },
             ...props
         };
-        Swal.fire({
-            timer: 400,
-            timerProgressBar: false,
-            showConfirmButton: false,
-            didOpen: () => {
-                Swal.showLoading();
-                $('.swal2-actions.swal2-loading').css('margin-top', 0);
-                $('.swal2-popup').css('background', 'unset');
-            },
-            ...opts,
-        }).then((result) => {
-            setTimeout(() => {
-                callback();
+        const state = checkVisible();
+        if (state !== false){
+            Swal.fire({
+                icon: 'warning',
+                timer: 400,
+                timerProgressBar: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                    $('.swal2-actions.swal2-loading').css('margin-top', 0);
+                    $('.swal2-popup').css('background', 'unset');
+                },
+                ...opts,
+            }).then((result) => {
+                setTimeout(() => {
+                    callback();
+                });
             });
-        });
+        }
     }
 
     static showUnauthenticated(opts, isRedirect = true) {
@@ -5846,14 +5855,18 @@ class FileControl {
     ui_multi_add_file(id, file) {
         // Creates a new file and add it to our list
         let base64Capture = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzVweCIgaGVpZ2h0PSIzNXB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGc+CiAgICA8cGF0aCBkPSJNMTkgOVYxNy44QzE5IDE4LjkyMDEgMTkgMTkuNDgwMiAxOC43ODIgMTkuOTA4QzE4LjU5MDMgMjAuMjg0MyAxOC4yODQzIDIwLjU5MDMgMTcuOTA4IDIwLjc4MkMxNy40ODAyIDIxIDE2LjkyMDEgMjEgMTUuOCAyMUg4LjJDNy4wNzk4OSAyMSA2LjUxOTg0IDIxIDYuMDkyMDIgMjAuNzgyQzUuNzE1NjkgMjAuNTkwMyA1LjQwOTczIDIwLjI4NDMgNS4yMTc5OSAxOS45MDhDNSAxOS40ODAyIDUgMTguOTIwMSA1IDE3LjhWNi4yQzUgNS4wNzk4OSA1IDQuNTE5ODQgNS4yMTc5OSA0LjA5MjAyQzUuNDA5NzMgMy43MTU2OSA1LjcxNTY5IDMuNDA5NzMgNi4wOTIwMiAzLjIxNzk5QzYuNTE5ODQgMyA3LjA3OTkgMyA4LjIgM0gxM00xOSA5TDEzIDNNMTkgOUgxNEMxMy40NDc3IDkgMTMgOC41NTIyOCAxMyA4VjMiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICA8L2c+Cjwvc3ZnPgo=';
-        let template = this.ele$.find('.pattern-file-text-plain').text()
-            .replace('%%filename%%', file.name)
-            .replace('%%fileid%%', id)
-            .replace('%%fileinfo%%', FileControl.parse_size(file.size))
-            .replace('%%filecapture%%', base64Capture)
-            .replace('%%fileremark%%', file.remarks || '')
-        ;
-
+        let template = $(
+            this.ele$.find('.pattern-file-text-plain').text()
+                .replace('%%filename%%', file.name)
+                .replace('%%fileid%%', id)
+                .replace('%%fileinfo%%', FileControl.parse_size(file.size))
+                .replace('%%filecapture%%', base64Capture)
+                .replace('%%fileremark%%', file.remarks || '')
+        );
+        const elePreview$ = template.find('.file-preview-link');
+        if (elePreview$.length > 0){
+            elePreview$.attr('href', elePreview$.attr('href').replaceAll('__pk__', id));
+        }
         this.ele$.find('.dm-uploader-no-files').hide();
 
         this.ele$.find('.dm-uploader-result-list').prepend(template).fadeIn();
@@ -5986,6 +5999,17 @@ class FileControl {
                         }
                     }
                 )
+            })
+        }
+    }
+
+    ui_on_click_download(parentEle=null){
+        if (this.init_opts.enable_download === true){
+            const clsThis = this;
+            const itemEle = parentEle ? parentEle : clsThis.ele$.find('dm-uploader-result-item');
+            itemEle.find('.btn-download-file').on('click', function (){
+                let itemEle = $(this).closest('.dm-uploader-result-item');
+                FileControl.download(itemEle.attr('data-file-id'));
             })
         }
     }
@@ -6151,6 +6175,9 @@ class FileControl {
                 this.ui_on_click_remove(
                     this.ele$.find(`.dm-uploader-result-item[data-file-id="${fileData.id}"]`)
                 )
+                this.ui_on_click_download(
+                    this.ele$.find(`.dm-uploader-result-item[data-file-id="${fileData.id}"]`)
+                )
                 this.ui_add_id(fileData.id);
             } else {
                 Swal.fire({
@@ -6267,6 +6294,7 @@ class FileControl {
             opts = {
                 'name': '',
                 'data': [],
+                enable_download: false,
                 ...(
                     opts?.['enable_edit'] === true || opts?.['enable_edit'] === undefined ? {
                         'readonly': false,
@@ -6335,6 +6363,7 @@ class FileControl {
                                 eleItem.attr('data-file-id', data);
                                 eleItem.find('input.file-txt-remark').val(fileData.remarks);
                                 clsThis.ui_on_click_remove(eleItem);
+                                clsThis.ui_on_click_download(eleItem);
                                 clsThis.ui_add_id(fileData.id);
                             } else {
                                 Swal.fire({
@@ -6386,6 +6415,9 @@ class FileControl {
                             if (!opts.enable_remove) {
                                 clsThis.ele$.find('button.btn-destroy-file').remove()
                             }
+                            if (!opts.enable_download) {
+                                clsThis.ele$.find('button.btn-download-file').remove()
+                            }
                         },
                         onFileTypeError: function (file) {
                             let templateTitle = clsThis.ele$.find('.template-title-error-type').html();
@@ -6421,6 +6453,47 @@ class FileControl {
                 }
             });
         }
+    }
+
+    static download(pk, successCallback=null){
+        function active_download(data, status, xhr){
+            const disposition = xhr.getResponseHeader('Content-Disposition');
+            let filename = '';
+            if (disposition && disposition.indexOf('attachment') !== -1) {
+                const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
+                if (matches != null && matches[1]) {
+                    filename = matches[1].replace(/['"]/g, '');
+                }
+            }
+
+            const url = window.URL.createObjectURL(data);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        if (!successCallback || typeof successCallback !== 'function'){
+            successCallback = active_download
+        }
+
+        $.fn.callAjax2({
+            url: `/attachment/download/${pk}`,
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob',
+            },
+            successOnly: true,
+            isLoading: true,
+            success: successCallback,
+        }).then(
+            resp => resp,
+            errs => {
+                $.fn.switcherResp(errs);
+                return null;
+            },
+        )
     }
 }
 

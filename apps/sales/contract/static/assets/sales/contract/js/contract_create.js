@@ -9,6 +9,10 @@ $(function () {
         ContractTinymceHandle.initTinymce();
         WFRTControl.setWFInitialData('contractapproval');
 
+        // file
+        if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+            new $x.cls.file($('#attachment')).init({});
+        }
 
         ContractLoadDataHandle.$btnAddDoc.on('click', function () {
             ContractLoadDataHandle.loadAddDoc();

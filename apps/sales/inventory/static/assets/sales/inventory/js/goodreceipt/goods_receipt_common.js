@@ -575,28 +575,25 @@ class GRLoadDataHandle {
             if (eleLotNumber) {
                 eleLotNumber.value = dataLot?.['lot_number'];
             }
-            let valid_lot = GRValidateHandle.validateLotNumberExistRow(eleLotNumber);
-            if (valid_lot === true) {
-                ele.setAttribute('data-checked', 'true');
-                $(ele).css('background-color', '#eef6ff');
-                if (eleImport) {
-                    eleImport.value = '0';
-                    GRLoadDataHandle.loadQuantityImport();
+            ele.setAttribute('data-checked', 'true');
+            $(ele).css('background-color', '#eef6ff');
+            if (eleImport) {
+                eleImport.value = '0';
+                GRLoadDataHandle.loadQuantityImport();
+            }
+            if (eleExpire) {
+                let date = '';
+                if (dataLot?.['expire_date']) {
+                    date = moment(dataLot?.['expire_date']).format('DD/MM/YYYY');
                 }
-                if (eleExpire) {
-                    let date = '';
-                    if (dataLot?.['expire_date']) {
-                        date = moment(dataLot?.['expire_date']).format('DD/MM/YYYY');
-                    }
-                    eleExpire.value = date;
+                eleExpire.value = date;
+            }
+            if (eleManufacture) {
+                let date = '';
+                if (dataLot?.['manufacture_date']) {
+                    date = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY');
                 }
-                if (eleManufacture) {
-                    let date = '';
-                    if (dataLot?.['manufacture_date']) {
-                        date = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY');
-                    }
-                    eleManufacture.value = date;
-                }
+                eleManufacture.value = date;
             }
         }
         return true;

@@ -37,19 +37,19 @@ $(document).ready(function () {
                         {
                             className: 'wrap-text',
                             render: (data, type, row) => {
-                                return `<span data-item-id="${row?.['product']?.['id']}" class="badge badge-soft-secondary balance-item">${row?.['product']?.['code']}</span>&nbsp;<span>${row?.['product']?.['title']}</span>`;
+                                return `<span data-item-id="${row?.['product']?.['id']}" class="badge badge-light w-20 balance-item">${row?.['product']?.['code']}</span>&nbsp;<span>${row?.['product']?.['title']}</span>`;
                             }
                         },
                         {
                             className: 'wrap-text',
                             render: (data, type, row) => {
-                                return `<span>${row?.['product']?.['uom']?.['title']}</span>`;
+                                return `<span class="badge badge-soft-blue">${row?.['product']?.['uom']?.['title']}</span>`;
                             }
                         },
                         {
                             className: 'wrap-text',
                             render: (data, type, row) => {
-                                return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-soft-primary balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
+                                return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-soft-primary w-15 balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
                             }
                         },
                         {
@@ -382,17 +382,19 @@ $(document).ready(function () {
 
                 dtb_balance_init_item_Ele.find('tbody .dataTables_empty').remove()
                 dtb_balance_init_item_Ele.find('tbody').append(`
-                    <tr class="bg-primary-light-5 new-row-data">
+                    <tr class="new-row-data">
                         <script class="data-lot"></script>
                         <script class="data-sn"></script>
-                        <td><span data-item-id="${result?.['product_data']?.['id']}" class="badge badge-soft-secondary balance-item">${result?.['product_data']?.['code']}</span>&nbsp;<span>${result?.['product_data']?.['title']}</span></td>
-                        <td><span>${result?.['uom_data']?.['title']}</span></td>
-                        <td><span data-wh-id="${result?.['wh_data']?.['id']}" class="badge badge-soft-primary balance-wh">${result?.['wh_data']?.['code']}</span>&nbsp;<span>${result?.['wh_data']?.['title']}</span></td>
+                        <td><span data-item-id="${result?.['product_data']?.['id']}" class="badge badge-light w-20 balance-item">${result?.['product_data']?.['code']}</span>&nbsp;<span>${result?.['product_data']?.['title']}</span></td>
+                        <td><span class="badge badge-soft-blue">${result?.['uom_data']?.['title']}</span></td>
+                        <td><span data-wh-id="${result?.['wh_data']?.['id']}" class="badge badge-soft-primary w-15 balance-wh">${result?.['wh_data']?.['code']}</span>&nbsp;<span>${result?.['wh_data']?.['title']}</span></td>
                         <td><span class="balance-quantity">${result?.['quantity_balance']}</span></td>
                         <td><span class="balance-value mask-money" data-init-money="${result?.['value_balance']}"></span></td>
                         <td class="text-right"><a href="#" class="text-danger btn-delete-row"><i class="far fa-trash-alt"></i></a></td>
                     </tr>
                 `)
+
+                $.fn.initMaskMoney2()
 
                 let data_sn = []
                 dtb_wh_product_Ele.find('.row-input-sn').each(function () {

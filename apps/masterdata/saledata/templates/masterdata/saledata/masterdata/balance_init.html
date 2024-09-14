@@ -88,21 +88,29 @@
                         <th class="w-15">{% trans 'UoM' %}</th>
                         <th class="w-20">{% trans 'Warehouse' %}</th>
                         <th class="w-15">{% trans 'Quantity' %}</th>
-                        <th class="w-15">{% trans 'Value' %}</th>
+                        <th class="w-15">{% trans 'Pretax value' %}</th>
                         <th class="w-5 text-right"></th>
                     </thead>
                     <tbody></tbody>
+                    <tfoot>
+                        <tr>
+                            <td>
+                                <div class="text-left">
+                                    <button type="button"
+                                            id="btn-add-balance"
+                                            style="min-width: max-content"
+                                            class="btn btn-flush-primary btn-animated w-20"
+                                            data-bs-toggle="modal" data-bs-target="#modal-add-balance"
+                                    >
+                                        <i class="fas fa-plus-circle"></i>
+                                        {% trans 'Add balance' %}
+                                    </button>
+                                </div>
+                            </td>
+                            <td colspan="5"></td>
+                        </tr>
+                    </tfoot>
                 </table>
-            </div>
-            <div class="col-12 mt-2">
-                <button type="button"
-                        id="btn-add-balance"
-                        class="btn btn-primary btn-sm"
-                        data-bs-toggle="modal" data-bs-target="#modal-add-balance"
-                >
-                    <i class="fas fa-plus-circle"></i>
-                    {% trans 'Add balance' %}
-                </button>
             </div>
         </div>
         <div class="modal fade" id="modal-add-balance" tabindex="-1" role="dialog" aria-labelledby="modal-add-balance" aria-hidden="true">

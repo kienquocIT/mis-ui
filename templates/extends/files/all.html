@@ -86,7 +86,17 @@
                         alt="Preview"
                 >
                 <div class="media-body mb-1">
-                    <p class="f-item-name">%%filename%%</p>
+                    <div class="d-flex">
+                        <p class="f-item-name">%%filename%%</p>
+                        <a
+                                class="file-preview-link ml-2"
+                                href="{% url 'AttachmentPreview' pk='__pk__' %}"
+                                target="_blank"
+                        >
+                            <i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i>
+                        </a>
+                    </div>
+
                     <small class="f-item-info">%%fileinfo%%</small>
                     <input type="text" class="form-control-plaintext file-txt-remark" placeholder="" value="%%fileremark%%" readonly disabled>
                 </div>
@@ -94,6 +104,12 @@
                         type="button"
                         class="ml-auto btn btn-rounded btn-icon btn-percent-upload mr-1" disabled
                 ></button>
+                <button
+                        type="button"
+                        class="ml-auto btn btn-soft-secondary btn-rounded btn-icon btn-download-file"
+                >
+                    <i class="fa-solid fa-download"></i>
+                </button>
                 <button
                         type="button"
                         class="ml-auto btn btn-danger btn-rounded btn-icon btn-destroy-file"

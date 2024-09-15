@@ -2,7 +2,7 @@ from django.urls import path
 
 from apps.sales.purchasing.views import (
     PurchaseOrderCreate, PurchaseRequestList, PurchaseRequestCreate, PurchaseRequestProductListAPI,
-    PurchaseOrderUpdate, PurchaseOrderProductListAPI, PurchaseOrderSaleListAPI,
+    PurchaseOrderUpdate, PurchaseOrderProductGRListAPI, PurchaseOrderSaleListAPI,
 
     PurchaseRequestListAPI, PurchaseRequestDetailAPI, PurchaseRequestDetail,
     PurchaseRequestListForPQRAPI, PurchaseRequestConfigAPI, PurchaseRequestConfig, PurchaseRequestUpdate,
@@ -40,7 +40,7 @@ urlpatterns = [
     path('purchase-order/detail/<str:pk>', PurchaseOrderDetail.as_view(), name='PurchaseOrderDetail'),
     path('purchase-order/detail-api/<str:pk>', PurchaseOrderDetailAPI.as_view(), name='PurchaseOrderDetailAPI'),
     path('purchase-order/update/<str:pk>', PurchaseOrderUpdate.as_view(), name='PurchaseOrderUpdate'),
-    path('purchase-order-product/list', PurchaseOrderProductListAPI.as_view(), name='PurchaseOrderProductListAPI'),
+    path('purchase-order-product-gr/list', PurchaseOrderProductGRListAPI.as_view(), name='PurchaseOrderProductGRListAPI'),
 
     # purchase quotation request
     path('purchase-quotation-request/lists', PurchaseQuotationRequestList.as_view(), name='PurchaseQuotationRequestList'),

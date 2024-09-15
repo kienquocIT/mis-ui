@@ -85,6 +85,7 @@
                                                 <input
                                                         type="text" name="username" id="inp-username"
                                                         class="form-control" placeholder=""
+                                                        autofocus
                                                         required
                                                 >
                                                 <button
@@ -526,7 +527,7 @@
                         }
 
                         $.fn.forgotCallAjax(
-                            frmOTPValidate.attr('data-url') + '?' + $.params({
+                            frmOTPValidate.attr('data-url') + '?' + $.param({
                                 'captcha': $(document).find('input[name="g-recaptcha-response"]').val()
                             }),
                             'GET',

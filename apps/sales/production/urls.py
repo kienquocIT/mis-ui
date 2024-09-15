@@ -3,8 +3,11 @@ from apps.sales.production.views import (
     BOMList, BOMCreate, BOMDetail, BOMUpdate, BOMListAPI, BOMDetailAPI, LaborListForBOMAPI, ProductionOrderCreate,
     ProductMaterialListForBOMAPI, ProductToolListForBOMAPI, BOMOrderListAPI, ProductionOrderDetail,
     ProductionOrderListAPI, ProductionOrderDetailAPI, ProductionOrderUpdate, ProductionOrderList,
-    ProductListForBOMAPI
+    ProductListForBOMAPI, ProductionOrderDDListAPI
 )
+from apps.sales.production.views.production_report import ProductionReportCreate, ProductionReportList, \
+    ProductionReportListAPI, ProductionReportDetail, ProductionReportDetailAPI, ProductionReportUpdate, \
+    ProductionReportDDListAPI, ProductionReportGRListAPI
 
 urlpatterns = [
     path('bill-of-material/list', BOMList.as_view(), name='BOMList'),
@@ -28,4 +31,15 @@ urlpatterns = [
     path('production-order/detail/<str:pk>', ProductionOrderDetail.as_view(), name='ProductionOrderDetail'),
     path('production-order/detail-api/<str:pk>', ProductionOrderDetailAPI.as_view(), name='ProductionOrderDetailAPI'),
     path('production-order/update/<str:pk>', ProductionOrderUpdate.as_view(), name='ProductionOrderUpdate'),
+    path('production-order-dd/api/list', ProductionOrderDDListAPI.as_view(), name='ProductionOrderDDListAPI'),
+
+    # production report
+    path('production-report/list', ProductionReportList.as_view(), name='ProductionReportList'),
+    path('production-report/api/list', ProductionReportListAPI.as_view(), name='ProductionReportListAPI'),
+    path('production-report/create', ProductionReportCreate.as_view(), name='ProductionReportCreate'),
+    path('production-report/detail/<str:pk>', ProductionReportDetail.as_view(), name='ProductionReportDetail'),
+    path('production-report/detail-api/<str:pk>', ProductionReportDetailAPI.as_view(), name='ProductionReportDetailAPI'),
+    path('production-report/update/<str:pk>', ProductionReportUpdate.as_view(), name='ProductionReportUpdate'),
+    path('production-report-dd/api/list', ProductionReportDDListAPI.as_view(), name='ProductionReportDDListAPI'),
+    path('production-report-gr/api/list', ProductionReportGRListAPI.as_view(), name='ProductionReportGRListAPI'),
 ]

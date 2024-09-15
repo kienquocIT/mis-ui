@@ -114,16 +114,16 @@ class InventoryAdjustmentDetailAPI(APIView):
         return resp.auto_return()
 
 
-# Inventory adjustment use for other apps
-class InventoryAdjustmentOtherListAPI(APIView):
+# Inventory adjustment use for GR
+class InventoryAdjustmentGRListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.INVENTORY_ADJUSTMENT_OTHER_LIST).get(data)
-        return resp.auto_return(key_success='inventory_adjustment_other_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.INVENTORY_ADJUSTMENT_GR_LIST).get(data)
+        return resp.auto_return(key_success='inventory_adjustment_gr')
 
 
 class InventoryAdjustmentProductListAPI(APIView):

@@ -357,7 +357,7 @@ function load_bank_accounts_mapped(data) {
                                 Bank name: <span class="bank_name"><b>${bank_account?.['bank_name']}</b></span>
                             </div>
                             <div class="card-text">
-                                Bank account number: <span class="bank_account_number"><b>${bank_account?.['bank_account_number']}</b></span>
+                                Account number: <span class="bank_account_number"><b>${bank_account?.['bank_account_number']}</b></span>
                             </div>
                             <div class="card-text" hidden>
                                 Country ID: <span class="bank_country_id"><b>${bank_account?.['bank_country_id']}</b></span>
@@ -366,7 +366,7 @@ function load_bank_accounts_mapped(data) {
                                 Bank code: <span class="bank_code"><b>${bank_account?.['bank_code']}</b></span>
                             </div>
                             <div class="card-text" hidden>
-                                BIC/SWIFT Code: <span class="bic_swift_code"><b>${bank_account?.['bic_swift_code']}</b></span>
+                                BIC/SWIFT code: <span class="bic_swift_code"><b>${bank_account?.['bic_swift_code']}</b></span>
                             </div>
                         </div>
                     </div>
@@ -1168,7 +1168,7 @@ $(document).on('click', '#save-changes-modal-bank-account', function () {
                                 Bank name: <span class="bank_name"><b>` + bank_name + `</b></span>
                             </div>
                             <div class="card-text">
-                                Bank account number: <span class="bank_account_number"><b>` + bank_account_number + `</b></span>
+                                Account number: <span class="bank_account_number"><b>` + bank_account_number + `</b></span>
                             </div>
                             <div class="card-text" hidden>
                                 Country ID: <span class="bank_country_id"><b>` + bank_country_id + `</b></span>
@@ -1177,7 +1177,7 @@ $(document).on('click', '#save-changes-modal-bank-account', function () {
                                 Bank code: <span class="bank_code"><b>` + bank_code + `</b></span>
                             </div>
                             <div class="card-text" hidden>
-                                BIC/SWIFT Code: <span class="bic_swift_code"><b>` + bic_swift_code + `</b></span>
+                                BIC/SWIFT code: <span class="bic_swift_code"><b>` + bic_swift_code + `</b></span>
                             </div>
                         </div>
                     </div>

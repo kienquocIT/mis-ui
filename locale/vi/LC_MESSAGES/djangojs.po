@@ -120,3 +120,19 @@ msgstr "2 ngày trước"
 #
 msgid "3 day ago"
 msgstr "3 ngày trước"
+
+#
+msgid "Request was throttled. Expected available in {time_sec} seconds."
+msgstr "Yêu cầu đã được điều tiết do lưu lượng bất thường. Dự kiến khả dụng sau {time_sec} giây."
+
+#
+msgid "Request was throttled"
+msgstr "Yêu cầu đã được điều tiết do lưu lượng bất thường"
+
+#
+msgid "Expected available in {time_sec} seconds"
+msgstr "Dự kiến khả dụng sau {time_sec} giây"
+
+#
+msgid "a few"
+msgstr "vài"

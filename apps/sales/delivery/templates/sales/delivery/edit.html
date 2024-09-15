@@ -236,11 +236,11 @@
         <div class="modal fade" id="warehouseStockModal" tabindex="-1" role="dialog" aria-labelledby="warehouseStockModal" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
                 <div class="modal-content">
-                    <div class="modal-header h-65p">
+                    <div class="modal-header">
                         <h5 class="modal-title text-primary ml-4"><b class="title-mdl"></b></h5>
                         <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                     </div>
-                    <div class="modal-body modal-body-custom">
+                    <div class="modal-body">
                         <div class="row">
                             <div class="col-12 col-md-6 col-lg-6 border-right">
                                 <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-wh">
@@ -387,8 +387,5 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'sales/delivery/delivery/detail.js' %}"></script>
-    <script>
-        new $x.cls.file($('#attachment')).init({'name': 'attachment'});
-    </script>
 {% endblock %}
 

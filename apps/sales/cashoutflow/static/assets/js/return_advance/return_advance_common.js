@@ -205,7 +205,7 @@ class ReturnAPHandle {
         return frm
     }
     static LoadDetail(option) {
-        let url_loaded = $('#frmDetail').attr('data-url');
+        let url_loaded = $('#form-detail-return-ap').attr('data-url');
         $.fn.callAjax(url_loaded, 'GET').then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);

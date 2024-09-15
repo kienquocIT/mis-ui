@@ -297,7 +297,7 @@ def mask_view(**parent_kwargs):
                 handle_exception_all_view(err, self)
                 raise err
 
-            if isinstance(view_return, HttpResponse):  # pylint: disable=R1705
+            if isinstance(view_return, (HttpResponse, Response)):  # pylint: disable=R1705
                 return view_return
             else:
                 data, http_status = None, 200

@@ -368,6 +368,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    PROJECT_BOM_LIST_PAGE = BreadcrumbChildren(_('Project bill of material list'), 'ProjectBOMList')
+    PROJECT_BOM_CREATE_PAGE = BreadcrumbChildren(_('Project bill of material create'), 'ProjectBOMCreate')
+    PROJECT_BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    PROJECT_BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
     MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
     IMPORT_LIST_PAGE = BreadcrumbChildren(_('Import List'), 'FImportListView')
@@ -388,7 +393,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     CONTRACT_LIST_PAGE = BreadcrumbChildren(_('Contract approval'), 'ContractList')
 
     # Production
-    PRODUCTION_ORDER_LIST_PAGE = BreadcrumbChildren(_('Production order'), '')
+    PRODUCTION_ORDER_LIST_PAGE = BreadcrumbChildren(_('Production order'), 'ProductionOrderList')
+    PRODUCTION_REPORT_LIST_PAGE = BreadcrumbChildren(_('Production report'), '')
 
 
 class BreadcrumbView:
@@ -947,6 +953,11 @@ class BreadcrumbView:
     BOM_DETAIL_PAGE = BOM_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     BOM_UPDATE_PAGE = BOM_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
+    PROJECT_BOM_LIST_PAGE = [BreadcrumbItem.PROJECT_BOM_LIST_PAGE]
+    PROJECT_BOM_CREATE_PAGE = PROJECT_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    PROJECT_BOM_DETAIL_PAGE = PROJECT_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    PROJECT_BOM_UPDATE_PAGE = PROJECT_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
     PRINTER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PRINTER_CONFIG_LIST_PAGE]
     PRINTER_CONFIG_LIST_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]
     PRINTER_CONFIG_CREATE_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_CREATE]
@@ -996,3 +1007,10 @@ class BreadcrumbView:
     PRODUCTION_ORDER_CREATE_PAGE = PRODUCTION_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     PRODUCTION_ORDER_DETAIL_PAGE = PRODUCTION_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     PRODUCTION_ORDER_UPDATE_PAGE = PRODUCTION_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    PRODUCTION_REPORT_LIST_PAGE = [
+        BreadcrumbItem.PRODUCTION_REPORT_LIST_PAGE
+    ]
+    PRODUCTION_REPORT_CREATE_PAGE = PRODUCTION_REPORT_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    PRODUCTION_REPORT_DETAIL_PAGE = PRODUCTION_REPORT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    PRODUCTION_REPORT_UPDATE_PAGE = PRODUCTION_REPORT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

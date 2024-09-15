@@ -4,7 +4,7 @@ $(document).ready(function () {
 
     $('#frmCreate').submit(function (event) {
         event.preventDefault();
-        let form = GISHandle.CombinesDataForIA($(this));
+        let form = GISHandle.CombinesDataGoodsIssue($(this));
         if (form) {
             WFRTControl.callWFSubmitForm(form);
         }

@@ -23,10 +23,11 @@
         <table id="datatable_payment_list" class="table nowrap w-100 mb-5" data-method="GET"
                data-url="{% url 'PaymentListAPI' %}"
                data-url-detail="{% url 'PaymentDetail' '0' %}"
-               data-type-translate-approved="{% trans 'Approved' %}"
                data-url-opp-detail="{% url 'OpportunityDetail' '0' %}"
                data-url-quo-detail="{% url 'QuotationDetail' '0' %}"
                data-url-so-detail="{% url 'SaleOrderDetail' '0' %}"
+               data-trans-supplier="{% trans 'To supplier' %}"
+               data-trans-internal="{% trans 'Internal' %}"
         >
             <thead>
                 <th></th>
@@ -34,7 +35,7 @@
                 <th>{% trans "Name" %}</th>
                 <th>{% trans "Type" %}</th>
                 <th>{% trans "Employee inherit" %}</th>
-                <th>{% trans "Sale code" %}</th>
+                <th>{% trans "Sale Code" %}</th>
                 <th>{% trans "Created date" %}</th>
                 <th>{% trans "Payment value" %}</th>
                 <th>{% trans "Status" %}</th>

@@ -309,6 +309,10 @@ class MenusCRM:
         name='Product', code='id_menu_product_list', view_name='ProductList',
         icon='<i class="bi bi-nut-fill"></i>',
     )
+    PROJECT_BOM = MenuCommon(
+        name='Project bill of material', code='menu_project_bom_list', view_name='ProjectBOMList',
+        icon='<i class="fas fa-dice"></i>',
+    )
     PRICING = MenuCommon(
         name='Pricing', code='menu_pricing', view_name='',
         icon='<i class="bi bi-tags-fill"></i>',
@@ -668,6 +672,12 @@ class MenusProduction:
                 view_name='ProductionOrderList',
                 icon='<i class="fas fa-boxes"></i>',
             ),
+            MenuCommon(
+                name='Production report',
+                code='menu_production_report_list',
+                view_name='ProductionReportList',
+                icon='<i class="fas fa-file-alt"></i>',
+            ),
         ],
     )
 
@@ -712,7 +722,7 @@ class SpaceCommon:
 class SpaceItem:
     mapping = {
         'crm': SpaceCommon(
-            'CRM',
+            'Sales',
             'crm',
             icon='<i class="fa-solid fa-users-gear"></i>',
             menus=[
@@ -730,6 +740,7 @@ class SpaceItem:
                 MenusCRM.SALE_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.PRODUCT,
+                MenusCRM.PROJECT_BOM,
                 MenusCRM.PRICING,
                 MenusCRM.CASH_OUTFLOW,
                 MenusCRM.SALE_ACTIVITIES,

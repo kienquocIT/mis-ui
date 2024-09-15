@@ -27,7 +27,7 @@ $(function () {
             }
             let dataBOM = ProdOrderLoadDataHandle.loadGetDataBOM();
             if (dataBOM?.['sum_time']) {
-                ProdOrderLoadDataHandle.$time.html(`${parseInt(dataBOM?.['sum_time']) * multi}`);
+                ProdOrderLoadDataHandle.$time.val(`${parseInt(dataBOM?.['sum_time']) * multi}`);
             }
         });
 
@@ -95,6 +95,7 @@ $(function () {
                 'group_data',
                 'time',
                 'task_data',
+                'gr_remain_quantity',
             ]
             if (_form.dataForm) {
                 ProdOrderCommonHandle.filterFieldList(submitFields, _form.dataForm);

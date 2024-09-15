@@ -27,7 +27,8 @@ class ReturnAdvanceCreate(View):
     )
     def get(self, request, *args, **kwargs):
         return {
-           'data': {'employee_current': request.user.employee_current_data},
+            'data': {'employee_current': request.user.employee_current_data},
+            'form_id': 'form-create-return-ap'
         }, status.HTTP_200_OK
 
 
@@ -64,6 +65,7 @@ class ReturnAdvanceDetail(View):
     def get(self, request, *args, **kwargs):
         return {
             'data': {'employee_current': request.user.employee_current_data},
+            'form_id': 'form-detail-return-ap'
         }, status.HTTP_200_OK
 
 
@@ -77,6 +79,7 @@ class ReturnAdvanceUpdate(View):
     def get(self, request, *args, **kwargs):
         return {
             'data': {'employee_current': request.user.employee_current_data},
+            'form_id': 'form-detail-return-ap'
         }, status.HTTP_200_OK
 
 

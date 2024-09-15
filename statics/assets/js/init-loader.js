@@ -263,6 +263,41 @@ $.fn.extend({
                 WindowControl.showNotFound(configData.swalOpts);
                 return {};
             },
+            '429': (respData, configData) => {
+                const html = $.fn.gettext("Expected available in {time_sec} seconds").replaceAll("{time_sec}", '<b class="status-code-429">' + respData?.['retry_time'] || $.fn.gettext("a few") + '</b>');
+                let timerInterval;
+                WindowControl.showTimeOut({
+                    ...configData.swalOpts,
+                    timer: respData?.['retry_time'] || 60 * 1000,
+                    title: $.fn.gettext("Request was throttled"),
+                    html: html,
+                    timerProgressBar: true,
+                    checkVisible: function (){
+                        if (Swal.isVisible()) {
+                            const eleTmp$ = $(Swal.getHtmlContainer());
+                            if (eleTmp$.find('b.status-code-429').length === 0){
+                                // force close when another showing
+                                Swal.close();
+                            } else {
+                                // keep show 429
+                                return false;
+                            }
+                        }
+                        return true;
+                    },
+                    didOpen: function (){
+                        const timer = Swal.getPopup().querySelector("b");
+                        timerInterval = setInterval(() => {
+                          timer.textContent = `${(Swal.getTimerLeft() / 1000).toFixed(1)}`;
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    },
+                    allowOutsideClick: false,
+                    callback: function (){},
+                })
+            },
             '500': (respData, configData) => {
                 WindowControl.showSVErrors(configData.swalOpts);
                 return {};
@@ -292,6 +327,8 @@ $.fn.extend({
                     return opts['403'](resp, opts);
                 case 404:
                     return opts['404'](resp, opts);
+                case 429:
+                    return opts['429'](resp, opts);
                 case 500:
                     return opts['500'](resp, opts);
                 default:
@@ -516,6 +553,11 @@ $.fn.extend({
                                 403: function () {
                                     if (isNotify === true) $.fn.notifyB({
                                         'description': globeMsgHttp403
+                                    }, 'failure');
+                                },
+                                429: function (){
+                                    if (isNotify === true) $.fn.notifyB({
+                                        'description': $.fn.gettext("Request was throttled. Expected available in {time_sec} seconds.").replaceAll("{time_sec}", $.fn.gettext("a few"))
                                     }, 'failure');
                                 },
                                 404: function () {

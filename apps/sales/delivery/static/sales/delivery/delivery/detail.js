@@ -1274,10 +1274,15 @@ $(async function () {
                         }
                     }
                 }
+                // file
+                new $x.cls.file($('#attachment')).init({
+                    enable_download: true,
+                    data: res?.['attachments'],
+                });
                 // wf
                 WFRTControl.setWFRuntimeID(res?.['workflow_runtime_id']);
                 // wf initial
-                WFRTControl.setWFInitialData('orderdeliverysub', $form.attr('data-method'));
+                WFRTControl.setWFInitialData('orderdeliverysub');
             })
     }
 

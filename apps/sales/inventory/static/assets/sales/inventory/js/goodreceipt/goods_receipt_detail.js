@@ -2,19 +2,6 @@ $(function () {
 
     $(document).ready(function () {
         let $form = $('#frm_good_receipt_create');
-
-        GRDataTableHandle.dataTableGoodReceiptPOProduct();
-        GRDataTableHandle.dataTableGoodReceiptPR();
-        GRDataTableHandle.dataTableGoodReceiptWH();
-        GRDataTableHandle.dataTableGoodReceiptWHLot();
-        GRDataTableHandle.dataTableGoodReceiptWHSerial();
-        GRDataTableHandle.dataTableGoodReceiptLineDetailPO();
-
-        GRDataTableHandle.dataTableGoodReceiptIAProduct();
-        GRDataTableHandle.dataTableGoodReceiptIAWHLot();
-        GRDataTableHandle.dataTableGoodReceiptIAWHSerial();
-        GRDataTableHandle.dataTableGoodReceiptLineDetailIA();
-
         // call ajax get detail from API
         $.fn.callAjax2({
                 'url': $form.data('url'),
@@ -28,6 +15,12 @@ $(function () {
                     $.fn.compareStatusShowPageAction(data);
                     $('#data-detail-page').val(JSON.stringify(data));
                     GRLoadDataHandle.loadDetailPage(data);
+                    // file
+                    new $x.cls.file($('#attachment')).init({
+                        enable_edit: false,
+                        enable_download: true,
+                        data: data?.['attachment'],
+                    });
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             }

@@ -8,7 +8,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frmDetail">
+    <button class="btn btn-outline-primary" type="submit" form="form-detail-return-ap">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -19,11 +19,9 @@
 {% endblock %}
 {% block pageContent %}
     {{ data.data.employee_current | json_script:"employee_current" }}
-    <script id="script-url"
-
-    >
+    <script id="script-url">
     </script>
-    <form id="frmDetail"
+    <form id="form-detail-return-ap"
           data-url="{% url "ReturnAdvanceDetailAPI" pk=pk %}"
           data-url-redirect="{% url "ReturnAdvanceDetail" pk=pk %}"
           data-method="PUT"

@@ -183,7 +183,7 @@ class fGanttCustom {
         function loadWorkDetail(res){
             let date_from = res?.w_start_date, date_end = res?.w_end_date, depen_type = res?.work_dependencies_type,
             $sltWork = $('#select_project_work'), $sltGroup = $('#select_project_group'), $workElm = $('#workTitle'),
-            $BorBtnElm = $('.choice-bor');
+            $workModal = $('#work_modal'), $BorBtnElm = $('.choice-bor', $workModal);
             if (date_from === undefined) date_from = res.date_from
             if (date_end === undefined) date_end = res['date_end']
             if (depen_type === undefined) depen_type = res.relationships_type
@@ -223,7 +223,7 @@ class fGanttCustom {
                 $sltWork.attr('data-onload', JSON.stringify(dependencies))
                     .append(`<option value="${dependencies.id}">${dependencies.title}</option>`)
                     .val(dependencies.id).trigger('change')
-            $('#work_modal').modal('show')
+            $workModal.modal('show')
         }
 
         if (!check_page_version){

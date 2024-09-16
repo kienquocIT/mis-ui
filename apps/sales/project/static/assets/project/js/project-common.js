@@ -548,7 +548,7 @@ function action_select_bom(){
         else $WElmTitle.val('')
     });
 
-    $bor.on('select2:unselect', function(e){
+    $bor.on('select2:unselect', function(){
         $WElmTitle.val('').attr('readonly', false)
         $borData.data('bor_data', '')
         $(this).closest('.input-group').find('.choice-bor').removeClass('is_selected')
@@ -784,14 +784,13 @@ class ProjectTeamsHandle {
 
 class ProjectWorkExpenseHandle {
     static ValidDataRow(data) {
-        if (data.expense_item.hasOwnProperty('id') &&
+        return !!(data.expense_item.hasOwnProperty('id') &&
             data.uom.hasOwnProperty('id') &&
             data.quantity &&
             data.expense_price &&
             typeof data.is_labor == "boolean" &&
-            ((!data.is_labor && data.title !== "") || (data.is_labor && data.expense_name.hasOwnProperty('id')))
-        ) return true
-        return false
+            ((!data.is_labor && data.title !== "") || (data.is_labor && data.expense_name.hasOwnProperty('id'))));
+
     }
 
     static saveExpenseData() {

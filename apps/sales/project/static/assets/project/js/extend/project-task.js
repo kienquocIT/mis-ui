@@ -31,7 +31,7 @@ function resetFormTask() {
 }
 
 function isValidString(inputString) {
-    let pattern = /^\d+[wdh]*$/;
+    let pattern = /^\d+[dh]*$/;
     return pattern.test(inputString);
 }
 
@@ -511,8 +511,7 @@ class Task_in_project {
             let thisSelect = this.value, _dataStore = $(this).data('save_bom_detail');
             if (thisSelect){
                 $('#inputTextTitle').val(this.textContent).attr('readonly', true)
-                $($BomHTML[2]).removeClass('is_active').prev('.choice-bor').addClass(
-                    'is_selected')
+                $($BomHTML[2]).removeClass('is_active').prev('.choice-bor').addClass('is_selected')
                 let thisVal = null
                 for (let item of _dataStore){
                     if (item.order === parseInt(thisSelect)){
@@ -520,7 +519,10 @@ class Task_in_project {
                         break;
                     }
                 }
-                window.editor.setData(thisVal.note)
+                if (thisVal)
+                    window.editor.setData(thisVal.note)
+                if (thisVal.quantity > 0 && 'ratio' in thisVal.uom)
+                    $('#inputTextEstimate').val(thisVal.quantity * thisVal.uom.ratio + 'd')
             }
             else{
                 $('#inputTextTitle').val('').attr('readonly', false)

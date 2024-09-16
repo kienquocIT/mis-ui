@@ -225,6 +225,13 @@
             border: 0 !important;
             color: #fff !important;
         }
+
+        .event-item-birthday {
+            background: linear-gradient(235deg, #e92990, #ffc400, #008cff, #ba00ff);
+            background-size: 100% 100%;
+            border: 0 !important;
+            color: #fff !important;
+        }
     </style>
 
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.css' %}">
@@ -1184,6 +1191,10 @@
                         ele$.addClass('event-item-holiday');
                         iconApp = $('<i class="fa-solid fa-umbrella-beach"></i>');
                         break
+                    case 'Birthday':
+                        ele$.addClass('event-item-birthday');
+                        iconApp = $(`<i class="fa-solid fa-cake-candles"></i>`)
+                        break
                 }
 
                 if (data?.['category']) {
@@ -1233,14 +1244,14 @@
                 ele$.find('[data-bs-toggle="tooltip"]').tooltip();
             }
             function renderEventItem(data) {
+                console.log('data.category:', data.category);
                 switch (data.category) {
                     case 'EOffice Meeting':
                     case 'Opportunity Meeting':
                     case 'Business Trip':
                     case 'Leave Register':
-                        _renderEventItem(data);
-                        break
                     case 'Holiday':
+                    case 'Birthday':
                         _renderEventItem(data);
                         break
                 }
@@ -1277,6 +1288,7 @@
                                 ...homeCalendar?.['business_trip'] || [],
                                 ...homeCalendar?.['leave'] || [],
                                 ...homeCalendar?.['holiday'] || [],
+                                ...homeCalendar?.['birthday'] || [],
                             ]
                             if (MeetingData.length > 0) {
                                 itemEmpty$.hide(0);

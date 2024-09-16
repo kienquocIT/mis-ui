@@ -5,6 +5,7 @@ class ContractLoadDataHandle {
     static $fileArea = $('#file-area');
     static $remark = $('#contract-doc-remark');
     static $attachment = $('#attachment');
+    static $attachmentTmp = $('#attachment-tmp');
     static $trans = $('#app-trans-factory');
 
     // DOCUMENT
@@ -36,15 +37,11 @@ class ContractLoadDataHandle {
             ContractLoadDataHandle.$remark[0].removeAttribute('readonly');
             ContractLoadDataHandle.$remark.val('');
             ContractLoadDataHandle.loadAddFile([]);
-            let uploaderResult = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-result-list');
-            if (uploaderResult) {
-                uploaderResult.innerHTML = "";
-            }
             let fileIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
             if (fileIds) {
                 fileIds.value = "";
             }
-            if (ele.getAttribute('data-store') && uploaderResult && fileIds) {
+            if (ele.getAttribute('data-store') && fileIds) {
                 let dataStore = JSON.parse(ele.getAttribute('data-store'));
                 ContractLoadDataHandle.$remark.val(dataStore?.['remark']);
                 ContractLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
@@ -58,12 +55,22 @@ class ContractLoadDataHandle {
                 for (let attachData of dataStore?.['attachment_data']) {
                     attachmentParse.push(attachData?.['attachment']);
                 }
-                // file
+                // append html file again
+                ContractLoadDataHandle.$attachment.empty().html(`${ContractLoadDataHandle.$attachmentTmp.html()}`);
+                // init file again
                 new $x.cls.file(ContractLoadDataHandle.$attachment).init({
                     name: 'attachment',
                     enable_edit: true,
                     enable_download: true,
                     data: attachmentParse,
+                });
+                // add event
+                let inputs = ContractLoadDataHandle.$attachment[0].querySelectorAll('input[type="file"]');
+                inputs.forEach((input) => {
+                    input.addEventListener('change', function () {
+                        let dataList = ContractLoadDataHandle.loadSetupAddFile();
+                        ContractLoadDataHandle.loadAddFile(dataList);
+                    });
                 });
             }
             ContractLoadDataHandle.$attachment[0].removeAttribute('hidden');
@@ -326,14 +333,6 @@ class ContractStoreHandle {
             let btnStore = ContractDataTableHandle.$tableDocument[0].querySelector(`.attach-file[data-order="${doc}"]`);
             if (btnStore) {
                 btnStore.setAttribute('data-store', JSON.stringify(dataStore));
-                let row = btnStore.closest('tr');
-                if (row) {
-                    let uploaderResult = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-result-list');
-                    let tmpUploader = row.querySelector('.tmp-uploader');
-                    if (uploaderResult && tmpUploader) {
-                        tmpUploader.innerHTML = uploaderResult.innerHTML;
-                    }
-                }
             }
         }
         return true;

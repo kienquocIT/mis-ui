@@ -30,11 +30,6 @@ $(function () {
             ContractCommonHandle.commonDeleteRow(this.closest('tr'), ContractDataTableHandle.$tableDocument);
         });
 
-        ContractLoadDataHandle.$attachment.find('input[type="file"]').on('change', '', function () {
-            let dataList = ContractLoadDataHandle.loadSetupAddFile();
-            ContractLoadDataHandle.loadAddFile(dataList);
-        });
-
         ContractDataTableHandle.$tableFile.on('click', '.set-current', function () {
             let dataList = ContractLoadDataHandle.loadSetupSetCurrent(this);
             ContractLoadDataHandle.loadAddFile(dataList);

@@ -33,7 +33,7 @@ class ContractLoadDataHandle {
             if (eleOrder) {
                 ContractLoadDataHandle.$fileArea[0].setAttribute('data-doc', eleOrder.innerHTML);
             }
-            ContractLoadDataHandle.$remark[0].removeAttribute('disabled');
+            ContractLoadDataHandle.$remark[0].removeAttribute('readonly');
             ContractLoadDataHandle.$remark.val('');
             ContractLoadDataHandle.loadAddFile([]);
             let uploaderResult = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-result-list');
@@ -54,13 +54,19 @@ class ContractLoadDataHandle {
                 }
                 let fileIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
                 fileIds.value = ids.join(',');
-                let tmpUploader = row.querySelector('.tmp-uploader');
-                if (tmpUploader) {
-                    uploaderResult.innerHTML = tmpUploader.innerHTML;
+                let attachmentParse = [];
+                for (let attachData of dataStore?.['attachment_data']) {
+                    attachmentParse.push(attachData?.['attachment']);
                 }
+                // file
+                new $x.cls.file(ContractLoadDataHandle.$attachment).init({
+                    name: 'attachment',
+                    enable_edit: true,
+                    enable_download: true,
+                    data: attachmentParse,
+                });
             }
             ContractLoadDataHandle.$attachment[0].removeAttribute('hidden');
-            ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-results').setAttribute('hidden', 'true');
         }
         return true;
     };
@@ -80,15 +86,21 @@ class ContractLoadDataHandle {
         let order = 1;
         for (let mediaBody of ContractLoadDataHandle.$attachment[0].querySelectorAll('.media-body')) {
             let fileName = mediaBody.querySelector('.f-item-name');
-            let dataAdd = {
-                'attachment': {
-                    'file_name': fileName.innerHTML,
-                },
-                'date_created': ContractCommonHandle.getCurrentDate(),
-                'order': order,
-                'is_current': is_current,
-            };
-            result.push(dataAdd);
+            let fileSize = mediaBody.querySelector('.f-item-info');
+            let fileRemark = mediaBody.querySelector('.file-txt-remark');
+            if (fileName && fileSize && fileRemark) {
+                let dataAdd = {
+                    'attachment': {
+                        'file_name': fileName.innerHTML,
+                        'file_size': parseFloat(fileSize.innerHTML.replace(" KB", "")),
+                        'remarks': fileRemark.value,
+                    },
+                    'date_created': ContractCommonHandle.getCurrentDate(),
+                    'order': order,
+                    'is_current': is_current,
+                };
+                result.push(dataAdd);
+            }
             is_current = false;
             order += 1;
         }
@@ -144,8 +156,29 @@ class ContractLoadDataHandle {
     // DETAIL
     static loadDetail(data) {
         $('#contract-title').val(data?.['title']);
+        ContractLoadDataHandle.setupDetailDocAttach(data);
         ContractDataTableHandle.$tableDocument.DataTable().rows.add(data?.['document_data']).draw();
     };
+
+    static setupDetailDocAttach(data) {
+        if (data?.['document_data']) {
+            for (let dataDoc of data?.['document_data']) {
+                if (dataDoc?.['attachment_data']) {
+                    for (let attachData of dataDoc?.['attachment_data']) {
+                        if (data?.['attachment']) {
+                            for (let attach of data?.['attachment']) {
+                                if (attachData?.['attachment']?.['id'] === attach?.['id']) {
+                                    attachData['attachment'] = attach;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
 }
 
 // DataTable
@@ -230,7 +263,11 @@ class ContractDataTableHandle {
                     targets: 2,
                     width: '15%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-date">${row?.['date_created'] ? row?.['date_created'] : ''}</span>`;
+                        let date = '';
+                        if (row?.['date_created']) {
+                            date = moment(row?.['date_created']).format('DD/MM/YYYY')
+                        }
+                        return `<span class="table-row-date">${date}</span>`;
                     }
                 },
                 {
@@ -270,23 +307,15 @@ class ContractStoreHandle {
             if (ids.length > 0) {
                 ContractDataTableHandle.$tableFile.DataTable().rows().every(function () {
                     let row = this.node();
-                    let eleOrder = row.querySelector('.table-row-order');
-                    let eleTitle = row.querySelector('.table-row-title');
-                    let eleDate = row.querySelector('.table-row-date');
-                    if (eleOrder && eleTitle && eleDate) {
-                        let is_current = false;
-                        if (eleOrder.innerHTML === '1') {
-                            is_current = true;
+                    if (row.querySelector('.table-row-order')) {
+                        if (row.querySelector('.table-row-order').getAttribute('data-row')) {
+                            let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
+                            if (!dataRow?.['id']) {
+                                dataRow['attachment']['id'] = ids[dataRow?.['order'] - 1];
+                                row.querySelector('.table-row-order').setAttribute('data-row', JSON.stringify(dataRow));
+                            }
+                            fileData.push(dataRow);
                         }
-                        fileData.push({
-                            'attachment': {
-                                'id': ids[parseInt(eleOrder.innerHTML) - 1],
-                                'file_name': eleTitle.innerHTML,
-                            },
-                            'date_created': eleDate.innerHTML,
-                            'order': parseInt(eleOrder.innerHTML),
-                            'is_current': is_current,
-                        })
                     }
                 })
             }
@@ -393,7 +422,7 @@ class ContractCommonHandle {
         let day = String(currentDate.getDate()).padStart(2, '0');
         let month = String(currentDate.getMonth() + 1).padStart(2, '0');
         let year = currentDate.getFullYear();
-        return `${day}/${month}/${year}`;
+        return `${year}-${month}-${day}`;
     }
 
     static filterFieldList(field_list, data_json) {

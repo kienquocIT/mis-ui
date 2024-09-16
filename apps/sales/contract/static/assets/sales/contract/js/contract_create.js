@@ -10,8 +10,11 @@ $(function () {
         WFRTControl.setWFInitialData('contractapproval');
 
         // file
-        if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
-            new $x.cls.file($('#attachment')).init({});
+        if (formSubmit.attr('data-method').toLowerCase() === 'post') {
+            new $x.cls.file($('#attachment')).init({
+                name: 'attachment',
+                enable_edit: true,
+            });
         }
 
         ContractLoadDataHandle.$btnAddDoc.on('click', function () {

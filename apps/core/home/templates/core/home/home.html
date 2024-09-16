@@ -532,11 +532,15 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block modalData %}
     <div
             class="modal fade" id="modalAddBookMark" tabindex="-1" role="dialog" aria-labelledby="modalAddBookMark"
+            data-bs-keyboard="false" data-bs-backdrop="static"
             aria-hidden="true"
     >
-        <div class="modal-dialog modal-lg mt-15" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     {% trans 'New Book Mark' as titleModalBM %}
@@ -678,6 +682,7 @@
         </div>
     </div>
 {% endblock %}
+
 {% block dataHiddenGroup %}
     {{ data.app_name_list|json_script:'app_list' }}
 {% endblock %}

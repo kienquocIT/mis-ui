@@ -2,67 +2,61 @@
 <!-- Main Menu -->
 <div data-simplebar class="nicescroll-bar">
     <div class="menu-content-wrap">
-        <div class="menu-group">
+        <div class="menu-group mb-3">
             <div class="nav-header">
+                <span class="d-block mb-2">Spaces</span>
                 <div
-                        class="btn-group w-100"
-                        id="menu-tenant"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="right"
-                        data-bs-original-title="Space Menus"
-                        data-space-selected="{{ base.space_current_detail.code }}"
-                >
-                    <button
-                            id="menu-tenant-text"
-                            type="button" class="btn btn-outline-dark dropdown-toggle"
-                            data-bs-toggle="dropdown"
-                            data-dropdown-animation aria-haspopup="true" aria-expanded="false"
-                    >
-                        {% if base.space_current_detail.name %}
-                            {{ base.space_current_detail.icon|safe }} {{ base.space_current_detail.name }}
-                        {% else %}
-                            _
-                        {% endif %}
-                    </button>
-                    <div
-                            class="dropdown-menu" data-url="{% url 'SpaceChangeView' %}"
-                            data-url-redirect="{% url 'HomeView' %}" data-method="PUT"
-                    >
-                        {% csrf_token %}
-                        {% for item in base.space_list %}
-                            {% if item.child|length > 0 %}
-                                <h6 class="dropdown-header">{{ item.name }}</h6>
-                                {% for item_child in item.child %}
-                                    <a
-                                            class="dropdown-item space-item {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"
-                                            data-space-code="{{ item_child.code }}"
-                                            data-space-name="{{ item_child.name }}"
-                                            href="#"
-                                    >
-                                        {{ item_child.icon|safe }}
-                                        <span class="ml-1">{{ item_child.name }}</span>
-                                    </a>
+                                class="btn-group w-100"
+                                id="menu-tenant"
+                                data-space-selected="{{ base.space_current_detail.code }}"
+                        >
+                            <button
+                                    id="menu-tenant-text"
+                                    type="button" class="btn btn-outline-dark dropdown-toggle"
+                                    data-bs-toggle="dropdown"
+                                    data-dropdown-animation aria-haspopup="true" aria-expanded="false"
+                            >
+                                {% if base.space_current_detail.name %}
+                                    {{ base.space_current_detail.icon|safe }} {{ base.space_current_detail.name }}
+                                {% else %}
+                                    _
+                                {% endif %}
+                            </button>
+                            <div
+                                    class="dropdown-menu" data-url="{% url 'SpaceChangeView' %}"
+                                    data-url-redirect="{% url 'HomeView' %}" data-method="PUT"
+                            >
+                                {% csrf_token %}
+                                {% for item in base.space_list %}
+                                    {% if item.child|length > 0 %}
+                                        <h6 class="dropdown-header">{{ item.name }}</h6>
+                                        {% for item_child in item.child %}
+                                            <a
+                                                    class="dropdown-item space-item {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"
+                                                    data-space-code="{{ item_child.code }}"
+                                                    data-space-name="{{ item_child.name }}"
+                                                    href="#"
+                                            >
+                                                {{ item_child.icon|safe }}
+                                                <span class="ml-1">{{ item_child.name }}</span>
+                                            </a>
+                                        {% endfor %}
+                                    {% else %}
+                                        <a
+                                                class="dropdown-item  {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"
+                                                href="#"
+                                        >{{ item.name }}</a>
+                                    {% endif %}
                                 {% endfor %}
-                            {% else %}
-                                <a
-                                        class="dropdown-item  {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"
-                                        href="#"
-                                >{{ item.name }}</a>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
+                            </div>
+                        </div>
             </div>
         </div>
         <div class="menu-group">
-
             {% if base.menus and base.menus|length > 0 %}
-                <!-- Test -->
-                {% if base.space_current_data.name %}
-                    <div class="nav-header">
-                        <span>{{ base.space_current_data.name }}</span>
-                    </div>
-                {% endif %}
+                <div class="nav-header">
+                    <span>{% trans 'Menus' %}</span>
+                </div>
                 <ul class="navbar-nav flex-column">
 
                     {% for item in base.menus %}

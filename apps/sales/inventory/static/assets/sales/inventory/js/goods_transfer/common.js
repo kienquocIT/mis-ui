@@ -968,7 +968,7 @@ class GoodsTransferHandle {
                         'product_warehouse': prd_wh?.['id'],
                         'warehouse': wh?.['id'],
                         'product': prd_wh?.['product']?.['id'],
-                        'sale_order': row.find('.row_sale_order').val(),
+                        'sale_order': row.find('.row_sale_order').val() ? row.find('.row_sale_order').val() : null,
                         'end_warehouse': target_wh?.['id'],
                         'uom': prd_wh?.['uom']?.['id'],
                         'lot_data': lot_changes,

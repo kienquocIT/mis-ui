@@ -26,5 +26,5 @@ $(document).ready(function () {
         errorClass: 'is-invalid cl-red',
         submitHandler: submitHandleFunc
     })
-    WFRTControl.setWFInitialData('assettoolsdelivery', 'post');
+    WFRTControl.setWFInitialData('assettoolsdelivery');
 });

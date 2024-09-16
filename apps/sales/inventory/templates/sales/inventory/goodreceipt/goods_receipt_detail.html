@@ -38,7 +38,8 @@
                                     type="text" class="form-control"
                                     name="title"
                                     id="good-receipt-title"
-                                    disabled
+                                    required
+                                    readonly
                                 >
                             </div>
                             <div class="row">
@@ -58,7 +59,8 @@
                                                     data-link-detail=""
                                                     name="good_receipt_type"
                                                     data-keyResp=""
-                                                    disabled
+                                                    required
+                                                    readonly
                                                 >
                                                 </select>
                                             </div>
@@ -67,10 +69,10 @@
                                 </div>
                                 <div class="col-12 col-md-5 col-lg-5">
                                     <div class="form-group">
-                                        <label class="form-label" for="good-receipt-date-received">{% trans 'Date' %}</label>
+                                        <label class="form-label required" for="good-receipt-date-received">{% trans 'Date' %}</label>
                                         <div class="input-affix-wrapper">
                                             <input type="text" name="date-received" id="good-receipt-date-received"
-                                                   class="form-control date-picker" autocomplete="off" disabled>
+                                                   class="form-control date-picker" autocomplete="off" required disabled>
                                             <div class="input-suffix">
                                                 <i class="fas fa-calendar-alt"></i>
                                             </div>
@@ -82,7 +84,7 @@
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label class="form-label" for="good-receipt-note">{% trans 'Note' %}</label>
-                                <textarea class="form-control" rows="4" id="good-receipt-note" name="remarks" disabled></textarea>
+                                <textarea class="form-control" rows="3" id="good-receipt-note" name="remarks" readonly></textarea>
                             </div>
                         </div>
                     </div>
@@ -102,7 +104,8 @@
                                                 data-link-detail="{% url "PurchaseOrderDetail" 1 %}"
                                                 name="purchase_order"
                                                 data-keyResp="purchase_order_sale_list"
-                                                disabled
+                                                required
+                                                readonly
                                         ></select>
                                     </div>
                                 </div>
@@ -129,7 +132,8 @@
                                         name="supplier"
                                         data-keyResp="account_sale_list"
                                         data-keyText="name"
-                                        disabled
+                                        required
+                                        readonly
                                 ></select>
                             </div>
                         </div>
@@ -143,12 +147,13 @@
                                 <select
                                         class="form-select"
                                         id="box-good-receipt-inventory-adjustment"
-                                        data-url="{% url 'InventoryAdjustmentOtherListAPI' %}"
+                                        data-url="{% url 'InventoryAdjustmentGRListAPI' %}"
                                         data-method="GET"
                                         data-link-detail=""
                                         name="inventory_adjustment"
-                                        data-keyResp="inventory_adjustment_other_list"
-                                        disabled
+                                        data-keyResp="inventory_adjustment_gr"
+                                        required
+                                        readonly
                                 >
                                 </select>
                             </div>
@@ -157,36 +162,46 @@
                 </div>
                 <div class="row custom-area" id="custom-area-3" hidden>
                     <div class="row">
-                        <div class="col-12 col-md-5 col-lg-5">
-                            <div class="form-group">
-                                <label class="form-label" for="box-good-receipt-product-order">{% trans 'Product order' %}</label>
-                                <select
-                                        class="form-select"
-                                        id="box-good-receipt-product-order"
-                                        data-url=""
-                                        data-method="GET"
-                                        data-link-detail=""
-                                        name="product_order"
-                                        data-keyResp=""
-                                        disabled
-                                >
-                                </select>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="row">
+                                <div class="col-12 col-md-7 col-lg-7">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-production-order">{% trans 'Production order' %}</label>
+                                        <select
+                                                class="form-select"
+                                                id="box-production-order"
+                                                data-url="{% url 'ProductionOrderDDListAPI' %}"
+                                                data-method="GET"
+                                                data-link-detail=""
+                                                name="production_order"
+                                                data-keyResp="production_order_dd"
+                                                required
+                                                readonly
+                                        >
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-5 col-lg-5">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-production-report">{% trans 'Production report' %}</label>
+                                        <select
+                                                class="form-select"
+                                                id="box-production-report"
+                                                data-url="{% url 'ProductionReportGRListAPI' %}"
+                                                data-method="GET"
+                                                data-link-detail=""
+                                                name="production_report"
+                                                data-keyResp="production_report_gr"
+                                                multiple
+                                                required
+                                                disabled
+                                        >
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-12 col-md-5 col-lg-5">
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Production report' %}</label>
-                                <select
-                                        class="form-select"
-                                        id=""
-                                        data-url="{% url "ProductForSaleListAPI" %}"
-                                        data-method="GET"
-                                        data-link-detail="{% url "ProductDetail" 1 %}"
-                                        name="production_report"
-                                        data-keyResp=""
-                                        disabled
-                                ></select>
-                            </div>
+
+
                         </div>
                     </div>
                 </div>
@@ -265,7 +280,7 @@
                                                     <input type="text" class="form-control good-receipt-product-taxes-raw" value="0" hidden>
                                                 </div>
                                             </div>
-                                            <hr class="bg-dark">
+                                            <hr class="bg-teal">
                                             <div class="row">
                                                 <div class="col-6">
                                                     <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
@@ -290,15 +305,15 @@
                                         data-bs-toggle="modal"
                                         data-bs-target="#productModalCenter"
                                     >
-                                        <span><span>{% trans 'Detail' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-list"></i></span></span></span>
+                                        <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>{% trans 'Edit' %}</span></span>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="row custom-line-detail" id="custom-line-detail-2" hidden>
+                        <div class="row custom-line-detail" id="custom-line-detail-3" hidden>
                             <div class="row">
                                 <table
-                                    id="datable-good-receipt-line-detail-ia"
+                                    id="datable-good-receipt-line-detail-production"
                                     class="table nowrap min-w-1500p w-100 mb-5"
                                     data-url=""
                                     data-method="get"
@@ -324,16 +339,15 @@
                                     <button
                                         type="button"
                                         class="btn btn-outline-primary"
-                                        id="btn-edit-ia-product-good-receipt"
+                                        id="btn-edit-production-good-receipt"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#productIAModalCenter"
+                                        data-bs-target="#productionModalCenter"
                                     >
-                                        <span><span>{% trans 'Detail' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-align-left"></i></span></span></span>
+                                        <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>{% trans 'Edit' %}</span></span>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="row custom-line-detail" id="custom-line-detail-3" hidden></div>
                     </div>
                     <div class="tab-pane fade" id="attachment">
                         {% include 'extends/files/all.html' %}
@@ -346,11 +360,11 @@
             <div class="modal fade" id="productModalCenter" tabindex="-1" role="dialog" aria-labelledby="productModalCenter" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
                     <div class="modal-content">
-                        <div class="modal-header h-65p">
+                        <div class="modal-header">
                             <h5 class="modal-title text-primary ml-4"><b>{% trans 'Product list' %}</b></h5>
                             <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                         </div>
-                        <div class="modal-body modal-body-custom">
+                        <div class="modal-body">
                             <div class="row">
                                 <div class="col-6 border-right">
                                     <div class="row mb-2">
@@ -358,7 +372,7 @@
                                             <table
                                                 id="datable-good-receipt-po-product"
                                                 class="table nowrap w-100"
-                                                data-url="{% url "PurchaseOrderProductListAPI" %}"
+                                                data-url="{% url "PurchaseOrderProductGRListAPI" %}"
                                                 data-method="GET"
                                             >
                                                 <thead>
@@ -406,7 +420,7 @@
                                             <table
                                                 id="datable-good-receipt-warehouse"
                                                 class="table nowrap w-100"
-                                                data-url="{% url 'WareHouseListAPI' %}"
+                                                data-url="{% url 'WareHouseListAPI' %}?interact=1"
                                                 data-method="GET"
                                             >
                                                 <thead>
@@ -428,7 +442,7 @@
                                             <div data-simplebar class="nicescroll-bar" id="table-good-receipt-manage-lot-area" hidden>
                                                 <table
                                                     id="datable-good-receipt-manage-lot"
-                                                    class="table nowrap min-w-1000p w-100"
+                                                    class="table nowrap min-w-800p w-100"
                                                     data-url=""
                                                     data-method="GET"
                                                 >
@@ -444,11 +458,14 @@
                                                     <tbody>
                                                     </tbody>
                                                 </table>
+                                                <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-lot">
+                                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
+                                                </button>
                                             </div>
                                             <div data-simplebar class="nicescroll-bar" id="table-good-receipt-manage-serial-area" hidden>
                                                 <table
                                                     id="datable-good-receipt-manage-serial"
-                                                    class="table nowrap min-w-1000p w-100"
+                                                    class="table nowrap min-w-800p w-100"
                                                     data-url=""
                                                     data-method="GET"
                                                 >
@@ -466,6 +483,9 @@
                                                     <tbody>
                                                     </tbody>
                                                 </table>
+                                                <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-serial">
+                                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -473,98 +493,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-confirm-add-product" data-bs-dismiss="modal" hidden>{% trans 'Next' %}</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal fade" id="productIAModalCenter" tabindex="-1" role="dialog" aria-labelledby="productIAModalCenter" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header h-65p">
-                            <h5 class="modal-title text-primary ml-4"><b>{% trans 'Product list' %}</b></h5>
-                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-                        </div>
-                        <div class="modal-body modal-body-custom">
-                            <div class="row">
-                                <div class="col-6 border-right">
-                                    <div class="row">
-                                        <div data-simplebar class="h-750p nicescroll-bar">
-                                            <table
-                                                id="datable-good-receipt-ia-product"
-                                                class="table nowrap w-100"
-                                                data-url=""
-                                                data-method="GET"
-                                            >
-                                                <thead>
-                                                <tr class="bg-light">
-                                                    <th class="w-20">{% trans 'Product' %}</th>
-                                                    <th class="w-20">{% trans 'Warehouse' %}</th>
-                                                    <th class="w-10">{% trans 'Quantity' %}</th>
-                                                    <th class="w-15">{% trans 'UOM' %}</th>
-                                                    <th class="w-15">{% trans 'Input later' %}</th>
-                                                    <th class="w-15">{% trans 'This time' %}</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="row">
-                                        <div id="scroll-table-ia-lot-serial" hidden>
-                                            <div data-simplebar class="nicescroll-bar" id="table-good-receipt-ia-lot-area" hidden>
-                                                <table
-                                                    id="datable-good-receipt-ia-lot"
-                                                    class="table nowrap min-w-1000p w-100"
-                                                    data-url=""
-                                                    data-method="GET"
-                                                >
-                                                    <thead>
-                                                    <tr class="bg-light">
-                                                        <th class="required w-30">{% trans 'Lot number' %}</th>
-                                                        <th class="required w-15">{% trans 'Quantity' %}</th>
-                                                        <th class="w-20">{% trans 'Exp date' %}</th>
-                                                        <th class="w-20">{% trans 'Mfg date' %}</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div data-simplebar class="nicescroll-bar" id="table-good-receipt-ia-serial-area" hidden>
-                                                <table
-                                                    id="datable-good-receipt-ia-serial"
-                                                    class="table nowrap min-w-1000p w-100"
-                                                    data-url=""
-                                                    data-method="GET"
-                                                >
-                                                    <thead>
-                                                    <tr class="bg-light">
-                                                        <th class="w-15">{% trans 'Vendor serial no.' %}</th>
-                                                        <th class="w-15">{% trans 'Serial no.' %}</th>
-                                                        <th class="w-15">{% trans 'Exp date' %}</th>
-                                                        <th class="w-15">{% trans 'Mfr date' %}</th>
-                                                        <th class="w-15">{% trans 'Warranty start' %}</th>
-                                                        <th class="w-15">{% trans 'Warranty end' %}</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-confirm-add-ia-product" data-bs-dismiss="modal" hidden>{% trans 'Next' %}</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-confirm-add-product" data-bs-dismiss="modal">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -591,42 +521,46 @@
             data-for-ia="{% trans 'For inventory adjustment' %}"
             data-for-product="{% trans 'For production' %}"
             data-ia-quantity-valid="{% trans 'Please enter sufficient quantity' %}"
-        >
-        <input
+            data-stock="{% trans 'Stock' %}"
+    >
+    <input
             type="text"
             id="data-init-product"
             data-url="{% url "ProductForSaleListAPI" %}"
             data-link-detail="{% url "ProductDetail" 1 %}"
             data-method="GET"
-        >
-        <input
+    >
+    <input
             type="text"
             id="data-init-uom"
             data-url="{% url "UnitOfMeasureListAPI" %}"
             data-method="GET"
-        >
-        <input
+    >
+    <input
             type="text"
             id="data-init-tax"
             data-url="{% url "TaxListAPI" %}"
             data-method="GET"
-        >
-        <input
+    >
+    <input
+            type="text"
+            id="data-init-warehouse"
+            data-url="{% url "WareHouseListAPI" %}?interact=1"
+            data-method="GET"
+    >
+    <input
             type="text"
             id="data-init-purchase-order-products"
-        >
-        <input
+    >
+    <input
             type="text"
             id="data-submit-pr-warehouse"
-        >
-        <input
-            type="text"
-            id="data-detail-page"
-        >
-        <input type="text" id="url-factory"
-           data-product-warehouse-lot="{% url 'WarehouseLotListAPI' %}"
-           data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
-        >
+    >
+    <input
+            type="text" id="url-factory"
+            data-product-warehouse-lot="{% url 'WarehouseLotListAPI' %}"
+            data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
+    >
 {% endblock %}
 
 {% block jsFooter %}
@@ -638,8 +572,4 @@
     <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_common.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_create.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_detail.js' %}"></script>
-
-    <script>
-        new $x.cls.file($('#attachment')).init({'name': 'attachment'});
-    </script>
 {% endblock %}

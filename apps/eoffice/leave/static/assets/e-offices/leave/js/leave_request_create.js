@@ -50,5 +50,5 @@ $(document).ready(function () {
         errorClass: 'is-invalid cl-red',
         submitHandler: submitHandleFunc
     });
-    WFRTControl.setWFInitialData('leaverequest', 'post');
+    WFRTControl.setWFInitialData('leaverequest');
 })

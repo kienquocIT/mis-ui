@@ -21,80 +21,78 @@ $(document).ready(function () {
                 columns: [
                     {
                         className: 'wrap-text',
-                        'render': (data, type, row, meta) => {
+                        'render': () => {
                             return ``;
                         }
                     },
                     {
                         data: 'code',
                         className: 'wrap-text w-10',
-                        render: (data, type, row, meta) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}" class="badge badge-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                        render: (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                            return `<a href="${link}" class="badge badge-primary w-70">${row?.['code']}</a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
                         data: 'title',
                         className: 'wrap-text w-25',
-                        render: (data, type, row, meta) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="text-primary"><b>${row.title}</b></span></a>`
+                        render: (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                            return `<a href="${link}"><span class="text-primary"><b>${row?.['title']}</b></span></a>`
                         }
                     },
                     {
                         data: 'type',
                         className: 'wrap-text w-10',
-                        render: (data, type, row, meta) => {
-                            if (!row.supplier) {
-                                return `<span class="text-secondary fst-italic">Internal</span>`;
+                        render: (data, type, row) => {
+                            if (row?.['supplier']) {
+                                return `<span class="text-muted small">${dtb.attr('data-trans-supplier')}</span>`;
                             }
-                            return `<span class="text-secondary fst-italic">Supplier</span>`;
+                            return `<span class="text-muted small">${dtb.attr('data-trans-internal')}</span>`;
                         }
                     },
                     {
                         data: 'employee_inherit',
                         className: 'wrap-text w-10',
-                        render: (data, type, row, meta) => {
-                            return `<span class="text-blue">${data?.['full_name']}</span>`;
+                        render: (data, type, row) => {
+                            return `<span class="text-blue">${row?.['employee_inherit']?.['full_name']}</span>`;
                         }
                     },
                     {
                         data: 'sale_code',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            if (Object.keys(row.opportunity_mapped).length !== 0) {
-                                return `Opp <span><a class="link-secondary underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row.opportunity_mapped.id)}"><b>${row.opportunity_mapped.title}</b></a></span>`
+                            if (row?.['opportunity_mapped']?.['id']) {
+                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['opportunity_mapped']?.['id'])}"><b>${row?.['opportunity_mapped']?.['code']}</b></a></span>`
                             }
-                            else if (Object.keys(row.quotation_mapped).length !== 0) {
-                                return `Quo <span><a class="link-secondary underline_hover" target="_blank" href="${dtb.attr('data-url-quo-detail').replace('0', row.quotation_mapped.id)}"><b>${row.quotation_mapped.title}</b></a></span>`
+                            else if (row?.['quotation_mapped']?.['id']) {
+                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-quo-detail').replace('0', row?.['quotation_mapped']?.['id'])}"><b>${row?.['quotation_mapped']?.['code']}</b></a></span>`
                             }
-                            else if (Object.keys(row.sale_order_mapped).length !== 0) {
-                                return `SO <span><a class="link-secondary underline_hover" target="_blank" href="${dtb.attr('data-url-so-detail').replace('0', row.sale_order_mapped.id)}"><b>${row.sale_order_mapped.title}</b></a></span>`
+                            else if (row?.['sale_order_mapped']?.['id']) {
+                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-so-detail').replace('0', row?.['sale_order_mapped']?.['id'])}"><b>${row?.['sale_order_mapped']?.['code']}</b></a></span>`
                             }
                             else {
-                                return '--'
+                                return ''
                             }
                         }
                     },
                     {
                         data: 'date_created',
                         className: 'wrap-text w-10',
-                        render: (data, type, row, meta) => {
-                            return $x.fn.displayRelativeTime(data, {
-                                'outputFormat': 'DD-MM-YYYY',
-                            });
+                        render: (data) => {
+                            return $x.fn.displayRelativeTime(data, {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
                         data: 'payment_value',
                         className: 'wrap-text w-10',
-                        render: (data, type, row, meta) => {
-                            return `<span class="mask-money text-primary" data-init-money="` + row.payment_value + `"></span>`
+                        render: (data, type, row) => {
+                            return `<span class="mask-money text-primary" data-init-money="${row?.['payment_value']}"></span>`
                         }
                     },
                     {
                         data: 'status',
-                        className: 'wrap-text text-center w-10',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             let approved_trans = ``
                             let text_color = ``

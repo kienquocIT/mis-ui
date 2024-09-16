@@ -26,12 +26,9 @@ class ReturnAdvanceCreate(View):
         menu_active='menu_return_advance_list',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(
-            user=request.user,
-            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
-        ).get()
         return {
-           'data': {'employee_current': resp1.result},
+            'data': {'employee_current': request.user.employee_current_data},
+            'form_id': 'form-create-return-ap'
         }, status.HTTP_200_OK
 
 
@@ -66,12 +63,9 @@ class ReturnAdvanceDetail(View):
         menu_active='menu_return_advance_list'
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(
-            user=request.user,
-            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
-        ).get()
         return {
-            'data': {'employee_current': resp1.result},
+            'data': {'employee_current': request.user.employee_current_data},
+            'form_id': 'form-detail-return-ap'
         }, status.HTTP_200_OK
 
 
@@ -83,12 +77,9 @@ class ReturnAdvanceUpdate(View):
         menu_active='menu_return_advance_list'
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(
-            user=request.user,
-            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
-        ).get()
         return {
-            'data': {'employee_current': resp1.result},
+            'data': {'employee_current': request.user.employee_current_data},
+            'form_id': 'form-detail-return-ap'
         }, status.HTTP_200_OK
 
 

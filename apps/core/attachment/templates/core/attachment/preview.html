@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block pageAction %}
+    <button
+            class="btn btn-outline-primary"
+            type="button"
+            id="btn-download-file"
+            data-id="{{ pk }}"
+    >
+        <span>
+            <span>{% trans 'Download' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-download"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+{% endblock %}
+
+{% block jsHeaderUnCompress %}
+    <script src="{% static 'vendors/xlsx/dist/xlsx.full.min.js' %}"></script>
+    <script src="{% static 'vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'vendors/docx-preview/dist/docx-preview.min.js' %}"></script>
+{% endblock %}
+
+{% block jsFooter %}
+    <script>
+        $(document).ready(function () {
+            $('#btn-download-file').on('click', function (){
+                $x.cls.file.download($(this).attr('data-id'));
+            })
+
+            function renderPreview(data, status, xhr) {
+                const contentType = xhr.getResponseHeader('Content-Type');
+                const fileURL = URL.createObjectURL(data);
+                if (contentType.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.src = fileURL;
+                    img.style = "width: 100%;height: 100%;object-fit: contain;"
+                    $('#idxPageContent').append(img);
+                }
+                else if (contentType === 'application/pdf') {
+                    const iframe = $('<iframe id="preview-pdf"></iframe>');
+                    iframe.attr('src', fileURL);
+                    iframe.attr('width', '100%');
+                    iframe.attr('height', '99%');
+                    $('#idxPageContent').append(iframe);
+                }
+                else if (
+                    contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+                    contentType === 'application/msword'
+                ) {
+                    // const iframe = document.createElement('iframe');
+                    // // https://docs.google.com/gview?url=http://ieee802.org/secmail/docIZSEwEqHFr.doc&embedded=true
+                    // const fileURLDoc = "{% url 'AttachmentPreview' pk=pk %}"
+                    // iframe.src = `https://docs.google.com/gview?url=${fileURLDoc}&embedded=true`;
+                    // iframe.width = '100%';
+                    // iframe.height = '500px';
+                    // $('#idxPageContent').append(iframe);
+
+                    docx.renderAsync(data, $('#idxPageContent')[0], null, {
+                        debug: false,
+                    })
+                }
+                else if (
+                    contentType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+                    contentType === 'application/vnd.ms-excel'
+                ) {
+                    function handleBlob(blob) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const arrayBuffer = e.target.result;
+                            processFile(arrayBuffer);
+                        };
+                        reader.onerror = function (error) {
+                            console.error('FileReader error:', error);
+                        };
+                        reader.readAsArrayBuffer(blob);
+                    }
+
+                    function processFile(arrayBuffer) {
+                        const data = new Uint8Array(arrayBuffer);
+                        const workbook = XLSX.read(data, {type: 'array'});
+
+                        const ulNav = $(`<ul class="nav nav-light nav-tabs"></ul>`);
+                        const tabContent$ = $(`<div class="tab-content">`);
+
+                        workbook.SheetNames.map(
+                            (sheetName, idx) => {
+                                const sheet = workbook.Sheets[sheetName];
+                                const htmlString = XLSX.utils.sheet_to_html(sheet);
+
+                                const rdIdx = 'ex_' + $x.fn.randomStr(10);
+                                const tab$ = $(`<li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#${rdIdx}">
+                                        <span class="nav-link-text">${sheetName}</span>
+                                    </a>
+                                </li>`);
+                                const content$ = $(`
+                                    <div class="tab-pane fade" id="${rdIdx}">
+                                        ${htmlString}
+                                    </div>
+                                `);
+                                if (idx === 0){
+                                    tab$.find('.nav-link').addClass('active');
+                                    content$.addClass('show active');
+                                }
+                                ulNav.append(tab$);
+                                tabContent$.append(content$);
+                            }
+                        )
+                        $('#idxPageContent').html([ulNav, tabContent$]).find('table').addClass('w-100 table table-bordered');
+                    }
+
+                    handleBlob(data);
+
+                }
+                else if (contentType.startsWith('text/')) {
+                    function handleBlob(blob) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const txtData = e.target.result;
+                            processFile(txtData);
+                        };
+                        reader.onerror = function (error) {
+                            console.error('FileReader error:', error);
+                        };
+                        reader.readAsText(blob);
+                    }
+
+                    function processFile(txtData) {
+                        $('#idxPageContent').append($('<pre></pre>').html(txtData.toString()));
+                    }
+
+                    handleBlob(data);
+                }
+                else {
+                    $('#idxPageContent').append(`<div class="w-100 d-flex justify-content-center"><p>${$.fn.gettext("This content file does not support preview")}</p></div>`)
+                }
+            }
+
+            $x.cls.file.download("{{pk}}", renderPreview);
+        })
+    </script>
+{% endblock %}

@@ -33,7 +33,7 @@ $(function () {
                         targets: 1,
                         width: '10%',
                         render: (data, type, row) => {
-                            let link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row?.['id']);
+                            let link = $('#goods-receipt-link').data('link-detail').format_url_with_uuid(row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`;
                         }
                     },
@@ -41,7 +41,7 @@ $(function () {
                         targets: 2,
                         width: '30%',
                         render: (data, type, row) => {
-                            const link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row?.['id'])
+                            const link = $('#goods-receipt-link').data('link-detail').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="underline_hover">${row?.['title']}</a>`
                         }
                     },
@@ -50,8 +50,9 @@ $(function () {
                         width: '15%',
                         render: (data, type, row) => {
                             let type_data = [
-                                "primary badge-outline",
+                                "success badge-outline",
                                 "blue badge-outline",
+                                "pink badge-outline",
                             ]
                             let typeTxt = JSON.parse($('#gr_type').text())
                             return `<span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${typeTxt[row?.['goods_receipt_type']][1]}</span>`;
@@ -62,12 +63,14 @@ $(function () {
                         width: '10%',
                         render: (data, type, row) => {
                             let type_data = [
-                                "primary",
+                                "success",
                                 "blue",
+                                "pink",
                             ]
                             let type_code = {
-                                0: 'purchase_order',
-                                1: 'inventory_adjustment',
+                                0: 'purchase_order_data',
+                                1: 'inventory_adjustment_data',
+                                2: 'production_order_data',
                             }
                             return `<span class="badge badge-soft-${type_data[row?.['goods_receipt_type']]}">${row?.[type_code[row?.['goods_receipt_type']]]?.['code']}</span>`;
                         }

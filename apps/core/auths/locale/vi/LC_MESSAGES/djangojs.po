@@ -116,3 +116,11 @@ msgstr "Xác thực cấu hình 2FA"
 #
 msgid "Destroy 2FA config"
 msgstr "Xoá cấu hình 2FA"
+
+#
+msgid "Request was throttled. Expected available in {time_sec} seconds."
+msgstr "Yêu cầu đã được điều tiết do lưu lượng bất thường. Dự kiến khả dụng sau {time_sec} giây."
+
+#
+msgid "The tenant is not found or was disabled!"
+msgstr "Không tìm thấy tổ chức của bạn, hoặc có thể bị vô hiệu hoá!"

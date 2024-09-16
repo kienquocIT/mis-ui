@@ -1,0 +1,180 @@
+{% load i18n %}
+
+<style>
+    #labor-summary-table th, #labor-summary-table td {
+        padding-bottom: 0;
+        padding-top: 0;
+    }
+    #labor-summary-table thead th, #labor-summary-table tbody td {
+        border: none;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="form-group">
+            <label for="project" class="form-label required">{% trans 'Project' %}</label>
+            <select class="form-select select2" id="project" data-url="{% url 'OpportunityListAPI' %}"></select>
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="employee-inherit" class="form-label required">{% trans 'Employee inherit' %}</label>
+            <select disabled class="form-select select2" id="employee-inherit"></select>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="form-group">
+            <label for="product" class="form-label required">{% trans 'Product' %}</label>
+            <select class="form-select select2" id="product" data-url="{% url 'ProductListForProjectBOMAPI' %}"></select>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="form-group">
+            <label for="price" class="form-label">{% trans 'Sum price' %}</label>
+            <input disabled readonly class="form-control form-control-line mask-money" id="price" value="0">
+        </div>
+    </div>
+    <div class="col-6 col-md-2 col-lg-2">
+        <div class="form-group">
+            <label for="time" class="form-label">{% trans 'Sum time' %} (h)</label>
+            <input disabled readonly type="number" class="form-control form-control-line" id="time" value="0">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="replacement-material-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" style="min-width: 60%" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">{% trans 'Select replacement material/component' %}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+                <div id="replacement-material-table-warning" class="alert alert-warning" role="alert">
+                    {% trans 'Please select main material/component first!' %}
+                </div>
+                <table id="replacement-material-table" data-url="{% url 'ProductMaterialListForProjectBOMAPI' %}" class="table w-100 nowrap">
+                    <thead>
+                        <tr>
+                            <th style="min-width: 30px"></th>
+                            <th style="min-width: 30px"></th>
+                            <th style="min-width: 100px">{% trans 'Code' %}</th>
+                            <th style="min-width: 150px">{% trans 'Material/Component' %}</th>
+                            <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                            <th style="min-width: 120px">{% trans 'UOM' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+				<button type="button" class="btn btn-primary">{% trans 'Select' %}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+{#for production#}
+
+<div id="normal-production-space" class="mb-20">
+    <div class="row mt-10">
+        <div class="col-12">
+            <h5 class="text-primary fw-bold"><i class="fas fa-stream"></i> <span class="text-decoration-underline">{% trans 'Process description' %}</span></h5>
+            <table class="table nowrap w-100" id="process-description-table">
+                <thead>
+                <tr>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 250px">{% trans 'Task name' %}</th>
+                    <th style="min-width: 250px">{% trans 'Labor' %}</th>
+                    <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                    <th style="min-width: 150px">{% trans 'UOM' %}</th>
+                    <th style="min-width: 200px">{% trans 'Unit price' %}</th>
+                    <th style="min-width: 200px">{% trans 'Subtotal price' %}</th>
+                    <th style="min-width: 250px">{% trans 'Note' %}</th>
+                    <th style="min-width: 30px"></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button type="button" class="btn btn-outline-primary btn-xs mt-2" id="add-new-process-description">
+                <span>
+                    <span class="icon">
+                        <span class="feather-icon">
+                            <i class="far fa-plus-square"></i>
+                        </span>
+                    </span>
+                    <span>{% trans 'Add new row' %}</span>
+                </span>
+            </button>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-12 col-md-12 col-lg-6">
+{#            <h6 class="text-secondary fw-bold">{% trans 'Labor summary' %}</h6>#}
+            <div class="border rounded p-2">
+                <table class="table nowrap w-100" id="labor-summary-table">
+                    <thead>
+                        <tr>
+                            <th class="w-20 fw-bold text-primary">{% trans 'Labor' %}</th>
+                            <th class="w-20 fw-bold text-primary">{% trans 'Quantity' %}</th>
+                            <th class="w-20 fw-bold text-primary">{% trans 'UOM' %}</th>
+                            <th class="w-20 fw-bold text-primary">{% trans 'Unit price' %}</th>
+                            <th class="w-20 fw-bold text-primary">{% trans 'Subtotal price' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-10">
+        <div class="col-12">
+            <h5 class="text-primary fw-bold"><i class="fas fa-puzzle-piece"></i> <span class="text-decoration-underline">{% trans 'Materials/Components' %}</span></h5>
+            <div class="table-responsive-x-100-y-max">
+                <table class="table nowrap w-100" id="material-table">
+                    <thead>
+                    <tr>
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 100px">{% trans 'Code' %}</th>
+                        <th style="min-width: 250px">{% trans 'Material/Component' %}</th>
+                        <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                        <th style="min-width: 150px">{% trans 'UOM' %}</th>
+                        <th style="min-width: 100px" class="text-center">{% trans 'Disassemble' %}</th>
+                        <th style="min-width: 250px">{% trans 'Note' %}</th>
+                        <th style="min-width: 30px"></th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-10">
+        <div class="col-12">
+            <h5 class="text-primary fw-bold"><i class="fas fa-wrench"></i> <span class="text-decoration-underline">{% trans 'Tools' %}</span></h5>
+            <div class="table-responsive-x-100-y-max">
+                <table class="table nowrap w-100" id="tools-table">
+                    <thead>
+                    <tr>
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 100px">{% trans 'Code' %}</th>
+                        <th style="min-width: 250px">{% trans 'Tool' %}</th>
+                        <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                        <th style="min-width: 150px">{% trans 'UOM' %}</th>
+                        <th style="min-width: 250px">{% trans 'Note' %}</th>
+                        <th style="min-width: 30px"></th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

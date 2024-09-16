@@ -68,3 +68,7 @@ msgstr "Công tác"
 #
 msgid "Leave Register"
 msgstr "Nghỉ phép"
+
+#
+msgid "Holiday"
+msgstr "Ngày lễ"

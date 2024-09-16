@@ -301,7 +301,7 @@ class QuotationLoadDataHandle {
         let month = String(currentDate.getMonth() + 1).padStart(2, '0');
         let year = currentDate.getFullYear();
         let formattedDate = `${day}/${month}/${year}`;
-        $('#quotation-create-date-created').html(formattedDate)
+        $('#quotation-create-date-created').val(formattedDate)
     }
 
     static loadBoxQuotationPrice() {
@@ -430,7 +430,6 @@ class QuotationLoadDataHandle {
                 if (price && priceList) {
                     let lastPrice = QuotationLoadDataHandle.loadPriceProduct(ele[0]);
                     $(price).attr('value', String(lastPrice));
-                    $(price).addClass('text-primary');
                 }
                 // load TAX
                 if (tax && data?.['tax']) {
@@ -952,22 +951,25 @@ class QuotationLoadDataHandle {
 
     static loadRowDisabled(row) {
         if (row.querySelector('.table-row-item')) {
-            row.querySelector('.table-row-item').setAttribute('disabled', 'true');
+            row.querySelector('.table-row-item').setAttribute('readonly', 'true');
         }
         if (row.querySelector('.table-row-uom')) {
-            row.querySelector('.table-row-uom').setAttribute('disabled', 'true');
+            row.querySelector('.table-row-uom').setAttribute('readonly', 'true');
         }
         if (row.querySelector('.table-row-quantity')) {
-            row.querySelector('.table-row-quantity').setAttribute('disabled', 'true');
+            row.querySelector('.table-row-quantity').setAttribute('readonly', 'true');
         }
         if (row.querySelector('.table-row-price')) {
-            row.querySelector('.table-row-price').setAttribute('disabled', 'true');
+            row.querySelector('.table-row-price').setAttribute('readonly', 'true');
+        }
+        if (row.querySelector('.input-group-price')) {
+            row.querySelector('.input-group-price').setAttribute('disabled', 'true');
         }
         if (row.querySelector('.table-row-discount')) {
-            row.querySelector('.table-row-discount').setAttribute('disabled', 'true');
+            row.querySelector('.table-row-discount').setAttribute('readonly', 'true');
         }
         if (row.querySelector('.table-row-tax')) {
-            row.querySelector('.table-row-tax').setAttribute('disabled', 'true');
+            row.querySelector('.table-row-tax').setAttribute('readonly', 'true');
         }
     };
 
@@ -1729,9 +1731,11 @@ class QuotationLoadDataHandle {
                     'allowClear': true,
                 });
         }
-        QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
-        QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
-        QuotationLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
+        if ($(form).attr('data-method').toLowerCase() !== 'get') {
+            QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
+            QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
+            QuotationLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
+        }
         if (Object.keys(data?.['opportunity']).length > 0) {
             if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
                 if (form.getAttribute('data-method').toLowerCase() === 'get') {
@@ -1763,12 +1767,12 @@ class QuotationLoadDataHandle {
         }
         if (data?.['quotation'] && data?.['sale_person']) {
             if (data?.['quotation']?.['title']) {
-                QuotationLoadDataHandle.quotationSelectEle.empty().html(data?.['quotation']?.['title']);
+                QuotationLoadDataHandle.quotationSelectEle.val(data?.['quotation']?.['title']);
             }
             QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(data?.['quotation']));
         }
         if (data?.['date_created']) {
-            $('#quotation-create-date-created').html(moment(data?.['date_created']).format('DD/MM/YYYY'));
+            $('#quotation-create-date-created').val(moment(data?.['date_created']).format('DD/MM/YYYY'));
         }
         if (data?.['is_customer_confirm'] && is_copy === false) {
             $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
@@ -1795,7 +1799,7 @@ class QuotationLoadDataHandle {
                 'title': data?.['title'],
                 'code': data?.['code'],
             }
-            QuotationLoadDataHandle.quotationSelectEle.empty().html(data?.['title']);
+            QuotationLoadDataHandle.quotationSelectEle.val(data?.['title']);
             QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(dataQuotationCopy));
 
         }
@@ -2079,16 +2083,16 @@ class QuotationLoadDataHandle {
 
     static loadTableDisabled(table) {
         for (let ele of table[0].querySelectorAll('.table-row-item')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-labor-item')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-expense-title')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-uom')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-quantity')) {
             ele.setAttribute('readonly', 'true');
@@ -2100,7 +2104,7 @@ class QuotationLoadDataHandle {
             ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-tax')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.input-group-price')) {
             ele.setAttribute('disabled', 'true');
@@ -2118,13 +2122,13 @@ class QuotationLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-term')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-ratio')) {
             ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-due-date')) {
             ele.setAttribute('disabled', 'true');
@@ -2139,7 +2143,7 @@ class QuotationLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-supplied-by')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
     };
 
@@ -2148,17 +2152,17 @@ class QuotationLoadDataHandle {
             let dataProductList = data?.['quotation_products_data'];
             for (let dataProduct of dataProductList) {
                 if (dataProduct?.['promotion_id']) {
-                    let checkData = promotionHandle.checkPromotionValid(dataProduct?.['promotion_data'], data?.['customer']?.['id']);
-                    let promotionParse = promotionHandle.getPromotionResult(checkData);
+                    let checkData = QuotationPromotionHandle.checkPromotionValid(dataProduct?.['promotion_data'], data?.['customer']?.['id']);
+                    let promotionParse = QuotationPromotionHandle.getPromotionResult(checkData);
                     let tableProduct = $('#datable-quotation-create-product');
                     if (promotionParse?.['is_discount'] === true) { // DISCOUNT
                         if (promotionParse?.['row_apply_index'] === null) { // on Specific product
                             if (promotionParse.hasOwnProperty('discount_rate_on_order')) {
                                 if (promotionParse.discount_rate_on_order !== null) {
                                     if (promotionParse.is_before_tax === true) {
-                                        promotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price']);
+                                        QuotationPromotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price']);
                                     } else {
-                                        promotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price'], false)
+                                        QuotationPromotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price'], false)
                                     }
                                 }
                             }
@@ -2364,7 +2368,7 @@ class QuotationDataTableHandle {
                                             <div class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></div>
                                         </div>
                                         </div>
-                                        <div role="menu" class="dropdown-menu table-row-price-list w-500p">
+                                        <div role="menu" class="dropdown-menu table-row-price-list w-400p">
                                         <a class="dropdown-item" data-value=""></a>
                                         </div>
                                     </div>
@@ -2609,7 +2613,7 @@ class QuotationDataTableHandle {
                                                 <div class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></div>
                                             </div>
                                             </div>
-                                            <div role="menu" class="dropdown-menu table-row-cost-list w-500p">
+                                            <div role="menu" class="dropdown-menu table-row-cost-list w-400p">
                                             <a class="dropdown-item" data-value=""></a>
                                             </div>
                                         </div>
@@ -4169,7 +4173,7 @@ class indicatorHandle {
 }
 
 // Promotion
-class promotionHandle {
+class QuotationPromotionHandle {
     static callPromotion(type_check) {
         let $ele = $('#data-init-quotation-create-promotion');
         let customer_id = QuotationLoadDataHandle.customerSelectEle.val();
@@ -4177,8 +4181,7 @@ class promotionHandle {
         $.fn.callAjax2({  // promotion for all
                 'url': $ele.attr('data-url'),
                 'method': $ele.attr('data-method'),
-                // 'data': {'customer_type': 0, 'valid_date_start__lte': currentDate, 'valid_date_end__gte': currentDate},
-                'data': {'customer_type': 0},
+                'data': {'customer_type': 0, 'valid_date_start__lte': currentDate, 'valid_date_end__gte': currentDate},
                 'isDropdown': true,
             }
         ).then(
@@ -4201,10 +4204,10 @@ class promotionHandle {
                                         if (data2.hasOwnProperty('promotion_check_list') && Array.isArray(data2.promotion_check_list)) {
                                             let dataFinal = dataAllCus.concat(data2.promotion_check_list);
                                             if (type_check === 0) {
-                                                promotionHandle.checkOnWorking(dataFinal, customer_id);
+                                                QuotationPromotionHandle.checkOnWorking(dataFinal, customer_id);
                                             }
                                             if (type_check === 1) {
-                                                promotionHandle.checkOnSubmit(dataFinal, customer_id);
+                                                QuotationPromotionHandle.checkOnSubmit(dataFinal, customer_id);
                                             }
                                         }
                                     }
@@ -4213,10 +4216,10 @@ class promotionHandle {
                         } else {
                             let dataFinal = dataAllCus;
                             if (type_check === 0) {
-                                promotionHandle.checkOnWorking(dataFinal, customer_id);
+                                QuotationPromotionHandle.checkOnWorking(dataFinal, customer_id);
                             }
                             if (type_check === 1) {
-                                promotionHandle.checkOnSubmit(dataFinal, customer_id);
+                                QuotationPromotionHandle.checkOnSubmit(dataFinal, customer_id);
                             }
                         }
                     }
@@ -4230,7 +4233,7 @@ class promotionHandle {
         let passList = [];
         let failList = [];
         dataPromotion.map(function (item) {
-            let checkData = promotionHandle.checkPromotionValid(item, customer_id);
+            let checkData = QuotationPromotionHandle.checkPromotionValid(item, customer_id);
             if (checkData?.['is_pass'] === true) {
                 item['is_pass'] = true;
                 item['condition'] = checkData?.['condition'];
@@ -4249,7 +4252,7 @@ class promotionHandle {
         let check_length = 0;
         let eleCheck = $('#quotation-check-promotion');
         dataPromotion.map(function (item) {
-            let check = promotionHandle.checkPromotionValid(item, customer_id);
+            let check = QuotationPromotionHandle.checkPromotionValid(item, customer_id);
             if (check?.['is_pass'] === false) {
                 let tableProduct = document.getElementById('datable-quotation-create-product');
                 let rowPromotion = tableProduct.querySelector('.table-row-promotion');
@@ -4293,7 +4296,7 @@ class promotionHandle {
                 let fixDiscountAmount = 0;
                 let conditionCheck = data_promotion?.['discount_method'];
                 // check limit used on Sale Order
-                let check_limit = promotionHandle.checkLimit(data_promotion, customer_id);
+                let check_limit = QuotationPromotionHandle.checkLimit(data_promotion, customer_id);
                 if (check_limit === false) {
                     return data_promotion;
                 }
@@ -4521,7 +4524,7 @@ class promotionHandle {
             } else if (data_promotion?.['is_gift'] === true) { // GIFT
                 let conditionCheck = data_promotion?.['gift_method'];
                 // check limit used on Sale Order
-                let check_limit = promotionHandle.checkLimit(data_promotion, customer_id);
+                let check_limit = QuotationPromotionHandle.checkLimit(data_promotion, customer_id);
                 if (check_limit === false) {
                     return data_promotion;
                 }
@@ -4640,15 +4643,15 @@ class promotionHandle {
                         }
                     } else if (times_condition === 2) { // IN CURRENT WEEK
                         let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM'));
-                        let dateCurrent = new Date(moment($('#quotation-create-date-created')[0].innerHTML).format('YYYY-MM'));
-                        const weekNumber1 = promotionHandle.getWeekNumber(dateToCheck);
-                        const weekNumber2 = promotionHandle.getWeekNumber(dateCurrent);
+                        let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM'));
+                        const weekNumber1 = QuotationPromotionHandle.getWeekNumber(dateToCheck);
+                        const weekNumber2 = QuotationPromotionHandle.getWeekNumber(dateCurrent);
                         if (weekNumber1 === weekNumber2) {
                             check_use_count++
                         }
                     } else if (times_condition === 3) { // IN CURRENT MONTH
                         let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM')).getTime();
-                        let dateCurrent = new Date(moment($('#quotation-create-date-created')[0].innerHTML).format('YYYY-MM')).getTime();
+                        let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM')).getTime();
                         if (dateToCheck === dateCurrent) {
                             check_use_count++
                         }
@@ -4691,7 +4694,9 @@ class promotionHandle {
             let discount_rate_on_order = null;
             let is_on_row = false;
             let is_before_tax = true;
-            if (condition?.['is_on_product'] === true) { // discount on specific product
+            let remark = '';
+            if (condition?.['is_on_product'] === true) { // on product
+                remark = QuotationLoadDataHandle.transEle.attr('data-discount-product');
                 let row = tableProd.DataTable().row(condition?.['row_apply_index']).node();
                 let taxSelected = row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex];
                 taxID = taxSelected.value;
@@ -4711,9 +4716,10 @@ class promotionHandle {
                     }
                 }
                 is_on_row = true;
-            } else if (condition?.['is_on_order'] === true) { // discount on whole order
-                if (condition?.['is_on_percent'] === true) { // discount by percent
+            } else if (condition?.['is_on_order'] === true) { // on whole order
+                if (condition?.['is_on_percent'] === true) {
                     if (condition.is_before_tax === true) {
+                        remark = QuotationLoadDataHandle.transEle.attr('data-discount-bt');
                         if (tableProductWrapper) {
                             let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
                             let elePreTaxRaw = tableProductFt?.querySelector('.quotation-create-product-pretax-amount-raw');
@@ -4736,6 +4742,7 @@ class promotionHandle {
                             }
                         }
                     } else if (condition.is_after_tax === true) {
+                        remark = QuotationLoadDataHandle.transEle.attr('data-discount-at');
                         if (tableProductWrapper) {
                             let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
                             let eleTotal = tableProductFt?.querySelector('.quotation-create-product-total-raw');
@@ -4758,6 +4765,7 @@ class promotionHandle {
                     }
                 } else if (condition?.['is_fix_amount'] === true) { // discount by fix amount
                     if (condition.is_before_tax === true) {
+                        remark = QuotationLoadDataHandle.transEle.attr('data-discount-bt');
                         DiscountAmount = condition.fix_value;
                         if (tableProductWrapper) {
                             let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
@@ -4776,6 +4784,7 @@ class promotionHandle {
                             }
                         }
                     } else if (condition.is_after_tax === true) {
+                        remark = QuotationLoadDataHandle.transEle.attr('data-discount-at');
                         DiscountAmount = condition.fix_value;
                         if (tableProductWrapper) {
                             let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
@@ -4797,7 +4806,7 @@ class promotionHandle {
             promotionData['title'] = -DiscountAmount;
             promotionData['row_apply_index'] = condition?.['row_apply_index'];
             promotionData['product_data'] = condition?.['product_data'];
-            promotionData['product_data']['description'] = "(Voucher)";
+            promotionData['product_data']['description'] = remark;
             promotionData['product_quantity'] = condition?.['product_quantity'];
             promotionData['product_price'] = DiscountAmount;
             promotionData['value_tax'] = taxID;
@@ -4809,7 +4818,7 @@ class promotionHandle {
             promotionData['is_gift'] = true;
             promotionData['row_apply_index'] = condition?.['row_apply_index'];
             promotionData['product_data'] = condition?.['product_data'];
-            promotionData['product_data']['description'] = "(Gift)";
+            promotionData['product_data']['description'] = QuotationLoadDataHandle.transEle.attr('data-gift');
             promotionData['product_quantity'] = condition?.['product_quantity'];
             promotionData['product_price'] = 0;
             return promotionData;
@@ -5930,7 +5939,7 @@ class QuotationSubmitHandle {
             quotation_logistic_data = 'sale_order_logistic_data';
             quotation_indicators_data = 'sale_order_indicators_data';
 
-            if (QuotationLoadDataHandle.quotationSelectEle && QuotationLoadDataHandle.quotationSelectEle.length >0) {
+            if (QuotationLoadDataHandle.quotationSelectEle && QuotationLoadDataHandle.quotationSelectEle.length > 0) {
                 if (QuotationLoadDataHandle.quotationSelectEle.attr('data-detail')) {
                     let dataQuotation = JSON.parse(QuotationLoadDataHandle.quotationSelectEle.attr('data-detail'));
                     _form.dataForm['quotation'] = dataQuotation?.['id'];

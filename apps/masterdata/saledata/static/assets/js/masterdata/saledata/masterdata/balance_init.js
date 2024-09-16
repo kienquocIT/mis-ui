@@ -37,19 +37,19 @@ $(document).ready(function () {
                         {
                             className: 'wrap-text',
                             render: (data, type, row) => {
-                                return `<span data-item-id="${row?.['product']?.['id']}" class="badge badge-soft-secondary balance-item">${row?.['product']?.['code']}</span>&nbsp;<span>${row?.['product']?.['title']}</span>`;
+                                return `<span data-item-id="${row?.['product']?.['id']}" class="badge badge-light w-20 balance-item">${row?.['product']?.['code']}</span>&nbsp;<span>${row?.['product']?.['title']}</span>`;
                             }
                         },
                         {
                             className: 'wrap-text',
                             render: (data, type, row) => {
-                                return `<span>${row?.['product']?.['uom']?.['title']}</span>`;
+                                return `<span class="badge badge-soft-blue">${row?.['product']?.['uom']?.['title']}</span>`;
                             }
                         },
                         {
                             className: 'wrap-text',
                             render: (data, type, row) => {
-                                return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-soft-primary balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
+                                return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-soft-primary w-15 balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
                             }
                         },
                         {
@@ -67,7 +67,7 @@ $(document).ready(function () {
                         {
                             className: 'wrap-text text-right',
                             render: (data, type, row) => {
-                                return ``;
+                                return `<a href="#" class="text-secondary clear-balance-init"><i class="bi bi-x-lg"></i></a>`;
                             }
                         },
                     ],
@@ -99,7 +99,13 @@ $(document).ready(function () {
                     method: 'GET',
                 },
                 callbackDataResp: function (resp, keyResp) {
-                    return resp.data[keyResp];
+                    let res = []
+                    for (let i = 0; i < resp.data[keyResp].length; i++) {
+                        if (resp.data[keyResp][i]?.['product_choice'].includes(1)) {
+                            res.push(resp.data[keyResp][i])
+                        }
+                    }
+                    return res
                 },
                 templateResult: function(data) {
                     let ele = $('<div class="row"></div>');
@@ -138,33 +144,7 @@ $(document).ready(function () {
         }
         LoadProduct()
 
-        $(document).on("change", '.item-value', function () {
-            let sum = 0
-            $('.item-value').each(function (index, item) {
-                let value = $(item).attr('value')
-                let quantity = $(item).closest('tr').find('.item-quantity').val()
-
-                if (quantity && value) {
-                    sum += parseFloat($(item).attr('value'))
-                }
-            })
-            $('#modal-total-value').attr('data-init-money', sum)
-            $.fn.initMaskMoney2()
-        });
-
         $(document).on("change", '.item-quantity', function () {
-            let sum = 0
-            $('.item-value').each(function (index, item) {
-                let value = $(item).attr('value')
-                let quantity = $(item).closest('tr').find('.item-quantity').val()
-
-                if (quantity && value) {
-                    sum += parseFloat($(item).attr('value'))
-                }
-            })
-            $('#modal-total-value').attr('data-init-money', sum)
-            $.fn.initMaskMoney2()
-
             let item_obj_ele = $(this).closest('tr').find('.item-obj')
             let selected = SelectDDControl.get_data_from_idx(item_obj_ele, item_obj_ele.val())
             if (selected?.['general_traceability_method'] === 2) {
@@ -175,6 +155,74 @@ $(document).ready(function () {
                 loadRowLOT($(this))
             }
         });
+
+        $(document).on("click", '.clear-balance-init', function () {
+            let this_row = $(this).closest('tr')
+            Swal.fire({
+                html:
+                `<div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div><h5 class="text-danger">${trans_script.attr('data-trans-notify-clear')}</h5><p class="small">${trans_script.attr('data-trans-warning')}</p>`,
+                customClass: {
+                    confirmButton: 'btn btn-outline-secondary text-danger',
+                    cancelButton: 'btn btn-outline-secondary text-gray',
+                    container:'swal2-has-bg',
+                    actions:'w-100'
+                },
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: trans_script.attr('data-trans-delete'),
+                cancelButtonText: trans_script.attr('data-trans-cancel'),
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    let data = combinesDataDelete(
+                        form_balance_Ele,
+                        this_row.find('.balance-item').attr('data-item-id'),
+                        this_row.find('.balance-wh').attr('data-wh-id')
+                    );
+                    // console.log(data)
+                    if (data) {
+                        WindowControl.showLoading();
+                        $.fn.callAjax2(data)
+                            .then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    if (data) {
+                                        $.fn.notifyB({description: "Successfully"}, 'success')
+                                        setTimeout(() => {
+                                            window.location.replace(form_balance_Ele.attr('data-redirect-url'));
+                                            location.reload.bind(location);
+                                        }, 1000);
+                                    }
+                                },
+                                (errs) => {
+                                    setTimeout(
+                                        () => {
+                                            WindowControl.hideLoading();
+                                        },
+                                        1000
+                                    )
+                                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                                }
+                            )
+                    }
+                }
+            })
+        });
+
+        function combinesDataDelete(frmEle, prd_id, wh_id) {
+            let frm = new SetupFormSubmit($(frmEle));
+
+            frm.dataForm['clear_balance_data'] = true
+            frm.dataForm['product_id'] = prd_id
+            frm.dataForm['warehouse_id'] = wh_id
+
+            return {
+                url: frm.dataUrl.format_url_with_uuid(period_setup_sw_start_using_time.replace(/^"(.*)"$/, '$1')),
+                method: frm.dataMethod,
+                data: frm.dataForm,
+                urlRedirect: frm.dataUrlRedirect,
+            };
+        }
 
         function loadRowSN(ratio) {
             let prd_ele = $('.item-obj:first-child')
@@ -334,17 +382,19 @@ $(document).ready(function () {
 
                 dtb_balance_init_item_Ele.find('tbody .dataTables_empty').remove()
                 dtb_balance_init_item_Ele.find('tbody').append(`
-                    <tr class="bg-primary-light-5 new-row-data">
+                    <tr class="new-row-data">
                         <script class="data-lot"></script>
                         <script class="data-sn"></script>
-                        <td><span data-item-id="${result?.['product_data']?.['id']}" class="badge badge-soft-secondary balance-item">${result?.['product_data']?.['code']}</span>&nbsp;<span>${result?.['product_data']?.['title']}</span></td>
-                        <td><span>${result?.['uom_data']?.['title']}</span></td>
-                        <td><span data-wh-id="${result?.['wh_data']?.['id']}" class="badge badge-soft-primary balance-wh">${result?.['wh_data']?.['code']}</span>&nbsp;<span>${result?.['wh_data']?.['title']}</span></td>
+                        <td><span data-item-id="${result?.['product_data']?.['id']}" class="badge badge-light w-20 balance-item">${result?.['product_data']?.['code']}</span>&nbsp;<span>${result?.['product_data']?.['title']}</span></td>
+                        <td><span class="badge badge-soft-blue">${result?.['uom_data']?.['title']}</span></td>
+                        <td><span data-wh-id="${result?.['wh_data']?.['id']}" class="badge badge-soft-primary w-15 balance-wh">${result?.['wh_data']?.['code']}</span>&nbsp;<span>${result?.['wh_data']?.['title']}</span></td>
                         <td><span class="balance-quantity">${result?.['quantity_balance']}</span></td>
                         <td><span class="balance-value mask-money" data-init-money="${result?.['value_balance']}"></span></td>
                         <td class="text-right"><a href="#" class="text-danger btn-delete-row"><i class="far fa-trash-alt"></i></a></td>
                     </tr>
                 `)
+
+                $.fn.initMaskMoney2()
 
                 let data_sn = []
                 dtb_wh_product_Ele.find('.row-input-sn').each(function () {
@@ -370,9 +420,6 @@ $(document).ready(function () {
 
                 $('.data-sn').last().text(JSON.stringify(data_sn))
                 $('.data-lot').last().text(JSON.stringify(data_lot))
-
-                $('#modal-total-value').attr('data-init-money', 0)
-                $.fn.initMaskMoney2()
 
                 modal_add_balance.modal('hide')
                 selectWH_Ele.empty()
@@ -482,7 +529,7 @@ $(document).ready(function () {
         form_balance_Ele.submit(function (event) {
             event.preventDefault();
             let data = combinesData($(this));
-            console.log(data)
+            // console.log(data)
             if (data) {
                 WindowControl.showLoading();
                 $.fn.callAjax2(data)

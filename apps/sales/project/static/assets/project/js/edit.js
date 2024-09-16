@@ -141,7 +141,7 @@ $(document).ready(function () {
                     $('#data_form').data('form_data', data)
                 }
                 else $('#create_baseline').prop('disabled', true)
-                WFRTControl.setWFInitialData('projectbaseline', 'post');
+                WFRTControl.setWFInitialData('projectbaseline');
                 animating_number(data['completion_rate'], $('.completion_rate_block .heading span'))
                 if (data['completion_rate'] !== 100)
                     $('#complete_project span span:nth-child(2)').text($.fn.gettext('Close Project'))

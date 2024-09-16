@@ -37,7 +37,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm-detail">
+    <button class="btn btn-outline-primary" id="update-OPP-btn" type="submit" form="frm-detail">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -53,6 +53,7 @@
             data-trans-alert-warn-call-log="{% trans 'This call log cannot be reactivated.' %}"
             data-trans-alert-cancel-meeting="{% trans 'Cancel this meeting ?' %}"
             data-trans-alert-warn-meeting="{% trans 'This meeting cannot be reactivated.' %}"
+            data-trans-notify-update-permission="{% trans 'Please save Update Opportunity page to apply all the permissions!' %}"
     ></script>
     <script id="script-url"
             data-url-opp-list="{% url "OpportunityListAPI" %}"
@@ -64,6 +65,7 @@
             data-url-ap-detail="{% url "AdvancePaymentDetail" '0' %}"
             data-url-payment-detail="{% url "PaymentDetail" '0' %}"
             data-url-return-detail="{% url "ReturnAdvanceDetail" '0' %}"
+            data-url-bom-detail="{% url "ProjectBOMDetail" '0' %}"
     ></script>
     <div id="json-data">
         <input id="emp-current-id" class="hidden" value="{{ request.user.employee_current_data.id }}">
@@ -660,6 +662,7 @@
             data-url-advance-detail="{% url 'AdvancePaymentDetail' pk=0 %}"
             data-url-payment-detail="{% url 'PaymentDetail' pk=0 %}"
             data-url-return-detail="{% url 'ReturnAdvanceDetail' pk=0 %}"
+            data-url-bom-detail="{% url "ProjectBOMDetail" '0' %}"
     ></script>
     <script
             type="text" id="trans-factory"
@@ -680,6 +683,7 @@
             data-trans-payment="{% trans "Payment" %}"
             data-trans-return="{% trans "Return Advance" %}"
             data-trans-task="{% trans "Task" %}"
+            data-trans-bom="{% trans 'BOM' %}"
             data-trans-call="{% trans "Call customer" %}"
             data-trans-email="{% trans "Email to customer" %}"
             data-trans-meeting="{% trans "Meeting with customer" %}"

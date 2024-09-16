@@ -76,3 +76,5 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     BOM_UPDATE = _('Bill of material update successfully')
     PRODUCTION_ORDER_CREATE = _('Production order create successfully')
     PRODUCTION_ORDER_UPDATE = _('Production order update successfully')
+    PRODUCTION_REPORT_CREATE = _('Production order create successfully')
+    PRODUCTION_REPORT_UPDATE = _('Production order update successfully')

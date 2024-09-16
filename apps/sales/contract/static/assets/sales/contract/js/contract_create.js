@@ -7,8 +7,12 @@ $(function () {
         ContractDataTableHandle.dataTableDocument();
         ContractDataTableHandle.dataTableFile();
         ContractTinymceHandle.initTinymce();
-        WFRTControl.setWFInitialData('contractapproval', formSubmit.attr('data-method'));
+        WFRTControl.setWFInitialData('contractapproval');
 
+        // file
+        if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+            new $x.cls.file($('#attachment')).init({});
+        }
 
         ContractLoadDataHandle.$btnAddDoc.on('click', function () {
             ContractLoadDataHandle.loadAddDoc();

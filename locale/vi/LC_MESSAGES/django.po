@@ -1539,19 +1539,19 @@ msgid "Country"
 msgstr "Quốc gia"
 
 #
-msgid "Bank Name"
-msgstr "Tên ngân hàng"
+msgid "Bank name"
+msgstr "Tên NH"
 
 #
-msgid "Bank Code"
-msgstr "Mã ngân hàng"
+msgid "Bank code"
+msgstr "Mã NH"
 
 #
-msgid "Account Number"
+msgid "Account number"
 msgstr "Số tài khoản"
 
 #
-msgid "BIC/SWIFT Code"
+msgid "BIC/SWIFT code"
 msgstr "Mã BIC/SWIFT"
 
 #
@@ -2165,7 +2165,7 @@ msgstr "Thông tin ngân hàng"
 
 #
 msgid "To payment"
-msgstr "Thanh toán"
+msgstr "Dùng cho TT"
 
 #
 msgid "Attachment"
@@ -2186,10 +2186,6 @@ msgstr "Kế hoạch sau thuế"
 #
 msgid "AP Approved"
 msgstr "Đã tạm ứng"
-
-#
-msgid "To Payment"
-msgstr "Thanh toán"
 
 #
 msgid "Other Payment"
@@ -2229,7 +2225,7 @@ msgstr "Tạm ứng"
 
 #
 msgid "Sale Code"
-msgstr "Mã giao dịch bán hàng"
+msgstr "Mã GD bán hàng"
 
 #
 msgid "More information"
@@ -2281,7 +2277,7 @@ msgstr "Mã phiếu tạm ứng"
 
 #
 msgid "Return Status"
-msgstr "Trạng thái hoàn trả"
+msgstr "TT hoàn trả"
 
 #
 msgid "Opportunity list"
@@ -3785,7 +3781,7 @@ msgstr "Chọn chi phí"
 
 #
 msgid "To employee"
-msgstr "Cho nhân viên"
+msgstr "Cho NV"
 
 #
 msgid "To supplier"
@@ -3813,11 +3809,7 @@ msgstr "Giá trị thanh toán"
 
 #
 msgid "Advance Payment value"
-msgstr "Giá trị phiếu tạm ứng"
-
-#
-msgid "To payment value"
-msgstr "Đã thanh toán"
+msgstr "Giá trị tạm ứng"
 
 #
 msgid "Remain AP"
@@ -6149,10 +6141,6 @@ msgid "Descriptions of file"
 msgstr "Mô tả của tập tin"
 
 #
-msgid "AP Status"
-msgstr "Trạng thái tạm ứng"
-
-#
 msgid "Asset, Tools"
 msgstr "Tài sản, Công cụ"
 
@@ -7027,10 +7015,6 @@ msgstr "Tên người mua hàng"
 #
 msgid "Billing address"
 msgstr "Địa chỉ xuất hoá đơn"
-
-#
-msgid "Bank code"
-msgstr "Mã ngân hàng"
 
 #
 msgid "Bank number"
@@ -8073,8 +8057,8 @@ msgid "Change view mode"
 msgstr "Thay đổi chế độ xem"
 
 #
-msgid "AP status"
-msgstr "Trạng thái tạm ứng"
+msgid "Received money"
+msgstr "Đã nhận tiền"
 
 #
 msgid "Google app password"
@@ -8742,7 +8726,7 @@ msgstr "Cho thanh lý"
 
 #
 msgid "Bill of material"
-msgstr "Hóa đơn nguyên vật liệu"
+msgstr "Định mức nguyên vật liệu"
 
 #
 msgid "Finished"
@@ -8763,3 +8747,75 @@ msgstr "Xuất trước đó"
 #
 msgid "Filter for expiring return advance"
 msgstr "Lọc lấy phiếu sắp đến hạn hoàn ứng"
+
+#
+msgid "Please save Update Opportunity page to apply all the permissions!"
+msgstr "Lưu Cơ Hội Kinh Doanh để các quyền được áp dụng!"
+
+#
+msgid "Estimated delivery date"
+msgstr "Ngày giao dự kiến"
+
+#
+msgid "Finished quantity"
+msgstr "Số lượng hoàn thành"
+
+#
+msgid "Not good quantity"
+msgstr "Số lượng không đạt"
+
+#
+msgid "Production report"
+msgstr "Báo cáo sản xuất"
+
+#
+msgid "Production report create successfully"
+msgstr "Tạo báo cáo sản xuất thành công"
+
+#
+msgid "Production report update successfully"
+msgstr "Cập nhật báo cáo sản xuất thành công"
+
+#
+msgid "Discount before tax"
+msgstr "Giảm giá trước thuế"
+
+#
+msgid "Discount after tax"
+msgstr "Giảm giá sau thuế"
+
+#
+msgid "Discount on product"
+msgstr "Giảm giá sản phẩm"
+
+#
+msgid "Project bill of material"
+msgstr "Định mức nguyên vật liệu dự án"
+
+#
+msgid "For project"
+msgstr "Cho dự án"
+
+#
+msgid "This action can not be undo!"
+msgstr "Hành động này không thể hoàn tác!"
+
+#
+msgid "Consider carefully when clear balance init. The system will delete this balance init after checking that the data preservation conditions are satisfied."
+msgstr "Hãy cân nhắc cẩn thận khi xóa số dư đã khởi tạo. Hệ thống sẽ xóa số dư này sau khi kiểm tra thõa mãn các điều kiện về bảo toàn dữ liệu."
+
+#
+msgid "After the stock activities have occurred, the Inventory Reports will be run in the order of the configured accounting periods. Make sure that the Opening Balance is created before these activities take place to avoid reporting errors."
+msgstr "Sau khi các hoạt động nhập-xuất kho được diễn ra, các Báo Cáo Kho sẽ được chạy theo thứ tự của kì kế toán được cấu hình. Đảm bảo rằng, số dư đầu kì này được khởi tạo trước khi các hoạt động nhập-xuất kho diễn ra để tránh sai sót số liệu trong báo cáo."
+
+#
+msgid "The initial balance will be inserted from the month of starting to use the software."
+msgstr "Số dư đầu kì sẽ được chèn bắt đầu từ tháng sử dụng phần mềm đã cài đặt."
+
+#
+msgid "If the data changes after the time of starting to use the software (not recommended). Re-run all reports from that month to now to update them correctly."
+msgstr "Nếu dữ liệu có sự thay đổi sau thời gian bắt đầu sử dụng phần mềm (không khuyến khích). Hãy chạy lại tất cả các báo cáo từ tháng đó đến nay để cập nhập lại chính xác."
+
+#
+msgid "Pretax value"
+msgstr "Giá trị trước thuế"

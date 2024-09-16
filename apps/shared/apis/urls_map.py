@@ -68,6 +68,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FILE_UPLOAD_WEB_BUILDER = StringUrl('attachment/web-builder/upload')
     FILE_LIST_WEB_BUILDER = StringUrl('attachment/web-builder/list')
     FILE_DOWNLOAD = StringUrl('attachment/download/{pk}')
+    FILE_INFO = StringUrl('attachment/info/{pk}')
 
     # attachment
     MEDIA_ACCESS_TOKEN = StringUrl('hr/employee/media-token')

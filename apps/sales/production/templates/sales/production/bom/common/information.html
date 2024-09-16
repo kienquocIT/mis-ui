@@ -110,6 +110,7 @@
                             <th style="min-width: 150px">{% trans 'Material/Component' %}</th>
                             <th style="min-width: 100px">{% trans 'Quantity' %}</th>
                             <th style="min-width: 120px">{% trans 'UOM' %}</th>
+                            <th style="min-width: 100px" class="text-center">{% trans 'Disassemble' %}</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -117,7 +118,7 @@
             </div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-				<button type="button" class="btn btn-primary">{% trans 'Select' %}</button>
+				<button type="button" class="btn btn-primary" id="btn-get-replacement-material">{% trans 'Select' %}</button>
 			</div>
 		</div>
 	</div>

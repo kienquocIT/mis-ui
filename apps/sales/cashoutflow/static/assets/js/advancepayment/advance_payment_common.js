@@ -32,7 +32,6 @@ class APLoadPage {
         APLoadPage.LoadCreatorInfor(data)
     }
     static LoadCreatorInfor(data) {
-        console.log(data)
         let btn_detail = $('#btn-detail-creator-tab');
         $('#creator-detail-span').prop('hidden', false);
         $('#creator-name').text(data?.['full_name']);
@@ -1226,7 +1225,9 @@ class APHandle {
         })
         frm.dataForm['ap_item_list'] = ap_item_list
 
-        console.log(frm)
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
+
+        // console.log(frm)
         return frm
     }
     static LoadDetailAP(option) {
@@ -1372,6 +1373,7 @@ class APHandle {
                         enable_download: option === 'detail',
                         enable_edit: option !== 'detail',
                         data: data.attachment,
+                        name: 'attachment'
                     })
 
                     APAction.DisabledDetailPage(option);

@@ -645,6 +645,7 @@ function LoadDetailAPInvoice(option) {
                 new $x.cls.file($('#attachment')).init({
                     enable_edit: option !== 'detail',
                     data: data.attachment,
+                    name: 'attachment'
                 })
 
                 $.fn.initMaskMoney2();

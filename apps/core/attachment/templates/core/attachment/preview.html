@@ -181,6 +181,14 @@
                                     </tr>
                                 `);
 
+                                const dateCreated = fileInfo?.['date_created'] || '';
+                                tbody$.append(`
+                                    <tr>
+                                        <td>${$.fn.gettext('Date created')}</td>
+                                        <td>${$x.fn.displayRelativeTime(dateCreated)}</td>
+                                    </tr>
+                                `);
+
                                 const tableTmp$ = $('<table class="w-100 table table-bordered"></table>').append(thead$).append(tbody$);
                                 modalBody$.empty().append(tableTmp$);
                             }

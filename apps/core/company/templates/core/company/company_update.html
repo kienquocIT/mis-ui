@@ -68,6 +68,20 @@
                                         />
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label for="company_icon" class="form-label">{% trans 'Icon' %}</label>
+                                    <div class="w-100 d-flex justify-content-center align-items-center overflow-hidden">
+                                        <input
+                                                id="company_icon"
+                                               class="form-control"
+                                               type="file"
+                                               data-url="{% url 'CompanyLogoUpload' pk=pk %}"
+                                               data-method="PUT"
+                                               data-max-file-size="100K"
+                                               data-allowed-file-extensions="jpeg jpg png gif"
+                                        />
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-12 col-md-10 col-lg-10">
                                 <div class="row">

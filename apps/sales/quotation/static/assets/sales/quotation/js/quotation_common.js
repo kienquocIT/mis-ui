@@ -2984,7 +2984,7 @@ class QuotationDataTableHandle {
                                         </div>
                                     </div>`;
                         }
-                        return `<span>__</span>`;
+                        return `<span>--</span>`;
                     }
                 },
                 {
@@ -2994,7 +2994,7 @@ class QuotationDataTableHandle {
                             return `<span class="badge badge-soft-pink">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>
                                     <span class="table-row-customer">${row?.['opportunity']?.['title']}</span>`;
                         }
-                        return `<span>__</span>`;
+                        return `<span>--</span>`;
                     },
                 },
                 {
@@ -3003,7 +3003,7 @@ class QuotationDataTableHandle {
                         if (row?.['customer']?.['title']) {
                             return `<p class="table-row-customer">${row?.['customer']?.['title']}</p>`;
                         }
-                        return `<p>__</p>`;
+                        return `<p>--</p>`;
                     },
                 }
             ],

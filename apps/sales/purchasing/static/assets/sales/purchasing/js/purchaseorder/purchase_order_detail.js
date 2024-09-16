@@ -24,7 +24,8 @@ $(function () {
                     POLoadDataHandle.loadDetailPage(data);
                     // file
                     new $x.cls.file($('#attachment')).init({
-                        enable_edit: false,
+                        name: 'attachment',
+                        enable_edit: true,
                         enable_download: true,
                         data: data?.['attachment'],
                     });

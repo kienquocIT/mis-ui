@@ -1090,6 +1090,7 @@ class OpportunityActivity {
                             'cashoutflow.payment': transEle.attr('data-trans-payment'),
                             'cashoutflow.returnadvance': transEle.attr('data-trans-return'),
                             'task.opportunitytask': transEle.attr('data-trans-task'),
+                            'production.bom': transEle.attr('data-trans-bom'),
                         }
                         let appMapBadge = {
                             'quotation.quotation': "badge-primary badge-outline",
@@ -1098,6 +1099,7 @@ class OpportunityActivity {
                             'cashoutflow.payment': "badge-violet badge-outline",
                             'cashoutflow.returnadvance': "badge-purple badge-outline",
                             'task.opportunitytask': "badge-secondary badge-outline",
+                            'production.bom': "badge-orange badge-outline",
                         }
                         let typeMapActivity = {
                             1: transEle.attr('data-trans-task'),
@@ -1124,14 +1126,10 @@ class OpportunityActivity {
                             }
                         } else {
                             let status = '';
-                            let badgeType = 'badge-soft-smoke';
                             if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
                                 status = `<span class="badge badge-sm badge-soft-danger">${$('#trans-script').attr('data-trans-activity-cancelled')}</i>`
                             }
-                            if (Object.keys(row?.['task']).length > 0) {
-                                badgeType = 'badge-soft-sky';
-                            }
-                            return `<span class="w-80 badge ${badgeType}">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
+                            return `<span class="badge badge-outline badge-primary">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                         }
                         return `<p></p>`;
                     }
@@ -1145,6 +1143,7 @@ class OpportunityActivity {
                             'cashoutflow.advancepayment': urlFactory.attr('data-url-advance-detail'),
                             'cashoutflow.payment': urlFactory.attr('data-url-payment-detail'),
                             'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
+                            'production.bom': urlFactory.attr('data-url-bom-detail'),
                         }
                         let link = '';
                         let title = '';

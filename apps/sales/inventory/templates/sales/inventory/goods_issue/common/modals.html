@@ -13,7 +13,7 @@
                 <table hidden
                        class="table nowrap w-100"
                        id="select-detail-table-sn"
-                       data-sn-url="{% url 'WarehouseSerialListAPI' %}">
+                       data-sn-url="{% url 'ProductWarehouseSerialListAPIForGIS' %}">
                     <thead>
                         <tr>
                             <th class="w-5"></th>
@@ -33,7 +33,7 @@
                 <table hidden
                        class="table nowrap w-100"
                        id="select-detail-table-lot"
-                       data-lot-url="{% url 'WarehouseLotListAPI' %}">
+                       data-lot-url="{% url 'ProductWarehouseLotListAPIForGIS' %}">
                     <thead>
                         <tr>
                             <th class="w-5"></th>
@@ -48,7 +48,7 @@
                     </thead>
                     <tbody></tbody>
                 </table>
-                <div hidden id="select-detail-table-none" class="row" data-url-prd-wh="{% url 'WarehouseGetProductsListAPI' %}">
+                <div hidden id="select-detail-table-none" class="row" data-url-prd-wh="{% url 'ProductWarehouseListAPIForGIS' %}">
                     <div class="col-6">
                         <div class="form-group">
                             <label for="stock-quantity" class="form-label">{% trans 'Stock quantity' %}</label>

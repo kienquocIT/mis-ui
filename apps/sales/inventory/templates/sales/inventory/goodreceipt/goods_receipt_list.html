@@ -49,7 +49,8 @@
 {% block dataHiddenGroup %}
     <input
             type="text" id="goods-receipt-link"
-            data-link-update="{% url 'GoodsReceiptDetail' 1 %}"
+            data-link-detail="{% url 'GoodsReceiptDetail' 1 %}"
+            data-link-update="{% url 'GoodsReceiptUpdate' 1 %}"
             data-link-list="{% url 'GoodsReceiptList' %}"
     >
     <input

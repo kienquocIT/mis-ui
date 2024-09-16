@@ -32,6 +32,11 @@ $(function () {
             $(this).val('').trigger('change');
         });
 
+        // file
+        if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+            new $x.cls.file($('#attachment')).init({});
+        }
+
         // collapse
         $('#btn-collapse').click(function () {
             $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');

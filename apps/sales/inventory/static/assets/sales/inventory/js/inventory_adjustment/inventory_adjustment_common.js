@@ -246,8 +246,8 @@ function getDataFormCreate() {
     let product_dict = JSON.parse($('#data-product-warehouse').text());
     tableLineDetailTbody.find('tr').each(function () {
         let product_obj = product_dict[$(this).find('.product_id_td').attr('data-id')];
-        let book_quantity = product_obj.available_amount;
-        let count = $(this).find('.count-input').val();
+        let book_quantity = parseFloat(product_obj.available_amount)
+        let count = parseFloat($(this).find('.count-input').val())
         let select_for_action = $(this).find('.selected_for_actions').is(':checked');
         let action_status = 0;
         let action_type = (count > book_quantity) ? 2 : (count < book_quantity) ? 1 : 0;
@@ -282,8 +282,8 @@ function getDataFormUpdate() {
 
     let ia_items_data_list = [];
     tableLineDetailTbody.find('tr').each(function () {
-        let book_quantity = $(this).find('.quantity-td').text();
-        let count = $(this).find('.count-input').val();
+        let book_quantity = parseFloat($(this).find('.quantity-td').text())
+        let count = parseFloat($(this).find('.count-input').val())
         let action_type = (count > book_quantity) ? 2 : (count < book_quantity) ? 1 : 0;
         ia_items_data_list.push({
             'id': $(this).find('.product_id_td').attr('data-item-id'),

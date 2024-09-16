@@ -1,17 +1,12 @@
 {% load static i18n %}
 <div class="wrap-bor">
     <div class="block_01">
+        <input type="hidden" id="bor_select_data">
         <select name="related_bor" id="bor_select" class="form-select" data-method="GET"
-                data-url="{% url 'ProductionOrderListAPI' %}" data-keyResp="production_order_list"></select>
-    </div>
-    <div class="block_02">
-        <div class="service-w">
-            <select name="related_service" id="service_select" class="form-select" hidden
-            data-detail="{% url 'ProductionOrderDetailAPI' 1 %}">
-            </select>
-        </div>
-        <button class="btn btn-outline-primary" id="prev_choice" type="button">
-            <i class="bi bi-arrow-return-right"></i>
-        </button>
+                data-url="{% url 'BOMListAPI' %}?bom_type=1"
+                data-keyResp="bom_list"
+                data-keyText="product.title"
+                data-allowClear="true"
+        ></select>
     </div>
 </div>

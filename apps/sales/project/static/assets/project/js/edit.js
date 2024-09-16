@@ -149,6 +149,7 @@ $(document).ready(function () {
 
                 new $x.cls.file($('#project_assign_attach')).init({
                     enable_edit: false,
+                    enable_download: true,
                     data: data['assignee_attachment'],
                 })
             },

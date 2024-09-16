@@ -22,7 +22,12 @@ $(function () {
                     $x.fn.renderCodeBreadcrumb(data);
                     $.fn.compareStatusShowPageAction(data);
                     POLoadDataHandle.loadDetailPage(data);
-
+                    // file
+                    new $x.cls.file($('#attachment')).init({
+                        enable_edit: false,
+                        enable_download: true,
+                        data: data?.['attachment'],
+                    });
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             }

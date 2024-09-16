@@ -1977,8 +1977,10 @@ var Gantt = (function () {
                             + `<span class="row-title ${item.child_of_group ? 'pd-15' : ''}" title="${item['name']
                             }">${item['name']}</span>`
                         ).addClass('wrap-title')
+                        let is_bom = '';
+                        if ('id' in item.bom_data) is_bom = `<i class="fa-brands fa-connectdevelop"></i>`
+                        const htmlBtn2 = jQuery(`<div class="dropdown">${is_bom}<button class="btn btn-sm row-btn${this.options['is_detail'] ? ' disabled' : ''}" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></button><ul class="dropdown-menu"><li><button class="dropdown-item btn-item-row-delete" type="button">${jQuery.fn.gettext('Delete')}</button></li><li><button class="dropdown-item btn-item-row-assign" type="button">${jQuery.fn.gettext('Assign Task')}</button></li><li><button class="dropdown-item btn-row-task_list" type="button">${jQuery.fn.gettext('Task list')}</button></li></ul></div>`)
 
-                        const htmlBtn2 = jQuery(`<div class="dropdown"><button class="btn btn-sm row-btn${this.options['is_detail'] ? ' disabled' : ''}" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></button><ul class="dropdown-menu"><li><button class="dropdown-item btn-item-row-delete" type="button">${jQuery.fn.gettext('Delete')}</button></li><li><button class="dropdown-item btn-item-row-assign" type="button">${jQuery.fn.gettext('Assign Task')}</button></li><li><button class="dropdown-item btn-row-task_list" type="button">${jQuery.fn.gettext('Task list')}</button></li></ul></div>`)
                         item_html.append(htmlBtn2)
 
                         if (item.is_group) {
@@ -2018,7 +2020,10 @@ var Gantt = (function () {
                             jQuery('.btn-show-task_f').trigger('click');
                             jQuery('input[name="work_id"]', $form).remove()
                             $form.append(`<input type="hidden" name="work_id" value="${item.id}"/>`);
-
+                            if ('id' in item.bom_data){
+                                $form.find('#inputTextTitle').after(`<input type="hidden" name="bom_id" value="${item.bom_data.id}"/>`);
+                                jQuery('.choice-bor, .input-affix-wrapper .dropdown_custom', $form).removeClass('hidden')
+                            }
                         })
 
                         jQuery('.btn-row-task_list', htmlBtn2).on('click',() =>{

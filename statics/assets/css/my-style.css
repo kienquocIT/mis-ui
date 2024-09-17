@@ -108,7 +108,8 @@
 }
 
 .menu-child-icon i {
-    font-size: 0.6em;
+    /*font-size: 0.6em;*/
+    filter: contrast(70%);
 }
 
 .icon-info {

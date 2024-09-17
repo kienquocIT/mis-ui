@@ -19,7 +19,7 @@ function resetFormTask() {
 }
 
 function isValidString(inputString) {
-    let pattern = /^\d+[wdh]*$/;
+    let pattern = /^\d+[dh]*$/;
     return pattern.test(inputString);
 }
 

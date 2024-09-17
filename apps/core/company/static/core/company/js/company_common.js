@@ -518,23 +518,39 @@ function LoadDetailCompany(frm, option) {
                 $('#phone').val(data.phone);
                 $('#fax').val(data.fax);
 
-                let eleInputAvatar = $('#company_logo');
+                const eleInputLogo = $('#company_logo');
+                const eleInputIcon = $('#company_icon');
                 if (option === 'update') {
                     if (data.logo) {
-                        eleInputAvatar.attr('data-default-file', data.logo);
+                        eleInputLogo.attr('data-default-file', data.logo);
                     }
-                    eleInputAvatar.dropify({
+                    eleInputLogo.dropify({
                         messages: {
                             'default': '',
                         }
                     });
+
+                    if (data.icon){
+                        eleInputIcon.attr('data-default-file', data.icon);
+                    }
+                    eleInputIcon.dropify({
+                        messages: {
+                            'default': '',
+                        }
+                    })
                 } else {
                     if (data.logo) {
                         $(`
-                            <img src="${data.logo}" style="width: 90%; max-height: 100px; object-fit: cover;"/>
-                        `).insertAfter(eleInputAvatar);
+                            <img src="${data.logo}" style="width: 90%; max-height: 100px; object-fit: contain;"/>
+                        `).insertAfter(eleInputLogo);
                     }
-                    eleInputAvatar.attr('disabled', 'disabled').remove();
+                    eleInputLogo.attr('disabled', 'disabled').remove();
+                    if (data.icon) {
+                        $(`
+                            <img src="${data.icon}" style="width: 90%; max-height: 100px; object-fit: contain;"/>
+                        `).insertAfter(eleInputIcon);
+                    }
+                    eleInputIcon.attr('disabled', 'disabled').remove();
                 }
 
                 loadFunctionNumberTableDetail(option, data?.['company_function_number'])

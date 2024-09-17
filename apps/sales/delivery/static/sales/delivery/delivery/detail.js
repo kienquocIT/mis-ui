@@ -1276,6 +1276,8 @@ $(async function () {
                 }
                 // file
                 new $x.cls.file($('#attachment')).init({
+                    name: 'attachment',
+                    enable_edit: true,
                     enable_download: true,
                     data: res?.['attachments'],
                 });

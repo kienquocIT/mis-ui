@@ -64,10 +64,13 @@
             <div class="col-12 col-md-5 col-lg-5" id="file-area">
                 <div class="form-group">
                     <label class="form-label" for="contract-doc-remark">{% trans 'Description' %}</label>
-                    <textarea class="form-control" rows="3" id="contract-doc-remark" name="remarks" disabled></textarea>
+                    <textarea class="form-control" rows="3" id="contract-doc-remark" name="remarks" readonly></textarea>
                 </div>
                 <label class="form-label">{% trans 'Attachment' %}</label>
                 <div id="attachment" hidden>
+                    {% include 'extends/files/all.html' %}
+                </div>
+                <div id="attachment-tmp" hidden>
                     {% include 'extends/files/all.html' %}
                 </div>
                 <table

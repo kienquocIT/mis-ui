@@ -16,6 +16,11 @@ $(function () {
                     $.fn.compareStatusShowPageAction(data);
                     // store && load data detail
                     ContractLoadDataHandle.loadDetail(data);
+                    // file
+                    new $x.cls.file($('#attachment')).init({
+                        enable_download: true,
+                        data: data?.['attachment'],
+                    });
                     // init workflow
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                     // get WF initial zones for change

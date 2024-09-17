@@ -6,6 +6,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
 from apps.core.account.models import Company
 from apps.shared import mask_view, ApiURL, ServerAPI, TypeCheck
+from apps.shared.apis import RespData
 
 
 class CompanyList(View):
@@ -112,19 +113,24 @@ class CompanyLogoUpload(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
-        uploaded_file = request.FILES.get('file')
-        m = MultipartEncoder(
-            fields={
-                'logo': (uploaded_file.name, uploaded_file, uploaded_file.content_type),
-            }
-        )
-        resp = ServerAPI(
-            request=request, user=request.user, url=ApiURL.COMPANY_DETAIL_LOGO.fill_key(pk=pk),
-            cus_headers={
-                'content-type': m.content_type,
-            }
-        ).post(data=m)
-        return resp.auto_return(key_success='company_logo_detail')
+        uploaded_file_logo = request.FILES.get('file_logo', None)
+        uploaded_file_icon = request.FILES.get('file_icon', None)
+        body_data = {}
+        if uploaded_file_logo:
+            body_data['logo'] = (uploaded_file_logo.name, uploaded_file_logo, uploaded_file_logo.content_type)
+        if uploaded_file_icon:
+            body_data['icon'] = (uploaded_file_icon.name, uploaded_file_icon, uploaded_file_icon.content_type)
+
+        if body_data:
+            m = MultipartEncoder(fields=body_data)
+            resp = ServerAPI(
+                request=request, user=request.user, url=ApiURL.COMPANY_DETAIL_LOGO.fill_key(pk=pk),
+                cus_headers={
+                    'content-type': m.content_type,
+                }
+            ).post(data=m)
+            return resp.auto_return(key_success='company_logo_detail')
+        return RespData.resp_200(data={})
 
 
 class CompanyDeleteAPI(APIView):

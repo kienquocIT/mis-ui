@@ -58,6 +58,13 @@ class AttachmentPreview(View):
         return {}, status.HTTP_200_OK
 
 
+class AttachmentInfo(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.FILE_INFO.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='file_info')
+
+
 class FilesUnusedAPI(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):

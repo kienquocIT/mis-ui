@@ -1105,18 +1105,18 @@ class GRLoadDataHandle {
         }
         if (idAreaShow === '3') {
             GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionOrder, [data?.['production_order_data']], {'system_status': 3});
-            // GRLoadDataHandle.$boxProductionReport.removeAttr('disabled');
         }
         GRDataTableHandle.tableLineDetailPO.DataTable().rows.add(data?.['gr_products_data']).draw();
         GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetailPO);
         if (formSubmit.attr('data-method') === 'GET') {
             GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLineDetailPO);
         }
-        GRLoadDataHandle.loadDetailProducts(data?.['gr_products_data']);
+        GRLoadDataHandle.loadDetailProducts(data);
         return true;
     };
 
-    static loadDetailProducts(dataProducts) {
+    static loadDetailProducts(dataDetail) {
+        let dataProducts = dataDetail?.['gr_products_data'];
         let typeGR = GRLoadDataHandle.typeSelectEle.val();
         let frm = new SetupFormSubmit(GRDataTableHandle.tablePOProduct);
         if (typeGR === '1' && GRLoadDataHandle.POSelectEle.val()) {
@@ -1131,6 +1131,7 @@ class GRLoadDataHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('purchase_order_product_gr') && Array.isArray(data.purchase_order_product_gr)) {
+                            GRLoadDataHandle.loadTotal(dataDetail);
                             for (let dataPOPro of data.purchase_order_product_gr) {
                                 let isDetail = false;
                                 for (let dataProduct of dataProducts) {
@@ -1283,6 +1284,41 @@ class GRLoadDataHandle {
         for (let ele of table[0].querySelectorAll('.table-row-warranty-end')) {
             ele.setAttribute('disabled', 'true');
         }
+    };
+
+    static loadTotal(data) {
+        let tableWrapper = document.getElementById('datable-good-receipt-line-detail-po_wrapper');
+        if (tableWrapper) {
+            let tableFt = tableWrapper.querySelector('.dataTables_scrollFoot');
+            if (tableFt) {
+                let elePretaxAmount = tableFt.querySelector('.good-receipt-product-pretax-amount');
+                let elePretaxAmountRaw = tableFt.querySelector('.good-receipt-product-pretax-amount-raw');
+                if (elePretaxAmount && elePretaxAmountRaw) {
+                    $(elePretaxAmount).attr('data-init-money', String(data?.['total_pretax']));
+                    elePretaxAmountRaw.value = data?.['total_pretax'];
+                }
+                let eleTaxes = tableFt.querySelector('.good-receipt-product-taxes');
+                let eleTaxesRaw = tableFt.querySelector('.good-receipt-product-taxes-raw');
+                if (eleTaxes && eleTaxesRaw) {
+                    $(eleTaxes).attr('data-init-money', String(data?.['total_tax']));
+                    eleTaxesRaw.value = data?.['total_tax'];
+                }
+                let eleTotal = tableFt.querySelector('.good-receipt-product-total');
+                let eleTotalRaw = tableFt.querySelector('.good-receipt-product-total-raw');
+                if (eleTotal && eleTotalRaw) {
+                    $(eleTotal).attr('data-init-money', String(data?.['total']));
+                    eleTotalRaw.value = data?.['total'];
+                }
+                let finalRevenueBeforeTax = tableFt.querySelector('.good-receipt-final-revenue-before-tax');
+                let finalRevenueBeforeTaxRaw = tableFt.querySelector('.good-receipt-final-revenue-before-tax-raw');
+                if (finalRevenueBeforeTax && finalRevenueBeforeTaxRaw) {
+                    $(finalRevenueBeforeTax).attr('data-init-money', String(data?.['total_revenue_before_tax']));
+                    finalRevenueBeforeTaxRaw.value = data?.['total_revenue_before_tax'];
+                }
+            }
+        }
+        $.fn.initMaskMoney2();
+        return true;
     };
 
 
@@ -1927,10 +1963,10 @@ class GRCalculateHandle {
     };
 
     static calculateTable(table) {
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
-            GRCalculateHandle.calculateMain(table, row)
-        }
+        table.DataTable().rows().every(function () {
+            let row = this.node();
+            GRCalculateHandle.calculateMain(table, row);
+        });
     };
 }
 
@@ -2409,14 +2445,24 @@ class GRSubmitHandle {
         let tableWrapper = document.getElementById('datable-good-receipt-line-detail-po_wrapper');
         if (tableWrapper) {
             let tableFt = tableWrapper.querySelector('.dataTables_scrollFoot');
-            let elePretaxAmountRaw = tableFt.querySelector('.good-receipt-product-pretax-amount-raw');
-            let eleTaxesRaw = tableFt.querySelector('.good-receipt-product-taxes-raw');
-            let eleTotalRaw = tableFt.querySelector('.good-receipt-product-total-raw');
-            let finalRevenueBeforeTax = tableFt.querySelector('.good-receipt-final-revenue-before-tax');
-            _form.dataForm['total_pretax'] = parseFloat($(elePretaxAmountRaw).val());
-            _form.dataForm['total_tax'] = parseFloat($(eleTaxesRaw).val());
-            _form.dataForm['total'] = parseFloat($(eleTotalRaw).val());
-            _form.dataForm['total_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
+            if (tableFt) {
+                let elePretaxAmountRaw = tableFt.querySelector('.good-receipt-product-pretax-amount-raw');
+                if ($(elePretaxAmountRaw).val()) {
+                    _form.dataForm['total_pretax'] = parseFloat($(elePretaxAmountRaw).val());
+                }
+                let eleTaxesRaw = tableFt.querySelector('.good-receipt-product-taxes-raw');
+                if ($(eleTaxesRaw).val()) {
+                    _form.dataForm['total_tax'] = parseFloat($(eleTaxesRaw).val());
+                }
+                let eleTotalRaw = tableFt.querySelector('.good-receipt-product-total-raw');
+                if ($(eleTotalRaw).val()) {
+                    _form.dataForm['total'] = parseFloat($(eleTotalRaw).val());
+                }
+                let finalRevenueBeforeTax = tableFt.querySelector('.good-receipt-final-revenue-before-tax');
+                if (finalRevenueBeforeTax.value) {
+                    _form.dataForm['total_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
+                }
+            }
         }
         // attachment
         if (_form.dataForm.hasOwnProperty('attachment')) {

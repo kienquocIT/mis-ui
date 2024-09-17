@@ -587,8 +587,8 @@ class LeadHandle {
         frm.dataForm['email'] = $email.val()
         frm.dataForm['company_name'] = $company_name.val()
         frm.dataForm['industry'] = $industry.val()
-        frm.dataForm['total_employees'] = $total_employees.val()
-        frm.dataForm['revenue'] = $revenue.val()
+        frm.dataForm['total_employees'] = $total_employees.val() ? $total_employees.val() : null
+        frm.dataForm['revenue'] = $revenue.val() ? $revenue.val() : null
         frm.dataForm['source'] = $lead_source.val()
         frm.dataForm['lead_status'] = $lead_status.val()
         frm.dataForm['assign_to_sale'] = $assign_to_sale.val()

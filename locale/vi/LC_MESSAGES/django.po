@@ -8819,3 +8819,7 @@ msgstr "Nếu dữ liệu có sự thay đổi sau thời gian bắt đầu sử
 #
 msgid "Pretax value"
 msgstr "Giá trị trước thuế"
+
+#
+msgid "Abstract"
+msgstr "Tóm tắt"

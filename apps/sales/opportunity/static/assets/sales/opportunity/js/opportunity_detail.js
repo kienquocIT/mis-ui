@@ -1411,6 +1411,10 @@ $(document).ready(function () {
                 let url = $(this).attr('data-url') + `?opportunity=${$(this).attr('data-opportunity_mapped')}`
                 window.open(url, '_blank');
             })
+            $('#dropdown-menu-relate-app #create-project-bom-shortcut').on('click', function () {
+                let url = $(this).attr('data-url') + `?opp_mapped=${$(this).attr('data-opp-mapped')}&&sale_person_mapped=${$(this).attr('data-sale-person-mapped')}`
+                window.open(url, '_blank');
+            })
 
             $(document).on('click', '.btn-add-document', function () {
                 let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
@@ -1549,6 +1553,40 @@ $(document).ready(function () {
                     })
 
                 $('#create-return-advance-shortcut').attr('data-opportunity_mapped', encodeURIComponent(JSON.stringify({'id': dataInitSaleCode?.['id'], 'code': dataInitSaleCode?.['code'], 'title': dataInitSaleCode?.['title']})))
+
+                let dataParam_bom = {'list_from_app': 'production.bom.create'}
+                opp_list_ajax= $.fn.callAjax2({
+                    url: $('#script-url').attr('data-url-opp-list'),
+                    data: dataParam_bom,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                                return data?.['opportunity_list'];
+                            }
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+
+                Promise.all([opp_list_ajax]).then(
+                    (results) => {
+                        let opp_list = results[0];
+                        for (let opp of opp_list) {
+                            if (opp?.['id'] === dataInitSaleCode?.['id']) {
+                                let opp_mapped= encodeURIComponent(JSON.stringify({'id': opp?.['id'], 'code': opp?.['code'], 'title': opp?.['title']}));
+                                let sale_person_mapped= encodeURIComponent(JSON.stringify(opp?.['sale_person']));
+                                $('#create-project-bom-shortcut').removeClass('disabled')
+                                $('#create-project-bom-shortcut').attr('data-opp-mapped', opp_mapped)
+                                $('#create-project-bom-shortcut').attr('data-sale-person-mapped', sale_person_mapped)
+                                break;
+                            }
+                        }
+                    })
             })
 
             loadLeadList(results[2])

@@ -741,6 +741,7 @@ function LoadDetailMeetingSchedule() {
                 new $x.cls.file($('#attachment')).init({
                     enable_edit: false,
                     data: data.attachment,
+                    name: 'attachment'
                 })
 
                 $('input').attr('disabled', true).attr('readonly', true)

@@ -59,8 +59,8 @@ productImageEle.dropify({
 });
 
 check_tab_inventory.change(function () {
-    disabledTab(this.checked, '#link-tab-inventory', '#tab_inventory');
-    $('#tab_inventory input, #tab_inventory select').val('');
+    $('#tab_inventory input, #tab_inventory select').val('')
+    $('#tab_inventory').find('.row').prop('hidden', !check_tab_inventory.is(':checked'))
     if (check_tab_inventory.is(':checked')) {
         $('#label-dimension').addClass('required');
     } else {
@@ -69,13 +69,13 @@ check_tab_inventory.change(function () {
 });
 
 check_tab_sale.change(function () {
-    disabledTab(this.checked, '#link-tab-sale', '#tab_sale');
-    $('#tab_sale input, #tab_sale select').val('');
+    $('#tab_sale input, #tab_sale select').val('')
+    $('#tab_sale').find('.row').prop('hidden', !check_tab_sale.is(':checked'))
 });
 
 check_tab_purchase.change(function () {
-    disabledTab(this.checked, '#link-tab-purchase', '#tab_purchase');
-    $('#tab_purchase input, #tab_purchase select').val('');
+    $('#tab_purchase input, #tab_purchase select').val('')
+    $('#tab_purchase').find('.row').prop('hidden', !check_tab_purchase.is(':checked'))
 });
 
 available_notify_checkboxEle.on('change', function () {
@@ -153,21 +153,6 @@ $(document).on('change', '.input_price_list', function () {
     loadSalePriceListForSaleOnline(null, sale_product_price_list)
 })
 
-function disabledTab(check, link_tab, id_tab) {
-    let tab = $(`a[href="` + id_tab + `"]`);
-    if (!check) {
-        $(link_tab).addClass('disabled');
-        $(id_tab).removeClass('active show');
-        if (tab.hasClass('active')) {
-            $('a[href="#tab_general"]').addClass('active');
-            $('#tab_general').addClass('active show');
-        }
-        tab.removeClass('active');
-    } else {
-        $(link_tab).removeClass('disabled');
-    }
-}
-
 function loadGeneralProductType(product_type_list) {
     generalProductTypeEle.initSelect2({
         ajax: {
@@ -179,6 +164,7 @@ function loadGeneralProductType(product_type_list) {
         keyId: 'id',
         keyText: 'title',
     }).on('change', function () {
+        $('#notify-inventory').prop('hidden', true)
         if (generalProductTypeEle.val().length === 0) {
             check_tab_inventory.prop('checked', false).prop('disabled', false)
             check_tab_sale.prop('checked', false).prop('disabled', false)
@@ -200,7 +186,7 @@ function loadGeneralProductType(product_type_list) {
                 generalProductTypeEle.empty()
             }
             else if (has_service) {
-                $.fn.notifyB({description: 'Inventory management is not allowed for service'}, 'warning');
+                $('#notify-inventory').prop('hidden', false)
                 check_tab_inventory.prop('checked', false).prop('disabled', true)
             }
             else {
@@ -861,7 +847,7 @@ function getDataForm() {
             $.fn.notifyB({description: 'Missing Price list for Sale online'}, 'failure');
             return false
         }
-        if (!data['sale_default_uom'] || !data['sale_currency_using'] || !data['sale_tax'] || data['sale_price_list'].length < 1) {
+        if (!data['sale_default_uom'] || !data['sale_currency_using'] || !data['sale_tax']) {
             $.fn.notifyB({description: 'Some fields in Sale tab is missing'}, 'failure');
             return false
         }
@@ -951,16 +937,19 @@ function LoadDetailProduct(option) {
                 if (product_detail['product_choice'].includes(0)) {
                     $('#check-tab-sale').attr('checked', true);
                     $('#link-tab-sale').removeClass('disabled');
+                    $('#tab_sale').find('.row').prop('hidden', false)
                 }
 
                 if (product_detail['product_choice'].includes(1)) {
                     $('#check-tab-inventory').attr('checked', true);
                     $('#link-tab-inventory').removeClass('disabled');
+                    $('#tab_inventory').find('.row').prop('hidden', false)
                 }
 
                 if (product_detail['product_choice'].includes(2)) {
                     $('#check-tab-purchase').attr('checked', true);
                     $('#link-tab-purchase').removeClass('disabled');
+                    $('#tab_purchase').find('.row').prop('hidden', false)
                 }
 
                 if (Object.keys(product_detail['general_information']).length !== 0) {

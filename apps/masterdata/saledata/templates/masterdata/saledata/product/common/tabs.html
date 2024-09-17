@@ -10,19 +10,19 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_sale" id="link-tab-sale">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_sale" id="link-tab-sale">
                     <span class="nav-icon-wrap"></span>
                     <span class="nav-link-text">{% trans 'Sale' %}</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_inventory" id="link-tab-inventory">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_inventory" id="link-tab-inventory">
                     <span class="nav-icon-wrap"></span>
                     <span class="nav-link-text">{% trans 'Inventory' %}</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchase" href="#tab_purchase">
+                <a class="nav-link" data-bs-toggle="tab" id="link-tab-purchase" href="#tab_purchase">
                     <span class="nav-icon-wrap"></span>
                     <span class="nav-link-text">{% trans 'Purchase' %}</span>
                 </a>
@@ -145,7 +145,11 @@
         </div>
     </div>
     <div class="tab-pane fade" id="tab_sale">
-        <div class="row">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="check-tab-sale" value="option2">
+            <label class="form-check-label text-primary fw-bold" for="check-tab-sale">{% trans "For Sale" %}</label>
+        </div>
+        <div hidden class="row mt-5">
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="row">
                     <div class="col-12 col-md-12 col-lg-6">
@@ -212,7 +216,14 @@
         </div>
     </div>
     <div class="tab-pane fade" id="tab_inventory">
-        <div class="row">
+        <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="check-tab-inventory" value="option1">
+                                <label class="form-check-label text-primary fw-bold" for="check-tab-inventory">{% trans "For Inventory" %}</label>
+                            </div>
+        <div hidden class="alert alert-warning" role="alert" id="notify-inventory">
+            {% trans 'Inventory management is not allowed for Service product' %}
+        </div>
+        <div hidden class="row mt-5">
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="inventory-select-box-uom-name" class="form-label required">{% trans "UoM Name" %}</label>
@@ -234,7 +245,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div hidden class="row">
             <div class="col-12 col-md-9 col-lg-6 mt-5">
                 <span class="text-muted">* {% trans 'Product overview' %}</span>
                 <table id="datatable-warehouse-overview" class="table table-advance nowrap w-100">
@@ -269,7 +280,11 @@
         </div>
     </div>
     <div class="tab-pane fade" id="tab_purchase">
-        <div class="row">
+        <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="check-tab-purchase" value="option3">
+                                <label class="form-check-label text-primary fw-bold" for="check-tab-purchase">{% trans "For Purchase" %}</label>
+                            </div>
+        <div hidden class="row mt-5">
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="purchase-select-box-default-uom" class="form-label required">{% trans "Default UoM" %}</label>
@@ -296,17 +311,23 @@
         </div>
     </div>
     <div class="tab-pane fade" id="tab_variants">
-        <table class="table nowrap w-100" id="table-variant-attributes">
-            <thead>
-            <th></th>
-            <th class="required">{% trans 'Attributes' %}</th>
-            <th class="required">{% trans 'Values' %}</th>
-            <th></th>
-            <th class="required">{% trans 'Configurations' %}</th>
-            <th></th>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div class="row">
+            <div class="col-12">
+                <table class="table nowrap w-100" id="table-variant-attributes">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="required">{% trans 'Attributes' %}</th>
+                            <th class="required">{% trans 'Values' %}</th>
+                            <th></th>
+                            <th class="required">{% trans 'Configurations' %}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-12">

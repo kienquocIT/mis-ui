@@ -16,6 +16,8 @@ const replacement_material_table_warning = $('#replacement-material-table-warnin
 const normal_production_space = $('#normal-production-space')
 const outsourcing_production_space = $('#outsourcing-production-space')
 let NOW_BOM_TYPE = $('#for-production')
+let REPLACEMENT_ROW = null
+
 
 //// COMMON
 
@@ -421,13 +423,13 @@ class BOMLoadTab {
                 },
                 columns: [
                     {
-                        className: 'w-5 text-center',
+                        className: 'text-center',
                         'render': () => {
                             return ``;
                         }
                     },
                     {
-                        className: 'w-5 text-center',
+                        className: 'text-center',
                         'render': (data, type, row) => {
                             return `<div class="form-check">
                                         <input type="checkbox" data-material-id="${row?.['id']}" class="form-check-input replacement-checkbox">
@@ -436,27 +438,41 @@ class BOMLoadTab {
                         }
                     },
                     {
-                        className: 'w-10',
+                        className: '',
                         'render': (data, type, row) => {
                             return `<span class="badge badge-light w-100">${row?.['code']}</span>`;
                         }
                     },
                     {
-                        className: 'w-40',
+                        className: '',
                         'render': (data, type, row) => {
                             return `${row?.['title']}`;
                         }
                     },
                     {
-                        className: 'w-15',
+                        className: '',
                         'render': (data, type, row) => {
                             return `<input disabled type="number" value="0" class="form-control replacement-quantity">`;
                         }
                     },
                     {
-                        className: 'w-25',
+                        className: '',
                         'render': (data, type, row) => {
                             return `<select disabled data-group-id="${row?.['general_uom_group']}" class="form-select select2 replacement-uom"></select>`;
+                        }
+                    },
+                    {
+                        className: 'text-center',
+                        'render': () => {
+                            return `<div class="form-check">
+                                        <input type="checkbox" disabled class="form-check-input replacement-material-disassemble">
+                                    </div>`;
+                        }
+                    },
+                    {
+                        className: '',
+                        'render': (data, type, row) => {
+                            return `<textarea disabled class="form-control replacement-note"></textarea>`;
                         }
                     },
                 ],
@@ -481,50 +497,55 @@ class BOMLoadTab {
                 data: [],
                 columns: [
                     {
-                        className: 'w-5 text-center',
+                        className: 'text-center',
                         'render': () => {
                             return ``;
                         }
                     },
                     {
-                        className: 'w-5 text-center',
+                        className: 'text-center',
                         'render': (data, type, row) => {
-                            return `<div class="form-check">
-                            <input type="checkbox" data-material-id="${row?.['id']}" class="form-check-input replacement-checkbox">
-                            <label class="form-check-label"></label>
-                        </div>`;
+                            return ``;
                         }
                     },
                     {
-                        className: 'w-10',
+                        className: '',
                         'render': (data, type, row) => {
-                            return `<span class="badge badge-light w-100">${row?.['code']}</span>`;
+                            return ``;
                         }
                     },
                     {
-                        className: 'w-40',
+                        className: '',
                         'render': (data, type, row) => {
-                            return `${row?.['title']}`;
+                            return ``;
                         }
                     },
                     {
-                        className: 'w-15',
+                        className: '',
                         'render': (data, type, row) => {
-                            return `<input disabled type="number" value="0" class="form-control replacement-quantity">`;
+                            return ``;
                         }
                     },
                     {
-                        className: 'w-25',
+                        className: '',
                         'render': (data, type, row) => {
-                            return `<select disabled data-group-id="${row?.['general_uom_group']}" class="form-select select2 replacement-uom"></select>`;
+                            return ``;
+                        }
+                    },
+                    {
+                        className: '',
+                        'render': () => {
+                            return ``;
+                        }
+                    },
+                    {
+                        className: '',
+                        'render': (data, type, row) => {
+                            return `<textarea disabled class="form-control replacement-note"></textarea>`;
                         }
                     },
                 ],
-                initComplete: function () {
-                    replacement_material_table.find('tbody tr').each(function () {
-                        BOMLoadTab.LoadUOM($(this).find('.replacement-uom'), $(this).find('.replacement-uom').attr('data-group-id'))
-                    })
-                }
+                initComplete: function () {}
             });
         }
     }
@@ -1007,6 +1028,7 @@ class BOMHandle {
 }
 
 // COMMON
+
 function Clean_MaterialTable_ToolTable() {
     if (material_table.find('tbody tr').length === 0) {
         BOMLoadTab.LoadMaterialTable()
@@ -1015,6 +1037,7 @@ function Clean_MaterialTable_ToolTable() {
         BOMLoadTab.LoadToolTable()
     }
 }
+
 is_outsourcing.on('change', function () {
     Swal.fire({
 		html: `<h5 class="text-blue">${script_trans.attr('data-trans-change-type')}</h5><p class="small">${script_trans.attr('data-trans-reload-data')}</p>`,
@@ -1093,6 +1116,7 @@ $('input[name="bom-type"]').on('change', function() {
 })
 
 // PROCESS
+
 add_new_process_description.on('click', function () {
     let flag = true
     process_description_table.find('tbody tr .process-task-name').each(function () {
@@ -1172,6 +1196,7 @@ $(document).on("click", '.del-row-material', function () {
 })
 
 $(document).on("click", '.add-new-swap-material', function () {
+    REPLACEMENT_ROW = $(this).closest('tr')
     let root_material_id = $(this).attr('data-root-material-id')
     BOMLoadTab.LoadMaterialReplacementTable([], root_material_id)
 })
@@ -1180,9 +1205,29 @@ $(document).on("change", '.replacement-checkbox', function () {
     let is_checked = $(this).prop('checked')
     $(this).closest('tr').find('.replacement-quantity').val(0).prop('disabled', !is_checked)
     $(this).closest('tr').find('.replacement-uom').empty().prop('disabled', !is_checked)
+    $(this).closest('tr').find('.replacement-material-disassemble').empty().prop('disabled', !is_checked)
+})
+
+$('#btn-get-replacement-material').on('click', function () {
+    let replacement_data = []
+    $('#replacement-material-table').find('tbody tr').each(function () {
+        let row = $(this)
+        if (row.find('.replacement-checkbox').prop('checked')) {
+            replacement_data.push({
+                'material_id': row.find('.replacement-checkbox').attr('data-material-id'),
+                'quantity': row.find('.replacement-quantity').val(),
+                'uom': row.find('.replacement-uom').val(),
+                'disassemble': row.find('.replacement-material-disassemble').prop('checked'),
+                'note': row.find('.replacement-note').val()
+            })
+        }
+    })
+    REPLACEMENT_ROW.find('.replacement-material-script').text(JSON.stringify(replacement_data))
+    $('#replacement-material-modal').modal('hide')
 })
 
 // TOOL
+
 $(document).on("click", '.add-new-tool', function () {
     let row_index = $(this).closest('tr').find('td:eq(0)').text()
     let new_tool_row = BOMAction.Create_tool_row(row_index)

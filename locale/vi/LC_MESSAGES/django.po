@@ -8789,7 +8789,7 @@ msgid "Discount on product"
 msgstr "Giảm giá sản phẩm"
 
 #
-msgid "Project bill of material"
+msgid "Opportunity bill of material"
 msgstr "Định mức nguyên vật liệu dự án"
 
 #
@@ -8819,3 +8819,11 @@ msgstr "Nếu dữ liệu có sự thay đổi sau thời gian bắt đầu sử
 #
 msgid "Pretax value"
 msgstr "Giá trị trước thuế"
+
+#
+msgid "Inventory management is not allowed for Service product"
+msgstr "Quản lý tồn kho không có sẵn cho Sản phẩm Dịch vụ"
+
+#
+msgid "Opportunity BOM"
+msgstr "BOM cho CHKD"

@@ -368,8 +368,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
-    PROJECT_BOM_LIST_PAGE = BreadcrumbChildren(_('Project bill of material list'), 'ProjectBOMList')
-    PROJECT_BOM_CREATE_PAGE = BreadcrumbChildren(_('Project bill of material create'), 'ProjectBOMCreate')
+    PROJECT_BOM_LIST_PAGE = BreadcrumbChildren(_('Opportunity bill of material list'), 'ProjectBOMList')
+    PROJECT_BOM_CREATE_PAGE = BreadcrumbChildren(_('Opportunity bill of material create'), 'ProjectBOMCreate')
     PROJECT_BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     PROJECT_BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 

@@ -3,7 +3,7 @@
 <div class="accordion" id="accordionPanelsStayOpenExampleOne">
     <div class="accordion-item">
         <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+            <button style="background-color: #eef6ff; color: #4885e1; font-weight: bold" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
                 <i class="acon-icon ri-funds-box-line"></i>&nbsp;<span>{% trans "Activity logs" %}</span>
             </button>
         </h2>
@@ -12,12 +12,12 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="row div-activity">
-                            <div class="col-12 col-md-5 col-lg-5 mb-1">
+                            <div class="col-12 col-md-3 col-lg-3">
                                 <div class="dropdown">
-                                    <button type="button" id="btn-create-related-feature" class="w-100 btn btn-soft-primary dropdown-toggle btn-xs" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
-                                        {% trans 'Create Related Feature' %}
+                                    <button type="button" id="btn-create-related-feature" class="w-100 btn btn-outline-secondary dropdown-toggle btn-sm" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
+                                        {% trans 'Related features' %}
                                     </button>
-                                    <div class="dropdown-menu" id="dropdown-menu-relate-app">
+                                    <div class="dropdown-menu w-80" id="dropdown-menu-relate-app">
                                         <h6 class="dropdown-header">{% trans 'Sale Activities' %}</h6>
                                         <a data-bs-toggle="modal" data-bs-target="#create-new-call-log" class="dropdown-item create-new-call-log-button" href="#">
                                             {% trans 'Log a call' %}
@@ -34,26 +34,30 @@
                                         <div class="dropdown-divider"></div>
 
                                         <h6 class="dropdown-header">{% trans 'Related features' %}</h6>
-                                        <a id="create-quotation-shortcut" class="dropdown-item relate-app" data-label="quotation.quotation" data-url="{% url 'QuotationCreate' %}" href="#">{% trans 'Quotation' %}</a>
-                                        <a id="create-sale-order-shortcut" class="dropdown-item relate-app" data-label="saleorder.saleorder" data-url="{% url 'SaleOrderCreate' %}" href="#">{% trans 'Sale Order' %}</a>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <a id="create-quotation-shortcut" class="dropdown-item relate-app" data-label="quotation.quotation" data-url="{% url 'QuotationCreate' %}" href="#">{% trans 'Quotation' %}</a>
+                                            </div>
+                                            <div class="col-6">
+                                                <a class="dropdown-item item-detail-related-feature text-blue" id="item-related-quotation" href="#" target="_blank">{% trans 'View Quotation' %}</a>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <a id="create-sale-order-shortcut" class="dropdown-item relate-app" data-label="saleorder.saleorder" data-url="{% url 'SaleOrderCreate' %}" href="#">{% trans 'Sale Order' %}</a>
+                                            </div>
+                                            <div class="col-6">
+                                                <a class="dropdown-item item-detail-related-feature text-blue" id="item-related-sale-order" href="#" target="_blank">{% trans 'View Sale Order' %}</a>
+                                            </div>
+                                        </div>
                                         <a id="create-advance-payment-shortcut" class="disabled dropdown-item btn-create-related-feature" data-url="{% url 'AdvancePaymentCreate' %}" href="#">{% trans 'Advance Payment' %}</a>
                                         <a id="create-payment-shortcut" class="disabled dropdown-item btn-create-related-feature" data-url="{% url 'PaymentCreate' %}" href="#">{% trans 'Payment' %}</a>
                                         <a id="create-return-advance-shortcut" class="dropdown-item btn-create-related-feature" data-url="{% url 'ReturnAdvanceCreate' %}" href="#">{% trans 'Return Advance' %}</a>
+                                        <a id="create-project-bom-shortcut" class="disabled dropdown-item btn-create-related-feature" data-url="{% url 'ProjectBOMCreate' %}" href="#">{% trans 'Opportunity BOM' %}</a>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-10 col-md-5 col-lg-4 mb-1">
-                                <div class="dropdown">
-                                    <button type="button" class="w-50 btn btn-soft-primary dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
-                                        {% trans 'Shortcut' %}
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item item-detail-related-feature" id="item-related-quotation" href="#" target="_blank">{% trans 'View Quotation' %} <span class="small"><i class="fa-solid fa-arrow-up-right-from-square"></i></span></a>
-                                        <a class="dropdown-item item-detail-related-feature" id="item-related-sale-order" href="#" target="_blank">{% trans 'View Sale Order' %} <span class="small"><i class="fa-solid fa-arrow-up-right-from-square"></i></span></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-2 col-md-2 col-lg-3 text-right">
+                            <div class="col-2 col-md-3 col-lg-3 text-right">
                                 <a hidden href="#" id="btn-show-action">
                                     <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="{% trans 'Show actions' %}">
                                         <i class="bi bi-pip text-primary"></i>
@@ -104,7 +108,7 @@
 <div class="accordion mt-3 mb-5" id="accordionPanelsStayOpenExampleTwo">
     <div class="accordion-item">
         <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+            <button style="background-color: #eef6ff; color: #4885e1; font-weight: bold" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
                 <i class="fas fa-outdent"></i>&nbsp;<span>{% trans 'Details' %}</span>
             </button>
         </h2>

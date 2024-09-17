@@ -310,7 +310,7 @@ class MenusCRM:
         icon='<i class="bi bi-nut-fill"></i>',
     )
     PROJECT_BOM = MenuCommon(
-        name='Project bill of material', code='menu_project_bom_list', view_name='ProjectBOMList',
+        name='Opportunity bill of material', code='menu_project_bom_list', view_name='ProjectBOMList',
         icon='<i class="fas fa-dice"></i>',
     )
     PRICING = MenuCommon(

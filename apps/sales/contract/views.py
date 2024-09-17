@@ -62,7 +62,7 @@ class ContractApprovalListAPI(APIView):
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.CONTRACT_LIST).get(data)
-        return resp.auto_return(key_success='contract_list')
+        return resp.auto_return(key_success='contract_approval_list')
 
     @mask_view(
         auth_require=True,

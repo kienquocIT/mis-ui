@@ -15,8 +15,8 @@ $(function () {
                     type: frm.dataMethod,
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
-                        if (data && resp.data.hasOwnProperty('contract_list')) {
-                            return resp.data['contract_list'] ? resp.data['contract_list'] : []
+                        if (data && resp.data.hasOwnProperty('contract_approval_list')) {
+                            return resp.data['contract_approval_list'] ? resp.data['contract_approval_list'] : []
                         }
                         throw Error('Call data raise errors.')
                     },

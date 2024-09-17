@@ -40,7 +40,9 @@ $(function () {
                     WFRTControl.setWFInitialData(appCode);
 
                     // init diagram
-                    DiagramControl.setBtnDiagram('saleorder.saleorder');
+                    if ($form[0].classList.contains('sale-order')) {
+                        DiagramControl.setBtnDiagram('saleorder.saleorder');
+                    }
 
                     // init delivery button
                     if (data?.['delivery_call'] === false) $('#btnDeliverySaleOrder').removeClass('hidden');

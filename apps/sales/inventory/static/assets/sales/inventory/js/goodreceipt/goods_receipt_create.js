@@ -223,6 +223,11 @@ $(function () {
                 'date_received',
                 // tab product
                 'gr_products_data',
+                // total
+                'total_pretax',
+                'total_tax',
+                'total',
+                'total_revenue_before_tax',
                 // attachment
                 'attachment',
                 // abstract

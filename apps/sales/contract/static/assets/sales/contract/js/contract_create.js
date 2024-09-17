@@ -6,7 +6,9 @@ $(function () {
 
         ContractDataTableHandle.dataTableDocument();
         ContractDataTableHandle.dataTableFile();
-        ContractTinymceHandle.initTinymce();
+        if (formSubmit.attr('data-method').toLowerCase() === 'post') {
+            ContractTinymceHandle.initTinymce();
+        }
         WFRTControl.setWFInitialData('contractapproval');
 
         // file
@@ -44,6 +46,7 @@ $(function () {
                 'title',
                 'document_data',
                 'attachment',
+                'tinymce_content',
             ]
             if (_form.dataForm) {
                 ContractCommonHandle.filterFieldList(submitFields, _form.dataForm);

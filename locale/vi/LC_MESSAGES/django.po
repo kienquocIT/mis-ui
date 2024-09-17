@@ -8827,3 +8827,7 @@ msgstr "Quản lý tồn kho không có sẵn cho Sản phẩm Dịch vụ"
 #
 msgid "Opportunity BOM"
 msgstr "BOM cho CHKD"
+
+#
+msgid "Abstract"
+msgstr "Tóm tắt"

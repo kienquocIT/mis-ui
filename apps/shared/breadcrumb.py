@@ -390,7 +390,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ZONES_LIST_PAGE = BreadcrumbChildren(_('Zones'), 'ZonesList')
 
     # Contract
-    CONTRACT_LIST_PAGE = BreadcrumbChildren(_('Contract approval'), 'ContractList')
+    CONTRACT_LIST_PAGE = BreadcrumbChildren(_('Contract approval'), 'ContractApprovalList')
 
     # Production
     PRODUCTION_ORDER_LIST_PAGE = BreadcrumbChildren(_('Production order'), 'ProductionOrderList')

@@ -2413,10 +2413,10 @@ class GRSubmitHandle {
             let eleTaxesRaw = tableFt.querySelector('.good-receipt-product-taxes-raw');
             let eleTotalRaw = tableFt.querySelector('.good-receipt-product-total-raw');
             let finalRevenueBeforeTax = tableFt.querySelector('.good-receipt-final-revenue-before-tax');
-            _form.dataForm['total_product_pretax_amount'] = parseFloat($(elePretaxAmountRaw).val());
-            _form.dataForm['total_product_tax'] = parseFloat($(eleTaxesRaw).val());
-            _form.dataForm['total_product'] = parseFloat($(eleTotalRaw).val());
-            _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
+            _form.dataForm['total_pretax'] = parseFloat($(elePretaxAmountRaw).val());
+            _form.dataForm['total_tax'] = parseFloat($(eleTaxesRaw).val());
+            _form.dataForm['total'] = parseFloat($(eleTotalRaw).val());
+            _form.dataForm['total_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
         }
         // attachment
         if (_form.dataForm.hasOwnProperty('attachment')) {

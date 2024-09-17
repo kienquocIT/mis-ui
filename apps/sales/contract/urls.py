@@ -1,13 +1,13 @@
 from django.urls import path
 
-from apps.sales.contract.views import ContractCreate, ContractListAPI, ContractList, ContractDetail, \
-    ContractDetailAPI, ContractUpdate
+from apps.sales.contract.views import ContractApprovalCreate, ContractApprovalListAPI, ContractApprovalList,\
+    ContractApprovalDetail, ContractApprovalDetailAPI, ContractApprovalUpdate
 
 urlpatterns = [
-    path('lists', ContractList.as_view(), name='ContractList'),
-    path('api/lists', ContractListAPI.as_view(), name='ContractListAPI'),
-    path('create', ContractCreate.as_view(), name='ContractCreate'),
-    path('detail/<str:pk>', ContractDetail.as_view(), name='ContractDetail'),
-    path('detail-api/<str:pk>', ContractDetailAPI.as_view(), name='ContractDetailAPI'),
-    path('update/<str:pk>', ContractUpdate.as_view(), name='ContractUpdate'),
+    path('lists', ContractApprovalList.as_view(), name='ContractApprovalList'),
+    path('api/lists', ContractApprovalListAPI.as_view(), name='ContractApprovalListAPI'),
+    path('create', ContractApprovalCreate.as_view(), name='ContractApprovalCreate'),
+    path('detail/<str:pk>', ContractApprovalDetail.as_view(), name='ContractApprovalDetail'),
+    path('detail-api/<str:pk>', ContractApprovalDetailAPI.as_view(), name='ContractApprovalDetailAPI'),
+    path('update/<str:pk>', ContractApprovalUpdate.as_view(), name='ContractApprovalUpdate'),
 ]

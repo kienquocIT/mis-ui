@@ -514,14 +514,23 @@ class POLoadDataHandle {
         if (dataRowRaw) {
             let dataRow = JSON.parse(dataRowRaw);
             POLoadDataHandle.loadBoxProduct($(row.querySelector('.table-row-item')));
-            $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']).trigger('change');
-            let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
-            if (boxRender) {
-                boxRender.innerHTML = dataRow?.['product']?.['title'];
-                boxRender.setAttribute('title', dataRow?.['product']?.['title']);
+            POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom-order-actual')), [], {'group': dataRow?.['uom_order_actual']?.['uom_group']?.['id']});
+            POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')));
+            // $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']).trigger('change');
+            // let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
+            // if (boxRender) {
+            //     boxRender.innerHTML = dataRow?.['product']?.['title'];
+            //     boxRender.setAttribute('title', dataRow?.['product']?.['title']);
+            // }
+            if (dataRow?.['product']?.['id']) {
+                POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product']]);
             }
-            POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom-order-actual')), [dataRow?.['uom_order_actual']], {'group': dataRow?.['uom_order_actual']?.['uom_group']?.['id']});
-            POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax']]);
+            if (dataRow?.['uom_order_actual']?.['id']) {
+                POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom-order-actual')), [dataRow?.['uom_order_actual']], {'group': dataRow?.['uom_order_actual']?.['uom_group']?.['id']});
+            }
+            if (dataRow?.['tax']?.['id']) {
+                POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax']]);
+            }
         }
     };
 

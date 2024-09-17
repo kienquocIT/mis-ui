@@ -293,17 +293,21 @@ class MenusCRM:
         name='Quotation', code='menu_quotation_list', view_name='QuotationList',
         icon='<i class="fas fa-file-invoice-dollar"></i>',
     )
-    AR_INVOICE = MenuCommon(
-        name='AR invoice', code='id_menu_ar_invoice', view_name='ARInvoiceList',
-        icon='<i class="bi bi-receipt"></i>',
-    )
     SALE_ORDER = MenuCommon(
         name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',
         icon='<i class="fas fa-file-invoice"></i>',
     )
+    AR_INVOICE = MenuCommon(
+        name='AR invoice', code='id_menu_ar_invoice', view_name='ARInvoiceList',
+        icon='<i class="bi bi-receipt"></i>',
+    )
     FINAL_ACCEPTANCE = MenuCommon(
         name='Final acceptance', code='menu_final_acceptance_list', view_name='FinalAcceptanceList',
         icon='<i class="fas fa-file-alt"></i>',
+    )
+    CONTRACT_APPROVAL = MenuCommon(
+        name='Contract approval', code='menu_contract_approval_list', view_name='ContractApprovalList',
+        icon='<i class="fas fa-file-signature"></i>',
     )
     PRODUCT = MenuCommon(
         name='Product', code='id_menu_product_list', view_name='ProductList',
@@ -739,6 +743,7 @@ class SpaceItem:
                 MenusCRM.AR_INVOICE,
                 MenusCRM.SALE_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,
+                MenusCRM.CONTRACT_APPROVAL,
                 MenusCRM.PRODUCT,
                 MenusCRM.PROJECT_BOM,
                 MenusCRM.PRICING,

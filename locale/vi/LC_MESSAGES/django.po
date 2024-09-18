@@ -8829,6 +8829,10 @@ msgid "Opportunity BOM"
 msgstr "BOM cho CHKD"
 
 #
+msgid "Abstract"
+msgstr "Tóm tắt"
+
+#
 msgid "Issued"
 msgstr "Đã xuất"
 

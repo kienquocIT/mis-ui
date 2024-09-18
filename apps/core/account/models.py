@@ -191,6 +191,13 @@ class User(AuthUser):
         return staticfiles_storage('assets/images/brand/bflow/png/icon/icon-bflow-original-36x36.png')
 
     @property
+    def company_has_icon(self) -> bool:
+        if self.company:
+            if self.company.icon:
+                return True
+        return False
+
+    @property
     def company_code_upper(self):
         if self.company:
             if self.company.code:

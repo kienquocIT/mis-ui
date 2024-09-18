@@ -550,7 +550,8 @@
     margin: 0 4px;
     transform: rotate(25deg);
 }
-.wrap-title > .dropdown > i{
+.wrap-title > .dropdown > i,
+.wrap-text > i{
     animation-name: icon_effect;
     animation-duration: 3s;
     animation-iteration-count: infinite;
@@ -564,4 +565,24 @@
 }
 .input-affix-wrapper span.select2 .select2-selection{
     padding-left: unset;
+}
+.btn-outline-blue {
+    border: 1px solid #0064CD;
+    color: #0064CD;
+    background-color: white;
+    transition: background-color 0.3s, color 0.3s;
+}
+.btn-outline-blue:hover {
+    background-color: #0064CD;
+    color: white;
+}
+.btn-outline-orange {
+    border: 1px solid #F0552D;
+    color: #F0552D;
+    background-color: white;
+    transition: background-color 0.3s, color 0.3s;
+}
+.btn-outline-orange:hover {
+    background-color: #F0552D;
+    color: white;
 }

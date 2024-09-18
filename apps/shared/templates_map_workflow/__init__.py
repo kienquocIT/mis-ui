@@ -16,6 +16,7 @@ from .eoffice_leave_request import LEAVE_DATA_MAP
 from .eoffice_business_trip import BUSINESS_TRIP_DATA_MAP
 from .eoffice_asset_tools import *
 from .distribution_plan_distributionplan import DISTRIBUTION_PLAN_DATA_MAP
+from .contract_contract_approval import CONTRACT_APPROVAL_DATA_MAP
 
 __all__ = [
     'InputMappingProperties',
@@ -43,3 +44,4 @@ class InputMappingProperties:
     INVENTORY_GOODS_TRANSFER = GOODS_TRANSFER_DATA_MAP
     INVENTORY_GOODS_RETURN = GOODS_RETURN_DATA_MAP
     DISTRIBUTION_PLAN_DB = DISTRIBUTION_PLAN_DATA_MAP
+    CONTRACT_APPROVAL_DATA_MAP = CONTRACT_APPROVAL_DATA_MAP

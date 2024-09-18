@@ -66,7 +66,12 @@ $(document).ready(function () {
                     $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append(selFormID$)
                 );
 
-                const statusCodeInit = $x.fn.getUrlParameter('status', '')
+                function onChangeSystemCode(_system_code){
+                    _system_code === '4' || _system_code === '5' ? selFormID$.toggleSelect2(1) : selFormID$.toggleSelect2(0);
+                }
+
+                const statusCodeInit = $x.fn.getUrlParameter('status', '');
+                console.log('statusCodeInit:', statusCodeInit);
                 selStatusCode$.initSelect2({
                     placeholder: $.fn.gettext('Status'),
                     allowClear: true,
@@ -96,14 +101,14 @@ $(document).ready(function () {
                     dtb_initial.ajax.reload();
                 });
 
-                const systemCodeInit = $x.fn.getUrlParameter('type', '')
+                const systemCodeInit = $x.fn.getUrlParameter('type', '');
                 selSystemCode$.initSelect2({
                     placeholder: $.fn.gettext('System code'),
                     allowClear: true,
                     keyId: 'id',
                     keyText: 'title',
                     data: [
-                        {'id': '', 'title': '', "selected": statusCodeInit === ''},
+                        {'id': '', 'title': '', "selected": systemCodeInit === ''},
                         {'id': '0', 'title': $.fn.gettext('Another'), 'selected': systemCodeInit === '0'},
                         {'id': '1', 'title': $.fn.gettext('Welcome'), 'selected': systemCodeInit === '1'},
                         {'id': '2', 'title': $.fn.gettext('Calendar'), 'selected': systemCodeInit === '2'},
@@ -112,10 +117,10 @@ $(document).ready(function () {
                         {'id': '5', 'title': $.fn.gettext('Form: OTP validation'), 'selected': systemCodeInit === '5'},
                     ]
                 }).on('change', function (){
-                    $(this).val() === '4' || $(this).val() === '5' ? selFormID$.toggleSelect2(1) : selFormID$.toggleSelect2(0);
+                    onChangeSystemCode($(this).val());
                     dtb_initial.ajax.reload();
                 });
-                systemCodeInit === '4' || systemCodeInit === '5' ? selFormID$.toggleSelect2(1) : selFormID$.toggleSelect2(0);
+                onChangeSystemCode(systemCodeInit);
             }
         },
         rowIdx: true,

@@ -166,9 +166,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FORM_SANITIZE_HTML = StringUrl('form/sanitize-html')
     FORM_ENTRIES_LIST = StringUrl('form/entries/{pk}/list')
     FORM_ENTRIES_REF_NAME_LIST = StringUrl('form/entries/{pk}/ref-name/list')
-    FORM_VALID_EMAIL_OTP = StringUrl('form/runtime/auth/{tenant_code}/{form_code}')
-    FORM_VALID_SESSION = StringUrl('form/runtime/auth')
-    FORM_VALID_SESSION_PK = StringUrl('form/runtime/auth/{pk_form_session}')
+    FORM_VALID_SESSION = StringUrl('form/runtime/auth/{tenant_code}/{form_code}')
+    FORM_VALID_SESSION_PK = StringUrl('form/runtime/auth/{tenant_code}/{form_code}/{pk_form_session}')
 
     # comment
     COMMENT_LIST = StringUrl('comment/doc/{pk_doc}/{pk_app}/list')

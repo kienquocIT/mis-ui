@@ -2,6 +2,7 @@ import random
 import string
 
 from django import template
+from django.templatetags.static import static
 
 register = template.Library()
 
@@ -25,7 +26,7 @@ def check_split_static(value):
 def get_logo(value):
     if value:
         return value
-    return 'https://www.bflow.vn/images/logo/logo_180x180.png'
+    return static('assets/images/brand/bflow/png/icon/icon-bflow-original-36x36.png')
 
 
 @register.simple_tag

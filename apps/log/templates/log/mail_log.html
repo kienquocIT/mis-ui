@@ -3,9 +3,9 @@
 
 {% block pageContent %}
     <table
-            class="w-100 table no-wrap"
+            class="w-100 table no-wrap min-w-1000p"
             id="form-auth-logs"
-            data-url="{% url 'FormMailLogAPI' %}"
+            data-url="{% url 'MailLogAPI' %}"
             data-url-form-list="{% url 'FormListAPI' %}"
     >
         <thead>
@@ -13,11 +13,11 @@
                 <th>#</th>
                 <th class="no-transform">{% trans 'Type' %}</th>
                 <th class="no-transform">{% trans 'Date created' %}</th>
+                <th class="no-transform">{% trans 'Subject' %}</th>
                 <th class="no-transform">{% trans 'Sender' %}</th>
                 <th class="no-transform">{% trans 'Address to' %}</th>
                 <th class="no-transform">{% trans 'Address cc' %}</th>
                 <th class="no-transform">{% trans 'Address bcc' %}</th>
-                <th class="no-transform">{% trans 'Subject' %}</th>
                 <th class="no-transform">{% trans 'Status' %}</th>
                 <th class="no-transform">{% trans 'Status remark' %}</th>
             </tr>
@@ -26,5 +26,5 @@
 {% endblock %}
 
 {% block jsFooter %}
-    <script src="{% static 'form/log/log.js' %}"></script>
+    <script src="{% static 'log/mail_log.js' %}"></script>
 {% endblock %}

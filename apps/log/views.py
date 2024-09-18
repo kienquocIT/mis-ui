@@ -14,6 +14,8 @@ __all__ = [
     'MyNotifyAllAPI',
     'MyNotifyCleanAllAPI',
     'MyNotifyPageView',
+    'MailLogView',
+    'MailLogAPI',
 ]
 
 from apps.shared.msg import BaseMsg
@@ -96,3 +98,22 @@ class MyNotifyCleanAllAPI(APIView):
     def delete(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, url=ApiURL.LOG_MY_NOTIFY_CLEAN_ALL, user=request.user).delete()
         return resp.auto_return(callback_success=self.callback_success)
+
+
+class MailLogView(View):
+    @mask_view(
+        login_require=True,
+        template='log/mail_log.html',
+        jsi18n='log',
+        breadcrumb='FORM_AUTH_LOG',
+        menu_active='menu_form_data',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class MailLogAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.MAILER_LOG).get()
+        return resp.auto_return(key_success='mail_log')

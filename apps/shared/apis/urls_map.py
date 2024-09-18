@@ -168,7 +168,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FORM_ENTRIES_REF_NAME_LIST = StringUrl('form/entries/{pk}/ref-name/list')
     FORM_VALID_SESSION = StringUrl('form/runtime/auth/{tenant_code}/{form_code}')
     FORM_VALID_SESSION_PK = StringUrl('form/runtime/auth/{tenant_code}/{form_code}/{pk_form_session}')
-    FORM_MAIL_LOG = StringUrl('form/mail-log')
 
     # comment
     COMMENT_LIST = StringUrl('comment/doc/{pk_doc}/{pk_app}/list')
@@ -194,6 +193,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     MAILER_CONFIG_DETAIL = StringUrl('mailer/config/detail/{pk}')
     MAILER_CONFIG_DETAIL_CONNECTION_TEST = StringUrl('mailer/config/detail/{pk}/connection/test')
     MAILER_CONFIG_DETAIL_CONNECTION_TEST_DATA = StringUrl('mailer/config/detail/{pk}/connection/test/data')
+    MAILER_LOG = StringUrl('mailer/log')
 
     # base
     PLAN_LIST = StringUrl('base/plans')

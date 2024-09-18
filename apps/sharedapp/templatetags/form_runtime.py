@@ -26,6 +26,13 @@ def check_split_static(value):
 def get_logo(value):
     if value:
         return value
+    return static('assets/images/brand/bflow-by-mts/png/bflow-by-mts-original.png')
+
+
+@register.simple_tag
+def get_icon(value):
+    if value:
+        return value
     return static('assets/images/brand/bflow/png/icon/icon-bflow-original-36x36.png')
 
 

@@ -316,9 +316,6 @@ class User(AuthUser):
             try:
                 user, _created = User.objects.get_or_create(
                     username_auth=username_auth,
-                    user_id=user_id,
-                    tenant=tenant_obj,
-                    company=company_obj,
                     defaults={
                         'user_id': user_id,
                         'username_auth': username_auth,
@@ -332,6 +329,9 @@ class User(AuthUser):
                 print(msg_err)
                 return None
 
+            user.user_id = user_id
+            user.tenant = tenant_obj
+            user.company = company_obj
             user.user_update_data(api_result=api_result)
             return user
         print(f'Required key in value API: {", ".join(key_require)}')

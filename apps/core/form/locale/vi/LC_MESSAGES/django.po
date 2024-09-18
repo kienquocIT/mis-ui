@@ -1004,3 +1004,19 @@ msgstr "Cột"
 #
 msgid "Rows"
 msgstr "Hàng"
+
+#
+msgid "Sender"
+msgstr "Người gửi"
+
+#
+msgid "Address to"
+msgstr "Địa chỉ nhận"
+
+#
+msgid "Address cc"
+msgstr "Địa chỉ nhận bản sao (cc)"
+
+#
+msgid "Address bcc"
+msgstr "Địa chỉ nhận bản sao ẩn danh (bcc)"

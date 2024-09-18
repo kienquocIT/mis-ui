@@ -291,3 +291,22 @@ class FakePreviewIframe(View):
     @mask_view(login_require=True)
     def get(self, request, *args, form_code, **kwargs):
         return render(request, 'form/fake_iframe_preview.html', {'form_code': form_code})
+
+
+class FormAuthLogView(View):
+    @mask_view(
+        login_require=True,
+        template='form_log/log.html',
+        jsi18n='form',
+        breadcrumb='FORM_AUTH_LOG',
+        menu_active='menu_form_data',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class FormMailLogAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.FORM_MAIL_LOG).get()
+        return resp.auto_return(key_success='mail_log')

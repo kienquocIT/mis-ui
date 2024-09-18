@@ -4,7 +4,7 @@ from apps.core.form.views import (
     FormListView, FormCreateView, FormListAPI, FormCreateAPI, FormUpdateView,
     FormUpdateAPI, FormDetailAPI,
     FormSanitizeHTMLAPI, FormDetailForEntriesAPI, FormUpdateTurnOnOffAPI, FakePreviewIframe, FormDetailDuplicateAPI,
-    FormKnowledgeView,
+    FormKnowledgeView, FormAuthLogView, FormMailLogAPI,
 )
 
 urlpatterns = [
@@ -23,6 +23,10 @@ urlpatterns = [
     path('config/update/<str:pk>/api', FormUpdateAPI.as_view(), name='FormUpdateAPI'),
     path('config/update/<str:pk>/turn-off/api', FormUpdateTurnOnOffAPI.as_view(), name='FormUpdateTurnOnOffAPI'),
     path('config/knowledge', FormKnowledgeView.as_view(), name='FormKnowledgeView'),
+
+    # log
+    path('mail-log', FormAuthLogView.as_view(), name='FormAuthLogView'),
+    path('mail-log/api', FormMailLogAPI.as_view(), name='FormMailLogAPI'),
 
     # another
     path('publised/', include('apps.core.form.urls_published')),

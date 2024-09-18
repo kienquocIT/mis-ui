@@ -1,6 +1,6 @@
 /* Button */
 .no-transform {
-    text-transform: unset!important;
+    text-transform: initial !important;
 }
 /* -- Button */
 

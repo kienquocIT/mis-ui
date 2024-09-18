@@ -2,6 +2,16 @@
 {% load i18n %}
 
 {% block pageAction %}
+    <a href="{% url 'FormAuthLogView' %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span class="no-transform">{% trans 'Authentication logs' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </span>
+        </span>
+        </button>
+    </a>
     <a href="{% url 'FormCreateView' %}">
         <button class="btn btn-outline-primary">
         <span>

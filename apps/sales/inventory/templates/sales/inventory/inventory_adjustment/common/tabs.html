@@ -41,17 +41,18 @@
                                data-method="GET"
                                class="table nowrap w-100" id="table-line-detail">
                             <thead>
-                            <tr>
-                                <th>{% trans 'Product name' %}</th>
-                                <th>{% trans 'Warehouse' %}</th>
-                                <th>{% trans 'Unit Of Measure' %}</th>
-                                <th>{% trans 'Booked quantity' %}</th>
-                                <th class="required">{% trans 'Counted quantity' %}</th>
-                                <th class="text-center">{% trans 'Difference' %}</th>
-                                <th class="text-center">{% trans 'Select for actions' %}</th>
-                                <th class="text-center">{% trans 'Action type' %}</th>
-                                <th class="text-center">{% trans 'Action status' %}</th>
-                            </tr>
+                                <tr>
+                                    <th>{% trans 'Product name' %}</th>
+                                    <th>{% trans 'Warehouse' %}</th>
+                                    <th>{% trans 'Unit Of Measure' %}</th>
+                                    <th>{% trans 'Booked quantity' %}</th>
+                                    <th class="required">{% trans 'Counted quantity' %}</th>
+                                    <th class="text-center">{% trans 'Difference' %}</th>
+                                    <th class="text-center">{% trans 'Issued' %} / {% trans 'Receipted' %}</th>
+                                    <th hidden class="text-center">{% trans 'Select for actions' %}</th>
+                                    <th class="text-center">{% trans 'Action type' %}</th>
+                                    <th class="text-center">{% trans 'Action status' %}</th>
+                                </tr>
                             </thead>
                             <tbody></tbody>
                         </table>

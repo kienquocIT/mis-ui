@@ -15,7 +15,7 @@ class customerHandle {
     }
 
     onOpenModal() {
-        let $this = this
+        let _this = this
         $('#customer_modal').on('show.bs.modal', function (){
             let getType = parseInt($('[name="customer_type"]').val())
             let type = getType ? getType : 0;
@@ -23,14 +23,12 @@ class customerHandle {
             else if (type === 1) {
                 $('.customer_list').removeClass('hidden');
                 $('.customer_condition').addClass('hidden');
-                Customer.loadCustomerList();
+                _this.loadCustomerList();
             }
             else {
                 $('.customer_list').addClass('hidden');
                 $('.customer_condition').removeClass('hidden');
             }
-            $(`[name="select_customer_type"] option[value="${type}"]`).trigger('change');
-            this.getCustomerList
         });
     }
 
@@ -131,7 +129,6 @@ class customerHandle {
             }
             $(this).closest('.modal').modal('hide');
         })
-
     }
 
     initSelectResult(param, $elm, value=null){
@@ -144,8 +141,7 @@ class customerHandle {
             $relElm.html('');
             // destroy and re-init select2
             if ($relElm.next('span').hasClass('select2')) $relElm.select2("destroy");
-            let prefix = '',
-                url = '';
+            let prefix = '', url = '';
             if (param === 0){
                 prefix = 'account_group_list'
                 url = $urlFactory.attr('data-customer_group')
@@ -257,11 +253,13 @@ class customerHandle {
         const dataList = this.getCustomerList;
         const $table = $('#table_customer_list')
         let tableList = $table.DataTable().data().toArray();
-            for (let item of tableList){
-                if (dataList.includes(item.id)) item.checked = true
+        for (let idx in tableList){
+            let item = tableList[idx]
+            if (dataList.includes(item.id)){
+                item['checked'] = true
+                $table.DataTable().cell(idx, 0).data(true)
             }
-            $table.DataTable().clear().draw()
-            $table.DataTable().rows.add(tableList).draw();
+        }
     }
 
     init() {
@@ -328,11 +326,10 @@ function getDetailPage($form){
                 if (data) {
                     $('#title').val(data.title)
                     $('#remark').val(data.remark)
-                    $('#customer_remark').val(data.customer_remark)
+                    $('#customer_remark').val(data['customer_remark'])
                     $('[name="select_customer_type"]').val(data.customer_type).trigger('change');
-                    if (data?.customer_by_list.length){
-                        Customer.setCustomerList = data.customer_by_list
-                    }
+                    if (data?.customer_by_list.length)
+                        Customer.setCustomerList = data.customer_by_list;
                     if (data?.customer_by_condition.length)
                         Customer.setCustomerCond = data.customer_by_condition
                     $('#currency').attr('data-onload', JSON.stringify(data.currency))

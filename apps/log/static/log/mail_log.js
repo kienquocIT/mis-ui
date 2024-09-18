@@ -20,11 +20,12 @@ $(document).ready(function () {
     const selStatusCode$ = $(`<select class="form-select form-select-sm" id="form-log-status-code"></select>`);
     const selSystemCode$ = $(`<select class="form-select form-select-sm" id="form-log-system-code"></select>`);
     const selFormID$ = $(`<select class="form-select form-select-sm" id="form-log-by-form-id"></select>`);
-    const dtbt = tbl$.DataTableDefault({
+    const dtb_initial = tbl$.DataTableDefault({
         useDataServer: true,
         scrollX: true,
         autoWidth: false,
         ajax: {
+            cache: true,
             url: tbl$.attr('data-url'),
             type: 'GET',
             data: function (d){
@@ -78,7 +79,7 @@ $(document).ready(function () {
                         {'id': '2', 'title': $.fn.gettext('Error'), 'selected': statusCodeInit === '2'},
                     ],
                 }).on('change', function (){
-                    dtbt.ajax.reload();
+                    dtb_initial.ajax.reload();
                 });
 
                 selFormID$.initSelect2({
@@ -92,7 +93,7 @@ $(document).ready(function () {
                     keyId: 'id',
                     keyText: 'title',
                 }).on('change', function (){
-                    dtbt.ajax.reload();
+                    dtb_initial.ajax.reload();
                 });
 
                 const systemCodeInit = $x.fn.getUrlParameter('type', '')
@@ -112,7 +113,7 @@ $(document).ready(function () {
                     ]
                 }).on('change', function (){
                     $(this).val() === '4' || $(this).val() === '5' ? selFormID$.toggleSelect2(1) : selFormID$.toggleSelect2(0);
-                    dtbt.ajax.reload();
+                    dtb_initial.ajax.reload();
                 });
                 systemCodeInit === '4' || systemCodeInit === '5' ? selFormID$.toggleSelect2(1) : selFormID$.toggleSelect2(0);
             }
@@ -127,13 +128,29 @@ $(document).ready(function () {
                 data: 'system_code',
                 className: 'min-w-100p',
                 render: (data) => {
+                    // {'id': '0', 'title': $.fn.gettext('Another'), 'selected': systemCodeInit === '0'},
+                    //                         {'id': '1', 'title': .$fn.gettext('Welcome'), 'selected': systemCodeInit === '1'},
+                    //                         {'id': '2', 'title': $.fn.gettext('Calendar'), 'selected': systemCodeInit === '2'},
+                    //                         {'id': '3', 'title': $.fn.gettext('OTP validation'), 'selected': systemCodeInit === '3'},
+                    //                         {'id': '4', 'title': $.fn.gettext('Form: Record'), 'selected': systemCodeInit === '4'},
+                    //                         {'id': '5', 'title': $.fn.gettext('Form: OTP validation'), 'selected': systemCodeInit === '5'},
+                    const baseClassName = "badge no-transform";
                     switch (data) {
+                        case 1:
+                        case '1':
+                            return `<span class="${baseClassName} badge-green">${$.fn.gettext('Welcome')}</span>`
+                        case 2:
+                        case '2':
+                            return `<span class="${baseClassName} badge-purple">${$.fn.gettext('Calendar')}</span>`
+                        case 3:
+                        case '3':
+                            return `<span class="${baseClassName} badge-brown">${$.fn.gettext('OTP validation')}</span>`
                         case 4:
                         case '4':
-                            return `<span class="badge badge-soft-secondary">Form Record</span>`
+                            return `<span class="${baseClassName} badge-teal">${$.fn.gettext('Form: Record')}</span>`
                         case 5:
                         case '5':
-                            return `<span class="badge badge-soft-brown">Form OTP Validation</span>`
+                            return `<span class="${baseClassName} badge-pumpkin">${$.fn.gettext('Form: OTP validation')}</span>`
                         default:
                             return '-'
                     }

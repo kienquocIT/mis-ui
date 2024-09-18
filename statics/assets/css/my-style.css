@@ -390,6 +390,10 @@ div.dataTables_wrapper .dataTables_scrollBody table {
     border-radius: 4px;
 }
 
+.dtb-header-toolbar {
+    flex-wrap: wrap;
+}
+
 /* button upload file */
 .btn-upload-force-color {
     color: #262a2e !important;

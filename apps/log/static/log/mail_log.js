@@ -71,7 +71,6 @@ $(document).ready(function () {
                 }
 
                 const statusCodeInit = $x.fn.getUrlParameter('status', '');
-                console.log('statusCodeInit:', statusCodeInit);
                 selStatusCode$.initSelect2({
                     placeholder: $.fn.gettext('Status'),
                     allowClear: true,

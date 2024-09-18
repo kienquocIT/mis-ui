@@ -8827,3 +8827,15 @@ msgstr "Quản lý tồn kho không có sẵn cho Sản phẩm Dịch vụ"
 #
 msgid "Opportunity BOM"
 msgstr "BOM cho CHKD"
+
+#
+msgid "Issued"
+msgstr "Đã xuất"
+
+#
+msgid "Receipted"
+msgstr "Đã nhập"
+
+#
+msgid "For Serial and Lot products, click on the Detail button in the last column to view/select detail."
+msgstr "Đối với sản phẩm Serial và LOT, click vào nút Chi tiết ở cột cuối để xem/chọn chi tiết."

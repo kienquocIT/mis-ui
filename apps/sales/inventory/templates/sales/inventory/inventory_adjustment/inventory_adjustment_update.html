@@ -37,29 +37,37 @@
         {% include 'sales/inventory/inventory_adjustment/common/tabs.html' %}
     </form>
 
-    <div class="offcanvas offcanvas-end w-50" tabindex="-1" id="select-items-modal" aria-labelledby="offcanvasTopLabel">
+    <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="select-items-modal" aria-labelledby="offcanvasTopLabel">
         <div class="offcanvas-header row">
             <div class="col-9"><h5 id="offcanvasRightLabel">{% trans 'Select products from warehouses' %}</h5></div>
-            <div class="col-2"><button id="btn-select-product" type="button" class="btn btn-primary w-100" data-bs-dismiss="offcanvas">{% trans 'Select' %}</button></div>
-            <div class="col-1 text-right"><button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button></div>
+            <div class="col-3 text-right"><button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button></div>
         </div>
         <div class="offcanvas-body">
-            <div style="overflow: auto; height: 70vh; overflow-x: hidden">
-                <table class="table nowrap w-100" id="table-select-products">
-                    <thead>
-                    <th class="w-10">
-                        <span class="form-check">
-                            <input type="checkbox" class="form-check-input" id="selected_all_product">
-                            <label class="form-check-label"></label>
-                        </span>
-                    </th>
-                    <th class="w-20">{% trans 'Code' %}</th>
-                    <th class="w-30">{% trans 'Warehouse' %}</th>
-                    <th class="w-40">{% trans 'Product' %}</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="row">
+                <div class="col-12">
+                    <div class="border rounded p-3">
+                        <div style="overflow: auto; max-height: 70vh; overflow-x: hidden">
+                            <table class="table nowrap w-100" id="table-select-products">
+                                <thead>
+                                    <tr>
+                                        <th class="w-10">
+                                            <span class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="selected_all_product">
+                                                <label class="form-check-label"></label>
+                                            </span>
+                                        </th>
+                                        <th class="w-40">{% trans 'Warehouse' %}</th>
+                                        <th class="w-50">{% trans 'Product' %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <button id="btn-select-product" type="button" class="btn btn-primary mt-3" data-bs-dismiss="offcanvas">{% trans 'Select' %}</button>
         </div>
     </div>
 {% endblock %}

@@ -343,7 +343,7 @@ class ProjectBOMLoadTab {
             }
         })
     }
-    static LoadMaterialReplacementTable(data_list=[], root_material_id=null) {
+    static LoadMaterialReplacementTable(data_list=[], root_material_id=null, selected_list=[]) {
         replacement_material_table.DataTable().clear().destroy()
         if (root_material_id) {
             replacement_material_table_warning.prop('hidden', true)
@@ -426,8 +426,20 @@ class ProjectBOMLoadTab {
                 ],
                 initComplete: function () {
                     replacement_material_table.find('tbody tr').each(function () {
-                        BOMLoadTab.LoadUOM($(this).find('.replacement-uom'), $(this).find('.replacement-uom').attr('data-group-id'))
+                        ProjectBOMLoadTab.LoadUOM($(this).find('.replacement-uom'), $(this).find('.replacement-uom').attr('data-group-id'))
                     })
+                    for (let i = 0; i < selected_list.length; i++) {
+                        replacement_material_table.find('tbody tr').each(function () {
+                            if ($(this).find('.replacement-checkbox').attr('data-material-id') === selected_list[i]?.['material_id']) {
+                                $(this).find('.replacement-checkbox').prop('checked', true)
+                                $(this).find('.replacement-quantity').val(selected_list[i]?.['quantity']).prop('disabled', false)
+                                $(this).find('.replacement-uom').prop('disabled', false)
+                                ProjectBOMLoadTab.LoadUOM($(this).find('.replacement-uom'), selected_list[i]?.['uom_data']?.['group_id'], selected_list[i]?.['uom_data'])
+                                $(this).find('.replacement-material-disassemble').prop('disabled', false).prop('checked', selected_list[i]?.['disassemble'])
+                                $(this).find('.replacement-note').val(selected_list[i]?.['note']).prop('disabled', false)
+                            }
+                        })
+                    }
                 }
             });
         }
@@ -835,6 +847,7 @@ class ProjectBOMHandle {
                         'uom_id': $(this).find('.material-uom').val(),
                         'disassemble': $(this).find('.material-disassemble').prop('checked'),
                         'note': $(this).find('.material-note').val(),
+                        'replacement_data': $(this).find('.replacement-material-script').text() ? JSON.parse($(this).find('.replacement-material-script').text()) : []
                     })
                 }
             })
@@ -896,18 +909,19 @@ class ProjectBOMHandle {
                                 if (process_row_index === parseInt(data?.['bom_material_component_data'][j]?.['bom_process_order'])) {
                                     let new_material_row = ProjectBOMAction.Create_material_row(process_row_index)
                                     material_table.append(new_material_row)
-                                    let material_selected = data?.['bom_material_component_data'][j]?.['material']
-                                    new_material_row.find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['id'])
-                                    ProjectBOMLoadTab.LoadMaterial(new_material_row.find('.material-item'), material_selected)
-                                    new_material_row.find('.material-code').text(material_selected?.['code'])
-                                    new_material_row.find('.material-quantity').val(data?.['bom_material_component_data'][j]?.['quantity'])
+                                    let material_selected = data?.['bom_material_component_data'][j]
+                                    new_material_row.find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['material']?.['id'])
+                                    new_material_row.find('.replacement-material-script').text(material_selected?.['replacement_data'] ? JSON.stringify(material_selected?.['replacement_data']) : '[]')
+                                    ProjectBOMLoadTab.LoadMaterial(new_material_row.find('.material-item'), material_selected?.['material'])
+                                    new_material_row.find('.material-code').text(material_selected?.['material']?.['code'])
+                                    new_material_row.find('.material-quantity').val(material_selected?.['quantity'])
                                     ProjectBOMLoadTab.LoadUOM(
                                         new_material_row.find('.material-uom'),
-                                        data?.['bom_material_component_data'][j]?.['uom']?.['group_id'],
-                                        data?.['bom_material_component_data'][j]?.['uom']
+                                        material_selected?.['uom']?.['group_id'],
+                                        material_selected?.['uom']
                                     )
-                                    new_material_row.find('.material-disassemble').prop('checked', data?.['bom_material_component_data'][j]?.['disassemble'])
-                                    new_material_row.find('.material-note').val(data?.['bom_material_component_data'][j]?.['note'])
+                                    new_material_row.find('.material-disassemble').prop('checked', material_selected?.['disassemble'])
+                                    new_material_row.find('.material-note').val(material_selected?.['note'])
                                     new_material_row.find('.del-row-material').prop('disabled', option === 'detail')
                                 }
                             }
@@ -916,16 +930,16 @@ class ProjectBOMHandle {
                                 if (process_row_index === parseInt(data?.['bom_tool_data'][k]?.['bom_process_order'])) {
                                     let new_tool_row = ProjectBOMAction.Create_tool_row(process_row_index)
                                     tools_table.append(new_tool_row)
-                                    let tool_selected = data?.['bom_tool_data'][k]?.['tool']
-                                    ProjectBOMLoadTab.LoadTool(new_tool_row.find('.tool-item'), tool_selected)
-                                    new_tool_row.find('.tool-code').text(tool_selected?.['code'])
-                                    new_tool_row.find('.tool-quantity').val(data?.['bom_tool_data'][k]?.['quantity'])
+                                    let tool_selected = data?.['bom_tool_data'][k]
+                                    ProjectBOMLoadTab.LoadTool(new_tool_row.find('.tool-item'), tool_selected?.['tool'])
+                                    new_tool_row.find('.tool-code').text(tool_selected?.['tool']?.['code'])
+                                    new_tool_row.find('.tool-quantity').val(tool_selected?.['quantity'])
                                     ProjectBOMLoadTab.LoadUOM(
                                         new_tool_row.find('.tool-uom'),
-                                        data?.['bom_tool_data'][k]?.['uom']?.['group_id'],
-                                        data?.['bom_tool_data'][k]?.['uom']
+                                        tool_selected?.['uom']?.['group_id'],
+                                        tool_selected?.['uom']
                                     )
-                                    new_tool_row.find('.tool-note').val(data?.['bom_tool_data'][k]?.['note'])
+                                    new_tool_row.find('.tool-note').val(tool_selected?.['note'])
                                     new_tool_row.find('.del-row-tool').prop('disabled', option === 'detail')
                                 }
                             }
@@ -1032,14 +1046,17 @@ $(document).on("click", '.del-row-material', function () {
 $(document).on("click", '.add-new-swap-material', function () {
     REPLACEMENT_ROW = $(this).closest('tr')
     let root_material_id = $(this).attr('data-root-material-id')
-    ProjectBOMLoadTab.LoadMaterialReplacementTable([], root_material_id)
+    console.log(root_material_id)
+    let selected_list = REPLACEMENT_ROW.find('.replacement-material-script').text() ? JSON.parse(REPLACEMENT_ROW.find('.replacement-material-script').text()) : []
+    ProjectBOMLoadTab.LoadMaterialReplacementTable([], root_material_id, selected_list)
 })
 
 $(document).on("change", '.replacement-checkbox', function () {
     let is_checked = $(this).prop('checked')
     $(this).closest('tr').find('.replacement-quantity').val(0).prop('disabled', !is_checked)
     $(this).closest('tr').find('.replacement-uom').empty().prop('disabled', !is_checked)
-    $(this).closest('tr').find('.replacement-material-disassemble').empty().prop('disabled', !is_checked)
+    $(this).closest('tr').find('.replacement-material-disassemble').prop('checked', false).prop('disabled', !is_checked)
+    $(this).closest('tr').find('.replacement-note').val('').prop('disabled', !is_checked)
 })
 
 $('#btn-get-replacement-material').on('click', function () {
@@ -1050,7 +1067,7 @@ $('#btn-get-replacement-material').on('click', function () {
             replacement_data.push({
                 'material_id': row.find('.replacement-checkbox').attr('data-material-id'),
                 'quantity': row.find('.replacement-quantity').val(),
-                'uom': row.find('.replacement-uom').val(),
+                'uom_id': row.find('.replacement-uom').val(),
                 'disassemble': row.find('.replacement-material-disassemble').prop('checked'),
                 'note': row.find('.replacement-note').val()
             })

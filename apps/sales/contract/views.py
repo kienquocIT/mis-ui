@@ -25,36 +25,36 @@ def update_contract(request, url, pk, msg):
     return resp.auto_return()
 
 
-class ContractList(View):
+class ContractApprovalList(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
         template='sales/contract/contract_list.html',
-        menu_active='',
+        menu_active='menu_contract_approval_list',
         breadcrumb='CONTRACT_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
 
 
-class ContractCreate(View):
+class ContractApprovalCreate(View):
     @mask_view(
         auth_require=True,
         template='sales/contract/contract_create.html',
-        menu_active='',
+        menu_active='menu_contract_approval_list',
         breadcrumb='CONTRACT_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
         ctx = {
             'employee_current': request.user.employee_current_data,
-            'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
-            'form_id': 'frm_quotation_create',
+            'input_mapping_properties': InputMappingProperties.CONTRACT_APPROVAL_DATA_MAP,
+            'form_id': 'frm_contract_create',
         }
-        return {}, status.HTTP_200_OK
+        return ctx, status.HTTP_200_OK
 
 
-class ContractListAPI(APIView):
+class ContractApprovalListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
@@ -62,7 +62,7 @@ class ContractListAPI(APIView):
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.CONTRACT_LIST).get(data)
-        return resp.auto_return(key_success='contract_list')
+        return resp.auto_return(key_success='contract_approval_list')
 
     @mask_view(
         auth_require=True,
@@ -76,13 +76,13 @@ class ContractListAPI(APIView):
         )
 
 
-class ContractDetail(View):
+class ContractApprovalDetail(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
         template='sales/contract/contract_detail.html',
-        menu_active='',
+        menu_active='menu_contract_approval_list',
         breadcrumb='CONTRACT_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
@@ -91,21 +91,25 @@ class ContractDetail(View):
                }, status.HTTP_200_OK
 
 
-class ContractUpdate(View):
+class ContractApprovalUpdate(View):
     @mask_view(
         auth_require=True,
         template='sales/contract/contract_update.html',
-        breadcrumb='',
+        breadcrumb='menu_contract_approval_list',
         menu_active='CONTRACT_UPDATE_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         ctx = {
             'data': {'doc_id': pk},
+            'employee_current': request.user.employee_current_data,
+            'input_mapping_properties': InputMappingProperties.CONTRACT_APPROVAL_DATA_MAP,
+            'form_id': 'frm_contract_create',
+
         }
         return ctx, status.HTTP_200_OK
 
 
-class ContractDetailAPI(APIView):
+class ContractApprovalDetailAPI(APIView):
 
     @mask_view(
         auth_require=True,

@@ -81,7 +81,7 @@ $(document).ready(function () {
             })
     });
 
-    $('#groupWeight, #workWeight').keyup(delay(function (e) {
+    $('#groupWeight, #workWeight').keyup(delay(function () {
         validWeight(this)
     }, 500));
 
@@ -789,8 +789,7 @@ class ProjectWorkExpenseHandle {
             data.quantity &&
             data.expense_price &&
             typeof data.is_labor == "boolean" &&
-            ((!data.is_labor && data.title !== "") || (data.is_labor && data.expense_name.hasOwnProperty('id'))));
-
+            ((!data.is_labor && data.title !== "") || (data.is_labor && data.expense_name.hasOwnProperty('id'))))
     }
 
     static saveExpenseData() {
@@ -847,7 +846,7 @@ class ProjectWorkExpenseHandle {
         $('tr:nth-child(3) th:nth-child(3)', tbl.table().header()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${total_price}"></span></p>`)
     }
 
-    static appendChildTable(trElm, workID) {
+    static appendChildTable(trElm, workID, bomID='') {
         const $formElm = $('#project_form'), check_page_version = $formElm.hasClass('baseline_version');
         let baseline_data = $formElm.data('baseline_data');
         let dtlSub = `<table id="expense_child_${workID}" class="table nowrap w-100 min-w-1768p mb-5"><thead></thead><tbody></tbody></table>`,
@@ -856,6 +855,12 @@ class ProjectWorkExpenseHandle {
                 + `<a class="dropdown-item add-expense" href="#"><i class="dropdown-icon fas fa-hand-holding-usd text-primary"></i> ${$.fn.gettext("Add Expense")}</a>`
                 + `<a class="dropdown-item add-labor" href="#"><i class="dropdown-icon fas fa-people-carry text-primary"></i> ${$.fn.gettext("Add Labor")}</a>`
                 + `</div>`;
+        // if work has reference to BOM Service
+        if (bomID){
+            $addBtn += `<button type="button" class="btn btn-outline-blue btn-sm ml-2 btn-load-service">${$.fn.gettext('Load service')}</button>`
+            + `<button type="button" class="btn btn-outline-orange btn-sm ml-2 btn-reset-service">${$.fn.gettext('Reset')}</button>`;
+        }
+
         if (check_page_version) $addBtn = ''
         trElm.after(
             `<tr class="work-expense-wrap"><td colspan="4"><div class="WE-content hidden-simple">${$addBtn + dtlSub}</div></td></tr>`
@@ -1029,6 +1034,8 @@ class ProjectWorkExpenseHandle {
                 $.fn.initMaskMoney2()
             },
         });
+
+        // event dropdown button ADD expense or labor
         $('.add-expense, .add-labor', trElm.next()).on('click', function (e) {
             e.preventDefault()
             let temp = [{
@@ -1046,6 +1053,71 @@ class ProjectWorkExpenseHandle {
                 sub_total_after_tax: 0,
             }]
             crtTable.rows.add(temp).draw()
+        })
+
+        // event click button load service
+        $('.btn-load-service', trElm.next()).on('click', function (e) {
+            e.preventDefault();
+            $(this).attr('disabled', true)
+            if (bomID){
+                $.fn.callAjax2({
+                    'url': $('#url-factory').attr('data-bom_detail').format_url_with_uuid(bomID),
+                    'method': 'get',
+                }).then(
+                    (resp) => {
+                        let res = $.fn.switcherResp(resp);
+                        if (res && (res['status'] === 201 || res['status'] === 200)) {
+                           let data = res['bom_detail']['bom_process_data']
+                            if (data){
+                                let lst_service = []
+                                for (let item of data){
+                                    lst_service.push({
+                                        work_id: workID,
+                                        id: $x.fn.randomStr(16),
+                                        expense_name: item.labor,
+                                        title: item.task_name,
+                                        expense_item: item.labor.expense_item,
+                                        uom: item.uom,
+                                        quantity: item.quantity,
+                                        expense_price: item.unit_price,
+                                        tax: {},
+                                        sub_total: item.subtotal_price,
+                                        sub_total_after_tax: item.subtotal_price,
+                                        is_labor: true,
+                                        is_service: true
+                                    })
+                                }
+                                crtTable.rows.add(lst_service).draw()
+                                $(`#expense_child_${workID} tbody tr:first-child .valid-number`).trigger('change')
+                                $(this).attr('disabled', false)
+                            }
+                        }
+                        $(this).prop('disabled', false)
+                    },
+                    (err) => {
+                        $.fn.notifyB({description: err.data.errors}, 'failure')
+                        $(this).prop('disabled', false)
+                    }
+                )
+            }
+        });
+
+        // event button click reset service
+        $('.btn-reset-service', trElm.next()).on('click', function (e){
+            e.preventDefault();
+            let crtData = crtTable.data().toArray()
+            const $elmExData = $('#work_expense_data')
+            let deleteList = $elmExData.data('delete_lst') || []
+
+            for (let idx in crtData){
+                const item = crtData[idx]
+                if(item.is_service) $(crtTable.row(idx).node()).addClass('is_reset')
+                if (item.id.length > 16)
+                    deleteList.push(item.id)
+            }
+            crtTable.rows('.is_reset').remove().draw(false)
+            $elmExData.data('delete_lst', deleteList)
+            ProjectWorkExpenseHandle.calcSubTotal(crtTable.data().toArray(), trElm)
         })
 
         // on change field QUANTITY and UNIT PRICE
@@ -1110,8 +1182,10 @@ class ProjectWorkExpenseHandle {
                 {
                     data: 'title',
                     width: '60%',
-                    render: (row) => {
-                        return `<button class="btn-sh-ex btn-flush-primary btn btn-icon btn-rounded flush-soft-hover mr-1"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> ${row}`;
+                    render: (row, type, data) => {
+                        return `<button class="btn-sh-ex btn-flush-primary btn btn-icon btn-rounded flush-soft-hover mr-1">`
+                            + `<span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> ${
+                            row} ${'id' in data?.['bom_data'] ? '<i class="fa-brands fa-connectdevelop"></i>' : ''}`;
                     }
                 },
                 {
@@ -1148,7 +1222,8 @@ class ProjectWorkExpenseHandle {
                     } else {
                         // toggle open
                         if (!tr.next().hasClass('work-expense-wrap')) {
-                            ProjectWorkExpenseHandle.appendChildTable(tr, data.id)
+                            let bomID = 'id' in data?.['bom_data'] ? data['bom_data']['id'] : '';
+                            ProjectWorkExpenseHandle.appendChildTable(tr, data.id, bomID)
                         }
                         tr.next().removeClass('hidden').find('.WE-content').slideToggle()
                     }
@@ -1184,7 +1259,6 @@ class ProjectWorkExpenseHandle {
                 $('tr:nth-child(3) th:nth-child(3)', api.table().header()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${totalAfterTax}"></span></p>`);
             },
         });
-
         // init tab when click
         $('a[data-bs-toggle="tab"][href="#tab_work_expense"]').on('shown.bs.tab', () => WExTbl.columns.adjust())
     }

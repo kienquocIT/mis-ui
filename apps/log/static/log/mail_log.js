@@ -20,6 +20,8 @@ $(document).ready(function () {
     const selStatusCode$ = $(`<select class="form-select form-select-sm" id="form-log-status-code"></select>`);
     const selSystemCode$ = $(`<select class="form-select form-select-sm" id="form-log-system-code"></select>`);
     const selFormID$ = $(`<select class="form-select form-select-sm" id="form-log-by-form-id"></select>`);
+    const statusCodeInit = $x.fn.getUrlParameter('status', '');
+    const systemCodeInit = $x.fn.getUrlParameter('type', '');
     const dtb_initial = tbl$.DataTableDefault({
         useDataServer: true,
         scrollX: true,
@@ -30,6 +32,11 @@ $(document).ready(function () {
             type: 'GET',
             data: function (d){
                 let ctx = {};
+                if (tbl$.attr('data-first-load') !== 'true') {
+                    tbl$.attr('data-first-load', 'true');
+                    if (statusCodeInit) ctx['status_code'] = statusCodeInit;
+                    if (systemCodeInit) ctx['system_code'] = systemCodeInit;
+                }
                 if (selFormID$ && selFormID$.length > 0){
                     let filterFormId = selFormID$.val();
                     if (filterFormId) ctx['doc_id'] = filterFormId;
@@ -70,7 +77,6 @@ $(document).ready(function () {
                     _system_code === '4' || _system_code === '5' ? selFormID$.toggleSelect2(1) : selFormID$.toggleSelect2(0);
                 }
 
-                const statusCodeInit = $x.fn.getUrlParameter('status', '');
                 selStatusCode$.initSelect2({
                     placeholder: $.fn.gettext('Status'),
                     allowClear: true,
@@ -100,7 +106,6 @@ $(document).ready(function () {
                     dtb_initial.ajax.reload();
                 });
 
-                const systemCodeInit = $x.fn.getUrlParameter('type', '');
                 selSystemCode$.initSelect2({
                     placeholder: $.fn.gettext('System code'),
                     allowClear: true,

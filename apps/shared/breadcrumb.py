@@ -378,7 +378,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     IMPORT_LIST_PAGE = BreadcrumbChildren(_('Import List'), 'FImportListView')
     FORM_LIST_PAGE = BreadcrumbChildren(_('Forms'), 'FormListView')
     FORM_ENTRIES_LIST_PAGE = BreadcrumbChildren(_('Entries Data'))
-    FORM_AUTH_LOG_PAGE = BreadcrumbChildren(_('Authentication logs'))
+
+    LOGS = BreadcrumbChildren(_('Logs'))
 
     # PROJECT
     PROJECT_HOME = BreadcrumbChildren(_('Project home'), 'ProjectList')
@@ -968,6 +969,8 @@ class BreadcrumbView:
 
     MAILER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.MAILER_CONFIG_LIST_PAGE]
     MAILER_CONFIG_LIST_PAGE = MAILER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]
+    MAILER_LOG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.MAILER_CONFIG_LIST_PAGE, BreadcrumbItem.LOGS]
+    MAILER_LOG_LIST_PAGE = MAILER_LOG_LIST + [BreadcrumbItem.BASTION_LIST]
 
     IMPORT_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.IMPORT_LIST_PAGE]
     IMPORT_LIST_PAGE = IMPORT_LIST + [BreadcrumbItem.BASTION_LIST]
@@ -989,7 +992,6 @@ class BreadcrumbView:
     FORM_UPDATE = FORM_LIST + [BreadcrumbItem.BASTION_UPDATE]
     FORM_ENTRIES_LIST = FORM_LIST + [BreadcrumbItem.FORM_ENTRIES_LIST_PAGE]
     FORM_KNOWLEDGE = FORM_LIST + [BreadcrumbItem.BASTION_KNOWLEDGE]
-    FORM_AUTH_LOG = FORM_LIST + [BreadcrumbItem.FORM_AUTH_LOG_PAGE]
 
     # Zones
     ZONES_LIST_PAGE = [

@@ -104,9 +104,9 @@ class MailLogView(View):
     @mask_view(
         login_require=True,
         template='log/mail_log.html',
-        jsi18n='log',
-        breadcrumb='FORM_AUTH_LOG',
-        menu_active='menu_form_data',
+        jsi18n='mailer',
+        breadcrumb='MAILER_LOG_LIST_PAGE',
+        menu_active='menu_mail_template',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

@@ -35,7 +35,7 @@ $(document).ready(function () {
                 if (tbl$.attr('data-first-load') !== 'true') {
                     tbl$.attr('data-first-load', 'true');
                     if (statusCodeInit) ctx['status_code'] = statusCodeInit;
-                    if (systemCodeInit) ctx['system_code'] = systemCodeInit;
+                    if (systemCodeInit) ctx[systemCodeInit.indexOf(',') === -1 ? 'system_code' : 'system_code__in'] = systemCodeInit;
                 }
                 if (selFormID$ && selFormID$.length > 0){
                     let filterFormId = selFormID$.val();
@@ -47,7 +47,9 @@ $(document).ready(function () {
                 }
                 if (selSystemCode$ && selSystemCode$.length > 0){
                     let systemCodeSelected = selSystemCode$.val();
-                    if (systemCodeSelected) ctx['system_code'] = selSystemCode$.val();
+                    if (systemCodeSelected){
+                        ctx[systemCodeSelected.indexOf(',') === -1 ? 'system_code': 'system_code__in'] = systemCodeSelected;
+                    }
                 }
                 return $.extend({}, d, ctx);
             },
@@ -74,7 +76,7 @@ $(document).ready(function () {
                 );
 
                 function onChangeSystemCode(_system_code){
-                    _system_code === '4' || _system_code === '5' ? selFormID$.toggleSelect2(1) : selFormID$.toggleSelect2(0);
+                    _system_code.indexOf('4') !== -1 || _system_code.indexOf('5') !== -1 ? selFormID$.toggleSelect2(1) : selFormID$.toggleSelect2(0);
                 }
 
                 selStatusCode$.initSelect2({
@@ -93,7 +95,7 @@ $(document).ready(function () {
                 });
 
                 selFormID$.initSelect2({
-                    placeholder: $.fn.gettext('Form'),
+                    placeholder: $.fn.gettext('Form filter'),
                     ajax: {
                         url: tbl$.attr('data-url-form-list'),
                         method: 'GET',
@@ -117,8 +119,7 @@ $(document).ready(function () {
                         {'id': '1', 'title': $.fn.gettext('Welcome'), 'selected': systemCodeInit === '1'},
                         {'id': '2', 'title': $.fn.gettext('Calendar'), 'selected': systemCodeInit === '2'},
                         {'id': '3', 'title': $.fn.gettext('OTP validation'), 'selected': systemCodeInit === '3'},
-                        {'id': '4', 'title': $.fn.gettext('Form: Record'), 'selected': systemCodeInit === '4'},
-                        {'id': '5', 'title': $.fn.gettext('Form: OTP validation'), 'selected': systemCodeInit === '5'},
+                        {'id': '4,5', 'title': $.fn.gettext('Form')},
                     ]
                 }).on('change', function (){
                     onChangeSystemCode($(this).val());
@@ -137,12 +138,6 @@ $(document).ready(function () {
                 data: 'system_code',
                 className: 'min-w-100p',
                 render: (data) => {
-                    // {'id': '0', 'title': $.fn.gettext('Another'), 'selected': systemCodeInit === '0'},
-                    //                         {'id': '1', 'title': .$fn.gettext('Welcome'), 'selected': systemCodeInit === '1'},
-                    //                         {'id': '2', 'title': $.fn.gettext('Calendar'), 'selected': systemCodeInit === '2'},
-                    //                         {'id': '3', 'title': $.fn.gettext('OTP validation'), 'selected': systemCodeInit === '3'},
-                    //                         {'id': '4', 'title': $.fn.gettext('Form: Record'), 'selected': systemCodeInit === '4'},
-                    //                         {'id': '5', 'title': $.fn.gettext('Form: OTP validation'), 'selected': systemCodeInit === '5'},
                     const baseClassName = "badge no-transform";
                     switch (data) {
                         case 1:
@@ -194,6 +189,7 @@ $(document).ready(function () {
             },
             {
                 data: 'address_cc',
+                visible: false,
                 className: 'min-w-200p',
                 render: (data, type, row) => {
                     return htmlMailList(data, 'badge-warning');
@@ -213,7 +209,7 @@ $(document).ready(function () {
                 render: data => {
                     switch (data) {
                         case 0:
-                        case '2':
+                        case '0':
                             return `<span 
                                 class="badge badge-light badge-indicator badge-indicator-xl"
                                 data-bs-toggle="tooltip"

@@ -189,6 +189,7 @@ $(document).ready(function () {
             },
             {
                 data: 'address_cc',
+                visible: false,
                 className: 'min-w-200p',
                 render: (data, type, row) => {
                     return htmlMailList(data, 'badge-warning');
@@ -208,7 +209,7 @@ $(document).ready(function () {
                 render: data => {
                     switch (data) {
                         case 0:
-                        case '2':
+                        case '0':
                             return `<span 
                                 class="badge badge-light badge-indicator badge-indicator-xl"
                                 data-bs-toggle="tooltip"

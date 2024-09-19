@@ -120,6 +120,9 @@
 }
 
 /* mention person */
+.mention-person-list {
+    z-index: 1056;
+}
 .mention-person-list li {
     padding: 0.2rem 0.2rem;
 }

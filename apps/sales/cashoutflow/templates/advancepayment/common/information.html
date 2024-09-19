@@ -29,7 +29,7 @@
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label" for="created_date_id">{% trans "Created date" %}</label>
-                            <input class="form-control form-control-line" id="created_date_id" style="color: #6f6f6f">
+                            <input name="date_created" class="form-control form-control-line" id="created_date_id" style="color: #6f6f6f">
                         </div>
                     </div>
                 {#        creator#}
@@ -60,7 +60,7 @@
                                         </span>
                                     </span>
                                 </span>
-                                <input class="form-control form-control-line" id="creator-select-box">
+                                <input name="employee_created" class="form-control form-control-line" id="creator-select-box">
                             </span>
                         </div>
                     </div>
@@ -68,7 +68,8 @@
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label" for="quotation_mapped_select">{% trans "Quotation" %}</label>
-                            <select class="select2 form-select"
+                            <select name="quotation_id"
+                                    class="select2 form-select"
                                     data-url="{% url 'CashOutflowQuotationListAPI' %}"
                                     id="quotation_mapped_select">
                             </select>
@@ -78,7 +79,8 @@
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label" for="sale_order_mapped_select">{% trans "Sale Order" %}</label>
-                            <select class="select2 form-select"
+                            <select name="sale_order_id"
+                                    class="select2 form-select"
                                     data-url="{% url 'CashOutflowSaleOrderListAPI' %}"
                                     id="sale_order_mapped_select"
                             ></select>
@@ -129,8 +131,13 @@
                                         </span>
                                     </span>
                                 </span>
-                                <select name="supplier" class="form-select" data-method="GET" id="supplier-select-box" disabled
-                                        data-url="{% url 'AccountListAPI' %}"></select>
+                                <select name="supplier"
+                                        class="form-select"
+                                        data-method="GET"
+                                        id="supplier-select-box"
+                                        disabled
+                                        data-url="{% url 'AccountListAPI' %}">
+                                </select>
                             </span>
                         </div>
                     </div>

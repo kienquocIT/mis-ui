@@ -17,8 +17,8 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'ProductionOrderListAPI' %}"
-            data-url-redirect="{% url 'ProductionOrderList' %}"
+            data-url="{% url 'WorkOrderListAPI' %}"
+            data-url-redirect="{% url 'WorkOrderList' %}"
             data-method="POST"
             id="frm_production_order"
             method="post"
@@ -41,6 +41,21 @@
                     <div class="form-group">
                         <label class="form-label" for="date-created">{% trans 'Date Created' %}</label>
                         <input type="text" class="form-control form-control-line mt-1" id="date-created" readonly>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="form-group">
+                        <label class="form-label required" for="box-status">{% trans 'Status' %}</label>
+                        <select
+                            class="form-select"
+                            id="box-status"
+                            data-url=""
+                            data-method="GET"
+                            data-link-detail=""
+                            name="status"
+                            data-keyResp=""
+                            disabled
+                        ></select>
                     </div>
                 </div>
             </div>
@@ -68,7 +83,7 @@
                                 ></select>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-6">
+                        <div class="col-12 col-md-3 col-lg-3">
                             <div class="d-flex justify-content-start mt-6">
                                 <button type="button" class="btn btn-outline-primary" id="btn-edit-product" data-bs-toggle="modal" data-bs-target="#productModal">
                                     <span><span class="icon"><i class="far fa-edit"></i></span><span>{% trans 'Edit product' %}</span></span>
@@ -97,6 +112,21 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-warehouse">{% trans 'Warehouse' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="box-warehouse"
+                                    data-url="{% url "WareHouseListAPI" %}"
+                                    data-method="GET"
+                                    data-link-detail=""
+                                    name="warehouse_id"
+                                    data-keyResp="warehouse_list"
+                                    required
+                                ></select>
+                            </div>
+                        </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label required" for="date-start">{% trans 'Start date' %}</label>
@@ -121,6 +151,8 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-12 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label required" for="box-group">{% trans 'Production group' %}</label>

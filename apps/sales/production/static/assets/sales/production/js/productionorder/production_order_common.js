@@ -475,7 +475,7 @@ class ProdOrderDataTableHandle {
 
     static dataTableMain(data) {
         let multi = 1;
-        if (ProdOrderLoadDataHandle.$quantity) {
+        if (ProdOrderLoadDataHandle.$quantity.val()) {
             multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
         }
         ProdOrderDataTableHandle.$tableMain.DataTableDefault({

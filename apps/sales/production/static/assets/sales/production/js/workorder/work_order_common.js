@@ -6,7 +6,9 @@ class WorkOrderLoadDataHandle {
     static $dateEnd = $('#date-end');
     static $dateCreated = $('#date-created');
     static $boxOpp = $('#opportunity_id');
+    static $boxEmp = $('#employee_inherit_id');
     static $boxSO = $('#box-so');
+    static $boxGroup = $('#box-group');
     static $btnEditProd = $('#btn-edit-product');
     static $btnSaveProd = $('#btn-save-product');
 
@@ -52,6 +54,9 @@ class WorkOrderLoadDataHandle {
                     let row = eleCheck.closest('tr');
                     if (row) {
                         $(row).css('background-color', '');
+                        if (row.querySelector('.table-row-quantity')) {
+                            row.querySelector('.table-row-quantity').setAttribute('disabled', 'true');
+                        }
                     }
                 }
                 checkbox.checked = checked;
@@ -59,6 +64,30 @@ class WorkOrderLoadDataHandle {
                 if (row) {
                     if (checked === true) {
                         $(row).css('background-color', '#ebfcf5');
+                        if (row.querySelector('.table-row-quantity')) {
+                            row.querySelector('.table-row-quantity').removeAttribute('disabled');
+                        }
+                    }
+                }
+            });
+        });
+        return true;
+    };
+
+    static loadEventValidQuantity($table) {
+        let inputs = $table[0].querySelectorAll('.table-row-quantity');
+        inputs.forEach((input) => {
+            input.addEventListener('change', function () {
+                let row = input.closest('tr');
+                if (row) {
+                    if (row.querySelector('.table-row-quantity-wo-remain')) {
+                        let remain = parseFloat(row.querySelector('.table-row-quantity-wo-remain').innerHTML);
+                        let quantity = parseFloat(input.value);
+                        if (quantity > remain) {
+                            input.value = 0;
+                            $.fn.notifyB({description: WorkOrderLoadDataHandle.$trans.attr('data-exceed-quantity')}, 'failure');
+                            return false;
+                        }
                     }
                 }
             });
@@ -83,6 +112,7 @@ class WorkOrderLoadDataHandle {
         WorkOrderLoadDataHandle.$dateCreated.val(WorkOrderCommonHandle.getCurrentDate());
         // select2
         WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxSO, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+        WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxGroup);
         // date picker
         $('.date-picker').each(function () {
             $(this).daterangepicker({
@@ -114,12 +144,16 @@ class WorkOrderLoadDataHandle {
 
     static loadDataByOpportunity() {
         WorkOrderLoadDataHandle.loadCallAjaxSOProduct();
+        return true;
     };
 
     static loadCallAjaxSOProduct() {
         if (WorkOrderLoadDataHandle.$boxOpp.val()) {
             let dataOpp = SelectDDControl.get_data_from_idx(WorkOrderLoadDataHandle.$boxOpp, WorkOrderLoadDataHandle.$boxOpp.val());
             if (dataOpp) {
+                if (dataOpp?.['sale_person']?.['id']) {
+                    WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxEmp, [dataOpp?.['sale_person']]);
+                }
                 if (dataOpp?.['sale_order']?.['id']) {
                     WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxSO, [dataOpp?.['sale_order']], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
                     $.fn.callAjax2({
@@ -135,6 +169,7 @@ class WorkOrderLoadDataHandle {
                                 if (data.hasOwnProperty('sale_order_product_wo') && Array.isArray(data.sale_order_product_wo)) {
                                     WorkOrderDataTableHandle.$tableSOProd.DataTable().rows.add(data.sale_order_product_wo).draw();
                                     WorkOrderLoadDataHandle.loadEventCheckbox(WorkOrderDataTableHandle.$tableSOProd);
+                                    WorkOrderLoadDataHandle.loadEventValidQuantity(WorkOrderDataTableHandle.$tableSOProd);
                                     for (let ele of WorkOrderDataTableHandle.$tableSOProd[0].querySelectorAll('.table-row-quantity')) {
                                         WorkOrderLoadDataHandle.loadEventValidNum(ele);
                                     }
@@ -160,6 +195,7 @@ class WorkOrderLoadDataHandle {
                     if (dataRow?.['product_data']?.['id']) {
                         WorkOrderLoadDataHandle.$product.val(dataRow?.['product_data']?.['title']);
                         WorkOrderLoadDataHandle.$product.attr('data-detail', JSON.stringify(dataRow?.['product_data']));
+                        WorkOrderLoadDataHandle.loadBOM();
                     }
                     if (dataRow?.['uom_data']?.['id']) {
                         WorkOrderLoadDataHandle.$uom.val(dataRow?.['uom_data']?.['title']);
@@ -176,7 +212,7 @@ class WorkOrderLoadDataHandle {
         if (WorkOrderLoadDataHandle.$product.attr('data-detail')) {
             let dataProduct = JSON.parse(WorkOrderLoadDataHandle.$product.attr('data-detail'));
             $.fn.callAjax2({
-                    'url': ProdOrderLoadDataHandle.$urls.attr('data-md-bom'),
+                    'url': WorkOrderLoadDataHandle.$urls.attr('data-md-bom'),
                     'method': 'GET',
                     'data': {'product_id': dataProduct?.['id']},
                     'isDropdown': true,
@@ -203,8 +239,8 @@ class WorkOrderLoadDataHandle {
     };
 
     static loadGetDataBOM() {
-        if (ProdOrderLoadDataHandle.$dataBOM.val()) {
-            return JSON.parse(ProdOrderLoadDataHandle.$dataBOM.val());
+        if (WorkOrderLoadDataHandle.$dataBOM.val()) {
+            return JSON.parse(WorkOrderLoadDataHandle.$dataBOM.val());
         }
         return {};
     };
@@ -242,15 +278,15 @@ class WorkOrderLoadDataHandle {
             {'task_order': 2, 'product_data': {'id': 0, 'title': 'Mặt bàn lớn', 'available_amount': 15}, 'warehouse_data': {'id': 0, 'title': 'Kho 1', 'available_stock': 15}, 'quantity_bom': 1, 'quantity': 0, 'order': 1},
             {'task_order': 2, 'product_data': {'id': 1, 'title': 'Vít lớn 4mm', 'available_amount': 45}, 'warehouse_data': {'id': 0, 'title': 'Kho 1', 'available_stock': 30}, 'quantity_bom': 3, 'quantity': 0, 'order': 2},
         ]
-        ProdOrderDataTableHandle.$tableMain.DataTable().clear().draw();
-        ProdOrderDataTableHandle.$tableMain.DataTable().rows.add(data).draw();
-        ProdOrderLoadDataHandle.loadDD(ProdOrderDataTableHandle.$tableMain);
-        ProdOrderLoadDataHandle.loadSetCollapse();
+        WorkOrderDataTableHandle.$tableMain.DataTable().clear().draw();
+        WorkOrderDataTableHandle.$tableMain.DataTable().rows.add(data).draw();
+        WorkOrderLoadDataHandle.loadDD(WorkOrderDataTableHandle.$tableMain);
+        WorkOrderLoadDataHandle.loadSetCollapse();
         return true;
     };
 
     static loadSetCollapse() {
-        for (let child of ProdOrderDataTableHandle.$tableMain[0].querySelectorAll('.cl-child')) {
+        for (let child of WorkOrderDataTableHandle.$tableMain[0].querySelectorAll('.cl-child')) {
             if (child.getAttribute('data-row')) {
                 let dataRow = JSON.parse(child.getAttribute('data-row'));
                 let row = child.closest('tr');
@@ -269,7 +305,7 @@ class WorkOrderLoadDataHandle {
     static loadDDProduct($ele, dataProduct) {
         let result = [];
         $.fn.callAjax2({
-                'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
+                'url': WorkOrderLoadDataHandle.$urls.attr('data-md-product'),
                 'method': 'GET',
                 'data': {
                     'general_product_types_mapped__is_material': true
@@ -283,7 +319,7 @@ class WorkOrderLoadDataHandle {
                     if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
                         result = result.concat(data.product_sale_list);
                         $.fn.callAjax2({
-                                'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
+                                'url': WorkOrderLoadDataHandle.$urls.attr('data-md-product'),
                                 'method': 'GET',
                                 'data': {
                                     'general_product_types_mapped__is_finished_goods': true,
@@ -296,7 +332,7 @@ class WorkOrderLoadDataHandle {
                                 if (data) {
                                     if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
                                         result = result.concat(data.product_sale_list);
-                                        ProdOrderLoadDataHandle.loadInitS2($ele, result);
+                                        WorkOrderLoadDataHandle.loadInitS2($ele, result);
                                         // $.fn.callAjax2({
                                         //         'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
                                         //         'method': 'GET',
@@ -353,10 +389,10 @@ class WorkOrderLoadDataHandle {
             if (row.querySelector('.table-row-order').getAttribute('data-row')) {
                 let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
                 if (row.querySelector('.table-row-item')) {
-                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [], {'general_product_types_mapped__is_material': true});
+                    WorkOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [], {'general_product_types_mapped__is_material': true});
                     if (dataRow?.['product_data']) {
                         $.fn.callAjax2({
-                                'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
+                                'url': WorkOrderLoadDataHandle.$urls.attr('data-md-product'),
                                 'method': 'GET',
                                 'data': {'id': dataRow?.['product_data']?.['id']},
                                 'isDropdown': true,
@@ -367,7 +403,7 @@ class WorkOrderLoadDataHandle {
                                 if (data) {
                                     if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
                                         if (data.product_sale_list.length > 0) {
-                                            ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [data.product_sale_list[0]], {'general_product_types_mapped__is_material': true});
+                                            WorkOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [data.product_sale_list[0]], {'general_product_types_mapped__is_material': true});
                                         }
                                     }
                                 }
@@ -376,9 +412,9 @@ class WorkOrderLoadDataHandle {
                     }
                 }
                 if (row.querySelector('.table-row-uom')) {
-                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')));
+                    WorkOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')));
                     if (dataRow?.['uom_data']) {
-                        ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
+                        WorkOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
                     }
                 }
                 if (row.querySelector('.check-all-wh')) {
@@ -388,15 +424,15 @@ class WorkOrderLoadDataHandle {
                     if (dataRow?.['is_all_warehouse'] === true) {
                         row.querySelector('.table-row-warehouse').setAttribute('disabled', 'true');
                     }
-                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')));
+                    WorkOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')));
                     if (dataRow?.['warehouse_data']) {
-                        ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), [dataRow?.['warehouse_data']]);
+                        WorkOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), [dataRow?.['warehouse_data']]);
                     }
                 }
                 if (row.querySelector('.table-row-tool')) {
-                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tool')));
+                    WorkOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tool')));
                     if (dataRow?.['tool_data']) {
-                        ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tool')), dataRow?.['tool_data'], {'general_product_types_mapped__is_asset_tool': true});
+                        WorkOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tool')), dataRow?.['tool_data'], {'general_product_types_mapped__is_asset_tool': true});
                     }
                 }
                 if (row.querySelector('.cl-parent')) {
@@ -419,7 +455,7 @@ class WorkOrderLoadDataHandle {
                     dataParams = {'product_id': productID};
                 }
                 $.fn.callAjax2({
-                        'url': ProdOrderLoadDataHandle.$urls.attr('data-md-pwh'),
+                        'url': WorkOrderLoadDataHandle.$urls.attr('data-md-pwh'),
                         'method': 'GET',
                         'data': dataParams,
                         'isDropdown': true,
@@ -462,9 +498,9 @@ class WorkOrderLoadDataHandle {
                 let dataUOMGr = data?.['general_information']?.['uom_group'];
                 // load UOM
                 if (dataUOM && dataUOMGr?.['id']) {
-                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataUOM], {'group': dataUOMGr?.['id']});
+                    WorkOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataUOM], {'group': dataUOMGr?.['id']});
                 } else {
-                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')));
+                    WorkOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')));
                 }
                 // reset
                 row.querySelector('.table-row-stock').innerHTML = 0;
@@ -475,10 +511,10 @@ class WorkOrderLoadDataHandle {
 
     static loadChangeQuantity() {
         let multi = 1;
-        if (ProdOrderLoadDataHandle.$quantity) {
-            multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
+        if (WorkOrderLoadDataHandle.$quantity) {
+            multi = parseInt(WorkOrderLoadDataHandle.$quantity.val());
         }
-        ProdOrderDataTableHandle.$tableMain.DataTable().rows().every(function () {
+        WorkOrderDataTableHandle.$tableMain.DataTable().rows().every(function () {
             let row = this.node();
             if (row.querySelector('.table-row-order').getAttribute('data-row')) {
                 let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
@@ -553,8 +589,8 @@ class WorkOrderDataTableHandle {
 
     static dataTableMain(data) {
         let multi = 1;
-        if (WorkOrderLoadDataHandle.$quantity) {
-            multi = parseInt(WorkOrderLoadDataHandle.$quantity.val());
+        if (WorkOrderLoadDataHandle.$quantity.html()) {
+            multi = parseInt(WorkOrderLoadDataHandle.$quantity.html());
         }
         WorkOrderDataTableHandle.$tableMain.DataTableDefault({
             data: data ? data : [],
@@ -735,7 +771,7 @@ class WorkOrderDataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-quantity valid-number" value="${row?.['quantity'] ? row?.['quantity'] : 0}">`;
+                        return `<input type="text" class="form-control table-row-quantity valid-number" value="${row?.['quantity'] ? row?.['quantity'] : 0}" disabled>`;
                     }
                 },
             ],
@@ -834,7 +870,7 @@ class WorkOrderStoreHandle {
                     'order',
                 ]
                 if (dataRow) {
-                    ProdOrderCommonHandle.filterFieldList(submitFields, dataRow);
+                    WorkOrderCommonHandle.filterFieldList(submitFields, dataRow);
                 }
                 row.querySelector('.table-row-order').setAttribute('data-row', JSON.stringify(dataRow));
             }
@@ -929,8 +965,8 @@ class WorkOrderSubmitHandle {
                 _form.dataForm['time'] = parseInt(WorkOrderLoadDataHandle.$time.val());
             }
 
-            ProdOrderStoreHandle.storeAll();
-            _form.dataForm['task_data'] = ProdOrderSubmitHandle.setupTask();
+            WorkOrderStoreHandle.storeAll();
+            _form.dataForm['task_data'] = WorkOrderSubmitHandle.setupTask();
 
         }
     };

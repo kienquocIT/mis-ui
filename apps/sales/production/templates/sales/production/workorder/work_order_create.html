@@ -64,11 +64,12 @@
                                     name="sale_order"
                                     data-keyResp="sale_order_list"
                                     data-keyText="code"
+                                    readonly
                                 ></select>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
-                            <div class="d-flex justify-content-start mt-5">
+                            <div class="d-flex justify-content-start mt-6">
                                 <button type="button" class="btn btn-outline-primary" id="btn-edit-product" data-bs-toggle="modal" data-bs-target="#productModal">
                                     <span><span class="icon"><i class="far fa-edit"></i></span><span>{% trans 'Edit product' %}</span></span>
                                 </button>
@@ -96,7 +97,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
+                        <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label required" for="date-start">{% trans 'Start date' %}</label>
                                 <div class="input-affix-wrapper">
@@ -108,7 +109,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-6">
+                        <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label required" for="date-end">{% trans 'End date' %}</label>
                                 <div class="input-affix-wrapper">
@@ -118,6 +119,27 @@
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-group">{% trans 'Production group' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="box-group"
+                                    data-url="{% url "GroupListAPI" %}"
+                                    data-method="GET"
+                                    data-link-detail=""
+                                    name="group_id"
+                                    data-keyResp="group_list"
+                                    required
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-2 col-lg-2">
+                            <div class="form-group">
+                                <label class="form-label" for="time">{% trans 'Time' %}</label>
+                                <input type="text" class="form-control form-control-line mt-1" id="time" readonly>
                             </div>
                         </div>
                     </div>
@@ -208,6 +230,7 @@
         data-in-production="{% trans 'In production' %}"
         data-done="{% trans 'Done' %}"
         data-all-wh="{% trans 'All warehouse' %}"
+        data-exceed-quantity="{% trans 'Exceed remain quantity' %}"
     >
     <input
         type="text"

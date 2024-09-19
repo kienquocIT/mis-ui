@@ -297,6 +297,10 @@ class MenusCRM:
         name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',
         icon='<i class="fas fa-file-invoice"></i>',
     )
+    WORK_ORDER = MenuCommon(
+        name='Work order', code='menu_work_order_list', view_name='WorkOrderCreate',
+        icon='<i class="fas fa-pencil-ruler"></i>',
+    )
     AR_INVOICE = MenuCommon(
         name='AR invoice', code='id_menu_ar_invoice', view_name='ARInvoiceList',
         icon='<i class="bi bi-receipt"></i>',
@@ -742,6 +746,7 @@ class SpaceItem:
                 MenusCRM.QUOTATION,
                 MenusCRM.AR_INVOICE,
                 MenusCRM.SALE_ORDER,
+                MenusCRM.WORK_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.CONTRACT_APPROVAL,
                 MenusCRM.PRODUCT,

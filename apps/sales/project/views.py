@@ -4,7 +4,7 @@ __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI',
            'ProjectMemberDetailAPI', 'ProjectUpdateOrderAPI', 'ProjectTaskListAPI', 'ProjectGroupDDListAPI',
            'ProjectTaskDetailAPI', 'ProjectWorkExpenseAPI', 'ProjectListBaselineAPI', 'ProjectBaselineDetail',
            'ProjectBaselineDetailAPI', 'ProjectHome', 'ProjectConfig', 'ProjectConfigAPI', 'ProjectExpenseListAPI',
-           'ProjectListBaseline', 'ProjectWorkList'
+           'ProjectListBaseline', 'ProjectWorkList', 'ProjectActivities'
            ]
 
 from django.views import View
@@ -533,3 +533,12 @@ class ProjectConfigAPI(APIView):
         return resp.auto_return()
 
 
+class ProjectActivities(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/project/project-news.html',
+        breadcrumb='PROJECT_ACTIVITIES',
+        menu_active='menu_project_activities',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

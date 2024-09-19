@@ -4710,6 +4710,21 @@ class WindowControl {
         return location.hash;
     }
 
+    static getUrlParameter(sParam, defaultData='') {
+        const sPageURL = window.location.search.substring(1);
+        const sURLVariables = sPageURL.split('&');
+        let sParameterName;
+
+        for (let i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? defaultData : decodeURIComponent(sParameterName[1]);
+            }
+        }
+        return defaultData;
+    }
+
     static pushHashUrl(idHash) {
         window.history.pushState(null, null, idHash.includes('#') ? idHash : '#' + idHash);
     }
@@ -7922,6 +7937,7 @@ let $x = {
         randomColor: Beautiful.randomColorClass,
 
         getHashUrl: WindowControl.getHashUrl,
+        getUrlParameter: WindowControl.getUrlParameter,
         pushHashUrl: WindowControl.pushHashUrl,
         scrollToIdx: WindowControl.scrollToIdx,
         findGetParameter: WindowControl.findGetParameter,

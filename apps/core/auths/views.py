@@ -122,7 +122,7 @@ class AuthLogin(APIView):
                         ctx['redirect_to'] = reverse('TwoFAVerifyView')
 
                 return ctx, status.HTTP_200_OK
-            return {'detail': AuthMsg.login_exc, 'data': resp.result}, status.HTTP_400_BAD_REQUEST
+            return {'detail': AuthMsg.login_exc}, status.HTTP_400_BAD_REQUEST
         return resp.errors, status.HTTP_400_BAD_REQUEST
 
 

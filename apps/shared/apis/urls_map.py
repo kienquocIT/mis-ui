@@ -193,6 +193,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     MAILER_CONFIG_DETAIL = StringUrl('mailer/config/detail/{pk}')
     MAILER_CONFIG_DETAIL_CONNECTION_TEST = StringUrl('mailer/config/detail/{pk}/connection/test')
     MAILER_CONFIG_DETAIL_CONNECTION_TEST_DATA = StringUrl('mailer/config/detail/{pk}/connection/test/data')
+    MAILER_LOG = StringUrl('mailer/log')
 
     # base
     PLAN_LIST = StringUrl('base/plans')
@@ -393,6 +394,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALE_ORDER_INDICATOR_DETAIL = StringUrl('saleorder/indicator')
     SALE_ORDER_INDICATOR_RESTORE = StringUrl('saleorder/indicator-restore')
     PRODUCT_LIST_SALE_ORDER = StringUrl('saleorder/product/list/{pk}')
+    SALE_ORDER_PRODUCT_WO_LIST = StringUrl('saleorder/sale-order-product-wo/list')
 
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')

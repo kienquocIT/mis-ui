@@ -340,3 +340,14 @@ class SaleOrderPurchasingStaffListAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST_FOR_PURCHASING_STAFF).get(params)
         return resp.auto_return(key_success='sale_order_list')
+
+
+class SOProductWOListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.SALE_ORDER_PRODUCT_WO_LIST).get(data)
+        return resp.auto_return(key_success='sale_order_product_wo')

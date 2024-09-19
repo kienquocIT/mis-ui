@@ -20,3 +20,60 @@ msgstr ""
 #
 msgid "Success"
 msgstr "Thành công"
+
+
+#
+msgid "All"
+msgstr "Tất cả"
+
+#
+msgid "In progress"
+msgstr "Đang xử lý"
+
+#
+msgid "Sent"
+msgstr "Đã gửi"
+
+#
+msgid "Error"
+msgstr "Lỗi"
+
+#
+msgid "Another"
+msgstr "Khác"
+
+#
+msgid "Welcome"
+msgstr "Thư chào mừng"
+
+#
+msgid "Calendar"
+msgstr "Lịch sự kiện"
+
+#
+msgid "OTP validation"
+msgstr "Xác thực OTP"
+
+#
+msgid "Form: Record"
+msgstr "Biểu mẫu: Bản ghi"
+
+#
+msgid "Form: OTP validation"
+msgstr "Biểu mẫu: Xác thực OTP"
+
+#
+msgid "Status"
+msgstr "Trạng thái"
+
+#
+msgid "System code"
+msgstr "Mã hệ thống"
+
+#
+msgid "Form filter"
+msgstr "Lọc Biểu mẫu"
+
+#
+msgid "Form"
+msgstr "Biểu mẫu"

@@ -8,6 +8,7 @@ const IAItemTableDiv = $('#table-for-ia')
 const POItemTableDiv = $('#table-for-production')
 const NONETable = $('#select-detail-table-none')
 const SNTable = $('#select-detail-table-sn')
+const SNTableNotify = $('#select-detail-table-sn-notify')
 const LOTTable = $('#select-detail-table-lot')
 const done_none = $('#select-detail-table-none-done')
 const done_sn = $('#select-detail-table-sn-done')
@@ -171,7 +172,7 @@ class GISLoadTab {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity'] ? row?.['issued_quantity'] : 0}">
-                                    <button ${(row?.['product_mapped']?.['general_traceability_method'] === 0 && IS_DONE_GIS || row?.['issued_quantity'] === 0) ? 'disabled' : ''}
+                                    <button ${(row?.['product_mapped']?.['general_traceability_method'] === 0 && IS_DONE_GIS || row?.['issued_quantity'] === 0 && IS_DONE_GIS) ? 'disabled' : ''}
                                             data-uom-id="${row?.['uom_mapped']?.['id']}"
                                             data-uom-code="${row?.['uom_mapped']?.['code']}"
                                             data-uom-title="${row?.['uom_mapped']?.['title']}"
@@ -259,7 +260,7 @@ class GISLoadTab {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity'] ? row?.['issued_quantity'] : 0}">
-                                    <button ${(row?.['product_mapped']?.['general_traceability_method'] === 0 && IS_DONE_GIS || row?.['issued_quantity'] === 0) ? 'disabled' : ''}
+                                    <button ${(row?.['product_mapped']?.['general_traceability_method'] === 0 && IS_DONE_GIS || row?.['issued_quantity'] === 0 && IS_DONE_GIS) ? 'disabled' : ''}
                                             data-uom-id="${row?.['uom_mapped']?.['id']}"
                                             data-uom-code="${row?.['uom_mapped']?.['code']}"
                                             data-uom-title="${row?.['uom_mapped']?.['title']}"
@@ -451,7 +452,7 @@ class GISHandle {
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    // console.log(data)
+                    console.log(data)
                     IS_DETAIL_PAGE = option === 'detail'
                     IS_DONE_GIS = data?.['system_status'] === 3
                     if (IS_DONE_GIS) {
@@ -474,10 +475,10 @@ class GISHandle {
                     }
                     else if (data?.['goods_issue_type'] === 2) {
                         $('#for-production').prop('checked', true)
-                        GISLoadPage.LoadPO(data?.['inventory_adjustment'])
+                        GISLoadPage.LoadPO(data?.['production_order'])
                         $('#inventory-adjustment-select-space').prop('hidden', true)
                         $('#production-order-select-space').prop('hidden', false)
-                        // GISLoadTab.DrawTableIAItems(data?.['detail_data_ia'])
+                        GISLoadTab.DrawTableIAItems(data?.['detail_data_po'])
                     }
 
                     GISAction.DisabledDetailPage(option);
@@ -489,6 +490,7 @@ class GISHandle {
 
         frm.dataForm['title'] = $('#title').val()
         let detail_data_ia = []
+        let detail_data_po = []
         if ($('#for-ia').prop('checked')) {
             frm.dataForm['goods_issue_type'] = 0
             frm.dataForm['inventory_adjustment_id'] = IAEle.val()
@@ -515,13 +517,13 @@ class GISHandle {
             frm.dataForm['production_order_id'] = POEle.val()
             POItemTable.find('tbody tr').each(function () {
                 let row = $(this);
-                detail_data_ia.push({
+                detail_data_po.push({
                     'production_order_item_id': row.find('.select-detail').attr('data-item-id'),
                     'product_id': row.find('.select-detail').attr('data-prd-id'),
                     'warehouse_id': row.find('.select-detail').attr('data-wh-id'),
                     'uom_id': row.find('.select-detail').attr('data-uom-id'),
-                    'before_quantity': row.find('.select-detail').attr('before-quantity'),
-                    'remain_quantity': row.find('.select-detail').attr('remain-quantity'),
+                    'before_quantity': row.find('.before-quantity').text(),
+                    'remain_quantity': row.find('.remain-quantity').text(),
                     'issued_quantity': row.find('.selected-quantity').val(),
                     'lot_data': row.find('.lot-data-script').text() ? JSON.parse(row.find('.lot-data-script').text()) : [],
                     'sn_data': row.find('.sn-data-script').text() ? JSON.parse(row.find('.sn-data-script').text()) : []
@@ -530,8 +532,9 @@ class GISHandle {
         }
         frm.dataForm['note'] = $('#note').val()
         frm.dataForm['detail_data_ia'] = detail_data_ia;
+        frm.dataForm['detail_data_po'] = detail_data_po;
 
-        // console.log(frm)
+        console.log(frm)
         return frm
     }
 }
@@ -585,6 +588,7 @@ $(document).on("click", '.select-detail', function () {
                 SNTable.DataTable().clear().destroy()
                 NONETable.prop('hidden', false)
                 SNTable.prop('hidden', true)
+                SNTableNotify.prop('hidden', true)
                 LOTTable.prop('hidden', true)
                 done_none.prop('hidden', false)
                 done_sn.prop('hidden', true)
@@ -636,6 +640,7 @@ $(document).on("click", '.select-detail', function () {
                 (results) => {
                     NONETable.prop('hidden', true)
                     SNTable.prop('hidden', true)
+                    SNTableNotify.prop('hidden', true)
                     LOTTable.prop('hidden', false)
                     done_none.prop('hidden', true)
                     done_sn.prop('hidden', true)
@@ -691,6 +696,7 @@ $(document).on("click", '.select-detail', function () {
                 (results) => {
                     NONETable.prop('hidden', true)
                     SNTable.prop('hidden', false)
+                    SNTableNotify.prop('hidden', false)
                     LOTTable.prop('hidden', true)
                     done_none.prop('hidden', true)
                     done_sn.prop('hidden', false)

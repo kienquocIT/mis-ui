@@ -8843,3 +8843,7 @@ msgstr "Đã nhập"
 #
 msgid "For Serial and Lot products, click on the Detail button in the last column to view/select detail."
 msgstr "Đối với sản phẩm Serial và LOT, click vào nút Chi tiết ở cột cuối để xem/chọn chi tiết."
+
+#
+msgid "Logs"
+msgstr "Nhật ký"

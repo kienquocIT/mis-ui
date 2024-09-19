@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block pageAction %}
-    <a href="{% url 'MailLogView' %}">
+    <a href="{% url 'MailLogView' %}?type=4,5">
         <button class="btn btn-outline-primary">
         <span>
             <span class="no-transform">{% trans 'Authentication logs' %}</span>

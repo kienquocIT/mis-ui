@@ -18,5 +18,3 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
-msgid "Status remark"
-msgstr "Mô tả thêm cho trạng thái"

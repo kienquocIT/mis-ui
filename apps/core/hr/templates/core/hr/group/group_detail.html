@@ -329,6 +329,17 @@
     </form>
 {% endblock %}
 
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+        data-level="{% trans 'Level' %}"
+    >
+    <input
+        type="text"
+        id="app-urls-factory"
+    >
+{% endblock %}
 
 {% block jsFooter %}
     <script src="{% static 'assets/js/core/hr/group/group_common.js' %}"></script>

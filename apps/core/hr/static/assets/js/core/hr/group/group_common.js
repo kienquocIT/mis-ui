@@ -3,6 +3,7 @@ class GroupLoadDataHandle {
     static boxGroupParent = $('#select-box-group');
     static box1stManager = $('#select-box-first-manager');
     static box2ndManager = $('#select-box-second-manager');
+    static $trans = $('#app-trans-factory');
 
     static loadDataCommon(frm) {
         if (frm.attr('data-method') === "POST") {
@@ -56,7 +57,7 @@ class GroupLoadDataHandle {
             'dataParams': {'group_level__level__lt': parseInt(level)},
             disabled: !(ele.attr('data-url')),
             templateResult: function (state) {
-                let levelHTML = `<span class="badge badge-soft-primary">level ${state.data?.level ? state.data.level : "_"}</span>`
+                let levelHTML = `<span class="badge badge-soft-primary">${GroupLoadDataHandle.$trans.attr('data-level')} ${state.data?.level ? state.data.level : "_"}</span>`
                 let activeHTML = state.data?.is_active === true ? `<span class="badge badge-success badge-indicator"></span>` : `<span class="badge badge-light badge-indicator"></span>`;
                 state.text = state.data?.title;
                 return $(`<span>${state.text} ${activeHTML} ${levelHTML}</span>`);
@@ -70,8 +71,13 @@ class GroupLoadDataHandle {
         ele.initSelect2({
             data: dataLevel,
             disabled: !(ele.attr('data-url')),
-            callbackTextDisplay: function (item) {
-                return 'Level' + item?.['level'] || '';
+            templateResult: function (state) {
+                let str = GroupLoadDataHandle.$trans.attr('data-level') + " ";
+                let level = String(state.data?.['level']) ? state.data?.['level'] : "_";
+                if (str && level) {
+                    state.text = str + level.toString();
+                }
+                return $(`<span>${GroupLoadDataHandle.$trans.attr('data-level')} ${state.data?.level ? state.data.level : "_"}</span>`);
             },
         });
     }

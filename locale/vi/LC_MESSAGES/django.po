@@ -8851,3 +8851,7 @@ msgstr "Nhật ký"
 #
 msgid "If the number of selected serials in this table is less than the selected quantity, some of the selected serials may not exist in any warehouse."
 msgstr "Nếu số lượng Serial được chọn trong bảng này ít hơn số lượng đã chọn, có thể một số Serial đã chọn không còn tồn tại trong kho nữa."
+
+#
+msgid "Work order"
+msgstr "Lệnh sản xuất"

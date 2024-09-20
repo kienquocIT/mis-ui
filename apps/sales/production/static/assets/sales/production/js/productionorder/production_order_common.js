@@ -447,19 +447,19 @@ class ProdOrderLoadDataHandle {
             ProdOrderDataTableHandle.$tableMain.DataTable().rows().every(function () {
                 let row = this.node();
                 for (let ele of row.querySelectorAll('.table-row-item')) {
-                    ele.setAttribute('disabled', 'true');
+                    ele.setAttribute('readonly', 'true');
                 }
                 for (let ele of row.querySelectorAll('.table-row-uom')) {
-                    ele.setAttribute('disabled', 'true');
+                    ele.setAttribute('readonly', 'true');
                 }
                 for (let ele of row.querySelectorAll('.check-all-wh')) {
                     ele.setAttribute('disabled', 'true');
                 }
                 for (let ele of row.querySelectorAll('.table-row-warehouse')) {
-                    ele.setAttribute('disabled', 'true');
+                    ele.setAttribute('readonly', 'true');
                 }
                 for (let ele of row.querySelectorAll('.table-row-tool')) {
-                    ele.setAttribute('disabled', 'true');
+                    ele.setAttribute('readonly', 'true');
                 }
                 return true;
             });

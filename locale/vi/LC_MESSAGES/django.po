@@ -8855,3 +8855,7 @@ msgstr "Nếu số lượng Serial được chọn trong bảng này ít hơn s�
 #
 msgid "Previous"
 msgstr "Về trước"
+
+#
+msgid "Planning"
+msgstr "Kế hoạch"

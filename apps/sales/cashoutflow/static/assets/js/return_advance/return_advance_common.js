@@ -211,7 +211,6 @@ class ReturnAPHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     data = data['return_advance'];
-                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
                     // console.log(data)
@@ -229,6 +228,7 @@ class ReturnAPHandle {
                     $('#total-value').attr('value', data?.['return_total'])
                     $('#money-received').prop('checked', data?.['money_received'])
                     ReturnAPAction.DisabledDetailPage(option)
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
     }

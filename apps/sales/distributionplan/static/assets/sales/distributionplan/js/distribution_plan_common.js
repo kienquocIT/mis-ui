@@ -336,7 +336,6 @@ function LoadDetailDP(option) {
             if (data) {
                 data = data['distribution_plan_detail'];
                 // console.log(data)
-                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 
@@ -359,6 +358,7 @@ function LoadDetailDP(option) {
                 }, 1000);
 
                 Disable(option)
+                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             }
         })
 }

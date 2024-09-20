@@ -390,7 +390,13 @@ class BOMLoadTab {
             if (ele.val()) {
                 let material_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
                 ele.closest('tr').find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['id'])
-                ele.closest('tr').find('.material-code').text(material_selected?.['code'])
+                if (material_selected?.['has_bom']) {
+                    ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge btn-gradient-primary material-code w-100')
+                    ele.closest('tr').find('.detail_bom_script').text(JSON.stringify(material_selected?.['detail_bom']))
+                }
+                else {
+                    ele.closest('tr').find('.material-code').text(material_selected?.['code'])
+                }
                 BOMLoadTab.LoadUOM(ele.closest('tr').find('.material-uom'), material_selected?.['general_uom_group'], material_selected?.['sale_default_uom'])
             }
         })
@@ -761,7 +767,10 @@ class BOMAction {
                     </button>
                     <script class="replacement-material-script"></script>
                 </td>
-                <td><span class="badge badge-light material-code w-100"></span></td>
+                <td>
+                    <span class="badge badge-light material-code w-100"></span>
+                    <script class="detail_bom_script">[]</script>
+                </td>
                 <td><select class="form-select select2 material-item"></select></td>
                 <td><input type="number" class="form-control material-quantity" value="0"></td>
                 <td><select class="form-select select2 material-uom"></select></td>
@@ -957,10 +966,9 @@ class BOMHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     data = data['bom_detail'];
-                    WFRTControl.setWFRuntimeID(data?.['bom_detail']);
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    console.log(data)
+                    // console.log(data)
 
                     if (data?.['bom_type'] === 0) {
                         $('#for-production').prop('checked', true)
@@ -1037,6 +1045,7 @@ class BOMHandle {
 
                     $.fn.initMaskMoney2()
                     BOMAction.DisableDetailPage(option);
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
     }

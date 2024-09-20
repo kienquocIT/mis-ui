@@ -13,8 +13,8 @@ ADVANCE_DATA_MAP = {
     'date_created': FieldMapCommon(
         name_mapping=['date_created'],
     ).data,
-    'employee_created': FieldMapCommon(
-        name_mapping=['employee_created'],
+    'employee_created_id': FieldMapCommon(
+        name_mapping=['employee_created_id'],
     ).data,
     'quotation_id': FieldMapCommon(
         name_mapping=['quotation_id'],
@@ -25,8 +25,8 @@ ADVANCE_DATA_MAP = {
     'advance_payment_type': FieldMapCommon(
         name_mapping=['advance_payment_type'],
     ).data,
-    'supplier': FieldMapCommon(
-        name_mapping=['supplier'],
+    'supplier_id': FieldMapCommon(
+        name_mapping=['supplier_id'],
     ).data,
     'method': FieldMapCommon(
         name_mapping=['method'],

@@ -29,9 +29,11 @@ class PaymentCreate(View):
         menu_active='menu_advance_payment_list',
     )
     def get(self, request, *args, **kwargs):
+        input_mapping_properties = InputMappingProperties.CASHOUTFLOW_PAYMENT
         return {
             'data': {'employee_current': request.user.employee_current_data},
             'list_from_app': 'cashoutflow.payment.create',
+            'input_mapping_properties': input_mapping_properties,
             'form_id': 'form-create-payment'
         }, status.HTTP_200_OK
 
@@ -70,8 +72,10 @@ class PaymentDetail(View):
         menu_active='menu_payment_detail',
     )
     def get(self, request, *args, **kwargs):
+        input_mapping_properties = InputMappingProperties.CASHOUTFLOW_PAYMENT
         return {
             'data': {'employee_current': request.user.employee_current_data},
+            'input_mapping_properties': input_mapping_properties,
             'form_id': 'form-detail-payment'
         }, status.HTTP_200_OK
 

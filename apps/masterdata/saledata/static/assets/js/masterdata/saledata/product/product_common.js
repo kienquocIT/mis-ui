@@ -922,7 +922,6 @@ function LoadDetailProduct(option) {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                WFRTControl.setWFRuntimeID(data['product']?.['workflow_runtime_id']);
                 let product_detail = data['product'];
                 Detail_data = product_detail;
                 $.fn.compareStatusShowPageAction(data);

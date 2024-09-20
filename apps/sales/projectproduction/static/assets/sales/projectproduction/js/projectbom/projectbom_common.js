@@ -338,7 +338,13 @@ class ProjectBOMLoadTab {
             if (ele.val()) {
                 let material_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
                 ele.closest('tr').find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['id'])
-                ele.closest('tr').find('.material-code').text(material_selected?.['code'])
+                if (material_selected?.['has_bom']) {
+                    ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge btn-gradient-primary material-code w-100')
+                    ele.closest('tr').find('.detail_bom_script').text(JSON.stringify(material_selected?.['detail_bom']))
+                }
+                else {
+                    ele.closest('tr').find('.material-code').text(material_selected?.['code'])
+                }
                 ProjectBOMLoadTab.LoadUOM(ele.closest('tr').find('.material-uom'), material_selected?.['general_uom_group'], material_selected?.['sale_default_uom'])
             }
         })
@@ -707,7 +713,10 @@ class ProjectBOMAction {
                     </button>
                     <script class="replacement-material-script"></script>
                 </td>
-                <td><span class="badge badge-light material-code w-100"></span></td>
+                <td>
+                    <span class="badge badge-light material-code w-100"></span>
+                    <script class="detail_bom_script">[]</script>
+                </td>
                 <td><select class="form-select select2 material-item"></select></td>
                 <td><input type="number" class="form-control material-quantity" value="0"></td>
                 <td><select class="form-select select2 material-uom"></select></td>
@@ -885,10 +894,9 @@ class ProjectBOMHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     data = data['bom_detail'];
-                    WFRTControl.setWFRuntimeID(data?.['bom_detail']);
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    console.log(data)
+                    // console.log(data)
 
                     ProjectBOMLoadPage.LoadOpportunity(opp_mapped_select, data?.['opportunity'])
                     opp_mapped_select.trigger('change')
@@ -947,6 +955,7 @@ class ProjectBOMHandle {
 
                     $.fn.initMaskMoney2()
                     ProjectBOMAction.DisableDetailPage(option);
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
     }

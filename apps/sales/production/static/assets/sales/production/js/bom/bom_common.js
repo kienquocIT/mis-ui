@@ -395,7 +395,8 @@ class BOMLoadTab {
                     ele.closest('tr').find('.material-code').closest('a').attr('href', script_url.attr('data-url-bom-detail').replace('/0', `/${material_selected?.['bom_id']}`))
                 }
                 else {
-                    ele.closest('tr').find('.material-code').text(material_selected?.['code'])
+                    ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge badge-light material-code w-100')
+                    ele.closest('tr').find('.material-code').closest('a').attr('href', '').prop('disabled', true)
                 }
                 BOMLoadTab.LoadUOM(ele.closest('tr').find('.material-uom'), material_selected?.['general_uom_group'], material_selected?.['sale_default_uom'])
             }

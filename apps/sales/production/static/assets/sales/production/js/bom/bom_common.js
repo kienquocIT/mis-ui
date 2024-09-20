@@ -392,7 +392,7 @@ class BOMLoadTab {
                 ele.closest('tr').find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['id'])
                 if (material_selected?.['has_bom']) {
                     ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge btn-gradient-primary material-code w-100')
-                    ele.closest('tr').find('.detail_bom_script').text(JSON.stringify(material_selected?.['detail_bom']))
+                    ele.closest('tr').find('.material-code').closest('a').attr('href', script_url.attr('data-url-bom-detail').replace('/0', `/${material_selected?.['bom_id']}`))
                 }
                 else {
                     ele.closest('tr').find('.material-code').text(material_selected?.['code'])
@@ -768,8 +768,7 @@ class BOMAction {
                     <script class="replacement-material-script"></script>
                 </td>
                 <td>
-                    <span class="badge badge-light material-code w-100"></span>
-                    <script class="detail_bom_script">[]</script>
+                    <a target="_blank"><span class="badge badge-light material-code w-100"></span></a>
                 </td>
                 <td><select class="form-select select2 material-item"></select></td>
                 <td><input type="number" class="form-control material-quantity" value="0"></td>

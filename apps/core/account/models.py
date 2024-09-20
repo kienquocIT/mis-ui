@@ -2,6 +2,7 @@ from uuid import uuid4
 
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.conf import settings
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
@@ -82,131 +83,6 @@ class AuthUser(AbstractBaseUser, PermissionsMixin):
         permissions = ()
 
 
-class User(AuthUser):
-    ui_space_selected = models.CharField(max_length=100, null=True, default=None, help_text='Space code of user')
-
-    tenant_current_data = models.JSONField(default=dict, help_text='{"id": "", "title": "", "code": ""}')
-    company_current_data = models.JSONField(default=dict, help_text='{"id": "", "title": "", "code": ""}')
-    space_current_data = models.JSONField(default=dict, help_text='{"id": "", "title": "", "code": ""}')
-    employee_current_data = models.JSONField(
-        default=dict, help_text='{"id": "", "first_name": "", "last_name": "", "email": "", "phone": ""}'
-    )
-    companies_data = models.JSONField(default=list, help_text='[{...company detail...},]')
-    is_admin_tenant = models.BooleanField(default=False)
-
-    def update_avatar_hash(self, media_path_hash):
-        if media_path_hash:
-            self.avatar = media_path_hash
-            self.save()
-
-    @property
-    def avatar_url(self):
-        # return f'{settings.MEDIA_PUBLIC_DOMAIN}p/f/avatar/{self.avatar}' if self.avatar else None
-        return self.avatar if self.avatar else None
-
-    class Meta:
-        verbose_name = 'Account User'
-        verbose_name_plural = 'Account User'
-        default_permissions = ()
-        permissions = ()
-
-    @staticmethod
-    def exist_key(dict_data):
-        key_required = []
-        for key in ['id', 'username', 'first_name', 'last_name', 'token']:
-            if key not in dict_data:
-                key_required.append(key)
-        if key_required:
-            return False, key_required
-        return True, []
-
-    @classmethod
-    def regis_with_api_result(cls, api_result):
-        state_check, key_require = cls.exist_key(api_result)
-        if state_check:
-            try:
-                user = User.objects.get(username_auth=api_result['username_auth'], user_id=api_result['id'])
-            except User.DoesNotExist:
-                user = User.objects.create(
-                    user_id=api_result['id'],
-                    username_auth=api_result['username_auth'],
-                    username=api_result['username'],
-                    first_name=api_result['first_name'],
-                    last_name=api_result['last_name'],
-                    email=api_result.get('email', ''),
-                    phone=api_result.get('phone', ''),
-                    dob=api_result.get('dob', None),
-                    gender=api_result.get('gender', None),
-                    language=api_result.get('language', settings.LANGUAGE_CODE),
-                    avatar=api_result.get('employee_current', {}).get('avatar_img', None),
-                    is_admin_tenant=api_result.get('is_admin_tenant', False),
-                )
-            except Exception as err:
-                msg_err = f'The regis user process raise exception over happy case. (msg: {str(err)})'
-                print(msg_err)
-                return None
-            user.user_id = api_result['id']
-            user.username = api_result['username']
-            user.first_name = api_result['first_name']
-            user.last_name = api_result['last_name']
-            user.email = api_result.get('email', '')
-            user.phone = api_result.get('phone', '')
-            user.dob = api_result.get('dob', None)
-            user.gender = api_result.get('gender', None)
-            user.language = api_result.get('language', settings.LANGUAGE_CODE)
-            user.is_admin_tenant = api_result.get('is_admin_tenant', False)
-            user.tenant_current_data = api_result.get('tenant_current', {})
-            user.company_current_data = api_result.get('company_current', {})
-            user.space_current_data = api_result.get('space_current', {})
-            user.employee_current_data = api_result.get('employee_current', {})
-            user.avatar = api_result.get('employee_current', {}).get('avatar_img', None)
-            user.companies_data = api_result.get('companies', [])
-            user.access_token = api_result['token']['access_token']
-            user.refresh_token = api_result['token']['refresh_token']
-            user.last_login = timezone.now()
-            passwd_hidden = RandomGenerate.get_string(length=32, allow_special=True)
-            user.set_password(passwd_hidden)
-            user.save()
-            return user
-        print(f'Required key in value API: {", ".join(key_require)}')
-        return None
-
-    def save(self, *args, **kwargs):
-        if self.tenant_current_data and isinstance(self.tenant_current_data, dict):
-            tenant_id = self.tenant_current_data.get('id', '')
-            tenant_code = self.tenant_current_data.get('code', '').lower()
-            tenant_title = self.tenant_current_data.get('title', '')
-            if tenant_title and tenant_code:
-                tenant_obj, _created = Tenant.objects.get_or_create(
-                    code=tenant_code, defaults={
-                        'id': tenant_id, 'code': tenant_code, 'title': tenant_title,
-                    }
-                )
-
-                if self.company_current_data and isinstance(self.company_current_data, dict):
-                    sub_domain = self.company_current_data.get('sub_domain', '')
-                    company_id = self.company_current_data.get('id', '')
-                    company_code = self.company_current_data.get('code', '').lower()
-                    company_title = self.company_current_data.get('title', '')
-                    if sub_domain and company_code and company_title:
-                        company_obj, _created = Company.objects.get_or_create(
-                            id=company_id,
-                            defaults={
-                                'id': company_id,
-                                'tenant': tenant_obj,
-                                'code': company_code,
-                                'title': company_title,
-                                'sub_domain': sub_domain,
-                            }
-                        )
-                        if company_obj:
-                            company_obj.sub_domain = sub_domain
-                            company_obj.code = company_code
-                            company_obj.title = company_title
-                            company_obj.save()
-        super().save(*args, **kwargs)
-
-
 class Tenant(models.Model):
     id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
     title = models.CharField(max_length=200)
@@ -246,6 +122,10 @@ class Company(models.Model):
     # web builder
     sub_domain = models.CharField(max_length=35, unique=True)
 
+    #
+    logo = models.TextField(null=True)
+    icon = models.TextField(null=True)
+
     def save(self, *args, **kwargs):
         self.code = self.code.lower()
         super().save(*args, **kwargs)
@@ -267,3 +147,192 @@ class Company(models.Model):
         default_permissions = ()
         permissions = ()
         unique_together = ('tenant_id', 'code',)
+
+
+class User(AuthUser):
+    ui_space_selected = models.CharField(max_length=100, null=True, default=None, help_text='Space code of user')
+
+    tenant_current_data = models.JSONField(default=dict, help_text='{"id": "", "title": "", "code": ""}')
+    company_current_data = models.JSONField(default=dict, help_text='{"id": "", "title": "", "code": ""}')
+    space_current_data = models.JSONField(default=dict, help_text='{"id": "", "title": "", "code": ""}')
+    employee_current_data = models.JSONField(
+        default=dict, help_text='{"id": "", "first_name": "", "last_name": "", "email": "", "phone": ""}'
+    )
+    companies_data = models.JSONField(default=list, help_text='[{...company detail...},]')
+    is_admin_tenant = models.BooleanField(default=False)
+
+    company = models.ForeignKey('account.Company', null=True, on_delete=models.SET_NULL)
+    tenant = models.ForeignKey('account.Tenant', null=True, on_delete=models.SET_NULL)
+
+    def update_avatar_hash(self, media_path_hash):
+        if media_path_hash:
+            self.avatar = media_path_hash
+            self.save()
+
+    @property
+    def avatar_url(self):
+        # return f'{settings.MEDIA_PUBLIC_DOMAIN}p/f/avatar/{self.avatar}' if self.avatar else None
+        return self.avatar if self.avatar else None
+
+    @property
+    def company_logo_uri(self):
+        if self.company:
+            if self.company.logo:
+                return self.company.logo
+        return staticfiles_storage('assets/images/brand/bflow/png/logo-bflow-orginal.png')
+
+    @property
+    def company_icon_uri(self):
+        if self.company:
+            if self.company.icon:
+                return self.company.icon
+            if self.company.logo:
+                return self.company.logo
+        return staticfiles_storage('assets/images/brand/bflow/png/icon/icon-bflow-original-36x36.png')
+
+    @property
+    def company_has_icon(self) -> bool:
+        if self.company:
+            if self.company.icon:
+                return True
+        return False
+
+    @property
+    def company_code_upper(self):
+        if self.company:
+            if self.company.code:
+                return self.company.code.upper()
+        return ''
+
+    class Meta:
+        verbose_name = 'Account User'
+        verbose_name_plural = 'Account User'
+        default_permissions = ()
+        permissions = ()
+
+    @staticmethod
+    def exist_key(dict_data):
+        key_required = []
+        for key in ['id', 'username', 'first_name', 'last_name', 'token']:
+            if key not in dict_data:
+                key_required.append(key)
+        if key_required:
+            return False, key_required
+        return True, []
+
+    @classmethod
+    def tenant_create_or_update(cls, tenant_current_data) -> Tenant or None:
+        if tenant_current_data:
+            tenant_id = tenant_current_data.get('id', '')
+            tenant_code = tenant_current_data.get('code', '').lower()
+            tenant_title = tenant_current_data.get('title', '')
+            if tenant_id and tenant_title and tenant_code:
+                tenant_obj, _created = Tenant.objects.get_or_create(
+                    code=tenant_code, defaults={
+                        'id': tenant_id,
+                        'code': tenant_code,
+                        'title': tenant_title,
+                    }
+                )
+                if not _created:
+                    tenant_obj.id = tenant_id
+                    tenant_obj.code = tenant_code
+                    tenant_obj.title = tenant_title
+                    tenant_obj.save()
+                return tenant_obj
+        return None
+
+    @classmethod
+    def company_create_or_update(cls, tenant_obj, company_current_data) -> Company or None:
+        if company_current_data:
+            sub_domain = company_current_data.get('sub_domain', '')
+            company_id = company_current_data.get('id', '')
+            company_code = company_current_data.get('code', '').lower()
+            company_title = company_current_data.get('title', '')
+            company_logo = company_current_data.get('logo', None)
+            company_icon = company_current_data.get('icon', None)
+            if sub_domain and company_code and company_title:
+                company_obj, _created = Company.objects.get_or_create(
+                    id=company_id,
+                    defaults={
+                        'id': company_id,
+                        'tenant': tenant_obj,
+                        'code': company_code,
+                        'title': company_title,
+                        'sub_domain': sub_domain,
+                        'logo': company_logo,
+                        'icon': company_icon,
+                    }
+                )
+                if not _created:
+                    company_obj.id = company_id
+                    company_obj.tenant = tenant_obj
+                    company_obj.code = company_code
+                    company_obj.title = company_title
+                    company_obj.sub_domain = sub_domain
+                    company_obj.logo = company_logo
+                    company_obj.icon = company_icon
+                    company_obj.save()
+                return company_obj
+        return None
+
+    def user_update_data(self, api_result):
+        self.first_name = api_result['first_name']
+        self.last_name = api_result['last_name']
+        self.email = api_result.get('email', '')
+        self.phone = api_result.get('phone', '')
+        self.dob = api_result.get('dob', None)
+        self.gender = api_result.get('gender', None)
+        self.language = api_result.get('language', settings.LANGUAGE_CODE)
+        self.is_admin_tenant = api_result.get('is_admin_tenant', False)
+        self.tenant_current_data = api_result.get('tenant_current', {})
+        self.company_current_data = api_result.get('company_current', {})
+        self.space_current_data = api_result.get('space_current', {})
+        self.employee_current_data = api_result.get('employee_current', {})
+        self.avatar = api_result.get('employee_current', {}).get('avatar_img', None)
+        self.companies_data = api_result.get('companies', [])
+        self.access_token = api_result['token']['access_token']
+        self.refresh_token = api_result['token']['refresh_token']
+        self.last_login = timezone.now()
+        self.set_password(RandomGenerate.get_string(length=32, allow_special=True))
+        self.save()
+        return self
+
+    @classmethod
+    def regis_with_api_result(cls, api_result):
+        state_check, key_require = cls.exist_key(api_result)
+        if state_check:
+            tenant_obj = cls.tenant_create_or_update(
+                tenant_current_data=api_result.get('tenant_current', {})
+            )
+            company_obj = cls.company_create_or_update(
+                tenant_obj=tenant_obj,
+                company_current_data=api_result.get('company_current', {}),
+            )
+
+            user_id = api_result['id']
+            username = api_result['username']
+            username_auth = api_result['username_auth']
+            try:
+                user, _created = User.objects.get_or_create(
+                    username_auth=username_auth,
+                    defaults={
+                        'user_id': user_id,
+                        'username_auth': username_auth,
+                        'username': username,
+                        'tenant': tenant_obj,
+                        'company': company_obj,
+                    }
+                )
+            except Exception as err:
+                msg_err = f'The regis user process raise exception over happy case. (msg: {str(err)})'
+                print(msg_err)
+                return None
+
+            user.user_id = user_id
+            user.tenant = tenant_obj
+            user.company = company_obj
+            user.user_update_data(api_result=api_result)
+            return user
+        print(f'Required key in value API: {", ".join(key_require)}')
+        return None

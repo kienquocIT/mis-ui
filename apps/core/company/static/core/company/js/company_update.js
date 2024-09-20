@@ -8,6 +8,12 @@ $(document).ready(function () {
         logoFiles = event.target.files[0];
     })
 
+    let iconFiles = null;
+    const eleIcon$ = $('#company_icon');
+    eleIcon$.on('change', event => {
+        iconFiles = event.target.files[0];
+    })
+
     let pk = $.fn.getPkDetail();
     $("#frm-update-company").submit(function (event) {
         event.preventDefault();
@@ -69,9 +75,10 @@ $(document).ready(function () {
                                 if (data['status'] === 200) {
                                     $.fn.notifyB({'title': 'Config', 'description': $.fn.transEle.attr('data-success')}, 'success')
 
-                                    if (logoFiles){
+                                    if (logoFiles || iconFiles){
                                         let formData = new FormData();
-                                        formData.append('file', logoFiles);
+                                        if (logoFiles) formData.append('file_logo', logoFiles);
+                                        if (iconFiles) formData.append('file_icon', iconFiles);
                                         return $.fn.callAjax2({
                                             url: eleLogo.attr('data-url'),
                                             method: eleLogo.attr('data-method'),

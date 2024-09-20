@@ -368,8 +368,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
-    PROJECT_BOM_LIST_PAGE = BreadcrumbChildren(_('Project bill of material list'), 'ProjectBOMList')
-    PROJECT_BOM_CREATE_PAGE = BreadcrumbChildren(_('Project bill of material create'), 'ProjectBOMCreate')
+    PROJECT_BOM_LIST_PAGE = BreadcrumbChildren(_('Opportunity bill of material list'), 'ProjectBOMList')
+    PROJECT_BOM_CREATE_PAGE = BreadcrumbChildren(_('Opportunity bill of material create'), 'ProjectBOMCreate')
     PROJECT_BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     PROJECT_BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
@@ -378,6 +378,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     IMPORT_LIST_PAGE = BreadcrumbChildren(_('Import List'), 'FImportListView')
     FORM_LIST_PAGE = BreadcrumbChildren(_('Forms'), 'FormListView')
     FORM_ENTRIES_LIST_PAGE = BreadcrumbChildren(_('Entries Data'))
+
+    LOGS = BreadcrumbChildren(_('Logs'))
 
     # PROJECT
     PROJECT_HOME = BreadcrumbChildren(_('Project home'), 'ProjectList')
@@ -966,6 +968,8 @@ class BreadcrumbView:
 
     MAILER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.MAILER_CONFIG_LIST_PAGE]
     MAILER_CONFIG_LIST_PAGE = MAILER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]
+    MAILER_LOG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.MAILER_CONFIG_LIST_PAGE, BreadcrumbItem.LOGS]
+    MAILER_LOG_LIST_PAGE = MAILER_LOG_LIST + [BreadcrumbItem.BASTION_LIST]
 
     IMPORT_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.IMPORT_LIST_PAGE]
     IMPORT_LIST_PAGE = IMPORT_LIST + [BreadcrumbItem.BASTION_LIST]

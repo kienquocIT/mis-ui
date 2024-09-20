@@ -8789,7 +8789,7 @@ msgid "Discount on product"
 msgstr "Giảm giá sản phẩm"
 
 #
-msgid "Project bill of material"
+msgid "Opportunity bill of material"
 msgstr "Định mức nguyên vật liệu dự án"
 
 #
@@ -8821,5 +8821,33 @@ msgid "Pretax value"
 msgstr "Giá trị trước thuế"
 
 #
+msgid "Inventory management is not allowed for Service product"
+msgstr "Quản lý tồn kho không có sẵn cho Sản phẩm Dịch vụ"
+
+#
+msgid "Opportunity BOM"
+msgstr "BOM cho CHKD"
+
+#
 msgid "Abstract"
 msgstr "Tóm tắt"
+
+#
+msgid "Issued"
+msgstr "Đã xuất"
+
+#
+msgid "Receipted"
+msgstr "Đã nhập"
+
+#
+msgid "For Serial and Lot products, click on the Detail button in the last column to view/select detail."
+msgstr "Đối với sản phẩm Serial và LOT, click vào nút Chi tiết ở cột cuối để xem/chọn chi tiết."
+
+#
+msgid "Logs"
+msgstr "Nhật ký"
+
+#
+msgid "If the number of selected serials in this table is less than the selected quantity, some of the selected serials may not exist in any warehouse."
+msgstr "Nếu số lượng Serial được chọn trong bảng này ít hơn số lượng đã chọn, có thể một số Serial đã chọn không còn tồn tại trong kho nữa."

@@ -20,3 +20,46 @@ msgstr ""
 #
 msgid "This content file does not support preview"
 msgstr "Nội dung của tệp tin này không hỗ trợ xem trước"
+
+#
+msgid "Properties"
+msgstr "Thuộc tính"
+
+#
+msgid "Values"
+msgstr "Giá trị"
+
+#
+msgid "File title"
+msgstr "Tên tệp tin"
+#
+msgid "Remarks"
+msgstr "Mô tả"
+
+#
+msgid "File type"
+msgstr "Loại tệp"
+
+#
+msgid "File size"
+msgstr "Dung lượng tệp"
+
+#
+msgid "Application related"
+msgstr "Ứng dụng đã liên kết"
+
+#
+msgid "Document related"
+msgstr "Tài liệu đã liên kết"
+
+#
+msgid "Employee created"
+msgstr "Nhân viên đã tạo"
+
+#
+msgid "Folder"
+msgstr "Thư mục"
+
+#
+msgid "Date created"
+msgstr "Ngày tạo"

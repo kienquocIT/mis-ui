@@ -72,3 +72,7 @@ msgstr "Nghỉ phép"
 #
 msgid "Holiday"
 msgstr "Ngày lễ"
+
+#
+msgid "Birthday"
+msgstr "Sinh nhật"

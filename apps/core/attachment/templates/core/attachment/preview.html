@@ -9,14 +9,52 @@
             data-id="{{ pk }}"
     >
         <span>
-            <span>{% trans 'Download' %}</span>
+            <span class="no-transform">{% trans 'Download' %}</span>
             <span class="icon">
                 <i class="fa-solid fa-download"></i>
             </span>
         </span>
     </button>
+    <button
+            class="btn btn-outline-primary"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#fileInfoModal"
+    >
+        <span>
+            <span class="no-transform">{% trans 'Information' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-circle-info"></i>
+            </span>
+        </span>
+    </button>
 {% endblock %}
+
 {% block pageContent %}
+{% endblock %}
+
+{% block modalData %}
+    <div
+            class="modal fade"
+            id="fileInfoModal"
+            tabindex="-1" role="dialog" aria-labelledby="fileInfoModal" aria-hidden="true"
+            data-bs-keyboard="false" data-bs-backdrop="static"
+            data-url="{% url 'AttachmentInfo' pk=pk %}"
+    >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'File properties' %}</h5>
+                    <button
+                            type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block jsHeaderUnCompress %}
@@ -27,121 +65,137 @@
 
 {% block jsFooter %}
     <script>
+        const employeeDetailUrl = "{% url 'EmployeeDetail' pk='__pk__' %}";
+        const gatewayDocDetail = "{% url 'GatewayMiddleDetailView' plan='__plan__' app='__app__' pk='__pk__' %}?redirect=true";
+
         $(document).ready(function () {
+            const pk = "{{pk}}";
+            new $x.cls.fileStream({'pk': pk}).distribution();
+
             $('#btn-download-file').on('click', function (){
                 $x.cls.file.download($(this).attr('data-id'));
             })
+            const modalInfo$ = $('#fileInfoModal');
+            const modalBody$ = modalInfo$.find('.modal-body')
+            modalInfo$.on('shown.bs.modal', function (){
+                const url = $(this).attr('data-url');
+                const state = $(this).attr('data-loaded');
+                if (state !== 'true') {
+                    $(this).attr('data-loaded', 'true');
+                    $.fn.callAjax2({
+                        url: url,
+                        method: 'GET',
+                        isLoading: true
+                    }).then(
+                        resp => {
+                            const data = $.fn.switcherResp(resp);
+                            console.log('data:', data);
+                            if (data && data.hasOwnProperty('file_info')){
+                                const fileInfo = data['file_info'] || {};
+                                const thead$ = $('<thead></thead>');
+                                thead$.append(`
+                                    <tr>
+                                        <th class="no-transform">${$.fn.gettext('Properties')}</th>
+                                        <th class="no-transform">${$.fn.gettext('Values')}</th>
+                                    </tr>
+                                `)
 
-            function renderPreview(data, status, xhr) {
-                const contentType = xhr.getResponseHeader('Content-Type');
-                const fileURL = URL.createObjectURL(data);
-                if (contentType.startsWith('image/')) {
-                    const img = document.createElement('img');
-                    img.src = fileURL;
-                    img.style = "width: 100%;height: 100%;object-fit: contain;"
-                    $('#idxPageContent').append(img);
-                }
-                else if (contentType === 'application/pdf') {
-                    const iframe = $('<iframe id="preview-pdf"></iframe>');
-                    iframe.attr('src', fileURL);
-                    iframe.attr('width', '100%');
-                    iframe.attr('height', '99%');
-                    $('#idxPageContent').append(iframe);
-                }
-                else if (
-                    contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-                    contentType === 'application/msword'
-                ) {
-                    // const iframe = document.createElement('iframe');
-                    // // https://docs.google.com/gview?url=http://ieee802.org/secmail/docIZSEwEqHFr.doc&embedded=true
-                    // const fileURLDoc = "{% url 'AttachmentPreview' pk=pk %}"
-                    // iframe.src = `https://docs.google.com/gview?url=${fileURLDoc}&embedded=true`;
-                    // iframe.width = '100%';
-                    // iframe.height = '500px';
-                    // $('#idxPageContent').append(iframe);
+                                const tbody$ = $('<tbody></tbody>');
 
-                    docx.renderAsync(data, $('#idxPageContent')[0], null, {
-                        debug: false,
-                    })
-                }
-                else if (
-                    contentType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
-                    contentType === 'application/vnd.ms-excel'
-                ) {
-                    function handleBlob(blob) {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            const arrayBuffer = e.target.result;
-                            processFile(arrayBuffer);
-                        };
-                        reader.onerror = function (error) {
-                            console.error('FileReader error:', error);
-                        };
-                        reader.readAsArrayBuffer(blob);
-                    }
-
-                    function processFile(arrayBuffer) {
-                        const data = new Uint8Array(arrayBuffer);
-                        const workbook = XLSX.read(data, {type: 'array'});
-
-                        const ulNav = $(`<ul class="nav nav-light nav-tabs"></ul>`);
-                        const tabContent$ = $(`<div class="tab-content">`);
-
-                        workbook.SheetNames.map(
-                            (sheetName, idx) => {
-                                const sheet = workbook.Sheets[sheetName];
-                                const htmlString = XLSX.utils.sheet_to_html(sheet);
-
-                                const rdIdx = 'ex_' + $x.fn.randomStr(10);
-                                const tab$ = $(`<li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#${rdIdx}">
-                                        <span class="nav-link-text">${sheetName}</span>
-                                    </a>
-                                </li>`);
-                                const content$ = $(`
-                                    <div class="tab-pane fade" id="${rdIdx}">
-                                        ${htmlString}
-                                    </div>
+                                const fName = fileInfo?.['file_name'] || '';
+                                tbody$.append(`
+                                    <tr>
+                                        <td>${$.fn.gettext('File title')}</td>
+                                        <td>${fName}</td>
+                                    </tr>
                                 `);
-                                if (idx === 0){
-                                    tab$.find('.nav-link').addClass('active');
-                                    content$.addClass('show active');
+
+                                const remarks = fileInfo?.['remarks'] || '';
+                                tbody$.append(`
+                                    <tr>
+                                        <td>${$.fn.gettext('Remarks')}</td>
+                                        <td>${remarks}</td>
+                                    </tr>
+                                `);
+
+                                const contentType = fileInfo?.['file_type'] || null;
+                                tbody$.append(`
+                                    <tr>
+                                        <td>${$.fn.gettext('File type')}</td>
+                                        <td>${$x.cls.fileStream.getAppByContentType(contentType)}</td>
+                                    </tr>
+                                `);
+
+                                const fSize = fileInfo?.['file_size'] || null;
+                                tbody$.append(`
+                                    <tr>
+                                        <td>${$.fn.gettext('File size')}</td>
+                                        <td>${$x.cls.file.parse_size(fSize)}</td>
+                                    </tr>
+                                `);
+
+                                const relateApp = fileInfo?.['relate_app'] || null;
+                                const relateAppTitle = relateApp ? relateApp?.['title'] || '' : '';
+                                const relateAppPlan = relateApp ? relateApp?.['plan'] || '' : '';
+                                const relateAppApp = relateApp ? relateApp?.['app'] || '' : '';
+                                tbody$.append(`
+                                    <tr>
+                                        <td>${$.fn.gettext('Application related')}</td>
+                                        <td>${relateAppTitle ? `<span class="badge badge-soft-primary">${$.fn.gettext(relateAppTitle)}</span>` : ''}</td>
+                                    </tr>
+                                `);
+
+                                const relateDoc = fileInfo?.['relate_doc'] || null;
+                                let linkToDetail = '';
+                                if (relateDoc && relateAppPlan && relateAppApp) {
+                                    const linkTmp = gatewayDocDetail
+                                        .replaceAll('__plan__', relateAppPlan)
+                                        .replaceAll('__app__', relateAppApp)
+                                        .replaceAll('__pk__', relateDoc)
+                                    linkToDetail = `<a href="${linkTmp}">${relateDoc}</a>`
                                 }
-                                ulNav.append(tab$);
-                                tabContent$.append(content$);
+                                tbody$.append(`
+                                    <tr>
+                                        <td>${$.fn.gettext('Document related')}</td>
+                                        <td>
+                                           ${linkToDetail ? linkToDetail : relateDoc ? relateDoc : ''}
+                                        </td>
+                                    </tr>
+                                `);
+
+                                const folder = fileInfo?.['folder'] || null;
+                                const folderTitle = folder ? folder?.['title'] || '' : '';
+                                tbody$.append(`
+                                    <tr>
+                                        <td>${$.fn.gettext('Folder')}</td>
+                                        <td>${folderTitle ? `<span class="badge badge-soft-primary">${folderTitle}</span>` : ''}</td>
+                                    </tr>
+                                `);
+
+                                const employeeCreated = fileInfo?.['employee_created'] || null;
+                                tbody$.append(`
+                                    <tr>
+                                        <td>${$.fn.gettext('Employee created')}</td>
+                                        <td><a href="${employeeDetailUrl.replaceAll('__pk__', employeeCreated['id'])}">${employeeCreated ? employeeCreated['full_name'] : '-'}</a></td>
+                                    </tr>
+                                `);
+
+                                const dateCreated = fileInfo?.['date_created'] || '';
+                                tbody$.append(`
+                                    <tr>
+                                        <td>${$.fn.gettext('Date created')}</td>
+                                        <td>${$x.fn.displayRelativeTime(dateCreated)}</td>
+                                    </tr>
+                                `);
+
+                                const tableTmp$ = $('<table class="w-100 table table-bordered"></table>').append(thead$).append(tbody$);
+                                modalBody$.empty().append(tableTmp$);
                             }
-                        )
-                        $('#idxPageContent').html([ulNav, tabContent$]).find('table').addClass('w-100 table table-bordered');
-                    }
-
-                    handleBlob(data);
-
+                        },
+                        errs => $.fn.switcherResp(errs),
+                    )
                 }
-                else if (contentType.startsWith('text/')) {
-                    function handleBlob(blob) {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            const txtData = e.target.result;
-                            processFile(txtData);
-                        };
-                        reader.onerror = function (error) {
-                            console.error('FileReader error:', error);
-                        };
-                        reader.readAsText(blob);
-                    }
-
-                    function processFile(txtData) {
-                        $('#idxPageContent').append($('<pre></pre>').html(txtData.toString()));
-                    }
-
-                    handleBlob(data);
-                }
-                else {
-                    $('#idxPageContent').append(`<div class="w-100 d-flex justify-content-center"><p>${$.fn.gettext("This content file does not support preview")}</p></div>`)
-                }
-            }
-
-            $x.cls.file.download("{{pk}}", renderPreview);
+            })
         })
     </script>
 {% endblock %}

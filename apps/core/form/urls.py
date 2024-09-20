@@ -4,7 +4,7 @@ from apps.core.form.views import (
     FormListView, FormCreateView, FormListAPI, FormCreateAPI, FormUpdateView,
     FormUpdateAPI, FormDetailAPI,
     FormSanitizeHTMLAPI, FormDetailForEntriesAPI, FormUpdateTurnOnOffAPI, FakePreviewIframe, FormDetailDuplicateAPI,
-    FormKnowledgeView,
+    FormKnowledgeView
 )
 
 urlpatterns = [

@@ -253,6 +253,8 @@
         </div>
     </div>
     <!-- End Tabs -->
+{% endblock %}
+{% block modalData %}
     <!-- modal group -->
     {% include 'sales/project/extends/group-modal.html' %}
     <!-- modal work -->
@@ -295,6 +297,7 @@
            data-tax="{% url "TaxListAPI" %}"
            data-work-expense="{% url "ProjectWorkExpenseAPI" %}"
            data-baseline="{% url "ProjectListBaselineAPI" %}"
+           data-bom_detail="{% url "BOMDetailAPI" 1 %}"
     >
 
 {% endblock %}

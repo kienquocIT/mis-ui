@@ -67,7 +67,7 @@ $(document).ready(function(){
                 width: '5%',
                 render: (row, type, data) => {
                     const _code = row.code,
-                        _url = $urlFact.attr('data-baseline-url').format_url_with_uuid(data.project_data.id);
+                        _url = $urlFact.attr('data-baseline-url').format_url_with_uuid(data.id);
                     let html = `<span class="badge badge-primary position-relative">${_code}</span>`
                     return row ? `<a href="${_url}" class="link-primary underline_hover">${html}</a>` : '--'
                 }

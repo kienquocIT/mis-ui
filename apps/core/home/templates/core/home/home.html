@@ -225,6 +225,13 @@
             border: 0 !important;
             color: #fff !important;
         }
+
+        .event-item-birthday {
+            background: linear-gradient(235deg, #e92990, #ffc400, #008cff, #ba00ff);
+            background-size: 100% 100%;
+            border: 0 !important;
+            color: #fff !important;
+        }
     </style>
 
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.css' %}">
@@ -532,11 +539,15 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block modalData %}
     <div
             class="modal fade" id="modalAddBookMark" tabindex="-1" role="dialog" aria-labelledby="modalAddBookMark"
+            data-bs-keyboard="false" data-bs-backdrop="static"
             aria-hidden="true"
     >
-        <div class="modal-dialog modal-lg mt-15" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     {% trans 'New Book Mark' as titleModalBM %}
@@ -678,6 +689,7 @@
         </div>
     </div>
 {% endblock %}
+
 {% block dataHiddenGroup %}
     {{ data.app_name_list|json_script:'app_list' }}
 {% endblock %}
@@ -1179,6 +1191,10 @@
                         ele$.addClass('event-item-holiday');
                         iconApp = $('<i class="fa-solid fa-umbrella-beach"></i>');
                         break
+                    case 'Birthday':
+                        ele$.addClass('event-item-birthday');
+                        iconApp = $(`<i class="fa-solid fa-cake-candles"></i>`)
+                        break
                 }
 
                 if (data?.['category']) {
@@ -1228,14 +1244,14 @@
                 ele$.find('[data-bs-toggle="tooltip"]').tooltip();
             }
             function renderEventItem(data) {
+                console.log('data.category:', data.category);
                 switch (data.category) {
                     case 'EOffice Meeting':
                     case 'Opportunity Meeting':
                     case 'Business Trip':
                     case 'Leave Register':
-                        _renderEventItem(data);
-                        break
                     case 'Holiday':
+                    case 'Birthday':
                         _renderEventItem(data);
                         break
                 }
@@ -1272,6 +1288,7 @@
                                 ...homeCalendar?.['business_trip'] || [],
                                 ...homeCalendar?.['leave'] || [],
                                 ...homeCalendar?.['holiday'] || [],
+                                ...homeCalendar?.['birthday'] || [],
                             ]
                             if (MeetingData.length > 0) {
                                 itemEmpty$.hide(0);

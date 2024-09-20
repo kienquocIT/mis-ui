@@ -36,4 +36,5 @@ I18N_JS_MATCH_APP = {
     'form_runtime': ['apps.core.form', 'djangojs_runtime'],
     'project_home': 'apps.sales.project',
     'attachment': 'apps.core.attachment',
+    'log': 'apps.log',
 }

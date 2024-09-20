@@ -27,8 +27,9 @@
     <meta property="og:image" content="{{ logo_resolve }}"/>
 
     {% get_logo logo as logo_resolve %}
+    {% get_icon logo as icon_resolve %}
 
-    <link rel="icon" type="image/x-icon" href="{{ logo_resolve }}"/>
+    <link rel="icon" type="image/x-icon" href="{{ icon_resolve }}"/>
 
     <title>{{ title }}</title>
 
@@ -127,7 +128,7 @@
                 <p style="margin: 0 0 10px;">
                     {% trans 'OTP validation' %}
                 </p>
-                <form id="form-email-get-otp" data-url="{% url 'FormAuthenticateFormAPI' %}">
+                <form id="form-email-get-otp" data-url="{% url 'FormAuthenticateFormAPI' form_code=form_code %}">
                     {% csrf_token %}
                     <div style="width: 100%; display: flex;">
                         <div style="flex-basis: auto;margin-right: 5px;">
@@ -149,7 +150,7 @@
                 <p style="display: block;margin: 10px 0 10px;font-style: italic;font-size: 0.9rem;">
                     {% trans 'You will receive an OTP via email from Bflow (*@bflow.vn) to verify your account.' %}
                 </p>
-                <form id="form-email-verify-otp" style="display: none;" data-url="{% url 'FormAuthenticateFormAPI' %}">
+                <form id="form-email-verify-otp" style="display: none;" data-url="{% url 'FormAuthenticateFormAPI' form_code=form_code %}">
                     <hr/>
                     {% csrf_token %}
                     <div style="margin-bottom: 10px;width: 100%;">

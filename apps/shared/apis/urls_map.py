@@ -68,6 +68,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FILE_UPLOAD_WEB_BUILDER = StringUrl('attachment/web-builder/upload')
     FILE_LIST_WEB_BUILDER = StringUrl('attachment/web-builder/list')
     FILE_DOWNLOAD = StringUrl('attachment/download/{pk}')
+    FILE_INFO = StringUrl('attachment/info/{pk}')
 
     # attachment
     MEDIA_ACCESS_TOKEN = StringUrl('hr/employee/media-token')
@@ -165,9 +166,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FORM_SANITIZE_HTML = StringUrl('form/sanitize-html')
     FORM_ENTRIES_LIST = StringUrl('form/entries/{pk}/list')
     FORM_ENTRIES_REF_NAME_LIST = StringUrl('form/entries/{pk}/ref-name/list')
-    FORM_VALID_EMAIL_OTP = StringUrl('form/runtime/auth/{tenant_code}/{form_code}')
-    FORM_VALID_SESSION = StringUrl('form/runtime/auth')
-    FORM_VALID_SESSION_PK = StringUrl('form/runtime/auth/{pk_form_session}')
+    FORM_VALID_SESSION = StringUrl('form/runtime/auth/{tenant_code}/{form_code}')
+    FORM_VALID_SESSION_PK = StringUrl('form/runtime/auth/{tenant_code}/{form_code}/{pk_form_session}')
 
     # comment
     COMMENT_LIST = StringUrl('comment/doc/{pk_doc}/{pk_app}/list')
@@ -193,6 +193,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     MAILER_CONFIG_DETAIL = StringUrl('mailer/config/detail/{pk}')
     MAILER_CONFIG_DETAIL_CONNECTION_TEST = StringUrl('mailer/config/detail/{pk}/connection/test')
     MAILER_CONFIG_DETAIL_CONNECTION_TEST_DATA = StringUrl('mailer/config/detail/{pk}/connection/test/data')
+    MAILER_LOG = StringUrl('mailer/log')
 
     # base
     PLAN_LIST = StringUrl('base/plans')

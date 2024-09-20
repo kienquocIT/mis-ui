@@ -7,6 +7,7 @@ from apps.log.views import (
     MyNotifySeenAllAPI,
     MyNotifyAllAPI,
     MyNotifyCleanAllAPI, MyNotifyPageView,
+    MailLogView, MailLogAPI,
 )
 
 urlpatterns = [
@@ -17,4 +18,7 @@ urlpatterns = [
     path('notify/me/count', MyNotifyNoDoneCountAPI.as_view(), name='MyNotifyNoDoneCountAPI'),
     path('notify/me/seen-all', MyNotifySeenAllAPI.as_view(), name='MyNotifySeenAllAPI'),
     path('notify/me/clean-all', MyNotifyCleanAllAPI.as_view(), name='MyNotifyCleanAllAPI'),
+
+    path('mail', MailLogView.as_view(), name='MailLogView'),
+    path('mail/api', MailLogAPI.as_view(), name='MailLogAPI'),
 ]

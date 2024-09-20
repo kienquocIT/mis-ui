@@ -1466,7 +1466,11 @@ class PaymentHandle {
                 }
             }
         }
-        frm.dataForm['payment_item_list'] = payment_item_list;
+        frm.dataForm['payment_item_list'] = payment_item_list
+
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
+
+        // console.log(frm)
         return frm
     }
     static LoadDetailPayment(option) {
@@ -1615,6 +1619,7 @@ class PaymentHandle {
                     new $x.cls.file($('#attachment')).init({
                         enable_edit: option !== 'detail',
                         data: data.attachment,
+                        name: 'attachment'
                     })
 
                     PaymentAction.DisabledDetailPage(option);

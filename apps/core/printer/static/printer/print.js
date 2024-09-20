@@ -182,7 +182,7 @@ function ParamGetData(data, key, configData) {
             if (Array.isArray(currentData)){
                 return currentData.map(
                     (item) => {
-                        if (typeof item === 'object' && item.hasOwnProperty(currentKey)){
+                        if (item && typeof item === 'object' && item.hasOwnProperty(currentKey)){
                             return item[currentKey];
                         }
                         return null;

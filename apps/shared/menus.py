@@ -263,7 +263,7 @@ class MenusCRM:
     )
     PLANNING = MenuCommon(
         name='Planning', code='id_menu_planning', view_name='#',
-        icon='<i class="fas fa-solar-panel"></i>',
+        icon='<i class="fas fa-scroll"></i>',
         child=[
             MenuCommon(
                 name='Revenue plan', code='menu_revenue_plan_list', view_name='RevenuePlanList',

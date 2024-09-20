@@ -340,7 +340,12 @@ class ProjectBOMLoadTab {
                 ele.closest('tr').find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['id'])
                 if (material_selected?.['has_bom']) {
                     ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge btn-gradient-primary material-code w-100')
-                    ele.closest('tr').find('.material-code').closest('a').attr('href', script_url.attr('data-url-bom-detail').replace('/0', `/${material_selected?.['bom_id']}`)).removeClass('disabled')
+                    let is_project_bom = material_selected?.['is_project_bom']
+                    let url = script_url.attr('data-url-bom-detail').replace('/0', `/${material_selected?.['bom_id']}`)
+                    if (is_project_bom) (
+                        url = script_url.attr('data-url-project-bom-detail').replace('/0', `/${material_selected?.['bom_id']}`)
+                    )
+                    ele.closest('tr').find('.material-code').closest('a').attr('href', url).removeClass('disabled')
                 }
                 else {
                     ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge badge-light material-code w-100')

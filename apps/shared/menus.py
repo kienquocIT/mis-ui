@@ -261,13 +261,19 @@ class MenusCRM:
             ),
         ],
     )
-    REVENUE_PLAN = MenuCommon(
-        name='Revenue plan', code='menu_revenue_plan_list', view_name='RevenuePlanList',
-        icon='<i class="fas fa-circle-dollar-to-slot"></i>',
-    )
-    BUDGET_PLAN = MenuCommon(
-        name='Budget plan', code='menu_budget_plan_list', view_name='BudgetPlanList',
-        icon='<i class="fas fa-wallet"></i>',
+    PLANNING = MenuCommon(
+        name='Planning', code='id_menu_planning', view_name='#',
+        icon='<i class="fas fa-solar-panel"></i>',
+        child=[
+            MenuCommon(
+                name='Revenue plan', code='menu_revenue_plan_list', view_name='RevenuePlanList',
+                icon='<i class="fas fa-circle-dollar-to-slot"></i>',
+            ),
+            MenuCommon(
+                name='Budget plan', code='menu_budget_plan_list', view_name='BudgetPlanList',
+                icon='<i class="fas fa-wallet"></i>',
+            )
+        ],
     )
     LEAD = MenuCommon(
         name='Lead', code='menu_lead_list', view_name='LeadList',
@@ -736,8 +742,7 @@ class SpaceItem:
             menus=[
                 MenusCRM.HOME,
                 MenusCRM.DASHBOARD,
-                MenusCRM.REVENUE_PLAN,
-                MenusCRM.BUDGET_PLAN,
+                MenusCRM.PLANNING,
                 MenusCRM.LEAD,
                 MenusCRM.CALENDAR,
                 MenusCRM.CONTACT,

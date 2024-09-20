@@ -1,6 +1,6 @@
 // Load data
 class WorkOrderLoadDataHandle {
-    static $form = $('#frm_production_order');
+    static $form = $('#frm_work_order');
     static $title = $('#title');
     static $dateStart = $('#date-start');
     static $dateEnd = $('#date-end');
@@ -202,10 +202,6 @@ class WorkOrderLoadDataHandle {
                     let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
                     let quantity = parseFloat(row.querySelector('.table-row-quantity').value);
                     if (dataRow?.['product_data']?.['id']) {
-                        if (dataRow?.['uom_data']?.['id']) {
-                            WorkOrderLoadDataHandle.$uom.val(dataRow?.['uom_data']?.['title']);
-                            WorkOrderLoadDataHandle.$uom.attr('data-detail', JSON.stringify(dataRow?.['uom_data']));
-                        }
                         WorkOrderLoadDataHandle.$quantity.val(quantity);
                         WorkOrderLoadDataHandle.loadChangeQuantity();
                         let multi = 1;
@@ -215,6 +211,10 @@ class WorkOrderLoadDataHandle {
                         let dataBOM = WorkOrderLoadDataHandle.loadGetDataBOM();
                         if (dataBOM?.['sum_time']) {
                             WorkOrderLoadDataHandle.$time.val(`${parseInt(dataBOM?.['sum_time']) * multi}`);
+                        }
+                        if (dataRow?.['uom_data']?.['id']) {
+                            WorkOrderLoadDataHandle.$uom.val(dataRow?.['uom_data']?.['title']);
+                            WorkOrderLoadDataHandle.$uom.attr('data-detail', JSON.stringify(dataRow?.['uom_data']));
                         }
                         let curProdID = null;
                         if (WorkOrderLoadDataHandle.$product.attr('data-detail')) {
@@ -477,7 +477,30 @@ class WorkOrderLoadDataHandle {
     static loadDetail(data) {
         WorkOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data?.['bom_data']));
         WorkOrderLoadDataHandle.$title.val(data?.['title']);
+        if (data?.['opportunity_data']?.['id']) {
+            WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxOpp, [data?.['opportunity_data']], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+        }
+        if (data?.['employee_inherit_data']?.['id']) {
+            WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxEmp, [data?.['employee_inherit_data']], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+        }
+        if (data?.['sale_order_data']?.['id']) {
+            WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxSO, [data?.['sale_order_data']], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+        }
+        if (data?.['product_data']?.['id']) {
+            WorkOrderLoadDataHandle.$product.val(data?.['product_data']?.['title']);
+            WorkOrderLoadDataHandle.$product.attr('data-detail', JSON.stringify(data?.['product_data']));
+        }
         WorkOrderLoadDataHandle.$quantity.val(data?.['quantity']);
+        if (data?.['uom_data']?.['id']) {
+            WorkOrderLoadDataHandle.$uom.val(data?.['uom_data']?.['title']);
+            WorkOrderLoadDataHandle.$uom.attr('data-detail', JSON.stringify(data?.['uom_data']));
+        }
+        if (data?.['warehouse_data']?.['id']) {
+            WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxWH, [data?.['warehouse_data']]);
+        }
+        if (data?.['group_data']?.['id']) {
+            WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxGroup, [data?.['group_data']]);
+        }
         let date_start = '';
         if (data?.['date_start']) {
             date_start = data?.['date_start'];

@@ -8853,9 +8853,21 @@ msgid "If the number of selected serials in this table is less than the selected
 msgstr "Nếu số lượng Serial được chọn trong bảng này ít hơn số lượng đã chọn, có thể một số Serial đã chọn không còn tồn tại trong kho nữa."
 
 #
+msgid "Previous"
+msgstr "Về trước"
+
+#
+msgid "Planning"
+msgstr "Kế hoạch"
+
+#
 msgid "Work order"
 msgstr "Yêu cầu sản xuất"
 
 #
 msgid "Goods receipt for"
 msgstr "Nhập hàng cho"
+
+#
+msgid "Report for"
+msgstr "Báo cáo cho"

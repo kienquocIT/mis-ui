@@ -29,14 +29,11 @@ class APLoadPage {
     }
     static LoadCreator(data) {
         APCreatorEle.val(data?.['full_name']).prop('readonly', true).prop('disabled', true)
-        APLoadPage.LoadCreatorInfor(data)
-    }
-    static LoadCreatorInfor(data) {
         let btn_detail = $('#btn-detail-creator-tab');
         $('#creator-detail-span').prop('hidden', false);
         $('#creator-name').text(data?.['full_name']);
         $('#creator-code').text(data?.['code']);
-        $('#creator-department').text(data?.['group']['title']);
+        $('#creator-department').text(data?.['group']?.['title']);
         let url = btn_detail.attr('data-url').replace('0', data?.['id']);
         btn_detail.attr('href', url);
     }
@@ -133,8 +130,8 @@ class APLoadPage {
         $('#supplier-detail-span').prop('hidden', false);
         $('#supplier-name').text(data?.['name']);
         $('#supplier-code').text(data?.['code']);
-        $('#supplier-owner').text(data?.['owner']['fullname']);
-        $('#supplier-industry').text(data?.['industry']['title']);
+        $('#supplier-owner').text(data?.['owner']?.['fullname']);
+        $('#supplier-industry').text(data?.['industry']?.['title']);
         let url = btn_detail.attr('data-url').replace('0', data?.['id']);
         btn_detail.attr('href', url);
     }
@@ -341,7 +338,7 @@ class APLoadTab {
                         if (row?.['type'] === 'planned') {
                             return `<span data-zone="plan_tab" class="available mask-money text-primary" data-init-money="${row?.['sum_available']}"></span>`
                         }
-                        return `<span data-zone="plan_tab"></span>`;
+                        return `<span data-zone="plan_tab">--</span>`;
                     }
                 },
             ],
@@ -561,7 +558,7 @@ class APLoadTab {
                 })
         }
     }
-    static LoadPlanQuotationOnly(quotation_id) {
+    static LoadPlanQuotationOnly(quotation_id, workflow_runtime_id) {
         if (quotation_id) {
             let dataParam1 = {'quotation_id': quotation_id}
             let expense_quotation = $.fn.callAjax2({
@@ -770,10 +767,11 @@ class APLoadTab {
                     }
 
                     APLoadTab.DrawTablePlan(data_table_planned)
+                    WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
     }
-    static LoadPlanSaleOrderOnly(sale_order_id) {
+    static LoadPlanSaleOrderOnly(sale_order_id, workflow_runtime_id) {
         if (sale_order_id) {
             let dataParam1 = {'sale_order_id': sale_order_id}
             let expense_sale_order = $.fn.callAjax2({
@@ -982,6 +980,7 @@ class APLoadTab {
                     }
 
                     APLoadTab.DrawTablePlan(data_table_planned)
+                    WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
     }
@@ -1270,7 +1269,11 @@ class APHandle {
                             }]
                         }).init();
                         APLoadPage.LoadQuotation(data?.['opportunity_mapped']?.['quotation_mapped'])
-                        APLoadTab.LoadPlanQuotation(opp_mapped_select.val(), data?.['opportunity_mapped']?.['quotation_mapped']?.['id'], data?.['workflow_runtime_id'])
+                        APLoadTab.LoadPlanQuotation(
+                            opp_mapped_select.val(),
+                            data?.['opportunity_mapped']?.['quotation_mapped']?.['id'],
+                            data?.['workflow_runtime_id']
+                        )
                         ap_for = 'opportunity'
                     }
                     else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
@@ -1315,13 +1318,19 @@ class APHandle {
                                 }
                             })
 
-                        APLoadTab.LoadPlanQuotationOnly(data?.['quotation_mapped']?.['id'])
+                        APLoadTab.LoadPlanQuotationOnly(
+                            data?.['quotation_mapped']?.['id'],
+                            data?.['workflow_runtime_id']
+                        )
                         ap_for = 'quotation'
                     }
                     else if (Object.keys(data?.['sale_order_mapped']).length !== 0) {
                         APLoadPage.LoadSaleOrder(data?.['sale_order_mapped'])
                         APLoadPage.LoadQuotation(data?.['sale_order_mapped']?.['quotation_mapped'])
-                        APLoadTab.LoadPlanSaleOrderOnly(data?.['sale_order_mapped']?.['id'])
+                        APLoadTab.LoadPlanSaleOrderOnly(
+                            data?.['sale_order_mapped']?.['id'],
+                            data?.['workflow_runtime_id']
+                        )
                         ap_for = 'saleorder'
                     }
                     else {

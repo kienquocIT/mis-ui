@@ -446,11 +446,10 @@ function LoadDetailPQR(for_update=false) {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                WFRTControl.setWFRuntimeID(data['purchase_quotation_request_detail']?.['workflow_runtime_id']);
-                let data_detail = data['purchase_quotation_request_detail'];
+                let data_detail = data?.['purchase_quotation_request_detail'];
                 $.fn.compareStatusShowPageAction(data_detail);
                 $x.fn.renderCodeBreadcrumb(data_detail);
-                console.log(data_detail)
+                // console.log(data_detail)
 
                 data_URL_script.attr('data-pqr-type', data_detail.purchase_quotation_request_type);
                 if (data_detail.purchase_quotation_request_type) {
@@ -525,6 +524,7 @@ function LoadDetailPQR(for_update=false) {
                 $.fn.initMaskMoney2();
 
                 Disable(for_update);
+                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             }
         })
 }

@@ -449,7 +449,6 @@ class GISHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     data = data['goods_issue_detail'];
-                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
                     console.log(data)
@@ -482,6 +481,7 @@ class GISHandle {
                     }
 
                     GISAction.DisabledDetailPage(option);
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
     }

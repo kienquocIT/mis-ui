@@ -304,7 +304,7 @@ class MenusCRM:
         icon='<i class="fas fa-file-invoice"></i>',
     )
     WORK_ORDER = MenuCommon(
-        name='Work order', code='menu_work_order_list', view_name='WorkOrderCreate',
+        name='Work order', code='menu_work_order_list', view_name='WorkOrderList',
         icon='<i class="fas fa-pencil-ruler"></i>',
     )
     AR_INVOICE = MenuCommon(

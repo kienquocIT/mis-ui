@@ -5818,7 +5818,7 @@ msgstr "Loại nhập hàng"
 
 #
 msgid "For purchase order"
-msgstr "Theo đơn mua hàng"
+msgstr "Cho đơn mua hàng"
 
 #
 msgid "For inventory adjustment"
@@ -8854,4 +8854,8 @@ msgstr "Nếu số lượng Serial được chọn trong bảng này ít hơn s�
 
 #
 msgid "Work order"
-msgstr "Lệnh sản xuất"
+msgstr "Yêu cầu sản xuất"
+
+#
+msgid "Goods receipt for"
+msgstr "Nhập hàng cho"

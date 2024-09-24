@@ -28,7 +28,7 @@ class GRLoadDataHandle {
         },
     ];
 
-    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false) {
+    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
         let opts = {'allowClear': isClear};
         $ele.empty();
         if (data.length > 0) {
@@ -39,6 +39,13 @@ class GRLoadDataHandle {
         }
         if ($modal) {
             opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                return $(`<span>${res1} ${res2}</span>`);
+            }
         }
         $ele.initSelect2(opts);
         return true;
@@ -111,7 +118,7 @@ class GRLoadDataHandle {
                 GRLoadDataHandle.loadInitS2(GRLoadDataHandle.POSelectEle, [], {
                     'receipt_status__in': [0, 1, 2].join(','),
                     'system_status': 3
-                });
+                }, null, false, {'res1': 'code', 'res2': 'title'});
             }
             if (!GRLoadDataHandle.supplierSelectEle.val()) {
                 GRLoadDataHandle.loadInitS2(GRLoadDataHandle.supplierSelectEle);
@@ -119,12 +126,12 @@ class GRLoadDataHandle {
         }
         if (type === "2") {
             if (!GRLoadDataHandle.IASelectEle.val()) {
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.IASelectEle, [], {'state': false});
+                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.IASelectEle, [], {'state': false}, null, false, {'res1': 'code', 'res2': 'title'});
             }
         }
         if (type === "3") {
             if (!GRLoadDataHandle.$boxProductionOrder.val()) {
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionOrder);
+                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
             }
             if (GRLoadDataHandle.$boxProductionReport.val().length === 0) {
                 GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport);

@@ -809,7 +809,6 @@ function LoadDetailGoodsTransfer(option='detail') {
                 if (option === 'detail') {
                     new PrintTinymceControl().render('866f163d-b724-404d-942f-4bc44dc2e2ed', data, false);
                 }
-                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 
@@ -916,6 +915,7 @@ function LoadDetailGoodsTransfer(option='detail') {
                     Disable()
                 }
                 $.fn.initMaskMoney2()
+                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             }
         })
 }

@@ -390,7 +390,19 @@ class BOMLoadTab {
             if (ele.val()) {
                 let material_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
                 ele.closest('tr').find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['id'])
-                ele.closest('tr').find('.material-code').text(material_selected?.['code'])
+                if (material_selected?.['has_bom']) {
+                    ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge btn-gradient-primary material-code w-100')
+                    let is_project_bom = material_selected?.['is_project_bom']
+                    let url = script_url.attr('data-url-bom-detail').replace('/0', `/${material_selected?.['bom_id']}`)
+                    if (is_project_bom) (
+                        url = script_url.attr('data-url-project-bom-detail').replace('/0', `/${material_selected?.['bom_id']}`)
+                    )
+                    ele.closest('tr').find('.material-code').closest('a').attr('href', url).removeClass('disabled')
+                }
+                else {
+                    ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge badge-light material-code w-100')
+                    ele.closest('tr').find('.material-code').closest('a').attr('href', '').addClass('disabled')
+                }
                 BOMLoadTab.LoadUOM(ele.closest('tr').find('.material-uom'), material_selected?.['general_uom_group'], material_selected?.['sale_default_uom'])
             }
         })
@@ -761,7 +773,9 @@ class BOMAction {
                     </button>
                     <script class="replacement-material-script"></script>
                 </td>
-                <td><span class="badge badge-light material-code w-100"></span></td>
+                <td>
+                    <a target="_blank"><span class="badge badge-light material-code w-100"></span></a>
+                </td>
                 <td><select class="form-select select2 material-item"></select></td>
                 <td><input type="number" class="form-control material-quantity" value="0"></td>
                 <td><select class="form-select select2 material-uom"></select></td>
@@ -957,10 +971,9 @@ class BOMHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     data = data['bom_detail'];
-                    WFRTControl.setWFRuntimeID(data?.['bom_detail']);
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    console.log(data)
+                    // console.log(data)
 
                     if (data?.['bom_type'] === 0) {
                         $('#for-production').prop('checked', true)
@@ -1037,6 +1050,7 @@ class BOMHandle {
 
                     $.fn.initMaskMoney2()
                     BOMAction.DisableDetailPage(option);
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
     }

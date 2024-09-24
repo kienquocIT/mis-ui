@@ -261,13 +261,19 @@ class MenusCRM:
             ),
         ],
     )
-    REVENUE_PLAN = MenuCommon(
-        name='Revenue plan', code='menu_revenue_plan_list', view_name='RevenuePlanList',
-        icon='<i class="fas fa-circle-dollar-to-slot"></i>',
-    )
-    BUDGET_PLAN = MenuCommon(
-        name='Budget plan', code='menu_budget_plan_list', view_name='BudgetPlanList',
-        icon='<i class="fas fa-wallet"></i>',
+    PLANNING = MenuCommon(
+        name='Planning', code='id_menu_planning', view_name='#',
+        icon='<i class="fas fa-scroll"></i>',
+        child=[
+            MenuCommon(
+                name='Revenue plan', code='menu_revenue_plan_list', view_name='RevenuePlanList',
+                icon='<i class="fas fa-circle-dollar-to-slot"></i>',
+            ),
+            MenuCommon(
+                name='Budget plan', code='menu_budget_plan_list', view_name='BudgetPlanList',
+                icon='<i class="fas fa-wallet"></i>',
+            )
+        ],
     )
     LEAD = MenuCommon(
         name='Lead', code='menu_lead_list', view_name='LeadList',
@@ -296,6 +302,10 @@ class MenusCRM:
     SALE_ORDER = MenuCommon(
         name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',
         icon='<i class="fas fa-file-invoice"></i>',
+    )
+    WORK_ORDER = MenuCommon(
+        name='Work order', code='menu_work_order_list', view_name='WorkOrderList',
+        icon='<i class="fas fa-pencil-ruler"></i>',
     )
     AR_INVOICE = MenuCommon(
         name='AR invoice', code='id_menu_ar_invoice', view_name='ARInvoiceList',
@@ -732,8 +742,7 @@ class SpaceItem:
             menus=[
                 MenusCRM.HOME,
                 MenusCRM.DASHBOARD,
-                MenusCRM.REVENUE_PLAN,
-                MenusCRM.BUDGET_PLAN,
+                MenusCRM.PLANNING,
                 MenusCRM.LEAD,
                 MenusCRM.CALENDAR,
                 MenusCRM.CONTACT,
@@ -742,6 +751,7 @@ class SpaceItem:
                 MenusCRM.QUOTATION,
                 MenusCRM.AR_INVOICE,
                 MenusCRM.SALE_ORDER,
+                MenusCRM.WORK_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.CONTRACT_APPROVAL,
                 MenusCRM.PRODUCT,

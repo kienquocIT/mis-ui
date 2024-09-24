@@ -128,6 +128,10 @@
                 });
             })
 
+            let stateChange = null;
+            window.addEventListener('beforeunload', function (event) {
+                if (stateChange === true) event.stopImmediatePropagation();
+            });
 
             let frm = $('#frm-new-print-template');
             new SetupFormSubmit(frm).validate({
@@ -144,6 +148,7 @@
                                 $.fn.notifyB({
                                     'description': $.fn.transEle.attr('data-success'),
                                 }, 'success');
+                                stateChange = true;
                                 setTimeout(
                                     () => {
                                         window.onbeforeunload = null;

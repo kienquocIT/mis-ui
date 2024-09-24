@@ -5,22 +5,24 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_production_order">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
+    <a href="{% url 'WorkOrderUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
             </span>
-        </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 
 {% block pageContent %}
     <form
-            data-url="{% url 'ProductionOrderDetailAPI' pk=pk %}"
-            data-url-redirect="{% url 'ProductionOrderList' %}"
-            data-method="PUT"
-            id="frm_production_order"
+            data-url="{% url 'WorkOrderDetailAPI' pk=pk %}"
+            data-url-redirect="{% url 'WorkOrderList' %}"
+            data-method="GET"
+            id="frm_work_order"
             method="post"
     >
         {% csrf_token %}
@@ -28,12 +30,13 @@
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
-                        <label class="form-label required" for="contract-title">{% trans 'Title' %}</label>
+                        <label class="form-label required" for="title">{% trans 'Title' %}</label>
                         <input
                                 type="text" class="form-control"
                                 name="title"
                                 id="title"
                                 required
+                                readonly
                         >
                     </div>
                 </div>
@@ -62,59 +65,49 @@
 
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
+                    {% trans 'Select Sale Person' as inherit_title %}
+                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label class="form-label required" for="box-type">{% trans 'Type' %}</label>
+                                <label class="form-label" for="box-so">{% trans 'Sale order' %}</label>
                                 <select
                                     class="form-select"
-                                    id="box-type"
-                                    data-url=""
+                                    id="box-so"
+                                    data-url="{% url "SaleOrderListAPI" %}"
                                     data-method="GET"
                                     data-link-detail=""
-                                    name="type"
-                                    data-keyResp=""
-                                    required
-                                ></select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="box-product">{% trans 'Product' %}</label>
-                                <select
-                                    class="form-select"
-                                    id="box-product"
-                                    data-url="{% url "ProductForSaleListAPI" %}"
-                                    data-method="GET"
-                                    name="product_id"
-                                    data-keyResp="product_sale_list"
-                                    required
+                                    name="sale_order"
+                                    data-keyResp="sale_order_list"
+                                    data-keyText="code"
+                                    readonly
                                 ></select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 col-md-3 col-lg-3">
+                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label class="form-label required" for="quantity">{% trans 'Quantity' %}</label>
-                                <input type="text" class="form-control valid-number" id="quantity" value="1" required>
+                                <label class="form-label" for="product">{% trans 'Product' %}</label>
+                                <input type="text" class="form-control form-control-line mt-1" id="product" data-detail="" readonly>
                             </div>
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label class="form-label required" for="box-uom">{% trans 'UOM' %}</label>
-                                <select
-                                    class="form-select"
-                                    id="box-uom"
-                                    data-url="{% url "UnitOfMeasureListAPI" %}"
-                                    data-method="GET"
-                                    data-link-detail=""
-                                    name="uom_id"
-                                    data-keyResp="unit_of_measure"
-                                    required
-                                ></select>
+                                <label class="form-label" for="quantity">{% trans 'Quantity' %}</label>
+                                <input type="text" class="form-control form-control-line mt-1" id="quantity" readonly>
                             </div>
                         </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label" for="uom">{% trans 'UOM' %}</label>
+                                <input type="text" class="form-control form-control-line mt-1" id="uom" data-detail="" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label class="form-label required" for="box-warehouse">{% trans 'Warehouse' %}</label>
@@ -127,17 +120,16 @@
                                     name="warehouse_id"
                                     data-keyResp="warehouse_list"
                                     required
+                                    readonly
                                 ></select>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label required" for="date-start">{% trans 'Start date' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" name="start-date" id="date-start"
-                                           class="form-control date-picker" autocomplete="off" required>
+                                           class="form-control date-picker" autocomplete="off" required disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -149,13 +141,15 @@
                                 <label class="form-label required" for="date-end">{% trans 'End date' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" name="end-date" id="date-end"
-                                           class="form-control date-picker" autocomplete="off" required>
+                                           class="form-control date-picker" autocomplete="off" required disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-12 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label required" for="box-group">{% trans 'Production group' %}</label>
@@ -168,6 +162,7 @@
                                     name="group_id"
                                     data-keyResp="group_list"
                                     required
+                                    readonly
                                 ></select>
                             </div>
                         </div>
@@ -177,22 +172,6 @@
                                 <input type="text" class="form-control form-control-line mt-1" id="time" readonly>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="form-group">
-                        <label class="form-label" for="box-so">{% trans 'Sale order' %}</label>
-                        <select
-                            class="form-select"
-                            id="box-so"
-                            data-url="{% url "SaleOrderListAPI" %}"
-                            data-method="GET"
-                            data-link-detail=""
-                            name="sale_order"
-                            data-keyResp="sale_order_list"
-                            data-keyText="code"
-                            multiple
-                        ></select>
                     </div>
                 </div>
             </div>
@@ -205,7 +184,7 @@
 
         <div class="row">
             <table
-                    id="table_production_order"
+                    id="table_work_order"
                     class="table nowrap min-w-1280p w-100 mb-5"
             >
                 <thead>
@@ -225,6 +204,47 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="modal-area">
+            <div
+                    class="modal fade" id="productModal" tabindex="-1"
+                    role="dialog" aria-labelledby="productModal"
+                    aria-hidden="true"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-primary"><b>{% trans 'Select product' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table
+                                    id="table-so-product"
+                                    class="table nowrap w-100 mb-5"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th class="w-5"></th>
+                                    <th class="w-20">{% trans 'Product' %}</th>
+                                    <th class="w-10">{% trans 'UOM' %}</th>
+                                    <th class="w-10">{% trans 'Total' %}</th>
+                                    <th class="w-10">{% trans 'Ordered before' %}</th>
+                                    <th class="w-10">{% trans 'remain' %}</th>
+                                    <th class="w-15">{% trans 'Quantity order' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-product" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 
 {% endblock %}
@@ -240,6 +260,7 @@
         data-in-production="{% trans 'In production' %}"
         data-done="{% trans 'Done' %}"
         data-all-wh="{% trans 'All warehouse' %}"
+        data-exceed-quantity="{% trans 'Exceed remain quantity' %}"
     >
     <input
         type="text"
@@ -249,6 +270,7 @@
         data-md-uom="{% url 'UnitOfMeasureListAPI' %}"
         data-md-warehouse="{% url 'WareHouseListAPI' %}"
         data-md-pwh="{% url 'WarehouseGetProductsListAPI' %}"
+        data-so-product-wo="{% url 'SOProductWOListAPI' %}"
     >
     <input type="text" id="data-bom">
     {{ data.employee_current|json_script:'employee_current' }}
@@ -257,7 +279,9 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="{% static 'assets/sales/production/js/productionorder/production_order_common.js' %}"></script>
-    <script src="{% static 'assets/sales/production/js/productionorder/production_order_create.js' %}"></script>
-    <script src="{% static 'assets/sales/production/js/productionorder/production_order_detail.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/workorder/work_order_common.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/workorder/work_order_create.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/workorder/work_order_detail.js' %}"></script>
+
+    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
 {% endblock %}

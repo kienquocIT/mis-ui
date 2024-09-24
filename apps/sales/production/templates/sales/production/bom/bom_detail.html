@@ -30,6 +30,8 @@
             data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
             data-url-material="{% url 'ProductMaterialListForBOMAPI' %}"
             data-url-tool="{% url 'ProductToolListForBOMAPI' %}"
+            data-url-bom-detail="{% url 'BOMDetail' '0' %}"
+            data-url-project-bom-detail="{% url 'ProjectBOMDetail' '0' %}"
     ></script>
     <script id="script-trans"
             data-trans-select-one="{% trans 'Select one' %}"

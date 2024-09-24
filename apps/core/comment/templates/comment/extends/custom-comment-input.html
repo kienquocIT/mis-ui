@@ -1,0 +1,19 @@
+{% load static i18n %}
+<div class="custom_comment">
+    <div type="text" class="form-control input_txt">
+        <textarea placeholder="{% trans 'leave your comment...' %}"></textarea>
+    </div>
+    <a href="#" class="btn send_btn"><i class="fa-solid fa-paper-plane"></i></a>
+    <a href="#" class="btn emoji_btn"><i class="fa-solid fa-face-smile"></i></a>
+</div>
+<div class="emoji_wrapbox" data-url="/static/comment/js/emoji_data.json">
+    <div class="input_wrap_search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="search_emoji" placeholder="{% trans 'Search' %}">
+        <a href="#" class="close_btn_search"><i class="fa-regular fa-circle-xmark"></i></a>
+    </div>
+    <div class="emoji-category-nav"></div>
+    <div class="emoji-body">
+        <ul class="emoji-list"></ul>
+    </div>
+</div>

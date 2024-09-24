@@ -4,6 +4,8 @@
     {% trans 'Project activities' %}
 {% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'comment/css/comment-custom.css' %}" rel="stylesheet" type="text/css"/>
+
     <link href="{% static 'assets/project/css/activities.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
@@ -32,6 +34,7 @@
                         </h5>
                         <p class="card-text">Some quick example text to build on the card title and make up the bulk of
                             the card's content.</p>
+                        {% include 'comment/extends/custom-comment-input.html' %}
                     </div>
                 </div>
             </div>
@@ -40,9 +43,9 @@
 {% endblock %}
 
 {% block dataHiddenGroup %}
-    <input type="hidden" id="url-factory" aria-label="url-factory">
+    <input type="hidden" id="url-factory" aria-label="url-factory" >
     <input type="hidden" id="trans-factory" aria-label="trans-factory">
 {% endblock %}
 {% block jsFooter %}
-{#    <script src="{% static 'assets/project/js/list.js' %}"></script>#}
+    <script src="{% static 'comment/js/comment-custom.js' %}"></script>
 {% endblock %}

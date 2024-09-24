@@ -1,0 +1,71 @@
+.custom_comment{
+    position: relative;
+}
+.custom_comment .input_txt{
+    width: 100%;
+    transition: all .2s ease-out;
+    border-radius:15px;
+    padding-bottom: 35px;
+    padding-top: 12px;
+}
+.custom_comment .input_txt > textarea{
+    display: block;
+    height: 20px;
+    -webkit-appearance: none;
+    resize: none;
+    border: 0;
+    width: 100%;
+    overflow: hidden;
+    outline: none;
+    padding: 0;
+}
+.send_btn{
+    position: absolute;
+    right:0;
+    bottom:0;
+}
+.send_btn i{
+    transition: all .25s ease-in-out;
+}
+.emoji_btn{
+    position: absolute;
+    bottom:0;
+}
+.emoji_wrapbox{
+    width: 322px;
+    height:438px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px 0 rgb(0 0 0 / 10%);
+    padding: 15px 10px;
+}
+
+.emoji_wrapbox #search_emoji{
+    background: rgb(0 0 0 / 5%);
+    outline: none;
+    border:0;
+    border-radius: 10px;
+    width: 100%;
+    height: 36px;
+    padding: 2px 5px 2px 32px;
+}
+.emoji_wrapbox #search_emoji:focus{
+    outline: solid 1px #298DFF;
+}
+.input_wrap_search{
+    position: relative;
+}
+.input_wrap_search > i:first-child,
+.close_btn_search i{
+    position: absolute;
+    top: 13px;
+    left: 10px;
+    font-size: 90%;
+    color: rgb(0 0 0 / 50%);
+}
+.close_btn_search i{
+    opacity: 0;
+    left: unset;
+    right: 10px;
+    font-size: 100%;
+    top:11px;
+}

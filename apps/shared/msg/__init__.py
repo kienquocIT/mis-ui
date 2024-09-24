@@ -18,6 +18,7 @@ from .templates import TemplateMsg
 from .application import AppMsg
 from .core import CoreMsg
 from .masterdata import MDMsg
+from .production import ProductionMsg
 
 
 class BaseMsg:

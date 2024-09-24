@@ -8871,3 +8871,15 @@ msgstr "Nhập hàng cho"
 #
 msgid "Report for"
 msgstr "Báo cáo cho"
+
+#
+msgid "For production order"
+msgstr "Cho lệnh sản xuất"
+
+#
+msgid "For work order"
+msgstr "Cho yêu cầu sản xuất"
+
+#
+msgid "Finished quantity is required"
+msgstr "Số lượng hoàn thành là bắt buộc"

@@ -71,28 +71,31 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="box-production-order">{% trans 'Production order' %}</label>
-                                <select
-                                    class="form-select"
-                                    id="box-production-order"
-                                    data-url="{% url "ProductionOrderDDListAPI" %}"
-                                    data-method="GET"
-                                    name="production_order_id"
-                                    data-keyResp="production_order_dd"
-                                ></select>
+                            <div class="custom-area" id="custom-area-0">
+                                <div class="form-group">
+                                    <label class="form-label required" for="box-production-order">{% trans 'Production order' %}</label>
+                                    <select
+                                        class="form-select"
+                                        id="box-production-order"
+                                        data-url="{% url "ProductionOrderDDListAPI" %}"
+                                        data-method="GET"
+                                        name="production_order_id"
+                                        data-keyResp="production_order_dd"
+                                    ></select>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label required" for="box-work-order">{% trans 'Work order' %}</label>
-                                <select
-                                    class="form-select"
-                                    id="box-work-order"
-                                    data-url="{% url "WorkOrderDDListAPI" %}"
-                                    data-method="GET"
-                                    name=work_order_id"
-                                    data-keyResp="work_order_dd"
-                                    hidden
-                                ></select>
+                            <div class="custom-area" id="custom-area-1" hidden>
+                                <div class="form-group">
+                                    <label class="form-label required" for="box-work-order">{% trans 'Work order' %}</label>
+                                    <select
+                                        class="form-select"
+                                        id="box-work-order"
+                                        data-url="{% url "WorkOrderDDListAPI" %}"
+                                        data-method="GET"
+                                        name=work_order_id"
+                                        data-keyResp="work_order_dd"
+                                    ></select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -171,6 +174,8 @@
     <input
         type="text"
         id="app-trans-factory"
+        data-for-po="{% trans 'For production order' %}"
+        data-for-wo="{% trans 'For work order' %}"
     >
     <input
         type="text"

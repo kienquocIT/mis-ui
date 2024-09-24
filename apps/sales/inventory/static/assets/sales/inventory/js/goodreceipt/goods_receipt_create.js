@@ -97,7 +97,6 @@ $(function () {
 
         GRDataTableHandle.tableWH.on('click', '.table-row-checkbox-additional', function () {
             GRLoadDataHandle.loadCheckIsAdditional(this);
-            GRStoreDataHandle.storeDataProduct();
         });
 
         GRLoadDataHandle.btnAddLot.on('click', function () {

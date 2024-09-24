@@ -405,12 +405,24 @@ class GRLoadDataHandle {
     };
 
     static loadCheckWH(ele) {
-        let $form = $('#frm_good_receipt_create');
         let row = ele.closest('tr');
         GRDataTableHandle.tableLot.DataTable().clear().draw();
         GRDataTableHandle.tableSerial.DataTable().clear().draw();
         GRLoadDataHandle.loadNewRowsLotOrNewRowsSerial();
-        if ($form.attr('data-method').toLowerCase() !== 'get') {
+        let tablePO = GRDataTableHandle.tablePOProduct;
+        let elePOChecked = tablePO[0].querySelector('.table-row-checkbox:checked');
+        if (elePOChecked) {
+            let rowPO = elePOChecked.closest('tr');
+            let rowIndex = tablePO.DataTable().row(rowPO).index();
+            let $row = tablePO.DataTable().row(rowIndex);
+            let dataStore = $row.data();
+            if (dataStore?.['product_data']?.['general_traceability_method'] === 2) {
+                if (row.querySelector('.table-row-checkbox-additional')) {
+                    row.querySelector('.table-row-checkbox-additional').removeAttribute('disabled');
+                }
+            }
+        }
+        if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
             let eleAdditional = row.querySelector('.table-row-checkbox-additional');
             let eleImport = row.querySelector('.table-row-import');
             if (eleAdditional && eleImport && !eleAdditional.hasAttribute('disabled')) {
@@ -421,6 +433,7 @@ class GRLoadDataHandle {
                 }
             }
         }
+        return true;
     };
 
     static loadAreaLotOrAreaSerial() {
@@ -476,24 +489,24 @@ class GRLoadDataHandle {
     };
 
     static loadAreaLotSerial(type) {
-        let $form = $('#frm_good_receipt_create');
         $('#scroll-table-lot-serial')[0].removeAttribute('hidden');
         GRDataTableHandle.tableLot.DataTable().clear().draw();
         GRDataTableHandle.tableSerial.DataTable().clear().draw();
         if (type === 1) {  // lot
             $('#table-good-receipt-manage-lot-area')[0].removeAttribute('hidden');
-            if ($form.attr('data-method').toLowerCase() !== 'get') {
+            if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 $('#btn-add-manage-lot')[0].removeAttribute('disabled');
             }
             $('#table-good-receipt-manage-serial-area')[0].setAttribute('hidden', 'true');
         }
         if (type === 2) {  // serial
             $('#table-good-receipt-manage-serial-area')[0].removeAttribute('hidden');
-            if ($form.attr('data-method').toLowerCase() !== 'get') {
+            if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 $('#btn-add-manage-serial')[0].removeAttribute('disabled');
             }
             $('#table-good-receipt-manage-lot-area')[0].setAttribute('hidden', 'true');
         }
+        return true;
     };
 
     static loadNewRowsLot() {
@@ -896,16 +909,22 @@ class GRLoadDataHandle {
                     }
                 }
                 if (dataPO?.['product_data']?.['general_traceability_method'] === 2) {
-                    let eleList = GRDataTableHandle.tableSerial[0].querySelectorAll('.table-row-serial-number');
-                    if (eleList.length > 0) {
-                        for (let eleSerialNumber of eleList) {
-                            if (eleSerialNumber.value !== '') {
-                                valueWHNew++;
+                    if (eleWHChecked.closest('tr').querySelector('.table-row-checkbox-additional')) {
+                        if (eleWHChecked.closest('tr').querySelector('.table-row-checkbox-additional').checked === true) {
+                            valueWHNew = parseFloat(whImport.value);
+                        } else {
+                            let eleList = GRDataTableHandle.tableSerial[0].querySelectorAll('.table-row-serial-number');
+                            if (eleList.length > 0) {
+                                for (let eleSerialNumber of eleList) {
+                                    if (eleSerialNumber.value !== '') {
+                                        valueWHNew++;
+                                    }
+                                }
+                                whImport.value = String(valueWHNew);
+                            } else {
+                                whImport.value = String(0);
                             }
                         }
-                        whImport.value = String(valueWHNew);
-                    } else {
-                        whImport.value = String(0);
                     }
                 }
             }
@@ -1047,8 +1066,7 @@ class GRLoadDataHandle {
     };
 
     static loadCheckIsAdditional(ele) {
-        let $form = $('#frm_good_receipt_create');
-        if ($form.attr('data-method').toLowerCase() !== 'get') {
+        if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
             let row = ele.closest('tr');
             row.querySelector('.table-row-import').value = '0';
             if (ele.checked === true) {
@@ -1056,11 +1074,18 @@ class GRLoadDataHandle {
                 GRDataTableHandle.tableSerial.DataTable().clear().draw();
                 GRLoadDataHandle.btnAddLot[0].setAttribute('disabled', 'true');
                 GRLoadDataHandle.btnAddSerial[0].setAttribute('disabled', 'true');
-                row.querySelector('.table-row-import').removeAttribute('disabled');
-            } else {
+                if (row.querySelector('.table-row-import')) {
+                    row.querySelector('.table-row-import').removeAttribute('disabled');
+                }
+                if (row.querySelector('.table-row-checkbox')) {
+                    row.querySelector('.table-row-checkbox').checked = true;
+                }
+            }
+            if (ele.checked === false) {
                 GRLoadDataHandle.btnAddLot[0].removeAttribute('disabled');
                 GRLoadDataHandle.btnAddSerial[0].removeAttribute('disabled');
                 row.querySelector('.table-row-import').setAttribute('disabled', 'true');
+                GRLoadDataHandle.loadQuantityImport();
             }
             GRStoreDataHandle.storeDataProduct();
         }
@@ -1523,12 +1548,12 @@ class GRDataTableHandle {
                             let rowIndex = tablePO.DataTable().row(row).index();
                             let $row = tablePO.DataTable().row(rowIndex);
                             let dataStore = $row.data();
-                            if ([2].includes(dataStore?.['product_data']?.['general_traceability_method'])) {
+                            if (dataStore?.['product_data']?.['general_traceability_method'] === 1) {
                                 disabled = 'disabled';
                             }
                         }
                         return `<div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" disabled ${checked} ${disabled}>
+                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" ${checked} ${disabled}>
                                 </div>`;
                     }
                 },
@@ -1549,6 +1574,9 @@ class GRDataTableHandle {
                             if ([1, 2].includes(dataStore?.['product_data']?.['general_traceability_method'])) {
                                 disabled = 'disabled';
                             }
+                        }
+                        if (row?.['is_additional'] === true) {
+                            disabled = '';
                         }
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-import validated-number text-primary" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" ${disabled}>

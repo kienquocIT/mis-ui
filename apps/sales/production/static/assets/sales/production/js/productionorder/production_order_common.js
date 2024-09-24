@@ -95,7 +95,10 @@ class ProdOrderLoadDataHandle {
             $.fn.callAjax2({
                     'url': ProdOrderLoadDataHandle.$urls.attr('data-md-bom'),
                     'method': 'GET',
-                    'data': {'product_id': ProdOrderLoadDataHandle.$boxProd.val()},
+                    'data': {
+                        'product_id': ProdOrderLoadDataHandle.$boxProd.val(),
+                        'opportunity_id__isnull': true,
+                    },
                     'isDropdown': true,
                 }
             ).then(

@@ -5,7 +5,10 @@ class GRLoadDataHandle {
     static POSelectEle = $('#box-good-receipt-purchase-order');
     static supplierSelectEle = $('#box-good-receipt-supplier');
     static IASelectEle = $('#box-good-receipt-inventory-adjustment');
+    static $boxTypeReport = $('#box-report-type');
+    static $btnSR = $('#btn-save-production-report');
     static $boxProductionOrder = $('#box-production-order');
+    static $boxWorkOrder = $('#box-work-order');
     static $boxProductionReport = $('#box-production-report');
     static initPOProductEle = $('#data-init-purchase-order-products');
     static PRDataEle = $('#purchase_requests_data');
@@ -16,7 +19,7 @@ class GRLoadDataHandle {
     static dataTypeGr = [
         {
             'id': 3,
-            'title': GRLoadDataHandle.transEle.attr('data-for-product')
+            'title': GRLoadDataHandle.transEle.attr('data-for-production')
         },
         {
             'id': 2,
@@ -26,6 +29,10 @@ class GRLoadDataHandle {
             'id': 1,
             'title': GRLoadDataHandle.transEle.attr('data-for-po')
         },
+    ];
+    static dataTypeReport = [
+        {'id': 0, 'title': GRLoadDataHandle.transEle.attr('data-for-pro')},
+        {'id': 1, 'title': GRLoadDataHandle.transEle.attr('data-for-wo')},
     ];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -130,9 +137,16 @@ class GRLoadDataHandle {
             }
         }
         if (type === "3") {
+            if (!GRLoadDataHandle.$boxTypeReport.val()) {
+                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxTypeReport, GRLoadDataHandle.dataTypeReport);
+            }
             if (!GRLoadDataHandle.$boxProductionOrder.val()) {
                 GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
             }
+            if (!GRLoadDataHandle.$boxWorkOrder.val()) {
+                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxWorkOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+            }
+            GRDataTableHandle.dataTableProductionReport();
             if (GRLoadDataHandle.$boxProductionReport.val().length === 0) {
                 GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport);
             }
@@ -143,6 +157,19 @@ class GRLoadDataHandle {
         GRDataTableHandle.dataTableGoodReceiptWHLot();
         GRDataTableHandle.dataTableGoodReceiptWHSerial();
         GRDataTableHandle.dataTableGoodReceiptLineDetailPO();
+        return true;
+    };
+
+    static loadCustomAreaReportByType() {
+        GRLoadDataHandle.loadClearModal();
+        GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+        GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxWorkOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+        GRDataTableHandle.tableProductionReport.DataTable().clear().draw();
+        for (let eleArea of GRLoadDataHandle.$form[0].querySelectorAll('.custom-area-report')) {
+            eleArea.setAttribute('hidden', 'true');
+        }
+        let idAreaShow = 'custom-area-report-' + String(GRLoadDataHandle.$boxTypeReport.val());
+        document.getElementById(idAreaShow).removeAttribute('hidden');
         return true;
     };
 
@@ -257,6 +284,36 @@ class GRLoadDataHandle {
                     }
                 )
             }
+        }
+        return true;
+    };
+
+    static loadChangeProductionWorkOrder() {
+        GRLoadDataHandle.loadClearModal();
+        if (GRLoadDataHandle.$boxProductionOrder.val() || GRLoadDataHandle.$boxWorkOrder.val()) {
+            let data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxProductionOrder, GRLoadDataHandle.$boxProductionOrder.val());
+            let dataParams = {'production_order_id': data?.['id']};
+            if (GRLoadDataHandle.$boxTypeReport.val() === '1') {
+                data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxWorkOrder, GRLoadDataHandle.$boxWorkOrder.val());
+                dataParams = {'work_order_id': data?.['id']};
+            }
+            $.fn.callAjax2({
+                    'url': GRDataTableHandle.tableProductionReport.attr('data-url'),
+                    'method': "GET",
+                    'data': dataParams,
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('production_report_gr') && Array.isArray(data.production_report_gr)) {
+                            GRDataTableHandle.tableProductionReport.DataTable().rows.add(data.production_report_gr).draw();
+                        }
+                    }
+                }
+            )
+            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport, [], {'production_order_id': data?.['id']});
         }
         return true;
     };
@@ -1116,7 +1173,7 @@ class GRLoadDataHandle {
         let type_data = {
             '1': GRLoadDataHandle.transEle.attr('data-for-po'),
             '2': GRLoadDataHandle.transEle.attr('data-for-ia'),
-            '3': GRLoadDataHandle.transEle.attr('data-for-product'),
+            '3': GRLoadDataHandle.transEle.attr('data-for-production'),
         }
         let idAreaShow = String(data?.['goods_receipt_type'] + 1);
         GRLoadDataHandle.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGr);
@@ -1368,6 +1425,8 @@ class GRDataTableHandle {
     static tableLot = $('#datable-good-receipt-manage-lot');
     static tableSerial = $('#datable-good-receipt-manage-serial');
     static tableLineDetailPO = $('#datable-good-receipt-line-detail-po');
+
+    static tableProductionReport = $('#table-production-report');
 
     // PO
     static dataTableGoodReceiptPOProduct(data) {
@@ -1881,6 +1940,41 @@ class GRDataTableHandle {
             ],
             drawCallback: function () {
             },
+        });
+    };
+
+    static dataTableProductionReport(data) {
+        // init dataTable
+        GRDataTableHandle.tableProductionReport.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        if (row?.['title'] && row?.['code']) {
+                            let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                            return `<div class="d-flex align-items-center">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input table-row-checkbox" data-row="${dataRow}">
+                                        </div>
+                                        <div>
+                                            <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
+                                            <span class="table-row-title">${row?.['title']}</span>
+                                        </div>
+                                    </div>`;
+                        }
+                        return `<span>--</span>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['quantity_order']}</span>`;
+                    },
+                },
+            ],
         });
     };
 

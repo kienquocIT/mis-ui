@@ -180,13 +180,27 @@ $(function () {
         });
 
         // PRODUCTION BEGIN
+        GRLoadDataHandle.$boxTypeReport.on('change', function () {
+           GRLoadDataHandle.loadCustomAreaReportByType();
+        });
+
         GRLoadDataHandle.$boxProductionOrder.on('change', function () {
-            GRLoadDataHandle.loadClearModal();
-            if (GRLoadDataHandle.$boxProductionOrder.val()) {
-                let data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxProductionOrder, GRLoadDataHandle.$boxProductionOrder.val());
-                GRLoadDataHandle.$boxProductionReport.removeAttr('disabled');
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport, [], {'production_order_id': data?.['id']});
+            GRLoadDataHandle.loadChangeProductionWorkOrder();
+        });
+
+        GRLoadDataHandle.$boxWorkOrder.on('change', function () {
+            GRLoadDataHandle.loadChangeProductionWorkOrder();
+        });
+
+        GRLoadDataHandle.$btnSR.on('click', function () {
+            let listData = [];
+            for (let eleCheck of GRDataTableHandle.tableProductionReport[0].querySelectorAll('.table-row-checkbox:checked')) {
+                if (eleCheck.getAttribute('data-row')) {
+                    listData.push(JSON.parse(eleCheck.getAttribute('data-row')));
+                }
             }
+            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport, listData);
+            GRLoadDataHandle.$boxProductionReport.change();
         });
 
         GRLoadDataHandle.$boxProductionReport.on('change', function () {

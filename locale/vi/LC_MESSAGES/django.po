@@ -8885,5 +8885,13 @@ msgid "Finished quantity is required"
 msgstr "Số lượng hoàn thành là bắt buộc"
 
 #
-msgid "For production by sale order"
-msgstr "Cho sản xuất theo đơn hàng"
+msgid "General production"
+msgstr "Sản xuất chung"
+
+#
+msgid "Production for orders"
+msgstr "Sản xuất cho đơn hàng"
+
+#
+msgid "Select production report"
+msgstr "Chọn báo cáo sản xuất"

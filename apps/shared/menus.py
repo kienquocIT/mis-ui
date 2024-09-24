@@ -663,10 +663,10 @@ class MenusProject:
         name='Baseline', code='menu_baseline_list', view_name='ProjectListBaseline',
         icon='<i class="bi bi-signpost-fill"></i>',
     )
-    # WORKS = MenuCommon(
-    #     name='Works', code='menu_works_list', view_name='ProjectWorkList',
-    #     icon='<i class="bi bi-filter-circle font-3"></i>',
-    # )
+    ACTIVITIES = MenuCommon(
+        name='Project Activities', code='menu_project_activities', view_name='ProjectActivities',
+        icon='<i class="fa-solid fa-fire-flame-curved"></i>',
+    )
 
 
 class MenusProduction:
@@ -833,7 +833,7 @@ class SpaceItem:
                 MenusProject.HOME,
                 MenusProject.LIST,
                 MenusProject.BASELINE,
-                # MenusProject.WORKS,
+                MenusProject.ACTIVITIES,
             ]
         ),
         'report': SpaceCommon(

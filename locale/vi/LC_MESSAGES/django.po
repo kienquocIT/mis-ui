@@ -8883,3 +8883,7 @@ msgstr "Cho yêu cầu sản xuất"
 #
 msgid "Finished quantity is required"
 msgstr "Số lượng hoàn thành là bắt buộc"
+
+#
+msgid "For production by sale order"
+msgstr "Cho sản xuất theo đơn hàng"

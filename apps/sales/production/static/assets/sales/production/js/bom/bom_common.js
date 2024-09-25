@@ -1120,9 +1120,13 @@ $('input[name="bom-type"]').on('change', function() {
             if ($('#for-production').prop('checked') || $('#for-service').prop('checked')) {
                 if ($('#for-service').prop('checked')) {
                     BOMLoadPage.LoadServiceProduct(productEle)
+                    $('#hint-for-finished-goods').prop('hidden', true)
+                    $('#hint-for-service').prop('hidden', false)
                 }
                 if ($('#for-production').prop('checked')) {
                     BOMLoadPage.LoadFinishProduct(productEle)
+                    $('#hint-for-finished-goods').prop('hidden', false)
+                    $('#hint-for-service').prop('hidden', true)
                 }
                 NOW_BOM_TYPE = $('input[name="bom-type"]:checked')
                 normal_production_space.prop('hidden', false)

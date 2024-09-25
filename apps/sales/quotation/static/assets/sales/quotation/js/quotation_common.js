@@ -938,61 +938,6 @@ class QuotationLoadDataHandle {
         return 0;
     };
 
-    static loadCostProduct(eleProduct) {
-        let formSubmit = $('#frm_quotation_create');
-        let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-        if (productData) {
-            let costList = eleProduct.closest('tr').querySelector('.table-row-cost-list');
-            // load PRICE
-            if (costList && productData?.['id']) {
-                $(costList).empty();
-                let htmlDD = ``;
-                let urlDetail = QuotationLoadDataHandle.urlEle.attr('data-url-product-detail').format_url_with_uuid(productData?.['id']);
-                // call ajax get info product detail
-                $.fn.callAjax2({
-                    url: urlDetail,
-                    method: 'GET',
-                    isLoading: false,
-                }).then(
-                    (resp) => {
-                        let dataDetail = $.fn.switcherResp(resp);
-                        if (dataDetail) {
-                            if (dataDetail?.['cost_list']) {
-                                if (Array.isArray(dataDetail?.['cost_list']) && dataDetail?.['cost_list'].length > 0) {
-                                    for (let costData of dataDetail?.['cost_list']) {
-                                        htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}">
-                                                <div class="d-flex justify-content-between">
-                                                    <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
-                                                    <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
-                                                </div>
-                                            </a>`;
-                                    }
-                                    $(costList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-60p position-relative overflow-y-scroll">${htmlDD}</div>`);
-                                } else {
-                                    let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
-                                    let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
-                                    let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
-                                    if (elePrice) {
-                                        if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
-                                            elePrice.removeAttribute('disabled');
-                                        }
-                                    }
-                                    if (eleBtnPriceList) {
-                                        eleBtnPriceList.setAttribute('hidden', 'true');
-                                    }
-                                    if (eleGrPrice) {
-                                        eleGrPrice.removeAttribute('data-bs-toggle');
-                                    }
-                                }
-                            }
-                            $.fn.initMaskMoney2();
-                        }
-                    }
-                )
-            }
-        }
-    };
-
     static loadReInitDataTableProduct() {
         let $form = $('#frm_quotation_create');
         let $table = $('#datable-quotation-create-product');
@@ -1517,6 +1462,98 @@ class QuotationLoadDataHandle {
                     }
                 }
             });
+        }
+    };
+
+    static loadCostProduct(eleProduct) {
+        let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+        if (productData) {
+            if (productData?.['id']) {
+                // call ajax check BOM
+                $.fn.callAjax2({
+                        'url': QuotationLoadDataHandle.urlEle.attr('data-md-bom'),
+                        'method': 'GET',
+                        'data': {
+                            'product_id': productData?.['id'],
+                            'opportunity_id__isnull': false,
+                        },
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('bom_order_list') && Array.isArray(data.bom_order_list)) {
+                                let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
+                                if (data.bom_order_list.length > 0) {
+                                    if (elePrice) {
+                                        elePrice.setAttribute('disabled', 'true');
+                                        $(elePrice).attr('value', String(data.bom_order_list[0]?.['sum_price']));
+                                        $.fn.initMaskMoney2();
+                                    }
+                                } else {
+                                    QuotationLoadDataHandle.loadCostWHProduct(eleProduct);
+                                }
+                            }
+                        }
+                    }
+                )
+            }
+        }
+    };
+
+    static loadCostWHProduct(eleProduct) {
+        let formSubmit = $('#frm_quotation_create');
+        let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+        if (productData) {
+            let costList = eleProduct.closest('tr').querySelector('.table-row-cost-list');
+            // load PRICE
+            if (costList && productData?.['id']) {
+                $(costList).empty();
+                let htmlDD = ``;
+                let urlDetail = QuotationLoadDataHandle.urlEle.attr('data-url-product-detail').format_url_with_uuid(productData?.['id']);
+                // call ajax get info product detail
+                $.fn.callAjax2({
+                    url: urlDetail,
+                    method: 'GET',
+                    isLoading: false,
+                }).then(
+                    (resp) => {
+                        let dataDetail = $.fn.switcherResp(resp);
+                        if (dataDetail) {
+                            if (dataDetail?.['cost_list']) {
+                                if (Array.isArray(dataDetail?.['cost_list']) && dataDetail?.['cost_list'].length > 0) {
+                                    for (let costData of dataDetail?.['cost_list']) {
+                                        htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}">
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
+                                                    <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
+                                                </div>
+                                            </a>`;
+                                    }
+                                    $(costList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-60p position-relative overflow-y-scroll">${htmlDD}</div>`);
+                                } else {
+                                    let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
+                                    let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
+                                    let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
+                                    if (elePrice) {
+                                        if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                                            elePrice.removeAttribute('disabled');
+                                        }
+                                    }
+                                    if (eleBtnPriceList) {
+                                        eleBtnPriceList.setAttribute('hidden', 'true');
+                                    }
+                                    if (eleGrPrice) {
+                                        eleGrPrice.removeAttribute('data-bs-toggle');
+                                    }
+                                }
+                            }
+                            $.fn.initMaskMoney2();
+                        }
+                    }
+                )
+            }
         }
     };
 

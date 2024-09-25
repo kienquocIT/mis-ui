@@ -34,14 +34,14 @@ class NodeLoadDataHandle {
         }
     ];
     static dataSource = [
-        {'id': 3, 'title': 'In workflow'},
-        {'id': 2, 'title': 'Out form'},
+        {'id': 3, 'title': NodeLoadDataHandle.transEle.attr('data-type-src-3')},
+        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-type-src-2')},
         // {'id': 1, 'title': 'In form'},
     ];
     static dataSourceJSON = {
         // 1: {'id': 1, 'title': 'In form'},
-        2: {'id': 2, 'title': 'Out form'},
-        3: {'id': 3, 'title': 'In workflow'},
+        2: {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-type-src-2')},
+        3: {'id': 3, 'title': NodeLoadDataHandle.transEle.attr('data-type-src-3')},
     };
     static dataInWFOption = [
         {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-employee')},
@@ -53,6 +53,29 @@ class NodeLoadDataHandle {
         {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-2nd-manager')},
         {'id': 1, 'title': NodeLoadDataHandle.transEle.attr('data-select-1st-manager')},
     ];
+
+    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
+        let opts = {'allowClear': isClear};
+        $ele.empty();
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                return $(`<span>${res1} ${res2}</span>`);
+            }
+        }
+        $ele.initSelect2(opts);
+        return true;
+    };
 
     static loadSystemNode() {
         NodeDataTableHandle.dataTableNode();
@@ -259,7 +282,8 @@ class NodeLoadDataHandle {
         NodeDataTableHandle.dataTableCollabInWFEmployee($(tableInWFEmployee));
         // init select2
         if (row.querySelector('.box-list-source')) {
-            NodeLoadDataHandle.loadBoxListSource($(row.querySelector('.box-list-source')));
+            // NodeLoadDataHandle.loadBoxListSource($(row.querySelector('.box-list-source')));
+            NodeLoadDataHandle.loadInitS2($(row.querySelector('.box-list-source')), NodeLoadDataHandle.dataSource);
         }
         if (row.querySelector('.box-in-form-property')) {
             NodeLoadDataHandle.loadBoxPropertyEmployee($(row.querySelector('.box-in-form-property')));
@@ -277,7 +301,11 @@ class NodeLoadDataHandle {
             NodeLoadDataHandle.loadBoxPosition($(row.querySelector('.box-in-workflow-position')));
         }
         if (row.querySelector('.box-in-workflow-employee')) {
-            NodeLoadDataHandle.loadBoxEmployee($(row.querySelector('.box-in-workflow-employee')));
+            // NodeLoadDataHandle.loadBoxEmployee($(row.querySelector('.box-in-workflow-employee')));
+            NodeLoadDataHandle.loadInitS2($(row.querySelector('.box-in-workflow-employee')), [], {
+                    'receipt_status__in': [0, 1, 2].join(','),
+                    'system_status': 3
+                }, null, false, {'res1': 'code', 'res2': 'full_name'});
         }
         return true;
     };
@@ -648,8 +676,6 @@ class NodeLoadDataHandle {
                         'is_edit_all_zone': is_edit_all_zone,
                     }
                     $(table).DataTable().row.add(data).draw().node();
-                    // update zoneHiddenEmployee for validate zone hidden
-                    // NodeValidateHandle.validateZoneHiddenEmployeeSetup(dataEmployee?.['id'], zoneHidden);
                 }
             }
         }
@@ -1253,13 +1279,13 @@ class NodeDataTableHandle {
                                                                     </div>
                                                                     <div class="col-10"></div>
                                                                 </div>
-                                                                <div class="offcanvas offcanvas-end w-60 mt-4" tabindex="-1" id="${idInWFCanvas}" aria-labelledby="${idInWFCanvas}">
+                                                                <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="${idInWFCanvas}" aria-labelledby="${idInWFCanvas}">
                                                                     <div class="offcanvas-header">
                                                                         <h5 id="offcanvasRightLabel">${NodeLoadDataHandle.transEle.attr('data-add-employee')}</h5>
                                                                     </div>
                                                                     <div class="offcanvas-body form-group">
                                                                         <div class="form-group">
-                                                                            <label class="form-label">Select option</label>
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-config-according')}</label>
                                                                             <select
                                                                                 class="form-select box-in-workflow-option"
                                                                                 data-url=""
@@ -1278,7 +1304,7 @@ class NodeDataTableHandle {
                                                                             >
                                                                             </select>
                                                                         </div>
-                                                                        <div class="form-group employee-area" hidden>
+                                                                        <div class="form-group" hidden>
                                                                             <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-select-company')}</label>
                                                                             <select 
                                                                                 class="form-control box-in-workflow-company"
@@ -1288,7 +1314,7 @@ class NodeDataTableHandle {
                                                                             >
                                                                             </select>
                                                                         </div>
-                                                                        <div class="form-group employee-area" hidden>
+                                                                        <div class="form-group" hidden>
                                                                             <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-select-role')}</label>
                                                                             <select 
                                                                                 class="form-control box-in-workflow-role"
@@ -1327,7 +1353,7 @@ class NodeDataTableHandle {
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="form-group">
+                                                                        <div class="form-group" hidden>
                                                                             <label class="form-label">
                                                                                 ${NodeLoadDataHandle.transEle.attr('data-description')}
                                                                             </label>

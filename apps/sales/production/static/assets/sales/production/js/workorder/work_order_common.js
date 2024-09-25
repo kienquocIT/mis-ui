@@ -250,11 +250,12 @@ class WorkOrderLoadDataHandle {
                             if (data.bom_order_list.length > 0) {
                                 WorkOrderLoadDataHandle.loadAddDtbRows(WorkOrderLoadDataHandle.loadSetupBOM(data.bom_order_list[0]));
                                 let multi = 1;
-                                if (WorkOrderLoadDataHandle.$quantity.html()) {
-                                    multi = parseInt(WorkOrderLoadDataHandle.$quantity.html());
+                                if (WorkOrderLoadDataHandle.$quantity.val()) {
+                                    multi = parseInt(WorkOrderLoadDataHandle.$quantity.val());
                                 }
                                 WorkOrderLoadDataHandle.$time.val(`${data.bom_order_list[0]?.['sum_time'] * multi}`);
                                 WorkOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data.bom_order_list[0]));
+                                WorkOrderLoadDataHandle.loadChangeQuantity();
                             }
                         }
                     }

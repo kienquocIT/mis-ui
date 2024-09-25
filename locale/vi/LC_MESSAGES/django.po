@@ -8899,3 +8899,15 @@ msgstr "Chọn báo cáo sản xuất"
 #
 msgid "Goods receipt to warehouse"
 msgstr "Nhập hàng vào kho"
+
+#
+msgid "One collaborator"
+msgstr "Một cộng tác viên"
+
+#
+msgid "Many collaborators"
+msgstr "Nhiều cộng tác viên"
+
+#
+msgid "Config according to"
+msgstr "Cấu hình theo"

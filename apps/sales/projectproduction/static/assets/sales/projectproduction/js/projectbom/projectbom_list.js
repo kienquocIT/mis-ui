@@ -10,7 +10,7 @@ $(document).ready(function () {
                 reloadCurrency: true,
                 ajax: {
                     data: {
-                        'bom_type': 4
+                        'for_opp': true
                     },
                     url: frm.dataUrl,
                     type: frm.dataMethod,

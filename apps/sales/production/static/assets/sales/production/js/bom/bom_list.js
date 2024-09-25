@@ -9,6 +9,9 @@ $(document).ready(function () {
                 rowIdx: true,
                 reloadCurrency: true,
                 ajax: {
+                    data: {
+                        'for_production': true,
+                    },
                     url: frm.dataUrl,
                     type: frm.dataMethod,
                     dataSrc: function (resp) {

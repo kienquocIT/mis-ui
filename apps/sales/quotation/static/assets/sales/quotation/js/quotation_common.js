@@ -741,103 +741,6 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadAddRowExpense() {
-        let tableExpense = $('#datable-quotation-create-expense');
-        let order = tableExpense[0].querySelectorAll('.table-row-order').length + 1;
-        let dataAdd = {
-            "tax": {
-                "id": "",
-                "code": "",
-                "title": "",
-                "value": 0
-            },
-            "order": order,
-            "expense": {
-                "id": "",
-                "code": "",
-                "title": ""
-            },
-            "product": {
-                "id": "",
-                "code": "",
-                "title": ""
-            },
-            "expense_code": "",
-            "expense_price": 0,
-            "expense_title": "",
-            "unit_of_measure": {
-                "id": "",
-                "code": "",
-                "title": ""
-            },
-            "expense_quantity": 0,
-            "expense_uom_code": "",
-            "expense_tax_title": "",
-            "expense_tax_value": 0,
-            "expense_uom_title": "",
-            "expense_tax_amount": 0,
-            "expense_subtotal_price": 0,
-            "is_product": false,
-            "is_labor": false,
-        }
-        let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
-        // load data dropdown
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-item')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-        // check disable
-        tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
-    };
-
-    static loadAddRowLabor() {
-        let tableExpense = $('#datable-quotation-create-expense');
-        let order = tableExpense[0].querySelectorAll('.table-row-order').length + 1;
-        let dataAdd = {
-            "tax": {
-                "id": "",
-                "code": "",
-                "title": "",
-                "value": 0
-            },
-            "order": order,
-            "expense": {
-                "id": "",
-                "code": "",
-                "title": ""
-            },
-            "product": {
-                "id": "",
-                "code": "",
-                "title": ""
-            },
-            "expense_code": "",
-            "expense_price": 0,
-            "expense_title": "",
-            "unit_of_measure": {
-                "id": "",
-                "code": "",
-                "title": ""
-            },
-            "expense_quantity": 0,
-            "expense_uom_code": "",
-            "expense_tax_title": "",
-            "expense_tax_value": 0,
-            "expense_uom_title": "",
-            "expense_tax_amount": 0,
-            "expense_subtotal_price": 0,
-            "is_product": false,
-            "is_labor": true,
-        }
-        let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
-        // load data dropdown
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-labor-item')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-item')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-        // check disable
-        tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
-    };
-
     static loadAPIDetailQuotation(select_id) {
         let ele = $('#data-init-copy-quotation');
         let url = ele.attr('data-url-detail').format_url_with_uuid(select_id);
@@ -1615,6 +1518,132 @@ class QuotationLoadDataHandle {
                 }
             });
         }
+    };
+
+    // TABLE EXPENSE
+    static loadAddRowExpense() {
+        let tableExpense = $('#datable-quotation-create-expense');
+        let order = tableExpense[0].querySelectorAll('.table-row-order').length + 1;
+        let dataAdd = {
+            "tax": {
+                "id": "",
+                "code": "",
+                "title": "",
+                "value": 0
+            },
+            "order": order,
+            "expense": {
+                "id": "",
+                "code": "",
+                "title": ""
+            },
+            "product": {
+                "id": "",
+                "code": "",
+                "title": ""
+            },
+            "expense_code": "",
+            "expense_price": 0,
+            "expense_title": "",
+            "unit_of_measure": {
+                "id": "",
+                "code": "",
+                "title": ""
+            },
+            "expense_quantity": 0,
+            "expense_uom_code": "",
+            "expense_tax_title": "",
+            "expense_tax_value": 0,
+            "expense_uom_title": "",
+            "expense_tax_amount": 0,
+            "expense_subtotal_price": 0,
+            "is_product": false,
+            "is_labor": false,
+        }
+        let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
+        // load data dropdown
+        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-item')));
+        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
+        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+        // check disable
+        tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
+    };
+
+    static loadAddRowLabor() {
+        let tableExpense = $('#datable-quotation-create-expense');
+        let order = tableExpense[0].querySelectorAll('.table-row-order').length + 1;
+        let dataAdd = {
+            "tax": {
+                "id": "",
+                "code": "",
+                "title": "",
+                "value": 0
+            },
+            "order": order,
+            "expense": {
+                "id": "",
+                "code": "",
+                "title": ""
+            },
+            "product": {
+                "id": "",
+                "code": "",
+                "title": ""
+            },
+            "expense_code": "",
+            "expense_price": 0,
+            "expense_title": "",
+            "unit_of_measure": {
+                "id": "",
+                "code": "",
+                "title": ""
+            },
+            "expense_quantity": 0,
+            "expense_uom_code": "",
+            "expense_tax_title": "",
+            "expense_tax_value": 0,
+            "expense_uom_title": "",
+            "expense_tax_amount": 0,
+            "expense_subtotal_price": 0,
+            "is_product": false,
+            "is_labor": true,
+        }
+        let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
+        // load data dropdown
+        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-labor-item')));
+        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-item')));
+        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
+        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+        // check disable
+        tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
+    };
+
+    static loadChangeLabor(ele) {
+        if ($(ele).val()) {
+            let row = ele.closest('tr');
+            let dataSelected = SelectDDControl.get_data_from_idx($(ele), $(ele).val());
+            if (dataSelected?.['expense_item']?.['id']) {
+                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataSelected?.['expense_item']]);
+            }
+            if (dataSelected?.['uom']?.['id'] && dataSelected?.['uom_group']?.['id']) {
+                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataSelected?.['uom']], {'group': dataSelected?.['uom_group']?.['id']});
+            }
+            QuotationLoadDataHandle.loadPriceLabor(row, dataSelected, dataSelected?.['uom']?.['id']);
+        }
+        return true;
+    };
+
+    static loadPriceLabor(row, dataSelected, uomSelectedID) {
+        $(row.querySelector('.table-row-price')).attr('value', String(0));
+        if (dataSelected?.['price_list'].length > 0) {
+            for (let priceData of dataSelected?.['price_list']) {
+                if (priceData?.['uom']?.['id'] === uomSelectedID) {
+                    $(row.querySelector('.table-row-price')).attr('value', String(priceData?.['price_value']));
+                    break;
+                }
+            }
+        }
+        return true;
     };
 
     static loadSetWFRuntimeZone() {
@@ -2827,7 +2856,6 @@ class QuotationDataTableHandle {
                                         data-keyResp="unit_of_measure"
                                         data-zone="${dataZone}"
                                         required
-                                        disabled
                                     >
                                     </select>`;
                         }

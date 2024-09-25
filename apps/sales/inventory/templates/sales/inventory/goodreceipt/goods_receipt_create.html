@@ -46,7 +46,7 @@
                                         <div class="input-group">
                                             <div class="input-affix-wrapper">
                                                 <div class="input-prefix">
-                                                    <i class="fas fa-file-import text-primary"></i>
+                                                    <i class="fas fa-file-import text-dark"></i>
                                                 </div>
                                                 <select
                                                     class="form-select"
@@ -158,22 +158,6 @@
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="row">
-{#                                <div class="col-12 col-md-7 col-lg-7">#}
-{#                                    <div class="form-group">#}
-{#                                        <label class="form-label required" for="box-production-order">{% trans 'Production order' %}</label>#}
-{#                                        <select#}
-{#                                                class="form-select"#}
-{#                                                id="box-production-order"#}
-{#                                                data-url="{% url 'ProductionOrderDDListAPI' %}"#}
-{#                                                data-method="GET"#}
-{#                                                data-link-detail=""#}
-{#                                                name="production_order"#}
-{#                                                data-keyResp="production_order_dd"#}
-{#                                                required#}
-{#                                        >#}
-{#                                        </select>#}
-{#                                    </div>#}
-{#                                </div>#}
                                 <div class="col-12 col-md-7 col-lg-7">
                                     <div class="form-group">
                                         <label class="form-label required" for="box-production-report">{% trans 'Production report' %}</label>
@@ -200,8 +184,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -400,7 +382,7 @@
                                             >
                                                 <thead>
                                                 <tr class="bg-light">
-                                                    <th class="w-25">PR</th>
+                                                    <th class="w-25 th-custom"></th>
                                                     <th class="w-20">{% trans 'UOM' %}</th>
                                                     <th class="w-10">{% trans 'Quantity' %}</th>
                                                     <th class="w-15">{% trans 'Received before' %}</th>
@@ -427,7 +409,7 @@
                                                 <tr class="bg-light">
                                                     <th class="w-15">{% trans 'Warehouse Code' %}</th>
                                                     <th class="w-20">{% trans 'Warehouse Name' %}</th>
-                                                    <th class="w-15">{% trans 'Input later' %}</th>
+                                                    <th class="w-15">{% trans 'Input data later' %}</th>
                                                     <th class="w-20">{% trans 'Quantity' %}</th>
                                                     <th class="w-15">{% trans 'UOM' %}</th>
                                                 </tr>
@@ -508,7 +490,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title text-primary"><b>{% trans 'Production report' %}</b></h5>
+                            <h5 class="modal-title text-primary"><b>{% trans 'Select production report' %}</b></h5>
                             <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                         </div>
                         <div class="modal-body">
@@ -519,7 +501,7 @@
                                         <div class="input-group">
                                             <div class="input-affix-wrapper">
                                                 <div class="input-prefix">
-                                                    <i class="fas fa-file-import text-primary"></i>
+                                                    <i class="fas fa-file-import text-dark"></i>
                                                 </div>
                                                 <select
                                                     class="form-select"
@@ -579,6 +561,7 @@
                                 <tr class="bg-light">
                                     <th>{% trans 'Production report' %}</th>
                                     <th>{% trans 'Quantity' %}</th>
+                                    <th>{% trans 'Remain' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -617,6 +600,8 @@
             data-stock="{% trans 'Stock' %}"
             data-for-pro="{% trans 'General production' %}"
             data-for-wo="{% trans 'Production for orders' %}"
+            data-purchase-request="{% trans 'Purchase request' %}"
+            data-production-report="{% trans 'Production report' %}"
     >
     <input
             type="text"

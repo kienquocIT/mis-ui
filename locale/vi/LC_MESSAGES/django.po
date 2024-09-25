@@ -7189,8 +7189,8 @@ msgid "Select inventory adjustment"
 msgstr "Chọn phiếu kiểm kê kho"
 
 #
-msgid "Input later"
-msgstr "Nhập sau"
+msgid "Input data later"
+msgstr "Nhập liệu sau"
 
 #
 msgid "Vendor serial no."
@@ -8895,3 +8895,7 @@ msgstr "Sản xuất cho đơn hàng"
 #
 msgid "Select production report"
 msgstr "Chọn báo cáo sản xuất"
+
+#
+msgid "Goods receipt to warehouse"
+msgstr "Nhập hàng vào kho"

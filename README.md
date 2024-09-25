@@ -458,6 +458,9 @@ def view(...)
                   'form_id': 'frm_quotation_create',
               }
               return ctx, status.HTTP_200_OK
+
+4/ apps/core/home/utils.py (Tham khảo các chức năng khác)
+    Thêm urls detail chức năng để redirect từ noti & tab todo trang chủ
 ```
 
 9. Mọi z-index đều nhỏ hơn 9999

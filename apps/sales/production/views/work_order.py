@@ -32,7 +32,7 @@ class WorkOrderList(View):
         auth_require=True,
         template='sales/production/workorder/work_order_list.html',
         menu_active='menu_work_order_list',
-        breadcrumb='PRODUCTION_ORDER_LIST_PAGE',
+        breadcrumb='WORK_ORDER_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
@@ -43,7 +43,7 @@ class WorkOrderCreate(View):
         auth_require=True,
         template='sales/production/workorder/work_order_create.html',
         menu_active='',
-        breadcrumb='PRODUCTION_ORDER_CREATE_PAGE',
+        breadcrumb='WORK_ORDER_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
         ctx = {}
@@ -79,7 +79,7 @@ class WorkOrderDetail(View):
         auth_require=True,
         template='sales/production/workorder/work_order_detail.html',
         menu_active='menu_work_order_list',
-        breadcrumb='PRODUCTION_ORDER_DETAIL_PAGE',
+        breadcrumb='WORK_ORDER_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         return {
@@ -92,7 +92,7 @@ class WorkOrderUpdate(View):
         auth_require=True,
         template='sales/production/workorder/work_order_update.html',
         menu_active='menu_work_order_list',
-        breadcrumb='PRODUCTION_ORDER_UPDATE_PAGE',
+        breadcrumb='WORK_ORDER_UPDATE_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         ctx = {

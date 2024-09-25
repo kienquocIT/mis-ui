@@ -539,7 +539,7 @@ class WorkOrderLoadDataHandle {
                     ele.setAttribute('readonly', 'true');
                 }
                 for (let ele of row.querySelectorAll('.table-row-tool')) {
-                    ele.setAttribute('readonly', 'true');
+                    ele.setAttribute('disabled', 'true');
                 }
                 return true;
             });

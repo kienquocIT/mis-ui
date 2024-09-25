@@ -1026,7 +1026,6 @@ $(document).ready(function () {
             this.inpApp$.initSelect2().on('change', function () {
                 let idx = $(this).val();
                 clsThis.templateSelectedData = clsThis.templateData[idx];
-                console.log(clsThis.templateSelectedData, clsThis.templateSelectedData?.['template_link'])
                 if (clsThis.templateSelectedData && clsThis.templateSelectedData?.['template_link']) {
                     clsThis.linkTemplateList$.attr('href', clsThis.linkTemplateList$.attr('data-static-url') + clsThis.templateSelectedData['template_link']).show();
                     clsThis.inpFile$.prop('disabled', false);

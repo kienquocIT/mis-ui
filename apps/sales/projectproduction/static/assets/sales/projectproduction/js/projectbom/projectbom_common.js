@@ -55,7 +55,7 @@ class ProjectBOMLoadPage {
     static LoadFinishProduct(ele, data) {
         ele.initSelect2({
             ajax: {
-                data: {'general_product_types_mapped__is_finished_goods': true},
+                data: {'get_finished_goods_and_services': true},
                 url: ele.attr('data-url'),
                 method: 'GET',
             },

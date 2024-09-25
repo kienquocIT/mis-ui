@@ -8871,3 +8871,11 @@ msgstr "Nhập hàng cho"
 #
 msgid "Report for"
 msgstr "Báo cáo cho"
+
+#
+msgid "month"
+msgstr "tháng"
+
+#
+msgid "months"
+msgstr "tháng"

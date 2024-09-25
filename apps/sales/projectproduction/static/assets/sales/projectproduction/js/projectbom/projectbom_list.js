@@ -73,7 +73,7 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text w-15 text-center',
                         'render': (data, type, row) => {
-                            return `<span>${row?.['sum_time']} (h)</span>`;
+                            return `<span>${parseFloat(row?.['sum_time'].toFixed(2))} (h)</span>`;
                         }
                     },
                     {

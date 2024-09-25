@@ -176,7 +176,7 @@ class BOMLoadTab {
                 {
                     className: 'text-center',
                     'render': (data, type, row) => {
-                        return `<span class="labor-summary-quantity">${row?.['quantity']}</span>`;
+                        return `<span class="labor-summary-quantity">${parseFloat(row?.['quantity'].toFixed(2))}</span>`;
                     }
                 },
                 {
@@ -694,7 +694,7 @@ class BOMAction {
         labor_summary_table.find('tbody tr').each(function () {
             sum_time += parseFloat($(this).find('.labor-summary-quantity').text()) * parseFloat($(this).find('.labor-summary-uom').attr('data-uom-ratio'))
         })
-        timeEle.val(sum_time)
+        timeEle.val(parseFloat(sum_time.toFixed(2)))
     }
     // tab process
     static Calculate_process_table(row) {
@@ -984,7 +984,7 @@ class BOMHandle {
 
                     BOMLoadPage.LoadFinishProduct(productEle, data?.['product'])
                     priceEle.attr('value', data?.['sum_price'])
-                    timeEle.val(data?.['sum_time'])
+                    timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
 
                     if (!data?.['for_outsourcing']) {
                         BOMLoadTab.LoadProcessDescriptionTable(data?.['bom_process_data'], option)

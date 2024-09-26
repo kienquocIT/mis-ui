@@ -505,13 +505,13 @@ class POLoadDataHandle {
     };
 
     static loadDataRowTable($table) {
-        if (!$table[0].querySelector('.dataTables_empty')) {
-            for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
-                let row = $table[0].tBodies[0].rows[i];
-                let table_id = $table[0].id;
-                POLoadDataHandle.loadDataRow(row, table_id);
-            }
-        }
+        let table_id = $table[0].id;
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            POLoadDataHandle.loadDataRow(row, table_id);
+            POCalculateHandle.calculateMain($table, row);
+        });
+        return true;
     };
 
     static loadDataRow(row) {
@@ -1559,7 +1559,7 @@ class PODataTableHandle {
                                             data-method="${PODataTableHandle.productInitEle.attr('data-method')}"
                                             data-keyResp="product_sale_list"
                                             required
-                                            disabled
+                                            readonly
                                         >
                                         </select>
                                     </div>
@@ -1949,9 +1949,8 @@ class POCalculateHandle {
             let eleTotalRaw = tableFt.querySelector('.purchase-order-product-total-raw');
             let finalRevenueBeforeTaxAdd = tableFt.querySelector('.purchase-order-final-revenue-before-tax');
             if (elePretaxAmount && eleTaxes && eleTotal) {
-                let tableLen = table.tBodies[0].rows.length;
-                for (let i = 0; i < tableLen; i++) {
-                    let row = table.tBodies[0].rows[i];
+                $(table).DataTable().rows().every(function () {
+                    let row = this.node();
                     // calculate Pretax Amount
                     let subtotalRaw = row.querySelector('.table-row-subtotal-raw');
                     if (subtotalRaw) {
@@ -1966,7 +1965,7 @@ class POCalculateHandle {
                             taxAmount += parseFloat(subTaxAmountRaw.value)
                         }
                     }
-                }
+                });
                 let totalFinal = (pretaxAmount + taxAmount);
                 $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
                 elePretaxAmountRaw.value = pretaxAmount;
@@ -2035,10 +2034,11 @@ class POCalculateHandle {
     };
 
     static calculateTable(table) {
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
-            POCalculateHandle.calculateMain(table, row)
-        }
+        table.DataTable().rows().every(function () {
+            let row = this.node();
+            POCalculateHandle.calculateMain(table, row);
+        });
+        return true;
     };
 
     // payment stage
@@ -2260,7 +2260,7 @@ class POSubmitHandle {
                                 'quantity_origin': quantity_origin,
                                 'quantity_order_origin': quantity_order_origin,
                                 'remain_origin': remain_origin,
-                                'product_unit_price': 0,
+                                'product_unit_price': dataRow?.['unit_price'],
                                 'product_tax_title': '',
                                 'product_tax_amount': 0,
                                 'product_subtotal_price': 0,

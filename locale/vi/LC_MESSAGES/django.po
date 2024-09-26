@@ -7250,7 +7250,7 @@ msgstr "Đợi nhập"
 
 #
 msgid "PR code"
-msgstr "Mã PR"
+msgstr "Mã YCMH"
 
 #
 msgid "Merge same product in 1 line, convert to reference unit if there is more 1 UOM"

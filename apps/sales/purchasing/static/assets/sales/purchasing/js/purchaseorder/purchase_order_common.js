@@ -1577,7 +1577,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '5%',
+                    width: '7%',
                     render: (data, type, row) => {
                         let dataStr = JSON.stringify(row?.['uom_order_request']).replace(/"/g, "&quot;");
                         return `<span class="table-row-uom-order-request" id="${row?.['uom_order_request']?.['id']}">${row?.['uom_order_request']?.['title']}<input type="hidden" class="data-info" value="${dataStr}"></span>`;
@@ -1624,7 +1624,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '15.625%',
+                    width: '14.625%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <div class="dropend">
@@ -1675,7 +1675,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 10,
-                    width: '14.0625%',
+                    width: '13.0625%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>

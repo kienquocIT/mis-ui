@@ -6,3 +6,4 @@ from .crm.saledata.contact import *
 from .crm.saledata.salutation import *
 from .crm.saledata.price import *
 from .crm.saledata.account import *
+from .crm.saledata.product import *

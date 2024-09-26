@@ -8901,6 +8901,25 @@ msgid "Goods receipt to warehouse"
 msgstr "Nhập hàng vào kho"
 
 #
+msgid "month"
+msgstr "tháng"
+
+#
+msgid "months"
+msgstr "tháng"
+
+#
+msgid "Only select Finished goods"
+msgstr "Chỉ chọn Thành phẩm"
+
+#
+msgid "Only select Services"
+msgstr "Chỉ chọn Dịch Vụ"
+
+#
+msgid "Select Finished goods or Services"
+msgstr "Chọn Thành Phẩm hoặc Dịch Vụ"
+#
 msgid "One collaborator"
 msgstr "Một cộng tác viên"
 

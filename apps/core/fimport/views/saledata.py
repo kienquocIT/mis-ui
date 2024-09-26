@@ -69,3 +69,12 @@ class SaleDataAccountImportAPI(APIView):
     def post(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, url=ApiURL.IMPORT_SALEDATA_ACCOUNT, user=request.user).post(data=request.data)
         return resp.auto_return(key_success='account')
+
+
+class ProductUOMGroupImportAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.IMPORT_SALEDATA_PRODUCT_UOMGROUP, user=request.user).post(
+            data=request.data
+        )
+        return resp.auto_return(key_success='product_uom_group')

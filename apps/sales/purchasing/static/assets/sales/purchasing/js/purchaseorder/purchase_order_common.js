@@ -465,6 +465,7 @@ class POLoadDataHandle {
             $(eleTotal).attr('data-init-money', String(0));
             eleTotalRaw.value = 0;
         }
+        POCalculateHandle.calculateTable($tableProductPR);
         $.fn.initMaskMoney2();
         return true;
     };
@@ -505,13 +506,12 @@ class POLoadDataHandle {
     };
 
     static loadDataRowTable($table) {
-        if (!$table[0].querySelector('.dataTables_empty')) {
-            for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
-                let row = $table[0].tBodies[0].rows[i];
-                let table_id = $table[0].id;
-                POLoadDataHandle.loadDataRow(row, table_id);
-            }
-        }
+        let table_id = $table[0].id;
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            POLoadDataHandle.loadDataRow(row, table_id);
+        });
+        return true;
     };
 
     static loadDataRow(row) {
@@ -1559,7 +1559,7 @@ class PODataTableHandle {
                                             data-method="${PODataTableHandle.productInitEle.attr('data-method')}"
                                             data-keyResp="product_sale_list"
                                             required
-                                            disabled
+                                            readonly
                                         >
                                         </select>
                                     </div>
@@ -1937,46 +1937,52 @@ class POCalculateHandle {
         if (table.id === 'datable-purchase-order-product-request') {
             tableWrapper = document.getElementById('datable-purchase-order-product-request_wrapper');
         }
+        let elePretaxAmount = table.querySelector('.purchase-order-product-pretax-amount');
+        let eleTaxes = table.querySelector('.purchase-order-product-taxes');
+        let eleTotal = table.querySelector('.purchase-order-product-total');
+        let elePretaxAmountRaw = table.querySelector('.purchase-order-product-pretax-amount-raw');
+        let eleTaxesRaw = table.querySelector('.purchase-order-product-taxes-raw');
+        let eleTotalRaw = table.querySelector('.purchase-order-product-total-raw');
+        let finalRevenueBeforeTaxAdd = table.querySelector('.purchase-order-final-revenue-before-tax');
+        let pretaxAmount = 0;
+        let taxAmount = 0;
         if (tableWrapper) {
             let tableFt = tableWrapper.querySelector('.dataTables_scrollFoot');
-            let pretaxAmount = 0;
-            let taxAmount = 0;
-            let elePretaxAmount = tableFt.querySelector('.purchase-order-product-pretax-amount');
-            let eleTaxes = tableFt.querySelector('.purchase-order-product-taxes');
-            let eleTotal = tableFt.querySelector('.purchase-order-product-total');
-            let elePretaxAmountRaw = tableFt.querySelector('.purchase-order-product-pretax-amount-raw');
-            let eleTaxesRaw = tableFt.querySelector('.purchase-order-product-taxes-raw');
-            let eleTotalRaw = tableFt.querySelector('.purchase-order-product-total-raw');
-            let finalRevenueBeforeTaxAdd = tableFt.querySelector('.purchase-order-final-revenue-before-tax');
-            if (elePretaxAmount && eleTaxes && eleTotal) {
-                let tableLen = table.tBodies[0].rows.length;
-                for (let i = 0; i < tableLen; i++) {
-                    let row = table.tBodies[0].rows[i];
-                    // calculate Pretax Amount
-                    let subtotalRaw = row.querySelector('.table-row-subtotal-raw');
-                    if (subtotalRaw) {
-                        if (subtotalRaw.value) {
-                            pretaxAmount += parseFloat(subtotalRaw.value)
-                        }
-                    }
-                    // calculate Tax Amount
-                    let subTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
-                    if (subTaxAmountRaw) {
-                        if (subTaxAmountRaw.value) {
-                            taxAmount += parseFloat(subTaxAmountRaw.value)
-                        }
+
+            elePretaxAmount = tableFt.querySelector('.purchase-order-product-pretax-amount');
+            eleTaxes = tableFt.querySelector('.purchase-order-product-taxes');
+            eleTotal = tableFt.querySelector('.purchase-order-product-total');
+            elePretaxAmountRaw = tableFt.querySelector('.purchase-order-product-pretax-amount-raw');
+            eleTaxesRaw = tableFt.querySelector('.purchase-order-product-taxes-raw');
+            eleTotalRaw = tableFt.querySelector('.purchase-order-product-total-raw');
+            finalRevenueBeforeTaxAdd = tableFt.querySelector('.purchase-order-final-revenue-before-tax');
+        }
+        if (elePretaxAmount && eleTaxes && eleTotal) {
+            $(table).DataTable().rows().every(function () {
+                let row = this.node();
+                // calculate Pretax Amount
+                let subtotalRaw = row.querySelector('.table-row-subtotal-raw');
+                if (subtotalRaw) {
+                    if (subtotalRaw.value) {
+                        pretaxAmount += parseFloat(subtotalRaw.value)
                     }
                 }
-                let totalFinal = (pretaxAmount + taxAmount);
-                $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
-                elePretaxAmountRaw.value = pretaxAmount;
-                finalRevenueBeforeTaxAdd.value = pretaxAmount;
-                $(eleTaxes).attr('data-init-money', String(taxAmount));
-                eleTaxesRaw.value = taxAmount;
-                $(eleTotal).attr('data-init-money', String(totalFinal));
-                eleTotalRaw.value = totalFinal;
-            }
-
+                // calculate Tax Amount
+                let subTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
+                if (subTaxAmountRaw) {
+                    if (subTaxAmountRaw.value) {
+                        taxAmount += parseFloat(subTaxAmountRaw.value)
+                    }
+                }
+            });
+            let totalFinal = (pretaxAmount + taxAmount);
+            $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
+            elePretaxAmountRaw.value = pretaxAmount;
+            finalRevenueBeforeTaxAdd.value = pretaxAmount;
+            $(eleTaxes).attr('data-init-money', String(taxAmount));
+            eleTaxesRaw.value = taxAmount;
+            $(eleTotal).attr('data-init-money', String(totalFinal));
+            eleTotalRaw.value = totalFinal;
         }
         $.fn.initMaskMoney2();
         return true;
@@ -2035,10 +2041,11 @@ class POCalculateHandle {
     };
 
     static calculateTable(table) {
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
-            POCalculateHandle.calculateMain(table, row)
-        }
+        table.DataTable().rows().every(function () {
+            let row = this.node();
+            POCalculateHandle.calculateMain(table, row);
+        });
+        return true;
     };
 
     // payment stage
@@ -2260,7 +2267,7 @@ class POSubmitHandle {
                                 'quantity_origin': quantity_origin,
                                 'quantity_order_origin': quantity_order_origin,
                                 'remain_origin': remain_origin,
-                                'product_unit_price': 0,
+                                'product_unit_price': dataRow?.['unit_price'],
                                 'product_tax_title': '',
                                 'product_tax_amount': 0,
                                 'product_subtotal_price': 0,

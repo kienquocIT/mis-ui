@@ -8930,3 +8930,7 @@ msgstr "Nhiều cộng tác viên"
 #
 msgid "Config according to"
 msgstr "Cấu hình theo"
+
+#
+msgid "Ordered before"
+msgstr "Đã đặt"

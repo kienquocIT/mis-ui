@@ -913,9 +913,16 @@ class HandlePlanAppNew {
                     data: 'application',
                     render: (data, type, row) => {
                         if (data && Array.isArray(data)) {
-                            let detailHTML = data.sort((a, b) => {
-                                return a.title - b.title
-                            }).map((item) => {
+                            const dataResolved = data.sort((a, b) => {
+                                let aAppDataTitle = a?.['title_i18n'] || null;
+                                let bAppDataTitle = b?.['title_i18n'] || null;
+                                if (aAppDataTitle && bAppDataTitle && typeof aAppDataTitle === 'string' && typeof bAppDataTitle === 'string') {
+                                    return aAppDataTitle.localeCompare(bAppDataTitle);
+                                } else if (aAppDataTitle) return true;
+                                else if (bAppDataTitle) return false;
+                                return true;
+                            })
+                            let detailHTML = dataResolved.map((item) => {
                                 return `
                                         <div class="col-lg-3 col-md-6 col-12">
                                             <div class="form-check">
@@ -931,7 +938,7 @@ class HandlePlanAppNew {
                                                     class="form-check-label" 
                                                     for="app-${item.id}"
                                                 >
-                                                    ${item.title}
+                                                    ${item?.['title_i18n'] || ''}
                                                 </label>
                                             </div>
                                         </div>
@@ -1085,8 +1092,8 @@ class HandlePlanAppNew {
                     }
                 ).sort(
                     (a, b) => {
-                        let aAppDataTitle = a?.['appData']?.['title'] || null;
-                        let bAppDataTitle = b?.['appData']?.['title'] || null;
+                        let aAppDataTitle = a?.['appData']?.['title_i18n'] || null;
+                        let bAppDataTitle = b?.['appData']?.['title_i18n'] || null;
                         if (aAppDataTitle && bAppDataTitle && typeof aAppDataTitle === 'string' && typeof bAppDataTitle === 'string') {
                             return aAppDataTitle.localeCompare(bAppDataTitle);
                         } else if (aAppDataTitle) return true;
@@ -1112,7 +1119,7 @@ class HandlePlanAppNew {
                             data: "appData",
                             render: (data, type, row) => {
                                 if (data && typeof data === 'object' && data.hasOwnProperty('title')) {
-                                    return `<span class="badge badge-primary">${data.title}</span>`;
+                                    return `<span class="badge badge-primary">${data?.['title_i18n'] || ''}</span>`;
                                 }
                                 else row['app_data_not_found'] = true;
                                 return `<span class="badge badge-secondary app-title">_</span>`;

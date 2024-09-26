@@ -741,103 +741,6 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadAddRowExpense() {
-        let tableExpense = $('#datable-quotation-create-expense');
-        let order = tableExpense[0].querySelectorAll('.table-row-order').length + 1;
-        let dataAdd = {
-            "tax": {
-                "id": "",
-                "code": "",
-                "title": "",
-                "value": 0
-            },
-            "order": order,
-            "expense": {
-                "id": "",
-                "code": "",
-                "title": ""
-            },
-            "product": {
-                "id": "",
-                "code": "",
-                "title": ""
-            },
-            "expense_code": "",
-            "expense_price": 0,
-            "expense_title": "",
-            "unit_of_measure": {
-                "id": "",
-                "code": "",
-                "title": ""
-            },
-            "expense_quantity": 0,
-            "expense_uom_code": "",
-            "expense_tax_title": "",
-            "expense_tax_value": 0,
-            "expense_uom_title": "",
-            "expense_tax_amount": 0,
-            "expense_subtotal_price": 0,
-            "is_product": false,
-            "is_labor": false,
-        }
-        let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
-        // load data dropdown
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-item')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-        // check disable
-        tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
-    };
-
-    static loadAddRowLabor() {
-        let tableExpense = $('#datable-quotation-create-expense');
-        let order = tableExpense[0].querySelectorAll('.table-row-order').length + 1;
-        let dataAdd = {
-            "tax": {
-                "id": "",
-                "code": "",
-                "title": "",
-                "value": 0
-            },
-            "order": order,
-            "expense": {
-                "id": "",
-                "code": "",
-                "title": ""
-            },
-            "product": {
-                "id": "",
-                "code": "",
-                "title": ""
-            },
-            "expense_code": "",
-            "expense_price": 0,
-            "expense_title": "",
-            "unit_of_measure": {
-                "id": "",
-                "code": "",
-                "title": ""
-            },
-            "expense_quantity": 0,
-            "expense_uom_code": "",
-            "expense_tax_title": "",
-            "expense_tax_value": 0,
-            "expense_uom_title": "",
-            "expense_tax_amount": 0,
-            "expense_subtotal_price": 0,
-            "is_product": false,
-            "is_labor": true,
-        }
-        let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
-        // load data dropdown
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-labor-item')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-item')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-        // check disable
-        tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
-    };
-
     static loadAPIDetailQuotation(select_id) {
         let ele = $('#data-init-copy-quotation');
         let url = ele.attr('data-url-detail').format_url_with_uuid(select_id);
@@ -1033,61 +936,6 @@ class QuotationLoadDataHandle {
         }
         $.fn.initMaskMoney2();
         return 0;
-    };
-
-    static loadCostProduct(eleProduct) {
-        let formSubmit = $('#frm_quotation_create');
-        let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-        if (productData) {
-            let costList = eleProduct.closest('tr').querySelector('.table-row-cost-list');
-            // load PRICE
-            if (costList && productData?.['id']) {
-                $(costList).empty();
-                let htmlDD = ``;
-                let urlDetail = QuotationLoadDataHandle.urlEle.attr('data-url-product-detail').format_url_with_uuid(productData?.['id']);
-                // call ajax get info product detail
-                $.fn.callAjax2({
-                    url: urlDetail,
-                    method: 'GET',
-                    isLoading: false,
-                }).then(
-                    (resp) => {
-                        let dataDetail = $.fn.switcherResp(resp);
-                        if (dataDetail) {
-                            if (dataDetail?.['cost_list']) {
-                                if (Array.isArray(dataDetail?.['cost_list']) && dataDetail?.['cost_list'].length > 0) {
-                                    for (let costData of dataDetail?.['cost_list']) {
-                                        htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}">
-                                                <div class="d-flex justify-content-between">
-                                                    <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
-                                                    <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
-                                                </div>
-                                            </a>`;
-                                    }
-                                    $(costList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-60p position-relative overflow-y-scroll">${htmlDD}</div>`);
-                                } else {
-                                    let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
-                                    let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
-                                    let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
-                                    if (elePrice) {
-                                        if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
-                                            elePrice.removeAttribute('disabled');
-                                        }
-                                    }
-                                    if (eleBtnPriceList) {
-                                        eleBtnPriceList.setAttribute('hidden', 'true');
-                                    }
-                                    if (eleGrPrice) {
-                                        eleGrPrice.removeAttribute('data-bs-toggle');
-                                    }
-                                }
-                            }
-                            $.fn.initMaskMoney2();
-                        }
-                    }
-                )
-            }
-        }
     };
 
     static loadReInitDataTableProduct() {
@@ -1615,6 +1463,224 @@ class QuotationLoadDataHandle {
                 }
             });
         }
+    };
+
+    static loadCostProduct(eleProduct) {
+        let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+        if (productData) {
+            if (productData?.['id']) {
+                // call ajax check BOM
+                $.fn.callAjax2({
+                        'url': QuotationLoadDataHandle.urlEle.attr('data-md-bom'),
+                        'method': 'GET',
+                        'data': {
+                            'product_id': productData?.['id'],
+                            'opportunity_id__isnull': false,
+                        },
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('bom_order_list') && Array.isArray(data.bom_order_list)) {
+                                let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
+                                if (data.bom_order_list.length > 0) {
+                                    if (elePrice) {
+                                        elePrice.setAttribute('disabled', 'true');
+                                        $(elePrice).attr('value', String(data.bom_order_list[0]?.['sum_price']));
+                                        $.fn.initMaskMoney2();
+                                    }
+                                } else {
+                                    QuotationLoadDataHandle.loadCostWHProduct(eleProduct);
+                                }
+                            }
+                        }
+                    }
+                )
+            }
+        }
+    };
+
+    static loadCostWHProduct(eleProduct) {
+        let formSubmit = $('#frm_quotation_create');
+        let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+        if (productData) {
+            let costList = eleProduct.closest('tr').querySelector('.table-row-cost-list');
+            // load PRICE
+            if (costList && productData?.['id']) {
+                $(costList).empty();
+                let htmlDD = ``;
+                let urlDetail = QuotationLoadDataHandle.urlEle.attr('data-url-product-detail').format_url_with_uuid(productData?.['id']);
+                // call ajax get info product detail
+                $.fn.callAjax2({
+                    url: urlDetail,
+                    method: 'GET',
+                    isLoading: false,
+                }).then(
+                    (resp) => {
+                        let dataDetail = $.fn.switcherResp(resp);
+                        if (dataDetail) {
+                            if (dataDetail?.['cost_list']) {
+                                if (Array.isArray(dataDetail?.['cost_list']) && dataDetail?.['cost_list'].length > 0) {
+                                    for (let costData of dataDetail?.['cost_list']) {
+                                        htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}">
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
+                                                    <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
+                                                </div>
+                                            </a>`;
+                                    }
+                                    $(costList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-60p position-relative overflow-y-scroll">${htmlDD}</div>`);
+                                } else {
+                                    let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
+                                    let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
+                                    let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
+                                    if (elePrice) {
+                                        if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                                            elePrice.removeAttribute('disabled');
+                                        }
+                                    }
+                                    if (eleBtnPriceList) {
+                                        eleBtnPriceList.setAttribute('hidden', 'true');
+                                    }
+                                    if (eleGrPrice) {
+                                        eleGrPrice.removeAttribute('data-bs-toggle');
+                                    }
+                                }
+                            }
+                            $.fn.initMaskMoney2();
+                        }
+                    }
+                )
+            }
+        }
+    };
+
+    // TABLE EXPENSE
+    static loadAddRowExpense() {
+        let tableExpense = $('#datable-quotation-create-expense');
+        let order = tableExpense[0].querySelectorAll('.table-row-order').length + 1;
+        let dataAdd = {
+            "tax": {
+                "id": "",
+                "code": "",
+                "title": "",
+                "value": 0
+            },
+            "order": order,
+            "expense": {
+                "id": "",
+                "code": "",
+                "title": ""
+            },
+            "product": {
+                "id": "",
+                "code": "",
+                "title": ""
+            },
+            "expense_code": "",
+            "expense_price": 0,
+            "expense_title": "",
+            "unit_of_measure": {
+                "id": "",
+                "code": "",
+                "title": ""
+            },
+            "expense_quantity": 0,
+            "expense_uom_code": "",
+            "expense_tax_title": "",
+            "expense_tax_value": 0,
+            "expense_uom_title": "",
+            "expense_tax_amount": 0,
+            "expense_subtotal_price": 0,
+            "is_product": false,
+            "is_labor": false,
+        }
+        let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
+        // load data dropdown
+        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-item')));
+        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
+        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+        // check disable
+        tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
+    };
+
+    static loadAddRowLabor() {
+        let tableExpense = $('#datable-quotation-create-expense');
+        let order = tableExpense[0].querySelectorAll('.table-row-order').length + 1;
+        let dataAdd = {
+            "tax": {
+                "id": "",
+                "code": "",
+                "title": "",
+                "value": 0
+            },
+            "order": order,
+            "expense": {
+                "id": "",
+                "code": "",
+                "title": ""
+            },
+            "product": {
+                "id": "",
+                "code": "",
+                "title": ""
+            },
+            "expense_code": "",
+            "expense_price": 0,
+            "expense_title": "",
+            "unit_of_measure": {
+                "id": "",
+                "code": "",
+                "title": ""
+            },
+            "expense_quantity": 0,
+            "expense_uom_code": "",
+            "expense_tax_title": "",
+            "expense_tax_value": 0,
+            "expense_uom_title": "",
+            "expense_tax_amount": 0,
+            "expense_subtotal_price": 0,
+            "is_product": false,
+            "is_labor": true,
+        }
+        let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
+        // load data dropdown
+        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-labor-item')));
+        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-item')));
+        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
+        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+        // check disable
+        tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
+    };
+
+    static loadChangeLabor(ele) {
+        if ($(ele).val()) {
+            let row = ele.closest('tr');
+            let dataSelected = SelectDDControl.get_data_from_idx($(ele), $(ele).val());
+            if (dataSelected?.['expense_item']?.['id']) {
+                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataSelected?.['expense_item']]);
+            }
+            if (dataSelected?.['uom']?.['id'] && dataSelected?.['uom_group']?.['id']) {
+                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataSelected?.['uom']], {'group': dataSelected?.['uom_group']?.['id']});
+            }
+            QuotationLoadDataHandle.loadPriceLabor(row, dataSelected, dataSelected?.['uom']?.['id']);
+        }
+        return true;
+    };
+
+    static loadPriceLabor(row, dataSelected, uomSelectedID) {
+        $(row.querySelector('.table-row-price')).attr('value', String(0));
+        if (dataSelected?.['price_list'].length > 0) {
+            for (let priceData of dataSelected?.['price_list']) {
+                if (priceData?.['uom']?.['id'] === uomSelectedID) {
+                    $(row.querySelector('.table-row-price')).attr('value', String(priceData?.['price_value']));
+                    break;
+                }
+            }
+        }
+        return true;
     };
 
     static loadSetWFRuntimeZone() {
@@ -2827,7 +2893,6 @@ class QuotationDataTableHandle {
                                         data-keyResp="unit_of_measure"
                                         data-zone="${dataZone}"
                                         required
-                                        disabled
                                     >
                                     </select>`;
                         }

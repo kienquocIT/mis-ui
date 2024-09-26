@@ -189,11 +189,6 @@ function loadGeneralProductType(product_type_list) {
                 $('#notify-inventory').prop('hidden', false)
                 check_tab_inventory.prop('checked', false).prop('disabled', true)
             }
-            else {
-                check_tab_inventory.prop('checked', false).prop('disabled', false)
-                check_tab_sale.prop('checked', false).prop('disabled', false)
-                check_tab_purchase.prop('checked', false).prop('disabled', false)
-            }
         }
     })
 }
@@ -922,7 +917,6 @@ function LoadDetailProduct(option) {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                WFRTControl.setWFRuntimeID(data['product']?.['workflow_runtime_id']);
                 let product_detail = data['product'];
                 Detail_data = product_detail;
                 $.fn.compareStatusShowPageAction(data);

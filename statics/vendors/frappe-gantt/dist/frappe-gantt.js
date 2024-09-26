@@ -1978,7 +1978,8 @@ var Gantt = (function () {
                             }">${item['name']}</span>`
                         ).addClass('wrap-title')
                         let is_bom = '';
-                        if ('id' in item.bom_data) is_bom = `<i class="fa-brands fa-connectdevelop"></i>`
+                        if (item.bom_data)
+                            if ('id' in item.bom_data) is_bom = `<i class="fa-brands fa-connectdevelop"></i>`
                         const htmlBtn2 = jQuery(`<div class="dropdown">${is_bom}<button class="btn btn-sm row-btn${this.options['is_detail'] ? ' disabled' : ''}" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></button><ul class="dropdown-menu"><li><button class="dropdown-item btn-item-row-delete" type="button">${jQuery.fn.gettext('Delete')}</button></li><li><button class="dropdown-item btn-item-row-assign" type="button">${jQuery.fn.gettext('Assign Task')}</button></li><li><button class="dropdown-item btn-row-task_list" type="button">${jQuery.fn.gettext('Task list')}</button></li></ul></div>`)
 
                         item_html.append(htmlBtn2)

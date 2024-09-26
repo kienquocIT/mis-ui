@@ -355,8 +355,7 @@ function LoadDetailIA(option) {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                WFRTControl.setWFRuntimeID(data['inventory_adjustment_detail']?.['workflow_runtime_id']);
-                data = data['inventory_adjustment_detail'];
+                data = data?.['inventory_adjustment_detail'];
                 if (option === 'detail') {
                     new PrintTinymceControl().render('c5de0a7d-bea3-4f39-922f-06a40a060aba', data, false);
                 }
@@ -421,6 +420,7 @@ function LoadDetailIA(option) {
                 $.fn.initMaskMoney2();
 
                 Disable(option);
+                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             }
         })
 }

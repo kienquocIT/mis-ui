@@ -3,17 +3,23 @@ class ProdReportLoadDataHandle {
     static $form = $('#frm_production_report');
     static $title = $('#title');
     static $dateCreated = $('#date-created');
+    static $boxType = $('#box-report-type');
     static $quantity = $('#quantity');
     static $quantityFinished = $('#quantity-finished');
     static $quantityNG = $('#quantity-ng');
     static $boxProductionOrder = $('#box-production-order');
+    static $boxWorkOrder = $('#box-work-order');
     static $product = $('#product');
     static $uom= $('#uom');
     static $warehouse = $('#warehouse');
     static $trans = $('#app-trans-factory');
     static $urls = $('#app-urls-factory');
+    static dataType = [
+        {'id': 0, 'title': ProdReportLoadDataHandle.$trans.attr('data-for-po')},
+        {'id': 1, 'title': ProdReportLoadDataHandle.$trans.attr('data-for-wo')},
+    ];
 
-    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false) {
+    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
         let opts = {'allowClear': isClear};
         $ele.empty();
         if (data.length > 0) {
@@ -24,6 +30,13 @@ class ProdReportLoadDataHandle {
         }
         if ($modal) {
             opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                return $(`<span>${res1} ${res2}</span>`);
+            }
         }
         $ele.initSelect2(opts);
         return true;
@@ -48,7 +61,9 @@ class ProdReportLoadDataHandle {
         ProdReportLoadDataHandle.loadEventValidNum(ProdReportLoadDataHandle.$quantityFinished[0]);
         ProdReportLoadDataHandle.loadEventValidNum(ProdReportLoadDataHandle.$quantityNG[0]);
         // select2
-        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxProductionOrder, [], {'system_status': 3});
+        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxType, ProdReportLoadDataHandle.dataType);
+        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxProductionOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxWorkOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
         // date picker
         $('.date-picker').each(function () {
             $(this).daterangepicker({
@@ -75,8 +90,20 @@ class ProdReportLoadDataHandle {
         });
     };
 
-    static loadChangeProductionOrder() {
+    static loadCustomAreaByType() {
+        for (let eleArea of ProdReportLoadDataHandle.$form[0].querySelectorAll('.custom-area')) {
+            eleArea.setAttribute('hidden', 'true');
+        }
+        let idAreaShow = 'custom-area-' + String(ProdReportLoadDataHandle.$boxType.val());
+        document.getElementById(idAreaShow).removeAttribute('hidden');
+        return true;
+    };
+
+    static loadChangeProductionWorkOrder() {
         let data = SelectDDControl.get_data_from_idx(ProdReportLoadDataHandle.$boxProductionOrder, ProdReportLoadDataHandle.$boxProductionOrder.val());
+        if (ProdReportLoadDataHandle.$boxType.val() === "1") {
+            data = SelectDDControl.get_data_from_idx(ProdReportLoadDataHandle.$boxWorkOrder, ProdReportLoadDataHandle.$boxWorkOrder.val());
+        }
         if (data) {
             if (data?.['product_data']) {
                 ProdReportLoadDataHandle.$product.val(data?.['product_data']?.['title']);
@@ -173,7 +200,10 @@ class ProdReportLoadDataHandle {
     // Detail
     static loadDetail(data) {
         ProdReportLoadDataHandle.$title.val(data?.['title']);
+        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxType, ProdReportLoadDataHandle.dataType);
+        ProdReportLoadDataHandle.$boxType.val(data?.['production_report_type']).change();
         ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxProductionOrder, [data?.['production_order_data']], {'system_status': 3});
+        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxWorkOrder, [data?.['work_order_data']], {'system_status': 3});
         if (data?.['product_data']) {
             ProdReportLoadDataHandle.$product.val(data?.['product_data']?.['title']);
             ProdReportLoadDataHandle.$product.attr('data-detail', JSON.stringify(data?.['product_data']))
@@ -204,10 +234,10 @@ class ProdReportLoadDataHandle {
             ProdReportDataTableHandle.$tableMain.DataTable().rows().every(function () {
                 let row = this.node();
                 for (let ele of row.querySelectorAll('.table-row-item')) {
-                    ele.setAttribute('disabled', 'true');
+                    ele.setAttribute('readonly', 'true');
                 }
                 for (let ele of row.querySelectorAll('.table-row-uom')) {
-                    ele.setAttribute('disabled', 'true');
+                    ele.setAttribute('readonly', 'true');
                 }
                 for (let ele of row.querySelectorAll('.table-row-labor-actual')) {
                     ele.setAttribute('readonly', 'true');
@@ -237,7 +267,6 @@ class ProdReportDataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    width: '1%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_task'] === true) {
@@ -262,27 +291,24 @@ class ProdReportDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '20%',
                     render: (data, type, row) => {
                         if (row?.['is_task'] === true) {
                             return `<b class="table-row-task-title">${row?.['task_title']}</b>`;
                         }
-                        return `<select class="form-select table-row-item" data-url="${ProdReportLoadDataHandle.$urls.attr('data-md-product')}" data-method="GET" data-keyResp="product_sale_list" disabled></select>`;
+                        return `<select class="form-select table-row-item" data-url="${ProdReportLoadDataHandle.$urls.attr('data-md-product')}" data-method="GET" data-keyResp="product_sale_list" readonly></select>`;
                     }
                 },
                 {
                     targets: 2,
-                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['is_task'] === true) {
                             return ``;
                         }
-                        return `<select class="form-select table-row-uom" data-url="${ProdReportLoadDataHandle.$urls.attr('data-md-uom')}" data-method="GET" data-keyResp="unit_of_measure" disabled></select>`;
+                        return `<select class="form-select table-row-uom" data-url="${ProdReportLoadDataHandle.$urls.attr('data-md-uom')}" data-method="GET" data-keyResp="unit_of_measure" readonly></select>`;
                     }
                 },
                 {
                     targets: 3,
-                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['is_task'] === true) {
                             return `<span class="table-row-labor">${row?.['quantity'] ? row?.['quantity'] : 0}</span><span class="table-row-uom-labor"> ${row?.['uom_data']?.['title']}</span>`;
@@ -292,7 +318,6 @@ class ProdReportDataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['is_task'] === true) {
                             return `<input type="text" class="form-control valid-number table-row-labor-actual" value="${row?.['quantity_actual']}">`;
@@ -399,47 +424,64 @@ class ProdReportSubmitHandle {
     };
 
     static setupDataSubmit(_form) {
-        if (ProdReportLoadDataHandle.$boxProductionOrder.val()) {
-            _form.dataForm['production_order_id'] = ProdReportLoadDataHandle.$boxProductionOrder.val();
-            let data = SelectDDControl.get_data_from_idx(ProdReportLoadDataHandle.$boxProductionOrder, ProdReportLoadDataHandle.$boxProductionOrder.val());
-            if (data) {
-                _form.dataForm['production_order_data'] = data;
-            }
-            if (ProdReportLoadDataHandle.$product.attr('data-detail')) {
-                let data = JSON.parse(ProdReportLoadDataHandle.$product.attr('data-detail'));
-                if (data) {
-                    _form.dataForm['product_id'] = data?.['id'];
-                    _form.dataForm['product_data'] = data;
+        if (ProdReportLoadDataHandle.$boxType.val()) {
+            if (ProdReportLoadDataHandle.$boxProductionOrder.val() || ProdReportLoadDataHandle.$boxWorkOrder.val()) {
+                _form.dataForm['production_report_type'] = parseInt(ProdReportLoadDataHandle.$boxType.val());
+                if (ProdReportLoadDataHandle.$boxType.val() === "0") {
+                    _form.dataForm['production_order_id'] = ProdReportLoadDataHandle.$boxProductionOrder.val();
+                    let data = SelectDDControl.get_data_from_idx(ProdReportLoadDataHandle.$boxProductionOrder, ProdReportLoadDataHandle.$boxProductionOrder.val());
+                    if (data) {
+                        _form.dataForm['production_order_data'] = data;
+                    }
                 }
-            }
-            if (ProdReportLoadDataHandle.$quantity.val()) {
-                _form.dataForm['quantity'] = parseFloat(ProdReportLoadDataHandle.$quantity.val());
-            }
-            if (ProdReportLoadDataHandle.$uom.attr('data-detail')) {
-                let data = JSON.parse(ProdReportLoadDataHandle.$uom.attr('data-detail'));
-                if (data) {
-                    _form.dataForm['uom_id'] = data?.['id'];
-                    _form.dataForm['uom_data'] = data;
+                if (ProdReportLoadDataHandle.$boxType.val() === "1") {
+                    _form.dataForm['work_order_id'] = ProdReportLoadDataHandle.$boxWorkOrder.val();
+                    let data = SelectDDControl.get_data_from_idx(ProdReportLoadDataHandle.$boxWorkOrder, ProdReportLoadDataHandle.$boxWorkOrder.val());
+                    if (data) {
+                        _form.dataForm['work_order_data'] = data;
+                    }
                 }
-            }
-            if (ProdReportLoadDataHandle.$warehouse.attr('data-detail')) {
-                let data = JSON.parse(ProdReportLoadDataHandle.$warehouse.attr('data-detail'));
-                if (data) {
-                    _form.dataForm['warehouse_id'] = data?.['id'];
-                    _form.dataForm['warehouse_data'] = data;
+                if (ProdReportLoadDataHandle.$product.attr('data-detail')) {
+                    let data = JSON.parse(ProdReportLoadDataHandle.$product.attr('data-detail'));
+                    if (data) {
+                        _form.dataForm['product_id'] = data?.['id'];
+                        _form.dataForm['product_data'] = data;
+                    }
                 }
-            }
-            if (ProdReportLoadDataHandle.$quantityFinished.val()) {
-                _form.dataForm['quantity_finished'] = parseFloat(ProdReportLoadDataHandle.$quantityFinished.val());
-                _form.dataForm['gr_remain_quantity'] = parseFloat(ProdReportLoadDataHandle.$quantityFinished.val());
-            }
-            if (ProdReportLoadDataHandle.$quantityNG.val()) {
-                _form.dataForm['quantity_ng'] = parseFloat(ProdReportLoadDataHandle.$quantityNG.val());
-            }
-            ProdReportStoreHandle.storeAll();
-            _form.dataForm['task_data'] = ProdReportSubmitHandle.setupTask();
+                if (ProdReportLoadDataHandle.$quantity.val()) {
+                    _form.dataForm['quantity'] = parseFloat(ProdReportLoadDataHandle.$quantity.val());
+                }
+                if (ProdReportLoadDataHandle.$uom.attr('data-detail')) {
+                    let data = JSON.parse(ProdReportLoadDataHandle.$uom.attr('data-detail'));
+                    if (data) {
+                        _form.dataForm['uom_id'] = data?.['id'];
+                        _form.dataForm['uom_data'] = data;
+                    }
+                }
+                if (ProdReportLoadDataHandle.$warehouse.attr('data-detail')) {
+                    let data = JSON.parse(ProdReportLoadDataHandle.$warehouse.attr('data-detail'));
+                    if (data) {
+                        _form.dataForm['warehouse_id'] = data?.['id'];
+                        _form.dataForm['warehouse_data'] = data;
+                    }
+                }
+                if (ProdReportLoadDataHandle.$quantityFinished.val()) {
+                    _form.dataForm['quantity_finished'] = parseFloat(ProdReportLoadDataHandle.$quantityFinished.val());
+                    _form.dataForm['gr_remain_quantity'] = parseFloat(ProdReportLoadDataHandle.$quantityFinished.val());
+                    if (_form.dataForm['quantity_finished'] <= 0) {
+                        $.fn.notifyB({description: ProdReportLoadDataHandle.$trans.attr('data-required-quantity-finished')}, 'failure');
+                        return false;
+                    }
+                }
+                if (ProdReportLoadDataHandle.$quantityNG.val()) {
+                    _form.dataForm['quantity_ng'] = parseFloat(ProdReportLoadDataHandle.$quantityNG.val());
+                }
+                ProdReportStoreHandle.storeAll();
+                _form.dataForm['task_data'] = ProdReportSubmitHandle.setupTask();
 
+            }
         }
+        return _form.dataForm;
     };
 }
 

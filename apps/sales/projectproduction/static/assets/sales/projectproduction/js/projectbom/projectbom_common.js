@@ -55,7 +55,7 @@ class ProjectBOMLoadPage {
     static LoadFinishProduct(ele, data) {
         ele.initSelect2({
             ajax: {
-                data: {'general_product_types_mapped__is_finished_goods': true},
+                data: {'get_finished_goods_and_services': true},
                 url: ele.attr('data-url'),
                 method: 'GET',
             },
@@ -190,7 +190,7 @@ class ProjectBOMLoadTab {
                 {
                     className: 'text-center',
                     'render': (data, type, row) => {
-                        return `<span class="labor-summary-quantity">${row?.['quantity']}</span>`;
+                        return `<span class="labor-summary-quantity">${parseFloat(row?.['quantity'].toFixed(2))}</span>`;
                     }
                 },
                 {
@@ -338,7 +338,19 @@ class ProjectBOMLoadTab {
             if (ele.val()) {
                 let material_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
                 ele.closest('tr').find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['id'])
-                ele.closest('tr').find('.material-code').text(material_selected?.['code'])
+                if (material_selected?.['has_bom']) {
+                    ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge btn-gradient-primary material-code w-100')
+                    let is_project_bom = material_selected?.['is_project_bom']
+                    let url = script_url.attr('data-url-bom-detail').replace('/0', `/${material_selected?.['bom_id']}`)
+                    if (is_project_bom) (
+                        url = script_url.attr('data-url-project-bom-detail').replace('/0', `/${material_selected?.['bom_id']}`)
+                    )
+                    ele.closest('tr').find('.material-code').closest('a').attr('href', url).removeClass('disabled')
+                }
+                else {
+                    ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge badge-light material-code w-100')
+                    ele.closest('tr').find('.material-code').closest('a').attr('href', '').addClass('disabled')
+                }
                 ProjectBOMLoadTab.LoadUOM(ele.closest('tr').find('.material-uom'), material_selected?.['general_uom_group'], material_selected?.['sale_default_uom'])
             }
         })
@@ -628,7 +640,7 @@ class ProjectBOMAction {
         labor_summary_table.find('tbody tr').each(function () {
             sum_time += parseFloat($(this).find('.labor-summary-quantity').text()) * parseFloat($(this).find('.labor-summary-uom').attr('data-uom-ratio'))
         })
-        timeEle.val(sum_time)
+        timeEle.val(parseFloat(sum_time.toFixed(2)))
     }
     // tab process
     static Calculate_process_table(row) {
@@ -707,7 +719,9 @@ class ProjectBOMAction {
                     </button>
                     <script class="replacement-material-script"></script>
                 </td>
-                <td><span class="badge badge-light material-code w-100"></span></td>
+                <td>
+                    <a target="_blank"><span class="badge badge-light material-code w-100"></span><a>
+                </td>
                 <td><select class="form-select select2 material-item"></select></td>
                 <td><input type="number" class="form-control material-quantity" value="0"></td>
                 <td><select class="form-select select2 material-uom"></select></td>
@@ -885,16 +899,15 @@ class ProjectBOMHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     data = data['bom_detail'];
-                    WFRTControl.setWFRuntimeID(data?.['bom_detail']);
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    console.log(data)
+                    // console.log(data)
 
                     ProjectBOMLoadPage.LoadOpportunity(opp_mapped_select, data?.['opportunity'])
                     opp_mapped_select.trigger('change')
                     ProjectBOMLoadPage.LoadFinishProduct(productEle, data?.['product'])
                     priceEle.attr('value', data?.['sum_price'])
-                    timeEle.val(data?.['sum_time'])
+                    timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
 
                     ProjectBOMLoadTab.LoadProcessDescriptionTable(data?.['bom_process_data'], option)
                     ProjectBOMLoadTab.LoadLaborSummaryTable(data?.['bom_summary_process_data'])
@@ -947,6 +960,7 @@ class ProjectBOMHandle {
 
                     $.fn.initMaskMoney2()
                     ProjectBOMAction.DisableDetailPage(option);
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
     }

@@ -387,6 +387,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PROJECT_BASELINE = BreadcrumbChildren(_('Project Baseline'), 'ProjectListBaseline')
     PROJECT_WORKS = BreadcrumbChildren(_('Project works'), 'ProjectWorkList')
     PROJECT_CONFIG = BreadcrumbChildren(_('Project config'), 'ProjectConfig')
+    PROJECT_ACTIVITIES = BreadcrumbChildren(_('Project activities'), 'ProjectActivities')
 
     # Zones
     ZONES_LIST_PAGE = BreadcrumbChildren(_('Zones'), 'ZonesList')
@@ -396,7 +397,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Production
     PRODUCTION_ORDER_LIST_PAGE = BreadcrumbChildren(_('Production order'), 'ProductionOrderList')
-    PRODUCTION_REPORT_LIST_PAGE = BreadcrumbChildren(_('Production report'), '')
+    PRODUCTION_REPORT_LIST_PAGE = BreadcrumbChildren(_('Production report'), 'ProductionReportList')
+    WORK_ORDER_LIST_PAGE = BreadcrumbChildren(_('Work order'), 'WorkOrderList')
 
 
 class BreadcrumbView:
@@ -984,6 +986,7 @@ class BreadcrumbView:
     PROJECT_CREATE_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_CREATE]
     PROJECT_DETAIL_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_DETAIL]
     PROJECT_UPDATE_PAGE = PROJECT_LIST + [BreadcrumbItem.BASTION_UPDATE]
+    PROJECT_ACTIVITIES = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_ACTIVITIES]
 
     FORM_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.FORM_LIST_PAGE]
     FORM_CREATE = FORM_LIST + [BreadcrumbItem.BASTION_CREATE]
@@ -1018,3 +1021,10 @@ class BreadcrumbView:
     PRODUCTION_REPORT_CREATE_PAGE = PRODUCTION_REPORT_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     PRODUCTION_REPORT_DETAIL_PAGE = PRODUCTION_REPORT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     PRODUCTION_REPORT_UPDATE_PAGE = PRODUCTION_REPORT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    WORK_ORDER_LIST_PAGE = [
+        BreadcrumbItem.WORK_ORDER_LIST_PAGE
+    ]
+    WORK_ORDER_CREATE_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    WORK_ORDER_DETAIL_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    WORK_ORDER_UPDATE_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

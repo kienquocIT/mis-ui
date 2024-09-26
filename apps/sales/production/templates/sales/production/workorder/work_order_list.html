@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Production report list' %}{% endblock %}
+{% block title %}{% trans 'Work order list' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 
 {% block pageAction %}
-    <a href="{% url 'ProductionReportCreate' %}"
+    <a href="{% url 'WorkOrderCreate' %}"
        data-bs-toggle="tooltip"
        data-bs-placement="top"
-       title="{% trans 'Create production report' %}"
-       id="create_production_report_button"
-       data-bs-original-title="Add Product Report">
+       title="{% trans 'Create work order' %}"
+       id="create_work_order_button"
+       data-bs-original-title="Add Work Order">
             <button type="button" class="btn btn-outline-primary">
                 <span>
                     <span>{% trans 'Add' %}</span>
@@ -24,9 +24,9 @@
 
 {% block pageContent %}
     <table
-            id="table_production_report_list"
+            id="table_work_order_list"
             class="table nowrap w-100 mb-5"
-            data-url="{% url 'ProductionReportListAPI' %}"
+            data-url="{% url 'WorkOrderListAPI' %}"
             data-method="get"
     >
         <thead>
@@ -34,7 +34,7 @@
             <th></th>
             <th>{% trans 'Code' %}</th>
             <th>{% trans 'Name' %}</th>
-            <th>{% trans 'Report for' %}</th>
+            <th>{% trans 'Status' %}</th>
             <th></th>
         </tr>
         </thead>
@@ -45,9 +45,9 @@
 {% block dataHiddenGroup %}
     <input
             type="text" id="app-urls-factory"
-            data-link-detail="{% url 'ProductionReportDetail' 1 %}"
-            data-link-update="{% url 'ProductionReportUpdate' 1 %}"
-            data-link-list="{% url 'ProductionReportList' %}"
+            data-link-detail="{% url 'WorkOrderDetail' 1 %}"
+            data-link-update="{% url 'WorkOrderUpdate' 1 %}"
+            data-link-list="{% url 'WorkOrderList' %}"
     >
     <input
             type="text"
@@ -57,10 +57,9 @@
             data-cancel="{% trans 'Cancel' %}"
     >
     {{ data.stt_sys|json_script:'stt_sys' }}
-    {{ data.pr_type|json_script:'pr_type' }}
 {% endblock %}
 {% block jsFooter %}
 
 
-    <script src="{% static 'assets/sales/production/js/productionreport/production_report_list.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/workorder/work_order_list.js' %}"></script>
 {% endblock %}

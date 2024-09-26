@@ -97,7 +97,6 @@ $(function () {
 
         GRDataTableHandle.tableWH.on('click', '.table-row-checkbox-additional', function () {
             GRLoadDataHandle.loadCheckIsAdditional(this);
-            GRStoreDataHandle.storeDataProduct();
         });
 
         GRLoadDataHandle.btnAddLot.on('click', function () {
@@ -181,13 +180,27 @@ $(function () {
         });
 
         // PRODUCTION BEGIN
+        GRLoadDataHandle.$boxTypeReport.on('change', function () {
+           GRLoadDataHandle.loadCustomAreaReportByType();
+        });
+
         GRLoadDataHandle.$boxProductionOrder.on('change', function () {
-            GRLoadDataHandle.loadClearModal();
-            if (GRLoadDataHandle.$boxProductionOrder.val()) {
-                let data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxProductionOrder, GRLoadDataHandle.$boxProductionOrder.val());
-                GRLoadDataHandle.$boxProductionReport.removeAttr('disabled');
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport, [], {'production_order_id': data?.['id']});
+            GRLoadDataHandle.loadChangeProductionWorkOrder();
+        });
+
+        GRLoadDataHandle.$boxWorkOrder.on('change', function () {
+            GRLoadDataHandle.loadChangeProductionWorkOrder();
+        });
+
+        GRLoadDataHandle.$btnSR.on('click', function () {
+            let listData = [];
+            for (let eleCheck of GRDataTableHandle.tableProductionReport[0].querySelectorAll('.table-row-checkbox:checked')) {
+                if (eleCheck.getAttribute('data-row')) {
+                    listData.push(JSON.parse(eleCheck.getAttribute('data-row')));
+                }
             }
+            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport, listData);
+            GRLoadDataHandle.$boxProductionReport.change();
         });
 
         GRLoadDataHandle.$boxProductionReport.on('change', function () {
@@ -213,8 +226,11 @@ $(function () {
                 'purchase_order_data',
                 'inventory_adjustment_id',
                 'inventory_adjustment_data',
+                'production_report_type',
                 'production_order_id',
                 'production_order_data',
+                'work_order_id',
+                'work_order_data',
                 'supplier_id',
                 'supplier_data',
                 'purchase_requests',

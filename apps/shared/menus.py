@@ -261,13 +261,19 @@ class MenusCRM:
             ),
         ],
     )
-    REVENUE_PLAN = MenuCommon(
-        name='Revenue plan', code='menu_revenue_plan_list', view_name='RevenuePlanList',
-        icon='<i class="fas fa-circle-dollar-to-slot"></i>',
-    )
-    BUDGET_PLAN = MenuCommon(
-        name='Budget plan', code='menu_budget_plan_list', view_name='BudgetPlanList',
-        icon='<i class="fas fa-wallet"></i>',
+    PLANNING = MenuCommon(
+        name='Planning', code='id_menu_planning', view_name='#',
+        icon='<i class="fas fa-scroll"></i>',
+        child=[
+            MenuCommon(
+                name='Revenue plan', code='menu_revenue_plan_list', view_name='RevenuePlanList',
+                icon='<i class="fas fa-circle-dollar-to-slot"></i>',
+            ),
+            MenuCommon(
+                name='Budget plan', code='menu_budget_plan_list', view_name='BudgetPlanList',
+                icon='<i class="fas fa-wallet"></i>',
+            )
+        ],
     )
     LEAD = MenuCommon(
         name='Lead', code='menu_lead_list', view_name='LeadList',
@@ -298,7 +304,7 @@ class MenusCRM:
         icon='<i class="fas fa-file-invoice"></i>',
     )
     WORK_ORDER = MenuCommon(
-        name='Work order', code='menu_work_order_list', view_name='WorkOrderCreate',
+        name='Work order', code='menu_work_order_list', view_name='WorkOrderList',
         icon='<i class="fas fa-pencil-ruler"></i>',
     )
     AR_INVOICE = MenuCommon(
@@ -657,10 +663,10 @@ class MenusProject:
         name='Baseline', code='menu_baseline_list', view_name='ProjectListBaseline',
         icon='<i class="bi bi-signpost-fill"></i>',
     )
-    # WORKS = MenuCommon(
-    #     name='Works', code='menu_works_list', view_name='ProjectWorkList',
-    #     icon='<i class="bi bi-filter-circle font-3"></i>',
-    # )
+    ACTIVITIES = MenuCommon(
+        name='Project Activities', code='menu_project_activities', view_name='ProjectActivities',
+        icon='<i class="fa-solid fa-fire-flame-curved"></i>',
+    )
 
 
 class MenusProduction:
@@ -684,7 +690,7 @@ class MenusProduction:
                 name='Production report',
                 code='menu_production_report_list',
                 view_name='ProductionReportList',
-                icon='<i class="fas fa-file-alt"></i>',
+                icon='<i class="fas fa-tasks"></i>',
             ),
         ],
     )
@@ -736,8 +742,7 @@ class SpaceItem:
             menus=[
                 MenusCRM.HOME,
                 MenusCRM.DASHBOARD,
-                MenusCRM.REVENUE_PLAN,
-                MenusCRM.BUDGET_PLAN,
+                MenusCRM.PLANNING,
                 MenusCRM.LEAD,
                 MenusCRM.CALENDAR,
                 MenusCRM.CONTACT,
@@ -828,7 +833,7 @@ class SpaceItem:
                 MenusProject.HOME,
                 MenusProject.LIST,
                 MenusProject.BASELINE,
-                # MenusProject.WORKS,
+                MenusProject.ACTIVITIES,
             ]
         ),
         'report': SpaceCommon(

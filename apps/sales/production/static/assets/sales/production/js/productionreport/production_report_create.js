@@ -5,8 +5,16 @@ $(function () {
         let formSubmit = $('#frm_production_report');
         ProdReportLoadDataHandle.loadInitPage();
 
+        ProdReportLoadDataHandle.$boxType.on('change', function () {
+            ProdReportLoadDataHandle.loadCustomAreaByType();
+        });
+
         ProdReportLoadDataHandle.$boxProductionOrder.on('change', function () {
-            ProdReportLoadDataHandle.loadChangeProductionOrder();
+            ProdReportLoadDataHandle.loadChangeProductionWorkOrder();
+        });
+
+        ProdReportLoadDataHandle.$boxWorkOrder.on('change', function () {
+            ProdReportLoadDataHandle.loadChangeProductionWorkOrder();
         });
 
         ProdReportDataTableHandle.$tableMain.on('change', '.table-row-labor-actual, .table-row-quantity-actual', function () {
@@ -18,11 +26,17 @@ $(function () {
         formSubmit.submit(function (e) {
             e.preventDefault();
             let _form = new SetupFormSubmit(formSubmit);
-            ProdReportSubmitHandle.setupDataSubmit(_form);
+            let result = ProdReportSubmitHandle.setupDataSubmit(_form);
+            if (result === false) {
+                return false;
+            }
             let submitFields = [
                 'title',
+                'production_report_type',
                 'production_order_id',
                 'production_order_data',
+                'work_order_id',
+                'work_order_data',
                 'product_id',
                 'product_data',
                 'quantity',

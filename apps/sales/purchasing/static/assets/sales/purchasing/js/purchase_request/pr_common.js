@@ -834,6 +834,8 @@ function LoadDetailPR(option) {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 data = data['purchase_request'];
+                $.fn.compareStatusShowPageAction(data);
+                $x.fn.renderCodeBreadcrumb(data);
                 if (data?.['request_for'] === 0) {
                     $('.for-sale-order-request').prop('hidden', false)
                     $('#request-for-so').val(script_trans.attr('data-trans-for-so')).attr('data-type', 0)
@@ -937,8 +939,6 @@ function LoadDetailPR(option) {
                     $.fn.initMaskMoney2()
                 }
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
-                $.fn.compareStatusShowPageAction(data);
-                $x.fn.renderCodeBreadcrumb(data);
 
                 Disable(option);
             }

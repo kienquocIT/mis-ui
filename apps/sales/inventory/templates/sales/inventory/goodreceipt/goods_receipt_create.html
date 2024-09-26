@@ -42,11 +42,11 @@
                             <div class="row">
                                 <div class="col-12 col-md-7 col-lg-7">
                                     <div class="form-group" id="good-receipt-type-area">
-                                        <label class="form-label required" for="box-good-receipt-type">{% trans 'Goods receipt type' %}</label>
+                                        <label class="form-label required" for="box-good-receipt-type">{% trans 'Goods receipt for' %}</label>
                                         <div class="input-group">
                                             <div class="input-affix-wrapper">
                                                 <div class="input-prefix">
-                                                    <i class="fas fa-file-import text-primary"></i>
+                                                    <i class="fas fa-file-import text-dark"></i>
                                                 </div>
                                                 <select
                                                     class="form-select"
@@ -160,22 +160,6 @@
                             <div class="row">
                                 <div class="col-12 col-md-7 col-lg-7">
                                     <div class="form-group">
-                                        <label class="form-label required" for="box-production-order">{% trans 'Production order' %}</label>
-                                        <select
-                                                class="form-select"
-                                                id="box-production-order"
-                                                data-url="{% url 'ProductionOrderDDListAPI' %}"
-                                                data-method="GET"
-                                                data-link-detail=""
-                                                name="production_order"
-                                                data-keyResp="production_order_dd"
-                                                required
-                                        >
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-5 col-lg-5">
-                                    <div class="form-group">
                                         <label class="form-label required" for="box-production-report">{% trans 'Production report' %}</label>
                                         <select
                                                 class="form-select"
@@ -192,9 +176,14 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-12 col-md-3 col-lg-3">
+                                    <div class="d-flex justify-content-start mt-6">
+                                        <button type="button" class="btn btn-outline-primary" id="btn-edit-production-report" data-bs-toggle="modal" data-bs-target="#productionReportModal">
+                                            <span><span class="icon"><i class="far fa-edit"></i></span><span>{% trans 'Select production report' %}</span></span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -393,7 +382,7 @@
                                             >
                                                 <thead>
                                                 <tr class="bg-light">
-                                                    <th class="w-25">PR</th>
+                                                    <th class="w-25 th-custom"></th>
                                                     <th class="w-20">{% trans 'UOM' %}</th>
                                                     <th class="w-10">{% trans 'Quantity' %}</th>
                                                     <th class="w-15">{% trans 'Received before' %}</th>
@@ -420,7 +409,7 @@
                                                 <tr class="bg-light">
                                                     <th class="w-15">{% trans 'Warehouse Code' %}</th>
                                                     <th class="w-20">{% trans 'Warehouse Name' %}</th>
-                                                    <th class="w-15">{% trans 'Input later' %}</th>
+                                                    <th class="w-15">{% trans 'Input data later' %}</th>
                                                     <th class="w-20">{% trans 'Quantity' %}</th>
                                                     <th class="w-15">{% trans 'UOM' %}</th>
                                                 </tr>
@@ -492,6 +481,100 @@
                     </div>
                 </div>
             </div>
+
+            <div
+                    class="modal fade" id="productionReportModal" tabindex="-1"
+                    role="dialog" aria-labelledby="productionReportModal"
+                    aria-hidden="true"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-primary"><b>{% trans 'Select production report' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-report-type">{% trans 'Report for' %}</label>
+                                        <div class="input-group">
+                                            <div class="input-affix-wrapper">
+                                                <div class="input-prefix">
+                                                    <i class="fas fa-file-import text-dark"></i>
+                                                </div>
+                                                <select
+                                                    class="form-select"
+                                                    id="box-report-type"
+                                                    data-url=""
+                                                    data-method="GET"
+                                                    data-link-detail=""
+                                                    name="report_type"
+                                                    data-keyResp=""
+                                                    required
+                                                >
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="custom-area-report" id="custom-area-report-0">
+                                        <div class="form-group">
+                                            <label class="form-label required" for="box-production-order">{% trans 'Production order' %}</label>
+                                            <select
+                                                    class="form-select"
+                                                    id="box-production-order"
+                                                    data-url="{% url 'ProductionOrderDDListAPI' %}"
+                                                    data-method="GET"
+                                                    data-link-detail=""
+                                                    name="production_order"
+                                                    data-keyResp="production_order_dd"
+                                            >
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="custom-area-report" id="custom-area-report-1" hidden>
+                                        <div class="form-group">
+                                            <label class="form-label required" for="box-work-order">{% trans 'Work order' %}</label>
+                                            <select
+                                                    class="form-select"
+                                                    id="box-work-order"
+                                                    data-url="{% url 'WorkOrderDDListAPI' %}"
+                                                    data-method="GET"
+                                                    data-link-detail=""
+                                                    name="work_order"
+                                                    data-keyResp="work_order_dd"
+                                            >
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table
+                                    id="table-production-report"
+                                    class="table nowrap w-100 mb-5"
+                                    data-url="{% url 'ProductionReportGRListAPI' %}"
+                                    data-method="GET"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th>{% trans 'Production report' %}</th>
+                                    <th>{% trans 'Quantity' %}</th>
+                                    <th>{% trans 'Remain' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-production-report" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </form>
@@ -512,9 +595,13 @@
             data-serial-different="{% trans 'Serial number must be different' %}"
             data-for-po="{% trans 'For purchase order' %}"
             data-for-ia="{% trans 'For inventory adjustment' %}"
-            data-for-product="{% trans 'For production' %}"
+            data-for-production="{% trans 'For production' %}"
             data-ia-quantity-valid="{% trans 'Please enter sufficient quantity' %}"
             data-stock="{% trans 'Stock' %}"
+            data-for-pro="{% trans 'General production' %}"
+            data-for-wo="{% trans 'Production for orders' %}"
+            data-purchase-request="{% trans 'Purchase request' %}"
+            data-production-report="{% trans 'Production report' %}"
     >
     <input
             type="text"

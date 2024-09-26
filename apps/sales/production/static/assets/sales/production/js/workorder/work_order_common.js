@@ -216,6 +216,15 @@ class WorkOrderLoadDataHandle {
                             WorkOrderLoadDataHandle.$uom.val(dataRow?.['uom_data']?.['title']);
                             WorkOrderLoadDataHandle.$uom.attr('data-detail', JSON.stringify(dataRow?.['uom_data']));
                         }
+                        if (dataRow?.['product_data']?.['general_information']?.['product_type']) {
+                            for (let productType of dataRow?.['product_data']?.['general_information']?.['product_type']) {
+                                if (productType?.['is_service'] === true) {
+                                    WorkOrderLoadDataHandle.$boxWH.attr('readonly', 'true');
+                                    break;
+                                }
+                            }
+                        }
+
                         let curProdID = null;
                         if (WorkOrderLoadDataHandle.$product.attr('data-detail')) {
                             let dataProduct = JSON.parse(WorkOrderLoadDataHandle.$product.attr('data-detail'));
@@ -250,11 +259,12 @@ class WorkOrderLoadDataHandle {
                             if (data.bom_order_list.length > 0) {
                                 WorkOrderLoadDataHandle.loadAddDtbRows(WorkOrderLoadDataHandle.loadSetupBOM(data.bom_order_list[0]));
                                 let multi = 1;
-                                if (WorkOrderLoadDataHandle.$quantity.html()) {
-                                    multi = parseInt(WorkOrderLoadDataHandle.$quantity.html());
+                                if (WorkOrderLoadDataHandle.$quantity.val()) {
+                                    multi = parseInt(WorkOrderLoadDataHandle.$quantity.val());
                                 }
                                 WorkOrderLoadDataHandle.$time.val(`${data.bom_order_list[0]?.['sum_time'] * multi}`);
                                 WorkOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data.bom_order_list[0]));
+                                WorkOrderLoadDataHandle.loadChangeQuantity();
                             }
                         }
                     }
@@ -555,10 +565,6 @@ class WorkOrderDataTableHandle {
     static $tableSOProd = $('#table-so-product');
 
     static dataTableMain(data) {
-        let multi = 1;
-        if (WorkOrderLoadDataHandle.$quantity.val()) {
-            multi = parseInt(WorkOrderLoadDataHandle.$quantity.val());
-        }
         WorkOrderDataTableHandle.$tableMain.DataTableDefault({
             data: data ? data : [],
             ordering: false,
@@ -614,6 +620,10 @@ class WorkOrderDataTableHandle {
                     targets: 3,
                     width: '5%',
                     render: (data, type, row) => {
+                        let multi = 1;
+                        if (WorkOrderLoadDataHandle.$quantity.val()) {
+                            multi = parseInt(WorkOrderLoadDataHandle.$quantity.val());
+                        }
                         if (row?.['is_task'] === true) {
                             return ``;
                         }
@@ -661,6 +671,10 @@ class WorkOrderDataTableHandle {
                     targets: 7,
                     width: '10%',
                     render: (data, type, row) => {
+                        let multi = 1;
+                        if (WorkOrderLoadDataHandle.$quantity.val()) {
+                            multi = parseInt(WorkOrderLoadDataHandle.$quantity.val());
+                        }
                         if (row?.['is_task'] === true) {
                             return `<span class="table-row-labor">${row?.['quantity_bom'] * multi}</span><span class="table-row-uom-labor"> ${row?.['uom_data']?.['title']}</span>`;
                         }

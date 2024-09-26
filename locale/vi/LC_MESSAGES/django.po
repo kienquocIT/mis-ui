@@ -8919,3 +8919,18 @@ msgstr "Chỉ chọn Dịch Vụ"
 #
 msgid "Select Finished goods or Services"
 msgstr "Chọn Thành Phẩm hoặc Dịch Vụ"
+#
+msgid "One collaborator"
+msgstr "Một cộng tác viên"
+
+#
+msgid "Many collaborators"
+msgstr "Nhiều cộng tác viên"
+
+#
+msgid "Config according to"
+msgstr "Cấu hình theo"
+
+#
+msgid "Ordered before"
+msgstr "Đã đặt"

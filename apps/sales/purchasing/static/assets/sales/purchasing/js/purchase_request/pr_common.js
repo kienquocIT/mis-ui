@@ -749,6 +749,7 @@ class PurchaseRequestHandle {
             })
         })
         frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 
         // console.log(frm)
         return frm
@@ -780,6 +781,7 @@ class PurchaseRequestHandle {
             })
         })
         frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 
         // console.log(frm)
         return frm
@@ -810,6 +812,7 @@ class PurchaseRequestHandle {
             })
         })
         frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 
         // console.log(frm)
         return frm
@@ -836,6 +839,7 @@ function LoadDetailPR(option) {
                 data = data['purchase_request'];
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
+
                 if (data?.['request_for'] === 0) {
                     $('.for-sale-order-request').prop('hidden', false)
                     $('#request-for-so').val(script_trans.attr('data-trans-for-so')).attr('data-type', 0)
@@ -938,9 +942,16 @@ function LoadDetailPR(option) {
                     $('#input-product-total').attr('value', data?.['total_price'])
                     $.fn.initMaskMoney2()
                 }
-                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
+
+                new $x.cls.file($('#attachment')).init({
+                    enable_download: option === 'detail',
+                    enable_edit: option !== 'detail',
+                    data: data.attachment,
+                    name: 'attachment'
+                })
 
                 Disable(option);
+                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             }
         })
 }

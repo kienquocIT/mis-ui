@@ -8899,7 +8899,6 @@ msgstr "Chọn báo cáo sản xuất"
 #
 msgid "Goods receipt to warehouse"
 msgstr "Nhập hàng vào kho"
-msgstr "Báo cáo cho"
 
 #
 msgid "month"

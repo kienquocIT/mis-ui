@@ -2329,7 +2329,6 @@ class POSubmitHandle {
             let eleProduct = row.querySelector('.table-row-item');
             if (eleProduct) { // PRODUCT
                 let dataInfo = {};
-                let is_allow_gr = false;
                 if ($(eleProduct).val()) {
                     dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                 }
@@ -2337,11 +2336,6 @@ class POSubmitHandle {
                     rowData['product'] = dataInfo?.['id'];
                     rowData['product_title'] = dataInfo?.['title'];
                     rowData['product_code'] = dataInfo?.['code'];
-                    if (dataInfo.hasOwnProperty('product_choice') && Array.isArray(dataInfo?.['product_choice'])) {
-                        if (dataInfo?.['product_choice'].includes(1)) {  // product allow inventory
-                            is_allow_gr = true;
-                        }
-                    }
                 }
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
@@ -2386,9 +2380,7 @@ class POSubmitHandle {
                 if (eleQuantityOrder) {
                     if (eleQuantityOrder.value) {
                         rowData['product_quantity_order_actual'] = parseFloat(eleQuantityOrder.value);
-                        if (is_allow_gr === true) {
-                            rowData['gr_remain_quantity'] = parseFloat(eleQuantityOrder.value);
-                        }
+                        rowData['gr_remain_quantity'] = parseFloat(eleQuantityOrder.value);
                     }
                 }
                 let stock = row.querySelector('.table-row-stock');

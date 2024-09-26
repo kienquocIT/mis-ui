@@ -5818,7 +5818,7 @@ msgstr "Loại nhập hàng"
 
 #
 msgid "For purchase order"
-msgstr "Theo đơn mua hàng"
+msgstr "Cho đơn mua hàng"
 
 #
 msgid "For inventory adjustment"
@@ -7189,8 +7189,8 @@ msgid "Select inventory adjustment"
 msgstr "Chọn phiếu kiểm kê kho"
 
 #
-msgid "Input later"
-msgstr "Nhập sau"
+msgid "Input data later"
+msgstr "Nhập liệu sau"
 
 #
 msgid "Vendor serial no."
@@ -7250,7 +7250,7 @@ msgstr "Đợi nhập"
 
 #
 msgid "PR code"
-msgstr "Mã PR"
+msgstr "Mã YCMH"
 
 #
 msgid "Merge same product in 1 line, convert to reference unit if there is more 1 UOM"
@@ -8789,7 +8789,7 @@ msgid "Discount on product"
 msgstr "Giảm giá sản phẩm"
 
 #
-msgid "Project bill of material"
+msgid "Opportunity bill of material"
 msgstr "Định mức nguyên vật liệu dự án"
 
 #
@@ -8819,3 +8819,118 @@ msgstr "Nếu dữ liệu có sự thay đổi sau thời gian bắt đầu sử
 #
 msgid "Pretax value"
 msgstr "Giá trị trước thuế"
+
+#
+msgid "Inventory management is not allowed for Service product"
+msgstr "Quản lý tồn kho không có sẵn cho Sản phẩm Dịch vụ"
+
+#
+msgid "Opportunity BOM"
+msgstr "BOM cho CHKD"
+
+#
+msgid "Abstract"
+msgstr "Tóm tắt"
+
+#
+msgid "Issued"
+msgstr "Đã xuất"
+
+#
+msgid "Receipted"
+msgstr "Đã nhập"
+
+#
+msgid "For Serial and Lot products, click on the Detail button in the last column to view/select detail."
+msgstr "Đối với sản phẩm Serial và LOT, click vào nút Chi tiết ở cột cuối để xem/chọn chi tiết."
+
+#
+msgid "Logs"
+msgstr "Nhật ký"
+
+#
+msgid "If the number of selected serials in this table is less than the selected quantity, some of the selected serials may not exist in any warehouse."
+msgstr "Nếu số lượng Serial được chọn trong bảng này ít hơn số lượng đã chọn, có thể một số Serial đã chọn không còn tồn tại trong kho nữa."
+
+#
+msgid "Previous"
+msgstr "Về trước"
+
+#
+msgid "Planning"
+msgstr "Kế hoạch"
+
+#
+msgid "Work order"
+msgstr "Yêu cầu sản xuất"
+
+#
+msgid "Goods receipt for"
+msgstr "Nhập hàng cho"
+
+#
+msgid "Report for"
+msgstr "Báo cáo cho"
+
+#
+msgid "For production order"
+msgstr "Cho lệnh sản xuất"
+
+#
+msgid "For work order"
+msgstr "Cho yêu cầu sản xuất"
+
+#
+msgid "Finished quantity is required"
+msgstr "Số lượng hoàn thành là bắt buộc"
+
+#
+msgid "General production"
+msgstr "Sản xuất chung"
+
+#
+msgid "Production for orders"
+msgstr "Sản xuất cho đơn hàng"
+
+#
+msgid "Select production report"
+msgstr "Chọn báo cáo sản xuất"
+
+#
+msgid "Goods receipt to warehouse"
+msgstr "Nhập hàng vào kho"
+
+#
+msgid "month"
+msgstr "tháng"
+
+#
+msgid "months"
+msgstr "tháng"
+
+#
+msgid "Only select Finished goods"
+msgstr "Chỉ chọn Thành phẩm"
+
+#
+msgid "Only select Services"
+msgstr "Chỉ chọn Dịch Vụ"
+
+#
+msgid "Select Finished goods or Services"
+msgstr "Chọn Thành Phẩm hoặc Dịch Vụ"
+#
+msgid "One collaborator"
+msgstr "Một cộng tác viên"
+
+#
+msgid "Many collaborators"
+msgstr "Nhiều cộng tác viên"
+
+#
+msgid "Config according to"
+msgstr "Cấu hình theo"
+
+#
+msgid "Ordered before"
+msgstr "Đã đặt"

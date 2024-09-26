@@ -9,16 +9,17 @@
                 <div class="row">
                     <div class="col-xs-12 col-md-6 form-group">
                         <label for="workTitle" class="form-label required">{% trans 'Title' %}</label>
-{#                        <div class="input-group">#}
+                        <div class="input-affix-wrapper">
                             <input type="text" name="title" id="workTitle" class="form-control" required>
-{#                            <span class="input-group-text choice-bor">#}
-{#                                <i class="bi bi-journal-bookmark"></i>#}
-{#                                <i class="bi bi-journal-bookmark-fill" hidden></i>#}
-{#                            </span>#}
-{#                            <div class="dropdown_custom">#}
-{#                                {% include 'sales/project/extends/bom-modal.html' %}#}
-{#                            </div>#}
-{#                        </div>#}
+                            <span class="input-suffix choice-bor">
+                                <i class="fa-solid fa-font"></i>
+                                <span></span>
+                                <i class="fa-solid fa-clipboard-list"></i>
+                            </span>
+                            <div class="dropdown_custom">
+                                {% include 'sales/project/extends/bom-modal.html' %}
+                            </div>
+                        </div>
                     </div>
                     <div class="col-xs-12 col-md-6 form-group">
                         <label for="select_project_group"

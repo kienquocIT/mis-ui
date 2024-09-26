@@ -4,7 +4,7 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'ContractUpdate' pk=pk %}">
+    <a href="{% url 'ContractApprovalUpdate' pk=pk %}">
         <button class="btn btn-outline-primary" id="btn-enable-edit">
             <span>
                 <span>{% trans 'Edit' %}</span>
@@ -18,8 +18,8 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'ContractDetailAPI' pk=pk %}"
-            data-url-redirect="{% url 'ContractList' %}"
+            data-url="{% url 'ContractApprovalDetailAPI' pk=pk %}"
+            data-url-redirect="{% url 'ContractApprovalList' %}"
             data-method="GET"
             id="frm_contract_create"
             method="post"
@@ -43,6 +43,7 @@
                     class="table nowrap w-100"
                     data-url=""
                     data-method="GET"
+                    data-zone="document_data"
                 >
                     <thead>
                     <tr class="bg-light">
@@ -68,11 +69,15 @@
                 <div id="attachment" hidden>
                     {% include 'extends/files/all.html' %}
                 </div>
+                <div id="attachment-tmp" hidden>
+                    {% include 'extends/files/all.html' %}
+                </div>
                 <table
                     id="datable-contract-file"
                     class="table nowrap w-100"
                     data-url=""
                     data-method="GET"
+                    data-zone="attachment"
                 >
                     <thead>
                     <tr class="bg-light">

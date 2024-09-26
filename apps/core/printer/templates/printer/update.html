@@ -176,6 +176,11 @@
                     (errs) => $.fn.switcherResp(errs),
                 );
 
+                let stateChange = null;
+                window.addEventListener('beforeunload', function (event) {
+                    if (stateChange === true) event.stopImmediatePropagation();
+                });
+
                 new SetupFormSubmit(frm).validate({
                     submitHandler: function (form, event){
                         let frmSetup = new SetupFormSubmit(frm);
@@ -193,9 +198,9 @@
                                     $.fn.notifyB({
                                         'description': $.fn.transEle.attr('data-success'),
                                     }, 'success');
+                                    stateChange = true;
                                     setTimeout(
                                         () => {
-                                            window.onbeforeunload = null;
                                             window.location.reload();
                                         },
                                         1000

@@ -446,11 +446,10 @@ function LoadDetailPQR(for_update=false) {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                WFRTControl.setWFRuntimeID(data['purchase_quotation_request_detail']?.['workflow_runtime_id']);
-                let data_detail = data['purchase_quotation_request_detail'];
+                let data_detail = data?.['purchase_quotation_request_detail'];
                 $.fn.compareStatusShowPageAction(data_detail);
                 $x.fn.renderCodeBreadcrumb(data_detail);
-                console.log(data_detail)
+                // console.log(data_detail)
 
                 data_URL_script.attr('data-pqr-type', data_detail.purchase_quotation_request_type);
                 if (data_detail.purchase_quotation_request_type) {
@@ -524,7 +523,16 @@ function LoadDetailPQR(for_update=false) {
 
                 $.fn.initMaskMoney2();
 
+                new $x.cls.file($('#attachment')).init({
+                    enable_download: option === 'detail',
+                    enable_edit: option !== 'detail',
+                    data: data.attachment,
+                    name: 'attachment'
+                })
+
                 Disable(for_update);
+
+                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             }
         })
 }
@@ -735,6 +743,7 @@ class PQRHandle {
         frm.dataForm['taxes_price'] = $('#taxes-value').attr('data-init-money');
         frm.dataForm['total_price'] = $('#total-value').attr('data-init-money');
         frm.dataForm['purchase_quotation_request_type'] = 0;
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 
         if (flag) {
             if (for_update) {
@@ -796,6 +805,7 @@ class PQRHandle {
         frm.dataForm['taxes_price'] = $('#taxes-value').attr('data-init-money');
         frm.dataForm['total_price'] = $('#total-value').attr('data-init-money');
         frm.dataForm['purchase_quotation_request_type'] = 1;
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 
         if (flag) {
             if (for_update) {

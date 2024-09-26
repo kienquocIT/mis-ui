@@ -4,7 +4,7 @@ from apps.core.form.views_runtime import (
     FormPublishedRuntimeView, FormPublishedRuntimeIFrame,
     FormPostNewData, FormPublishedRuntimeSubmitted, FormSubmittedViewEdit, FormSubmittedOnlyView,
     FormSubmittedUpdate, FormRuntimeReverseUrl, FormRuntimeReverseUrlGet,
-    FormAuthenticateBeforeViewForm, FormAuthenticateFormAPI, FormViewLogout,
+    FormAuthBeforeViewForm, FormAuthenticateFormAPI, FormViewLogout,
 )
 
 urlpatterns = [
@@ -23,8 +23,9 @@ urlpatterns = [
     path('v/<str:form_code>/logout', FormViewLogout.as_view(), name='FormViewLogout'),
 
     # authentication and gateway
-    path('auth/email', FormAuthenticateBeforeViewForm.as_view(), name='FormAuthenticateBeforeViewForm'),
-    path('auth/email/api', FormAuthenticateFormAPI.as_view(), name='FormAuthenticateFormAPI'),
+    path('auth/<str:form_code>/email', FormAuthBeforeViewForm.as_view(), name='FormAuthBeforeViewForm'),
+    path('auth/<str:form_code>/email/api', FormAuthenticateFormAPI.as_view(), name='FormAuthenticateFormAPI'),
+
     path('g/rs', FormRuntimeReverseUrlGet.as_view(), name='FormRuntimeReverseUrlGet'),
     path('g/rs-get', FormRuntimeReverseUrl.as_view(), name='FormRuntimeReverseUrl'),
 ]

@@ -205,8 +205,11 @@ function LoadLineDetailTable(ele, product_datas=[], disabled='') {
             },
             {
                 className: 'wrap-text w-15',
-                render: () => {
-                    return `<select ${disabled} class="form-select select2 tax-detail"></select>`;
+                render: (data, type, row) => {
+                    return `<select data-tax-id="${row?.['tax_id']}"
+                                    data-tax-code="${row?.['tax_code']}"
+                                    data-tax-title="${row?.['tax_title']}"
+                                    ${disabled} class="form-select select2 tax-detail"></select>`;
                 }
             },
             {
@@ -218,6 +221,19 @@ function LoadLineDetailTable(ele, product_datas=[], disabled='') {
         ],
         initComplete: function () {
             if (product_datas.length > 0) {
+                ele.find('tbody tr').each(function (index) {
+                    if ($(this).find('.tax-detail').attr('data-tax-id') !== 'undefined') {
+                        LoadTaxLineDetail(
+                            $(this).find('.tax-detail'),
+                            {
+                                'id': $(this).find('.tax-detail').attr('data-tax-id'),
+                                'code': $(this).find('.tax-detail').attr('data-tax-code'),
+                                'title': $(this).find('.tax-detail').attr('data-tax-title'),
+                            }
+                        )
+                    }
+                })
+
                 ele.find('tbody tr').each(function (index) {
                     LoadTaxLineDetail(
                         $(this).find('.tax-detail'),
@@ -333,8 +349,8 @@ function LoadSaleOrderTable() {
             url: tableSaleOrder.attr('data-url'),
             data: {
                 'system_status': 3,
-                'employee_inherit': emp_current_id}
-            ,
+                'employee_inherit': emp_current_id
+            },
             type: 'GET',
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
@@ -440,7 +456,7 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
                         let product_data = []
                         for (let i = 0; i < resp.data['so_product_list']?.['product_data'].length; i++) {
                             let item = resp.data['so_product_list']?.['product_data'][i]
-                            if (item?.['product']?.['product_choice'].includes(2)) {
+                            if (item?.['product']?.['product_choice'].includes(2) && parseFloat(item?.['remain_for_purchase_request']) > 0) {
                                 product_data.push(item)
                             }
                         }
@@ -466,6 +482,9 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
                                   data-product-uom-id="${row?.['product']?.['uom']?.['id']}"
                                   data-product-uom-title="${row?.['product']?.['uom']?.['title']}"
                                   data-product-description="${row?.['product']?.['description']}"
+                                  data-product-tax-id="${row?.['tax']?.['id']}"
+                                  data-product-tax-code="${row?.['tax']?.['code']}"
+                                  data-product-tax-title="${row?.['tax']?.['title']}"
                                   class="w-30 badge badge-secondary product-span"
                             >${row?.['product']?.['code']}</span>&nbsp;<span class="text-secondary">${row?.['product']?.['title']}</span>`
                     }
@@ -611,7 +630,10 @@ function LoadDistributionProductTable(distribution_id=null) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('distribution_plan_detail')) {
                         let product_data = resp.data['distribution_plan_detail']?.['product']
-                        return product_data ? [product_data] : [];
+                        if (parseFloat(product_data?.['expected_number']) - parseFloat(product_data?.['purchase_request_number']) > 0) {
+                            return [product_data]
+                        }
+                        return []
                     }
                     throw Error('Call data raise errors.')
                 },
@@ -720,7 +742,7 @@ class PurchaseRequestHandle {
                 modalSelectDistribution.modal('show')
             }
         }
-
+        WFRTControl.setWFInitialData('purchaserequest');
     }
 
     combinesDataSO(frmEle) {
@@ -749,6 +771,7 @@ class PurchaseRequestHandle {
             })
         })
         frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 
         // console.log(frm)
         return frm
@@ -780,6 +803,7 @@ class PurchaseRequestHandle {
             })
         })
         frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 
         // console.log(frm)
         return frm
@@ -810,6 +834,7 @@ class PurchaseRequestHandle {
             })
         })
         frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 
         // console.log(frm)
         return frm
@@ -834,6 +859,9 @@ function LoadDetailPR(option) {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 data = data['purchase_request'];
+                $.fn.compareStatusShowPageAction(data);
+                $x.fn.renderCodeBreadcrumb(data);
+
                 if (data?.['request_for'] === 0) {
                     $('.for-sale-order-request').prop('hidden', false)
                     $('#request-for-so').val(script_trans.attr('data-trans-for-so')).attr('data-type', 0)
@@ -936,11 +964,16 @@ function LoadDetailPR(option) {
                     $('#input-product-total').attr('value', data?.['total_price'])
                     $.fn.initMaskMoney2()
                 }
-                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
-                $.fn.compareStatusShowPageAction(data);
-                $x.fn.renderCodeBreadcrumb(data);
+
+                new $x.cls.file($('#attachment')).init({
+                    enable_download: option === 'detail',
+                    enable_edit: option !== 'detail',
+                    data: data.attachment,
+                    name: 'attachment'
+                })
 
                 Disable(option);
+                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             }
         })
 }
@@ -960,26 +993,31 @@ btnSelectSOProduct.on('click', function () {
         let limit_number = $(this).find('.remain-span').text() ? parseFloat($(this).find('.remain-span').text()) : ''
         let request_number = $(this).find('.request-number-input').val() ? parseFloat($(this).find('.request-number-input').val()) : ''
 
-        if (limit_number && request_number !== '' && request_number <= limit_number) {
+        if (limit_number && request_number && request_number <= limit_number) {
             request_product_data.push({
                 'sale_order_product_id': $(this).find('.product-span').attr('data-so-product-id'),
                 'id': $(this).find('.product-span').attr('data-product-id'),
                 'code': $(this).find('.product-span').attr('data-product-code'),
                 'title': $(this).find('.product-span').attr('data-product-title'),
                 'description': $(this).find('.product-span').attr('data-product-description'),
-                'uom_title': $(this).find('.product-span').attr('data-product-uom-title'),
                 'uom_id': $(this).find('.product-span').attr('data-product-uom-id'),
+                'uom_title': $(this).find('.product-span').attr('data-product-uom-title'),
+                'tax_id': $(this).find('.product-span').attr('data-product-tax-id'),
+                'tax_code': $(this).find('.product-span').attr('data-product-tax-code'),
+                'tax_title': $(this).find('.product-span').attr('data-product-tax-title'),
                 'request_number': request_number
             })
         }
         else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Request number in invalid!',
-            })
-            flag = false
-            request_product_data = []
+            if (request_number) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Request number is invalid!',
+                })
+                flag = false
+                request_product_data = []
+            }
         }
     })
     if (flag) {
@@ -1000,7 +1038,7 @@ btnSelectDBProduct.on('click', function () {
         let limit_number = $(this).find('.remain-span').text() ? parseFloat($(this).find('.remain-span').text()) : ''
         let request_number = $(this).find('.request-number-input').val() ? parseFloat($(this).find('.request-number-input').val()) : ''
 
-        if (limit_number && request_number !== '' && request_number <= limit_number) {
+        if (limit_number && request_number && request_number <= limit_number) {
             request_product_data.push({
                 'sale_order_product_id': $(this).find('.product-span').attr('data-so-product-id'),
                 'id': $(this).find('.product-span').attr('data-product-id'),
@@ -1013,13 +1051,15 @@ btnSelectDBProduct.on('click', function () {
             })
         }
         else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Request number in invalid!',
-            })
-            flag = false
-            request_product_data = []
+            if (request_number) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Request number is invalid!',
+                })
+                flag = false
+                request_product_data = []
+            }
         }
     })
     if (flag) {

@@ -6,12 +6,17 @@ $(function () {
 
         ContractDataTableHandle.dataTableDocument();
         ContractDataTableHandle.dataTableFile();
-        ContractTinymceHandle.initTinymce();
+        if (formSubmit.attr('data-method').toLowerCase() === 'post') {
+            ContractTinymceHandle.initTinymce();
+        }
         WFRTControl.setWFInitialData('contractapproval');
 
         // file
-        if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
-            new $x.cls.file($('#attachment')).init({});
+        if (formSubmit.attr('data-method').toLowerCase() === 'post') {
+            new $x.cls.file($('#attachment')).init({
+                name: 'attachment',
+                enable_edit: true,
+            });
         }
 
         ContractLoadDataHandle.$btnAddDoc.on('click', function () {
@@ -25,11 +30,6 @@ $(function () {
 
         ContractDataTableHandle.$tableDocument.on('click', '.del-row', function () {
             ContractCommonHandle.commonDeleteRow(this.closest('tr'), ContractDataTableHandle.$tableDocument);
-        });
-
-        ContractLoadDataHandle.$attachment.find('input[type="file"]').on('change', '', function () {
-            let dataList = ContractLoadDataHandle.loadSetupAddFile();
-            ContractLoadDataHandle.loadAddFile(dataList);
         });
 
         ContractDataTableHandle.$tableFile.on('click', '.set-current', function () {
@@ -46,6 +46,7 @@ $(function () {
                 'title',
                 'document_data',
                 'attachment',
+                'tinymce_content',
             ]
             if (_form.dataForm) {
                 ContractCommonHandle.filterFieldList(submitFields, _form.dataForm);

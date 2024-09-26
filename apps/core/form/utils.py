@@ -60,14 +60,12 @@ class FormAuthController:
         self.OTP_EXPIRES = 'FORM_AUTHENTICATED_EMAIL'
         self.request = request
         self.verify_state = False
-        self.api_url = ApiURL.FORM_VALID_SESSION
-        self.api_url_pk = ApiURL.FORM_VALID_SESSION_PK
 
     def session_flush(self):
         self.request.session.flush()
 
-    def generate_otp(self, email):
-        url = self.api_url
+    def generate_otp(self, email, form_code, tenant_code):
+        url = ApiURL.FORM_VALID_SESSION.fill_key(form_code=form_code, tenant_code=tenant_code)
         data = {'email': email}
         resp = ServerAPI(url=url).post(data=data)
         if resp.state:
@@ -87,8 +85,8 @@ class FormAuthController:
             )
         return RespData.resp_400({'detail': 'The validate email is failure'})
 
-    def valid_otp(self, idx, otp):
-        url = self.api_url_pk.fill_key(pk_form_session=idx)
+    def valid_otp(self, idx, otp, form_code, tenant_code):
+        url = ApiURL.FORM_VALID_SESSION_PK.fill_key(tenant_code=tenant_code, form_code=form_code, pk_form_session=idx)
         data = {'otp': otp}
         resp = ServerAPI(url=url).put(data=data)
         idx = resp.result.get('id', None)
@@ -108,7 +106,7 @@ class FormAuthController:
     def verify(self):
         if not isinstance(self.verify_state, bool):
             if self.form_session:
-                resp = ServerAPI(url=self.api_url.fill_key(pk_form_session=self.form_session)).get()
+                resp = ServerAPI(url=ApiURL.FORM_VALID_SESSION.fill_key(pk_form_session=self.form_session)).get()
                 if resp.state:
                     if resp.result:
                         idx = resp.result.get('id', None)

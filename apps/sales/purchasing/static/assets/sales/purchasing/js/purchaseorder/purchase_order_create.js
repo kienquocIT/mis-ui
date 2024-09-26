@@ -55,8 +55,11 @@ $(function () {
         })
 
         // file
-        if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
-            new $x.cls.file($('#attachment')).init({});
+        if (formSubmit.attr('data-method').toLowerCase() === 'post') {
+            new $x.cls.file($('#attachment')).init({
+                name: 'attachment',
+                enable_edit: true,
+            });
         }
 
         // collapse
@@ -79,7 +82,6 @@ $(function () {
                 POLoadDataHandle.contactSelectEle.empty();
                 POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle);
             }
-            // POLoadDataHandle.loadResetPQAndPriceList();
             if (POLoadDataHandle.PRDataEle.val()) {
                 POLoadDataHandle.loadTableProductByPurchaseRequest();
             }

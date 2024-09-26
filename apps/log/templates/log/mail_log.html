@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block pageContent %}
+    <table
+            class="w-100 table no-wrap min-w-1000p"
+            id="form-auth-logs"
+            data-url="{% url 'MailLogAPI' %}"
+            data-url-form-list="{% url 'FormListAPI' %}"
+    >
+        <thead>
+            <tr>
+                <th>#</th>
+                <th class="no-transform">{% trans 'Type' %}</th>
+                <th class="no-transform">{% trans 'Date created' %}</th>
+                <th class="no-transform">{% trans 'Subject' %}</th>
+                <th class="no-transform">{% trans 'Sender' %}</th>
+                <th class="no-transform">{% trans 'Address to' %}</th>
+                <th class="no-transform">{% trans 'Address cc' %}</th>
+                <th class="no-transform">{% trans 'Address bcc' %}</th>
+                <th class="no-transform">{% trans 'Status' %}</th>
+                <th class="no-transform">{% trans 'Status remark' %}</th>
+            </tr>
+        </thead>
+    </table>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'log/mail_log.js' %}"></script>
+{% endblock %}

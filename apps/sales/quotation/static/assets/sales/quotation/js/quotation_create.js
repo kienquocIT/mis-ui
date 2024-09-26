@@ -400,15 +400,17 @@ $(function () {
         });
 
 // ******** Action on change data of table row EXPENSE => calculate data for row & calculate data total
-        tableExpense.on('change', '.table-row-item, .table-row-labor-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
+        tableExpense.on('change', '.table-row-item, .table-row-labor-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
             if (this.classList.contains('table-row-labor-item')) {
-                if ($(this).val()) {
-                    let dataSelected = SelectDDControl.get_data_from_idx($(this), $(this).val());
-                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataSelected?.['expense_item']]);
-                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataSelected?.['uom']]);
-                    if (dataSelected?.['price_list'].length > 0) {
-                       $(row.querySelector('.table-row-price')).attr('value', String(dataSelected?.['price_list'][0]?.['price_value']));
+                QuotationLoadDataHandle.loadChangeLabor(this);
+            }
+            if (this.classList.contains('table-row-uom')) {
+                if (row.querySelector('.table-row-labor-item')) {
+                    let dataLabor = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-labor-item')), $(row.querySelector('.table-row-labor-item')).val());
+                    let dataUOM = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-uom')), $(row.querySelector('.table-row-uom')).val());
+                    if (dataLabor && dataUOM) {
+                        QuotationLoadDataHandle.loadPriceLabor(row, dataLabor, dataUOM?.['id']);
                     }
                 }
             }

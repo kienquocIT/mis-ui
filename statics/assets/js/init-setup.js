@@ -4710,6 +4710,21 @@ class WindowControl {
         return location.hash;
     }
 
+    static getUrlParameter(sParam, defaultData='') {
+        const sPageURL = window.location.search.substring(1);
+        const sURLVariables = sPageURL.split('&');
+        let sParameterName;
+
+        for (let i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? defaultData : decodeURIComponent(sParameterName[1]);
+            }
+        }
+        return defaultData;
+    }
+
     static pushHashUrl(idHash) {
         window.history.pushState(null, null, idHash.includes('#') ? idHash : '#' + idHash);
     }
@@ -6455,45 +6470,259 @@ class FileControl {
         }
     }
 
-    static download(pk, successCallback=null){
-        function active_download(data, status, xhr){
-            const disposition = xhr.getResponseHeader('Content-Disposition');
-            let filename = '';
-            if (disposition && disposition.indexOf('attachment') !== -1) {
-                const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
-                if (matches != null && matches[1]) {
-                    filename = matches[1].replace(/['"]/g, '');
-                }
+    static getUrl(pk){
+        return `/attachment/download/${pk}`
+    }
+
+    static download(pk){
+        const a = document.createElement('a');
+        a.href = FileControl.getUrl(pk);
+        document.body.appendChild(a);
+        a.click();
+    }
+
+    static downloadByStream(pk, successCallback = null) {
+        if (!successCallback) {
+            successCallback = function (chunks, response) {
+                // const contentType = response.headers.get("Content-Type");
+                // const blob = new Blob(chunks, {type: response.headers.get("Content-Type")});
+                // const blobUrl = URL.createObjectURL(blob);
             }
-
-            const url = window.URL.createObjectURL(data);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
         }
-        if (!successCallback || typeof successCallback !== 'function'){
-            successCallback = active_download
+        const url = FileControl.getUrl(pk);
+        if (url){
+            $x.fn.showLoadingPage({
+                'didOpenEnd': function () {
+                    fetch(url)
+                        .then(
+                            response => {
+                            const reader = response.body.getReader();
+                            let chunks = [];
+                            let receivedLength = 0;
+
+                            function readChunk() {
+                                return reader.read().then(
+                                    (
+                                        {
+                                            done,
+                                            value
+                                        }
+                                    ) => {
+                                        if (done) {
+                                            $x.fn.hideLoadingPage();
+                                            successCallback(chunks, response);
+                                            return;
+                                        }
+
+                                        chunks.push(value);
+                                        receivedLength += value.length;
+                                        return readChunk();
+                                    }
+                                );
+                            }
+
+                            return readChunk();
+                        })
+                        .catch(
+                            error => {
+                                console.error("Error fetching file:", error);
+                            }
+                        );
+                }
+            });
+        } else {
+            $x.fn.showNotFound();
+        }
+    }
+}
+
+class FileStreamControl {
+    constructor(props) {
+        this.pk = props['pk'];
+        this.chunks = null;
+        this.response = null;
+
+        this._content$ = $('#idxPageContent')
+    }
+
+    get content$(){
+        return this._content$;
+    }
+
+    get contentType(){
+        if (this.response){
+            return this.response.headers.get("Content-Type")
+        }
+        return null;
+    }
+
+    get blobData(){
+        if (this.chunks && this.contentType){
+            return new Blob(this.chunks, {type: this.contentType});
+        }
+        return null
+    }
+
+    get blobURI(){
+        const blobData = this.blobData;
+        if (blobData){
+            return URL.createObjectURL(blobData);
+        }
+        return null;
+    }
+
+    static getAppByContentType(contentType){
+        if (contentType.startsWith('image/')) {
+            return 'Image';
+        }
+        if (contentType === 'application/pdf') {
+           return 'PDF';
+        }
+        if (
+            contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+            contentType === 'application/msword'
+        ) {
+            return 'Microsoft Words';
+        }
+        if (
+            contentType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+            contentType === 'application/vnd.ms-excel'
+        ) {
+            return 'Microsoft Excel';
+        }
+        if (contentType.startsWith('text/')) {
+            return 'Text';
+        }
+        return '-';
+    }
+
+    distribution(callback=null){
+        const clsThis = this;
+        $x.cls.file.downloadByStream(clsThis.pk, function (chunks, response) {
+            clsThis.chunks = chunks;
+            clsThis.response = response;
+
+            if (callback && typeof callback === 'function') callback.bind(clsThis)(chunks, response);
+            else {
+                const contentType = clsThis.contentType;
+                if (contentType.startsWith('image/')) {
+                    return clsThis.image();
+                }
+                if (contentType === 'application/pdf') {
+                   return clsThis.pdf();
+                }
+                if (
+                    contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+                    contentType === 'application/msword'
+                ) {
+                    return clsThis.docx();
+                }
+                if (
+                    contentType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+                    contentType === 'application/vnd.ms-excel'
+                ) {
+                    return clsThis.excel();
+                }
+                if (contentType.startsWith('text/')) {
+                    return clsThis.text();
+                }
+                clsThis.content$.append(`<div class="w-100 d-flex justify-content-center"><p>${$.fn.gettext("This content file does not support preview")}</p></div>`)
+            }
+        })
+    }
+
+    image(){
+        const img = document.createElement('img');
+        img.src = this.blobURI;
+        img.style = "width: 100%;height: 100%;object-fit: contain;"
+        this.content$.append(img);
+    }
+
+    pdf(){
+        const iframe = $('<iframe id="preview-pdf"></iframe>');
+        iframe.attr('src', this.blobURI);
+        iframe.attr('width', '100%');
+        iframe.attr('height', '99%');
+        this.content$.append(iframe);
+    }
+
+    docx(){
+        const blob = new Blob(this.chunks, {type: this.contentType});
+        docx.renderAsync(blob, this.content$[0], null, {
+            debug: false,
+        })
+    }
+
+    excel() {
+        const clsThis = this;
+        function handleBlob(blob) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const arrayBuffer = e.target.result;
+                processFile(arrayBuffer);
+            };
+            reader.onerror = function (error) {
+                console.error('FileReader error:', error);
+            };
+            reader.readAsArrayBuffer(blob);
         }
 
-        $.fn.callAjax2({
-            url: `/attachment/download/${pk}`,
-            method: 'GET',
-            xhrFields: {
-                responseType: 'blob',
-            },
-            successOnly: true,
-            isLoading: true,
-            success: successCallback,
-        }).then(
-            resp => resp,
-            errs => {
-                $.fn.switcherResp(errs);
-                return null;
-            },
-        )
+        function processFile(arrayBuffer) {
+            const data = new Uint8Array(arrayBuffer);
+            const workbook = XLSX.read(data, {type: 'array'});
+
+            const ulNav = $(`<ul class="nav nav-light nav-tabs"></ul>`);
+            const tabContent$ = $(`<div class="tab-content">`);
+
+            workbook.SheetNames.map(
+                (sheetName, idx) => {
+                    const sheet = workbook.Sheets[sheetName];
+                    const htmlString = XLSX.utils.sheet_to_html(sheet);
+
+                    const rdIdx = 'ex_' + $x.fn.randomStr(10);
+                    const tab$ = $(`<li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#${rdIdx}">
+                                        <span class="nav-link-text">${sheetName}</span>
+                                    </a>
+                                </li>`);
+                    const content$ = $(`
+                                    <div class="tab-pane fade" id="${rdIdx}">
+                                        ${htmlString}
+                                    </div>
+                                `);
+                    if (idx === 0) {
+                        tab$.find('.nav-link').addClass('active');
+                        content$.addClass('show active');
+                    }
+                    ulNav.append(tab$);
+                    tabContent$.append(content$);
+                }
+            )
+            clsThis.content$.html([ulNav, tabContent$]).find('table').addClass('w-100 table table-bordered');
+        }
+
+        handleBlob(this.blobData);
+    }
+
+    text() {
+        const clsThis = this;
+        function handleBlob(blob) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const txtData = e.target.result;
+                processFile(txtData);
+            };
+            reader.onerror = function (error) {
+                console.error('FileReader error:', error);
+            };
+            reader.readAsText(blob);
+        }
+
+        function processFile(txtData) {
+            clsThis.content$.append($('<pre></pre>').html(txtData.toString()));
+        }
+
+        handleBlob(this.blobData);
     }
 }
 
@@ -7459,24 +7688,25 @@ class CommentControl {
 
 class DiagramControl {
     static setBtnDiagram(appCode) {
-        if (window.location.href.includes('/detail/')) {
+        if (window.location.href.includes('/detail/') && ["saleorder.saleorder"].includes(appCode)) {
             let $btnLog = $('#btnLogShow');
             let urlDiagram = globeDiagramList;
             if ($btnLog && $btnLog.length > 0) {
                 let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
                                 <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
-                                    <div class="offcanvas-body mt-2">
-                                        <div class="d-flex justify-content-between mt-5 mb-2 border-bottom">
+                                    <div class="offcanvas-body">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
                                             <h5 id="offcanvasTopLabel">Diagram</h5>
-                                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                            <div class="d-flex justify-content-between">
                                                 <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Close">
-                                                    <button type="button" class="btn btn-outline-secondary btn-square btn-sm" data-bs-dismiss="offcanvas" aria-label="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
+                                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" data-bs-dismiss="offcanvas" aria-label="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
                                                 </span>
                                                 <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reload">
-                                                    <button type="button" class="btn btn-outline-secondary btn-square btn-sm" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-redo-alt"></i></span></button>
+                                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-redo-alt"></i></span></button>
                                                 </span>
                                             </div>
                                         </div>
+                                        <hr class="bg-dark">
                                         <div data-simplebar class="h-800p min-w-1680p nicescroll-bar">
                                             <div class="card-group" id="flowchart_diagram"></div>
                                         </div>
@@ -7632,6 +7862,7 @@ let $x = {
         excelJS: ExcelJSController,
         datetime: DateTimeControl,
         file: FileControl,
+        fileStream: FileStreamControl,
         cmt: CommentControl,
     },
     fn: {
@@ -7706,6 +7937,7 @@ let $x = {
         randomColor: Beautiful.randomColorClass,
 
         getHashUrl: WindowControl.getHashUrl,
+        getUrlParameter: WindowControl.getUrlParameter,
         pushHashUrl: WindowControl.pushHashUrl,
         scrollToIdx: WindowControl.scrollToIdx,
         findGetParameter: WindowControl.findGetParameter,

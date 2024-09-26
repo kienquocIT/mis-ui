@@ -8,6 +8,8 @@ from apps.sales.production.views import (
 from apps.sales.production.views.production_report import ProductionReportCreate, ProductionReportList, \
     ProductionReportListAPI, ProductionReportDetail, ProductionReportDetailAPI, ProductionReportUpdate, \
     ProductionReportDDListAPI, ProductionReportGRListAPI
+from apps.sales.production.views.work_order import WorkOrderCreate, WorkOrderList, WorkOrderListAPI, WorkOrderDetail, \
+    WorkOrderDetailAPI, WorkOrderUpdate, WorkOrderDDListAPI
 
 urlpatterns = [
     path('bill-of-material/list', BOMList.as_view(), name='BOMList'),
@@ -42,4 +44,13 @@ urlpatterns = [
     path('production-report/update/<str:pk>', ProductionReportUpdate.as_view(), name='ProductionReportUpdate'),
     path('production-report-dd/api/list', ProductionReportDDListAPI.as_view(), name='ProductionReportDDListAPI'),
     path('production-report-gr/api/list', ProductionReportGRListAPI.as_view(), name='ProductionReportGRListAPI'),
+
+    # work order
+    path('work-order/list', WorkOrderList.as_view(), name='WorkOrderList'),
+    path('work-order/api/list', WorkOrderListAPI.as_view(), name='WorkOrderListAPI'),
+    path('work-order/create', WorkOrderCreate.as_view(), name='WorkOrderCreate'),
+    path('work-order/detail/<str:pk>', WorkOrderDetail.as_view(), name='WorkOrderDetail'),
+    path('work-order/detail-api/<str:pk>', WorkOrderDetailAPI.as_view(), name='WorkOrderDetailAPI'),
+    path('work-order/update/<str:pk>', WorkOrderUpdate.as_view(), name='WorkOrderUpdate'),
+    path('work-order-dd/api/list', WorkOrderDDListAPI.as_view(), name='WorkOrderDDListAPI'),
 ]

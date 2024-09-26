@@ -68,6 +68,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FILE_UPLOAD_WEB_BUILDER = StringUrl('attachment/web-builder/upload')
     FILE_LIST_WEB_BUILDER = StringUrl('attachment/web-builder/list')
     FILE_DOWNLOAD = StringUrl('attachment/download/{pk}')
+    FILE_INFO = StringUrl('attachment/info/{pk}')
 
     # attachment
     MEDIA_ACCESS_TOKEN = StringUrl('hr/employee/media-token')
@@ -165,9 +166,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FORM_SANITIZE_HTML = StringUrl('form/sanitize-html')
     FORM_ENTRIES_LIST = StringUrl('form/entries/{pk}/list')
     FORM_ENTRIES_REF_NAME_LIST = StringUrl('form/entries/{pk}/ref-name/list')
-    FORM_VALID_EMAIL_OTP = StringUrl('form/runtime/auth/{tenant_code}/{form_code}')
-    FORM_VALID_SESSION = StringUrl('form/runtime/auth')
-    FORM_VALID_SESSION_PK = StringUrl('form/runtime/auth/{pk_form_session}')
+    FORM_VALID_SESSION = StringUrl('form/runtime/auth/{tenant_code}/{form_code}')
+    FORM_VALID_SESSION_PK = StringUrl('form/runtime/auth/{tenant_code}/{form_code}/{pk_form_session}')
 
     # comment
     COMMENT_LIST = StringUrl('comment/doc/{pk_doc}/{pk_app}/list')
@@ -193,6 +193,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     MAILER_CONFIG_DETAIL = StringUrl('mailer/config/detail/{pk}')
     MAILER_CONFIG_DETAIL_CONNECTION_TEST = StringUrl('mailer/config/detail/{pk}/connection/test')
     MAILER_CONFIG_DETAIL_CONNECTION_TEST_DATA = StringUrl('mailer/config/detail/{pk}/connection/test/data')
+    MAILER_LOG = StringUrl('mailer/log')
 
     # base
     PLAN_LIST = StringUrl('base/plans')
@@ -223,6 +224,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     IMPORT_SALEDATA_ACCOUNT_TYPE = StringUrl('import-data/saledata/account/type')
     IMPORT_SALEDATA_INDUSTRY = StringUrl('import-data/saledata/industry')
     IMPORT_SALEDATA_PAYMENT_TERM = StringUrl('import-data/saledata/payment-term')
+    IMPORT_SALEDATA_PRODUCT_UOMGROUP = StringUrl('import-data/saledata/product/uomgroup')
 
     # HR
 
@@ -393,6 +395,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALE_ORDER_INDICATOR_DETAIL = StringUrl('saleorder/indicator')
     SALE_ORDER_INDICATOR_RESTORE = StringUrl('saleorder/indicator-restore')
     PRODUCT_LIST_SALE_ORDER = StringUrl('saleorder/product/list/{pk}')
+    SALE_ORDER_PRODUCT_WO_LIST = StringUrl('saleorder/sale-order-product-wo/list')
 
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
@@ -710,3 +713,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCTION_REPORT_DETAIL = StringUrl('production/production-report')
     PRODUCTION_REPORT_DD_LIST = StringUrl('production/production-report-dd/list')
     PRODUCTION_REPORT_GR_LIST = StringUrl('production/production-report-gr/list')
+
+    # Production order
+    WORK_ORDER_LIST = StringUrl('production/work-order/list')
+    WORK_ORDER_DETAIL = StringUrl('production/work-order')
+    WORK_ORDER_DD_LIST = StringUrl('production/work-order-dd/list')

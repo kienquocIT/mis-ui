@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 
 import jwt
 
-from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, TypeCheck, CustomizeEncoder
+from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, TypeCheck, CustomizeEncoder, CacheController
 from apps.core.account.models import User
 
 from .forms import AuthLoginForm, ForgotPasswordForm, ForgotPasswordValidOTPForm, ForgotPasswordResendOTP
@@ -122,7 +122,7 @@ class AuthLogin(APIView):
                         ctx['redirect_to'] = reverse('TwoFAVerifyView')
 
                 return ctx, status.HTTP_200_OK
-            return {'detail': AuthMsg.login_exc, 'data': resp.result}, status.HTTP_400_BAD_REQUEST
+            return {'detail': AuthMsg.login_exc}, status.HTTP_400_BAD_REQUEST
         return resp.errors, status.HTTP_400_BAD_REQUEST
 
 
@@ -140,6 +140,8 @@ class AuthLogout(View):
             if resp.state is False:
                 pass
                 # return resp.errors, status.HTTP_200_OK
+            if hasattr(request.user, 'id'):
+                CacheController().delete(f'user_obj_${str(request.user.id)}')
         try:
             session_flush(request=request)
             logout(request)
@@ -165,6 +167,8 @@ class SwitchCompanyCurrentView(APIView):
     @mask_view(login_require=True, is_api=True)
     def put(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.SWITCH_COMPANY).put(request.data)
+        if hasattr(request.user, 'id'):
+            CacheController().delete(f'user_obj_${str(request.user.id)}')
         return resp.auto_return()
 
 

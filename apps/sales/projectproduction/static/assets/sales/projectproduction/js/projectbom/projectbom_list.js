@@ -9,7 +9,9 @@ $(document).ready(function () {
                 rowIdx: true,
                 reloadCurrency: true,
                 ajax: {
-                    data: {'bom_type': 4},
+                    data: {
+                        'for_opp': true
+                    },
                     url: frm.dataUrl,
                     type: frm.dataMethod,
                     dataSrc: function (resp) {
@@ -65,13 +67,13 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text w-10',
                         'render': (data, type, row) => {
-                            return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['opportunity_mapped']?.['id'])}">${row?.['opportunity_mapped']?.['code']}</a></span>`
+                            return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['opportunity']?.['id'])}">${row?.['opportunity']?.['code']}</a></span>`
                         }
                     },
                     {
                         className: 'wrap-text w-15 text-center',
                         'render': (data, type, row) => {
-                            return `<span>${row?.['sum_time']} (h)</span>`;
+                            return `<span>${parseFloat(row?.['sum_time'].toFixed(2))} (h)</span>`;
                         }
                     },
                     {

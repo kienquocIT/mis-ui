@@ -294,7 +294,7 @@ $(document).ready(function () {
     // change select box unit measure group
     $('#select-box-unit-measure-group').on('change', function () {
         let obj = SelectDDControl.get_data_from_idx($(this), $(this).val());
-        let data_referenced = obj?.['referenced_unit'].title;
+        let data_referenced = obj?.['referenced_unit']?.['title'];
         let group_name = $(this).find('option:selected').attr('group-name');
 
         let input_rounding_ele = $('#inp-rounding')
@@ -306,7 +306,8 @@ $(document).ready(function () {
         let ratio_ele = $('#ratio-unit');
         let label_ele = $('#label-referenced-unit');
         let checkbox_ele = $('#check-referenced-unit');
-        if (data_referenced === undefined) {
+        console.log(data_referenced)
+        if (!data_referenced) {
             $('#inp-code').prop('readonly', false);
             name_unit_ele.prop('readonly', false);
 
@@ -455,7 +456,7 @@ $(document).ready(function () {
             let frm_data = frm.dataForm;
             let data_url = frm.dataUrl;
 
-            frm_data['is_referenced_unit'] = !!$('#check-referenced-unit').is(':checked');
+            frm_data['is_referenced_unit'] = $('#check-referenced-unit').prop('checked');
 
             $.fn.callAjax2({
                 'url': data_url,
@@ -467,7 +468,12 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyB({description: "Tạo mới"}, 'success')
                         $('#modal-unit-measure').modal('hide');
-                        $('#datatable-unit-measure-list').DataTable().ajax.reload();
+                        if (frm_data['is_referenced_unit']) {
+                            location.reload()
+                        }
+                        else {
+                            $('#datatable-unit-measure-list').DataTable().ajax.reload();
+                        }
                     }
                 },
                 (errs) => {

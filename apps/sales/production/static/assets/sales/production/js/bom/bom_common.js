@@ -16,6 +16,8 @@ const replacement_material_table_warning = $('#replacement-material-table-warnin
 const normal_production_space = $('#normal-production-space')
 const outsourcing_production_space = $('#outsourcing-production-space')
 let NOW_BOM_TYPE = $('#for-production')
+let REPLACEMENT_ROW = null
+
 
 //// COMMON
 
@@ -174,7 +176,7 @@ class BOMLoadTab {
                 {
                     className: 'text-center',
                     'render': (data, type, row) => {
-                        return `<span class="labor-summary-quantity">${row?.['quantity']}</span>`;
+                        return `<span class="labor-summary-quantity">${parseFloat(row?.['quantity'].toFixed(2))}</span>`;
                     }
                 },
                 {
@@ -388,12 +390,24 @@ class BOMLoadTab {
             if (ele.val()) {
                 let material_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
                 ele.closest('tr').find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['id'])
-                ele.closest('tr').find('.material-code').text(material_selected?.['code'])
+                if (material_selected?.['has_bom']) {
+                    ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge btn-gradient-primary material-code w-100')
+                    let is_project_bom = material_selected?.['is_project_bom']
+                    let url = script_url.attr('data-url-bom-detail').replace('/0', `/${material_selected?.['bom_id']}`)
+                    if (is_project_bom) (
+                        url = script_url.attr('data-url-project-bom-detail').replace('/0', `/${material_selected?.['bom_id']}`)
+                    )
+                    ele.closest('tr').find('.material-code').closest('a').attr('href', url).removeClass('disabled')
+                }
+                else {
+                    ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge badge-light material-code w-100')
+                    ele.closest('tr').find('.material-code').closest('a').attr('href', '').addClass('disabled')
+                }
                 BOMLoadTab.LoadUOM(ele.closest('tr').find('.material-uom'), material_selected?.['general_uom_group'], material_selected?.['sale_default_uom'])
             }
         })
     }
-    static LoadMaterialReplacementTable(data_list=[], root_material_id=null) {
+    static LoadMaterialReplacementTable(data_list=[], root_material_id=null, selected_list=[]) {
         replacement_material_table.DataTable().clear().destroy()
         if (root_material_id) {
             replacement_material_table_warning.prop('hidden', true)
@@ -421,13 +435,13 @@ class BOMLoadTab {
                 },
                 columns: [
                     {
-                        className: 'w-5 text-center',
+                        className: 'text-center',
                         'render': () => {
                             return ``;
                         }
                     },
                     {
-                        className: 'w-5 text-center',
+                        className: 'text-center',
                         'render': (data, type, row) => {
                             return `<div class="form-check">
                                         <input type="checkbox" data-material-id="${row?.['id']}" class="form-check-input replacement-checkbox">
@@ -436,27 +450,41 @@ class BOMLoadTab {
                         }
                     },
                     {
-                        className: 'w-10',
+                        className: '',
                         'render': (data, type, row) => {
                             return `<span class="badge badge-light w-100">${row?.['code']}</span>`;
                         }
                     },
                     {
-                        className: 'w-40',
+                        className: '',
                         'render': (data, type, row) => {
                             return `${row?.['title']}`;
                         }
                     },
                     {
-                        className: 'w-15',
+                        className: '',
                         'render': (data, type, row) => {
                             return `<input disabled type="number" value="0" class="form-control replacement-quantity">`;
                         }
                     },
                     {
-                        className: 'w-25',
+                        className: '',
                         'render': (data, type, row) => {
                             return `<select disabled data-group-id="${row?.['general_uom_group']}" class="form-select select2 replacement-uom"></select>`;
+                        }
+                    },
+                    {
+                        className: 'text-center',
+                        'render': () => {
+                            return `<div class="form-check">
+                                        <input type="checkbox" disabled class="form-check-input replacement-material-disassemble">
+                                    </div>`;
+                        }
+                    },
+                    {
+                        className: '',
+                        'render': (data, type, row) => {
+                            return `<textarea disabled class="form-control replacement-note"></textarea>`;
                         }
                     },
                 ],
@@ -464,6 +492,18 @@ class BOMLoadTab {
                     replacement_material_table.find('tbody tr').each(function () {
                         BOMLoadTab.LoadUOM($(this).find('.replacement-uom'), $(this).find('.replacement-uom').attr('data-group-id'))
                     })
+                    for (let i = 0; i < selected_list.length; i++) {
+                        replacement_material_table.find('tbody tr').each(function () {
+                            if ($(this).find('.replacement-checkbox').attr('data-material-id') === selected_list[i]?.['material_id']) {
+                                $(this).find('.replacement-checkbox').prop('checked', true)
+                                $(this).find('.replacement-quantity').val(selected_list[i]?.['quantity']).prop('disabled', false)
+                                $(this).find('.replacement-uom').prop('disabled', false)
+                                BOMLoadTab.LoadUOM($(this).find('.replacement-uom'), selected_list[i]?.['uom_data']?.['group_id'], selected_list[i]?.['uom_data'])
+                                $(this).find('.replacement-material-disassemble').prop('disabled', false).prop('checked', selected_list[i]?.['disassemble'])
+                                $(this).find('.replacement-note').val(selected_list[i]?.['note']).prop('disabled', false)
+                            }
+                        })
+                    }
                 }
             });
         }
@@ -481,50 +521,55 @@ class BOMLoadTab {
                 data: [],
                 columns: [
                     {
-                        className: 'w-5 text-center',
+                        className: 'text-center',
                         'render': () => {
                             return ``;
                         }
                     },
                     {
-                        className: 'w-5 text-center',
+                        className: 'text-center',
                         'render': (data, type, row) => {
-                            return `<div class="form-check">
-                            <input type="checkbox" data-material-id="${row?.['id']}" class="form-check-input replacement-checkbox">
-                            <label class="form-check-label"></label>
-                        </div>`;
+                            return ``;
                         }
                     },
                     {
-                        className: 'w-10',
+                        className: '',
                         'render': (data, type, row) => {
-                            return `<span class="badge badge-light w-100">${row?.['code']}</span>`;
+                            return ``;
                         }
                     },
                     {
-                        className: 'w-40',
+                        className: '',
                         'render': (data, type, row) => {
-                            return `${row?.['title']}`;
+                            return ``;
                         }
                     },
                     {
-                        className: 'w-15',
+                        className: '',
                         'render': (data, type, row) => {
-                            return `<input disabled type="number" value="0" class="form-control replacement-quantity">`;
+                            return ``;
                         }
                     },
                     {
-                        className: 'w-25',
+                        className: '',
                         'render': (data, type, row) => {
-                            return `<select disabled data-group-id="${row?.['general_uom_group']}" class="form-select select2 replacement-uom"></select>`;
+                            return ``;
+                        }
+                    },
+                    {
+                        className: '',
+                        'render': () => {
+                            return ``;
+                        }
+                    },
+                    {
+                        className: '',
+                        'render': (data, type, row) => {
+                            return `<textarea disabled class="form-control replacement-note"></textarea>`;
                         }
                     },
                 ],
-                initComplete: function () {
-                    replacement_material_table.find('tbody tr').each(function () {
-                        BOMLoadTab.LoadUOM($(this).find('.replacement-uom'), $(this).find('.replacement-uom').attr('data-group-id'))
-                    })
-                }
+                initComplete: function () {}
             });
         }
     }
@@ -625,6 +670,7 @@ class BOMAction {
             $('.del-row-tool').prop('disabled', true)
             $('.add-new-tool').prop('disabled', true)
             $('.material-unit-price').closest('div').find('a').prop('disabled', true)
+            $('.material-unit-price').closest('div').find('a').prop('disabled', true)
         }
     }
     static Reload_index_for_material_and_tool_table() {
@@ -648,7 +694,7 @@ class BOMAction {
         labor_summary_table.find('tbody tr').each(function () {
             sum_time += parseFloat($(this).find('.labor-summary-quantity').text()) * parseFloat($(this).find('.labor-summary-uom').attr('data-uom-ratio'))
         })
-        timeEle.val(sum_time)
+        timeEle.val(parseFloat(sum_time.toFixed(2)))
     }
     // tab process
     static Calculate_process_table(row) {
@@ -727,7 +773,9 @@ class BOMAction {
                     </button>
                     <script class="replacement-material-script"></script>
                 </td>
-                <td><span class="badge badge-light material-code w-100"></span></td>
+                <td>
+                    <a target="_blank"><span class="badge badge-light material-code w-100"></span></a>
+                </td>
                 <td><select class="form-select select2 material-item"></select></td>
                 <td><input type="number" class="form-control material-quantity" value="0"></td>
                 <td><select class="form-select select2 material-uom"></select></td>
@@ -871,6 +919,7 @@ class BOMHandle {
                             'uom_id': $(this).find('.material-uom').val(),
                             'disassemble': $(this).find('.material-disassemble').prop('checked'),
                             'note': $(this).find('.material-note').val(),
+                            'replacement_data': $(this).find('.replacement-material-script').text() ? JSON.parse($(this).find('.replacement-material-script').text()) : []
                         })
                     }
                 })
@@ -922,10 +971,9 @@ class BOMHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     data = data['bom_detail'];
-                    WFRTControl.setWFRuntimeID(data?.['bom_detail']);
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    console.log(data)
+                    // console.log(data)
 
                     if (data?.['bom_type'] === 0) {
                         $('#for-production').prop('checked', true)
@@ -936,7 +984,7 @@ class BOMHandle {
 
                     BOMLoadPage.LoadFinishProduct(productEle, data?.['product'])
                     priceEle.attr('value', data?.['sum_price'])
-                    timeEle.val(data?.['sum_time'])
+                    timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
 
                     if (!data?.['for_outsourcing']) {
                         BOMLoadTab.LoadProcessDescriptionTable(data?.['bom_process_data'], option)
@@ -952,18 +1000,19 @@ class BOMHandle {
                                 if (process_row_index === parseInt(data?.['bom_material_component_data'][j]?.['bom_process_order'])) {
                                     let new_material_row = BOMAction.Create_material_row(process_row_index)
                                     material_table.append(new_material_row)
-                                    let material_selected = data?.['bom_material_component_data'][j]?.['material']
-                                    new_material_row.find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['id'])
-                                    BOMLoadTab.LoadMaterial(new_material_row.find('.material-item'), material_selected)
-                                    new_material_row.find('.material-code').text(material_selected?.['code'])
-                                    new_material_row.find('.material-quantity').val(data?.['bom_material_component_data'][j]?.['quantity'])
+                                    let material_selected = data?.['bom_material_component_data'][j]
+                                    new_material_row.find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['material']?.['id'])
+                                    new_material_row.find('.replacement-material-script').text(material_selected?.['replacement_data'] ? JSON.stringify(material_selected?.['replacement_data']) : '[]')
+                                    BOMLoadTab.LoadMaterial(new_material_row.find('.material-item'), material_selected?.['material'])
+                                    new_material_row.find('.material-code').text(material_selected?.['material']?.['code'])
+                                    new_material_row.find('.material-quantity').val(material_selected?.['quantity'])
                                     BOMLoadTab.LoadUOM(
                                         new_material_row.find('.material-uom'),
-                                        data?.['bom_material_component_data'][j]?.['uom']?.['group_id'],
-                                        data?.['bom_material_component_data'][j]?.['uom']
+                                        material_selected?.['uom']?.['group_id'],
+                                        material_selected?.['uom']
                                     )
-                                    new_material_row.find('.material-disassemble').prop('checked', data?.['bom_material_component_data'][j]?.['disassemble'])
-                                    new_material_row.find('.material-note').val(data?.['bom_material_component_data'][j]?.['note'])
+                                    new_material_row.find('.material-disassemble').prop('checked', material_selected?.['disassemble'])
+                                    new_material_row.find('.material-note').val(material_selected?.['note'])
                                     new_material_row.find('.del-row-material').prop('disabled', option === 'detail')
                                 }
                             }
@@ -972,16 +1021,16 @@ class BOMHandle {
                                 if (process_row_index === parseInt(data?.['bom_tool_data'][k]?.['bom_process_order'])) {
                                     let new_tool_row = BOMAction.Create_tool_row(process_row_index)
                                     tools_table.append(new_tool_row)
-                                    let tool_selected = data?.['bom_tool_data'][k]?.['tool']
-                                    BOMLoadTab.LoadTool(new_tool_row.find('.tool-item'), tool_selected)
-                                    new_tool_row.find('.tool-code').text(tool_selected?.['code'])
-                                    new_tool_row.find('.tool-quantity').val(data?.['bom_tool_data'][k]?.['quantity'])
+                                    let tool_selected = data?.['bom_tool_data'][k]
+                                    BOMLoadTab.LoadTool(new_tool_row.find('.tool-item'), tool_selected?.['tool'])
+                                    new_tool_row.find('.tool-code').text(tool_selected?.['tool']?.['code'])
+                                    new_tool_row.find('.tool-quantity').val(tool_selected?.['quantity'])
                                     BOMLoadTab.LoadUOM(
                                         new_tool_row.find('.tool-uom'),
-                                        data?.['bom_tool_data'][k]?.['uom']?.['group_id'],
-                                        data?.['bom_tool_data'][k]?.['uom']
+                                        tool_selected?.['uom']?.['group_id'],
+                                        tool_selected?.['uom']
                                     )
-                                    new_tool_row.find('.tool-note').val(data?.['bom_tool_data'][k]?.['note'])
+                                    new_tool_row.find('.tool-note').val(tool_selected?.['note'])
                                     new_tool_row.find('.del-row-tool').prop('disabled', option === 'detail')
                                 }
                             }
@@ -1001,12 +1050,14 @@ class BOMHandle {
 
                     $.fn.initMaskMoney2()
                     BOMAction.DisableDetailPage(option);
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
     }
 }
 
 // COMMON
+
 function Clean_MaterialTable_ToolTable() {
     if (material_table.find('tbody tr').length === 0) {
         BOMLoadTab.LoadMaterialTable()
@@ -1015,6 +1066,7 @@ function Clean_MaterialTable_ToolTable() {
         BOMLoadTab.LoadToolTable()
     }
 }
+
 is_outsourcing.on('change', function () {
     Swal.fire({
 		html: `<h5 class="text-blue">${script_trans.attr('data-trans-change-type')}</h5><p class="small">${script_trans.attr('data-trans-reload-data')}</p>`,
@@ -1068,9 +1120,13 @@ $('input[name="bom-type"]').on('change', function() {
             if ($('#for-production').prop('checked') || $('#for-service').prop('checked')) {
                 if ($('#for-service').prop('checked')) {
                     BOMLoadPage.LoadServiceProduct(productEle)
+                    $('#hint-for-finished-goods').prop('hidden', true)
+                    $('#hint-for-service').prop('hidden', false)
                 }
                 if ($('#for-production').prop('checked')) {
                     BOMLoadPage.LoadFinishProduct(productEle)
+                    $('#hint-for-finished-goods').prop('hidden', false)
+                    $('#hint-for-service').prop('hidden', true)
                 }
                 NOW_BOM_TYPE = $('input[name="bom-type"]:checked')
                 normal_production_space.prop('hidden', false)
@@ -1093,6 +1149,7 @@ $('input[name="bom-type"]').on('change', function() {
 })
 
 // PROCESS
+
 add_new_process_description.on('click', function () {
     let flag = true
     process_description_table.find('tbody tr .process-task-name').each(function () {
@@ -1172,17 +1229,40 @@ $(document).on("click", '.del-row-material', function () {
 })
 
 $(document).on("click", '.add-new-swap-material', function () {
+    REPLACEMENT_ROW = $(this).closest('tr')
     let root_material_id = $(this).attr('data-root-material-id')
-    BOMLoadTab.LoadMaterialReplacementTable([], root_material_id)
+    let selected_list = REPLACEMENT_ROW.find('.replacement-material-script').text() ? JSON.parse(REPLACEMENT_ROW.find('.replacement-material-script').text()) : []
+    BOMLoadTab.LoadMaterialReplacementTable([], root_material_id, selected_list)
 })
 
 $(document).on("change", '.replacement-checkbox', function () {
     let is_checked = $(this).prop('checked')
     $(this).closest('tr').find('.replacement-quantity').val(0).prop('disabled', !is_checked)
     $(this).closest('tr').find('.replacement-uom').empty().prop('disabled', !is_checked)
+    $(this).closest('tr').find('.replacement-material-disassemble').prop('checked', false).prop('disabled', !is_checked)
+    $(this).closest('tr').find('.replacement-note').val('').prop('disabled', !is_checked)
+})
+
+$('#btn-get-replacement-material').on('click', function () {
+    let replacement_data = []
+    $('#replacement-material-table').find('tbody tr').each(function () {
+        let row = $(this)
+        if (row.find('.replacement-checkbox').prop('checked')) {
+            replacement_data.push({
+                'material_id': row.find('.replacement-checkbox').attr('data-material-id'),
+                'quantity': row.find('.replacement-quantity').val(),
+                'uom_id': row.find('.replacement-uom').val(),
+                'disassemble': row.find('.replacement-material-disassemble').prop('checked'),
+                'note': row.find('.replacement-note').val()
+            })
+        }
+    })
+    REPLACEMENT_ROW.find('.replacement-material-script').text(JSON.stringify(replacement_data))
+    $('#replacement-material-modal').modal('hide')
 })
 
 // TOOL
+
 $(document).on("click", '.add-new-tool', function () {
     let row_index = $(this).closest('tr').find('td:eq(0)').text()
     let new_tool_row = BOMAction.Create_tool_row(row_index)

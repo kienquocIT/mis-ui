@@ -13,7 +13,7 @@
 <div class="row">
     <div class="col-12 col-md-6 col-lg-4">
         <div class="form-group">
-            <label for="project" class="form-label required">{% trans 'Project' %}</label>
+            <label for="project" class="form-label required">{% trans 'Opportunity' %}</label>
             <select class="form-select select2" id="project" data-url="{% url 'OpportunityListAPI' %}"></select>
         </div>
     </div>
@@ -30,6 +30,7 @@
         <div class="form-group">
             <label for="product" class="form-label required">{% trans 'Product' %}</label>
             <select class="form-select select2" id="product" data-url="{% url 'ProductListForProjectBOMAPI' %}"></select>
+            <span class="small fst-italic text-muted">{% trans 'Select Finished goods or Services' %}</span>
         </div>
     </div>
     <div class="col-6 col-md-4 col-lg-2">
@@ -65,9 +66,11 @@
                             <th style="min-width: 30px"></th>
                             <th style="min-width: 30px"></th>
                             <th style="min-width: 100px">{% trans 'Code' %}</th>
-                            <th style="min-width: 150px">{% trans 'Material/Component' %}</th>
+                            <th style="min-width: 200px">{% trans 'Material/Component' %}</th>
                             <th style="min-width: 100px">{% trans 'Quantity' %}</th>
                             <th style="min-width: 120px">{% trans 'UOM' %}</th>
+                            <th style="min-width: 100px" class="text-center">{% trans 'Disassemble' %}</th>
+                            <th style="min-width: 200px">{% trans 'Note' %}</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -75,7 +78,7 @@
             </div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-				<button type="button" class="btn btn-primary">{% trans 'Select' %}</button>
+				<button type="button" class="btn btn-primary" id="btn-get-replacement-material">{% trans 'Select' %}</button>
 			</div>
 		</div>
 	</div>

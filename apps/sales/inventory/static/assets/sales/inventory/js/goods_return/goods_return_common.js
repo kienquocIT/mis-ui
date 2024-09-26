@@ -1036,7 +1036,6 @@ function LoadDetailGoodsReturn(option) {
                 if (option === 'detail') {
                     new PrintTinymceControl().render('0242ba77-8b02-4589-8ed9-239788083f2b', data, false);
                 }
-                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 
@@ -1053,11 +1052,13 @@ function LoadDetailGoodsReturn(option) {
                 new $x.cls.file($('#attachment')).init({
                     enable_edit: option !== 'detail',
                     data: data.attachment,
+                    name: 'attachment'
                 })
 
                 $.fn.initMaskMoney2();
 
                 Disable(option);
+                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             }
         })
 }

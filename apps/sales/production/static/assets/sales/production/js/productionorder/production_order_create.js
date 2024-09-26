@@ -9,12 +9,19 @@ $(function () {
             ProdOrderLoadDataHandle.loadBOM();
             let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxProd, ProdOrderLoadDataHandle.$boxProd.val());
             if (data) {
-                // let dataUOM = data?.['inventory_information']?.['uom'];
                 let dataUOM = data?.['sale_information']?.['default_uom'];
                 let dataUOMGr = data?.['general_information']?.['uom_group'];
                 // load UOM
                 if (dataUOM && dataUOMGr?.['id']) {
                     ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM, [dataUOM], {'group': dataUOMGr?.['id']});
+                }
+                if (data?.['general_information']?.['product_type']) {
+                    for (let productType of data?.['general_information']?.['product_type']) {
+                        if (productType?.['is_service'] === true) {
+                            ProdOrderLoadDataHandle.$boxWH.attr('readonly', 'true');
+                            break;
+                        }
+                    }
                 }
             }
         });
@@ -52,21 +59,7 @@ $(function () {
         });
 
         ProdOrderDataTableHandle.$tableMain.on('change', '.check-all-wh', function () {
-            let row = this.closest('tr');
-            if (row.querySelector('.table-row-warehouse') && row.querySelector('.table-row-stock') && row.querySelector('.table-row-available')) {
-                row.querySelector('.table-row-stock').innerHTML = 0;
-                row.querySelector('.table-row-available').innerHTML = 0;
-                if (this.checked === true) {
-                    row.querySelector('.table-row-warehouse').setAttribute('disabled', 'true');
-                    ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), []);
-                    ProdOrderLoadDataHandle.loadChangeWH(row, 1);
-                }
-                if (this.checked === false) {
-                    row.querySelector('.table-row-warehouse').removeAttribute('disabled');
-                }
-            }
-            // store data
-            ProdOrderStoreHandle.storeRow(row);
+            ProdOrderLoadDataHandle.loadCheckAllWH(this);
         });
 
 

@@ -50,13 +50,14 @@ selectProductBtn.on('click', async function () {
     for (let i = 0; i < selected_product.length; i++) {
         tableLineDetailTbody.append(`
             <tr>
-                <td data-id="${selected_product[i].product_warehouse_id}" class="text-primary product_id_td">${selected_product[i].product_title}</td>
-                <td data-id="${selected_product[i].warehouse_id}" class="warehouse_id_td"><i class="fas fa-warehouse"></i> ${selected_product[i].warehouse_title}</td>
-                <td data-id="${selected_product[i].product_inventory_uom_id}" class="uom_id_td">${selected_product[i].product_inventory_uom_title}</td>
-                <td class="quantity-td">${selected_product[i].available_amount}</td>
-                <td><input class="form-control count-input" type="number" placeholder="Number" value="${selected_product[i].available_amount}"></td>
+                <td data-id="${selected_product[i]?.['product_warehouse_id']}" class="text-muted product_id_td"><span class="badge badge-soft-primary">${selected_product[i]?.['product_code']}</span> ${selected_product[i]?.['product_title']}</td>
+                <td data-id="${selected_product[i]?.['warehouse_id']}" class="warehouse_id_td"><span class="badge badge-soft-blue">${selected_product[i]?.['warehouse_code']}</span> ${selected_product[i]?.['warehouse_title']}</td>
+                <td data-id="${selected_product[i]?.['product_inventory_uom_id']}" class="uom_id_td">${selected_product[i]?.['product_inventory_uom_title']}</td>
+                <td class="quantity-td">${selected_product[i]?.['available_amount']}</td>
+                <td><input class="form-control count-input" type="number" placeholder="Number" value="${selected_product[i]?.['available_amount']}"></td>
                 <td class="difference_td text-center">0</td>
-                <td class="text-center">
+                <td class="text-center issued_receipted_td">0</td>
+                <td hidden class="text-center">
                     <span class="form-check">
                         <input type="checkbox" disabled class="form-check-input selected_for_actions">
                         <label class="form-check-label"></label>
@@ -173,6 +174,7 @@ function LoadTableSelectProduct(warehouse_list) {
                                     'warehouse_is_active': warehouse_temp['is_active'],
                                     'warehouse_remarks': warehouse_temp['remarks'],
                                     'product_id': product_temp[j]['product']['id'],
+                                    'product_code': product_temp[j]['product']['code'],
                                     'product_title': product_temp[j]['product']['title'],
                                     'product_inventory_uom_id': product_temp[j]['inventory_uom']['id'],
                                     'product_inventory_uom_title': product_temp[j]['inventory_uom']['title'],
@@ -209,9 +211,8 @@ function LoadTableSelectProduct(warehouse_list) {
                                 <label class="form-check-label"></label>
                             </span>
                         </td>
-                        <td><span class="badge badge-soft-primary w-80">${item?.['warehouse_code']}</span></td>
-                        <td><span><i class="fas fa-warehouse"></i> ${item?.['warehouse_title']}</span></td>
-                        <td><span class="text-primary">${item?.['product_title']}</span></td>
+                        <td><span class="badge badge-soft-blue">${item?.['warehouse_code']}</span> ${item?.['warehouse_title']}</td>
+                        <td><span class="badge badge-soft-primary">${item?.['product_code']}</span> ${item?.['product_title']}</span></td>
                     </tr>
                 `)
             }
@@ -354,8 +355,7 @@ function LoadDetailIA(option) {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                WFRTControl.setWFRuntimeID(data['inventory_adjustment_detail']?.['workflow_runtime_id']);
-                data = data['inventory_adjustment_detail'];
+                data = data?.['inventory_adjustment_detail'];
                 if (option === 'detail') {
                     new PrintTinymceControl().render('c5de0a7d-bea3-4f39-922f-06a40a060aba', data, false);
                 }
@@ -398,13 +398,14 @@ function LoadDetailIA(option) {
                     }
                     tableLineDetailTbody.append(`
                         <tr class="${class_ctn}">
-                            <td data-item-id="${data_row?.['id']}" data-product-warehouse-id="${data_row?.['product_warehouse_mapped_id']}" data-id="${data_row?.['product_mapped'].id}" class="text-primary product_id_td">${data_row?.['product_mapped'].title}</td>
-                            <td data-id="${data_row?.['warehouse_mapped'].id}" class="warehouse_id_td"><i class="fas fa-warehouse"></i> ${data_row?.['warehouse_mapped'].title}</td>
-                            <td data-id="${data_row?.['uom_mapped'].id}" class="uom_id_td">${data_row?.['uom_mapped'].title}</td>
+                            <td data-item-id="${data_row?.['id']}" data-product-warehouse-id="${data_row?.['product_warehouse_mapped_id']}" data-id="${data_row?.['product_mapped']?.['id']}" class="text-muted product_id_td"><span class="badge badge-soft-primary">${data_row?.['product_mapped']?.['code']}</span> ${data_row?.['product_mapped']?.['title']}</td>
+                            <td data-id="${data_row?.['warehouse_mapped']?.['id']}" class="warehouse_id_td"><span class="badge badge-soft-blue">${data_row?.['warehouse_mapped']?.['code']}</span> ${data_row?.['warehouse_mapped']?.['title']}</td>
+                            <td data-id="${data_row?.['uom_mapped']?.['id']}" class="uom_id_td">${data_row?.['uom_mapped']?.['title']}</td>
                             <td class="quantity-td">${data_row?.['book_quantity']}</td>
                             <td><input ${disabled_select} class="form-control count-input" type="number" placeholder="Number" value="${data_row?.['count']}"></td>
                             <td class="text-center difference_td">${difference}</td>
-                            <td class="text-center">
+                            <td class="text-center issued_receipted_td">${data_row?.['issued_receipted_quantity']}</td>
+                            <td hidden class="text-center">
                                 <span class="form-check">
                                     <input ${disabled_select} type="checkbox" class="form-check-input selected_for_actions" ${checked}>
                                     <label class="form-check-label"></label>
@@ -419,6 +420,7 @@ function LoadDetailIA(option) {
                 $.fn.initMaskMoney2();
 
                 Disable(option);
+                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             }
         })
 }

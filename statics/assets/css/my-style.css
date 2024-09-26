@@ -1,6 +1,6 @@
 /* Button */
 .no-transform {
-    text-transform: unset!important;
+    text-transform: initial !important;
 }
 /* -- Button */
 
@@ -108,7 +108,8 @@
 }
 
 .menu-child-icon i {
-    font-size: 0.6em;
+    /*font-size: 0.6em;*/
+    filter: contrast(70%);
 }
 
 .icon-info {
@@ -387,6 +388,10 @@ div.dataTables_wrapper .dataTables_scrollBody table {
 .dataTables_scrollBody::-webkit-scrollbar-thumb {
     background-color: #d6d9da;
     border-radius: 4px;
+}
+
+.dtb-header-toolbar {
+    flex-wrap: wrap;
 }
 
 /* button upload file */

@@ -29,15 +29,11 @@ class APLoadPage {
     }
     static LoadCreator(data) {
         APCreatorEle.val(data?.['full_name']).prop('readonly', true).prop('disabled', true)
-        APLoadPage.LoadCreatorInfor(data)
-    }
-    static LoadCreatorInfor(data) {
-        console.log(data)
         let btn_detail = $('#btn-detail-creator-tab');
         $('#creator-detail-span').prop('hidden', false);
         $('#creator-name').text(data?.['full_name']);
         $('#creator-code').text(data?.['code']);
-        $('#creator-department').text(data?.['group']['title']);
+        $('#creator-department').text(data?.['group']?.['title']);
         let url = btn_detail.attr('data-url').replace('0', data?.['id']);
         btn_detail.attr('href', url);
     }
@@ -134,8 +130,8 @@ class APLoadPage {
         $('#supplier-detail-span').prop('hidden', false);
         $('#supplier-name').text(data?.['name']);
         $('#supplier-code').text(data?.['code']);
-        $('#supplier-owner').text(data?.['owner']['fullname']);
-        $('#supplier-industry').text(data?.['industry']['title']);
+        $('#supplier-owner').text(data?.['owner']?.['fullname']);
+        $('#supplier-industry').text(data?.['industry']?.['title']);
         let url = btn_detail.attr('data-url').replace('0', data?.['id']);
         btn_detail.attr('href', url);
     }
@@ -279,7 +275,6 @@ class APLoadTab {
             data: data_list,
             columns: [
                 {
-
                     'render': () => {
                         return ``;
                     }
@@ -287,69 +282,69 @@ class APLoadTab {
                 {
                     'render': (data, type, row) => {
                         if (row?.['type'] === 'planned') {
-                            return `<span class="text-primary">${row?.['expense_item']?.['title']}</span>`
+                            return `<span data-zone="plan_tab" class="text-primary">${row?.['expense_item']?.['title']}</span>`
                         }
-                        return `<span class="text-danger">${row?.['expense_item']?.['title']}</span>`;
+                        return `<span data-zone="plan_tab" class="text-danger">${row?.['expense_item']?.['title']}</span>`;
                     }
                 },
                 {
                     className: 'text-right',
                     'render': (data, type, row) => {
                         if (row?.['type'] === 'planned') {
-                            return `<span class="plan_after_tax mask-money text-primary" data-init-money="${row?.['plan_after_tax']}"></span>`
+                            return `<span data-zone="plan_tab" class="plan_after_tax mask-money text-primary" data-init-money="${row?.['plan_after_tax']}"></span>`
                         }
-                        return `--`;
+                        return `<span data-zone="plan_tab">--</span>`;
                     }
                 },
                 {
                     className: 'text-right',
                     'render': (data, type, row) => {
                         if (row?.['type'] === 'planned') {
-                            return `<span class="ap_approved mask-money text-primary" data-init-money="${row?.['ap_approved_value']}"></span>`
+                            return `<span data-zone="plan_tab" class="ap_approved mask-money text-primary" data-init-money="${row?.['ap_approved_value']}"></span>`
                         }
-                        return `<span class="ap_approved mask-money text-danger" data-init-money="${row?.['ap_approved_value']}"></span>`;
+                        return `<span data-zone="plan_tab" class="ap_approved mask-money text-danger" data-init-money="${row?.['ap_approved_value']}"></span>`;
                     }
                 },
                 {
                     className: 'text-right',
                     'render': (data, type, row) => {
                         if (row?.['type'] === 'planned') {
-                            return `<span class="returned mask-money text-primary" data-init-money="${row?.['sum_return_value']}"></span>`
+                            return `<span data-zone="plan_tab" class="returned mask-money text-primary" data-init-money="${row?.['sum_return_value']}"></span>`
                         }
-                        return `<span class="returned mask-money text-danger" data-init-money="${row?.['sum_return_value']}"></span>`;
+                        return `<span data-zone="plan_tab" class="returned mask-money text-danger" data-init-money="${row?.['sum_return_value']}"></span>`;
                     }
                 },
                 {
                     className: 'text-right',
                     'render': (data, type, row) => {
                         if (row?.['type'] === 'planned') {
-                            return `<span class="to_payment mask-money text-primary" data-init-money="${row?.['sum_converted_value']}"></span>`
+                            return `<span data-zone="plan_tab" class="to_payment mask-money text-primary" data-init-money="${row?.['sum_converted_value']}"></span>`
                         }
-                        return `<span class="to_payment mask-money text-danger" data-init-money="${row?.['sum_converted_value']}"></span>`;
+                        return `<span data-zone="plan_tab" class="to_payment mask-money text-danger" data-init-money="${row?.['sum_converted_value']}"></span>`;
                     }
                 },
                 {
                     className: 'text-right',
                     'render': (data, type, row) => {
                         if (row?.['type'] === 'planned') {
-                            return `<span class="other_payment mask-money text-primary" data-init-money="${row?.['sum_real_value']}"></span>`
+                            return `<span data-zone="plan_tab" class="other_payment mask-money text-primary" data-init-money="${row?.['sum_real_value']}"></span>`
                         }
-                        return `<span class="other_payment mask-money text-danger" data-init-money="${row?.['sum_real_value']}"></span>`;
+                        return `<span data-zone="plan_tab" class="other_payment mask-money text-danger" data-init-money="${row?.['sum_real_value']}"></span>`;
                     }
                 },
                 {
                     className: 'text-right',
                     'render': (data, type, row) => {
                         if (row?.['type'] === 'planned') {
-                            return `<span class="available mask-money text-primary" data-init-money="${row?.['sum_available']}"></span>`
+                            return `<span data-zone="plan_tab" class="available mask-money text-primary" data-init-money="${row?.['sum_available']}"></span>`
                         }
-                        return `--`;
+                        return `<span data-zone="plan_tab">--</span>`;
                     }
                 },
             ],
         })
     }
-    static LoadPlanQuotation(opportunity_id, quotation_id) {
+    static LoadPlanQuotation(opportunity_id, quotation_id, workflow_runtime_id) {
         if (opportunity_id && quotation_id) {
             let dataParam1 = {'quotation_id': quotation_id}
             let expense_quotation = $.fn.callAjax2({
@@ -559,10 +554,11 @@ class APLoadTab {
                     }
 
                     APLoadTab.DrawTablePlan(data_table_planned)
+                    WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
     }
-    static LoadPlanQuotationOnly(quotation_id) {
+    static LoadPlanQuotationOnly(quotation_id, workflow_runtime_id) {
         if (quotation_id) {
             let dataParam1 = {'quotation_id': quotation_id}
             let expense_quotation = $.fn.callAjax2({
@@ -771,10 +767,11 @@ class APLoadTab {
                     }
 
                     APLoadTab.DrawTablePlan(data_table_planned)
+                    WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
     }
-    static LoadPlanSaleOrderOnly(sale_order_id) {
+    static LoadPlanSaleOrderOnly(sale_order_id, workflow_runtime_id) {
         if (sale_order_id) {
             let dataParam1 = {'sale_order_id': sale_order_id}
             let expense_sale_order = $.fn.callAjax2({
@@ -983,6 +980,7 @@ class APLoadTab {
                     }
 
                     APLoadTab.DrawTablePlan(data_table_planned)
+                    WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
     }
@@ -1226,7 +1224,9 @@ class APHandle {
         })
         frm.dataForm['ap_item_list'] = ap_item_list
 
-        console.log(frm)
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
+
+        // console.log(frm)
         return frm
     }
     static LoadDetailAP(option) {
@@ -1236,7 +1236,6 @@ class APHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     data = data['advance_payment_detail'];
-                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                     if (option === 'detail') {
                         new PrintTinymceControl().render('57725469-8b04-428a-a4b0-578091d0e4f5', data, false);
                     }
@@ -1270,7 +1269,11 @@ class APHandle {
                             }]
                         }).init();
                         APLoadPage.LoadQuotation(data?.['opportunity_mapped']?.['quotation_mapped'])
-                        APLoadTab.LoadPlanQuotation(opp_mapped_select.val(), data?.['opportunity_mapped']?.['quotation_mapped']?.['id'])
+                        APLoadTab.LoadPlanQuotation(
+                            opp_mapped_select.val(),
+                            data?.['opportunity_mapped']?.['quotation_mapped']?.['id'],
+                            data?.['workflow_runtime_id']
+                        )
                         ap_for = 'opportunity'
                     }
                     else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
@@ -1315,13 +1318,19 @@ class APHandle {
                                 }
                             })
 
-                        APLoadTab.LoadPlanQuotationOnly(data?.['quotation_mapped']?.['id'])
+                        APLoadTab.LoadPlanQuotationOnly(
+                            data?.['quotation_mapped']?.['id'],
+                            data?.['workflow_runtime_id']
+                        )
                         ap_for = 'quotation'
                     }
                     else if (Object.keys(data?.['sale_order_mapped']).length !== 0) {
                         APLoadPage.LoadSaleOrder(data?.['sale_order_mapped'])
                         APLoadPage.LoadQuotation(data?.['sale_order_mapped']?.['quotation_mapped'])
-                        APLoadTab.LoadPlanSaleOrderOnly(data?.['sale_order_mapped']?.['id'])
+                        APLoadTab.LoadPlanSaleOrderOnly(
+                            data?.['sale_order_mapped']?.['id'],
+                            data?.['workflow_runtime_id']
+                        )
                         ap_for = 'saleorder'
                     }
                     else {
@@ -1372,9 +1381,11 @@ class APHandle {
                         enable_download: option === 'detail',
                         enable_edit: option !== 'detail',
                         data: data.attachment,
+                        name: 'attachment'
                     })
 
                     APAction.DisabledDetailPage(option);
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
     }

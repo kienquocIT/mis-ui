@@ -16,9 +16,9 @@ class CacheController:  # pylint: disable=too-few-public-methods
         pass
 
     @staticmethod
-    def set(key, data):
+    def set(key, data, timeout=60):  # seconds
         """set value data"""
-        cache.set(key, data, timeout=60)
+        cache.set(key, data, timeout=timeout)
         return True
 
     @staticmethod

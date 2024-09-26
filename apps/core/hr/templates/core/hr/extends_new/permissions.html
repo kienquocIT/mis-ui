@@ -54,9 +54,10 @@
                 <select
                         id="new-row-app"
                         class="form-select"
-                        data-base-url="{% url 'PlanAppGetAppListAPI' pk=pk %}?get_from={{get_from}}"
-                        data-url="{% url 'PlanAppGetAppListAPI' pk=pk %}?get_from={{get_from}}"
+                        data-base-url="{% url 'PlanAppGetAppListAPI' pk=pk %}?get_from={{get_from}}&pageSize=-1"
+                        data-url="{% url 'PlanAppGetAppListAPI' pk=pk %}?get_from={{get_from}}&pageSize=-1"
                         data-keyResp="app_list"
+                        data-keyText="title_i18n"
                 >
                 </select>
                 <label for="new-row-app" class="d-none"></label>

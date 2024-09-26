@@ -591,6 +591,16 @@ $.fn.extend({
     initSelect2: function (opts) {
         return new SelectDDControl($(this), opts).init();
     },
+    toggleSelect2: function(isDisplay=false){
+        if (this instanceof jQuery) {
+            if (typeof isDisplay !== "boolean"){
+                isDisplay = isDisplay === 1;
+            }
+            const container$ = $(this).siblings('.select2-container');
+            if (container$.length > 0) isDisplay === true ? container$.show(0) : container$.hide(0);
+            $(this).hide(0);
+        }
+    },
     destroySelect2: function (addEmpty=false) {
         let state = false;
         if (this instanceof jQuery) {

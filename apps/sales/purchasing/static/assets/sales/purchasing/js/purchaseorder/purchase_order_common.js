@@ -10,7 +10,7 @@ class POLoadDataHandle {
     static eleDivTablePRProductMerge = $('#table-purchase-request-product-merge-area');
     static transEle = $('#app-trans-factory');
 
-    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false) {
+    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
         let opts = {'allowClear': isClear};
         $ele.empty();
         if (data.length > 0) {
@@ -21,6 +21,13 @@ class POLoadDataHandle {
         }
         if ($modal) {
             opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                return $(`<span>${res1} ${res2}</span>`);
+            }
         }
         $ele.initSelect2(opts);
         return true;
@@ -458,6 +465,7 @@ class POLoadDataHandle {
             $(eleTotal).attr('data-init-money', String(0));
             eleTotalRaw.value = 0;
         }
+        POCalculateHandle.calculateTable($tableProductPR);
         $.fn.initMaskMoney2();
         return true;
     };
@@ -498,13 +506,12 @@ class POLoadDataHandle {
     };
 
     static loadDataRowTable($table) {
-        if (!$table[0].querySelector('.dataTables_empty')) {
-            for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
-                let row = $table[0].tBodies[0].rows[i];
-                let table_id = $table[0].id;
-                POLoadDataHandle.loadDataRow(row, table_id);
-            }
-        }
+        let table_id = $table[0].id;
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            POLoadDataHandle.loadDataRow(row, table_id);
+        });
+        return true;
     };
 
     static loadDataRow(row) {
@@ -514,14 +521,23 @@ class POLoadDataHandle {
         if (dataRowRaw) {
             let dataRow = JSON.parse(dataRowRaw);
             POLoadDataHandle.loadBoxProduct($(row.querySelector('.table-row-item')));
-            $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']).trigger('change');
-            let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
-            if (boxRender) {
-                boxRender.innerHTML = dataRow?.['product']?.['title'];
-                boxRender.setAttribute('title', dataRow?.['product']?.['title']);
+            POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom-order-actual')), [], {'group': dataRow?.['uom_order_actual']?.['uom_group']?.['id']});
+            POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')));
+            // $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']).trigger('change');
+            // let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
+            // if (boxRender) {
+            //     boxRender.innerHTML = dataRow?.['product']?.['title'];
+            //     boxRender.setAttribute('title', dataRow?.['product']?.['title']);
+            // }
+            if (dataRow?.['product']?.['id']) {
+                POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product']]);
             }
-            POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom-order-actual')), [dataRow?.['uom_order_actual']], {'group': dataRow?.['uom_order_actual']?.['uom_group']?.['id']});
-            POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax']]);
+            if (dataRow?.['uom_order_actual']?.['id']) {
+                POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom-order-actual')), [dataRow?.['uom_order_actual']], {'group': dataRow?.['uom_order_actual']?.['uom_group']?.['id']});
+            }
+            if (dataRow?.['tax']?.['id']) {
+                POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax']]);
+            }
         }
     };
 
@@ -1543,7 +1559,7 @@ class PODataTableHandle {
                                             data-method="${PODataTableHandle.productInitEle.attr('data-method')}"
                                             data-keyResp="product_sale_list"
                                             required
-                                            disabled
+                                            readonly
                                         >
                                         </select>
                                     </div>
@@ -1561,7 +1577,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '5%',
+                    width: '7%',
                     render: (data, type, row) => {
                         let dataStr = JSON.stringify(row?.['uom_order_request']).replace(/"/g, "&quot;");
                         return `<span class="table-row-uom-order-request" id="${row?.['uom_order_request']?.['id']}">${row?.['uom_order_request']?.['title']}<input type="hidden" class="data-info" value="${dataStr}"></span>`;
@@ -1608,7 +1624,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '15.625%',
+                    width: '14.625%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <div class="dropend">
@@ -1659,7 +1675,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 10,
-                    width: '14.0625%',
+                    width: '13.0625%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
@@ -1921,46 +1937,52 @@ class POCalculateHandle {
         if (table.id === 'datable-purchase-order-product-request') {
             tableWrapper = document.getElementById('datable-purchase-order-product-request_wrapper');
         }
+        let elePretaxAmount = table.querySelector('.purchase-order-product-pretax-amount');
+        let eleTaxes = table.querySelector('.purchase-order-product-taxes');
+        let eleTotal = table.querySelector('.purchase-order-product-total');
+        let elePretaxAmountRaw = table.querySelector('.purchase-order-product-pretax-amount-raw');
+        let eleTaxesRaw = table.querySelector('.purchase-order-product-taxes-raw');
+        let eleTotalRaw = table.querySelector('.purchase-order-product-total-raw');
+        let finalRevenueBeforeTaxAdd = table.querySelector('.purchase-order-final-revenue-before-tax');
+        let pretaxAmount = 0;
+        let taxAmount = 0;
         if (tableWrapper) {
             let tableFt = tableWrapper.querySelector('.dataTables_scrollFoot');
-            let pretaxAmount = 0;
-            let taxAmount = 0;
-            let elePretaxAmount = tableFt.querySelector('.purchase-order-product-pretax-amount');
-            let eleTaxes = tableFt.querySelector('.purchase-order-product-taxes');
-            let eleTotal = tableFt.querySelector('.purchase-order-product-total');
-            let elePretaxAmountRaw = tableFt.querySelector('.purchase-order-product-pretax-amount-raw');
-            let eleTaxesRaw = tableFt.querySelector('.purchase-order-product-taxes-raw');
-            let eleTotalRaw = tableFt.querySelector('.purchase-order-product-total-raw');
-            let finalRevenueBeforeTaxAdd = tableFt.querySelector('.purchase-order-final-revenue-before-tax');
-            if (elePretaxAmount && eleTaxes && eleTotal) {
-                let tableLen = table.tBodies[0].rows.length;
-                for (let i = 0; i < tableLen; i++) {
-                    let row = table.tBodies[0].rows[i];
-                    // calculate Pretax Amount
-                    let subtotalRaw = row.querySelector('.table-row-subtotal-raw');
-                    if (subtotalRaw) {
-                        if (subtotalRaw.value) {
-                            pretaxAmount += parseFloat(subtotalRaw.value)
-                        }
-                    }
-                    // calculate Tax Amount
-                    let subTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
-                    if (subTaxAmountRaw) {
-                        if (subTaxAmountRaw.value) {
-                            taxAmount += parseFloat(subTaxAmountRaw.value)
-                        }
+
+            elePretaxAmount = tableFt.querySelector('.purchase-order-product-pretax-amount');
+            eleTaxes = tableFt.querySelector('.purchase-order-product-taxes');
+            eleTotal = tableFt.querySelector('.purchase-order-product-total');
+            elePretaxAmountRaw = tableFt.querySelector('.purchase-order-product-pretax-amount-raw');
+            eleTaxesRaw = tableFt.querySelector('.purchase-order-product-taxes-raw');
+            eleTotalRaw = tableFt.querySelector('.purchase-order-product-total-raw');
+            finalRevenueBeforeTaxAdd = tableFt.querySelector('.purchase-order-final-revenue-before-tax');
+        }
+        if (elePretaxAmount && eleTaxes && eleTotal) {
+            $(table).DataTable().rows().every(function () {
+                let row = this.node();
+                // calculate Pretax Amount
+                let subtotalRaw = row.querySelector('.table-row-subtotal-raw');
+                if (subtotalRaw) {
+                    if (subtotalRaw.value) {
+                        pretaxAmount += parseFloat(subtotalRaw.value)
                     }
                 }
-                let totalFinal = (pretaxAmount + taxAmount);
-                $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
-                elePretaxAmountRaw.value = pretaxAmount;
-                finalRevenueBeforeTaxAdd.value = pretaxAmount;
-                $(eleTaxes).attr('data-init-money', String(taxAmount));
-                eleTaxesRaw.value = taxAmount;
-                $(eleTotal).attr('data-init-money', String(totalFinal));
-                eleTotalRaw.value = totalFinal;
-            }
-
+                // calculate Tax Amount
+                let subTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
+                if (subTaxAmountRaw) {
+                    if (subTaxAmountRaw.value) {
+                        taxAmount += parseFloat(subTaxAmountRaw.value)
+                    }
+                }
+            });
+            let totalFinal = (pretaxAmount + taxAmount);
+            $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
+            elePretaxAmountRaw.value = pretaxAmount;
+            finalRevenueBeforeTaxAdd.value = pretaxAmount;
+            $(eleTaxes).attr('data-init-money', String(taxAmount));
+            eleTaxesRaw.value = taxAmount;
+            $(eleTotal).attr('data-init-money', String(totalFinal));
+            eleTotalRaw.value = totalFinal;
         }
         $.fn.initMaskMoney2();
         return true;
@@ -2019,10 +2041,11 @@ class POCalculateHandle {
     };
 
     static calculateTable(table) {
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
-            POCalculateHandle.calculateMain(table, row)
-        }
+        table.DataTable().rows().every(function () {
+            let row = this.node();
+            POCalculateHandle.calculateMain(table, row);
+        });
+        return true;
     };
 
     // payment stage
@@ -2244,7 +2267,7 @@ class POSubmitHandle {
                                 'quantity_origin': quantity_origin,
                                 'quantity_order_origin': quantity_order_origin,
                                 'remain_origin': remain_origin,
-                                'product_unit_price': 0,
+                                'product_unit_price': dataRow?.['unit_price'],
                                 'product_tax_title': '',
                                 'product_tax_amount': 0,
                                 'product_subtotal_price': 0,
@@ -2306,7 +2329,6 @@ class POSubmitHandle {
             let eleProduct = row.querySelector('.table-row-item');
             if (eleProduct) { // PRODUCT
                 let dataInfo = {};
-                let is_allow_gr = false;
                 if ($(eleProduct).val()) {
                     dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                 }
@@ -2314,11 +2336,6 @@ class POSubmitHandle {
                     rowData['product'] = dataInfo?.['id'];
                     rowData['product_title'] = dataInfo?.['title'];
                     rowData['product_code'] = dataInfo?.['code'];
-                    if (dataInfo.hasOwnProperty('product_choice') && Array.isArray(dataInfo?.['product_choice'])) {
-                        if (dataInfo?.['product_choice'].includes(1)) {  // product allow inventory
-                            is_allow_gr = true;
-                        }
-                    }
                 }
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
@@ -2363,9 +2380,7 @@ class POSubmitHandle {
                 if (eleQuantityOrder) {
                     if (eleQuantityOrder.value) {
                         rowData['product_quantity_order_actual'] = parseFloat(eleQuantityOrder.value);
-                        if (is_allow_gr === true) {
-                            rowData['gr_remain_quantity'] = parseFloat(eleQuantityOrder.value);
-                        }
+                        rowData['gr_remain_quantity'] = parseFloat(eleQuantityOrder.value);
                     }
                 }
                 let stock = row.querySelector('.table-row-stock');

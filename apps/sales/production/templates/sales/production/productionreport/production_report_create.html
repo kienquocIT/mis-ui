@@ -36,17 +36,68 @@
                                 required
                         >
                     </div>
+                </div>
+                <div class="col-12 col-md-3 col-lg-3">
                     <div class="form-group">
-                        <label class="form-label required" for="box-production-order">{% trans 'Production order' %}</label>
-                        <select
-                            class="form-select"
-                            id="box-production-order"
-                            data-url="{% url "ProductionOrderDDListAPI" %}"
-                            data-method="GET"
-                            name="production_order_id"
-                            data-keyResp="production_order_dd"
-                            required
-                        ></select>
+                        <label class="form-label" for="date-created">{% trans 'Date Created' %}</label>
+                        <input type="text" class="form-control form-control-line mt-1" id="date-created" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-report-type">{% trans 'Report for' %}</label>
+                                <div class="input-group">
+                                    <div class="input-affix-wrapper">
+                                        <div class="input-prefix">
+                                            <i class="fas fa-file-import text-dark"></i>
+                                        </div>
+                                        <select
+                                            class="form-select"
+                                            id="box-report-type"
+                                            data-url=""
+                                            data-method="GET"
+                                            data-link-detail=""
+                                            name="report_type"
+                                            data-keyResp=""
+                                            required
+                                        >
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="custom-area" id="custom-area-0">
+                                <div class="form-group">
+                                    <label class="form-label required" for="box-production-order">{% trans 'Production order' %}</label>
+                                    <select
+                                        class="form-select"
+                                        id="box-production-order"
+                                        data-url="{% url "ProductionOrderDDListAPI" %}"
+                                        data-method="GET"
+                                        name="production_order_id"
+                                        data-keyResp="production_order_dd"
+                                    ></select>
+                                </div>
+                            </div>
+                            <div class="custom-area" id="custom-area-1" hidden>
+                                <div class="form-group">
+                                    <label class="form-label required" for="box-work-order">{% trans 'Work order' %}</label>
+                                    <select
+                                        class="form-select"
+                                        id="box-work-order"
+                                        data-url="{% url "WorkOrderDDListAPI" %}"
+                                        data-method="GET"
+                                        name=work_order_id"
+                                        data-keyResp="work_order_dd"
+                                    ></select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
@@ -71,7 +122,7 @@
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label class="form-label" for="warehouse">{% trans 'Warehouse' %}</label>
+                                <label class="form-label" for="warehouse">{% trans 'Goods receipt to warehouse' %}</label>
                                 <input type="text" class="form-control form-control-line mt-1" id="warehouse" data-detail="" readonly>
                             </div>
                         </div>
@@ -83,18 +134,8 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label class="form-label required" for="quantity-ng">{% trans 'Not good quantity' %}</label>
-                                <input type="text" class="form-control valid-number" id="quantity-ng" name="quantity_ng" value="0" required>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label" for="date-created">{% trans 'Date Created' %}</label>
-                                <input type="text" class="form-control form-control-line mt-1" id="date-created" readonly>
+                                <label class="form-label" for="quantity-ng">{% trans 'Not good quantity' %}</label>
+                                <input type="text" class="form-control valid-number" id="quantity-ng" name="quantity_ng" value="0">
                             </div>
                         </div>
                     </div>
@@ -133,6 +174,9 @@
     <input
         type="text"
         id="app-trans-factory"
+        data-for-po="{% trans 'General production' %}"
+        data-for-wo="{% trans 'Production for orders' %}"
+        data-required-quantity-finished="{% trans 'Finished quantity is required' %}"
     >
     <input
         type="text"

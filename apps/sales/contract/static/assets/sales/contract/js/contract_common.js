@@ -5,6 +5,7 @@ class ContractLoadDataHandle {
     static $fileArea = $('#file-area');
     static $remark = $('#contract-doc-remark');
     static $attachment = $('#attachment');
+    static $attachmentTmp = $('#attachment-tmp');
     static $trans = $('#app-trans-factory');
 
     // DOCUMENT
@@ -33,18 +34,14 @@ class ContractLoadDataHandle {
             if (eleOrder) {
                 ContractLoadDataHandle.$fileArea[0].setAttribute('data-doc', eleOrder.innerHTML);
             }
-            ContractLoadDataHandle.$remark[0].removeAttribute('disabled');
+            ContractLoadDataHandle.$remark[0].removeAttribute('readonly');
             ContractLoadDataHandle.$remark.val('');
             ContractLoadDataHandle.loadAddFile([]);
-            let uploaderResult = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-result-list');
-            if (uploaderResult) {
-                uploaderResult.innerHTML = "";
-            }
             let fileIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
             if (fileIds) {
                 fileIds.value = "";
             }
-            if (ele.getAttribute('data-store') && uploaderResult && fileIds) {
+            if (ele.getAttribute('data-store') && fileIds) {
                 let dataStore = JSON.parse(ele.getAttribute('data-store'));
                 ContractLoadDataHandle.$remark.val(dataStore?.['remark']);
                 ContractLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
@@ -54,13 +51,29 @@ class ContractLoadDataHandle {
                 }
                 let fileIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
                 fileIds.value = ids.join(',');
-                let tmpUploader = row.querySelector('.tmp-uploader');
-                if (tmpUploader) {
-                    uploaderResult.innerHTML = tmpUploader.innerHTML;
+                let attachmentParse = [];
+                for (let attachData of dataStore?.['attachment_data']) {
+                    attachmentParse.push(attachData?.['attachment']);
                 }
+                // append html file again
+                ContractLoadDataHandle.$attachment.empty().html(`${ContractLoadDataHandle.$attachmentTmp.html()}`);
+                // init file again
+                new $x.cls.file(ContractLoadDataHandle.$attachment).init({
+                    name: 'attachment',
+                    enable_edit: true,
+                    enable_download: true,
+                    data: attachmentParse,
+                });
+                // add event
+                let inputs = ContractLoadDataHandle.$attachment[0].querySelectorAll('input[type="file"]');
+                inputs.forEach((input) => {
+                    input.addEventListener('change', function () {
+                        let dataList = ContractLoadDataHandle.loadSetupAddFile();
+                        ContractLoadDataHandle.loadAddFile(dataList);
+                    });
+                });
             }
             ContractLoadDataHandle.$attachment[0].removeAttribute('hidden');
-            ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-results').setAttribute('hidden', 'true');
         }
         return true;
     };
@@ -80,15 +93,21 @@ class ContractLoadDataHandle {
         let order = 1;
         for (let mediaBody of ContractLoadDataHandle.$attachment[0].querySelectorAll('.media-body')) {
             let fileName = mediaBody.querySelector('.f-item-name');
-            let dataAdd = {
-                'attachment': {
-                    'file_name': fileName.innerHTML,
-                },
-                'date_created': ContractCommonHandle.getCurrentDate(),
-                'order': order,
-                'is_current': is_current,
-            };
-            result.push(dataAdd);
+            let fileSize = mediaBody.querySelector('.f-item-info');
+            let fileRemark = mediaBody.querySelector('.file-txt-remark');
+            if (fileName && fileSize && fileRemark) {
+                let dataAdd = {
+                    'attachment': {
+                        'file_name': fileName.innerHTML,
+                        'file_size': parseFloat(fileSize.innerHTML.replace(" KB", "")),
+                        'remarks': fileRemark.value,
+                    },
+                    'date_created': ContractCommonHandle.getCurrentDate(),
+                    'order': order,
+                    'is_current': is_current,
+                };
+                result.push(dataAdd);
+            }
             is_current = false;
             order += 1;
         }
@@ -144,8 +163,30 @@ class ContractLoadDataHandle {
     // DETAIL
     static loadDetail(data) {
         $('#contract-title').val(data?.['title']);
+        ContractLoadDataHandle.setupDetailDocAttach(data);
         ContractDataTableHandle.$tableDocument.DataTable().rows.add(data?.['document_data']).draw();
+        ContractTinymceHandle.initTinymce(data?.['tinymce_content']);
     };
+
+    static setupDetailDocAttach(data) {
+        if (data?.['document_data']) {
+            for (let dataDoc of data?.['document_data']) {
+                if (dataDoc?.['attachment_data']) {
+                    for (let attachData of dataDoc?.['attachment_data']) {
+                        if (data?.['attachment']) {
+                            for (let attach of data?.['attachment']) {
+                                if (attachData?.['attachment']?.['id'] === attach?.['id']) {
+                                    attachData['attachment'] = attach;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
 }
 
 // DataTable
@@ -230,7 +271,11 @@ class ContractDataTableHandle {
                     targets: 2,
                     width: '15%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-date">${row?.['date_created'] ? row?.['date_created'] : ''}</span>`;
+                        let date = '';
+                        if (row?.['date_created']) {
+                            date = moment(row?.['date_created']).format('DD/MM/YYYY')
+                        }
+                        return `<span class="table-row-date">${date}</span>`;
                     }
                 },
                 {
@@ -270,23 +315,15 @@ class ContractStoreHandle {
             if (ids.length > 0) {
                 ContractDataTableHandle.$tableFile.DataTable().rows().every(function () {
                     let row = this.node();
-                    let eleOrder = row.querySelector('.table-row-order');
-                    let eleTitle = row.querySelector('.table-row-title');
-                    let eleDate = row.querySelector('.table-row-date');
-                    if (eleOrder && eleTitle && eleDate) {
-                        let is_current = false;
-                        if (eleOrder.innerHTML === '1') {
-                            is_current = true;
+                    if (row.querySelector('.table-row-order')) {
+                        if (row.querySelector('.table-row-order').getAttribute('data-row')) {
+                            let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
+                            if (!dataRow?.['id']) {
+                                dataRow['attachment']['id'] = ids[dataRow?.['order'] - 1];
+                                row.querySelector('.table-row-order').setAttribute('data-row', JSON.stringify(dataRow));
+                            }
+                            fileData.push(dataRow);
                         }
-                        fileData.push({
-                            'attachment': {
-                                'id': ids[parseInt(eleOrder.innerHTML) - 1],
-                                'file_name': eleTitle.innerHTML,
-                            },
-                            'date_created': eleDate.innerHTML,
-                            'order': parseInt(eleOrder.innerHTML),
-                            'is_current': is_current,
-                        })
                     }
                 })
             }
@@ -297,14 +334,6 @@ class ContractStoreHandle {
             let btnStore = ContractDataTableHandle.$tableDocument[0].querySelector(`.attach-file[data-order="${doc}"]`);
             if (btnStore) {
                 btnStore.setAttribute('data-store', JSON.stringify(dataStore));
-                let row = btnStore.closest('tr');
-                if (row) {
-                    let uploaderResult = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-result-list');
-                    let tmpUploader = row.querySelector('.tmp-uploader');
-                    if (uploaderResult && tmpUploader) {
-                        tmpUploader.innerHTML = uploaderResult.innerHTML;
-                    }
-                }
             }
         }
         return true;
@@ -349,6 +378,7 @@ class ContractSubmitHandle {
         let dataDocParse = ContractSubmitHandle.setupDataDocument();
         _form.dataForm['document_data'] = dataDocParse?.['dataDoc'];
         _form.dataForm['attachment'] = dataDocParse?.['attachment'];
+        _form.dataForm['tinymce_content'] = ContractTinymceHandle.getContent();
     };
 }
 
@@ -393,7 +423,7 @@ class ContractCommonHandle {
         let day = String(currentDate.getDate()).padStart(2, '0');
         let month = String(currentDate.getMonth() + 1).padStart(2, '0');
         let year = currentDate.getFullYear();
-        return `${day}/${month}/${year}`;
+        return `${year}-${month}-${day}`;
     }
 
     static filterFieldList(field_list, data_json) {
@@ -406,71 +436,35 @@ class ContractCommonHandle {
 }
 
 class ContractTinymceHandle{
-    static initTinymce() {
+    static initTinymce(htmlContent = '') {
         tinymce.init({
             selector: 'textarea#inp-contents',
-            plugins: 'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
-            imagetools_cors_hosts: ['picsum.photos'],
-            menubar: false,
-            toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
+            plugins: 'paste importcss autolink autosave save directionality code visualblocks visualchars fullscreen',
+            menubar: false,  // Hide the menubar
+            toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect | removeformat',
             toolbar_sticky: true,
             autosave_ask_before_unload: true,
             autosave_interval: '30s',
             autosave_prefix: '{path}{query}-{id}-',
             autosave_restore_when_empty: false,
             autosave_retention: '2m',
-            image_advtab: true,
-            link_list: [
-                {title: 'My page 1', value: 'http://www.tinymce.com'},
-                {title: 'My page 2', value: 'http://www.moxiecode.com'}
-            ],
-            image_list: [
-                {title: 'My page 1', value: 'http://www.tinymce.com'},
-                {title: 'My page 2', value: 'http://www.moxiecode.com'}
-            ],
-            image_class_list: [
-                {title: 'None', value: ''},
-                {title: 'Some class', value: 'class-name'}
-            ],
+            image_advtab: false,  // Disable advanced image options
             importcss_append: true,
-            file_picker_callback: function (callback, value, meta) {
-                /* Provide file and text for the link dialog */
-                if (meta.filetype === 'file') {
-                    callback('https://www.google.com/logos/google.jpg', {text: 'My text'});
-                }
-
-                /* Provide image and alt text for the image dialog */
-                if (meta.filetype === 'image') {
-                    callback('https://www.google.com/logos/google.jpg', {alt: 'My alt text'});
-                }
-
-                /* Provide alternative source and posted for the media dialog */
-                if (meta.filetype === 'media') {
-                    callback('movie.mp4', {source2: 'alt.ogg', poster: 'https://www.google.com/logos/google.jpg'});
-                }
-            },
-            templates: [
-                {
-                    title: 'New Table',
-                    description: 'creates a new table',
-                    content: '<div class="mceTmpl"><table width="98%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>'
-                },
-                {title: 'Starting my story', description: 'A cure for writers block', content: 'Once upon a time...'},
-                {
-                    title: 'New list with dates',
-                    description: 'New List with dates',
-                    content: '<div class="mceTmpl"><span class="cdate">cdate</span><br /><span class="mdate">mdate</span><h2>My List</h2><ul><li></li><li></li></ul></div>'
-                }
-            ],
-            template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
-            template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
             height: 400,
-            image_caption: true,
-            quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
+            quickbars_selection_toolbar: 'bold italic underline | fontselect fontsizeselect',
             noneditable_noneditable_class: 'mceNonEditable',
-            toolbar_mode: 'sliding',
-            contextmenu: 'link image imagetools table',
-            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+            toolbar_mode: 'sliding',  // Toolbar slides to fit smaller screens
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+            setup: function (editor) {
+                // Set content when the editor is initialized
+                editor.on('init', function () {
+                    editor.setContent(htmlContent);
+                });
+            }
         });
-    }
+    };
+
+    static getContent() {
+        return  tinymce.get('inp-contents').getContent();
+    };
 }

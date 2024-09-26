@@ -40,7 +40,7 @@ class CustomMiddleware:
 
     @classmethod
     def process_request(cls, request):
-        if request.user and not isinstance(request.user, AnonymousUser):
+        if request.user and request.user.is_authenticated and not isinstance(request.user, AnonymousUser):
             language = getattr(request.user, 'language', settings.LANGUAGE_CODE)
         else:
             language = header_language(request)

@@ -36,12 +36,12 @@ class PaymentLoadPage {
         }).prop('disabled', true);
     }
     static LoadCreator(data) {
-        creatorEle.val(data['full_name']);
+        creatorEle.val(data?.['full_name']).prop('readonly', true).prop('disabled', true)
         let btn_detail = $('#btn-detail-creator-tab');
         $('#creator-detail-span').prop('hidden', false);
         $('#creator-name').text(data?.['full_name']);
         $('#creator-code').text(data?.['code']);
-        $('#creator-department').text(data?.['group']['title']);
+        $('#creator-department').text(data?.['group']?.['title']);
         let url = btn_detail.attr('data-url').replace('0', data?.['id']);
         btn_detail.attr('href', url);
     }
@@ -167,8 +167,8 @@ class PaymentLoadPage {
         supplier_detail_span.prop('hidden', false);
         $('#supplier-name').text(data?.['name']);
         $('#supplier-code').text(data?.['code']);
-        $('#supplier-owner').text(data?.['owner']['fullname']);
-        $('#supplier-industry').text(data?.['industry']['title']);
+        $('#supplier-owner').text(data?.['owner']?.['fullname']);
+        $('#supplier-industry').text(data?.['industry']?.['title']);
         let url = btn_detail.attr('data-url').replace('0', data?.['id']);
         btn_detail.attr('href', url);
     }
@@ -634,69 +634,69 @@ class PaymentLoadTab {
                 {
                     'render': (data, type, row) => {
                         if (row?.['type'] === 'planned') {
-                            return `<span class="text-primary">${row?.['expense_item']?.['title']}</span>`
+                            return `<span data-zone="plan_tab" class="text-primary">${row?.['expense_item']?.['title']}</spandata-zone>`
                         }
-                        return `<span class="text-danger">${row?.['expense_item']?.['title']}</span>`;
+                        return `<span data-zone="plan_tab" class="text-danger">${row?.['expense_item']?.['title']}</span>`;
                     }
                 },
                 {
                     className: 'text-right',
                     'render': (data, type, row) => {
                         if (row?.['type'] === 'planned') {
-                            return `<span class="plan_after_tax mask-money text-primary" data-init-money="${row?.['plan_after_tax']}"></span>`
+                            return `<span data-zone="plan_tab" class="plan_after_tax mask-money text-primary" data-init-money="${row?.['plan_after_tax']}"></span>`
                         }
-                        return `--`;
+                        return `<span data-zone="plan_tab">--</span>`;
                     }
                 },
                 {
                     className: 'text-right',
                     'render': (data, type, row) => {
                         if (row?.['type'] === 'planned') {
-                            return `<span class="ap_approved mask-money text-primary" data-init-money="${row?.['ap_approved_value']}"></span>`
+                            return `<span data-zone="plan_tab" class="ap_approved mask-money text-primary" data-init-money="${row?.['ap_approved_value']}"></span>`
                         }
-                        return `<span class="ap_approved mask-money text-danger" data-init-money="${row?.['ap_approved_value']}"></span>`;
+                        return `<span data-zone="plan_tab" class="ap_approved mask-money text-danger" data-init-money="${row?.['ap_approved_value']}"></span>`;
                     }
                 },
                 {
                     className: 'text-right',
                     'render': (data, type, row) => {
                         if (row?.['type'] === 'planned') {
-                            return `<span class="returned mask-money text-primary" data-init-money="${row?.['sum_return_value']}"></span>`
+                            return `<span data-zone="plan_tab" class="returned mask-money text-primary" data-init-money="${row?.['sum_return_value']}"></span>`
                         }
-                        return `<span class="returned mask-money text-danger" data-init-money="${row?.['sum_return_value']}"></span>`;
+                        return `<span data-zone="plan_tab" class="returned mask-money text-danger" data-init-money="${row?.['sum_return_value']}"></span>`;
                     }
                 },
                 {
                     className: 'text-right',
                     'render': (data, type, row) => {
                         if (row?.['type'] === 'planned') {
-                            return `<span class="to_payment mask-money text-primary" data-init-money="${row?.['sum_converted_value']}"></span>`
+                            return `<span data-zone="plan_tab" class="to_payment mask-money text-primary" data-init-money="${row?.['sum_converted_value']}"></span>`
                         }
-                        return `<span class="to_payment mask-money text-danger" data-init-money="${row?.['sum_converted_value']}"></span>`;
+                        return `<span data-zone="plan_tab" class="to_payment mask-money text-danger" data-init-money="${row?.['sum_converted_value']}"></span>`;
                     }
                 },
                 {
                     className: 'text-right',
                     'render': (data, type, row) => {
                         if (row?.['type'] === 'planned') {
-                            return `<span class="other_payment mask-money text-primary" data-init-money="${row?.['sum_real_value']}"></span>`
+                            return `<span data-zone="plan_tab" class="other_payment mask-money text-primary" data-init-money="${row?.['sum_real_value']}"></span>`
                         }
-                        return `<span class="other_payment mask-money text-danger" data-init-money="${row?.['sum_real_value']}"></span>`;
+                        return `<span data-zone="plan_tab" class="other_payment mask-money text-danger" data-init-money="${row?.['sum_real_value']}"></span>`;
                     }
                 },
                 {
                     className: 'text-right',
                     'render': (data, type, row) => {
                         if (row?.['type'] === 'planned') {
-                            return `<span class="available mask-money text-primary" data-init-money="${row?.['sum_available']}"></span>`
+                            return `<span data-zone="plan_tab" class="available mask-money text-primary" data-init-money="${row?.['sum_available']}"></span>`
                         }
-                        return `--`;
+                        return `<span data-zone="plan_tab">--</span>`;
                     }
                 },
             ],
         })
     }
-    static LoadPlanQuotation(opportunity_id, quotation_id) {
+    static LoadPlanQuotation(opportunity_id, quotation_id, workflow_runtime_id) {
         if (opportunity_id && quotation_id) {
             let dataParam1 = {'quotation_id': quotation_id}
             let expense_quotation = $.fn.callAjax2({
@@ -906,10 +906,11 @@ class PaymentLoadTab {
                     }
 
                     PaymentLoadTab.DrawTablePlan(data_table_planned)
+                    WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
     }
-    static LoadPlanQuotationOnly(quotation_id) {
+    static LoadPlanQuotationOnly(quotation_id, workflow_runtime_id) {
         if (quotation_id) {
             let dataParam1 = {'quotation_id': quotation_id}
             let expense_quotation = $.fn.callAjax2({
@@ -1118,10 +1119,11 @@ class PaymentLoadTab {
                     }
 
                     PaymentLoadTab.DrawTablePlan(data_table_planned)
+                    WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
     }
-    static LoadPlanSaleOrderOnly(sale_order_id) {
+    static LoadPlanSaleOrderOnly(sale_order_id, workflow_runtime_id) {
         if (sale_order_id) {
             let dataParam1 = {'sale_order_id': sale_order_id}
             let expense_sale_order = $.fn.callAjax2({
@@ -1330,6 +1332,7 @@ class PaymentLoadTab {
                     }
 
                     PaymentLoadTab.DrawTablePlan(data_table_planned)
+                    WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
     }
@@ -1466,7 +1469,11 @@ class PaymentHandle {
                 }
             }
         }
-        frm.dataForm['payment_item_list'] = payment_item_list;
+        frm.dataForm['payment_item_list'] = payment_item_list
+
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
+
+        // console.log(frm)
         return frm
     }
     static LoadDetailPayment(option) {
@@ -1475,12 +1482,11 @@ class PaymentHandle {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    WFRTControl.setWFRuntimeID(data['payment_detail']?.['workflow_runtime_id']);
                     data = data['payment_detail'];
                     if (option === 'detail') {
                         new PrintTinymceControl().render('1010563f-7c94-42f9-ba99-63d5d26a1aca', data, false);
                     }
-                    console.log(data)
+                    // console.log(data)
                     DETAIL_DATA = data;
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
@@ -1511,7 +1517,11 @@ class PaymentHandle {
                             }]
                         }).init();
                         PaymentLoadPage.LoadQuotation(data?.['opportunity_mapped']?.['quotation_mapped'])
-                        PaymentLoadTab.LoadPlanQuotation(opp_mapped_select.val(), data?.['opportunity_mapped']?.['quotation_mapped']?.['id'])
+                        PaymentLoadTab.LoadPlanQuotation(
+                            opp_mapped_select.val(),
+                            data?.['opportunity_mapped']?.['quotation_mapped']?.['id'],
+                            data?.['workflow_runtime_id']
+                        )
                         payment_for = 'opportunity'
                     }
                     else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
@@ -1543,14 +1553,20 @@ class PaymentHandle {
                                 }
                             })
 
-                        PaymentLoadTab.LoadPlanQuotationOnly(data?.['quotation_mapped']?.['id'])
+                        PaymentLoadTab.LoadPlanQuotationOnly(
+                            data?.['quotation_mapped']?.['id'],
+                            data?.['workflow_runtime_id']
+                        )
                         payment_for = 'quotation'
                     }
                     else if (Object.keys(data?.['sale_order_mapped']).length !== 0) {
                         PaymentLoadPage.LoadSaleOrder(data?.['sale_order_mapped'])
                         PaymentLoadPage.LoadQuotation(data?.['sale_order_mapped']?.['quotation_mapped'])
 
-                        PaymentLoadTab.LoadPlanSaleOrderOnly(data?.['sale_order_mapped']?.['id'])
+                        PaymentLoadTab.LoadPlanSaleOrderOnly(
+                            data?.['sale_order_mapped']?.['id'],
+                            data?.['workflow_runtime_id']
+                        )
                         payment_for = 'saleorder'
                     }
                     else {
@@ -1615,9 +1631,11 @@ class PaymentHandle {
                     new $x.cls.file($('#attachment')).init({
                         enable_edit: option !== 'detail',
                         data: data.attachment,
+                        name: 'attachment'
                     })
 
                     PaymentAction.DisabledDetailPage(option);
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
     }

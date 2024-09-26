@@ -425,7 +425,6 @@ function LoadDetail(option) {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                WFRTControl.setWFRuntimeID(data['account_detail']?.['workflow_runtime_id']);
                 $.fn.compareStatusShowPageAction(data);
                 data = data['account_detail'];
                 console.log(data)

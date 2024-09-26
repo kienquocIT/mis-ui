@@ -146,3 +146,7 @@ msgstr "Cần thêm thông tin cấu hình"
 #
 msgid "Verification in progress"
 msgstr "Đang xác minh"
+
+#
+msgid "Status remark"
+msgstr "Mô tả thêm cho trạng thái"

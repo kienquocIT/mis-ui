@@ -7,6 +7,13 @@ from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg
 from apps.shared.constant import SYSTEM_STATUS
+from apps.shared.msg import ProductionMsg
+
+
+PR_TYPE = (
+    (0, ProductionMsg.TYPE_FOR_PO),
+    (1, ProductionMsg.TYPE_FOR_WO),
+)
 
 
 def create_production_report(request, url, msg):
@@ -35,7 +42,7 @@ class ProductionReportList(View):
         breadcrumb='PRODUCTION_REPORT_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
+        return {'stt_sys': SYSTEM_STATUS, 'pr_type': PR_TYPE}, status.HTTP_200_OK
 
 
 class ProductionReportCreate(View):

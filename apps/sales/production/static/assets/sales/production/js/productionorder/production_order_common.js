@@ -28,7 +28,7 @@ class ProdOrderLoadDataHandle {
         {'id': 2, 'title': ProdOrderLoadDataHandle.$trans.attr('data-done')},
     ];
 
-    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false) {
+    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
         let opts = {'allowClear': isClear};
         $ele.empty();
         if (data.length > 0) {
@@ -40,6 +40,13 @@ class ProdOrderLoadDataHandle {
         if ($modal) {
             opts['dropdownParent'] = $modal;
         }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                return $(`<span>${res1} ${res2}</span>`);
+            }
+        }
         $ele.initSelect2(opts);
         return true;
     };
@@ -50,10 +57,10 @@ class ProdOrderLoadDataHandle {
         // select2
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxType, ProdOrderLoadDataHandle.dataType);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, ProdOrderLoadDataHandle.dataStatus);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [], {'general_product_types_mapped__is_finished_goods': true});
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [], {'general_product_types_mapped__is_finished_goods': true, 'bom_product__opportunity_id__isnull': true});
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO);
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxGroup);
         // date picker
         $('.date-picker').each(function () {
@@ -88,7 +95,10 @@ class ProdOrderLoadDataHandle {
             $.fn.callAjax2({
                     'url': ProdOrderLoadDataHandle.$urls.attr('data-md-bom'),
                     'method': 'GET',
-                    'data': {'product_id': ProdOrderLoadDataHandle.$boxProd.val()},
+                    'data': {
+                        'product_id': ProdOrderLoadDataHandle.$boxProd.val(),
+                        'opportunity_id__isnull': true,
+                    },
                     'isDropdown': true,
                 }
             ).then(
@@ -320,6 +330,25 @@ class ProdOrderLoadDataHandle {
         return true;
     };
 
+    static loadCheckAllWH(ele) {
+        let row = ele.closest('tr');
+        if (row.querySelector('.table-row-warehouse') && row.querySelector('.table-row-stock') && row.querySelector('.table-row-available')) {
+            row.querySelector('.table-row-stock').innerHTML = 0;
+            row.querySelector('.table-row-available').innerHTML = 0;
+            if (ele.checked === true) {
+                row.querySelector('.table-row-warehouse').setAttribute('disabled', 'true');
+                ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), []);
+                ProdOrderLoadDataHandle.loadChangeWH(row, 1);
+            }
+            if (ele.checked === false) {
+                row.querySelector('.table-row-warehouse').removeAttribute('disabled');
+            }
+        }
+        // store data
+        ProdOrderStoreHandle.storeRow(row);
+        return true;
+    };
+
     static loadChangeWH(row, type= 0) {
         if (row) {
             if (row.querySelector('.table-row-item') && row.querySelector('.table-row-warehouse') && row.querySelector('.table-row-stock') && row.querySelector('.table-row-available')) {
@@ -440,16 +469,16 @@ class ProdOrderLoadDataHandle {
             ProdOrderDataTableHandle.$tableMain.DataTable().rows().every(function () {
                 let row = this.node();
                 for (let ele of row.querySelectorAll('.table-row-item')) {
-                    ele.setAttribute('disabled', 'true');
+                    ele.setAttribute('readonly', 'true');
                 }
                 for (let ele of row.querySelectorAll('.table-row-uom')) {
-                    ele.setAttribute('disabled', 'true');
+                    ele.setAttribute('readonly', 'true');
                 }
                 for (let ele of row.querySelectorAll('.check-all-wh')) {
                     ele.setAttribute('disabled', 'true');
                 }
                 for (let ele of row.querySelectorAll('.table-row-warehouse')) {
-                    ele.setAttribute('disabled', 'true');
+                    ele.setAttribute('readonly', 'true');
                 }
                 for (let ele of row.querySelectorAll('.table-row-tool')) {
                     ele.setAttribute('disabled', 'true');
@@ -467,10 +496,6 @@ class ProdOrderDataTableHandle {
     static $tableMain = $('#table_production_order');
 
     static dataTableMain(data) {
-        let multi = 1;
-        if (ProdOrderLoadDataHandle.$quantity) {
-            multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
-        }
         ProdOrderDataTableHandle.$tableMain.DataTableDefault({
             data: data ? data : [],
             ordering: false,
@@ -526,6 +551,10 @@ class ProdOrderDataTableHandle {
                     targets: 3,
                     width: '5%',
                     render: (data, type, row) => {
+                        let multi = 1;
+                        if (ProdOrderLoadDataHandle.$quantity.val()) {
+                            multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
+                        }
                         if (row?.['is_task'] === true) {
                             return ``;
                         }
@@ -573,6 +602,10 @@ class ProdOrderDataTableHandle {
                     targets: 7,
                     width: '10%',
                     render: (data, type, row) => {
+                        let multi = 1;
+                        if (ProdOrderLoadDataHandle.$quantity.val()) {
+                            multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
+                        }
                         if (row?.['is_task'] === true) {
                             return `<span class="table-row-labor">${row?.['quantity_bom'] * multi}</span><span class="table-row-uom-labor"> ${row?.['uom_data']?.['title']}</span>`;
                         }

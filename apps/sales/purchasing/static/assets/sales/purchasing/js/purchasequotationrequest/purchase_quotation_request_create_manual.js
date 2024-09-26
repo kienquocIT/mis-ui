@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    new $x.cls.file($('#attachment')).init({'name': 'attachment'});
+
     $('#form-create-purchase-quotation-request').submit(function (event) {
         event.preventDefault();
         let combinesData = new PQRHandle().combinesDataManual($(this));

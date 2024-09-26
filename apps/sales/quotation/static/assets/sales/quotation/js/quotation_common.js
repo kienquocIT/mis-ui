@@ -1,5 +1,6 @@
 // Load data
 class QuotationLoadDataHandle {
+    static $form = $('#frm_quotation_create');
     static opportunitySelectEle = $('#opportunity_id');
     static customerSelectEle = $('#select-box-quotation-create-customer');
     static contactSelectEle = $('#select-box-quotation-create-contact');
@@ -1485,11 +1486,19 @@ class QuotationLoadDataHandle {
                         if (data) {
                             if (data.hasOwnProperty('bom_order_list') && Array.isArray(data.bom_order_list)) {
                                 let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
+                                let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
+                                let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
                                 if (data.bom_order_list.length > 0) {
                                     if (elePrice) {
                                         elePrice.setAttribute('disabled', 'true');
                                         $(elePrice).attr('value', String(data.bom_order_list[0]?.['sum_price']));
                                         $.fn.initMaskMoney2();
+                                        if (eleBtnPriceList) {
+                                            eleBtnPriceList.setAttribute('hidden', 'true');
+                                        }
+                                        if (eleGrPrice) {
+                                            eleGrPrice.removeAttribute('data-bs-toggle');
+                                        }
                                     }
                                 } else {
                                     QuotationLoadDataHandle.loadCostWHProduct(eleProduct);
@@ -5497,7 +5506,6 @@ class QuotationSubmitHandle {
                 }
                 result.push(rowData);
             } else if (eleProduct) { // PRODUCT
-                let is_allow_po = false;
                 if ($(eleProduct).val()) {
                     let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                     if (dataProduct) {
@@ -5505,11 +5513,6 @@ class QuotationSubmitHandle {
                         rowData['product_title'] = dataProduct?.['title'];
                         rowData['product_code'] = dataProduct?.['code'];
                         rowData['product_data'] = dataProduct;
-                        if (dataProduct.hasOwnProperty('product_choice') && Array.isArray(dataProduct?.['product_choice'])) {
-                            if (dataProduct?.['product_choice'].includes(2)) {  // product allow purchase
-                                is_allow_po = true;
-                            }
-                        }
                     }
                 }
                 let eleUOM = row.querySelector('.table-row-uom');
@@ -5545,9 +5548,10 @@ class QuotationSubmitHandle {
                 let eleQuantity = row.querySelector('.table-row-quantity');
                 if (eleQuantity) {
                     rowData['product_quantity'] = parseFloat(eleQuantity.value);
-                    if (is_allow_po === true) {
+                    if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                         rowData['remain_for_purchase_request'] = parseFloat(eleQuantity.value);
                         rowData['remain_for_purchase_order'] = parseFloat(eleQuantity.value);
+                        rowData['quantity_wo_remain'] = parseFloat(eleQuantity.value);
                     }
                 }
                 let elePrice = row.querySelector('.table-row-price');

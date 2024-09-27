@@ -22,10 +22,10 @@ let REPLACEMENT_ROW = null
 //// COMMON
 
 class BOMLoadPage {
-    static LoadFinishProduct(ele, data) {
+    static LoadFinishProductAndGoods(ele, data) {
         ele.initSelect2({
             ajax: {
-                data: {'general_product_types_mapped__is_finished_goods': true},
+                data: {'get_finished_goods_and_goods': true},
                 url: ele.attr('data-url'),
                 method: 'GET',
             },
@@ -856,7 +856,7 @@ class BOMAction {
 
 class BOMHandle {
     static LoadPage() {
-        BOMLoadPage.LoadFinishProduct(productEle)
+        BOMLoadPage.LoadFinishProductAndGoods(productEle)
         BOMLoadTab.LoadProcessDescriptionTable()
         BOMLoadTab.LoadLaborSummaryTable()
         // material
@@ -982,7 +982,7 @@ class BOMHandle {
                         $('#for-service').prop('checked', true)
                     }
 
-                    BOMLoadPage.LoadFinishProduct(productEle, data?.['product'])
+                    BOMLoadPage.LoadFinishProductAndGoods(productEle, data?.['product'])
                     priceEle.attr('value', data?.['sum_price'])
                     timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
 
@@ -1122,11 +1122,13 @@ $('input[name="bom-type"]').on('change', function() {
                     BOMLoadPage.LoadServiceProduct(productEle)
                     $('#hint-for-finished-goods').prop('hidden', true)
                     $('#hint-for-service').prop('hidden', false)
+                    $('#hint-for-goods').prop('hidden', true)
                 }
                 if ($('#for-production').prop('checked')) {
-                    BOMLoadPage.LoadFinishProduct(productEle)
+                    BOMLoadPage.LoadFinishProductAndGoods(productEle)
                     $('#hint-for-finished-goods').prop('hidden', false)
                     $('#hint-for-service').prop('hidden', true)
+                    $('#hint-for-goods').prop('hidden', true)
                 }
                 NOW_BOM_TYPE = $('input[name="bom-type"]:checked')
                 normal_production_space.prop('hidden', false)

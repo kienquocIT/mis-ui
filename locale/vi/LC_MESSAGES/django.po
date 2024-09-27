@@ -8914,11 +8914,12 @@ msgstr "Chỉ chọn Thành phẩm"
 
 #
 msgid "Only select Services"
-msgstr "Chỉ chọn Dịch Vụ"
+msgstr "Chỉ chọn Dịch vụ"
 
 #
 msgid "Select Finished goods or Services"
-msgstr "Chọn Thành Phẩm hoặc Dịch Vụ"
+msgstr "Chọn Thành phẩm hoặc Dịch vụ"
+
 #
 msgid "One collaborator"
 msgstr "Một cộng tác viên"
@@ -8934,3 +8935,7 @@ msgstr "Cấu hình theo"
 #
 msgid "Ordered before"
 msgstr "Đã đặt"
+
+#
+msgid "Select Finished goods or Goods"
+msgstr "Chọn Thành phẩm hoặc Hàng hóa"

@@ -9,7 +9,7 @@ $(document).ready(function () {
         ProjectBOMLoadPage.LoadInherit(employeeInheritEle, sale_person_mapped)
     }
 
-    ProjectBOMHandle.LoadPage();
+    ProjectBOMHandle.LoadPage('create');
     WFRTControl.setWFInitialData('bom', 'POST')
 
     $('#form-create-prj-bom').submit(function (event) {

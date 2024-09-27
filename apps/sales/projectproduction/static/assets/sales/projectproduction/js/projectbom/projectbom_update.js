@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    ProjectBOMHandle.LoadPage();
+    ProjectBOMHandle.LoadPage('update');
     WFRTControl.setWFInitialData('bom', 'PUT')
 
     ProjectBOMHandle.LoadDetailBOM('update');

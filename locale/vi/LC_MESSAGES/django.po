@@ -8939,3 +8939,11 @@ msgstr "Đã đặt"
 #
 msgid "Select Finished goods or Goods"
 msgstr "Chọn Thành phẩm hoặc Hàng hóa"
+
+#
+msgid "Standard cost"
+msgstr "Giá tiêu chuẩn"
+
+#
+msgid "References in the BOM"
+msgstr "Để tham chiếu trong BOM"

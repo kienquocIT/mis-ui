@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    BOMHandle.LoadPage();
+    BOMHandle.LoadPage('create');
     WFRTControl.setWFInitialData('bom', 'POST')
 
     $('#form-create-bom').submit(function (event) {

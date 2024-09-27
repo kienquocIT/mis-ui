@@ -225,32 +225,32 @@ class BOMLoadTab {
         })
     }
     static LoadLaborPrice(ele, labor_selected, uom_id) {
-    if (ele.closest('tr').find('.process-unit-price').attr('value') === '0') {
-        ele.closest('tr').find('.process-subtotal-price').attr('value', 0)
+        if (ele.closest('tr').find('.process-unit-price').attr('value') === '0') {
+            ele.closest('tr').find('.process-subtotal-price').attr('value', 0)
+        }
+        ele.closest('tr').find('.dropdown-menu').html(`<h6 class="dropdown-header">${script_trans.attr('data-trans-select-one')}</h6>`)
+        for (let i = 0; i < labor_selected?.['price_list'].length; i++) {
+            ele.closest('tr').find('.dropdown-menu').append(
+                `<a class="${labor_selected?.['price_list'][i]?.['uom']?.['id'] !== uom_id ? 'disabled' : ''} labor-price-option dropdown-item border rounded mb-1" href="#">
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="text-muted">${labor_selected?.['price_list'][i]?.['price']?.['title']}</span>                 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">
+                            <span class="labor-uom badge badge-success badge-sm" data-id="${labor_selected?.['price_list'][i]?.['uom']?.['id']}">${labor_selected?.['price_list'][i]?.['uom']?.['title']}</span>                 
+                        </div>
+                        <div class="col-7 text-right">
+                            <span class="labor-price-value text-success mask-money" data-init-money="${labor_selected?.['price_list'][i]?.['price_value']}"></span>
+                        </div>
+                    </div>
+                    ${labor_selected?.['price_list'][i]?.['uom']?.['id'] !== uom_id ? `<span class="fst-italic small">${script_trans.attr('data-trans-can-not-select')}</span>` : ''}
+                </a>`
+            )
+        }
+        $.fn.initMaskMoney2()
     }
-    ele.closest('tr').find('.dropdown-menu').html(`<h6 class="dropdown-header">${script_trans.attr('data-trans-select-one')}</h6>`)
-    for (let i = 0; i < labor_selected?.['price_list'].length; i++) {
-        ele.closest('tr').find('.dropdown-menu').append(
-            `<a class="${labor_selected?.['price_list'][i]?.['uom']?.['id'] !== uom_id ? 'disabled' : ''} labor-price-option dropdown-item border rounded mb-1" href="#">
-                <div class="row">
-                    <div class="col-12">
-                        <span class="text-muted">${labor_selected?.['price_list'][i]?.['price']?.['title']}</span>                 
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-5">
-                        <span class="labor-uom badge badge-success badge-sm" data-id="${labor_selected?.['price_list'][i]?.['uom']?.['id']}">${labor_selected?.['price_list'][i]?.['uom']?.['title']}</span>                 
-                    </div>
-                    <div class="col-7 text-right">
-                        <span class="labor-price-value text-success mask-money" data-init-money="${labor_selected?.['price_list'][i]?.['price_value']}"></span>
-                    </div>
-                </div>
-                ${labor_selected?.['price_list'][i]?.['uom']?.['id'] !== uom_id ? `<span class="fst-italic small">${script_trans.attr('data-trans-can-not-select')}</span>` : ''}
-            </a>`
-        )
-    }
-    $.fn.initMaskMoney2()
-}
     // material
     static LoadMaterialTable() {
         material_table.DataTable().clear().destroy()
@@ -263,6 +263,16 @@ class BOMLoadTab {
             scrollCollapse: true,
             data: [],
             columns: [
+                {
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    'render': () => {
+                        return ``;
+                    }
+                },
                 {
                     'render': () => {
                         return ``;
@@ -344,6 +354,16 @@ class BOMLoadTab {
                     }
                 },
                 {
+                    'render': (data, type, row) => {
+                        return `<input disabled readonly class="form-control mask-money material-unit-price" value="${row?.['standard_price'] ? row?.['standard_price'] : 0}">`;
+                    }
+                },
+                {
+                    'render': (data, type, row) => {
+                        return `<input disabled readonly class="form-control mask-money material-unit-price" value="${row?.['subtotal_price'] ? row?.['subtotal_price'] : 0}">`;
+                    }
+                },
+                {
                     className: 'text-center',
                     'render': (data, type, row) => {
                         return `<div class="form-check">
@@ -404,6 +424,10 @@ class BOMLoadTab {
                     ele.closest('tr').find('.material-code').closest('a').attr('href', '').addClass('disabled')
                 }
                 BOMLoadTab.LoadUOM(ele.closest('tr').find('.material-uom'), material_selected?.['general_uom_group'], material_selected?.['sale_default_uom'])
+                ele.closest('tr').find('.material-unit-price').attr('value', material_selected?.['standard_price'])
+                let quantity = parseFloat(ele.closest('tr').find('.material-quantity').val())
+                ele.closest('tr').find('.material-subtotal-price').attr('value', parseFloat(material_selected?.['standard_price']) * quantity)
+                $.fn.initMaskMoney2()
             }
         })
     }
@@ -669,8 +693,6 @@ class BOMAction {
             $('.add-new-material').prop('disabled', true)
             $('.del-row-tool').prop('disabled', true)
             $('.add-new-tool').prop('disabled', true)
-            $('.material-unit-price').closest('div').find('a').prop('disabled', true)
-            $('.material-unit-price').closest('div').find('a').prop('disabled', true)
         }
     }
     static Reload_index_for_material_and_tool_table() {
@@ -686,6 +708,16 @@ class BOMAction {
         labor_summary_table.find('tbody tr').each(function () {
             sum_price += parseFloat($(this).find('.labor-summary-subtotal-price').attr('data-init-money'))
         })
+        if (is_outsourcing.prop('checked')) {
+            material_table_outsourcing.find('tbody tr').each(function () {
+                sum_price += $(this).find('.material-subtotal-price').attr('value') ? parseFloat($(this).find('.material-subtotal-price').attr('value')) : 0
+            })
+        }
+        else {
+            material_table.find('tbody tr').each(function () {
+                sum_price += $(this).find('.material-subtotal-price').attr('value') ? parseFloat($(this).find('.material-subtotal-price').attr('value')) : 0
+            })
+        }
         priceEle.attr('value', sum_price)
         $.fn.initMaskMoney2()
     }
@@ -747,7 +779,7 @@ class BOMAction {
         return $(`
             <tr class="material-for-task-${index}">
                 <td class="text-center">${index}</td>
-                <td colspan="7">
+                <td colspan="9">
                     <span class="material-group mr-2">${task_name}</span>
                     <button type="button" class="add-new-material btn btn-icon btn-rounded btn-flush-primary flush-soft-hover">
                         <span class="icon"><i class="far fa-plus-square"></i></span>
@@ -779,6 +811,8 @@ class BOMAction {
                 <td><select class="form-select select2 material-item"></select></td>
                 <td><input type="number" class="form-control material-quantity" value="0"></td>
                 <td><select class="form-select select2 material-uom"></select></td>
+                <td><input disabled readonly class="form-control mask-money material-unit-price" value="0"></td>
+                <td><input disabled readonly class="form-control mask-money material-subtotal-price" value="0"></td>
                 <td class="text-center">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input material-disassemble">
@@ -855,14 +889,16 @@ class BOMAction {
 }
 
 class BOMHandle {
-    static LoadPage() {
+    static LoadPage(option='create') {
         BOMLoadPage.LoadFinishProductAndGoods(productEle)
         BOMLoadTab.LoadProcessDescriptionTable()
         BOMLoadTab.LoadLaborSummaryTable()
-        // material
-        BOMLoadTab.LoadMaterialTable()
-        // tool
-        BOMLoadTab.LoadToolTable()
+        if (option === 'create') {
+            // material
+            BOMLoadTab.LoadMaterialTable()
+            // tool
+            BOMLoadTab.LoadToolTable()
+        }
         // outsourcing
         BOMLoadTab.LoadOutsourcingMaterialTable()
     }
@@ -916,6 +952,8 @@ class BOMHandle {
                             'order': material_order,
                             'material_id': $(this).find('.material-item').val(),
                             'quantity': $(this).find('.material-quantity').val(),
+                            'standard_price': $(this).find('.material-unit-price').attr('value'),
+                            'subtotal_price': $(this).find('.material-subtotal-price').attr('value'),
                             'uom_id': $(this).find('.material-uom').val(),
                             'disassemble': $(this).find('.material-disassemble').prop('checked'),
                             'note': $(this).find('.material-note').val(),
@@ -949,6 +987,8 @@ class BOMHandle {
                     'order': index+1,
                     'material_id': $(this).find('.material-item').val(),
                     'quantity': $(this).find('.material-quantity').val(),
+                    'standard_price': $(this).find('.material-unit-price').attr('value'),
+                    'subtotal_price': $(this).find('.material-subtotal-price').attr('value'),
                     'uom_id': $(this).find('.material-uom').val(),
                     'disassemble': $(this).find('.material-disassemble').prop('checked'),
                     'note': $(this).find('.material-note').val(),
@@ -1006,6 +1046,8 @@ class BOMHandle {
                                     BOMLoadTab.LoadMaterial(new_material_row.find('.material-item'), material_selected?.['material'])
                                     new_material_row.find('.material-code').text(material_selected?.['material']?.['code'])
                                     new_material_row.find('.material-quantity').val(material_selected?.['quantity'])
+                                    new_material_row.find('.material-unit-price').attr('value', material_selected?.['standard_price'])
+                                    new_material_row.find('.material-subtotal-price').attr('value', material_selected?.['subtotal_price'])
                                     BOMLoadTab.LoadUOM(
                                         new_material_row.find('.material-uom'),
                                         material_selected?.['uom']?.['group_id'],
@@ -1228,6 +1270,7 @@ $(document).on("click", '.add-new-material', function () {
 
 $(document).on("click", '.del-row-material', function () {
     $(this).closest('tr').remove()
+    BOMAction.Calculate_BOM_sum_price()
 })
 
 $(document).on("click", '.add-new-swap-material', function () {
@@ -1243,6 +1286,14 @@ $(document).on("change", '.replacement-checkbox', function () {
     $(this).closest('tr').find('.replacement-uom').empty().prop('disabled', !is_checked)
     $(this).closest('tr').find('.replacement-material-disassemble').prop('checked', false).prop('disabled', !is_checked)
     $(this).closest('tr').find('.replacement-note').val('').prop('disabled', !is_checked)
+})
+
+$(document).on("change", '.material-quantity', function () {
+    let unit_price = parseFloat($(this).closest('tr').find('.material-unit-price').attr('value'))
+    let quantity = parseFloat($(this).val())
+    $(this).closest('tr').find('.material-subtotal-price').attr('value', unit_price * quantity)
+    BOMAction.Calculate_BOM_sum_price()
+    $.fn.initMaskMoney2()
 })
 
 $('#btn-get-replacement-material').on('click', function () {
@@ -1290,5 +1341,3 @@ $(document).on("click", '.del-row-material-outsourcing', function () {
 })
 
 // SERVICE
-
-

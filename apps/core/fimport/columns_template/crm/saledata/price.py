@@ -1,7 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 
 from apps.core.fimport.columns_template import ResolveColumnsFImport
-from apps.core.fimport.columns_template.app_name import SHEET_SALEDATA_CURRENCY
+from apps.core.fimport.columns_template.app_name import SHEET_SALEDATA_CURRENCY, SHEET_SALEDATA_PRICE_TAX_CATEGORY
 
 COLUMNS_SALEDATA_CURRENCY = ResolveColumnsFImport(
     sheet_name=SHEET_SALEDATA_CURRENCY,
@@ -57,4 +57,44 @@ COLUMNS_SALEDATA_CURRENCY = ResolveColumnsFImport(
             },
         },
     ],
+)
+
+COLUMNS_SALEDATA_PRICE_TAX_CATEGORY = ResolveColumnsFImport(
+    sheet_name=SHEET_SALEDATA_PRICE_TAX_CATEGORY,
+    app_id='133e105e-cb3f-4845-8fba-bbb2516c5de2',
+    url_name='PriceTaxCategoryImportAPI',
+    template_link='fimport/template/import-saledata-price-taxcategory.xlsx',
+    validate={},
+    columns=[
+        {
+            'name': 'No.',
+            'type': 'number',
+        },
+        {
+            'name': _('Title'),
+            'input_name': 'title',
+            'type': 'string',
+            'remarks': [],
+            'input_attrs': {
+                'args': ['required'],
+                'kwargs': {
+                    'type': 'text',
+                    'minlength': 1,
+                }
+            }
+        },
+        {
+            'name': _('Remarks'),
+            'input_name': 'description',
+            'type': 'string',
+            'remarks': [],
+            'input_attrs': {
+            'args': [],
+                'kwargs': {
+                    'type': 'text',
+                    'maxlength': 200,
+                },
+            },
+        }
+    ]
 )

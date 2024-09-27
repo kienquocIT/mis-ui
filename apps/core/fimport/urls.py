@@ -8,7 +8,7 @@ from apps.core.fimport.views.core import (
 from apps.core.fimport.views.saledata import (
     SaleDataContactImportAPI, SalutationImportAPI, CurrencyImportAPI, AccountGroupImportAPI, AccountTypeImportAPI,
     IndustryImportAPI, PaymentTermImportAPI, SaleDataAccountImportAPI, ProductUOMGroupImportAPI,
-    ProductProductTypeImportAPI, ProductProductCategoryImportAPI,
+    ProductProductTypeImportAPI, ProductProductCategoryImportAPI, PriceTaxCategoryImportAPI,
 )
 
 urlpatterns = [
@@ -34,4 +34,5 @@ urlpatterns = [
     path('saledata/product/product-type', ProductProductTypeImportAPI.as_view(), name='ProductProductTypeImportAPI'),
     path('saledata/product/product-category', ProductProductCategoryImportAPI.as_view(),
          name='ProductProductCategoryImportAPI'),
+    path('saledata/price', PriceTaxCategoryImportAPI.as_view(), name='PriceTaxCategoryImportAPI'),
 ]

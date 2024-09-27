@@ -6,14 +6,6 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_final_acceptance_update" id="btn-save" hidden>
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
-            </span>
-        </span>
-    </button>
 {% endblock %}
 
 {% block pageContent %}
@@ -26,12 +18,56 @@
     >
     {% csrf_token %}
         <div class="row">
-            {% trans 'Select Sale Person' as inherit_title %}
-            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label class="form-label" for="employee_inherit_id">{% trans 'Employee inherit' %}</label>
+                    <select
+                            class="form-select"
+                            id="employee_inherit_id"
+                            data-url="{% url 'EmployeeListAPI' %}"
+                            data-method="GET"
+                            name="employee_inherit_id"
+                            data-keyResp="employee_list"
+                            data-keyText="full_name"
+                    ></select>
+                </div>
+            </div>
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
-                    <label class="form-label" for="sale-order">{% trans 'Sale order' %}</label>
-                    <input type="text" class="form-control form-control-line mt-1" id="sale-order" data-detail="" readonly>
+                    <label class="form-label" for="opportunity_id">{% trans 'Opportunity' %}</label>
+                    <select
+                            class="form-select"
+                            id="opportunity_id"
+                            data-url="{% url 'OpportunityListAPI' %}"
+                            data-method="GET"
+                            name="opportunity_id"
+                            data-keyResp="opportunity_list"
+                    ></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="box-final-acceptance-so">{% trans 'Sale Order' %}</label>
+                    <select
+                            class="form-select"
+                            id="box-final-acceptance-so"
+                            data-url="{% url "SaleOrderListAPI" %}"
+                            data-method="GET"
+                            name="sale_order"
+                            data-keyResp="sale_order_list"
+                            readonly
+                    ></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-1 col-lg-1">
+                <div class="d-flex justify-content-end mt-5">
+                    <button
+                            type="button"
+                            class="btn btn-outline-primary"
+                            id="btn-refresh-data"
+                    >
+                    <span><span class="icon"><span class="feather-icon"><i class="fas fa-eye"></i></span></span><span>{% trans 'View' %}</span></span>
+                    </button>
                 </div>
             </div>
         </div>

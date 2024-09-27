@@ -46,17 +46,9 @@
                 </div>
             </div>
             <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
-                    <label class="form-label" for="box-final-acceptance-so">{% trans 'Sale Order' %}</label>
-                    <select
-                            class="form-select"
-                            id="box-final-acceptance-so"
-                            data-url="{% url "SaleOrderListAPI" %}"
-                            data-method="GET"
-                            name="sale_order"
-                            data-keyResp="sale_order_list"
-                            readonly
-                    ></select>
+                <div class="form-group mt-2">
+                    <label class="form-label" for="sale-order">{% trans 'Sale order' %}</label>
+                    <input type="text" class="form-control form-control-line mt-1" id="sale-order" data-detail="" readonly>
                 </div>
             </div>
             <div class="col-12 col-md-1 col-lg-1">

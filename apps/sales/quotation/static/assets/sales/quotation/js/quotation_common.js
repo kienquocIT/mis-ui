@@ -45,6 +45,12 @@ class QuotationLoadDataHandle {
         return true;
     };
 
+    static loadCustomCss() {
+        $('.accordion-item').css({
+            'margin-bottom': 0
+        });
+    };
+
     static loadEventCheckbox(ele) {
         let checkboxes = ele.querySelectorAll('.form-check-input[type="radio"]');
         checkboxes.forEach((checkbox) => {

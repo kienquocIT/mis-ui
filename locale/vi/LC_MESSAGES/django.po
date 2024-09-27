@@ -8934,3 +8934,11 @@ msgstr "Cấu hình theo"
 #
 msgid "Ordered before"
 msgstr "Đã đặt"
+
+#
+msgid "Assembly"
+msgstr "Lắp ráp"
+
+#
+msgid "Disassembly"
+msgstr "Tháo rời"

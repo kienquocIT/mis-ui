@@ -1861,7 +1861,7 @@ class QuotationLoadDataHandle {
         }
         if (is_copy === false) {
             // check if finish then remove hidden btnDelivery (SO)
-            if (data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get' && form.classList.contains('sale-order')) {
+            if (data?.['system_status'] === 3 && data?.['opportunity']?.['is_deal_close'] === false && $(form).attr('data-method').toLowerCase() === 'get' && form.classList.contains('sale-order')) {
                 let btnDelivery = $('#btnDeliverySaleOrder');
                 if (btnDelivery && btnDelivery.length > 0) {
                     btnDelivery[0].removeAttribute('hidden');

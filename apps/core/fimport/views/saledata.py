@@ -86,3 +86,11 @@ class ProductProductTypeImportAPI(APIView):
             data=request.data
         )
         return resp.auto_return(key_success='product_product_type')
+
+class ProductProductCategoryImportAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.IMPORT_SALEDATA_PRODUCT_PRODUCT_CATEGORY, user=request.user).post(
+            data=request.data
+        )
+        return resp.auto_return(key_success='product_product_category')

@@ -2,7 +2,7 @@ from uuid import uuid4
 
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
-from django.contrib.staticfiles.storage import staticfiles_storage
+from django.templatetags.static import static
 from django.conf import settings
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
@@ -179,7 +179,7 @@ class User(AuthUser):
         if self.company:
             if self.company.logo:
                 return self.company.logo
-        return staticfiles_storage('assets/images/brand/bflow/png/logo-bflow-orginal.png')
+        return static('assets/images/brand/bflow/png/logo-bflow-orginal.png')
 
     @property
     def company_icon_uri(self):
@@ -188,7 +188,7 @@ class User(AuthUser):
                 return self.company.icon
             if self.company.logo:
                 return self.company.logo
-        return staticfiles_storage('assets/images/brand/bflow/png/icon/icon-bflow-original-36x36.png')
+        return static('assets/images/brand/bflow/png/icon/icon-bflow-original-36x36.png')
 
     @property
     def company_has_icon(self) -> bool:

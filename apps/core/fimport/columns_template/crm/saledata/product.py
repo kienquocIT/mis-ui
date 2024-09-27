@@ -2,7 +2,7 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.core.fimport.columns_template import ResolveColumnsFImport
 from apps.core.fimport.columns_template.app_name import (
-    SHEET_SALEDATA_PRODUCT_UOMGROUP
+    SHEET_SALEDATA_PRODUCT_UOMGROUP, SHEET_SALEDATA_PRODUCT_PRODUCT_TYPE,
 )
 
 COLUMNS_SALEDATA_PRODUCT_UOMGROUP = ResolveColumnsFImport(
@@ -23,6 +23,46 @@ COLUMNS_SALEDATA_PRODUCT_UOMGROUP.add_column(
             'kwargs': {
                 'type': 'text',
                 'minlength': 1,
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_PRODUCT_TYPE = ResolveColumnsFImport(
+    sheet_name=SHEET_SALEDATA_PRODUCT_PRODUCT_TYPE,
+    app_id='90f07280-e2f4-4406-aa23-ba255a22ec2d',
+    url_name='ProductProductTypeImportAPI',
+    template_link='fimport/template/import-saledata-product-producttype.xlsx',
+    validate={},
+)
+
+COLUMNS_SALEDATA_PRODUCT_PRODUCT_TYPE.add_column(
+    name=_('Title'), data={
+        'name': _('Title'),
+        'input_name': 'title',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+                'minlength': 1,
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_PRODUCT_TYPE.add_column(
+    name=_('Remarks'), data={
+        'name': _('Remarks'),
+        'input_name': 'description',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': [],
+            'kwargs': {
+                'type': 'text',
+                'maxlength': 200,
             },
         },
     }

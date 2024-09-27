@@ -78,3 +78,11 @@ class ProductUOMGroupImportAPI(APIView):
             data=request.data
         )
         return resp.auto_return(key_success='product_uom_group')
+
+class ProductProductTypeImportAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.IMPORT_SALEDATA_PRODUCT_PRODUCT_TYPE, user=request.user).post(
+            data=request.data
+        )
+        return resp.auto_return(key_success='product_product_type')

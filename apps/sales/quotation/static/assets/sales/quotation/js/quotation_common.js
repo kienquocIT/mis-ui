@@ -5506,7 +5506,6 @@ class QuotationSubmitHandle {
                 }
                 result.push(rowData);
             } else if (eleProduct) { // PRODUCT
-                let is_allow_po = false;
                 if ($(eleProduct).val()) {
                     let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                     if (dataProduct) {
@@ -5514,11 +5513,6 @@ class QuotationSubmitHandle {
                         rowData['product_title'] = dataProduct?.['title'];
                         rowData['product_code'] = dataProduct?.['code'];
                         rowData['product_data'] = dataProduct;
-                        if (dataProduct.hasOwnProperty('product_choice') && Array.isArray(dataProduct?.['product_choice'])) {
-                            if (dataProduct?.['product_choice'].includes(2)) {  // product allow purchase
-                                is_allow_po = true;
-                            }
-                        }
                     }
                 }
                 let eleUOM = row.querySelector('.table-row-uom');
@@ -5555,13 +5549,9 @@ class QuotationSubmitHandle {
                 if (eleQuantity) {
                     rowData['product_quantity'] = parseFloat(eleQuantity.value);
                     if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
-                        if (is_allow_po === true) {
-                            rowData['remain_for_purchase_request'] = parseFloat(eleQuantity.value);
-                            rowData['remain_for_purchase_order'] = parseFloat(eleQuantity.value);
-                        }
-                        if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                            rowData['quantity_wo_remain'] = parseFloat(eleQuantity.value);
-                        }
+                        rowData['remain_for_purchase_request'] = parseFloat(eleQuantity.value);
+                        rowData['remain_for_purchase_order'] = parseFloat(eleQuantity.value);
+                        rowData['quantity_wo_remain'] = parseFloat(eleQuantity.value);
                     }
                 }
                 let elePrice = row.querySelector('.table-row-price');

@@ -1049,7 +1049,26 @@ class HandlePlanAppNew {
                 )
             }
             else {
-                elePermit.newRowAppEle.initSelect2();
+                elePermit.newRowAppEle.initSelect2({
+                    'callbackDataResp': function (resp, keyResp) {
+                        let result = SelectDDControl.get_data_from_resp(resp, keyResp);
+                        if (result && Array.isArray(result) && result.length > 0){
+                            result.sort(
+                                (a, b) => {
+                                    let aAppDataTitle = a?.['title_i18n'] || null;
+                                    let bAppDataTitle = b?.['title_i18n'] || null;
+                                    if (aAppDataTitle && bAppDataTitle && typeof aAppDataTitle === 'string' && typeof bAppDataTitle === 'string') {
+                                        return aAppDataTitle.localeCompare(bAppDataTitle);
+                                    } else if (aAppDataTitle) return true;
+                                    else if (bAppDataTitle) return false;
+                                    return true;
+                                }
+                            )
+                            return result;
+                        }
+                        return [];
+                    }
+                });
                 clsThis.renderTablePermissionSelected(instance_id);
             }
         } else {

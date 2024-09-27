@@ -168,7 +168,7 @@ class WorkOrderLoadDataHandle {
                     $.fn.callAjax2({
                             'url': WorkOrderLoadDataHandle.$urls.attr('data-so-product-wo'),
                             'method': 'GET',
-                            'data': {'sale_order_id': dataOpp?.['sale_order']?.['id'], 'product__bom_product__isnull': false},
+                            'data': {'sale_order_id': dataOpp?.['sale_order']?.['id'], 'product__bom_product__isnull': false, 'product_id__isnull': false},
                             'isDropdown': true,
                         }
                     ).then(
@@ -176,7 +176,15 @@ class WorkOrderLoadDataHandle {
                             let data = $.fn.switcherResp(resp);
                             if (data) {
                                 if (data.hasOwnProperty('sale_order_product_wo') && Array.isArray(data.sale_order_product_wo)) {
-                                    WorkOrderDataTableHandle.$tableSOProd.DataTable().rows.add(data.sale_order_product_wo).draw();
+                                    let checkList = [];
+                                    let fnData = [];
+                                    for (let soProduct of data.sale_order_product_wo) {
+                                        if (!checkList.includes(soProduct?.['product_data']?.['id'])) {
+                                            fnData.push(soProduct);
+                                        }
+                                        checkList.push(soProduct?.['product_data']?.['id']);
+                                    }
+                                    WorkOrderDataTableHandle.$tableSOProd.DataTable().rows.add(fnData).draw();
                                     WorkOrderLoadDataHandle.loadEventCheckbox(WorkOrderDataTableHandle.$tableSOProd);
                                     WorkOrderLoadDataHandle.loadEventValidQuantity(WorkOrderDataTableHandle.$tableSOProd);
                                     for (let ele of WorkOrderDataTableHandle.$tableSOProd[0].querySelectorAll('.table-row-quantity')) {
@@ -706,9 +714,9 @@ class WorkOrderDataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    render: (data, type, row) => {
+                    render: (data, type, row, meta) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" data-row="${dataRow}">${row?.['order']}</span>`;
+                        return `<span class="table-row-order" data-row="${dataRow}">${(meta.row + 1)}</span>`;
                     }
                 },
                 {

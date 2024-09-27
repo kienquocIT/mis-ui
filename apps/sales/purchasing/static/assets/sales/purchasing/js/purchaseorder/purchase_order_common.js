@@ -1577,7 +1577,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '5%',
+                    width: '7%',
                     render: (data, type, row) => {
                         let dataStr = JSON.stringify(row?.['uom_order_request']).replace(/"/g, "&quot;");
                         return `<span class="table-row-uom-order-request" id="${row?.['uom_order_request']?.['id']}">${row?.['uom_order_request']?.['title']}<input type="hidden" class="data-info" value="${dataStr}"></span>`;
@@ -1624,7 +1624,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '15.625%',
+                    width: '14.625%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <div class="dropend">
@@ -1675,7 +1675,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 10,
-                    width: '14.0625%',
+                    width: '13.0625%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
@@ -2329,7 +2329,6 @@ class POSubmitHandle {
             let eleProduct = row.querySelector('.table-row-item');
             if (eleProduct) { // PRODUCT
                 let dataInfo = {};
-                let is_allow_gr = false;
                 if ($(eleProduct).val()) {
                     dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                 }
@@ -2337,11 +2336,6 @@ class POSubmitHandle {
                     rowData['product'] = dataInfo?.['id'];
                     rowData['product_title'] = dataInfo?.['title'];
                     rowData['product_code'] = dataInfo?.['code'];
-                    if (dataInfo.hasOwnProperty('product_choice') && Array.isArray(dataInfo?.['product_choice'])) {
-                        if (dataInfo?.['product_choice'].includes(1)) {  // product allow inventory
-                            is_allow_gr = true;
-                        }
-                    }
                 }
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
@@ -2386,9 +2380,7 @@ class POSubmitHandle {
                 if (eleQuantityOrder) {
                     if (eleQuantityOrder.value) {
                         rowData['product_quantity_order_actual'] = parseFloat(eleQuantityOrder.value);
-                        if (is_allow_gr === true) {
-                            rowData['gr_remain_quantity'] = parseFloat(eleQuantityOrder.value);
-                        }
+                        rowData['gr_remain_quantity'] = parseFloat(eleQuantityOrder.value);
                     }
                 }
                 let stock = row.querySelector('.table-row-stock');

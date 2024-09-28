@@ -7,7 +7,7 @@ class QuotationLoadDataHandle {
     static paymentSelectEle = $('#select-box-quotation-create-payment-term');
     static salePersonSelectEle = $('#employee_inherit_id');
     static quotationSelectEle = $('#select-box-quotation');
-    static $btnSaveNewProduct = $('#btn-save-new-product');
+    static $btnSaveSelectProduct = $('#btn-save-select-product');
     static transEle = $('#app-trans-factory');
     static urlEle = $('#app-url-factory');
     static customerInitEle = $('#data-init-customer');
@@ -349,12 +349,10 @@ class QuotationLoadDataHandle {
 
     static loadModalSProduct() {
         let fnData = [];
-        let ele = QuotationDataTableHandle.productInitEle;
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
+        WindowControl.showLoading();
         $.fn.callAjax2({
-                'url': url,
-                'method': method,
+                'url': QuotationDataTableHandle.productInitEle.attr('data-url'),
+                'method': QuotationDataTableHandle.productInitEle.attr('data-method'),
                 'isDropdown': true,
             }
         ).then(
@@ -372,9 +370,8 @@ class QuotationLoadDataHandle {
                         }
                         QuotationDataTableHandle.$tableSProduct.DataTable().clear().draw();
                         QuotationDataTableHandle.$tableSProduct.DataTable().rows.add(fnData).draw();
-
-
-                        ele.val(JSON.stringify(fnData));
+                        QuotationDataTableHandle.productInitEle.val(JSON.stringify(fnData));
+                        WindowControl.hideLoading();
                     }
                 }
             }

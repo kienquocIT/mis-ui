@@ -256,7 +256,7 @@
                                             <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
                                         </button>
                                         <div class="dropdown-menu w-210p">
-                                            <a class="dropdown-item" href="#" id="btn-add-product-quotation-create" data-bs-toggle="modal" data-bs-target="#newProductModal"><i class="dropdown-icon fas fa-cube text-primary"></i><span class="mt-2">{% trans 'Add Product' %}</span></a>
+                                            <a class="dropdown-item" href="#" id="btn-add-product-quotation-create" data-bs-toggle="modal" data-bs-target="#selectProductModal"><i class="dropdown-icon fas fa-cube text-primary"></i><span class="mt-2">{% trans 'Add Product' %}</span></a>
                                             <a class="dropdown-item" href="#" id="btn-add-product-group-quotation"><i class="dropdown-icon fas fa-layer-group text-primary"></i><span>{% trans 'Add group' %}</span></a>
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#" id="btn-add-shipping" data-bs-toggle="modal" data-bs-target="#shippingFeeModalCenter"><i class="dropdown-icon fas fa-shipping-fast text-primary"></i><span class="mt-2">{% trans 'Shipping fee' %}</span></a>
@@ -709,8 +709,8 @@
 
         <div class="modal-area">
             <div
-                    class="modal fade" id="newProductModal" tabindex="-1"
-                    role="dialog" aria-labelledby="newProductModal"
+                    class="modal fade" id="selectProductModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectProductModal"
                     aria-hidden="true"
             >
                 <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
@@ -738,7 +738,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-save-new-product" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-product" data-bs-dismiss="modal">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -776,9 +776,9 @@
         data-discount-at="{% trans "Discount after tax" %}"
         data-discount-product="{% trans "Discount on product" %}"
         data-gift="{% trans "Gift" %}"
-        data-valid-product-bom="{% trans "The product is being produced for another order" %}"
         data-product-status-1="{% trans "Ready" %}"
         data-product-status-2="{% trans "Selected" %}"
+        data-product-status-3="{% trans "Product is using for another order" %}"
     >
     <input
         type="text"

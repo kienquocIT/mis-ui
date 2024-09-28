@@ -134,7 +134,7 @@ $(function () {
             indicatorHandle.loadQuotationIndicator();
         });
 
-        QuotationLoadDataHandle.$btnSaveNewProduct.on('click', function () {
+        QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
             QuotationLoadDataHandle.loadNewProduct();
         });
 

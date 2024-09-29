@@ -820,18 +820,15 @@ class ProjectBOMAction {
 }
 
 class ProjectBOMHandle {
-    static LoadPage(option='create') {
+    static LoadPage() {
         ProjectBOMLoadPage.LoadOpportunity(opp_mapped_select)
         ProjectBOMLoadPage.LoadFinishProduct(productEle)
         ProjectBOMLoadTab.LoadProcessDescriptionTable()
         ProjectBOMLoadTab.LoadLaborSummaryTable()
-
-        // if (option === 'create') {
-            // material
-            ProjectBOMLoadTab.LoadMaterialTable()
-            // tool
-            ProjectBOMLoadTab.LoadToolTable()
-        // }
+        // material
+        ProjectBOMLoadTab.LoadMaterialTable()
+        // tool
+        ProjectBOMLoadTab.LoadToolTable()
     }
     static CombinesDataForProductionBOM(frmEle) {
         let frm = new SetupFormSubmit($(frmEle))

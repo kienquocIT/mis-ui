@@ -889,16 +889,14 @@ class BOMAction {
 }
 
 class BOMHandle {
-    static LoadPage(option='create') {
+    static LoadPage() {
         BOMLoadPage.LoadFinishProductAndGoods(productEle)
         BOMLoadTab.LoadProcessDescriptionTable()
         BOMLoadTab.LoadLaborSummaryTable()
-        // if (option === 'create') {
-            // material
-            BOMLoadTab.LoadMaterialTable()
-            // tool
-            BOMLoadTab.LoadToolTable()
-        // }
+        // material
+        BOMLoadTab.LoadMaterialTable()
+        // tool
+        BOMLoadTab.LoadToolTable()
         // outsourcing
         BOMLoadTab.LoadOutsourcingMaterialTable()
     }

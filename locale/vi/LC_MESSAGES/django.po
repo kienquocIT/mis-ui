@@ -8914,11 +8914,12 @@ msgstr "Chỉ chọn Thành phẩm"
 
 #
 msgid "Only select Services"
-msgstr "Chỉ chọn Dịch Vụ"
+msgstr "Chỉ chọn Dịch vụ"
 
 #
 msgid "Select Finished goods or Services"
-msgstr "Chọn Thành Phẩm hoặc Dịch Vụ"
+msgstr "Chọn Thành phẩm hoặc Dịch vụ"
+
 #
 msgid "One collaborator"
 msgstr "Một cộng tác viên"
@@ -8942,3 +8943,15 @@ msgstr "Lắp ráp"
 #
 msgid "Disassembly"
 msgstr "Tháo rời"
+
+#
+msgid "Select Finished goods or Goods"
+msgstr "Chọn Thành phẩm hoặc Hàng hóa"
+
+#
+msgid "Standard cost"
+msgstr "Giá tiêu chuẩn"
+
+#
+msgid "References in the BOM"
+msgstr "Để tham chiếu trong BOM"

@@ -257,7 +257,10 @@ class WorkOrderLoadDataHandle {
             $.fn.callAjax2({
                     'url': WorkOrderLoadDataHandle.$urls.attr('data-md-bom'),
                     'method': 'GET',
-                    'data': {'product_id': dataProduct?.['id']},
+                    'data': {
+                        'product_id': dataProduct?.['id'],
+                        'opportunity_id__isnull': false,
+                    },
                     'isDropdown': true,
                 }
             ).then(

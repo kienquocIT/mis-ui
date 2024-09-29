@@ -826,12 +826,12 @@ class ProjectBOMHandle {
         ProjectBOMLoadTab.LoadProcessDescriptionTable()
         ProjectBOMLoadTab.LoadLaborSummaryTable()
 
-        if (option === 'create') {
+        // if (option === 'create') {
             // material
             ProjectBOMLoadTab.LoadMaterialTable()
             // tool
             ProjectBOMLoadTab.LoadToolTable()
-        }
+        // }
     }
     static CombinesDataForProductionBOM(frmEle) {
         let frm = new SetupFormSubmit($(frmEle))
@@ -936,63 +936,55 @@ class ProjectBOMHandle {
                     ProjectBOMLoadTab.LoadProcessDescriptionTable(data?.['bom_process_data'], option)
                     ProjectBOMLoadTab.LoadLaborSummaryTable(data?.['bom_summary_process_data'])
 
+                    material_table.find('tbody').html('')
+                    tools_table.find('tbody').html('')
                     for (let i = 0; i < data?.['bom_process_data'].length; i++) {
-                            let process_row_index = i + 1
-                            let process_task_name = data?.['bom_process_data'][i]?.['task_name']
-                            ProjectBOMAction.Add_or_Update_material_group(process_row_index, process_task_name)
-                            ProjectBOMAction.Add_or_Update_tool_group(process_row_index, process_task_name)
+                        let process_row_index = i + 1
+                        let process_task_name = data?.['bom_process_data'][i]?.['task_name']
+                        ProjectBOMAction.Add_or_Update_material_group(process_row_index, process_task_name)
+                        ProjectBOMAction.Add_or_Update_tool_group(process_row_index, process_task_name)
 
-                            if (data?.['bom_material_component_data'].length === 0) {
-                                ProjectBOMLoadTab.LoadMaterialTable()
-                            }
-                            else {
-                                for (let j = 0; j < data?.['bom_material_component_data'].length; j++) {
-                                    if (process_row_index === parseInt(data?.['bom_material_component_data'][j]?.['bom_process_order'])) {
-                                        let new_material_row = ProjectBOMAction.Create_material_row(process_row_index)
-                                        material_table.append(new_material_row)
-                                        let material_selected = data?.['bom_material_component_data'][j]
-                                        new_material_row.find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['material']?.['id'])
-                                        new_material_row.find('.replacement-material-script').text(material_selected?.['replacement_data'] ? JSON.stringify(material_selected?.['replacement_data']) : '[]')
-                                        ProjectBOMLoadTab.LoadMaterial(new_material_row.find('.material-item'), material_selected?.['material'])
-                                        new_material_row.find('.material-code').text(material_selected?.['material']?.['code'])
-                                        new_material_row.find('.material-quantity').val(material_selected?.['quantity'])
-                                        new_material_row.find('.material-unit-price').attr('value', material_selected?.['standard_price'])
-                                        new_material_row.find('.material-subtotal-price').attr('value', material_selected?.['subtotal_price'])
-                                        ProjectBOMLoadTab.LoadUOM(
-                                            new_material_row.find('.material-uom'),
-                                            material_selected?.['uom']?.['group_id'],
-                                            material_selected?.['uom']
-                                        )
-                                        new_material_row.find('.material-disassemble').prop('checked', material_selected?.['disassemble'])
-                                        new_material_row.find('.material-note').val(material_selected?.['note'])
-                                        new_material_row.find('.del-row-material').prop('disabled', option === 'detail')
-                                    }
-                                }
-                            }
-
-                            if (data?.['bom_tool_data'].length === 0) {
-                                ProjectBOMLoadTab.LoadMaterialTable()
-                            }
-                            else {
-                                for (let k = 0; k < data?.['bom_tool_data'].length; k++) {
-                                    if (process_row_index === parseInt(data?.['bom_tool_data'][k]?.['bom_process_order'])) {
-                                        let new_tool_row = ProjectBOMAction.Create_tool_row(process_row_index)
-                                        tools_table.append(new_tool_row)
-                                        let tool_selected = data?.['bom_tool_data'][k]
-                                        ProjectBOMLoadTab.LoadTool(new_tool_row.find('.tool-item'), tool_selected?.['tool'])
-                                        new_tool_row.find('.tool-code').text(tool_selected?.['tool']?.['code'])
-                                        new_tool_row.find('.tool-quantity').val(tool_selected?.['quantity'])
-                                        ProjectBOMLoadTab.LoadUOM(
-                                            new_tool_row.find('.tool-uom'),
-                                            tool_selected?.['uom']?.['group_id'],
-                                            tool_selected?.['uom']
-                                        )
-                                        new_tool_row.find('.tool-note').val(tool_selected?.['note'])
-                                        new_tool_row.find('.del-row-tool').prop('disabled', option === 'detail')
-                                    }
-                                }
+                        for (let j = 0; j < data?.['bom_material_component_data'].length; j++) {
+                            if (process_row_index === parseInt(data?.['bom_material_component_data'][j]?.['bom_process_order'])) {
+                                let new_material_row = ProjectBOMAction.Create_material_row(process_row_index)
+                                material_table.append(new_material_row)
+                                let material_selected = data?.['bom_material_component_data'][j]
+                                new_material_row.find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['material']?.['id'])
+                                new_material_row.find('.replacement-material-script').text(material_selected?.['replacement_data'] ? JSON.stringify(material_selected?.['replacement_data']) : '[]')
+                                ProjectBOMLoadTab.LoadMaterial(new_material_row.find('.material-item'), material_selected?.['material'])
+                                new_material_row.find('.material-code').text(material_selected?.['material']?.['code'])
+                                new_material_row.find('.material-quantity').val(material_selected?.['quantity'])
+                                new_material_row.find('.material-unit-price').attr('value', material_selected?.['standard_price'])
+                                new_material_row.find('.material-subtotal-price').attr('value', material_selected?.['subtotal_price'])
+                                ProjectBOMLoadTab.LoadUOM(
+                                    new_material_row.find('.material-uom'),
+                                    material_selected?.['uom']?.['group_id'],
+                                    material_selected?.['uom']
+                                )
+                                new_material_row.find('.material-disassemble').prop('checked', material_selected?.['disassemble'])
+                                new_material_row.find('.material-note').val(material_selected?.['note'])
+                                new_material_row.find('.del-row-material').prop('disabled', option === 'detail')
                             }
                         }
+
+                        for (let k = 0; k < data?.['bom_tool_data'].length; k++) {
+                            if (process_row_index === parseInt(data?.['bom_tool_data'][k]?.['bom_process_order'])) {
+                                let new_tool_row = ProjectBOMAction.Create_tool_row(process_row_index)
+                                tools_table.append(new_tool_row)
+                                let tool_selected = data?.['bom_tool_data'][k]
+                                ProjectBOMLoadTab.LoadTool(new_tool_row.find('.tool-item'), tool_selected?.['tool'])
+                                new_tool_row.find('.tool-code').text(tool_selected?.['tool']?.['code'])
+                                new_tool_row.find('.tool-quantity').val(tool_selected?.['quantity'])
+                                ProjectBOMLoadTab.LoadUOM(
+                                    new_tool_row.find('.tool-uom'),
+                                    tool_selected?.['uom']?.['group_id'],
+                                    tool_selected?.['uom']
+                                )
+                                new_tool_row.find('.tool-note').val(tool_selected?.['note'])
+                                new_tool_row.find('.del-row-tool').prop('disabled', option === 'detail')
+                            }
+                        }
+                    }
 
                     $.fn.initMaskMoney2()
                     ProjectBOMAction.DisableDetailPage(option);

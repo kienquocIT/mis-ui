@@ -893,12 +893,12 @@ class BOMHandle {
         BOMLoadPage.LoadFinishProductAndGoods(productEle)
         BOMLoadTab.LoadProcessDescriptionTable()
         BOMLoadTab.LoadLaborSummaryTable()
-        if (option === 'create') {
+        // if (option === 'create') {
             // material
             BOMLoadTab.LoadMaterialTable()
             // tool
             BOMLoadTab.LoadToolTable()
-        }
+        // }
         // outsourcing
         BOMLoadTab.LoadOutsourcingMaterialTable()
     }
@@ -1030,6 +1030,8 @@ class BOMHandle {
                         BOMLoadTab.LoadProcessDescriptionTable(data?.['bom_process_data'], option)
                         BOMLoadTab.LoadLaborSummaryTable(data?.['bom_summary_process_data'])
 
+                        material_table.find('tbody').html('')
+                        tools_table.find('tbody').html('')
                         for (let i = 0; i < data?.['bom_process_data'].length; i++) {
                             let process_row_index = i + 1
                             let process_task_name = data?.['bom_process_data'][i]?.['task_name']

@@ -11,6 +11,7 @@ $(function () {
         let btnAddProduct = $('#btn-add-product-quotation-create');
 
         // Load inits
+        QuotationLoadDataHandle.loadCustomCss();
         QuotationLoadDataHandle.loadInitCustomer();
         QuotationLoadDataHandle.loadBoxQuotationCustomer();
         QuotationLoadDataHandle.loadBoxQuotationContact();

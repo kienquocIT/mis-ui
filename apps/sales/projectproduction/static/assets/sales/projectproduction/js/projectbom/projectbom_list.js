@@ -10,7 +10,7 @@ $(document).ready(function () {
                 reloadCurrency: true,
                 ajax: {
                     data: {
-                        'for_opp': true
+                        'for_opp_space': true
                     },
                     url: frm.dataUrl,
                     type: frm.dataMethod,

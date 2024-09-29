@@ -10,7 +10,7 @@ $(document).ready(function () {
                 reloadCurrency: true,
                 ajax: {
                     data: {
-                        'for_production': true,
+                        'for_production_space': true,
                     },
                     url: frm.dataUrl,
                     type: frm.dataMethod,

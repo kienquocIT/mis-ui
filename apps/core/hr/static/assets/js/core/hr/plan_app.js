@@ -106,7 +106,7 @@ class HandlePlanApp {
                                             ${clsThis.isEdit ? "" : "disabled"}
                                             data-app-depend-on="${appDependOn.join(',')}"
                                         />
-                                        <label class="form-check-label wrap-text" for="${idxRandom}">${item.title}</label>
+                                        <label class="form-check-label wrap-text" for="${idxRandom}">${item?.['title_i18n'] || ''}</label>
                                         ${htmlDependOn}
                                     </div></div>`;
                             }).join("");

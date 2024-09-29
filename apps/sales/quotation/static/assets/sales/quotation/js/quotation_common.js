@@ -1604,7 +1604,7 @@ class QuotationLoadDataHandle {
             if (costList && productData?.['id']) {
                 $(costList).empty();
                 let htmlDD = ``;
-                let urlDetail = QuotationLoadDataHandle.urlEle.attr('data-url-product-detail').format_url_with_uuid(productData?.['id']);
+                let urlDetail = QuotationLoadDataHandle.urlEle.attr('data-md-product-detail').format_url_with_uuid(productData?.['id']);
                 // call ajax get info product detail
                 $.fn.callAjax2({
                     url: urlDetail,
@@ -2174,19 +2174,13 @@ class QuotationLoadDataHandle {
                     $(row.querySelector('.table-row-item')).empty();
                     if (table[0].id === "datable-quotation-create-product") {  // PRODUCT
                         if (row.querySelector('.table-row-item')) {
-                            QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')));
-                            $(row.querySelector('.table-row-item')).val(dataRow?.['product_data']?.['id'] ? dataRow?.['product_data']?.['id'] : '');
-                            let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
-                            if (boxRender) {
-                                boxRender.innerHTML = dataRow?.['product_data']?.['title'] ? dataRow?.['product_data']?.['title'] : '';
-                                boxRender.setAttribute('title', dataRow?.['product_data']?.['title'] ? dataRow?.['product_data']?.['title'] : '');
-                            }
+                            QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
                             QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
                         }
                     }
                     if (table[0].id === "datable-quotation-create-cost") {  // COST
                         if (row.querySelector('.table-row-item')) {
-                            QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow?.['product_data']);
+                            QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
                             QuotationLoadDataHandle.loadCostProduct(row.querySelector('.table-row-item'));
                         }
                         if (row.querySelector('.table-row-supplied-by')) {
@@ -2416,7 +2410,15 @@ class QuotationDataTableHandle {
                         if (itemType === 0) { // PRODUCT
                             return `<div class="row table-row-item-area">
                                         <div class="col-12 col-md-12 col-lg-12">
-                                            <select class="form-select table-row-item" id="product-${row?.['order']}" data-product-id="${row?.['product_data']?.['id']}" data-zone="${dataZone}" readonly>
+                                            <select 
+                                                class="form-select table-row-item"
+                                                id="product-${row?.['order']}"
+                                                data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-product')}"
+                                                data-method="GET"
+                                                data-keyResp="product_sale_list"
+                                                data-product-id="${row?.['product_data']?.['id']}"
+                                                data-zone="${dataZone}"
+                                                readonly>
                                             </select>
                                         </div>
                                     </div>`;
@@ -3572,13 +3574,23 @@ class QuotationDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        let txt = QuotationLoadDataHandle.transEle.attr('data-product-status-1');
-                        let clsColor = 'text-success';
+                        let txt = QuotationLoadDataHandle.transEle.attr('data-available');
+                        let badge = 'success';
                         if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
-                            txt = QuotationLoadDataHandle.transEle.attr('data-product-status-2');
-                            clsColor = 'text-warning';
+                            txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
+                            badge = 'danger';
                         }
-                        return `<span class="table-row-status ${clsColor}">${txt}</span>`;
+                        return `<span class="badge badge-${badge} badge-outline table-row-status">${txt}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        let txt = '';
+                        if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
+                            txt = QuotationLoadDataHandle.transEle.attr('data-product-note-1');
+                        }
+                        return `<span class="table-row-note">${txt}</span>`;
                     }
                 },
             ],

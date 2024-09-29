@@ -8937,6 +8937,14 @@ msgid "Ordered before"
 msgstr "Đã đặt"
 
 #
+msgid "Assembly"
+msgstr "Lắp ráp"
+
+#
+msgid "Disassembly"
+msgstr "Tháo rời"
+
+#
 msgid "Select Finished goods or Goods"
 msgstr "Chọn Thành phẩm hoặc Hàng hóa"
 

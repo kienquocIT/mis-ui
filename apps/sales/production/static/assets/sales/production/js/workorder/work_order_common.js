@@ -163,6 +163,7 @@ class WorkOrderLoadDataHandle {
                 if (dataOpp?.['sale_person']?.['id']) {
                     WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxEmp, [dataOpp?.['sale_person']]);
                 }
+                WorkOrderDataTableHandle.$tableSOProd.DataTable().clear().draw();
                 if (dataOpp?.['sale_order']?.['id']) {
                     WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxSO, [dataOpp?.['sale_order']], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
                     $.fn.callAjax2({

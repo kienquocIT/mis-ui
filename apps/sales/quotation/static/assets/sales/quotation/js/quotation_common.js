@@ -1848,6 +1848,35 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadCheckDataCopy(dataCopy) {
+        let listProductID = [];
+        for (let dataProduct of dataCopy?.['quotation_products_data']) {
+            listProductID.push(dataProduct?.['product_data']?.['id']);
+        }
+
+        WindowControl.showLoading();
+        $.fn.callAjax2({
+            'url': QuotationDataTableHandle.productInitEle.attr('data-url'),
+            'method': QuotationDataTableHandle.productInitEle.attr('data-method'),
+            'data': {'id__in': listProductID},
+            'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                        for (let product of data.product_sale_list) {
+                            
+                        }
+                        WindowControl.hideLoading();
+                    }
+                }
+            }
+        )
+        return true;
+    };
+
     static loadCopyData(dataCopy) {
         let $form = $('#frm_quotation_create');
         let tableProduct = $('#datable-quotation-create-product');
@@ -3139,7 +3168,7 @@ class QuotationDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         if (row?.['title'] && row?.['code']) {
-                            return `<div class="d-flex align-items-center">
+                            return `<div class="d-flex align-items-center ml-2">
                                         <div class="form-check">
                                             <input type="radio" class="form-check-input table-row-check" data-id="${row?.['id']}">
                                         </div>
@@ -3533,7 +3562,7 @@ class QuotationDataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    render: (data, type, row, meta) => {
+                    render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         let disabled = '';
                         let checked = '';
@@ -3541,8 +3570,15 @@ class QuotationDataTableHandle {
                             disabled = 'disabled';
                             checked = 'checked';
                         }
-                        if (row?.['bom_check_data']?.['is_bom'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
-                            disabled = 'disabled';
+                        if (row?.['bom_check_data']?.['is_bom'] === true) {
+                            if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                disabled = 'disabled';
+                                checked = '';
+                            }
+                            if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                                disabled = 'disabled';
+                                checked = '';
+                            }
                         }
                         if (row?.['title'] && row?.['code']) {
                             return `<div class="d-flex align-items-center ml-2">
@@ -3579,9 +3615,15 @@ class QuotationDataTableHandle {
                             txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
                             badge = 'danger';
                         }
-                        if (row?.['bom_check_data']?.['is_bom'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
-                            txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
-                            badge = 'danger';
+                        if (row?.['bom_check_data']?.['is_bom'] === true) {
+                            if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
+                                badge = 'danger';
+                            }
+                            if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                                txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
+                                badge = 'danger';
+                            }
                         }
                         return `<span class="badge badge-${badge} badge-outline table-row-status">${txt}</span>`;
                     }
@@ -3593,8 +3635,13 @@ class QuotationDataTableHandle {
                         if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
                             txt = QuotationLoadDataHandle.transEle.attr('data-product-note-1');
                         }
-                        if (row?.['bom_check_data']?.['is_bom'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
-                            txt = QuotationLoadDataHandle.transEle.attr('data-product-note-2');
+                        if (row?.['bom_check_data']?.['is_bom'] === true) {
+                            if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                txt = QuotationLoadDataHandle.transEle.attr('data-product-note-2');
+                            }
+                            if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                                txt = QuotationLoadDataHandle.transEle.attr('data-product-note-2');
+                            }
                         }
                         return `<span class="table-row-note">${txt}</span>`;
                     }

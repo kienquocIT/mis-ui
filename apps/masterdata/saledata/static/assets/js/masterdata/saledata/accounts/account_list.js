@@ -14,8 +14,6 @@ $(document).ready(function () {
             },
         },
         fullToolbar: true,
-        autoWidth: true,
-        scrollX: true,
         cusFilter: [
             {
                 keyParam: "has_manager_custom",
@@ -67,12 +65,21 @@ $(document).ready(function () {
         ],
         columns: [  // 30,300,240,120,120,120,240,120,240,390 (1920p)
             {
+                className: 'wrap-text w-5',
                 'render': () => {
                     return ``;
                 },
             },
             {
-                className: 'wrap-text w-20',
+                className: 'wrap-text w-10',
+                data: 'name',
+                render: (data, type, row) => {
+                    const link = msgData.attr('data-url').format_url_with_uuid(row.id);
+                    return `<a href="${link}"><span class="w-70 badge badge-primary">${row?.['code']}</span></a> ${$x.fn.buttonLinkBlank(link)}`
+                }
+            },
+            {
+                className: 'wrap-text w-15',
                 data: 'name',
                 render: (data, type, row) => {
                     let urlEditPage = msgData.attr('data-url').format_url_with_uuid(row.id);
@@ -80,7 +87,7 @@ $(document).ready(function () {
                 },
             },
             {
-                className: 'wrap-text w-10 text-center',
+                className: 'wrap-text w-10',
                 data: 'account_type',
                 render: (data, type, row) => {
                     let clsBadgeCurrent = -1;
@@ -94,7 +101,7 @@ $(document).ready(function () {
                 },
             },
             {
-                className: 'wrap-text w-10 text-center',
+                className: 'wrap-text w-10',
                 data: 'owner',
                 render: (data, type, row) => {
                     if (row.owner.fullname) {
@@ -104,38 +111,31 @@ $(document).ready(function () {
                 },
             },
             {
-                className: 'wrap-text w-10 text-center',
+                className: 'wrap-text w-10',
                 data: 'revenue_information',
                 render: (data, type, row) => {
                     return `<span class="mask-money text-primary" data-init-money="${row?.['revenue_information']?.['revenue_ytd'] ? row?.['revenue_information']?.['revenue_ytd'] : 0}"></span>`;
                 },
             },
             {
-                className: 'wrap-text w-10 text-center',
+                className: 'wrap-text w-10',
                 data: '',
                 render: (data, type, row) => {
                     return `<span class="badge badge-soft-primary w-80">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span>`;
                 },
             },
             {
-                className: 'wrap-text w-10 text-center',
+                className: 'wrap-text w-10',
                 data: 'revenue_information',
                 render: (data, type, row) => {
                     return `<span class="mask-money text-primary" data-init-money="${row?.['revenue_information']?.['revenue_average'] ? row?.['revenue_information']?.['revenue_average'] : 0}"></span>`;
                 },
             },
             {
-                className: 'wrap-text w-10 text-center',
+                className: 'wrap-text w-10',
                 data: 'phone',
                 render: (data, type, row) => {
-                    return `<span>${row?.['phone'] ? row?.['phone'] : ''}</span>`;
-                },
-            },
-            {
-                className: 'wrap-text w-10',
-                data: 'website',
-                render: (data, type, row) => {
-                    return `<span>${row?.['website'] ? row['website'] : ''}</span>`;
+                    return `<span>${row?.['phone'] ? row?.['phone'] : '--'}</span><br><a class="text-blue" target="_blank" href="${row?.['website'] ? row['website'] : '#'}">${row?.['website'] ? row['website'] : '--'}</a>`;
                 },
             },
             {

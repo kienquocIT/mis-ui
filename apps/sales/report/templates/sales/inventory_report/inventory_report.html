@@ -27,7 +27,7 @@
         .sticky {
             position: sticky;
             top: 0;
-            z-index: 1111;
+            z-index: 1;
         }
     </style>
 {% endblock %}
@@ -63,6 +63,7 @@
             data-trans-all-warehouse="{% trans 'All warehouses' %}"
             data-trans-gtf-in="{% trans 'IN' %}"
             data-trans-gtf-out="{% trans 'OUT' %}"
+            data-trans-all="{% trans 'Default all' %}"
     ></script>
 
     <script id="url-script"
@@ -72,101 +73,97 @@
             data-url-qr-code-lot-info="{% url 'GetQRCodeLotInfoAPI' %}"
     ></script>
 
-    <div class="row">
-        <div class="col-12 col-md-12 col-lg-12">
-            <div id="btn-collapse" class="card">
-                <div class="card-header bg-primary-light-5">
-                    <h6>
-                        <span class="text-primary">
-                            <span>
-                                <span class="icon"><span class="feather-icon"><i class="bi bi-funnel"></i></span></span>
-                                {% trans 'Filter' %}
-                            </span>
+    <div class="accordion accordion-card accordion-soft accordion-icon" id="accordionPanelsStayOpenExampleOne">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                    <span class="d-flex align-items-center">
+                        <i class="bi bi-funnel mr-2"></i>
+                        <span>
+                            <span>{% trans 'Filter' %}</span>
                         </span>
-                        <button type="button" data-bs-toggle="collapse" data-bs-target="#filter_area" aria-expanded="false" aria-controls="collapse-area" class="btn btn-rounded btn-icon btn-xs">
-                            <span class="icon">
-                                <i class="fas fa-angle-double-up text-primary"></i>
-                            </span>
-                        </button>
-                    </h6>
-                    <div class="card-action-wrap">
-                        <div class="btn-group" role="group">
-                            <button id="btn-view-group" type="button" class="btn btn-gradient-primary w-100 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {% trans 'View' %}&nbsp;<i class="fas fa-eye"></i>
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="btn-action">
-                                <a class="dropdown-item" id="btn-view" href="#"><i class="far fa-window-maximize"></i> <span>{% trans 'General' %}</span></a>
-                                <a class="dropdown-item" id="btn-view-detail" href="#"><i class="fas fa-list-ul"></i> <span>{% trans 'Detail' %}</span></a>
+                    </span>
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                <div class="accordion-body">
+                    <div class="row">
+                        <div class="col-12 col-lg-2 col-md-6">
+                            <div class="form-group">
+                                <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
+                                <select class="form-select select2 select-multiple" id="warehouses_select" multiple
+                                        data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
                             </div>
                         </div>
-
-                        <div class="btn-group" role="group">
-                            <button id="btn-action" type="button" class="btn btn-gradient-dark w-100 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {% trans 'Action' %}
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="btn-action">
-                                <a class="dropdown-item disabled" id="btn-export" href="#"><i class="bi bi-file-earmark-spreadsheet"></i> <span>{% trans 'Export to excel' %}</span></a>
+                        <div class="col-12 col-lg-2 col-md-6">
+                            <div class="form-group">
+                                <label class="form-label" for="items_select">{% trans 'Product' %}</label>
+                                <select class="form-select select2 select-multiple" id="items_select" multiple
+                                        data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-2 col-md-6">
+                            <div class="form-group">
+                                <label for="project-select" class="form-label">{% trans 'Project' %}</label>
+                                <select disabled class="form-select select2" id="project-select"
+                                        data-url="{% url 'SaleOrderListAPI' %}"
+                                        data-method="GET"
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-2 col-md-6">
+                            <div class="form-group">
+                                <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
+                                <select class="form-select select2" id="period-select"
+                                        data-url="{% url 'PeriodsConfigListAPI' %}"
+                                        data-method="GET"
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-2 col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
+                                <select id="period-month" class="form-select"></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-1 col-md-4">
+                            <div class="form-group">
+                                <label class="form-label" for="period-day-from">{% trans 'From' %}</label>
+                                <span class="input-affix-wrapper">
+                                    <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
+                                    <input type="number" min="1" max="31" id="period-day-from" class="form-control">
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-1 col-md-4">
+                            <div class="form-group">
+                                <label class="form-label" for="period-day-to">{% trans 'To' %}</label>
+                                <span class="input-affix-wrapper">
+                                    <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
+                                    <input type="number" min="1" max="31" id="period-day-to" class="form-control">
+                                </span>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div id="filter_area" class="collapse show">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-12 col-lg-2 col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
-                                    <select class="form-select select2 select-multiple" id="warehouses_select" multiple
-                                            data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
+                    <div class="row">
+                        <div class="col-12 col-lg-1 col-md-4">
+                            <div class="btn-group dropend" role="group">
+                                <button id="btn-view-group" type="button" class="btn btn-gradient-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% trans 'View' %}&nbsp;<i class="fas fa-eye"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="btn-action">
+                                    <a class="dropdown-item" id="btn-view" href="#"><i class="far fa-window-maximize"></i> <span>{% trans 'General' %}</span></a>
+                                    <a class="dropdown-item" id="btn-view-detail" href="#"><i class="fas fa-list-ul"></i> <span>{% trans 'Detail' %}</span></a>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-2 col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="items_select">{% trans 'Product' %}</label>
-                                    <select class="form-select select2 select-multiple" id="items_select" multiple
-                                            data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-2 col-md-6">
-                                <div class="form-group">
-                                    <label for="project-select" class="form-label required">{% trans 'Project' %}</label>
-                                    <select class="form-select select2" id="project-select"
-                                            data-url="{% url 'SaleOrderListAPI' %}"
-                                            data-method="GET"
-                                    ></select>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-2 col-md-6">
-                                <div class="form-group">
-                                    <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
-                                    <select class="form-select select2" id="period-select"
-                                            data-url="{% url 'PeriodsConfigListAPI' %}"
-                                            data-method="GET"
-                                    ></select>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-2 col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
-                                    <select id="period-month" class="form-select"></select>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-1 col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label" for="period-day-from">{% trans 'From' %}</label>
-                                    <span class="input-affix-wrapper">
-                                        <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
-                                        <input type="number" min="1" max="31" id="period-day-from" class="form-control">
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-1 col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label" for="period-day-to">{% trans 'To' %}</label>
-                                    <span class="input-affix-wrapper">
-                                        <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
-                                        <input type="number" min="1" max="31" id="period-day-to" class="form-control">
-                                    </span>
+                        </div>
+                        <div hidden class="col-12 col-lg-1 col-md-4">
+                            <div class="btn-group dropend" role="group">
+                                <button id="btn-action" type="button" class="btn btn-gradient-dark dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% trans 'Action' %}
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="btn-action">
+                                    <a class="dropdown-item disabled" id="btn-export" href="#"><i class="bi bi-file-earmark-spreadsheet"></i> <span>{% trans 'Export to excel' %}</span></a>
                                 </div>
                             </div>
                         </div>
@@ -175,6 +172,7 @@
             </div>
         </div>
     </div>
+
     <div class="row mt-3 mb-3">
         <div hidden class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 70vh">
             <table class="resize table table-hover nowrap w-100" id="table-inventory-report">
@@ -217,7 +215,7 @@
         </div>
     </div>
 
-    <div class="modal fade" style="z-index: 2222" id="view-prd-wh" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" style="z-index: 2" id="view-prd-wh" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg min-w-1280p" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -248,7 +246,7 @@
         </div>
     </div>
 
-    <div class="modal fade" style="z-index: 3333" id="modal-QR-lot" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" style="z-index: 3" id="modal-QR-lot" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" style="width: 400px" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -276,7 +274,7 @@
         </div>
     </div>
 
-    <div class="modal fade" style="z-index: 3333" id="modal-QR-sn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" style="z-index: 3" id="modal-QR-sn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" style="width: 400px" role="document">
             <div class="modal-content">
                 <div class="modal-header">

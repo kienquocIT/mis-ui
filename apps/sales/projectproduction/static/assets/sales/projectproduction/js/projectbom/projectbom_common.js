@@ -626,7 +626,6 @@ class ProjectBOMAction {
             $('textarea').prop('readonly', true).prop('disabled', true)
             $('select').prop('readonly', true).prop('disabled', true)
             add_new_process_description.prop('disabled', true)
-            add_new_outsourcing_material.prop('disabled', true)
             $('.del-row-material').prop('disabled', true)
             $('.add-new-material').prop('disabled', true)
             $('.del-row-tool').prop('disabled', true)

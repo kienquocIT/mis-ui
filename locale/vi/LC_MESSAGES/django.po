@@ -7162,7 +7162,7 @@ msgstr "Xuất hàng"
 
 #
 msgid "Goods transfer"
-msgstr "Điều chuyển hàng hoá"
+msgstr "Điều chuyển hàng"
 
 #
 msgid "Inventory adjustment create"

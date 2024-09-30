@@ -55,7 +55,10 @@ $(function () {
         formSubmit.submit(function (e) {
             e.preventDefault();
             let _form = new SetupFormSubmit(formSubmit);
-            WorkOrderSubmitHandle.setupDataSubmit(_form);
+            let result = WorkOrderSubmitHandle.setupDataSubmit(_form);
+            if (result === false) {
+                return false;
+            }
             let submitFields = [
                 'title',
                 'bom_id',

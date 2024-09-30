@@ -932,6 +932,10 @@ class WorkOrderSubmitHandle {
             if (WorkOrderLoadDataHandle.$quantity.val()) {
                 _form.dataForm['quantity'] = parseFloat(WorkOrderLoadDataHandle.$quantity.val());
                 _form.dataForm['gr_remain_quantity'] = parseFloat(WorkOrderLoadDataHandle.$quantity.val());
+                if (_form.dataForm['quantity'] <= 0) {
+                    $.fn.notifyB({description: WorkOrderLoadDataHandle.$trans.attr('data-validate-quantity')}, 'failure');
+                    return false;
+                }
             }
             if (WorkOrderLoadDataHandle.$uom.attr('data-detail')) {
                 let dataUOM = JSON.parse(WorkOrderLoadDataHandle.$uom.attr('data-detail'));
@@ -966,6 +970,7 @@ class WorkOrderSubmitHandle {
             _form.dataForm['task_data'] = WorkOrderSubmitHandle.setupTask();
 
         }
+        return _form.dataForm;
     };
 }
 

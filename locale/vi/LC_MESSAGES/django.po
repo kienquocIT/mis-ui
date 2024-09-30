@@ -7250,7 +7250,7 @@ msgstr "Đợi nhập"
 
 #
 msgid "PR code"
-msgstr "Mã PR"
+msgstr "Mã YCMH"
 
 #
 msgid "Merge same product in 1 line, convert to reference unit if there is more 1 UOM"
@@ -8914,11 +8914,12 @@ msgstr "Chỉ chọn Thành phẩm"
 
 #
 msgid "Only select Services"
-msgstr "Chỉ chọn Dịch Vụ"
+msgstr "Chỉ chọn Dịch vụ"
 
 #
 msgid "Select Finished goods or Services"
-msgstr "Chọn Thành Phẩm hoặc Dịch Vụ"
+msgstr "Chọn Thành phẩm hoặc Dịch vụ"
+
 #
 msgid "One collaborator"
 msgstr "Một cộng tác viên"
@@ -8930,3 +8931,35 @@ msgstr "Nhiều cộng tác viên"
 #
 msgid "Config according to"
 msgstr "Cấu hình theo"
+
+#
+msgid "Ordered before"
+msgstr "Đã đặt"
+
+#
+msgid "Assembly"
+msgstr "Lắp ráp"
+
+#
+msgid "Disassembly"
+msgstr "Tháo rời"
+
+#
+msgid "Select Finished goods or Goods"
+msgstr "Chọn Thành phẩm hoặc Hàng hóa"
+
+#
+msgid "Standard cost"
+msgstr "Giá tiêu chuẩn"
+
+#
+msgid "References in the BOM"
+msgstr "Để tham chiếu trong BOM"
+
+#
+msgid "The product is in the design stage for another project"
+msgstr "Sản phẩm đang trong giai đoạn thiết kế cho dự án khác"
+
+#
+msgid "The quantity must be greater than 0"
+msgstr "Số lượng phải lớn hơn 0"

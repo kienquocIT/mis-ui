@@ -143,6 +143,7 @@ $(document).ready(function () {
                 data: function (params) {
                     params['delivery_call'] = true;
                     params['system_status__in'] = [2, 3].join(',');
+                    params['opportunity__is_deal_close'] = false;
                 },
             },
             rowIdx: true,
@@ -153,7 +154,7 @@ $(document).ready(function () {
                     data: 'title',
                     render: (data, type, row, meta) => {
                         const title = `<div class="form-check">`
-                            + `<input type="checkbox" class="form-check-input input_select" id="customChecks_${meta.row}">`
+                            + `<input type="radio" class="form-check-input input_select" id="customChecks_${meta.row}">`
                             + `<label class="form-check-label" for="customChecks_${meta.row}">${data}</label>`
                             + `</div>`
                         return title;
@@ -177,7 +178,7 @@ $(document).ready(function () {
 
 
     $('#call_delivery').off().on('click', function () {
-        const row = $('input[type="checkbox"]:checked', $('#sale_order_approved'))
+        const row = $('input[type="radio"]:checked', $('#sale_order_approved'))
         const isData = $Table.DataTable().row(row.closest('tr')).data();
         if (isData && isData.hasOwnProperty('id')){
             WindowControl.showLoading();

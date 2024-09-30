@@ -469,6 +469,8 @@ class GISHandle {
                         GISLoadPage.LoadIA(data?.['inventory_adjustment'])
                         $('#inventory-adjustment-select-space').prop('hidden', false)
                         GISLoadTab.DrawTableIAItems(data?.['detail_data_ia'])
+                        IAItemTableDiv.prop('hidden', false)
+                        POItemTableDiv.prop('hidden', true)
                     }
                     else if (data?.['goods_issue_type'] === 1) {
                     }
@@ -477,7 +479,9 @@ class GISHandle {
                         GISLoadPage.LoadPO(data?.['production_order'])
                         $('#inventory-adjustment-select-space').prop('hidden', true)
                         $('#production-order-select-space').prop('hidden', false)
-                        GISLoadTab.DrawTableIAItems(data?.['detail_data_po'])
+                        GISLoadTab.DrawTablePOItems(data?.['detail_data_po'])
+                        IAItemTableDiv.prop('hidden', true)
+                        POItemTableDiv.prop('hidden', false)
                     }
 
                     GISAction.DisabledDetailPage(option);

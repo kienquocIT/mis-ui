@@ -76,6 +76,7 @@ check_tab_sale.change(function () {
 check_tab_purchase.change(function () {
     $('#tab_purchase input, #tab_purchase select').val('')
     $('#tab_purchase').find('.row').prop('hidden', !check_tab_purchase.is(':checked'))
+    $.fn.initMaskMoney2()
 });
 
 available_notify_checkboxEle.on('change', function () {
@@ -827,9 +828,11 @@ function getDataForm() {
         data['product_choice'].push(2)
         data['purchase_default_uom'] = $('#purchase-select-box-default-uom option:selected').attr('value');
         data['purchase_tax'] = $('#purchase-select-box-tax-code option:selected').attr('value');
+        data['standard_price'] = $('#standard_price').attr('value')
     } else {
-        data['purchase_default_uom'] = null;
-        data['purchase_tax'] = null;
+        data['purchase_default_uom'] = null
+        data['purchase_tax'] = null
+        data['standard_price'] = 0
     }
 
     if (!data['product_types_mapped_list'].length > 0 || !data['general_product_category'] || !data['general_uom_group']) {
@@ -877,16 +880,16 @@ function getDataForm() {
 
 class ProductHandle {
     load() {
-        loadGeneralProductType();
-        loadGeneralProductCategory();
-        loadGeneralUoMGroup();
-        loadSaleTaxCode();
-        loadPurchaseTaxCode();
-        loadSaleDefaultUom();
-        loadSalePriceListForSaleOnline(null, []);
-        loadInventoryDefaultUom();
-        loadPurchaseDefaultUom();
-        loadBaseItemUnit();
+        loadGeneralProductType()
+        loadGeneralProductCategory()
+        loadGeneralUoMGroup()
+        loadSaleTaxCode()
+        loadPurchaseTaxCode()
+        loadSaleDefaultUom()
+        loadSalePriceListForSaleOnline(null, [])
+        loadInventoryDefaultUom()
+        loadPurchaseDefaultUom()
+        loadBaseItemUnit()
     }
 
     combinesData(frmEle, for_update = false) {
@@ -1023,6 +1026,7 @@ function LoadDetailProduct(option) {
                     loadPurchaseDefaultUom(purchase_information['default_uom']);
                     loadPurchaseTaxCode(purchase_information['tax']);
                     suppliedByEle.val(product_detail?.['purchase_information']?.['supplied_by'])
+                    $('#standard_price').attr('value', purchase_information['standard_price'])
                 }
 
                 $('#data-detail-page').val(JSON.stringify(product_detail));
@@ -1173,7 +1177,6 @@ function LoadDetailProduct(option) {
                 if (product_detail['product_variant_item_list'].length > 0) {
                  $('#table-variant-items-div').prop('hidden', false);
                 }
-
 
                 $.fn.initMaskMoney2();
 

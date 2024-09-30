@@ -11,14 +11,16 @@ $(function () {
         let btnAddProduct = $('#btn-add-product-quotation-create');
 
         // Load inits
+        QuotationLoadDataHandle.loadCustomCss();
         QuotationLoadDataHandle.loadInitCustomer();
         QuotationLoadDataHandle.loadBoxQuotationCustomer();
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         QuotationLoadDataHandle.loadInitDate();
 
-        QuotationLoadDataHandle.loadInitQuotationProduct();
+        // QuotationLoadDataHandle.loadInitQuotationProduct();
         // init dataTable
+        QuotationDataTableHandle.dataTableSelectProduct();
         QuotationDataTableHandle.dataTableProduct();
         QuotationDataTableHandle.dataTableCost();
         QuotationDataTableHandle.dataTableExpense();
@@ -127,8 +129,13 @@ $(function () {
 
 // Action on click button add product
         btnAddProduct.on('click', function (e) {
-            QuotationLoadDataHandle.loadAddRowProduct();
+            QuotationLoadDataHandle.loadModalSProduct();
+            // QuotationLoadDataHandle.loadAddRowProduct();
             indicatorHandle.loadQuotationIndicator();
+        });
+
+        QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
+            QuotationLoadDataHandle.loadNewProduct();
         });
 
 // Action on click select2 product
@@ -262,6 +269,7 @@ $(function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
                 if ($(this).hasClass('table-row-item')) {
+                    // QuotationLoadDataHandle.loadCheckProductBOM($(this));
                     QuotationLoadDataHandle.loadDataProductSelect($(this));
                 }
                 if ($(this).hasClass('validated-number')) {

@@ -303,6 +303,7 @@ class GRLoadDataHandle {
                 data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxWorkOrder, GRLoadDataHandle.$boxWorkOrder.val());
                 dataParams = {'work_order_id': data?.['id']};
             }
+            GRDataTableHandle.tableProductionReport.DataTable().clear().draw();
             $.fn.callAjax2({
                     'url': GRDataTableHandle.tableProductionReport.attr('data-url'),
                     'method': "GET",
@@ -1105,7 +1106,40 @@ class GRLoadDataHandle {
         let $row = $table.DataTable().row(rowIndex);
         let dataStore = $row.data();
         if (row.querySelector('.table-row-item')) {
-            GRLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataStore?.['product_data']]);
+            if (dataStore?.['product_data']?.['id']) {
+                GRLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataStore?.['product_data']]);
+                if (GRLoadDataHandle.typeSelectEle.val() === '3') {
+                    if (row.querySelector('.table-row-price')) {
+                        // call ajax check BOM
+                        $.fn.callAjax2({
+                                'url': GRLoadDataHandle.urlEle.attr('data-md-bom'),
+                                'method': 'GET',
+                                'data': {
+                                    'product_id': dataStore?.['product_data']?.['id'],
+                                },
+                                'isDropdown': true,
+                            }
+                        ).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    if (data.hasOwnProperty('bom_order_list') && Array.isArray(data.bom_order_list)) {
+                                        let elePrice = row.querySelector('.table-row-price');
+                                        if (data.bom_order_list.length > 0) {
+                                            if (elePrice) {
+                                                elePrice.setAttribute('disabled', 'true');
+                                                $(elePrice).attr('value', String(data.bom_order_list[0]?.['sum_price']));
+                                                $.fn.initMaskMoney2();
+                                                GRCalculateHandle.calculateMain(GRDataTableHandle.tableLineDetailPO, row);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+            }
         }
         if (row.querySelector('.table-row-uom')) {
             GRLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataStore?.['uom_data']], {'group': dataStore?.['uom_data']?.['uom_group']?.['id']});

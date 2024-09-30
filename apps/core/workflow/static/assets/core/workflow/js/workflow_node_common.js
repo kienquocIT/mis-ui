@@ -1103,7 +1103,7 @@ class NodeDataTableHandle {
                                         </div>
                                     </div>`;
                         } else {
-                            return `<div class="row align-items-center">
+                            return `<div class="row align-items-center" hidden>
                                         <div class="d-flex align-items-center">
                                             <button 
                                                 type="button"
@@ -1265,19 +1265,33 @@ class NodeDataTableHandle {
                                                                 </div>
                                                             </div>
                                                             <div class="row collab-area collab-in-workflow-area mb-5" hidden>
-                                                                <div class="row">
-                                                                    <div class="col-2">
-                                                                        <button
-                                                                                type="button"
-                                                                                class="btn btn-outline-primary btn-sm"
-                                                                                data-bs-toggle="offcanvas"
-                                                                                data-bs-target="#${idInWFCanvas}"
-                                                                                aria-controls="${idInWFCanvas}"
-                                                                        >
-                                                                            <span><span>${NodeLoadDataHandle.transEle.attr('data-add-new')}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="col-10"></div>
+                                                                <table
+                                                                    class="table nowrap w-100 table-in-workflow-employee"
+                                                                >
+                                                                    <thead>
+                                                                    <tr class="bg-light">
+                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
+                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-select-position')}</th>
+                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
+                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
+                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
+                                                                        <th class="w-5"></th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    </tbody>
+                                                                </table>
+                                                                
+                                                                <div class="d-flex justify-content-start">
+                                                                    <button
+                                                                            type="button"
+                                                                            class="btn btn-outline-primary btn-sm"
+                                                                            data-bs-toggle="offcanvas"
+                                                                            data-bs-target="#${idInWFCanvas}"
+                                                                            aria-controls="${idInWFCanvas}"
+                                                                    >
+                                                                        <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${NodeLoadDataHandle.transEle.attr('data-add-new')}</span></span>
+                                                                    </button>
                                                                 </div>
                                                                 <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="${idInWFCanvas}" aria-labelledby="${idInWFCanvas}">
                                                                     <div class="offcanvas-header">
@@ -1376,22 +1390,6 @@ class NodeDataTableHandle {
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <table
-                                                                    class="table nowrap w-100 table-in-workflow-employee"
-                                                                >
-                                                                    <thead>
-                                                                    <tr class="bg-light">
-                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
-                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-select-position')}</th>
-                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
-                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
-                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
-                                                                        <th class="w-5"></th>
-                                                                    </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                    </tbody>
-                                                                </table>
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
@@ -1455,7 +1453,7 @@ class NodeDataTableHandle {
                                         </div>
                                     </div>`;
                             } else {
-                                return `<div class="row align-items-center">
+                                return `<div class="row align-items-center" hidden>
                                         <div class="d-flex align-items-center">
                                             <button 
                                                 type="button"

@@ -123,7 +123,7 @@
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label class="form-label required" for="box-warehouse">{% trans 'Goods receipt to warehouse' %}</label>
+                                <label class="form-label" for="box-warehouse">{% trans 'Goods receipt to warehouse' %}</label>
                                 <select
                                     class="form-select"
                                     id="box-warehouse"
@@ -132,7 +132,6 @@
                                     data-link-detail=""
                                     name="warehouse_id"
                                     data-keyResp="warehouse_list"
-                                    required
                                     readonly
                                 ></select>
                             </div>
@@ -249,6 +248,7 @@
         data-in-production="{% trans 'In production' %}"
         data-done="{% trans 'Done' %}"
         data-all-wh="{% trans 'All warehouse' %}"
+        data-validate-quantity="{% trans 'The quantity must be greater than 0' %}"
     >
     <input
         type="text"

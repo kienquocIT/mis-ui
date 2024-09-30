@@ -163,12 +163,13 @@ class WorkOrderLoadDataHandle {
                 if (dataOpp?.['sale_person']?.['id']) {
                     WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxEmp, [dataOpp?.['sale_person']]);
                 }
+                WorkOrderDataTableHandle.$tableSOProd.DataTable().clear().draw();
                 if (dataOpp?.['sale_order']?.['id']) {
                     WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxSO, [dataOpp?.['sale_order']], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
                     $.fn.callAjax2({
                             'url': WorkOrderLoadDataHandle.$urls.attr('data-so-product-wo'),
                             'method': 'GET',
-                            'data': {'sale_order_id': dataOpp?.['sale_order']?.['id'], 'product__bom_product__isnull': false},
+                            'data': {'sale_order_id': dataOpp?.['sale_order']?.['id'], 'product__bom_product__isnull': false, 'product_id__isnull': false},
                             'isDropdown': true,
                         }
                     ).then(
@@ -176,7 +177,15 @@ class WorkOrderLoadDataHandle {
                             let data = $.fn.switcherResp(resp);
                             if (data) {
                                 if (data.hasOwnProperty('sale_order_product_wo') && Array.isArray(data.sale_order_product_wo)) {
-                                    WorkOrderDataTableHandle.$tableSOProd.DataTable().rows.add(data.sale_order_product_wo).draw();
+                                    let checkList = [];
+                                    let fnData = [];
+                                    for (let soProduct of data.sale_order_product_wo) {
+                                        if (!checkList.includes(soProduct?.['product_data']?.['id'])) {
+                                            fnData.push(soProduct);
+                                        }
+                                        checkList.push(soProduct?.['product_data']?.['id']);
+                                    }
+                                    WorkOrderDataTableHandle.$tableSOProd.DataTable().rows.add(fnData).draw();
                                     WorkOrderLoadDataHandle.loadEventCheckbox(WorkOrderDataTableHandle.$tableSOProd);
                                     WorkOrderLoadDataHandle.loadEventValidQuantity(WorkOrderDataTableHandle.$tableSOProd);
                                     for (let ele of WorkOrderDataTableHandle.$tableSOProd[0].querySelectorAll('.table-row-quantity')) {
@@ -216,6 +225,15 @@ class WorkOrderLoadDataHandle {
                             WorkOrderLoadDataHandle.$uom.val(dataRow?.['uom_data']?.['title']);
                             WorkOrderLoadDataHandle.$uom.attr('data-detail', JSON.stringify(dataRow?.['uom_data']));
                         }
+                        if (dataRow?.['product_data']?.['general_information']?.['product_type']) {
+                            for (let productType of dataRow?.['product_data']?.['general_information']?.['product_type']) {
+                                if (productType?.['is_service'] === true) {
+                                    WorkOrderLoadDataHandle.$boxWH.attr('readonly', 'true');
+                                    break;
+                                }
+                            }
+                        }
+
                         let curProdID = null;
                         if (WorkOrderLoadDataHandle.$product.attr('data-detail')) {
                             let dataProduct = JSON.parse(WorkOrderLoadDataHandle.$product.attr('data-detail'));
@@ -239,7 +257,10 @@ class WorkOrderLoadDataHandle {
             $.fn.callAjax2({
                     'url': WorkOrderLoadDataHandle.$urls.attr('data-md-bom'),
                     'method': 'GET',
-                    'data': {'product_id': dataProduct?.['id']},
+                    'data': {
+                        'product_id': dataProduct?.['id'],
+                        'opportunity_id__isnull': false,
+                    },
                     'isDropdown': true,
                 }
             ).then(
@@ -556,10 +577,6 @@ class WorkOrderDataTableHandle {
     static $tableSOProd = $('#table-so-product');
 
     static dataTableMain(data) {
-        let multi = 1;
-        if (WorkOrderLoadDataHandle.$quantity.val()) {
-            multi = parseInt(WorkOrderLoadDataHandle.$quantity.val());
-        }
         WorkOrderDataTableHandle.$tableMain.DataTableDefault({
             data: data ? data : [],
             ordering: false,
@@ -615,6 +632,10 @@ class WorkOrderDataTableHandle {
                     targets: 3,
                     width: '5%',
                     render: (data, type, row) => {
+                        let multi = 1;
+                        if (WorkOrderLoadDataHandle.$quantity.val()) {
+                            multi = parseInt(WorkOrderLoadDataHandle.$quantity.val());
+                        }
                         if (row?.['is_task'] === true) {
                             return ``;
                         }
@@ -662,6 +683,10 @@ class WorkOrderDataTableHandle {
                     targets: 7,
                     width: '10%',
                     render: (data, type, row) => {
+                        let multi = 1;
+                        if (WorkOrderLoadDataHandle.$quantity.val()) {
+                            multi = parseInt(WorkOrderLoadDataHandle.$quantity.val());
+                        }
                         if (row?.['is_task'] === true) {
                             return `<span class="table-row-labor">${row?.['quantity_bom'] * multi}</span><span class="table-row-uom-labor"> ${row?.['uom_data']?.['title']}</span>`;
                         }
@@ -693,9 +718,9 @@ class WorkOrderDataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    render: (data, type, row) => {
+                    render: (data, type, row, meta) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" data-row="${dataRow}">${row?.['order']}</span>`;
+                        return `<span class="table-row-order" data-row="${dataRow}">${(meta.row + 1)}</span>`;
                     }
                 },
                 {
@@ -907,6 +932,10 @@ class WorkOrderSubmitHandle {
             if (WorkOrderLoadDataHandle.$quantity.val()) {
                 _form.dataForm['quantity'] = parseFloat(WorkOrderLoadDataHandle.$quantity.val());
                 _form.dataForm['gr_remain_quantity'] = parseFloat(WorkOrderLoadDataHandle.$quantity.val());
+                if (_form.dataForm['quantity'] <= 0) {
+                    $.fn.notifyB({description: WorkOrderLoadDataHandle.$trans.attr('data-validate-quantity')}, 'failure');
+                    return false;
+                }
             }
             if (WorkOrderLoadDataHandle.$uom.attr('data-detail')) {
                 let dataUOM = JSON.parse(WorkOrderLoadDataHandle.$uom.attr('data-detail'));
@@ -941,6 +970,7 @@ class WorkOrderSubmitHandle {
             _form.dataForm['task_data'] = WorkOrderSubmitHandle.setupTask();
 
         }
+        return _form.dataForm;
     };
 }
 

@@ -57,7 +57,7 @@ class ProdOrderLoadDataHandle {
         // select2
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxType, ProdOrderLoadDataHandle.dataType);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, ProdOrderLoadDataHandle.dataStatus);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [], {'general_product_types_mapped__is_finished_goods': true});
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [], {'general_product_types_mapped__is_finished_goods': true, 'bom_product__opportunity_id__isnull': true});
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
@@ -330,6 +330,25 @@ class ProdOrderLoadDataHandle {
         return true;
     };
 
+    static loadCheckAllWH(ele) {
+        let row = ele.closest('tr');
+        if (row.querySelector('.table-row-warehouse') && row.querySelector('.table-row-stock') && row.querySelector('.table-row-available')) {
+            row.querySelector('.table-row-stock').innerHTML = 0;
+            row.querySelector('.table-row-available').innerHTML = 0;
+            if (ele.checked === true) {
+                row.querySelector('.table-row-warehouse').setAttribute('disabled', 'true');
+                ProdOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), []);
+                ProdOrderLoadDataHandle.loadChangeWH(row, 1);
+            }
+            if (ele.checked === false) {
+                row.querySelector('.table-row-warehouse').removeAttribute('disabled');
+            }
+        }
+        // store data
+        ProdOrderStoreHandle.storeRow(row);
+        return true;
+    };
+
     static loadChangeWH(row, type= 0) {
         if (row) {
             if (row.querySelector('.table-row-item') && row.querySelector('.table-row-warehouse') && row.querySelector('.table-row-stock') && row.querySelector('.table-row-available')) {
@@ -477,10 +496,6 @@ class ProdOrderDataTableHandle {
     static $tableMain = $('#table_production_order');
 
     static dataTableMain(data) {
-        let multi = 1;
-        if (ProdOrderLoadDataHandle.$quantity.val()) {
-            multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
-        }
         ProdOrderDataTableHandle.$tableMain.DataTableDefault({
             data: data ? data : [],
             ordering: false,
@@ -536,6 +551,10 @@ class ProdOrderDataTableHandle {
                     targets: 3,
                     width: '5%',
                     render: (data, type, row) => {
+                        let multi = 1;
+                        if (ProdOrderLoadDataHandle.$quantity.val()) {
+                            multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
+                        }
                         if (row?.['is_task'] === true) {
                             return ``;
                         }
@@ -583,6 +602,10 @@ class ProdOrderDataTableHandle {
                     targets: 7,
                     width: '10%',
                     render: (data, type, row) => {
+                        let multi = 1;
+                        if (ProdOrderLoadDataHandle.$quantity.val()) {
+                            multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
+                        }
                         if (row?.['is_task'] === true) {
                             return `<span class="table-row-labor">${row?.['quantity_bom'] * multi}</span><span class="table-row-uom-labor"> ${row?.['uom_data']?.['title']}</span>`;
                         }
@@ -746,6 +769,10 @@ class ProdOrderSubmitHandle {
             if (ProdOrderLoadDataHandle.$quantity.val()) {
                 _form.dataForm['quantity'] = parseFloat(ProdOrderLoadDataHandle.$quantity.val());
                 _form.dataForm['gr_remain_quantity'] = parseFloat(ProdOrderLoadDataHandle.$quantity.val());
+                if (_form.dataForm['quantity'] <= 0) {
+                    $.fn.notifyB({description: ProdOrderLoadDataHandle.$trans.attr('data-validate-quantity')}, 'failure');
+                    return false;
+                }
             }
             if (ProdOrderLoadDataHandle.$boxUOM.val()) {
                 _form.dataForm['uom_id'] = ProdOrderLoadDataHandle.$boxUOM.val();

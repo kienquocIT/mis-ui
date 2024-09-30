@@ -1231,11 +1231,22 @@ class PODataTableHandle {
             ajax: {
                 url: frm.dataUrl,
                 type: frm.dataMethod,
-                data: {'is_all_ordered': false, 'system_status': 3, 'sale_order__opportunity__is_deal_close': false},
+                data: {'is_all_ordered': false, 'system_status': 3},
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('purchase_request_sale_list')) {
-                        return resp.data['purchase_request_sale_list'] ? resp.data['purchase_request_sale_list'] : []
+                        let fnData = [];
+                        for (let prData of resp.data['purchase_request_sale_list']) {
+                            if ([1, 2, 3].includes(prData?.['request_for'])) {
+                                fnData.push(prData);
+                            }
+                            if (prData?.['request_for'] === 0) {
+                                if (prData?.['sale_order']?.['is_deal_close'] === false) {
+                                    fnData.push(prData);
+                                }
+                            }
+                        }
+                        return fnData;
                     }
                     throw Error('Call data raise errors.')
                 },

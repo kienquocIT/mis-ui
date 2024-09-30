@@ -65,7 +65,6 @@ $(document).ready(function () {
         ],
         columns: [  // 30,300,240,120,120,120,240,120,240,390 (1920p)
             {
-                className: 'wrap-text w-5',
                 'render': () => {
                     return ``;
                 },
@@ -79,7 +78,7 @@ $(document).ready(function () {
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'wrap-text w-20',
                 data: 'name',
                 render: (data, type, row) => {
                     let urlEditPage = msgData.attr('data-url').format_url_with_uuid(row.id);

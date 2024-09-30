@@ -66,14 +66,6 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadInitQuickProd() {
-        let choice = $('#quick-product-choice');
-        if (choice && choice.length > 0) {
-            QuotationLoadDataHandle.loadEventCheckbox(choice[0]);
-        }
-        return true;
-    };
-
     static loadInitOpportunity() {
         let form = $('#frm_quotation_create');
         if (form.attr('data-method').toLowerCase() === 'post') {
@@ -528,6 +520,7 @@ class QuotationLoadDataHandle {
                 'employee_inherit': sale_person_id,
                 'system_status__in': [2, 3].join(','),
             };
+            WindowControl.showLoading();
             $.fn.callAjax2({
                     'url': url,
                     'method': method,
@@ -559,12 +552,14 @@ class QuotationLoadDataHandle {
                                             if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
                                                 let dataHasOpp = data.quotation_list.concat(dataInit);
                                                 QuotationDataTableHandle.dataTableCopyQuotation(dataHasOpp);
+                                                WindowControl.hideLoading();
                                             }
                                         }
                                     }
                                 )
                             } else {
                                 QuotationDataTableHandle.dataTableCopyQuotation(dataInit);
+                                WindowControl.hideLoading();
                             }
                         }
                     }
@@ -572,6 +567,7 @@ class QuotationLoadDataHandle {
             )
         } else {
             QuotationDataTableHandle.dataTableCopyQuotation();
+            WindowControl.hideLoading();
         }
         return true;
     };
@@ -1856,19 +1852,17 @@ class QuotationLoadDataHandle {
 
         WindowControl.showLoading();
         $.fn.callAjax2({
-            'url': QuotationDataTableHandle.productInitEle.attr('data-url'),
-            'method': QuotationDataTableHandle.productInitEle.attr('data-method'),
-            'data': {'id__in': listProductID},
-            'isDropdown': true,
+                'url': QuotationDataTableHandle.productInitEle.attr('data-url'),
+                'method': QuotationDataTableHandle.productInitEle.attr('data-method'),
+                'data': {'id__in': listProductID},
+                'isDropdown': true,
             }
         ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                        for (let product of data.product_sale_list) {
-                            
-                        }
+
                         WindowControl.hideLoading();
                     }
                 }
@@ -2487,11 +2481,11 @@ class QuotationDataTableHandle {
                         if (row?.['shipping_id']) {
                             itemType = 2  // shipping
                         }
-                        let description = "";
+                        let description = "--";
                         if (itemType === 0) {  // PRODUCT
-                            description = row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : '';
+                            description = row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : '--';
                         } else if (itemType === 1) {  // PROMOTION
-                            description = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '';
+                            description = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '--';
                         }
                         return `<p class="table-row-description" data-zone="${dataZone}">${description}</p>`;
                     }
@@ -2727,7 +2721,7 @@ class QuotationDataTableHandle {
                                                 data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
                                                 data-keyResp="product_sale_list"
                                                 data-zone="${dataZone}"
-                                                disabled
+                                                readonly
                                             >
                                             </select>
                                         </div>

@@ -410,64 +410,6 @@ class QuotationLoadDataHandle {
         }
     };
 
-    static loadCheckProductBOM(ele) {
-        if (ele.val()) {
-            let productData = SelectDDControl.get_data_from_idx(ele, ele.val());
-            if (productData) {
-                // call ajax check BOM
-                $.fn.callAjax2({
-                        'url': QuotationLoadDataHandle.urlEle.attr('data-md-bom'),
-                        'method': 'GET',
-                        'data': {
-                            'product_id': productData?.['product_data']?.['id'],
-                        },
-                        'isDropdown': true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('bom_order_list') && Array.isArray(data.bom_order_list)) {
-                                if (data.bom_order_list.length > 0) {
-                                    $.fn.callAjax2({
-                                            'url': QuotationLoadDataHandle.urlEle.attr('data-so-product-wo'),
-                                            'method': 'GET',
-                                            'data': {
-                                                'product_id': productData?.['id'],
-                                                'sale_order__opportunity_id__isnull': false,
-                                                'sale_order__system_status__in': [0, 1].join(',')
-                                            },
-                                            'isDropdown': true,
-                                        }
-                                    ).then(
-                                        (resp) => {
-                                            let data = $.fn.switcherResp(resp);
-                                            if (data) {
-                                                if (data.hasOwnProperty('sale_order_product_wo') && Array.isArray(data.sale_order_product_wo)) {
-                                                    if (data.sale_order_product_wo.length > 0) {
-                                                        QuotationLoadDataHandle.loadBoxQuotationProduct(ele);
-                                                        ele.val('').trigger('change');
-                                                        $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-valid-product-bom')}, 'failure');
-                                                        return false;
-                                                    } else {
-                                                        QuotationLoadDataHandle.loadDataProductSelect(ele);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    )
-                                } else {
-                                    QuotationLoadDataHandle.loadDataProductSelect(ele);
-                                }
-                            }
-                        }
-                    }
-                )
-            }
-            $.fn.initMaskMoney2();
-        }
-    };
-
     static loadDataProductSelect(ele) {
         if (ele.val()) {
             let productData = SelectDDControl.get_data_from_idx(ele, ele.val());
@@ -1844,33 +1786,6 @@ class QuotationLoadDataHandle {
         }
     };
 
-    static loadCheckDataCopy(dataCopy) {
-        let listProductID = [];
-        for (let dataProduct of dataCopy?.['quotation_products_data']) {
-            listProductID.push(dataProduct?.['product_data']?.['id']);
-        }
-
-        WindowControl.showLoading();
-        $.fn.callAjax2({
-                'url': QuotationDataTableHandle.productInitEle.attr('data-url'),
-                'method': QuotationDataTableHandle.productInitEle.attr('data-method'),
-                'data': {'id__in': listProductID},
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-
-                        WindowControl.hideLoading();
-                    }
-                }
-            }
-        )
-        return true;
-    };
-
     static loadCopyData(dataCopy) {
         let $form = $('#frm_quotation_create');
         let tableProduct = $('#datable-quotation-create-product');
@@ -1885,9 +1800,59 @@ class QuotationLoadDataHandle {
         indicatorHandle.loadQuotationIndicator();
         // Set form novalidate
         $form[0].setAttribute('novalidate', 'novalidate');
-        $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');
+        QuotationLoadDataHandle.loadCheckDataCopy();
         // set again WF runtime
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
+        return true;
+    };
+
+    static loadCheckDataCopy() {
+        let listProductID = [];
+        for (let ele of QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-item')) {
+            if (ele.getAttribute('data-product-id')) {
+                listProductID.push(ele.getAttribute('data-product-id'));
+            }
+        }
+        WindowControl.showLoading();
+        $.fn.callAjax2({
+                'url': QuotationDataTableHandle.productInitEle.attr('data-url'),
+                'method': QuotationDataTableHandle.productInitEle.attr('data-method'),
+                'data': {'id__in': listProductID.join(','),},
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                        let listExclude = [];
+                        for (let product of data.product_sale_list) {
+                            if (product?.['bom_check_data']?.['is_bom'] === true) {
+                                if (product?.['bom_check_data']?.['is_so_finished'] === false && product?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                    listExclude.push(product?.['id']);
+                                }
+                                if (product?.['bom_check_data']?.['is_so_finished'] === true && product?.['bom_check_data']?.['is_so_using'] === true) {
+                                    listExclude.push(product?.['id']);
+                                }
+                            }
+                        }
+                        for (let ele of QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-item')) {
+                            if (ele.getAttribute('data-product-id')) {
+                                if (listExclude.includes(ele.getAttribute('data-product-id'))) {
+                                    if (ele.closest('tr')) {
+                                        if (ele.closest('tr').querySelector('.del-row')) {
+                                            $(ele.closest('tr').querySelector('.del-row')).trigger('click');
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        WindowControl.hideLoading();
+                        $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');
+                    }
+                }
+            }
+        )
         return true;
     };
 
@@ -3363,7 +3328,7 @@ class QuotationDataTableHandle {
                     targets: 1,
                     width: '40%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-title text-primary" data-id="${row?.['indicator']?.['id']}" data-zone="quotation_indicators_data">${row?.['indicator']?.['title']}</span>`
+                        return `<b class="table-row-title" data-id="${row?.['indicator']?.['id']}" data-zone="quotation_indicators_data">${row?.['indicator']?.['title']}</b>`
                     }
                 },
                 {
@@ -3412,7 +3377,7 @@ class QuotationDataTableHandle {
                     targets: 1,
                     width: '20%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-title text-primary" data-id="${row.quotation_indicator.id}" data-zone="sale_order_indicators_data">${row.quotation_indicator.title}</span>`
+                        return `<b class="table-row-title" data-id="${row.quotation_indicator.id}" data-zone="sale_order_indicators_data">${row.quotation_indicator.title}</b>`
                     }
                 },
                 {

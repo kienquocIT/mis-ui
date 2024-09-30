@@ -10,6 +10,17 @@ $(document).ready(function () {
             }
         },
         {
+                            data: 'code',
+                            className: 'wrap-text w-30',
+                            render: (data, type, row) => {
+                                if (row.is_default) {
+                                    return `<span class="badge badge-secondary">${row.code}</span>`
+                                } else {
+                                    return `<span class="badge badge-primary">${row.code}</span>`
+                                }
+                            }
+                        },
+        {
             data: 'title',
             className: 'wrap-text w-45',
             render: (data, type, row, meta) => {
@@ -157,8 +168,19 @@ $(document).ready(function () {
                             }
                         },
                         {
+                            data: 'code',
+                            className: 'wrap-text w-30',
+                            render: (data, type, row) => {
+                                if (row.is_default) {
+                                    return `<span class="badge badge-secondary">${row.code}</span>`
+                                } else {
+                                    return `<span class="badge badge-primary">${row.code}</span>`
+                                }
+                            }
+                        },
+                        {
                             data: 'title',
-                            className: 'wrap-text w-80',
+                            className: 'wrap-text w-50',
                             render: (data, type, row, meta) => {
                                 if (row.is_default) {
                                     return `<span><b>${row.title}</b></span>`
@@ -652,6 +674,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_type')) {
+                        $('#inp-edit-code').val(data?.['product_type'].code);
                         $('#inp-edit-name').val(data?.['product_type'].title);
                         $('#inp-edit-description').val(data?.['product_type'].description);
                     }
@@ -714,6 +737,9 @@ $(document).ready(function () {
     let frm_edit_product_expense = $('#form-edit-product-and-expense')
     new SetupFormSubmit(frm_edit_product_expense).validate({
         rules: {
+            code: {
+                required: true,
+            },
             title: {
                 required: true,
             }

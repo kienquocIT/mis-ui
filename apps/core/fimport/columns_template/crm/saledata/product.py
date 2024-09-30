@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from apps.core.fimport.columns_template import ResolveColumnsFImport
 from apps.core.fimport.columns_template.app_name import (
     SHEET_SALEDATA_PRODUCT_UOMGROUP, SHEET_SALEDATA_PRODUCT_PRODUCT_TYPE, SHEET_SALEDATA_PRODUCT_PRODUCT_CATEGORY,
+    SHEET_SALEDATA_PRODUCT_UOM,
 )
 
 COLUMNS_SALEDATA_PRODUCT_UOMGROUP = ResolveColumnsFImport(
@@ -34,6 +35,22 @@ COLUMNS_SALEDATA_PRODUCT_PRODUCT_TYPE = ResolveColumnsFImport(
     url_name='ProductProductTypeImportAPI',
     template_link='fimport/template/import-saledata-product-producttype.xlsx',
     validate={},
+)
+
+COLUMNS_SALEDATA_PRODUCT_PRODUCT_TYPE.add_column(
+    name=_('Code'), data={
+        'name': _('Code'),
+        'input_name': 'code',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+                'minlength': 1,
+            },
+        },
+    }
 )
 
 COLUMNS_SALEDATA_PRODUCT_PRODUCT_TYPE.add_column(
@@ -107,3 +124,59 @@ COLUMNS_SALEDATA_PRODUCT_PRODUCT_CATEGORY.add_column(
         },
     }
 )
+
+COLUMNS_SALEDATA_PRODUCT_UOM = ResolveColumnsFImport(
+    sheet_name=SHEET_SALEDATA_PRODUCT_UOM,
+    app_id='7bc78f47-66f1-4104-a6fa-5ca07f3f2275',
+    url_name='ProductUOMImportAPI',
+    template_link='fimport/template/import-saledata-product-uom.xlsx',
+    validate={},
+)
+
+COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
+    name=_('Code'), data={
+        'name': _('Code'),
+        'input_name': 'code',
+        'type': 'string',
+        'remarks': [],
+        'is_primary_key': True,
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
+    name=_('Title'), data={
+        'name': _('Title'),
+        'input_name': 'title',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
+    name=_('UOM Group'), data={
+        'name': _('UOM Group'),
+        'input_name': 'group',
+        'type': 'string',
+        'is_foreign_key': SHEET_SALEDATA_PRODUCT_UOMGROUP,
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+

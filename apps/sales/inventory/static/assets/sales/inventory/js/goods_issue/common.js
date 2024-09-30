@@ -73,43 +73,108 @@ class GISLoadPage {
         })
     }
     static LoadPO(data) {
-        POEle.initSelect2({
-            data: data,
-            ajax: {
-                data: {'system_status': 3},
-                url: POEle.attr('data-url'),
-                method: 'GET',
+        let po_dataParam = {'system_status': 3}
+        let po_list_ajax = $.fn.callAjax2({
+            url: POEle.attr('data-url-po'),
+            data: po_dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('production_order_list')) {
+                    return data?.['production_order_list'];
+                }
+                return {};
             },
-            keyResp: 'production_order_list',
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            if (POEle.val()) {
-                let dataParam = {}
-                let po_list_ajax = $.fn.callAjax2({
-                    url: `${script_url.attr('data-url-po').replace('/0', `/${POEle.val()}`)}`,
-                    data: dataParam,
-                    method: 'GET'
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && typeof data === 'object' && data.hasOwnProperty('production_order_detail')) {
-                            return data?.['production_order_detail'];
-                        }
-                        return {};
-                    },
-                    (errs) => {
-                        console.log(errs);
-                    }
-                )
-
-                Promise.all([po_list_ajax]).then(
-                    (results) => {
-                        console.log(results[0]?.['task_data'])
-                        return results[0] ? GISLoadTab.DrawTablePOItems(results[0]?.['task_data']) : GISLoadTab.DrawTablePOItems([])
-                    })
+            (errs) => {
+                console.log(errs);
             }
-        })
+        )
+
+        let wo_dataParam = {'system_status': 3}
+        let wo_list_ajax = $.fn.callAjax2({
+            url: POEle.attr('data-url-wo'),
+            data: wo_dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('work_order_list')) {
+                    return data?.['work_order_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([po_list_ajax, wo_list_ajax]).then(
+            (results) => {
+                POEle.initSelect2({
+                    data: results[0].concat(results[1]),
+                    templateResult: function (state) {
+                        let type_html = `<span class="badge badge-soft-primary">${state?.['data']?.['app'] ? state?.['data']?.['app'] : "--"}</span>`
+                        return $(`${type_html} <span>${state?.['data']?.['title']}</span>`);
+                    },
+                    keyResp: 'production_order_list',
+                    keyId: 'id',
+                    keyText: 'title',
+                }).on('change', function () {
+                    if (POEle.val()) {
+                        let selected = SelectDDControl.get_data_from_idx(POEle, POEle.val())
+                        if (selected?.['type'] === 0) {
+                            let dataParam = {}
+                            let po_detail_ajax = $.fn.callAjax2({
+                                url: `${script_url.attr('data-url-po').replace('/0', `/${POEle.val()}`)}`,
+                                data: dataParam,
+                                method: 'GET'
+                            }).then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    if (data && typeof data === 'object' && data.hasOwnProperty('production_order_detail')) {
+                                        return data?.['production_order_detail'];
+                                    }
+                                    return {};
+                                },
+                                (errs) => {
+                                    console.log(errs);
+                                }
+                            )
+
+                            Promise.all([po_detail_ajax]).then(
+                                (results) => {
+                                    return results[0] ? GISLoadTab.DrawTablePOItems(results[0]?.['task_data']) : GISLoadTab.DrawTablePOItems([])
+                                })
+                        }
+                        else {
+                            let dataParam = {}
+                            let wo_detail_ajax = $.fn.callAjax2({
+                                url: `${script_url.attr('data-url-wo').replace('/0', `/${POEle.val()}`)}`,
+                                data: dataParam,
+                                method: 'GET'
+                            }).then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    if (data && typeof data === 'object' && data.hasOwnProperty('work_order_detail')) {
+                                        return data?.['work_order_detail'];
+                                    }
+                                    return {};
+                                },
+                                (errs) => {
+                                    console.log(errs);
+                                }
+                            )
+
+                            Promise.all([wo_detail_ajax]).then(
+                                (results) => {
+                                    console.log(results[0])
+                                    return results[0] ? GISLoadTab.DrawTablePOItems(results[0]?.['task_data']) : GISLoadTab.DrawTablePOItems([])
+                                })
+                        }
+                    }
+                })
+            })
     }
 }
 

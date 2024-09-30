@@ -769,6 +769,10 @@ class ProdOrderSubmitHandle {
             if (ProdOrderLoadDataHandle.$quantity.val()) {
                 _form.dataForm['quantity'] = parseFloat(ProdOrderLoadDataHandle.$quantity.val());
                 _form.dataForm['gr_remain_quantity'] = parseFloat(ProdOrderLoadDataHandle.$quantity.val());
+                if (_form.dataForm['quantity'] <= 0) {
+                    $.fn.notifyB({description: ProdOrderLoadDataHandle.$trans.attr('data-validate-quantity')}, 'failure');
+                    return false;
+                }
             }
             if (ProdOrderLoadDataHandle.$boxUOM.val()) {
                 _form.dataForm['uom_id'] = ProdOrderLoadDataHandle.$boxUOM.val();

@@ -67,7 +67,10 @@ $(function () {
         formSubmit.submit(function (e) {
             e.preventDefault();
             let _form = new SetupFormSubmit(formSubmit);
-            ProdOrderSubmitHandle.setupDataSubmit(_form);
+            let result = ProdOrderSubmitHandle.setupDataSubmit(_form);
+            if (result === false) {
+                return false;
+            }
             let submitFields = [
                 'title',
                 'bom_id',

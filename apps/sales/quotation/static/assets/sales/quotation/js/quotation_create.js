@@ -18,8 +18,9 @@ $(function () {
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         QuotationLoadDataHandle.loadInitDate();
 
-        QuotationLoadDataHandle.loadInitQuotationProduct();
+        // QuotationLoadDataHandle.loadInitQuotationProduct();
         // init dataTable
+        QuotationDataTableHandle.dataTableSelectProduct();
         QuotationDataTableHandle.dataTableProduct();
         QuotationDataTableHandle.dataTableCost();
         QuotationDataTableHandle.dataTableExpense();
@@ -128,8 +129,13 @@ $(function () {
 
 // Action on click button add product
         btnAddProduct.on('click', function (e) {
-            QuotationLoadDataHandle.loadAddRowProduct();
+            QuotationLoadDataHandle.loadModalSProduct();
+            // QuotationLoadDataHandle.loadAddRowProduct();
             indicatorHandle.loadQuotationIndicator();
+        });
+
+        QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
+            QuotationLoadDataHandle.loadNewProduct();
         });
 
 // Action on click select2 product
@@ -263,6 +269,7 @@ $(function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
                 if ($(this).hasClass('table-row-item')) {
+                    // QuotationLoadDataHandle.loadCheckProductBOM($(this));
                     QuotationLoadDataHandle.loadDataProductSelect($(this));
                 }
                 if ($(this).hasClass('validated-number')) {
@@ -607,8 +614,7 @@ $(function () {
 
         function checkElementValuesBeforeLoadDataCopy() {
             let element0 = $('#data-copy-quotation-detail').val();
-            let element1 = $('#data-init-quotation-create-tables-product').val();
-            if (element0 && element1) {
+            if (element0) {
                 loadDataCopyTo(JSON.parse(element0));  // call loadDataCopyTo() if all condition pass
             } else {
                 setTimeout(checkElementValuesBeforeLoadDataCopy, 1000);  // call again after 1s if condition not pass yet

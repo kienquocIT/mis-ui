@@ -469,7 +469,7 @@ class ProdReportSubmitHandle {
                     _form.dataForm['quantity_finished'] = parseFloat(ProdReportLoadDataHandle.$quantityFinished.val());
                     _form.dataForm['gr_remain_quantity'] = parseFloat(ProdReportLoadDataHandle.$quantityFinished.val());
                     if (_form.dataForm['quantity_finished'] <= 0) {
-                        $.fn.notifyB({description: ProdReportLoadDataHandle.$trans.attr('data-required-quantity-finished')}, 'failure');
+                        $.fn.notifyB({description: ProdReportLoadDataHandle.$trans.attr('data-validate-quantity')}, 'failure');
                         return false;
                     }
                 }

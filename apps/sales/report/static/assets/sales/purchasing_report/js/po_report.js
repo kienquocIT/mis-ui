@@ -21,19 +21,6 @@ $(document).ready(function () {
         $periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
     }
 
-    $('#btn-collapse').on('click', function () {
-        if ($btn_title.text() !== $btn_title.attr('data-trans-show')) {
-            $btn_title.text($btn_title.attr('data-trans-hide'))
-            $(this).removeClass('btn-primary')
-            $(this).addClass('btn-soft-primary')
-        }
-        else {
-            $btn_title.text($btn_title.attr('data-trans-show'))
-            $(this).addClass('btn-primary')
-            $(this).removeClass('btn-soft-primary')
-        }
-    })
-
     $periodMonthEle.on('change', function () {
         let selected_option = SelectDDControl.get_data_from_idx($periodEle, $periodEle.val())
         if (selected_option) {
@@ -281,7 +268,6 @@ $(document).ready(function () {
 
         Promise.all([po_report_list_ajax]).then(
             (results) => {
-                $('#btn-collapse').trigger('click')
                 $table_po_report.find('tbody').html('')
                 let table_order_quantity = 0
                 let table_received_quantity = 0

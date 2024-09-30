@@ -303,6 +303,7 @@ class GRLoadDataHandle {
                 data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.$boxWorkOrder, GRLoadDataHandle.$boxWorkOrder.val());
                 dataParams = {'work_order_id': data?.['id']};
             }
+            GRDataTableHandle.tableProductionReport.DataTable().clear().draw();
             $.fn.callAjax2({
                     'url': GRDataTableHandle.tableProductionReport.attr('data-url'),
                     'method': "GET",

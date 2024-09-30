@@ -8955,3 +8955,11 @@ msgstr "Giá tiêu chuẩn"
 #
 msgid "References in the BOM"
 msgstr "Để tham chiếu trong BOM"
+
+#
+msgid "The product is in the design stage for another project"
+msgstr "Sản phẩm đang trong giai đoạn thiết kế cho dự án khác"
+
+#
+msgid "The quantity must be greater than 0"
+msgstr "Số lượng phải lớn hơn 0"

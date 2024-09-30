@@ -724,6 +724,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
+                        $('#inp-code-uomgroup').val(data.uom_group.code);
                         $('#inp-edit-name-uom-group').val(data.uom_group.title);
                     }
                 }

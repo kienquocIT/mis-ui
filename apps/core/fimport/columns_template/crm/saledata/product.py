@@ -13,6 +13,23 @@ COLUMNS_SALEDATA_PRODUCT_UOMGROUP = ResolveColumnsFImport(
     template_link='fimport/template/import-saledata-product-uomgroup.xlsx',
     validate={},
 )
+
+COLUMNS_SALEDATA_PRODUCT_UOMGROUP.add_column(
+    name=_('Code'), data={
+        'name': _('Code'),
+        'input_name': 'code',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+                'minlength': 1,
+            },
+        },
+    }
+)
+
 COLUMNS_SALEDATA_PRODUCT_UOMGROUP.add_column(
     name=_('Title'), data={
         'name': _('Title'),
@@ -154,12 +171,13 @@ COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
         'name': _('Code'),
         'input_name': 'code',
         'type': 'string',
-        'remarks': [],
         'is_primary_key': True,
+        'remarks': [],
         'input_attrs': {
             'args': ['required'],
             'kwargs': {
                 'type': 'text',
+                'minlength': 1,
             },
         },
     }
@@ -189,6 +207,54 @@ COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
         'remarks': [],
         'input_attrs': {
             'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
+    name=_('Is Referenced'), data={
+        'name': _('Is Referenced'),
+        'input_name': 'is_referenced_unit',
+        'type': 'string',
+        'remarks': [
+            _(
+                "Is referenced selection, chosen from: 0 (false), 1 (true)"
+            ),],
+        'input_attrs': {
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
+    name=_('Ratio'), data={
+        'name': _('Ratio'),
+        'input_name': 'ratio',
+        'type': 'string',
+        'remarks': [
+            _(
+                "If the current unit is referenced unit, ratio must be 1"
+            ),],
+        'input_attrs': {
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
+    name=_('Rounding'), data={
+        'name': _('Rounding'),
+        'input_name': 'rounding',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
             'kwargs': {
                 'type': 'text',
             },

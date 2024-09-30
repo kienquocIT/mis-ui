@@ -162,7 +162,8 @@
                             <div class="col-12 col-lg-4 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label required">{% trans "Code" %}</label>
-                                    <input required class="form-control" type="text" name="code" placeholder="CODE01">
+                                    <input required class="form-control" type="text" name="code" placeholder="CODE01"
+                                           oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>
                             <div class="col-12 col-lg-8 col-md-6">
@@ -340,7 +341,8 @@
                             <div class="col-12 col-lg-4 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label required">{% trans "Code" %}</label>
-                                    <input required class="form-control" type="text" name="code" placeholder="CODE01" oninput="this.value=this.value.toUpperCase()">
+                                    <input required class="form-control" type="text" name="code" placeholder="CODE01"
+                                           oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>
                             <div class="col-12 col-lg-8 col-md-6">
@@ -520,7 +522,8 @@
                             <div class="form-group inp-can-edit" id="inp-edit-name-div">
                                     <label class="form-label required">{% trans "Code" %}</label>
                                 <input required class="form-control inp-can-edit" type="text" name="code"
-                                       id="inp-edit-code" placeholder="CODE01">
+                                       id="inp-edit-code" placeholder="CODE01"
+                                       oninput="this.value=this.value.toUpperCase()">
                                 </div>
                                 </div>
                             <div class="col-12 col-lg-8 col-md-6">
@@ -582,6 +585,7 @@
                                 <div class="form-group">
                                     <label class="form-label required">{% trans "Code" %}</label>
                                     <input required class="form-control" type="text" name="code" placeholder="CODE01"
+                                           id="inp-code-uomgroup"
                                            oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>

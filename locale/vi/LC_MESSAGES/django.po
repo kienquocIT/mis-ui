@@ -7482,7 +7482,7 @@ msgstr "Các loại chi phí"
 
 #
 msgid "Internal Labor Items"
-msgstr "Các loại chi phí nhân công"
+msgstr "Chi phí nhân công nội bộ"
 
 #
 msgid "Invoice form config"

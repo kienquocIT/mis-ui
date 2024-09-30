@@ -1087,7 +1087,7 @@ $(document).on("click", '.add-new-material', function () {
 
 $(document).on("click", '.del-row-material', function () {
     $(this).closest('tr').remove()
-    BOMAction.Calculate_BOM_sum_price()
+    ProjectBOMAction.Calculate_BOM_sum_price()
 })
 
 $(document).on("click", '.add-new-swap-material', function () {

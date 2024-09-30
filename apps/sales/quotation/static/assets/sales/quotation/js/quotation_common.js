@@ -364,7 +364,6 @@ class QuotationLoadDataHandle {
                             if (product.hasOwnProperty('product_choice') && Array.isArray(product.product_choice)) {
                                 if (product['product_choice'].includes(0)) {
                                     fnData.push(product);
-
                                 }
                             }
                         }
@@ -2428,9 +2427,6 @@ class QuotationDataTableHandle {
                             if (linkDetail) {
                                 link = linkDetail.format_url_with_uuid(row?.['promotion_id']);
                             }
-                            // return `<div class="voucher table-row-promotion" data-promotion="${JSON.stringify(row?.['promotion_data']).replace(/"/g, "&quot;")}" data-id-product="${row?.['promotion_data']?.['product_data']?.['id']}">
-                            //           <span class="mask-money" data-init-money="${row?.['promotion_data']?.['title']}"></span>
-                            //         </div>`;
                             return `<div class="table-row-promotion" data-promotion="${JSON.stringify(row?.['promotion_data']).replace(/"/g, "&quot;")}" data-id-product="${row?.['promotion_data']?.['product_data']?.['id']}"><i class="fas fa-tags mr-2"></i><span>${QuotationLoadDataHandle.transEle.attr('data-promotion')}</span></div>`;
                         } else if (itemType === 2) { // SHIPPING
                             let link = "";
@@ -3545,6 +3541,9 @@ class QuotationDataTableHandle {
                             disabled = 'disabled';
                             checked = 'checked';
                         }
+                        if (row?.['bom_check_data']?.['is_bom'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                            disabled = 'disabled';
+                        }
                         if (row?.['title'] && row?.['code']) {
                             return `<div class="d-flex align-items-center ml-2">
                                         <div class="form-check">
@@ -3580,6 +3579,10 @@ class QuotationDataTableHandle {
                             txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
                             badge = 'danger';
                         }
+                        if (row?.['bom_check_data']?.['is_bom'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                            txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
+                            badge = 'danger';
+                        }
                         return `<span class="badge badge-${badge} badge-outline table-row-status">${txt}</span>`;
                     }
                 },
@@ -3589,6 +3592,9 @@ class QuotationDataTableHandle {
                         let txt = '';
                         if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
                             txt = QuotationLoadDataHandle.transEle.attr('data-product-note-1');
+                        }
+                        if (row?.['bom_check_data']?.['is_bom'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                            txt = QuotationLoadDataHandle.transEle.attr('data-product-note-2');
                         }
                         return `<span class="table-row-note">${txt}</span>`;
                     }

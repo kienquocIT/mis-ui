@@ -71,6 +71,19 @@ COLUMNS_SALEDATA_PRICE_TAX_CATEGORY = ResolveColumnsFImport(
             'type': 'number',
         },
         {
+            'name': _('Code'),
+            'input_name': 'code',
+            'type': 'string',
+            'remarks': [],
+            'input_attrs': {
+                'args': ['required'],
+                'kwargs': {
+                    'type': 'text',
+                    'minlength': 1,
+                }
+            }
+        },
+        {
             'name': _('Title'),
             'input_name': 'title',
             'type': 'string',

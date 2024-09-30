@@ -10,16 +10,16 @@ $(document).ready(function () {
             }
         },
         {
-                            data: 'code',
-                            className: 'wrap-text w-30',
-                            render: (data, type, row) => {
-                                if (row.is_default) {
-                                    return `<span class="badge badge-secondary">${row.code}</span>`
-                                } else {
-                                    return `<span class="badge badge-primary">${row.code}</span>`
-                                }
-                            }
-                        },
+            data: 'code',
+            className: 'wrap-text w-30',
+            render: (data, type, row) => {
+                if (row.is_default) {
+                    return `<span class="badge badge-secondary">${row.code}</span>`
+                } else {
+                    return `<span class="badge badge-primary">${row.code}</span>`
+                }
+            }
+        },
         {
             data: 'title',
             className: 'wrap-text w-45',

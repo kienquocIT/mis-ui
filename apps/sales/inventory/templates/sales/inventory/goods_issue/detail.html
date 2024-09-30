@@ -20,6 +20,8 @@
 {% block pageContent %}
     <script id="script-url"
             data-url-ia="{% url 'InventoryAdjustmentDetailAPI' '0' %}"
+            data-url-po="{% url 'ProductionOrderDetailAPIForGIS' '0' %}"
+            data-url-wo="{% url 'WorkOrderDetailAPIForGIS' '0' %}"
     ></script>
     <script id="script-trans"></script>
     <form id="frmDetail"

@@ -94,6 +94,22 @@ COLUMNS_SALEDATA_PRODUCT_PRODUCT_CATEGORY = ResolveColumnsFImport(
 )
 
 COLUMNS_SALEDATA_PRODUCT_PRODUCT_CATEGORY.add_column(
+    name=_('Code'), data={
+        'name': _('Code'),
+        'input_name': 'code',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+                'minlength': 1,
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_PRODUCT_CATEGORY.add_column(
     name=_('Title'), data={
         'name': _('Title'),
         'input_name': 'title',

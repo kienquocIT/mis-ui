@@ -699,6 +699,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category')) {
+                        $('#inp-edit-code').val(data.product_category.code);
                         $('#inp-edit-name').val(data.product_category.title);
                         $('#inp-edit-description').val(data.product_category.description);
                     }

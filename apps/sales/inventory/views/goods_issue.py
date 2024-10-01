@@ -196,3 +196,14 @@ class ProductWarehouseSerialListAPIForGIS(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.GIS_SERIAL_LIST).get(data)
         return resp.auto_return(key_success='warehouse_serial_list')
+
+
+class GoodsIssueProductPRListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_ISSUE_PRODUCT_PR_LIST).get(data)
+        return resp.auto_return(key_success='goods_issue_product_pr')

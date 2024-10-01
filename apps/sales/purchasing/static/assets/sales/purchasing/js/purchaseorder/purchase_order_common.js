@@ -8,6 +8,8 @@ class POLoadDataHandle {
     static eleDivTablePOProductAdd = $('#table-purchase-order-product-add-area');
     static eleDivTablePRProduct = $('#table-purchase-request-product-area');
     static eleDivTablePRProductMerge = $('#table-purchase-request-product-merge-area');
+    static $btnAddProduct = $('#btn-add-product-purchase-order');
+    static $btnAddShipping = $('#btn-add-shipping-purchase-order');
     static transEle = $('#app-trans-factory');
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -100,7 +102,7 @@ class POLoadDataHandle {
                 let tax = ele[0].closest('tr').querySelector('.table-row-tax');
                 // load Description
                 if (description) {
-                    description.innerHTML = data?.['description'];
+                    description.innerHTML = data?.['description'] ? data?.['description'] : '--';
                 }
                 // load UOM
                 if (uom && Object.keys(data?.['unit_of_measure']).length !== 0 && Object.keys(data?.['uom_group']).length !== 0) {
@@ -470,7 +472,8 @@ class POLoadDataHandle {
         return true;
     };
 
-    static loadAddRowTableProductAdd() {
+    static loadAddRowTableProductAdd(type = 0) {
+        // type: {0: product, 1: shipping}
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let order = 1;
@@ -495,6 +498,9 @@ class POLoadDataHandle {
             'product_tax_amount': 0,
             'product_subtotal_price': 0,
             'order': order,
+        }
+        if (type === 1) {
+            data['is_shipping'] = true;
         }
         POLoadDataHandle.eleDivTablePOProductRequest[0].setAttribute('hidden', 'true');
         POLoadDataHandle.eleDivTablePOProductAdd[0].removeAttribute('hidden');
@@ -523,12 +529,6 @@ class POLoadDataHandle {
             POLoadDataHandle.loadBoxProduct($(row.querySelector('.table-row-item')));
             POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom-order-actual')), [], {'group': dataRow?.['uom_order_actual']?.['uom_group']?.['id']});
             POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')));
-            // $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']).trigger('change');
-            // let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
-            // if (boxRender) {
-            //     boxRender.innerHTML = dataRow?.['product']?.['title'];
-            //     boxRender.setAttribute('title', dataRow?.['product']?.['title']);
-            // }
             if (dataRow?.['product']?.['id']) {
                 POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product']]);
             }
@@ -1730,10 +1730,18 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     width: '17%',
-                    render: () => {
+                    render: (data, type, row) => {
+                        if (row?.['is_shipping'] === true) {
+                            return `<input type="text" class="form-control table-row-shipping" value="${row?.['shipping_title'] ? row?.['shipping_title'] : ''}">`;
+                        }
                         return `<div class="row table-row-item-area">
                                     <div class="col-12 col-md-12 col-lg-12">
-                                        <select class="form-select table-row-item"></select>
+                                        <select 
+                                            class="form-select table-row-item"
+                                            data-url="${PODataTableHandle.productInitEle.attr('data-url')}"
+                                            data-method="GET"
+                                            data-keyResp="product_sale_list"
+                                        ></select>
                                     </div>
                                 </div>`;
                     },
@@ -1742,9 +1750,16 @@ class PODataTableHandle {
                     targets: 2,
                     width: '12%',
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                    <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
-                                </div>`;
+                        if (row?.['is_shipping'] === true) {
+                            return `<input type="text" class="form-control table-row-description" value="">`;
+                        }
+                        let des = '--';
+                        if (row?.['product']?.['description']) {
+                            if (row?.['product']?.['description'] !== '') {
+                                des = row?.['product']?.['description'];
+                            }
+                        }
+                        return `<div class="row"><p class="table-row-description">${des}</p></div>`;
                     }
                 },
                 {

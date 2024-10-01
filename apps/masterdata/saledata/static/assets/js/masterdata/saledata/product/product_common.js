@@ -651,7 +651,7 @@ function Disable(option) {
         $('.form-control').prop('disabled', true).css({color: 'black'});
         $('.form-select').prop('disabled', true).css({color: 'black'});
         $('.select2').prop('disabled', true);
-        $('input').prop('disabled', true);
+        $('form input').prop('disabled', true);
         btn_Add_Line_Variant_Attributes.prop('disabled', true);
     }
 }

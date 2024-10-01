@@ -528,7 +528,7 @@ class GISAction {
             $('.form-control').prop('readonly', true);
             $('.form-select').prop('disabled', true);
             $('.select2').prop('disabled', true);
-            $('input').prop('disabled', true);
+            $('form input').prop('disabled', true);
         }
     }
 }

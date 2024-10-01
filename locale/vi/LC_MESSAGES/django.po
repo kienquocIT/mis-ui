@@ -8971,3 +8971,7 @@ msgstr "Bắt đầu với"
 #
 msgid "Exceed quantity"
 msgstr "Vượt quá số lượng"
+
+#
+msgid "Only one collaborator actions at this node"
+msgstr "Chỉ một cộng tác viên thao tác tại trạm này"

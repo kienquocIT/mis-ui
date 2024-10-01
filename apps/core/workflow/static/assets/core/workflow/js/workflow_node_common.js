@@ -1153,7 +1153,7 @@ class NodeDataTableHandle {
                                                         <div class="modal-body modal-body-collab">
                                                             <div class="row collab-common-area">
                                                                 <div class="form-group form-group-data-source">
-                                                                    <label class="form-label required">${NodeLoadDataHandle.transEle.attr('data-list-source')}</label>
+                                                                    <label class="form-label required">${NodeLoadDataHandle.transEle.attr('data-type')}</label>
                                                                     <select
                                                                         class="form-select box-list-source"
                                                                         data-url=""
@@ -1164,6 +1164,9 @@ class NodeDataTableHandle {
                                                                         required
                                                                     >
                                                                     </select>
+                                                                    <small class="form-text text-muted">
+                                                                        ${NodeLoadDataHandle.transEle.attr('data-type-note-1')}
+                                                                    </small>
                                                                 </div>
                                                             </div>
                                                             <div class="row collab-area collab-in-form-area mb-5" hidden>

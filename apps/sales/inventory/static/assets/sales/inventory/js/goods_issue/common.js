@@ -267,7 +267,7 @@ class GISLoadTab {
             ],
         })
     }
-    static DrawTablePOItems(data_list=[], option='detail') {
+    static DrawTablePOItems(data_list=[], option='create') {
         POItemTable.DataTable().clear().destroy()
         POItemTable.DataTableDefault({
             dom: 't',
@@ -851,39 +851,44 @@ $(document).on("click", '.select-detail', function () {
 })
 
 $('#issue-quantity').on('change', function () {
-    const limit = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
-    let selected = parseFloat($(this).val())
-    if (selected > limit) {
-        $.fn.notifyB({description: "Issue quantity is invalid."}, 'warning')
-        $(this).val(0)
+    if (!$('#for-production').prop('checked')) {
+        const limit = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
+        let selected = parseFloat($(this).val())
+        if (selected > limit) {
+            $.fn.notifyB({description: "Issue quantity is invalid."}, 'warning')
+            $(this).val(0)
+        }
     }
 })
 
 $(document).on("change", '.sn-checkbox', function () {
-    const limit = parseFloat($('#amount-balance-sn').attr('data-value'))
-    let selected = $('.sn-checkbox:checked').length
-    $('#amount-selected-sn').text(selected)
-    if (selected >= limit) {
-        $('.sn-checkbox').prop('disabled', true)
-        $('.sn-checkbox:checked').prop('disabled', IS_DETAIL_PAGE)
-    }
-    else {
-        $('.sn-checkbox').prop('disabled', IS_DETAIL_PAGE)
+    if (!$('#for-production').prop('checked')) {
+        const limit = parseFloat($('#amount-balance-sn').attr('data-value'))
+        let selected = $('.sn-checkbox:checked').length
+        $('#amount-selected-sn').text(selected)
+        if (selected >= limit) {
+            $('.sn-checkbox').prop('disabled', true)
+            $('.sn-checkbox:checked').prop('disabled', IS_DETAIL_PAGE)
+        } else {
+            $('.sn-checkbox').prop('disabled', IS_DETAIL_PAGE)
+        }
     }
 })
 
 $(document).on("change", '.lot-input', function () {
-    let old_value = parseInt($(this).val())
-    const limit = parseFloat($('#amount-balance-lot').attr('data-value'))
-    let selected = 0
-    $('.lot-input').each(function () {
-        selected += $(this).val() ? parseFloat($(this).val()) : 0
-    })
-    $('#amount-selected-lot').text(selected)
-    if (selected > limit) {
-        $.fn.notifyB({description: "Issue quantity is invalid."}, 'warning')
-        $(this).val(0)
-        $('#amount-selected-lot').text(selected - old_value)
+    if (!$('#for-production').prop('checked')) {
+        let old_value = parseInt($(this).val())
+        const limit = parseFloat($('#amount-balance-lot').attr('data-value'))
+        let selected = 0
+        $('.lot-input').each(function () {
+            selected += $(this).val() ? parseFloat($(this).val()) : 0
+        })
+        $('#amount-selected-lot').text(selected)
+        if (selected > limit) {
+            $.fn.notifyB({description: "Issue quantity is invalid."}, 'warning')
+            $(this).val(0)
+            $('#amount-selected-lot').text(selected - old_value)
+        }
     }
 })
 
@@ -891,19 +896,37 @@ done_none.on('click', function () {
     let issue_quantity = parseFloat($('#issue-quantity').val())
     let stock_quantity = parseFloat($('#stock-quantity').val())
     let limit_quantity = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
-    if (issue_quantity <= stock_quantity && issue_quantity <= limit_quantity) {
-        DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
-        detail_modal.modal('hide')
+    if (!$('#for-production').prop('checked')) {
+        if (issue_quantity <= stock_quantity && issue_quantity <= limit_quantity) {
+            DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
+            detail_modal.modal('hide')
+        } else {
+            $.fn.notifyB({description: 'Issue quantity value is not valid.'}, 'failure')
+        }
     }
     else {
-        $.fn.notifyB({description: 'Issue quantity value is not valid.'}, 'failure')
+        DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
+        detail_modal.modal('hide')
     }
 })
 
 done_sn.on('click', function () {
     let issue_quantity = $('.sn-checkbox:checked').length
     let remain_quantity = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
-    if (issue_quantity <= remain_quantity) {
+    if (!$('#for-production').prop('checked')) {
+        if (issue_quantity <= remain_quantity) {
+            DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
+            let sn_data = []
+            $('.sn-checkbox:checked').each(function () {
+                sn_data.push($(this).attr('data-sn-id'))
+            })
+            DetailBtn.closest('tr').find('.sn-data-script').text(JSON.stringify(sn_data))
+            detail_modal.modal('hide')
+        } else {
+            $.fn.notifyB({description: 'Issue quantity value is not valid.'}, 'failure')
+        }
+    }
+    else {
         DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
         let sn_data = []
         $('.sn-checkbox:checked').each(function () {
@@ -911,9 +934,6 @@ done_sn.on('click', function () {
         })
         DetailBtn.closest('tr').find('.sn-data-script').text(JSON.stringify(sn_data))
         detail_modal.modal('hide')
-    }
-    else {
-        $.fn.notifyB({description: 'Issue quantity value is not valid.'}, 'failure')
     }
 })
 
@@ -923,7 +943,29 @@ done_lot.on('click', function () {
         issue_quantity += $(this).val() ? parseFloat($(this).val()) : 0
     })
     let remain_quantity = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
-    if (issue_quantity <= remain_quantity) {
+    if (!$('#for-production').prop('checked')) {
+        if (issue_quantity <= remain_quantity) {
+            DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
+            let lot_data = []
+            $('.lot-input').each(function () {
+                let quantity = $(this).val() ? parseFloat($(this).val()) : 0
+                let old_quantity = $(this).closest('tr').find('.limit-quantity').text() ? parseFloat($(this).closest('tr').find('.limit-quantity').text()) : 0
+                if (quantity > 0) {
+                    lot_data.push({
+                        'lot_id': $(this).attr('data-lot-id'),
+                        'old_quantity': old_quantity,
+                        'quantity': quantity
+                    })
+                }
+            })
+            DetailBtn.closest('tr').find('.lot-data-script').text(JSON.stringify(lot_data))
+            detail_modal.modal('hide')
+        }
+        else {
+            $.fn.notifyB({description: 'Issue quantity value is not valid.'}, 'failure')
+        }
+    }
+    else {
         DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
         let lot_data = []
         $('.lot-input').each(function () {
@@ -939,8 +981,5 @@ done_lot.on('click', function () {
         })
         DetailBtn.closest('tr').find('.lot-data-script').text(JSON.stringify(lot_data))
         detail_modal.modal('hide')
-    }
-    else {
-        $.fn.notifyB({description: 'Issue quantity value is not valid.'}, 'failure')
     }
 })

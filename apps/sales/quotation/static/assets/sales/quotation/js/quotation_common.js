@@ -3571,8 +3571,8 @@ class QuotationDataTableHandle {
                         let txt = QuotationLoadDataHandle.transEle.attr('data-available');
                         let badge = 'success';
                         if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
-                            txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
-                            badge = 'danger';
+                            txt = QuotationLoadDataHandle.transEle.attr('data-product-note-1');
+                            badge = 'warning';
                         }
                         if (row?.['bom_check_data']?.['is_bom'] === true) {
                             if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {

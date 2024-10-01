@@ -3,7 +3,8 @@ from rest_framework import status
 
 from apps.core.fimport.columns_template.crm.saledata.account import COLUMNS_SALEDATA_ACCOUNT
 from apps.core.fimport.columns_template.crm.saledata.config import COLUMNS_SALEDATA_PAYMENT_TERM
-from apps.core.fimport.columns_template.crm.saledata.price import COLUMNS_SALEDATA_PRICE_TAX_CATEGORY
+from apps.core.fimport.columns_template.crm.saledata.price import COLUMNS_SALEDATA_PRICE_TAX_CATEGORY, \
+    COLUMNS_SALEDATA_PRICE_TAX
 from apps.core.fimport.columns_template.crm.saledata.product import COLUMNS_SALEDATA_PRODUCT_UOM
 from apps.shared import mask_view
 from apps.core.fimport.columns_template import (
@@ -14,7 +15,7 @@ from apps.core.fimport.columns_template import (
     COLUMNS_SALEDATA_ACCOUNT_GROUP, COLUMNS_SALEDATA_ACCOUNT_TYPE, COLUMNS_SALEDATA_INDUSTRY,
     COLUMNS_SALEDATA_PRODUCT_UOMGROUP,
     COLUMNS_SALEDATA_PRODUCT_PRODUCT_TYPE,
-    COLUMNS_SALEDATA_PRODUCT_PRODUCT_CATEGORY
+    COLUMNS_SALEDATA_PRODUCT_PRODUCT_CATEGORY,
 )
 
 
@@ -38,6 +39,7 @@ def get_config():
         **COLUMNS_SALEDATA_PRODUCT_PRODUCT_CATEGORY.data,
         **COLUMNS_SALEDATA_PRODUCT_UOM.data,
         **COLUMNS_SALEDATA_PRICE_TAX_CATEGORY.data,
+        **COLUMNS_SALEDATA_PRICE_TAX.data,
     }
 
 

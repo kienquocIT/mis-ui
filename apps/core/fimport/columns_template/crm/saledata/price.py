@@ -1,7 +1,8 @@
 from django.utils.translation import gettext_lazy as _
 
 from apps.core.fimport.columns_template import ResolveColumnsFImport
-from apps.core.fimport.columns_template.app_name import SHEET_SALEDATA_CURRENCY, SHEET_SALEDATA_PRICE_TAX_CATEGORY
+from apps.core.fimport.columns_template.app_name import SHEET_SALEDATA_CURRENCY, SHEET_SALEDATA_PRICE_TAX_CATEGORY, \
+    SHEET_SALEDATA_PRICE_TAX
 
 COLUMNS_SALEDATA_CURRENCY = ResolveColumnsFImport(
     sheet_name=SHEET_SALEDATA_CURRENCY,
@@ -109,5 +110,85 @@ COLUMNS_SALEDATA_PRICE_TAX_CATEGORY = ResolveColumnsFImport(
                 },
             },
         }
+    ]
+)
+
+COLUMNS_SALEDATA_PRICE_TAX = ResolveColumnsFImport(
+    sheet_name=SHEET_SALEDATA_PRICE_TAX,
+    app_id='720d14f9-e031-4ffe-acb9-3c7763c134fc',
+    url_name='PriceTaxImportAPI',
+    template_link='fimport/template/import-saledata-price-tax.xlsx',
+    validate={},
+    columns=[
+        {
+            'name': 'No.',
+            'type': 'number',
+        },
+        {
+            'name': _('Code'),
+            'input_name': 'code',
+            'type': 'string',
+            'remarks': [],
+            'input_attrs': {
+                'args': ['required'],
+                'kwargs': {
+                    'type': 'text',
+                    'minlength': 1,
+                }
+            }
+        },
+        {
+            'name': _('Title'),
+            'input_name': 'title',
+            'type': 'string',
+            'remarks': [],
+            'input_attrs': {
+                'args': ['required'],
+                'kwargs': {
+                    'type': 'text',
+                    'minlength': 1,
+                }
+            }
+        },
+        {
+            'name': _('Type'),
+            'input_name': 'tax_type',
+            'type': 'string',
+            'remarks': [
+            _(
+                "Type selection, chosen from: 0 (Purchase), 1 (Sale), 2 (Both Purchase and Sale)"
+            ),],
+            'input_attrs': {
+            'args': ['required'],
+                'kwargs': {
+                    'type': 'text',
+                },
+            },
+        },
+        {
+            'name': _('Category'),
+            'input_name': 'category',
+            'type': 'string',
+            'remarks': [],
+            'is_foreign_key': SHEET_SALEDATA_PRICE_TAX_CATEGORY,
+            'input_attrs': {
+            'args': ['required'],
+                'kwargs': {
+                    'type': 'text',
+                },
+            },
+        },
+{
+            'name': _('Rate'),
+            'input_name': 'rate',
+            'type': 'string',
+            'remarks': [],
+            'input_attrs': {
+            'args': ['required'],
+                'kwargs': {
+                    'type': 'text',
+                },
+            },
+        },
     ]
 )

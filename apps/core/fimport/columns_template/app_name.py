@@ -20,3 +20,4 @@ SHEET_SALEDATA_PRODUCT_PRODUCT_CATEGORY = '#saledata.product.productcate'
 SHEET_SALEDATA_PRODUCT_UOM = '#saledata.product.uom'
 
 SHEET_SALEDATA_PRICE_TAX_CATEGORY = '#saledata.price.taxcategory'
+SHEET_SALEDATA_PRICE_TAX = '#saledata.price.tax'

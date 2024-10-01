@@ -110,3 +110,11 @@ class PriceTaxCategoryImportAPI(APIView):
             data=request.data
         )
         return resp.auto_return(key_success='price_tax_category')
+
+class PriceTaxImportAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.IMPORT_SALEDATA_PRICE_TAX, user=request.user).post(
+            data=request.data
+        )
+        return resp.auto_return(key_success='price_tax')

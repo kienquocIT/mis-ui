@@ -229,6 +229,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     IMPORT_SALEDATA_PRODUCT_PRODUCT_CATEGORY = StringUrl('import-data/saledata/product/product-category')
     IMPORT_SALEDATA_PRODUCT_UOM = StringUrl('import-data/saledata/product/uom')
     IMPORT_SALEDATA_PRICE_TAX_CATEGORY = StringUrl('import-data/saledata/price/tax-category')
+    IMPORT_SALEDATA_PRICE_TAX = StringUrl('import-data/saledata/price/tax')
     # HR
 
     # WORKFLOW

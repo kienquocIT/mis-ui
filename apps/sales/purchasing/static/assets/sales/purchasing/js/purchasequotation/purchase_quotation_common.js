@@ -361,7 +361,7 @@ function Disable(for_update=false) {
         $('.form-control').prop('disabled', true).css({color: 'black'});
         $('.form-select').prop('disabled', true).css({color: 'black'});
         $('.select2').prop('disabled', true);
-        $('input').prop('disabled', true);
+        $('form input').prop('disabled', true);
         $('#new-product-btn').attr('hidden', true);
     }
 }

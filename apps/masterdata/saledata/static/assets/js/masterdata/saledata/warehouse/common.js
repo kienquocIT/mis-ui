@@ -126,7 +126,7 @@ class WarehouseLoadPage {
                 }
                 $(document.getElementsByClassName('shelf')).resizable({ghost: true}).draggable({containment: "#shelf-map"})
                 if (type === 'detail') {
-                    $('input').prop('disabled', true)
+                    $('form input').prop('disabled', true)
                     $('textarea').prop('disabled', true)
                     $(document.getElementsByClassName('delete-shelf')).remove()
                     $(document.getElementsByClassName('ui-resizable-handle')).remove()

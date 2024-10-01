@@ -133,6 +133,10 @@ class ProdReportLoadDataHandle {
         ProdReportDataTableHandle.$tableMain.DataTable().rows.add(data).draw();
         ProdReportLoadDataHandle.loadDD(ProdReportDataTableHandle.$tableMain);
         ProdReportLoadDataHandle.loadSetCollapse();
+        ProdReportDataTableHandle.$tableMain.DataTable().rows().every(function () {
+            let row = this.node();
+            ProdReportLoadDataHandle.loadInfo(row);
+        });
         return true;
     };
 
@@ -194,6 +198,58 @@ class ProdReportLoadDataHandle {
                 }
             }
         });
+        return true;
+    };
+
+    static loadInfo(row, isInput = false) {
+        if (row.querySelector('.table-row-item') && row.querySelector('.table-row-quantity-actual') && row.querySelector('.btn-info') && row.querySelector('.content-info')) {
+            let eleQuantity = row.querySelector('.table-row-quantity-actual');
+            let contentInfo = row.querySelector('.content-info');
+            let dataProduct = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-item')), $(row.querySelector('.table-row-item')).val());
+            if (dataProduct?.['id']) {
+                let dataParams = {'goods_issue__system_status': 3, 'product_id': dataProduct?.['id']};
+                if (ProdReportLoadDataHandle.$boxType.val() === '0') {
+                    if (ProdReportLoadDataHandle.$boxProductionOrder.val()) {
+                        dataParams['goods_issue__production_order_id'] = ProdReportLoadDataHandle.$boxProductionOrder.val();
+                    }
+                }
+                if (ProdReportLoadDataHandle.$boxType.val() === '1') {
+                    if (ProdReportLoadDataHandle.$boxWorkOrder.val()) {
+                        dataParams['goods_issue__work_order_id'] = ProdReportLoadDataHandle.$boxWorkOrder.val();
+                    }
+                }
+                $.fn.callAjax2({
+                        'url': ProdReportLoadDataHandle.$urls.attr('data-goods-issue-product-pr'),
+                        'method': 'GET',
+                        'data': dataParams,
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('goods_issue_product_pr') && Array.isArray(data.goods_issue_product_pr)) {
+                                let issue = 0;
+                                for (let dataIssueProduct of data.goods_issue_product_pr) {
+                                    issue += dataIssueProduct?.['issued_quantity'];
+                                }
+                                contentInfo.innerHTML = `<b>${ProdReportLoadDataHandle.$trans.attr('data-available')}: ${issue}<b/>`;
+                                if (eleQuantity.value) {
+                                    if (parseFloat(eleQuantity.value) > issue) {
+                                        eleQuantity.value = 0;
+                                        ProdReportStoreHandle.storeRow(row);
+                                        if (isInput === true) {
+                                            $.fn.notifyB({description: ProdReportLoadDataHandle.$trans.attr('data-exceed-quantity')}, 'failure');
+                                        }
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                )
+            }
+        }
         return true;
     };
 
@@ -322,7 +378,11 @@ class ProdReportDataTableHandle {
                         if (row?.['is_task'] === true) {
                             return `<input type="text" class="form-control valid-number table-row-labor-actual" value="${row?.['quantity_actual']}">`;
                         }
-                        return `<input type="text" class="form-control valid-number table-row-quantity-actual" value="${row?.['quantity_actual']}">`;
+                        return `<div class="d-flex justify-content-between align-items-center">
+                                    <input type="text" class="form-control valid-number table-row-quantity-actual" value="${row?.['quantity_actual']}">
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-info" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="fas fa-info-circle"></i></span></button>
+                                    <div role="menu" class="dropdown-menu content-info"></div>
+                                </div>`;
                     }
                 },
             ],

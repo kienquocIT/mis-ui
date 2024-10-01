@@ -559,6 +559,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GIS_NONE_LIST = StringUrl('inventory/prd-wh-list-for-gis/list')
     GIS_LOT_LIST = StringUrl('inventory/lot-list-for-gis/list')
     GIS_SERIAL_LIST = StringUrl('inventory/serial-list-for-gis/list')
+    GOODS_ISSUE_PRODUCT_PR_LIST = StringUrl('inventory/goods-issue-product-pr/list')
 
     # Sale Order List for Purchasing Staff
     SALE_ORDER_LIST_FOR_PURCHASING_STAFF = StringUrl('saleorder/purchasing-staff/list')

@@ -52,20 +52,6 @@ class QuotationLoadDataHandle {
         });
     };
 
-    static loadEventCheckbox(ele) {
-        let checkboxes = ele.querySelectorAll('.form-check-input[type="radio"]');
-        checkboxes.forEach((checkbox) => {
-            checkbox.addEventListener('click', function () {
-                let checked = checkbox.checked;
-                for (let eleCheck of checkboxes) {
-                    eleCheck.checked = false;
-                }
-                checkbox.checked = checked;
-            });
-        });
-        return true;
-    };
-
     static loadInitOpportunity() {
         let form = $('#frm_quotation_create');
         if (form.attr('data-method').toLowerCase() === 'post') {
@@ -425,7 +411,7 @@ class QuotationLoadDataHandle {
                 let tax = ele[0].closest('tr').querySelector('.table-row-tax');
                 // load Description
                 if (description) {
-                    description.innerHTML = data?.['description'];
+                    description.innerHTML = data?.['description'] ? data?.['description'] : '--';
                 }
                 // load UOM
                 if (uom && data?.['unit_of_measure'] && data?.['uom_group']) {
@@ -2446,13 +2432,13 @@ class QuotationDataTableHandle {
                         if (row?.['shipping_id']) {
                             itemType = 2  // shipping
                         }
-                        let description = "--";
+                        let des = "--";
                         if (itemType === 0) {  // PRODUCT
-                            description = row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : '--';
+                            des = row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : '--';
                         } else if (itemType === 1) {  // PROMOTION
-                            description = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '--';
+                            des = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '--';
                         }
-                        return `<p class="table-row-description" data-zone="${dataZone}">${description}</p>`;
+                        return `<div class="row"><p class="table-row-description" data-zone="${dataZone}">${des}</p></div>`;
                     }
                 },
                 {

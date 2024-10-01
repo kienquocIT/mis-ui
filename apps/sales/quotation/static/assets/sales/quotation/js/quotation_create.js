@@ -269,7 +269,6 @@ $(function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
                 if ($(this).hasClass('table-row-item')) {
-                    // QuotationLoadDataHandle.loadCheckProductBOM($(this));
                     QuotationLoadDataHandle.loadDataProductSelect($(this));
                 }
                 if ($(this).hasClass('validated-number')) {

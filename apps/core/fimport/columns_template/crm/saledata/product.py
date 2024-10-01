@@ -218,7 +218,14 @@ COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
     name=_('Is Referenced'), data={
         'name': _('Is Referenced'),
         'input_name': 'is_referenced_unit',
-        'type': 'string',
+        'type': 'select',
+        'data_list': [
+                (0, _('False')),
+                (1, _('True')),
+        ],
+        'select2_config': {
+            'allowClear': True,
+        },
         'remarks': [
             _(
                 "Is referenced selection, chosen from: 0 (false), 1 (true)"
@@ -241,6 +248,7 @@ COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
                 "If the current unit is referenced unit, ratio must be 1"
             ),],
         'input_attrs': {
+            'args': ['required'],
             'kwargs': {
                 'type': 'text',
             },

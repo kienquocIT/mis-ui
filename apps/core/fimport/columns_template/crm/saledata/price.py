@@ -153,13 +153,21 @@ COLUMNS_SALEDATA_PRICE_TAX = ResolveColumnsFImport(
         {
             'name': _('Type'),
             'input_name': 'tax_type',
-            'type': 'string',
+            'type': 'select',
+            'data_list': [
+                (0, _('Purchase')),
+                (1, _('Sale')),
+                (2, _('Both Purchase and Sale')),
+            ],
+            'select2_config': {
+                'allowClear': True,
+            },
             'remarks': [
-            _(
-                "Type selection, chosen from: 0 (Purchase), 1 (Sale), 2 (Both Purchase and Sale)"
-            ),],
+                _(
+                    "Type selection, chosen from: 0 (Purchase), 1 (Sale), 2 (Both Purchase and Sale)"
+                ),],
             'input_attrs': {
-            'args': ['required'],
+                'args': ['required'],
                 'kwargs': {
                     'type': 'text',
                 },

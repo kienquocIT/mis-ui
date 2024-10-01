@@ -106,7 +106,7 @@ COLUMNS_SALEDATA_PRODUCT_PRODUCT_CATEGORY = ResolveColumnsFImport(
     sheet_name=SHEET_SALEDATA_PRODUCT_PRODUCT_CATEGORY,
     app_id='053c0804-162a-4357-a1c2-2161e6606cc2',
     url_name='ProductProductCategoryImportAPI',
-    template_link='fimport/template/import-saledata-product-productcategory.xlsx',
+    template_link='fimport/template/import-saledata-product-prodcategory.xlsx',
     validate={},
 )
 

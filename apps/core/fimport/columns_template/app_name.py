@@ -16,7 +16,7 @@ SHEET_SALEDATA_PAYMENT_TERM = '#saledata.payment-term'
 
 SHEET_SALEDATA_PRODUCT_UOMGROUP = '#saledata.product.uomgroup'
 SHEET_SALEDATA_PRODUCT_PRODUCT_TYPE = '#saledata.product.producttype'
-SHEET_SALEDATA_PRODUCT_PRODUCT_CATEGORY = '#saledata.product.productcate'
+SHEET_SALEDATA_PRODUCT_PRODUCT_CATEGORY = '#saledata.product.prodcategory'
 SHEET_SALEDATA_PRODUCT_UOM = '#saledata.product.uom'
 
 SHEET_SALEDATA_PRICE_TAX_CATEGORY = '#saledata.price.taxcategory'

@@ -23,13 +23,12 @@
                                 {% endif %}
                             </button>
                             <div
-                                    class="dropdown-menu" data-url="{% url 'SpaceChangeView' %}"
+                                    class="dropdown-menu dropdown-menu-dark" data-url="{% url 'SpaceChangeView' %}"
                                     data-url-redirect="{% url 'HomeView' %}" data-method="PUT"
                             >
                                 {% csrf_token %}
                                 {% for item in base.space_list %}
                                     {% if item.child|length > 0 %}
-                                        <h6 class="dropdown-header">{{ item.name }}</h6>
                                         {% for item_child in item.child %}
                                             <a
                                                     class="dropdown-item space-item {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"

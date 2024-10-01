@@ -80,6 +80,7 @@ $(document).ready(function () {
 
     function LoadItemsSelectBox(ele, data) {
         ele.initSelect2({
+            placeholder: trans_script.attr('data-trans-all'),
             allowClear: true,
             ajax: {
                 url: ele.attr('data-url'),
@@ -98,6 +99,7 @@ $(document).ready(function () {
 
     function LoadWarehouseSelectBox(ele, data) {
         ele.initSelect2({
+            placeholder: trans_script.attr('data-trans-all'),
             allowClear: true,
             ajax: {
                 url: ele.attr('data-url'),
@@ -117,7 +119,7 @@ $(document).ready(function () {
     LoadWarehouseSelectBox(warehouses_select_Ele)
 
     function RenderTableWithParameter(table, data_list=[]) {
-        console.log(data_list)
+        // console.log(data_list)
         table.DataTable().clear().destroy()
         table.DataTableDefault({
             dom: '',
@@ -344,7 +346,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_detail_list')) {
-                        console.log(data?.['report_inventory_detail_list'])
+                        // console.log(data?.['report_inventory_detail_list'])
                         return data?.['report_inventory_detail_list'];
                     }
                     return {};

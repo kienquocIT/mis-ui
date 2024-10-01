@@ -186,7 +186,8 @@
         data-md-product="{% url 'ProductForSaleListAPI' %}"
         data-md-uom="{% url 'UnitOfMeasureListAPI' %}"
         data-md-pwh="{% url 'WarehouseGetProductsListAPI' %}"
-        data-goods-issue-product-pr="{% url 'GoodsIssueProductPRListAPI' %}"
+        data-goods-issue-product="{% url 'GoodsIssueProductListAPI' %}"
+        data-production-report-product="{% url 'ProductionReportProductListAPI' %}"
     >
     {{ data.employee_current|json_script:'employee_current' }}
 {% endblock %}

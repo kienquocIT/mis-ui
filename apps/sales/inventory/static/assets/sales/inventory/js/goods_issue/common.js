@@ -591,6 +591,13 @@ class GISHandle {
                         }
                     }
 
+                    new $x.cls.file($('#attachment')).init({
+                        enable_download: option === 'detail',
+                        enable_edit: option !== 'detail',
+                        data: data.attachment,
+                        name: 'attachment'
+                    })
+
                     GISAction.DisabledDetailPage(option);
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
@@ -667,7 +674,9 @@ class GISHandle {
         frm.dataForm['detail_data_po'] = detail_data_po;
         frm.dataForm['detail_data_wo'] = detail_data_wo;
 
-        console.log(frm)
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
+
+        // console.log(frm)
         return frm
     }
 }

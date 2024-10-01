@@ -316,12 +316,12 @@ class GISLoadTab {
                         return `<span class="before-quantity">${row?.['before_quantity'] ? row?.['before_quantity'] : 0}</span>`;
                     }
                 },
-                {
-                    className: 'wrap-text text-center',
-                    render: (data, type, row) => {
-                        return `<span class="remain-quantity">${row?.['remain_quantity'] ? row?.['remain_quantity'] : 0}</span>`;
-                    }
-                },
+                // {
+                //     className: 'wrap-text text-center',
+                //     render: (data, type, row) => {
+                //         return `<span class="remain-quantity">${row?.['remain_quantity'] ? row?.['remain_quantity'] : 0}</span>`;
+                //     }
+                // },
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
@@ -637,7 +637,7 @@ class GISHandle {
                         'warehouse_id': row.find('.select-detail').attr('data-wh-id'),
                         'uom_id': row.find('.select-detail').attr('data-uom-id'),
                         'before_quantity': row.find('.before-quantity').text(),
-                        'remain_quantity': row.find('.remain-quantity').text(),
+                        'remain_quantity': 0,
                         'issued_quantity': row.find('.selected-quantity').val(),
                         'lot_data': row.find('.lot-data-script').text() ? JSON.parse(row.find('.lot-data-script').text()) : [],
                         'sn_data': row.find('.sn-data-script').text() ? JSON.parse(row.find('.sn-data-script').text()) : []
@@ -654,7 +654,7 @@ class GISHandle {
                         'warehouse_id': row.find('.select-detail').attr('data-wh-id'),
                         'uom_id': row.find('.select-detail').attr('data-uom-id'),
                         'before_quantity': row.find('.before-quantity').text(),
-                        'remain_quantity': row.find('.remain-quantity').text(),
+                        'remain_quantity': 0,
                         'issued_quantity': row.find('.selected-quantity').val(),
                         'lot_data': row.find('.lot-data-script').text() ? JSON.parse(row.find('.lot-data-script').text()) : [],
                         'sn_data': row.find('.sn-data-script').text() ? JSON.parse(row.find('.sn-data-script').text()) : []

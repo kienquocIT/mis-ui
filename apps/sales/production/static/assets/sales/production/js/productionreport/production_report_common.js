@@ -123,6 +123,14 @@ class ProdReportLoadDataHandle {
             for (let task of data?.['task_data']) {
                 task['quantity_actual'] = task?.['quantity'];
             }
+            for (let dataTask of data?.['task_data']) {
+                if (!dataTask?.['is_task']) {
+                    dataTask['quantity_actual'] = 0;
+                }
+                if (dataTask?.['is_task'] === false) {
+                    dataTask['quantity_actual'] = 0;
+                }
+            }
             ProdReportLoadDataHandle.loadAddDtbRows(data?.['task_data']);
         }
         return true;
@@ -133,10 +141,6 @@ class ProdReportLoadDataHandle {
         ProdReportDataTableHandle.$tableMain.DataTable().rows.add(data).draw();
         ProdReportLoadDataHandle.loadDD(ProdReportDataTableHandle.$tableMain);
         ProdReportLoadDataHandle.loadSetCollapse();
-        ProdReportDataTableHandle.$tableMain.DataTable().rows().every(function () {
-            let row = this.node();
-            ProdReportLoadDataHandle.loadInfo(row);
-        });
         return true;
     };
 
@@ -207,43 +211,76 @@ class ProdReportLoadDataHandle {
             let contentInfo = row.querySelector('.content-info');
             let dataProduct = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-item')), $(row.querySelector('.table-row-item')).val());
             if (dataProduct?.['id']) {
-                let dataParams = {'goods_issue__system_status': 3, 'product_id': dataProduct?.['id']};
+                let dataParamsIssue = {'goods_issue__system_status': 3, 'product_id': dataProduct?.['id']};
+                let dataParamsReport = {'product_id': dataProduct?.['id']};
                 if (ProdReportLoadDataHandle.$boxType.val() === '0') {
                     if (ProdReportLoadDataHandle.$boxProductionOrder.val()) {
-                        dataParams['goods_issue__production_order_id'] = ProdReportLoadDataHandle.$boxProductionOrder.val();
+                        dataParamsIssue['goods_issue__production_order_id'] = ProdReportLoadDataHandle.$boxProductionOrder.val();
+                        dataParamsReport['production_report__production_order_id'] = ProdReportLoadDataHandle.$boxProductionOrder.val();
                     }
                 }
                 if (ProdReportLoadDataHandle.$boxType.val() === '1') {
                     if (ProdReportLoadDataHandle.$boxWorkOrder.val()) {
-                        dataParams['goods_issue__work_order_id'] = ProdReportLoadDataHandle.$boxWorkOrder.val();
+                        dataParamsIssue['goods_issue__work_order_id'] = ProdReportLoadDataHandle.$boxWorkOrder.val();
+                        dataParamsReport['production_report__work_order_id'] = ProdReportLoadDataHandle.$boxWorkOrder.val();
                     }
                 }
                 $.fn.callAjax2({
-                        'url': ProdReportLoadDataHandle.$urls.attr('data-goods-issue-product-pr'),
+                        'url': ProdReportLoadDataHandle.$urls.attr('data-goods-issue-product'),
                         'method': 'GET',
-                        'data': dataParams,
+                        'data': dataParamsIssue,
                         'isDropdown': true,
                     }
                 ).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            if (data.hasOwnProperty('goods_issue_product_pr') && Array.isArray(data.goods_issue_product_pr)) {
-                                let issue = 0;
-                                for (let dataIssueProduct of data.goods_issue_product_pr) {
-                                    issue += dataIssueProduct?.['issued_quantity'];
-                                }
-                                contentInfo.innerHTML = `<b>${ProdReportLoadDataHandle.$trans.attr('data-available')}: ${issue}<b/>`;
-                                if (eleQuantity.value) {
-                                    if (parseFloat(eleQuantity.value) > issue) {
-                                        eleQuantity.value = 0;
-                                        ProdReportStoreHandle.storeRow(row);
-                                        if (isInput === true) {
-                                            $.fn.notifyB({description: ProdReportLoadDataHandle.$trans.attr('data-exceed-quantity')}, 'failure');
-                                        }
-                                        return false;
+                            if (data.hasOwnProperty('goods_issue_product') && Array.isArray(data.goods_issue_product)) {
+                                let dataIssue = data.goods_issue_product;
+
+                                $.fn.callAjax2({
+                                        'url': ProdReportLoadDataHandle.$urls.attr('data-production-report-product'),
+                                        'method': 'GET',
+                                        'data': dataParamsReport,
+                                        'isDropdown': true,
                                     }
-                                }
+                                ).then(
+                                    (resp) => {
+                                        let data = $.fn.switcherResp(resp);
+                                        if (data) {
+                                            if (data.hasOwnProperty('production_report_product') && Array.isArray(data.production_report_product)) {
+                                                let issue = 0;
+                                                let report = 0;
+                                                for (let dataIssueProduct of dataIssue) {
+                                                    issue += dataIssueProduct?.['issued_quantity'];
+                                                }
+                                                for (let dataReport of data.production_report_product) {
+                                                    report += dataReport?.['quantity_actual'];
+                                                    if (ProdReportLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
+                                                        let pk = $.fn.getPkDetail();
+                                                        if (dataReport?.['production_report']?.['id'] === pk) {
+                                                            report -= dataReport?.['quantity_actual'];
+                                                        }
+                                                    }
+                                                }
+                                                let result = issue - report;
+
+
+                                                contentInfo.innerHTML = `<b>${ProdReportLoadDataHandle.$trans.attr('data-available')}: ${result}<b/>`;
+                                                if (eleQuantity.value) {
+                                                    if (parseFloat(eleQuantity.value) > result) {
+                                                        eleQuantity.value = 0;
+                                                        ProdReportStoreHandle.storeRow(row);
+                                                        if (isInput === true) {
+                                                            $.fn.notifyB({description: ProdReportLoadDataHandle.$trans.attr('data-exceed-quantity')}, 'failure');
+                                                        }
+                                                        return false;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                )
                             }
                         }
                     }

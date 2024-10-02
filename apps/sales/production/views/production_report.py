@@ -151,3 +151,14 @@ class ProductionReportGRListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCTION_REPORT_GR_LIST).get(data)
         return resp.auto_return(key_success='production_report_gr')
+
+
+class ProductionReportProductListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCTION_REPORT_PRODUCT_LIST).get(data)
+        return resp.auto_return(key_success='production_report_product')

@@ -562,11 +562,18 @@ class NodeLoadDataHandle {
         for (let area of row.querySelectorAll('.collab-area')) {
             area.setAttribute('hidden', 'true');
         }
+        let eleNoteSrc = row.querySelector('.box-list-source-note');
         if ($(ele).val() === '1') {
             row.querySelector('.collab-in-form-area').removeAttribute('hidden');
         } else if ($(ele).val() === '2') {
+            if (eleNoteSrc) {
+                eleNoteSrc.innerHTML = NodeLoadDataHandle.transEle.attr('data-type-src-note') + ': ' + NodeLoadDataHandle.transEle.attr('data-type-src-2-note');
+            }
             row.querySelector('.collab-out-form-area').removeAttribute('hidden');
         } else if ($(ele).val() === '3') {
+            if (eleNoteSrc) {
+                eleNoteSrc.innerHTML = NodeLoadDataHandle.transEle.attr('data-type-src-note') + ': ' + NodeLoadDataHandle.transEle.attr('data-type-src-3-note');
+            }
             row.querySelector('.collab-in-workflow-area').removeAttribute('hidden');
         }
         NodeLoadDataHandle.loadZoneDD(row, true); // reset zones
@@ -1153,7 +1160,7 @@ class NodeDataTableHandle {
                                                         <div class="modal-body modal-body-collab">
                                                             <div class="row collab-common-area">
                                                                 <div class="form-group form-group-data-source">
-                                                                    <label class="form-label required">${NodeLoadDataHandle.transEle.attr('data-list-source')}</label>
+                                                                    <label class="form-label required">${NodeLoadDataHandle.transEle.attr('data-type')}</label>
                                                                     <select
                                                                         class="form-select box-list-source"
                                                                         data-url=""
@@ -1164,6 +1171,9 @@ class NodeDataTableHandle {
                                                                         required
                                                                     >
                                                                     </select>
+                                                                    <small class="form-text text-muted box-list-source-note">
+                                                                        ${NodeLoadDataHandle.transEle.attr('data-type-src-note')}: ${NodeLoadDataHandle.transEle.attr('data-type-src-2-note')}
+                                                                    </small>
                                                                 </div>
                                                             </div>
                                                             <div class="row collab-area collab-in-form-area mb-5" hidden>

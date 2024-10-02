@@ -1380,8 +1380,6 @@ $(document).ready(function () {
 
             // TIMELINE
 
-            OpportunityActivity.loadDblActivityLogs();
-
             function checkPermissionAppRelated() {
                 let $dataDetail = $('#data-detail');
                 let appRelateList = $('#dropdown-menu-relate-app')[0].querySelectorAll('.relate-app');
@@ -1622,6 +1620,7 @@ $(document).ready(function () {
                     })
             })
 
+            OpportunityActivity.loadDblActivityLogs();
             loadLeadList(results[2])
         }
     )

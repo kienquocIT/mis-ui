@@ -1,5 +1,6 @@
 // LoadData
 class NodeLoadDataHandle {
+    static $form = $('#form-create_workflow');
     static btnAddNode = $('#btn-add-new-node-create');
     static nodeModalTitleEle = $('#modal-node-name-create');
     static nodeModalDescriptionEle = $('#modal-node-description-create');
@@ -690,45 +691,47 @@ class NodeLoadDataHandle {
     };
 
     static loadCheckNextNode(row) {
-        // check next node
-        let $eleAssociate = $('#node-associate');
-        let nodeData = NodeSubmitHandle.setupDataSubmit();
-        if ($eleAssociate.val() && nodeData.length > 0) {
-            let associate_temp = $eleAssociate.val().replaceAll('\\', '');
-            if (associate_temp) {
-                let associate_data_submit = [];
-                let associate_data_json = JSON.parse(associate_temp);
-                for (let key in associate_data_json) {
-                    let item = associate_data_json[key]
-                    if (typeof item.node_in === "object") {
-                        // case from detail page update workflow if node_in is not order number
-                        item.node_in = item.node_in.order
-                        item.node_out = item.node_out.order
+        if (NodeLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
+            // check next node
+            let $eleAssociate = $('#node-associate');
+            let nodeData = NodeSubmitHandle.setupDataSubmit();
+            if ($eleAssociate.val() && nodeData.length > 0) {
+                let associate_temp = $eleAssociate.val().replaceAll('\\', '');
+                if (associate_temp) {
+                    let associate_data_submit = [];
+                    let associate_data_json = JSON.parse(associate_temp);
+                    for (let key in associate_data_json) {
+                        let item = associate_data_json[key]
+                        if (typeof item.node_in === "object") {
+                            // case from detail page update workflow if node_in is not order number
+                            item.node_in = item.node_in.order
+                            item.node_out = item.node_out.order
+                        }
+                        if (item?.['node_in'] && item?.['node_out']) {
+                            associate_data_submit.push(item);
+                        }
                     }
-                    if (item?.['node_in'] && item?.['node_out']) {
-                        associate_data_submit.push(item);
-                    }
-                }
-                // get next node list then check type of that node, if type OF then raise error
-                let nextNodeList = [];
-                let eleTitle = row?.querySelector('.table-row-title');
-                if (eleTitle) {
-                    let dataRowRaw = eleTitle.getAttribute('data-row');
-                    if (dataRowRaw) {
-                        let dataRow = JSON.parse(dataRowRaw);
-                        let order = parseInt(dataRow?.['order']);
-                        for (let associate of associate_data_submit) {
-                            if (associate?.['node_in'] === order) {
-                                nextNodeList.push(associate?.['node_out']);
+                    // get next node list then check type of that node, if type OF then raise error
+                    let nextNodeList = [];
+                    let eleTitle = row?.querySelector('.table-row-title');
+                    if (eleTitle) {
+                        let dataRowRaw = eleTitle.getAttribute('data-row');
+                        if (dataRowRaw) {
+                            let dataRow = JSON.parse(dataRowRaw);
+                            let order = parseInt(dataRow?.['order']);
+                            for (let associate of associate_data_submit) {
+                                if (associate?.['node_in'] === order) {
+                                    nextNodeList.push(associate?.['node_out']);
+                                }
                             }
                         }
                     }
-                }
-                for (let nextNode of nextNodeList) {
-                    for (let node of nodeData) {
-                        if (node?.['order'] === nextNode && node?.['option_collaborator'] === 1) {
-                            $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-validate-next-node')}, 'failure');
-                            return false;
+                    for (let nextNode of nextNodeList) {
+                        for (let node of nodeData) {
+                            if (node?.['order'] === nextNode && node?.['option_collaborator'] === 1) {
+                                $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-validate-next-node')}, 'failure');
+                                return false;
+                            }
                         }
                     }
                 }

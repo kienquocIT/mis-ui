@@ -316,12 +316,12 @@ class GISLoadTab {
                         return `<span class="before-quantity">${row?.['before_quantity'] ? row?.['before_quantity'] : 0}</span>`;
                     }
                 },
-                // {
-                //     className: 'wrap-text text-center',
-                //     render: (data, type, row) => {
-                //         return `<span class="remain-quantity">${row?.['remain_quantity'] ? row?.['remain_quantity'] : 0}</span>`;
-                //     }
-                // },
+                {
+                    className: 'wrap-text text-center',
+                    render: (data, type, row) => {
+                        return `<span class="remain-quantity">${row?.['remain_quantity'] ? row?.['remain_quantity'] : 0}</span>`;
+                    }
+                },
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {

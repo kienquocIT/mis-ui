@@ -8967,3 +8967,27 @@ msgstr "Số lượng phải lớn hơn 0"
 #
 msgid "Start with"
 msgstr "Bắt đầu với"
+
+#
+msgid "Exceed quantity"
+msgstr "Vượt quá số lượng"
+
+#
+msgid "At this node"
+msgstr "Khi đến trạm này"
+
+#
+msgid "Only one collaborator (select in list below) will action, approve the document"
+msgstr "Chỉ một cộng tác viên (chọn trong danh sách dưới đây) sẽ thao tác, phê duyệt phiếu"
+
+#
+msgid "All collaborators (according to configuration below) will action, approve the document"
+msgstr "Tất cả cộng tác viên (theo cấu hình dưới đây) sẽ cùng thao tác, phê duyệt phiếu"
+
+#
+msgid "The product is only used for project sale"
+msgstr "Sản phẩm chỉ dùng cho bán hàng dự án"
+
+#
+msgid "Only one collaborator can be configured at this node because the next node needs to select a collaborator"
+msgstr "Chỉ được cấu hình một cộng tác viên tại trạm này vì trạm tiếp theo cần chọn cộng tác viên"

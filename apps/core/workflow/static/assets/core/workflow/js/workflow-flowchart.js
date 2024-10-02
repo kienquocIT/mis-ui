@@ -953,7 +953,7 @@ class NodeHandler {
         if (dataNodeOut?.['collaborators']?.['option'] === 1) {
             if (dataNodeIn?.['collaborators']?.['total_in_runtime'] > 1) {
                 state = false;
-                msgFailed = "Node in put must have only one collaborator";
+                msgFailed = $('#node-trans-factory').attr('data-validate-next-node');
             }
         }
 

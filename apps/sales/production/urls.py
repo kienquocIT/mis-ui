@@ -7,7 +7,7 @@ from apps.sales.production.views import (
 )
 from apps.sales.production.views.production_report import ProductionReportCreate, ProductionReportList, \
     ProductionReportListAPI, ProductionReportDetail, ProductionReportDetailAPI, ProductionReportUpdate, \
-    ProductionReportDDListAPI, ProductionReportGRListAPI
+    ProductionReportDDListAPI, ProductionReportGRListAPI, ProductionReportProductListAPI
 from apps.sales.production.views.work_order import WorkOrderCreate, WorkOrderList, WorkOrderListAPI, WorkOrderDetail, \
     WorkOrderDetailAPI, WorkOrderUpdate, WorkOrderDDListAPI
 
@@ -44,6 +44,7 @@ urlpatterns = [
     path('production-report/update/<str:pk>', ProductionReportUpdate.as_view(), name='ProductionReportUpdate'),
     path('production-report-dd/api/list', ProductionReportDDListAPI.as_view(), name='ProductionReportDDListAPI'),
     path('production-report-gr/api/list', ProductionReportGRListAPI.as_view(), name='ProductionReportGRListAPI'),
+    path('production-report-product/api/list', ProductionReportProductListAPI.as_view(), name='ProductionReportProductListAPI'),
 
     # work order
     path('work-order/list', WorkOrderList.as_view(), name='WorkOrderList'),

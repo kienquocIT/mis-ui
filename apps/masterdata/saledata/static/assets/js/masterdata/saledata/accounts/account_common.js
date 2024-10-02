@@ -272,7 +272,7 @@ function Disable(option) {
         $('.form-control').prop('disabled', true).css({color: 'black'});
         $('.form-select').prop('disabled', true).css({color: 'black'});
         $('.select2').prop('disabled', true);
-        $('input').prop('disabled', true);
+        $('form input').prop('disabled', true);
         $('.del-address-item').prop('hidden', true);
         add_shipping_address_btn.addClass('disabled').prop('hidden', true);
         add_billing_address_btn.addClass('disabled').prop('hidden', true);

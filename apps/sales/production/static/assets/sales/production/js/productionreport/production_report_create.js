@@ -19,7 +19,15 @@ $(function () {
 
         ProdReportDataTableHandle.$tableMain.on('change', '.table-row-labor-actual, .table-row-quantity-actual', function () {
             let row = this.closest('tr');
-           ProdReportStoreHandle.storeRow(row);
+            if (this.classList.contains('table-row-quantity-actual')) {
+                ProdReportLoadDataHandle.loadInfo(row, true);
+            }
+            ProdReportStoreHandle.storeRow(row);
+        });
+
+        ProdReportDataTableHandle.$tableMain.on('click', '.btn-info', function () {
+            let row = this.closest('tr');
+            ProdReportLoadDataHandle.loadInfo(row);
         });
 
 // SUBMIT FORM

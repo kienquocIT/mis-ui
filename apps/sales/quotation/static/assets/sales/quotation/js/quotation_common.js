@@ -52,20 +52,6 @@ class QuotationLoadDataHandle {
         });
     };
 
-    static loadEventCheckbox(ele) {
-        let checkboxes = ele.querySelectorAll('.form-check-input[type="radio"]');
-        checkboxes.forEach((checkbox) => {
-            checkbox.addEventListener('click', function () {
-                let checked = checkbox.checked;
-                for (let eleCheck of checkboxes) {
-                    eleCheck.checked = false;
-                }
-                checkbox.checked = checked;
-            });
-        });
-        return true;
-    };
-
     static loadInitOpportunity() {
         let form = $('#frm_quotation_create');
         if (form.attr('data-method').toLowerCase() === 'post') {
@@ -425,7 +411,7 @@ class QuotationLoadDataHandle {
                 let tax = ele[0].closest('tr').querySelector('.table-row-tax');
                 // load Description
                 if (description) {
-                    description.innerHTML = data?.['description'];
+                    description.innerHTML = data?.['description'] ? data?.['description'] : '--';
                 }
                 // load UOM
                 if (uom && data?.['unit_of_measure'] && data?.['uom_group']) {
@@ -2446,13 +2432,13 @@ class QuotationDataTableHandle {
                         if (row?.['shipping_id']) {
                             itemType = 2  // shipping
                         }
-                        let description = "--";
+                        let des = "--";
                         if (itemType === 0) {  // PRODUCT
-                            description = row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : '--';
+                            des = row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : '--';
                         } else if (itemType === 1) {  // PROMOTION
-                            description = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '--';
+                            des = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '--';
                         }
-                        return `<p class="table-row-description" data-zone="${dataZone}">${description}</p>`;
+                        return `<div class="row"><p class="table-row-description" data-zone="${dataZone}">${des}</p></div>`;
                     }
                 },
                 {
@@ -3530,11 +3516,16 @@ class QuotationDataTableHandle {
                             checked = 'checked';
                         }
                         if (row?.['bom_check_data']?.['is_bom'] === true) {
-                            if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                                disabled = 'disabled';
-                                checked = '';
-                            }
-                            if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                            if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                    disabled = 'disabled';
+                                    checked = '';
+                                }
+                                if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                                    disabled = 'disabled';
+                                    checked = '';
+                                }
+                            } else {
                                 disabled = 'disabled';
                                 checked = '';
                             }
@@ -3571,15 +3562,20 @@ class QuotationDataTableHandle {
                         let txt = QuotationLoadDataHandle.transEle.attr('data-available');
                         let badge = 'success';
                         if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
-                            txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
-                            badge = 'danger';
+                            txt = QuotationLoadDataHandle.transEle.attr('data-product-note-1');
+                            badge = 'warning';
                         }
                         if (row?.['bom_check_data']?.['is_bom'] === true) {
-                            if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                                txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
-                                badge = 'danger';
-                            }
-                            if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                            if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                    txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
+                                    badge = 'danger';
+                                }
+                                if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                                    txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
+                                    badge = 'danger';
+                                }
+                            } else {
                                 txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
                                 badge = 'danger';
                             }
@@ -3595,11 +3591,15 @@ class QuotationDataTableHandle {
                             txt = QuotationLoadDataHandle.transEle.attr('data-product-note-1');
                         }
                         if (row?.['bom_check_data']?.['is_bom'] === true) {
-                            if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                                txt = QuotationLoadDataHandle.transEle.attr('data-product-note-2');
-                            }
-                            if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
-                                txt = QuotationLoadDataHandle.transEle.attr('data-product-note-2');
+                            if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                    txt = QuotationLoadDataHandle.transEle.attr('data-product-note-2');
+                                }
+                                if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                                    txt = QuotationLoadDataHandle.transEle.attr('data-product-note-2');
+                                }
+                            } else {
+                                txt = QuotationLoadDataHandle.transEle.attr('data-product-note-3');
                             }
                         }
                         return `<span class="table-row-note">${txt}</span>`;

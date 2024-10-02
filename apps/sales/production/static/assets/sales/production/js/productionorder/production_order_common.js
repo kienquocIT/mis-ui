@@ -98,6 +98,7 @@ class ProdOrderLoadDataHandle {
                     'data': {
                         'product_id': ProdOrderLoadDataHandle.$boxProd.val(),
                         'opportunity_id__isnull': true,
+                        'bom_type__in': [0, 2, 3, 4].join(','),
                     },
                     'isDropdown': true,
                 }
@@ -185,87 +186,6 @@ class ProdOrderLoadDataHandle {
             }
         }
         return true;
-    };
-
-    static loadDDProduct($ele, dataProduct) {
-        let result = [];
-        $.fn.callAjax2({
-                'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
-                'method': 'GET',
-                'data': {
-                    'general_product_types_mapped__is_material': true
-                },
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                        result = result.concat(data.product_sale_list);
-                        $.fn.callAjax2({
-                                'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
-                                'method': 'GET',
-                                'data': {
-                                    'general_product_types_mapped__is_finished_goods': true,
-                                },
-                                'isDropdown': true,
-                            }
-                        ).then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                                        result = result.concat(data.product_sale_list);
-                                        ProdOrderLoadDataHandle.loadInitS2($ele, result);
-                                        // $.fn.callAjax2({
-                                        //         'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
-                                        //         'method': 'GET',
-                                        //         'data': {
-                                        //             'general_product_types_mapped__is_goods': true,
-                                        //         },
-                                        //         'isDropdown': true,
-                                        //     }
-                                        // ).then(
-                                        //     (resp) => {
-                                        //         let data = $.fn.switcherResp(resp);
-                                        //         if (data) {
-                                        //             if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                                        //                 result = result.concat(data.product_sale_list);
-                                        //                 ProdOrderLoadDataHandle.loadInitS2($ele, result);
-                                        //                 if (dataProduct) {
-                                        //                     $.fn.callAjax2({
-                                        //                             'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
-                                        //                             'method': 'GET',
-                                        //                             'data': {'id': dataProduct?.['id']},
-                                        //                             'isDropdown': true,
-                                        //                         }
-                                        //                     ).then(
-                                        //                         (resp) => {
-                                        //                             let data = $.fn.switcherResp(resp);
-                                        //                             if (data) {
-                                        //                                 if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                                        //                                     if (data.product_sale_list.length > 0) {
-                                        //                                         ProdOrderLoadDataHandle.loadInitS2($ele, [data.product_sale_list[0]]);
-                                        //                                     }
-                                        //                                 }
-                                        //                             }
-                                        //                         }
-                                        //                     )
-                                        //                 }
-                                        //             }
-                                        //         }
-                                        //     }
-                                        // )
-                                    }
-                                }
-                            }
-                        )
-                    }
-                }
-            }
-        )
-        // ProdOrderLoadDataHandle.loadInitS2($ele, result);
     };
 
     static loadDD($table) {
@@ -436,6 +356,11 @@ class ProdOrderLoadDataHandle {
     // Detail
     static loadDetail(data) {
         ProdOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data?.['bom_data']));
+        for (let dataStatus of ProdOrderLoadDataHandle.dataStatus) {
+            if (dataStatus?.['id'] === data?.['status_production']) {
+                ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, [dataStatus]);
+            }
+        }
         ProdOrderLoadDataHandle.$title.val(data?.['title']);
         ProdOrderLoadDataHandle.$quantity.val(data?.['quantity']);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [data?.['product_data']], {'general_product_types_mapped__is_finished_goods': true});

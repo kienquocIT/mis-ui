@@ -43,7 +43,7 @@ $(document).ready(function () {
         pageLength:50,
         columns: [
             {
-                data: 'title',
+                data: 'title_i18n',
                 targets: 0,
                 width: "20%",
                 render: (data, type, row) => {

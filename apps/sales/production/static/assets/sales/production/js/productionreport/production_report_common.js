@@ -358,6 +358,7 @@ class ProdReportDataTableHandle {
             columns: [
                 {
                     targets: 0,
+                    width: '5%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_task'] === true) {
@@ -382,6 +383,7 @@ class ProdReportDataTableHandle {
                 },
                 {
                     targets: 1,
+                    width: '25%',
                     render: (data, type, row) => {
                         if (row?.['is_task'] === true) {
                             return `<b class="table-row-task-title">${row?.['task_title']}</b>`;
@@ -391,6 +393,7 @@ class ProdReportDataTableHandle {
                 },
                 {
                     targets: 2,
+                    width: '15%',
                     render: (data, type, row) => {
                         if (row?.['is_task'] === true) {
                             return ``;
@@ -400,6 +403,7 @@ class ProdReportDataTableHandle {
                 },
                 {
                     targets: 3,
+                    width: '15%',
                     render: (data, type, row) => {
                         if (row?.['is_task'] === true) {
                             return `<span class="table-row-labor">${row?.['quantity'] ? row?.['quantity'] : 0}</span><span class="table-row-uom-labor"> ${row?.['uom_data']?.['title']}</span>`;
@@ -409,6 +413,7 @@ class ProdReportDataTableHandle {
                 },
                 {
                     targets: 4,
+                    width: '20%',
                     render: (data, type, row) => {
                         if (row?.['is_task'] === true) {
                             return `<input type="text" class="form-control valid-number table-row-labor-actual" value="${row?.['quantity_actual']}">`;

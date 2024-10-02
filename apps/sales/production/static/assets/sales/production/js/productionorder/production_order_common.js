@@ -356,6 +356,11 @@ class ProdOrderLoadDataHandle {
     // Detail
     static loadDetail(data) {
         ProdOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data?.['bom_data']));
+        for (let dataStatus of ProdOrderLoadDataHandle.dataStatus) {
+            if (dataStatus?.['id'] === data?.['status_production']) {
+                ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, [dataStatus]);
+            }
+        }
         ProdOrderLoadDataHandle.$title.val(data?.['title']);
         ProdOrderLoadDataHandle.$quantity.val(data?.['quantity']);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [data?.['product_data']], {'general_product_types_mapped__is_finished_goods': true});

@@ -447,7 +447,7 @@ class BOMLoadTab {
                     ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge badge-light material-code w-100')
                     ele.closest('tr').find('.material-code').closest('a').attr('href', '').addClass('disabled')
                 }
-                BOMLoadTab.LoadUOM(ele.closest('tr').find('.material-uom'), material_selected?.['general_uom_group'], material_selected?.['sale_default_uom'])
+                BOMLoadTab.LoadUOM(ele.closest('tr').find('.material-uom'), material_selected?.['general_uom_group'], material_selected?.['inventory_uom'])
                 ele.closest('tr').find('.material-unit-price').attr('value', material_selected?.['standard_price'])
                 let quantity = parseFloat(ele.closest('tr').find('.material-quantity').val())
                 ele.closest('tr').find('.material-subtotal-price').attr('value', parseFloat(material_selected?.['standard_price']) * quantity)

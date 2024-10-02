@@ -2,7 +2,8 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.core.fimport.columns_template import ResolveColumnsFImport
 from apps.core.fimport.columns_template.app_name import (
-    SHEET_SALEDATA_PRODUCT_UOMGROUP
+    SHEET_SALEDATA_PRODUCT_UOMGROUP, SHEET_SALEDATA_PRODUCT_PRODUCT_TYPE, SHEET_SALEDATA_PRODUCT_PRODUCT_CATEGORY,
+    SHEET_SALEDATA_PRODUCT_UOM,
 )
 
 COLUMNS_SALEDATA_PRODUCT_UOMGROUP = ResolveColumnsFImport(
@@ -12,6 +13,23 @@ COLUMNS_SALEDATA_PRODUCT_UOMGROUP = ResolveColumnsFImport(
     template_link='fimport/template/import-saledata-product-uomgroup.xlsx',
     validate={},
 )
+
+COLUMNS_SALEDATA_PRODUCT_UOMGROUP.add_column(
+    name=_('Code'), data={
+        'name': _('Code'),
+        'input_name': 'code',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+                'minlength': 1,
+            },
+        },
+    }
+)
+
 COLUMNS_SALEDATA_PRODUCT_UOMGROUP.add_column(
     name=_('Title'), data={
         'name': _('Title'),
@@ -27,3 +45,228 @@ COLUMNS_SALEDATA_PRODUCT_UOMGROUP.add_column(
         },
     }
 )
+
+COLUMNS_SALEDATA_PRODUCT_PRODUCT_TYPE = ResolveColumnsFImport(
+    sheet_name=SHEET_SALEDATA_PRODUCT_PRODUCT_TYPE,
+    app_id='90f07280-e2f4-4406-aa23-ba255a22ec2d',
+    url_name='ProductProductTypeImportAPI',
+    template_link='fimport/template/import-saledata-product-producttype.xlsx',
+    validate={},
+)
+
+COLUMNS_SALEDATA_PRODUCT_PRODUCT_TYPE.add_column(
+    name=_('Code'), data={
+        'name': _('Code'),
+        'input_name': 'code',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+                'minlength': 1,
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_PRODUCT_TYPE.add_column(
+    name=_('Title'), data={
+        'name': _('Title'),
+        'input_name': 'title',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+                'minlength': 1,
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_PRODUCT_TYPE.add_column(
+    name=_('Remarks'), data={
+        'name': _('Remarks'),
+        'input_name': 'description',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': [],
+            'kwargs': {
+                'type': 'text',
+                'maxlength': 200,
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_PRODUCT_CATEGORY = ResolveColumnsFImport(
+    sheet_name=SHEET_SALEDATA_PRODUCT_PRODUCT_CATEGORY,
+    app_id='053c0804-162a-4357-a1c2-2161e6606cc2',
+    url_name='ProductProductCategoryImportAPI',
+    template_link='fimport/template/import-saledata-product-prodcategory.xlsx',
+    validate={},
+)
+
+COLUMNS_SALEDATA_PRODUCT_PRODUCT_CATEGORY.add_column(
+    name=_('Code'), data={
+        'name': _('Code'),
+        'input_name': 'code',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+                'minlength': 1,
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_PRODUCT_CATEGORY.add_column(
+    name=_('Title'), data={
+        'name': _('Title'),
+        'input_name': 'title',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+                'minlength': 1,
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_PRODUCT_CATEGORY.add_column(
+    name=_('Remarks'), data={
+        'name': _('Remarks'),
+        'input_name': 'description',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': [],
+            'kwargs': {
+                'type': 'text',
+                'maxlength': 200,
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_UOM = ResolveColumnsFImport(
+    sheet_name=SHEET_SALEDATA_PRODUCT_UOM,
+    app_id='7bc78f47-66f1-4104-a6fa-5ca07f3f2275',
+    url_name='ProductUOMImportAPI',
+    template_link='fimport/template/import-saledata-product-uom.xlsx',
+    validate={},
+)
+
+COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
+    name=_('Code'), data={
+        'name': _('Code'),
+        'input_name': 'code',
+        'type': 'string',
+        'is_primary_key': True,
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+                'minlength': 1,
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
+    name=_('Title'), data={
+        'name': _('Title'),
+        'input_name': 'title',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
+    name=_('UOM Group'), data={
+        'name': _('UOM Group'),
+        'input_name': 'group',
+        'type': 'string',
+        'is_foreign_key': SHEET_SALEDATA_PRODUCT_UOMGROUP,
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
+    name=_('Is Referenced'), data={
+        'name': _('Is Referenced'),
+        'input_name': 'is_referenced_unit',
+        'type': 'select',
+        'data_list': [
+                (0, _('False')),
+                (1, _('True')),
+        ],
+        'select2_config': {
+            'allowClear': True,
+        },
+        'remarks': [
+            _(
+                "Is referenced selection, chosen from: 0 (false), 1 (true)"
+            ),],
+        'input_attrs': {
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
+    name=_('Ratio'), data={
+        'name': _('Ratio'),
+        'input_name': 'ratio',
+        'type': 'string',
+        'remarks': [
+            _(
+                "If the current unit is referenced unit, ratio must be 1"
+            ),],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
+    name=_('Rounding'), data={
+        'name': _('Rounding'),
+        'input_name': 'rounding',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+

@@ -562,11 +562,18 @@ class NodeLoadDataHandle {
         for (let area of row.querySelectorAll('.collab-area')) {
             area.setAttribute('hidden', 'true');
         }
+        let eleNoteSrc = row.querySelector('.box-list-source-note');
         if ($(ele).val() === '1') {
             row.querySelector('.collab-in-form-area').removeAttribute('hidden');
         } else if ($(ele).val() === '2') {
+            if (eleNoteSrc) {
+                eleNoteSrc.innerHTML = NodeLoadDataHandle.transEle.attr('data-type-src-note') + ': ' + NodeLoadDataHandle.transEle.attr('data-type-src-2-note');
+            }
             row.querySelector('.collab-out-form-area').removeAttribute('hidden');
         } else if ($(ele).val() === '3') {
+            if (eleNoteSrc) {
+                eleNoteSrc.innerHTML = NodeLoadDataHandle.transEle.attr('data-type-src-note') + ': ' + NodeLoadDataHandle.transEle.attr('data-type-src-3-note');
+            }
             row.querySelector('.collab-in-workflow-area').removeAttribute('hidden');
         }
         NodeLoadDataHandle.loadZoneDD(row, true); // reset zones
@@ -1164,8 +1171,8 @@ class NodeDataTableHandle {
                                                                         required
                                                                     >
                                                                     </select>
-                                                                    <small class="form-text text-muted">
-                                                                        ${NodeLoadDataHandle.transEle.attr('data-type-note-1')}
+                                                                    <small class="form-text text-muted box-list-source-note">
+                                                                        ${NodeLoadDataHandle.transEle.attr('data-type-src-note')}: ${NodeLoadDataHandle.transEle.attr('data-type-src-2-note')}
                                                                     </small>
                                                                 </div>
                                                             </div>

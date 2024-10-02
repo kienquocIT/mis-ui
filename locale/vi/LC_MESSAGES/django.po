@@ -8973,5 +8973,13 @@ msgid "Exceed quantity"
 msgstr "Vượt quá số lượng"
 
 #
-msgid "Only one collaborator actions at this node"
-msgstr "Chỉ một cộng tác viên thao tác tại trạm này"
+msgid "At this node"
+msgstr "Khi đến trạm này"
+
+#
+msgid "Only one collaborator (select in list below) will action, approve the document"
+msgstr "Chỉ một cộng tác viên (chọn trong danh sách dưới đây) sẽ thao tác, phê duyệt phiếu"
+
+#
+msgid "All collaborators (according to configuration below) will action, approve the document"
+msgstr "Tất cả cộng tác viên (theo cấu hình dưới đây) sẽ cùng thao tác, phê duyệt phiếu"

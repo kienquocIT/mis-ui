@@ -123,6 +123,14 @@ class ProdReportLoadDataHandle {
             for (let task of data?.['task_data']) {
                 task['quantity_actual'] = task?.['quantity'];
             }
+            for (let dataTask of data?.['task_data']) {
+                if (!dataTask?.['is_task']) {
+                    dataTask['quantity_actual'] = 0;
+                }
+                if (dataTask?.['is_task'] === false) {
+                    dataTask['quantity_actual'] = 0;
+                }
+            }
             ProdReportLoadDataHandle.loadAddDtbRows(data?.['task_data']);
         }
         return true;
@@ -133,10 +141,6 @@ class ProdReportLoadDataHandle {
         ProdReportDataTableHandle.$tableMain.DataTable().rows.add(data).draw();
         ProdReportLoadDataHandle.loadDD(ProdReportDataTableHandle.$tableMain);
         ProdReportLoadDataHandle.loadSetCollapse();
-        ProdReportDataTableHandle.$tableMain.DataTable().rows().every(function () {
-            let row = this.node();
-            ProdReportLoadDataHandle.loadInfo(row);
-        });
         return true;
     };
 
@@ -252,6 +256,12 @@ class ProdReportLoadDataHandle {
                                                 }
                                                 for (let dataReport of data.production_report_product) {
                                                     report += dataReport?.['quantity_actual'];
+                                                    if (ProdReportLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
+                                                        let pk = $.fn.getPkDetail();
+                                                        if (dataReport?.['production_report']?.['id'] === pk) {
+                                                            report -= dataReport?.['quantity_actual'];
+                                                        }
+                                                    }
                                                 }
                                                 let result = issue - report;
 

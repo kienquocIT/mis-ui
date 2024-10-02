@@ -1275,7 +1275,7 @@ class NodeDataTableHandle {
                                                                             </span>
                                                                         </span>
                                                                     </div>
-                                                                    <div class="offcanvas offcanvas-end w-50 mt-4" tabindex="-1" id="${idOutFormCanvas}" aria-labelledby="${idOutFormCanvas}">
+                                                                    <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="${idOutFormCanvas}" aria-labelledby="${idOutFormCanvas}">
                                                                         <div class="offcanvas-header">
                                                                             <h5 id="offcanvasRightLabel">${NodeLoadDataHandle.transEle.attr('data-add-employee')}</h5>
                                                                         </div>
@@ -1288,6 +1288,7 @@ class NodeDataTableHandle {
                                                                                 <thead>
                                                                                 <tr class="bg-light">
                                                                                     <th class="w-30">${NodeLoadDataHandle.transEle.attr('data-select-employee')}</th>
+                                                                                    <th class="w-30">${NodeLoadDataHandle.transEle.attr('data-select-group')}</th>
                                                                                     <th class="w-40">${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
                                                                                 </tr>
                                                                                 </thead>
@@ -1619,8 +1620,7 @@ class NodeDataTableHandle {
     static dataTableCollabOutFormEmployee($table, data) {
         $table.DataTableDefault({
             data: data ? data : [],
-            // paginate: false,
-            // info: false,
+            pageLength: 8,
             columns: [
                 {
                     targets: 0,
@@ -1648,9 +1648,15 @@ class NodeDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
+                        return `<span class="badge badge-soft-blue">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
                         if (row.hasOwnProperty('role') && Array.isArray(row?.['role'])) {
                             let result = [];
-                            row?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-primary mb-1 mr-1">` + item?.['title'] + `</span>`) : null);
+                            row?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-pink mb-1 mr-1">` + item?.['title'] + `</span>`) : null);
                             return result.join(" ");
                         }
                         return '';
@@ -1688,7 +1694,7 @@ class NodeDataTableHandle {
                     render: (data, type, row) => {
                         if (row?.['employee'].hasOwnProperty('role') && Array.isArray(row?.['employee']?.['role'])) {
                             let result = [];
-                            row?.['employee']?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-primary mb-1 mr-1">${item?.['title']}</span>`) : null);
+                            row?.['employee']?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-pink mb-1 mr-1">${item?.['title']}</span>`) : null);
                             return result.join(" ");
                         }
                         return '';

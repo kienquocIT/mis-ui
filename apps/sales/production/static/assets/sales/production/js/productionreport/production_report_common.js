@@ -264,8 +264,6 @@ class ProdReportLoadDataHandle {
                                                     }
                                                 }
                                                 let result = issue - report;
-
-
                                                 contentInfo.innerHTML = `<b>${ProdReportLoadDataHandle.$trans.attr('data-available')}: ${result}<b/>`;
                                                 if (eleQuantity.value) {
                                                     if (parseFloat(eleQuantity.value) > result) {

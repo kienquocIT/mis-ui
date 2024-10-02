@@ -8987,3 +8987,7 @@ msgstr "Tất cả cộng tác viên (theo cấu hình dưới đây) sẽ cùng
 #
 msgid "The product is only used for project sale"
 msgstr "Sản phẩm chỉ dùng cho bán hàng dự án"
+
+#
+msgid "Only one collaborator can be configured at this node because the next node needs to select a collaborator"
+msgstr "Chỉ được cấu hình một cộng tác viên tại trạm này vì trạm tiếp theo cần chọn cộng tác viên"

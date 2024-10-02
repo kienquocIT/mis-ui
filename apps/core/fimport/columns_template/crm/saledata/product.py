@@ -342,6 +342,28 @@ COLUMNS_SALEDATA_PRODUCT.add_column(
 )
 
 COLUMNS_SALEDATA_PRODUCT.add_column(
+    name=_('Product choice'), data={
+        'name': _('Product choice'),
+        'input_name': 'product_choice',
+        'type': 'json',
+        'remarks': [],
+        'input_attrs': {
+            'kwargs': {
+                'type': 'text',
+                'data-type': 'json',
+                'data-valid-json': True,
+            },
+        },
+    },
+)
+COLUMNS_SALEDATA_PRODUCT.add_validate(
+    name='product_choice', data={
+        'json': True,
+        'pattern': "^\[(0|1|2)?(,(0|1|2)){0,2}\]$",
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT.add_column(
     name=_('Product Type'), data={
         'name': _('Product Type'),
         'input_name': 'general_product_types_mapped',

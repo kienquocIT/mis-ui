@@ -52,7 +52,7 @@ class ProjectBOMLoadPage {
             ele.empty()
         }
     }
-    static LoadFinishProduct(ele, data) {
+    static LoadFinishGoodsAndServices(ele, data) {
         ele.initSelect2({
             ajax: {
                 data: {'get_finished_goods_and_services': true},
@@ -60,7 +60,15 @@ class ProjectBOMLoadPage {
                 method: 'GET',
             },
             callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp];
+                let res = []
+                let existed = []
+                for (let i = 0; i < resp.data[keyResp].length; i++) {
+                    if (!existed.includes(resp.data[keyResp][i]?.['id'])) {
+                        res.push(resp.data[keyResp][i])
+                        existed.push(resp.data[keyResp][i]?.['id'])
+                    }
+                }
+                return res;
             },
             data: (data ? data : null),
             keyResp: 'product_list',
@@ -626,7 +634,6 @@ class ProjectBOMAction {
             $('textarea').prop('readonly', true).prop('disabled', true)
             $('select').prop('readonly', true).prop('disabled', true)
             add_new_process_description.prop('disabled', true)
-            add_new_outsourcing_material.prop('disabled', true)
             $('.del-row-material').prop('disabled', true)
             $('.add-new-material').prop('disabled', true)
             $('.del-row-tool').prop('disabled', true)
@@ -822,7 +829,7 @@ class ProjectBOMAction {
 class ProjectBOMHandle {
     static LoadPage() {
         ProjectBOMLoadPage.LoadOpportunity(opp_mapped_select)
-        ProjectBOMLoadPage.LoadFinishProduct(productEle)
+        ProjectBOMLoadPage.LoadFinishGoodsAndServices(productEle)
         ProjectBOMLoadTab.LoadProcessDescriptionTable()
         ProjectBOMLoadTab.LoadLaborSummaryTable()
         // material
@@ -926,7 +933,7 @@ class ProjectBOMHandle {
 
                     ProjectBOMLoadPage.LoadOpportunity(opp_mapped_select, data?.['opportunity'])
                     opp_mapped_select.trigger('change')
-                    ProjectBOMLoadPage.LoadFinishProduct(productEle, data?.['product'])
+                    ProjectBOMLoadPage.LoadFinishGoodsAndServices(productEle, data?.['product'])
                     priceEle.attr('value', data?.['sum_price'])
                     timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
 
@@ -1080,7 +1087,7 @@ $(document).on("click", '.add-new-material', function () {
 
 $(document).on("click", '.del-row-material', function () {
     $(this).closest('tr').remove()
-    BOMAction.Calculate_BOM_sum_price()
+    ProjectBOMAction.Calculate_BOM_sum_price()
 })
 
 $(document).on("click", '.add-new-swap-material', function () {

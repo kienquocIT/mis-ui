@@ -614,8 +614,7 @@ $(function () {
 
         function checkElementValuesBeforeLoadDataCopy() {
             let element0 = $('#data-copy-quotation-detail').val();
-            let element1 = $('#data-init-quotation-create-tables-product').val();
-            if (element0 && element1) {
+            if (element0) {
                 loadDataCopyTo(JSON.parse(element0));  // call loadDataCopyTo() if all condition pass
             } else {
                 setTimeout(checkElementValuesBeforeLoadDataCopy, 1000);  // call again after 1s if condition not pass yet

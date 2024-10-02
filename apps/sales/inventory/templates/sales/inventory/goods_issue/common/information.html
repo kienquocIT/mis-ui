@@ -60,25 +60,26 @@
                         </div>
                     </div>
                     <div id="inventory-adjustment-select-space" class="col-12 col-md-4 col-lg-4">
-                            <div class="form-group">
-                                <label for="box-select-ia" class="form-label required">{% trans 'Select inventory adjustment' %}</label>
-                                <select id="box-select-ia"
-                                        class="form-select"
-                                        data-method="GET"
-                                        data-url="{% url 'InventoryAdjustmentListAPIForGIS' %}"
-                                ></select>
-                            </div>
+                        <div class="form-group">
+                            <label for="box-select-ia" class="form-label required">{% trans 'Select inventory adjustment' %}</label>
+                            <select id="box-select-ia"
+                                    class="form-select"
+                                    data-method="GET"
+                                    data-url="{% url 'InventoryAdjustmentListAPIForGIS' %}"
+                            ></select>
                         </div>
+                    </div>
                     <div hidden id="production-order-select-space" class="col-12 col-md-4 col-lg-4">
-                                <div class="form-group">
-                                    <label for="box-select-production-order" class="form-label required">{% trans 'Select production order' %}</label>
-                                    <select id="box-select-production-order"
-                                            class="form-select select2"
-                                            data-method="GET"
-                                            data-url="{% url 'ProductionOrderListAPIForGIS' %}"
-                                    ></select>
-                                </div>
-                            </div>
+                        <div class="form-group">
+                            <label for="box-select-production-order" class="form-label required">{% trans 'Select' %} {% trans 'Production order' %} / {% trans 'Work order' %}</label>
+                            <select id="box-select-production-order"
+                                    class="form-select select2"
+                                    data-method="GET"
+                                    data-url-po="{% url 'ProductionOrderListAPIForGIS' %}"
+                                    data-url-wo="{% url 'WorkOrderListAPIForGIS' %}"
+                            ></select>
+                        </div>
+                    </div>
                     <div class="col-12 col-md-2 col-lg-2">
                         <div class="form-group">
                             <label for="date_created" class="form-label">{% trans 'Created date' %}</label>

@@ -193,6 +193,10 @@
                             multiple
                         ></select>
                     </div>
+                    <div class="form-check form-switch form-switch-lg mt-5" hidden>
+                        <input type="checkbox" class="form-check-input" id="manual-done">
+                        <label class="form-check-label" for="manual-done">{% trans 'Close/ open production order' %}</label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -249,6 +253,7 @@
         data-md-uom="{% url 'UnitOfMeasureListAPI' %}"
         data-md-warehouse="{% url 'WareHouseListAPI' %}"
         data-md-pwh="{% url 'WarehouseGetProductsListAPI' %}"
+        data-manual-done="{% url 'ProductionOrderManualDoneListAPI' %}"
     >
     <input type="text" id="data-bom">
     {{ data.employee_current|json_script:'employee_current' }}

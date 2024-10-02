@@ -8991,3 +8991,7 @@ msgstr "Sản phẩm chỉ dùng cho bán hàng dự án"
 #
 msgid "Only one collaborator can be configured at this node because the next node needs to select a collaborator"
 msgstr "Chỉ được cấu hình một cộng tác viên tại trạm này vì trạm tiếp theo cần chọn cộng tác viên"
+
+#
+msgid "Issue this time"
+msgstr "Xuất lần này"

@@ -3516,11 +3516,16 @@ class QuotationDataTableHandle {
                             checked = 'checked';
                         }
                         if (row?.['bom_check_data']?.['is_bom'] === true) {
-                            if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                                disabled = 'disabled';
-                                checked = '';
-                            }
-                            if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                            if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                    disabled = 'disabled';
+                                    checked = '';
+                                }
+                                if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                                    disabled = 'disabled';
+                                    checked = '';
+                                }
+                            } else {
                                 disabled = 'disabled';
                                 checked = '';
                             }
@@ -3561,11 +3566,16 @@ class QuotationDataTableHandle {
                             badge = 'warning';
                         }
                         if (row?.['bom_check_data']?.['is_bom'] === true) {
-                            if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                                txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
-                                badge = 'danger';
-                            }
-                            if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                            if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                    txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
+                                    badge = 'danger';
+                                }
+                                if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                                    txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
+                                    badge = 'danger';
+                                }
+                            } else {
                                 txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
                                 badge = 'danger';
                             }
@@ -3581,11 +3591,15 @@ class QuotationDataTableHandle {
                             txt = QuotationLoadDataHandle.transEle.attr('data-product-note-1');
                         }
                         if (row?.['bom_check_data']?.['is_bom'] === true) {
-                            if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                                txt = QuotationLoadDataHandle.transEle.attr('data-product-note-2');
-                            }
-                            if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
-                                txt = QuotationLoadDataHandle.transEle.attr('data-product-note-2');
+                            if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                                    txt = QuotationLoadDataHandle.transEle.attr('data-product-note-2');
+                                }
+                                if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
+                                    txt = QuotationLoadDataHandle.transEle.attr('data-product-note-2');
+                                }
+                            } else {
+                                txt = QuotationLoadDataHandle.transEle.attr('data-product-note-3');
                             }
                         }
                         return `<span class="table-row-note">${txt}</span>`;

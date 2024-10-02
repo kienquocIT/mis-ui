@@ -8983,3 +8983,7 @@ msgstr "Chỉ một cộng tác viên (chọn trong danh sách dưới đây) s�
 #
 msgid "All collaborators (according to configuration below) will action, approve the document"
 msgstr "Tất cả cộng tác viên (theo cấu hình dưới đây) sẽ cùng thao tác, phê duyệt phiếu"
+
+#
+msgid "The product is only used for project sale"
+msgstr "Sản phẩm chỉ dùng cho bán hàng dự án"

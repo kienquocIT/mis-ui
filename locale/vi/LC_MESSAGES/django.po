@@ -8995,3 +8995,7 @@ msgstr "Chỉ được cấu hình một cộng tác viên tại trạm này vì
 #
 msgid "Close/ open production order"
 msgstr "Đóng/ mở lệnh sản xuất"
+
+#
+msgid "Close/ open work order"
+msgstr "Đóng/ mở yêu cầu sản xuất"

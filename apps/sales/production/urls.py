@@ -9,7 +9,7 @@ from apps.sales.production.views.production_report import ProductionReportCreate
     ProductionReportListAPI, ProductionReportDetail, ProductionReportDetailAPI, ProductionReportUpdate, \
     ProductionReportDDListAPI, ProductionReportGRListAPI, ProductionReportProductListAPI
 from apps.sales.production.views.work_order import WorkOrderCreate, WorkOrderList, WorkOrderListAPI, WorkOrderDetail, \
-    WorkOrderDetailAPI, WorkOrderUpdate, WorkOrderDDListAPI
+    WorkOrderDetailAPI, WorkOrderUpdate, WorkOrderDDListAPI, WorkOrderManualDoneListAPI
 
 urlpatterns = [
     path('bill-of-material/list', BOMList.as_view(), name='BOMList'),
@@ -55,4 +55,5 @@ urlpatterns = [
     path('work-order/detail-api/<str:pk>', WorkOrderDetailAPI.as_view(), name='WorkOrderDetailAPI'),
     path('work-order/update/<str:pk>', WorkOrderUpdate.as_view(), name='WorkOrderUpdate'),
     path('work-order-dd/api/list', WorkOrderDDListAPI.as_view(), name='WorkOrderDDListAPI'),
+    path('work-order-manual-done/api/list', WorkOrderManualDoneListAPI.as_view(), name='WorkOrderManualDoneListAPI'),
 ]

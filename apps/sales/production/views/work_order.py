@@ -133,3 +133,16 @@ class WorkOrderDDListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.WORK_ORDER_DD_LIST).get(data)
         return resp.auto_return(key_success='work_order_dd')
+
+
+class WorkOrderManualDoneListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_work_order(
+            request=request,
+            url=ApiURL.WORK_ORDER_MANUAL_DONE_LIST,
+            msg=SaleMsg.WORK_ORDER_UPDATE
+        )

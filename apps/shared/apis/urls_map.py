@@ -723,7 +723,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCTION_REPORT_GR_LIST = StringUrl('production/production-report-gr/list')
     PRODUCTION_REPORT_PRODUCT_LIST = StringUrl('production/production-report-product/list')
 
-    # Production order
+    # Work order
     WORK_ORDER_LIST = StringUrl('production/work-order/list')
     WORK_ORDER_DETAIL = StringUrl('production/work-order')
     WORK_ORDER_DD_LIST = StringUrl('production/work-order-dd/list')
+    WORK_ORDER_MANUAL_DONE_LIST = StringUrl('production/work-order-manual-done/list')

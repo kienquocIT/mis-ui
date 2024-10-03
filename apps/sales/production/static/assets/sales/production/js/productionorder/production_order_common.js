@@ -393,18 +393,28 @@ class ProdOrderLoadDataHandle {
         let empCurrent = JSON.parse($('#employee_current').text());
         ProdOrderLoadDataHandle.$title.val(data?.['title']);
         ProdOrderLoadDataHandle.$quantity.val(data?.['quantity']);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [data?.['product_data']], {'general_product_types_mapped__is_finished_goods': true});
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM, [data?.['uom_data']]);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH, [data?.['warehouse_data']]);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO, data?.['sale_order_data']);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxGroup, [data?.['group_data']]);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, ProdOrderLoadDataHandle.dataStatus);
-        ProdOrderLoadDataHandle.$boxStatus.val(data?.['status_production']).trigger('change');
-        if (data?.['system_status'] === 3) {
-            ProdOrderLoadDataHandle.$manualDone.removeAttr('disabled');
+        if (data?.['product_data']?.['id']) {
+            ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [data?.['product_data']], {'general_product_types_mapped__is_finished_goods': true});
         }
-        if (data?.['status_production'] === 2) {
-            ProdOrderLoadDataHandle.$manualDone[0].checked = true;
+        if (data?.['uom_data']?.['id']) {
+           ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM, [data?.['uom_data']]);
+        }
+        if (data?.['warehouse_data']?.['id']) {
+            ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH, [data?.['warehouse_data']]);
+        }
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO, data?.['sale_order_data']);
+        if (data?.['group_data']?.['id']) {
+            ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxGroup, [data?.['group_data']]);
+        }
+        if (data?.['status_production'] !== 0) {
+            ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, ProdOrderLoadDataHandle.dataStatus);
+            ProdOrderLoadDataHandle.$boxStatus.val(data?.['status_production']).trigger('change');
+            if (data?.['system_status'] === 3) {
+                ProdOrderLoadDataHandle.$manualDone.removeAttr('disabled');
+            }
+            if (data?.['status_production'] === 2) {
+                ProdOrderLoadDataHandle.$manualDone[0].checked = true;
+            }
         }
         let date_start = '';
         if (data?.['date_start']) {

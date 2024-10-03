@@ -123,7 +123,7 @@ msgstr "Đăng ký"
 
 
 #: .\apps\core\account\templates\core\account\user_create.html:115
-msgid "Username to login "
+msgid "Username to login"
 msgstr "Tên tài khoản để đăng nhập"
 
 #: .\apps\core\account\templates\core\account\user_create.html:122
@@ -8995,3 +8995,15 @@ msgstr "Chỉ được cấu hình một cộng tác viên tại trạm này vì
 #
 msgid "Issue this time"
 msgstr "Xuất lần này"
+
+#
+msgid "WH Code"
+msgstr "Mã kho"
+
+#
+msgid "WH Name"
+msgstr "Tên kho"
+
+#
+msgid "lower letters, numbers, underscores or hyphens"
+msgstr "chữ cái viết thường, số, dấu gạch dưới hoặc dấu gạch nối"

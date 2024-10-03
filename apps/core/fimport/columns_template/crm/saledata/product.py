@@ -1,6 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 
-from apps.core.fimport.columns_template import ResolveColumnsFImport
+from apps.core.fimport.columns_template import ResolveColumnsFImport, SHEET_SALEDATA_PRICE_TAX
 from apps.core.fimport.columns_template.app_name import (
     SHEET_SALEDATA_PRODUCT_UOMGROUP, SHEET_SALEDATA_PRODUCT_PRODUCT_TYPE, SHEET_SALEDATA_PRODUCT_PRODUCT_CATEGORY,
     SHEET_SALEDATA_PRODUCT_UOM, SHEET_SALEDATA_PRODUCT,
@@ -511,6 +511,104 @@ COLUMNS_SALEDATA_PRODUCT.add_column(
     }
 )
 
+COLUMNS_SALEDATA_PRODUCT.add_column(
+    name=_('Sale UOM'), data={
+        'name': _('Sale UOM'),
+        'input_name': 'sale_default_uom',
+        'type': 'string',
+        'is_foreign_key': SHEET_SALEDATA_PRODUCT_UOM,
+        'remarks': [],
+        'input_attrs': {
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT.add_column(
+    name=_('Sale Tax'), data={
+        'name': _('Sale Tax'),
+        'input_name': 'sale_tax',
+        'type': 'string',
+        'is_foreign_key': SHEET_SALEDATA_PRICE_TAX,
+        'remarks': [],
+        'input_attrs': {
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT.add_column(
+    name=_('Inventory UOM'), data={
+        'name': _('Inventory UOM'),
+        'input_name': 'inventory_uom',
+        'type': 'string',
+        'is_foreign_key': SHEET_SALEDATA_PRODUCT_UOM,
+        'remarks': [],
+        'input_attrs': {
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT.add_column(
+    name=_('Purchase UOM'), data={
+        'name': _('Purchase UOM'),
+        'input_name': 'purchase_default_uom',
+        'type': 'string',
+        'is_foreign_key': SHEET_SALEDATA_PRODUCT_UOM,
+        'remarks': [],
+        'input_attrs': {
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT.add_column(
+    name=_('Purchase Tax'), data={
+        'name': _('Purchase Tax'),
+        'input_name': 'purchase_tax',
+        'type': 'string',
+        'is_foreign_key': SHEET_SALEDATA_PRICE_TAX,
+        'remarks': [],
+        'input_attrs': {
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT.add_column(
+    name=_('Supplied By'), data={
+        'name': _('Supplied By'),
+        'input_name': 'supplied_by',
+        'type': 'select',
+        'data_list': [
+            (0, _('Purchasing')),
+            (1, _('Making')),
+        ],
+        'select2_config': {
+            'allowClear': True,
+        },
+        'remarks': [
+            _(
+                "Is referenced selection, chosen from: 0 (Purchasing), 1 (Making)"
+            ), ],
+        'input_attrs': {
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
 
 
 

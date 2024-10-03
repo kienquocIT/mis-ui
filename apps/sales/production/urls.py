@@ -3,13 +3,13 @@ from apps.sales.production.views import (
     BOMList, BOMCreate, BOMDetail, BOMUpdate, BOMListAPI, BOMDetailAPI, LaborListForBOMAPI, ProductionOrderCreate,
     ProductMaterialListForBOMAPI, ProductToolListForBOMAPI, BOMOrderListAPI, ProductionOrderDetail,
     ProductionOrderListAPI, ProductionOrderDetailAPI, ProductionOrderUpdate, ProductionOrderList,
-    ProductListForBOMAPI, ProductionOrderDDListAPI
+    ProductListForBOMAPI, ProductionOrderDDListAPI, ProductionOrderManualDoneListAPI
 )
 from apps.sales.production.views.production_report import ProductionReportCreate, ProductionReportList, \
     ProductionReportListAPI, ProductionReportDetail, ProductionReportDetailAPI, ProductionReportUpdate, \
     ProductionReportDDListAPI, ProductionReportGRListAPI, ProductionReportProductListAPI
 from apps.sales.production.views.work_order import WorkOrderCreate, WorkOrderList, WorkOrderListAPI, WorkOrderDetail, \
-    WorkOrderDetailAPI, WorkOrderUpdate, WorkOrderDDListAPI
+    WorkOrderDetailAPI, WorkOrderUpdate, WorkOrderDDListAPI, WorkOrderManualDoneListAPI
 
 urlpatterns = [
     path('bill-of-material/list', BOMList.as_view(), name='BOMList'),
@@ -34,6 +34,7 @@ urlpatterns = [
     path('production-order/detail-api/<str:pk>', ProductionOrderDetailAPI.as_view(), name='ProductionOrderDetailAPI'),
     path('production-order/update/<str:pk>', ProductionOrderUpdate.as_view(), name='ProductionOrderUpdate'),
     path('production-order-dd/api/list', ProductionOrderDDListAPI.as_view(), name='ProductionOrderDDListAPI'),
+    path('production-order-manual-done/api/list', ProductionOrderManualDoneListAPI.as_view(), name='ProductionOrderManualDoneListAPI'),
 
     # production report
     path('production-report/list', ProductionReportList.as_view(), name='ProductionReportList'),
@@ -54,4 +55,5 @@ urlpatterns = [
     path('work-order/detail-api/<str:pk>', WorkOrderDetailAPI.as_view(), name='WorkOrderDetailAPI'),
     path('work-order/update/<str:pk>', WorkOrderUpdate.as_view(), name='WorkOrderUpdate'),
     path('work-order-dd/api/list', WorkOrderDDListAPI.as_view(), name='WorkOrderDDListAPI'),
+    path('work-order-manual-done/api/list', WorkOrderManualDoneListAPI.as_view(), name='WorkOrderManualDoneListAPI'),
 ]

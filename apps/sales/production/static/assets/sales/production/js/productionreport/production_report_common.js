@@ -62,8 +62,8 @@ class ProdReportLoadDataHandle {
         ProdReportLoadDataHandle.loadEventValidNum(ProdReportLoadDataHandle.$quantityNG[0]);
         // select2
         ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxType, ProdReportLoadDataHandle.dataType);
-        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxProductionOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
-        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxWorkOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxProductionOrder, [], {'system_status': 3, 'status_production': 1}, null, false, {'res1': 'code', 'res2': 'title'});
+        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxWorkOrder, [], {'system_status': 3, 'status_production': 1}, null, false, {'res1': 'code', 'res2': 'title'});
         // date picker
         $('.date-picker').each(function () {
             $(this).daterangepicker({

@@ -8991,3 +8991,19 @@ msgstr "Sản phẩm chỉ dùng cho bán hàng dự án"
 #
 msgid "Only one collaborator can be configured at this node because the next node needs to select a collaborator"
 msgstr "Chỉ được cấu hình một cộng tác viên tại trạm này vì trạm tiếp theo cần chọn cộng tác viên"
+
+#
+msgid "Close/ open production order"
+msgstr "Đóng/ mở lệnh sản xuất"
+
+#
+msgid "Close/ open work order"
+msgstr "Đóng/ mở yêu cầu sản xuất"
+
+#
+msgid "Status close/ open"
+msgstr "Trạng thái đóng/ mở"
+
+#
+msgid "Open"
+msgstr "Mở"

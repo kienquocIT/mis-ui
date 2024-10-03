@@ -38,6 +38,10 @@ $(function () {
             }
         });
 
+        ProdOrderLoadDataHandle.$manualDone.on('click', function () {
+            ProdOrderLoadDataHandle.loadClickManualDone();
+        });
+
         ProdOrderDataTableHandle.$tableMain.on('change', '.table-row-item', function () {
             let row = this.closest('tr');
             ProdOrderLoadDataHandle.loadChangeProduct(row);

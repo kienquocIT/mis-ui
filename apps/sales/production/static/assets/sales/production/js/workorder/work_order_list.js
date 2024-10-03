@@ -52,22 +52,6 @@ $(function () {
                         targets: 3,
                         width: '10%',
                         render: (data, type, row) => {
-                            let sttTxt = JSON.parse($('#stt_cp').text());
-                            let sttData = [
-                                "danger",
-                                "success",
-                            ]
-                            let stt = 1
-                            if (row?.['status_production'] === 2) {
-                                stt = 0
-                            }
-                            return `<span class="badge badge-soft-${sttData[stt]}">${sttTxt[stt][1]}</span>`;
-                        }
-                    },
-                    {
-                        targets: 4,
-                        width: '10%',
-                        render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
                             let sttData = [
                                 "light",
@@ -77,6 +61,22 @@ $(function () {
                                 "danger",
                             ]
                             return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
+                        }
+                    },
+                    {
+                        targets: 4,
+                        width: '10%',
+                        render: (data, type, row) => {
+                            let sttTxt = JSON.parse($('#stt_cp').text());
+                            let sttData = [
+                                "danger",
+                                "success",
+                            ]
+                            let stt = 1
+                            if (row?.['status_production'] === 2) {
+                                stt = 0
+                            }
+                            return `<span class="badge badge-${sttData[stt]} badge-outline">${sttTxt[stt][1]}</span>`;
                         }
                     },
                     {

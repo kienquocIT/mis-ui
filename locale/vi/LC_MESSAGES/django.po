@@ -8999,3 +8999,15 @@ msgstr "Đóng/ mở lệnh sản xuất"
 #
 msgid "Close/ open work order"
 msgstr "Đóng/ mở yêu cầu sản xuất"
+
+#
+msgid "Status close/ open"
+msgstr "Trạng thái đóng/ mở"
+
+#
+msgid "Close"
+msgstr "Đóng"
+
+#
+msgid "Open"
+msgstr "Mở"

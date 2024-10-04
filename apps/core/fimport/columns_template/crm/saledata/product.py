@@ -272,7 +272,7 @@ COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
 
 COLUMNS_SALEDATA_PRODUCT = ResolveColumnsFImport(
     sheet_name=SHEET_SALEDATA_PRODUCT,
-    app_id='9ec35702-68f0-430d-8938-ece02c5d35fa',
+    app_id='a8badb2e-54ff-4654-b3fd-0d2d3c777538',
     url_name='ProductImportAPI',
     template_link='fimport/template/import-saledata-product.xlsx',
     validate={},
@@ -600,7 +600,7 @@ COLUMNS_SALEDATA_PRODUCT.add_column(
         },
         'remarks': [
             _(
-                "Is referenced selection, chosen from: 0 (Purchasing), 1 (Making)"
+                "Supply selection, chosen from: 0 (Purchasing), 1 (Making)"
             ), ],
         'input_attrs': {
             'kwargs': {

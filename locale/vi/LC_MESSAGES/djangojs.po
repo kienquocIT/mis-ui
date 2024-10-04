@@ -30,7 +30,7 @@ msgid "Failed"
 msgstr "Thất bại"
 
 #
-msgid "Some apps will be working wrong"
+msgid "Some apps will not work correctly"
 msgstr "Một số ứng dụng sẽ không hoạt động"
 
 #

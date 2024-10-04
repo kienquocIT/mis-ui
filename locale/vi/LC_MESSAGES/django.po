@@ -227,11 +227,11 @@ msgid "Change Company"
 msgstr "Thay đổi công ty"
 
 #
-msgid "Hasn't link to the employee!"
+msgid "Hasn't been link to the employee!"
 msgstr "Tài khoản người dùng chưa có liên kết nhân viên"
 
 #
-msgid "Some apps will be working wrong"
+msgid "Some apps will not work correctly"
 msgstr "Một số ứng dụng sẽ không hoạt động"
 
 msgid "Please switch the current company to the one that already has an employee link or contact the administrator to add an employee to the account."
@@ -323,7 +323,7 @@ msgid "Use a strong password with at least 6 characters, including a mix of lowe
 msgstr "Sử dụng mật khẩu mạnh có ít nhất 6 ký tự, bao gồm kết hợp chữ thường, chữ hoa, số và ký hiệu."
 
 #: .\apps\core\auths\templates\auths\login.html:139
-msgid "Creat new account to MIS"
+msgid "Creat new account in MIS"
 msgstr "Tạo mới tài khoản trên MIS"
 
 #
@@ -1888,7 +1888,7 @@ msgid "After is required!"
 msgstr "Trường \"Sau khi\" là bắt buộc"
 
 #
-msgid "Percent do not math with before setup"
+msgid "The percentage is not calculated before setup"
 msgstr "Phần trăm không được tính toán trước khi thiết lập"
 
 #
@@ -2944,7 +2944,7 @@ msgid "contains"
 msgstr "chứa"
 
 #
-msgid "does not contains"
+msgid "does not contain"
 msgstr "không chứa"
 
 #
@@ -9024,3 +9024,6 @@ msgstr "Tên kho"
 msgid "lower letters, numbers, underscores or hyphens"
 msgstr "chữ cái viết thường, số, dấu gạch dưới hoặc dấu gạch nối"
 
+#
+msgid "SALE ORDER"
+msgstr "ĐƠN HÀNG"

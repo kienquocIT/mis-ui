@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    const preview_table = $('#preview-table');
+
     $('#input-excel').on('change', function () {
         const input = event.target;
         const reader = new FileReader();
@@ -17,26 +19,30 @@ $(document).ready(function () {
     });
 
     function displayExcelData(data) {
-        const table = $('#excel-table');
         console.log(data)
         if (data.length > 1) {
             let header = data[0]
-            table.find('thead').html('')
-            let tds = ``
-            for (let i = 0; i < header.length; i++) {
-                tds += `<td>${header[i]}</td>`
-            }
-            table.find('thead').append(`<tr>${tds}</tr>`)
+            let from_index = $('#from-index').val() ? parseInt($('#from-index').val()) : null
+            let to_index = $('#to-index').val() ? parseInt($('#to-index').val()) : null
 
-            let data_body = []
-            for (let i = 1; i < data.length; i++) {
-                let row_data = {}
-                for (let j = 0; j < data[i].length; j++) {
-                    row_data[j] = data[i][j]
+            if (header && from_index && to_index) {
+                preview_table.find('thead').html('')
+                preview_table.find('tbody').html('')
+
+                let ths = ``
+                for (let i = 0; i < header.length; i++) {
+                    ths += `<th>${header[i]}</th>`
                 }
-                data_body.push(row_data)
+                preview_table.find('thead').append(`<tr>${ths}</tr>`)
+
+                for (let i = from_index; i <= to_index; i++) {
+                    let tds = ``
+                    for (let j = 0; j < data[i].length; j++) {
+                        tds += `<td>${data[i][j]}</td>`
+                    }
+                    preview_table.find('tbody').append(`<tr>${tds}</tr>`)
+                }
             }
-            console.log(data_body)
         }
         else {
             $.fn.notifyB({description: "File is empty!"}, 'warning')

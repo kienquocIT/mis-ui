@@ -23,7 +23,7 @@
                 <div class="row">
                     <div class="col-12">
                         <label class="text-primary">{% trans 'Make sure that the tables in your Excel file have the same column order as the feature you are importing.' %}</label>
-                        <label class="text-primary">{% trans 'The default line 0 is the title of the table, the title of the table in the Excel file is not necessarily the same as the title of the table in the function.' %}</label>
+                        <label class="text-primary">{% trans 'The default line 0 is the title of the table, the title of the table in the Excel file is not necessarily the same as the title of the table in the feature.' %}</label>
                     </div>
                 </div>
                 <div class="border rounded p-3 mt-3">
@@ -49,8 +49,8 @@
                     </div>
                     <div class="row mt-3">
                         <div class="col-12">
-                            <span class="text-muted">{% trans 'Preview' %}</span>
-                            <table id="excel-table" class="nowrap w-100 table">
+                            <span class="badge badge-light">{% trans 'Preview' %}</span>
+                            <table id="preview-table" class="nowrap w-100 table mt-1">
                                 <thead></thead>
                                 <tbody></tbody>
                             </table>

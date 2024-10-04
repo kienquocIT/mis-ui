@@ -34,6 +34,9 @@ class GISLoadPage {
         })
     }
     static LoadIA(data) {
+        if (data) {
+            IAEle.prop('disabled', true)
+        }
         IAEle.initSelect2({
             data: data,
             ajax: {
@@ -316,12 +319,12 @@ class GISLoadTab {
                         return `<span class="before-quantity">${row?.['before_quantity'] ? row?.['before_quantity'] : 0}</span>`;
                     }
                 },
-                // {
-                //     className: 'wrap-text text-center',
-                //     render: (data, type, row) => {
-                //         return `<span class="remain-quantity">${row?.['remain_quantity'] ? row?.['remain_quantity'] : 0}</span>`;
-                //     }
-                // },
+                {
+                    className: 'wrap-text text-center',
+                    render: (data, type, row) => {
+                        return `<span class="remain-quantity">${row?.['remain_quantity'] ? row?.['remain_quantity'] : 0}</span>`;
+                    }
+                },
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
@@ -557,6 +560,7 @@ class GISHandle {
                         done_lot.remove()
                     }
 
+                    $('input[name="issue-type"]').prop('disabled', true)
                     $('#title').val(data?.['title'])
                     $('#date_created').val(moment(data?.['date_created'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $('#note').val(data?.['note'])

@@ -217,9 +217,9 @@
     </div>
     <div class="tab-pane fade" id="tab_inventory">
         <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="check-tab-inventory" value="option1">
-                                <label class="form-check-label text-primary fw-bold" for="check-tab-inventory">{% trans "For Inventory" %}</label>
-                            </div>
+            <input class="form-check-input" type="checkbox" id="check-tab-inventory" value="option1">
+            <label class="form-check-label text-primary fw-bold" for="check-tab-inventory">{% trans "For Inventory" %}</label>
+        </div>
         <div hidden class="alert alert-warning" role="alert" id="notify-inventory">
             {% trans 'Inventory management is not allowed for Service product' %}
         </div>
@@ -235,13 +235,32 @@
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="inventory-level-min" class="form-label">{% trans "Inventory Level Min" %}</label>
-                    <input id="inventory-level-min" type="number" class="form-control" min="0" step="1" placeholder="Input number">
+                    <input id="inventory-level-min" type="number" class="form-control" min="0" step="1">
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="inventory-level-max" class="form-label">{% trans "Inventory Level Max" %}</label>
-                    <input id="inventory-level-max" type="number" class="form-control" min="0" step="1" placeholder="Input number">
+                    <input id="inventory-level-max" type="number" class="form-control" min="0" step="1">
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-2">
+                <div class="form-group">
+                    <label for="valuation-method" class="form-label required">{% trans "Valuation method" %}</label>
+                    <select id="valuation-method"
+                            class="form-select required">
+{#                        <option value="0" disabled>{% trans 'FIFO' %}</option>#}
+{#                        <option value="1" disabled>{% trans 'Cumulative weighted average' %}</option>#}
+                        <option value="2" selected>{% trans 'Weighted average' %}</option>
+{#                        <option value="3" disabled>{% trans 'Specific identification method' %}</option>#}
+{#                        <option value="4">{% trans 'Standard cost' %}</option>#}
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-2">
+                <div class="form-group">
+                    <label for="standard_price" class="form-label">{% trans "Standard cost" %}</label>
+                    <input id="standard_price" class="form-control mask-money" value="0">
                 </div>
             </div>
         </div>
@@ -268,8 +287,8 @@
                        data-method="GET">
                     <thead>
                         <tr>
-                            <th>{% trans "Warehouse Code" %}</th>
-                            <th>{% trans "Warehouse Name" %}</th>
+                            <th>{% trans "WH Code" %}</th>
+                            <th>{% trans "WH Name" %}</th>
                             <th>{% trans "Stock" %}</th>
                             <th>{% trans "Cost" %}</th>
                         </tr>
@@ -306,13 +325,6 @@
                         <option value="0">{% trans 'Purchasing' %}</option>
                         <option value="1">{% trans 'Making' %}</option>
                     </select>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-2">
-                <div class="form-group">
-                    <label for="standard_price" class="form-label">{% trans "Standard cost" %}</label>
-                    <input id="standard_price" class="form-control mask-money" value="0">
-                    <span class="text-muted small fst-italic">{% trans 'References in the BOM' %}</span>
                 </div>
             </div>
         </div>

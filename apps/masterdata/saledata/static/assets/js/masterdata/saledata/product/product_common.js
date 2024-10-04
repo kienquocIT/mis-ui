@@ -818,21 +818,22 @@ function getDataForm() {
         data['inventory_uom'] = $('#inventory-select-box-uom-name option:selected').attr('value');
         data['inventory_level_min'] = parseFloat($('#inventory-level-min').val());
         data['inventory_level_max'] = parseFloat($('#inventory-level-max').val());
+        data['valuation_method'] = $('#valuation-method').val()
+        data['standard_price'] = $('#standard_price').attr('value')
     } else {
         data['inventory_uom'] = null;
         data['inventory_level_min'] = null;
         data['inventory_level_max'] = null;
+        data['standard_price'] = 0
     }
 
     if (check_tab_purchase.is(':checked') === true) {
         data['product_choice'].push(2)
         data['purchase_default_uom'] = $('#purchase-select-box-default-uom option:selected').attr('value');
         data['purchase_tax'] = $('#purchase-select-box-tax-code option:selected').attr('value');
-        data['standard_price'] = $('#standard_price').attr('value')
     } else {
         data['purchase_default_uom'] = null
         data['purchase_tax'] = null
-        data['standard_price'] = 0
     }
 
     if (!data['product_types_mapped_list'].length > 0 || !data['general_product_category'] || !data['general_uom_group']) {
@@ -1003,6 +1004,8 @@ function LoadDetailProduct(option) {
                     loadInventoryDefaultUom(inventory_information['uom']);
                     $('#inventory-level-min').val(inventory_information['inventory_level_min']);
                     $('#inventory-level-max').val(inventory_information['inventory_level_max']);
+                    $('#valuation-method').val(inventory_information['valuation_method'])
+                    $('#standard_price').attr('value', inventory_information['standard_price'])
 
                     loadWareHouseListDetail(product_detail['product_warehouse_detail']);
                     let data_overview = [];
@@ -1026,7 +1029,6 @@ function LoadDetailProduct(option) {
                     loadPurchaseDefaultUom(purchase_information['default_uom']);
                     loadPurchaseTaxCode(purchase_information['tax']);
                     suppliedByEle.val(product_detail?.['purchase_information']?.['supplied_by'])
-                    $('#standard_price').attr('value', purchase_information['standard_price'])
                 }
 
                 $('#data-detail-page').val(JSON.stringify(product_detail));

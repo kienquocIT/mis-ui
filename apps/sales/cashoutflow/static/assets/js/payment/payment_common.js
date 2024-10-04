@@ -450,6 +450,7 @@ class PaymentLoadTab {
     }
     static LoadTax(ele, data) {
         ele.initSelect2({
+            allowClear: true,
             ajax: {
                 url: tableLineDetail.attr('data-url-tax-list'),
                 method: 'GET',

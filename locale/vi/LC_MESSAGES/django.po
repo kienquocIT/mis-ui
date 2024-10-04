@@ -9055,3 +9055,19 @@ msgstr "BOM sản xuất"
 #
 msgid "Project BOM"
 msgstr "BOM dự án"
+
+#
+msgid "Project BOM create"
+msgstr "Taọ BOM dự án"
+
+#
+msgid "Project BOM list"
+msgstr "Danh sách BOM dự án"
+
+#
+msgid "Production BOM create"
+msgstr "Tạo BOM sản xuất"
+
+#
+msgid "Production BOM list"
+msgstr "Danh sách BOM sản xuất"

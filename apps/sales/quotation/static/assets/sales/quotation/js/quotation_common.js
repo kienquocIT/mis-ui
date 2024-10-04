@@ -125,6 +125,20 @@ class QuotationLoadDataHandle {
         deletePromotionRows(tableProduct, false, true);
         // ReCheck Config when change Opportunity
         QuotationCheckConfigHandle.checkConfig(0);
+        // check ProductBOM
+        for (let eleProduct of QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-item')) {
+            let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+            if (dataProduct) {
+                let checkBOM = QuotationLoadDataHandle.loadCheckProductBOM(dataProduct);
+                if (checkBOM?.['is_pass'] === false) {
+                    if (eleProduct.closest('tr')) {
+                        if (eleProduct.closest('tr').querySelector('.del-row')) {
+                            $(eleProduct.closest('tr').querySelector('.del-row')).trigger('click');
+                        }
+                    }
+                }
+            }
+        }
     };
 
     static loadInitCustomer() {
@@ -353,6 +367,33 @@ class QuotationLoadDataHandle {
                 }
             }
         )
+    };
+
+    static loadCheckProductBOM(data) {
+        let check = true;
+        let note_type = 'data-product-note-2';
+        if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+            if (data?.['bom_check_data']?.['is_bom_opp'] === true) {
+                if (data?.['bom_check_data']?.['is_so_finished'] === false && data?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                    check = false;
+                }
+                if (data?.['bom_check_data']?.['is_so_finished'] === true && data?.['bom_check_data']?.['is_so_using'] === true) {
+                    check = false;
+                }
+            }
+            if (data?.['bom_check_data']?.['is_bom_opp'] === false) {
+                if (data?.['bom_check_data']?.['is_bom'] === true) {
+                    check = false;
+                    note_type = 'data-product-note-3';
+                }
+            }
+        } else {
+            if (data?.['bom_check_data']?.['is_bom_opp'] === true) {
+                check = false;
+                note_type = 'data-product-note-4';
+            }
+        }
+        return {'is_pass': check, 'note_type': note_type};
     };
 
     static loadBoxQuotationProduct($ele, dataProduct = {}) {
@@ -1554,7 +1595,11 @@ class QuotationLoadDataHandle {
                                     let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
                                     if (elePrice) {
                                         if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
-                                            elePrice.removeAttribute('disabled');
+                                            if (productData?.['standard_price'] > 0) {
+                                                $(elePrice).attr('value', productData?.['standard_price']);
+                                            } else {
+                                                elePrice.removeAttribute('disabled');
+                                            }
                                         }
                                     }
                                     if (eleBtnPriceList) {
@@ -1813,13 +1858,9 @@ class QuotationLoadDataHandle {
                     if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
                         let listExclude = [];
                         for (let product of data.product_sale_list) {
-                            if (product?.['bom_check_data']?.['is_bom'] === true) {
-                                if (product?.['bom_check_data']?.['is_so_finished'] === false && product?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                                    listExclude.push(product?.['id']);
-                                }
-                                if (product?.['bom_check_data']?.['is_so_finished'] === true && product?.['bom_check_data']?.['is_so_using'] === true) {
-                                    listExclude.push(product?.['id']);
-                                }
+                            let checkBOM = QuotationLoadDataHandle.loadCheckProductBOM(product);
+                            if (checkBOM?.['is_pass'] === false) {
+                                listExclude.push(product?.['id']);
                             }
                         }
                         for (let ele of QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-item')) {
@@ -3515,20 +3556,10 @@ class QuotationDataTableHandle {
                             disabled = 'disabled';
                             checked = 'checked';
                         }
-                        if (row?.['bom_check_data']?.['is_bom'] === true) {
-                            if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                                if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                                    disabled = 'disabled';
-                                    checked = '';
-                                }
-                                if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
-                                    disabled = 'disabled';
-                                    checked = '';
-                                }
-                            } else {
-                                disabled = 'disabled';
-                                checked = '';
-                            }
+                        let checkBOM = QuotationLoadDataHandle.loadCheckProductBOM(row);
+                        if (checkBOM?.['is_pass'] === false) {
+                            disabled = 'disabled';
+                            checked = '';
                         }
                         if (row?.['title'] && row?.['code']) {
                             return `<div class="d-flex align-items-center ml-2">
@@ -3565,20 +3596,10 @@ class QuotationDataTableHandle {
                             txt = QuotationLoadDataHandle.transEle.attr('data-product-note-1');
                             badge = 'warning';
                         }
-                        if (row?.['bom_check_data']?.['is_bom'] === true) {
-                            if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                                if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                                    txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
-                                    badge = 'danger';
-                                }
-                                if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
-                                    txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
-                                    badge = 'danger';
-                                }
-                            } else {
-                                txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
-                                badge = 'danger';
-                            }
+                        let checkBOM = QuotationLoadDataHandle.loadCheckProductBOM(row);
+                        if (checkBOM?.['is_pass'] === false) {
+                            txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
+                            badge = 'danger';
                         }
                         return `<span class="badge badge-${badge} badge-outline table-row-status">${txt}</span>`;
                     }
@@ -3590,17 +3611,28 @@ class QuotationDataTableHandle {
                         if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
                             txt = QuotationLoadDataHandle.transEle.attr('data-product-note-1');
                         }
-                        if (row?.['bom_check_data']?.['is_bom'] === true) {
-                            if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                        if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                            if (row?.['bom_check_data']?.['is_bom_opp'] === true) {
                                 if (row?.['bom_check_data']?.['is_so_finished'] === false && row?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
                                     txt = QuotationLoadDataHandle.transEle.attr('data-product-note-2');
                                 }
                                 if (row?.['bom_check_data']?.['is_so_finished'] === true && row?.['bom_check_data']?.['is_so_using'] === true) {
                                     txt = QuotationLoadDataHandle.transEle.attr('data-product-note-2');
                                 }
-                            } else {
+                            }
+                            if (row?.['bom_check_data']?.['is_bom_opp'] === false) {
+                                if (row?.['bom_check_data']?.['is_bom'] === true) {
+                                    txt = QuotationLoadDataHandle.transEle.attr('data-product-note-4');
+                                }
+                            }
+                        } else {
+                            if (row?.['bom_check_data']?.['is_bom_opp'] === true) {
                                 txt = QuotationLoadDataHandle.transEle.attr('data-product-note-3');
                             }
+                        }
+                        let checkBOM = QuotationLoadDataHandle.loadCheckProductBOM(row);
+                        if (checkBOM?.['is_pass'] === false) {
+                            txt = QuotationLoadDataHandle.transEle.attr(checkBOM?.['note_type']);
                         }
                         return `<span class="table-row-note">${txt}</span>`;
                     }

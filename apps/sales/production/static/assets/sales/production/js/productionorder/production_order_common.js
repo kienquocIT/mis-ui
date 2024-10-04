@@ -100,6 +100,7 @@ class ProdOrderLoadDataHandle {
                         'product_id': ProdOrderLoadDataHandle.$boxProd.val(),
                         'opportunity_id__isnull': true,
                         'bom_type__in': [0, 2, 3, 4].join(','),
+                        'system_status': 3,
                     },
                     'isDropdown': true,
                 }

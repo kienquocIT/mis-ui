@@ -261,6 +261,8 @@ class WorkOrderLoadDataHandle {
                     'data': {
                         'product_id': dataProduct?.['id'],
                         'opportunity_id__isnull': false,
+                        'bom_type__in': [0, 2, 3, 4].join(','),
+                        'system_status': 3,
                     },
                     'isDropdown': true,
                 }

@@ -8993,6 +8993,22 @@ msgid "Only one collaborator can be configured at this node because the next nod
 msgstr "Chỉ được cấu hình một cộng tác viên tại trạm này vì trạm tiếp theo cần chọn cộng tác viên"
 
 #
+msgid "Close/ open production order"
+msgstr "Đóng/ mở lệnh sản xuất"
+
+#
+msgid "Close/ open work order"
+msgstr "Đóng/ mở yêu cầu sản xuất"
+
+#
+msgid "Status close/ open"
+msgstr "Trạng thái đóng/ mở"
+
+#
+msgid "Open"
+msgstr "Mở"
+
+#
 msgid "Issue this time"
 msgstr "Xuất lần này"
 
@@ -9007,3 +9023,4 @@ msgstr "Tên kho"
 #
 msgid "lower letters, numbers, underscores or hyphens"
 msgstr "chữ cái viết thường, số, dấu gạch dưới hoặc dấu gạch nối"
+

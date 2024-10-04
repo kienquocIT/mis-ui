@@ -9047,3 +9047,11 @@ msgstr "Đến hàng"
 #
 msgid "The default line 0 is the title of the table, the title of the table in the Excel file is not necessarily the same as the title of the table in the feature."
 msgstr "Dòng 0 mặc định là tiêu đề của bảng, tiêu đề của bảng trong file Excel không nhất thiết phải giống với tiêu đề của bảng trong chức năng."
+
+#
+msgid "Production BOM"
+msgstr "BOM sản xuất"
+
+#
+msgid "Project BOM"
+msgstr "BOM dự án"

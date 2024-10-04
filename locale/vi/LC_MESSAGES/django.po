@@ -9058,7 +9058,7 @@ msgstr "BOM dự án"
 
 #
 msgid "Project BOM create"
-msgstr "Taọ BOM dự án"
+msgstr "Tạo BOM dự án"
 
 #
 msgid "Project BOM list"

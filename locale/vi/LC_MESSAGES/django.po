@@ -9027,3 +9027,23 @@ msgstr "chữ cái viết thường, số, dấu gạch dưới hoặc dấu g�
 #
 msgid "SALE ORDER"
 msgstr "ĐƠN HÀNG"
+
+#
+msgid "Import datatable from excel"
+msgstr "Nhập bảng từ excel"
+
+#
+msgid "Make sure that the tables in your Excel file have the same column order as the function you are importing."
+msgstr "Đảm bảo rằng bảng trong file Excel của bạn có thứ tự cột giống như chức năng cần nhập."
+
+#
+msgid "From row"
+msgstr "Từ hàng"
+
+#
+msgid "To row"
+msgstr "Đến hàng"
+
+#
+msgid "The default line 0 is the title of the table, the title of the table in the Excel file is not necessarily the same as the title of the table in the function."
+msgstr "Dòng 0 mặc định là tiêu đề của bảng, tiêu đề của bảng trong file Excel không nhất thiết phải giống với tiêu đề của bảng trong chức năng."

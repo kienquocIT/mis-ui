@@ -1,0 +1,67 @@
+{% load static i18n %}
+
+<div class="row">
+    <div class="col-12 text-right">
+        <button data-bs-toggle="modal" data-bs-target="#modal-import-datatable-from-excel" type="button" id="btn-import-datatable-from-excel" class="btn btn-icon btn-gradient-primary btn-sm">
+            <span class="icon" data-bs-toggle="tooltip" title="{% trans 'Import datatable from excel' %}">
+                <i class="fas fa-file-import"></i>
+            </span>
+        </button>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-import-datatable-from-excel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLarge01" aria-hidden="true">
+	<div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">{% trans 'Import datatable from excel' %}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <label class="text-primary">{% trans 'Make sure that the tables in your Excel file have the same column order as the feature you are importing.' %}</label>
+                        <label class="text-primary">{% trans 'The default line 0 is the title of the table, the title of the table in the Excel file is not necessarily the same as the title of the table in the function.' %}</label>
+                    </div>
+                </div>
+                <div class="border rounded p-3 mt-3">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="input-excel" class="form-label">{% trans 'Click here to upload file' %}</label>
+                                <input class="form-control" type="file" id="input-excel">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-2">
+                            <div class="form-group">
+                                <label for="from-index" class="form-label">{% trans 'From row' %}</label>
+                                <input class="form-control" type="number" min="1" value="1" id="from-index">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-2">
+                            <div class="form-group">
+                                <label for="to-index" class="form-label">{% trans 'To row' %}</label>
+                                <input class="form-control" type="number" min="1" value="5" id="to-index">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <span class="text-muted">{% trans 'Preview' %}</span>
+                            <table id="excel-table">
+                                <thead></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+				<button type="button" class="btn btn-primary">{% trans 'Import' %}</button>
+			</div>
+		</div>
+	</div>
+</div>

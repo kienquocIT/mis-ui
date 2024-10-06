@@ -145,6 +145,7 @@ $(document).ready(function () {
                                 html:
                                 `<h5 class="text-danger">${trans_db_script.attr('data-trans-err')}</h5>`,
                             })
+                            $.fn.notifyB({description: errs.data.errors}, 'failure');
                         }
                     )
             }

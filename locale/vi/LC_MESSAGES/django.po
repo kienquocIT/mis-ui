@@ -9101,5 +9101,5 @@ msgid "Reload this page to see the update."
 msgstr "Tải lại trang để xem cập nhập."
 
 #
-msgid "Can not import these rows"
-msgstr "Không thể nhập liệu những dòng này"
+msgid "Can not import some rows"
+msgstr "Không thể nhập liệu một số dòng"

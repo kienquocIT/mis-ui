@@ -63,10 +63,11 @@ $(document).ready(function () {
                     preview_table.find('tbody').append(`<tr>
                         <td>${i-from_index+1}</td>
                         ${tds}
-                        <td class="w-10 text-center">
+                        <td class="w-10">
                             <i class="status-none text-muted fw-bold fas fa-minus"></i>
                             <i hidden class="status-ok text-success fw-bold fas fa-check-circle"></i>
-                            <i hidden class="status-error text-warning fw-bold fas fa-exclamation-circle"></i>
+                            <i hidden class="status-error text-danger fw-bold fas fa-exclamation-circle"></i>
+                            <span class="small text-danger err-title"></span>
                         </td>
                     </tr>`)
                     $.fn.initMaskMoney2()
@@ -92,11 +93,8 @@ $(document).ready(function () {
     $('#import-db-form').submit(function (event) {
         event.preventDefault();
 
-        let no_new_row = preview_table.find('tbody tr').length;
-        let count = 0;
-        let err_list = '';
-        let ajaxPromises = [];
-
+        let no_new_row = preview_table.find('tbody tr').length
+        let count = 0
         preview_table.find('tbody tr').each(function() {
             let data = combinesDataImportDB(
                 $('#import-db-form'),
@@ -111,46 +109,45 @@ $(document).ready(function () {
                     }
                 }
             );
-
+            // console.log(data)
             if (data) {
-                let ajaxCall = $.fn.callAjax2(data)
+                $.fn.callAjax2(data)
                     .then(
                         (resp) => {
                             let data = $.fn.switcherResp(resp);
                             if (data) {
-                                count += 1;
-                                $(this).find('.status-none').prop('hidden', true);
-                                $(this).find('.status-ok').prop('hidden', false);
-                                $(this).find('.status-error').prop('hidden', true);
+                                count += 1
+                                if (count === no_new_row) {
+                                    $(this).find('.status-none').prop('hidden', true)
+                                    $(this).find('.status-ok').prop('hidden', false)
+                                    $(this).find('.status-error').prop('hidden', true)
+                                    Swal.fire({
+                                        html:
+                                        `<h5 class="text-success">${trans_db_script.attr('data-trans-done')}</h5>
+                                        <h6 class="text-muted">${trans_db_script.attr('data-trans-reload')}</h6>`,
+                                    })
+                                }
+                                else {
+                                    $(this).find('.status-none').prop('hidden', true)
+                                    $(this).find('.status-ok').prop('hidden', false)
+                                    $(this).find('.status-error').prop('hidden', true)
+                                }
                             }
                         },
                         (errs) => {
-                            count += 1;
-                            $(this).find('.status-none').prop('hidden', true);
-                            $(this).find('.status-error').prop('hidden', false);
-                            $(this).find('.status-ok').prop('hidden', true);
-                            err_list += `${count}: ${errs.data.errors.detail}\n`
+                            $(this).find('.status-none').prop('hidden', true)
+                            $(this).find('.status-error').prop('hidden', false)
+                            $(this).find('.status-ok').prop('hidden', true)
+                            for (let key in errs.data.errors) {
+                                $(this).find('.err-title').text(errs.data.errors[key])
+                            }
+                            Swal.fire({
+                                html:
+                                `<h5 class="text-danger">${trans_db_script.attr('data-trans-err')}</h5>`,
+                            })
                         }
-                    );
-
-                ajaxPromises.push(ajaxCall);
+                    )
             }
-        });
-
-        Promise.all(ajaxPromises).then(function() {
-            if (count === no_new_row) {
-                Swal.fire({
-                    html: `<h5 class="text-success">${trans_db_script.attr('data-trans-done')}</h5>
-                           <h6 class="text-muted">${trans_db_script.attr('data-trans-reload')}</h6>`
-                });
-            }
-
-            if (err_list.length > 0) {
-                Swal.fire({
-                    html: `<h5 class="text-danger">${trans_db_script.attr('data-trans-err')}:</h5> 
-                           <p class="text-muted">${err_list}</p>`
-                });
-            }
-        });
-    });
+        })
+    })
 })

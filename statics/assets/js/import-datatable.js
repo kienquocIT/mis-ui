@@ -1,9 +1,8 @@
 $(document).ready(function () {
-    const preview_table = $('#preview-table');
-    let THIS_ROW = null
+    let preview_table = null
     const trans_db_script = $('#import-db-trans-script')
 
-    $('#input-excel').on('change', function () {
+    $('#import-db-form-input-file').on('change', function () {
         const input = event.target;
         const reader = new FileReader();
 
@@ -20,32 +19,42 @@ $(document).ready(function () {
         reader.readAsArrayBuffer(input.files[0]);
     });
 
-    $('.btn-import-datatable-from-excel').on('click', function () {
-        THIS_ROW = $(this).closest('.row')
+    $('#btn-import-datatable-from-excel').on('click', function () {
+        const list_import_db_table = JSON.parse($('#list-import-db-form').text().trim())
+        $('#import-db-form-select-table').html('<option></option>')
+        for (let i = 0; i < list_import_db_table.length; i++) {
+            $('#import-db-form-select-table').append(`<option value="${list_import_db_table[i]?.['id']}">${list_import_db_table[i]?.['name']}</option>`)
+        }
+    })
+
+    $('#import-db-form-select-table').on('change', function () {
+        let tableEle = $(`table[data-table-id="${$('#import-db-form-select-table').val()}"]`)
+        $('#import-db-form-modal-table').html(tableEle)
+        $('#import-db-form-modal-table').find('table').attr('id', tableEle.attr('data-table-id')).prop('hidden', false)
+        preview_table = $('#import-db-form-modal-table').find('table')
     })
 
     function displayExcelData(data) {
         if (data.length > 1) {
-            let header = data[0]
             let from_index = $('#from-index').val() ? parseInt($('#from-index').val()) : null
             let to_index = $('#to-index').val() ? parseInt($('#to-index').val()) : null
 
-            if (header && from_index && to_index) {
-                preview_table.find('thead').html('')
+            if (from_index && to_index) {
                 preview_table.find('tbody').html('')
-
-                let ths = ``
-                for (let i = 0; i < header.length; i++) {
-                    ths += `<th>${header[i]}</th>`
-                }
-                preview_table.find('thead').append(`<tr>${ths}<th class="w-10 text-center">${trans_db_script.attr('data-trans-status')}</th></tr>`)
 
                 for (let i = from_index; i <= to_index; i++) {
                     let tds = ``
                     for (let j = 0; j < data[i].length; j++) {
                         tds += `<td>${data[i][j]}</td>`
                     }
-                    preview_table.find('tbody').append(`<tr>${tds}<td class="w-10 text-center"><i hidden class="status-ok text-success fw-bold bi bi-check2"></i><i hidden class="status-error text-danger fw-bold bi bi-x-lg"></i></td></tr>`)
+                    preview_table.find('tbody').append(`<tr>
+                        <td>${i-from_index+1}</td>
+                        ${tds}
+                        <td class="w-10 text-center">
+                            <i hidden class="status-ok text-success fw-bold bi bi-check2"></i>
+                            <i hidden class="status-error text-danger fw-bold bi bi-x-lg"></i>
+                        </td>
+                    </tr>`)
                 }
             }
         }
@@ -75,10 +84,10 @@ $(document).ready(function () {
                 $('#import-db-form'),
                 {
                     'balance_data': {
-                        'product_code': $(this).find('td:eq(0)').text(),
-                        'warehouse_code': $(this).find('td:eq(2)').text(),
-                        'quantity': $(this).find('td:eq(3)').text(),
-                        'value': $(this).find('td:eq(4)').text(),
+                        'product_code': $(this).find('td:eq(1)').text(),
+                        'warehouse_code': $(this).find('td:eq(3)').text(),
+                        'quantity': $(this).find('td:eq(4)').text(),
+                        'value': $(this).find('td:eq(5)').text(),
                         'data_sn': JSON.parse('[]'),
                         'data_lot': JSON.parse('[]'),
                     }
@@ -96,6 +105,14 @@ $(document).ready(function () {
                                 if (count === no_new_row) {
                                     $(this).find('.status-ok').prop('hidden', false)
                                     $(this).find('.status-error').prop('hidden', true)
+                                    Swal.fire({
+                                        html:
+                                        `<div class="d-flex align-items-center">
+                                            <i class="ri-checkbox-line me-2 fs-3 text-success"></i>
+                                            <h5 class="text-success mb-0">${trans_db_script.attr('data-trans-done')}</h5>
+                                        </div>
+                                        <p class="mt-2 text-start">${trans_db_script.attr('data-trans-reload')}</p>`,
+                                    })
                                 }
                                 else {
                                     $(this).find('.status-ok').prop('hidden', false)

@@ -78,3 +78,51 @@ class ProductUOMGroupImportAPI(APIView):
             data=request.data
         )
         return resp.auto_return(key_success='product_uom_group')
+
+class ProductProductTypeImportAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.IMPORT_SALEDATA_PRODUCT_PRODUCT_TYPE, user=request.user).post(
+            data=request.data
+        )
+        return resp.auto_return(key_success='product_product_type')
+
+class ProductProductCategoryImportAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.IMPORT_SALEDATA_PRODUCT_PRODUCT_CATEGORY, user=request.user).post(
+            data=request.data
+        )
+        return resp.auto_return(key_success='product_product_category')
+
+class ProductImportAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.IMPORT_SALEDATA_PRODUCT, user=request.user).post(
+            data=request.data
+        )
+        return resp.auto_return(key_success='product')
+
+class ProductUOMImportAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.IMPORT_SALEDATA_PRODUCT_UOM, user=request.user).post(
+            data=request.data
+        )
+        return resp.auto_return(key_success='product_uom')
+
+class PriceTaxCategoryImportAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.IMPORT_SALEDATA_PRICE_TAX_CATEGORY, user=request.user).post(
+            data=request.data
+        )
+        return resp.auto_return(key_success='price_tax_category')
+
+class PriceTaxImportAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.IMPORT_SALEDATA_PRICE_TAX, user=request.user).post(
+            data=request.data
+        )
+        return resp.auto_return(key_success='price_tax')

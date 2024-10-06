@@ -46,7 +46,7 @@
             <div class="row">
                 <div class="col-12 text-center">
                     <div class="form-check">
-                        <input disabled type="radio" id="for-sale" name="bom-type" class="form-check-input">
+                        <input type="radio" id="for-sale" name="bom-type" class="form-check-input">
                         <label class="form-check-label" for="for-sale">{% trans 'For sale' %}</label>
                     </div>
                 </div>
@@ -74,6 +74,7 @@
             <select class="form-select select2" id="product" data-url="{% url 'ProductListForBOMAPI' %}"></select>
             <span class="small fst-italic text-muted" id="hint-for-finished-goods">{% trans 'Select Finished goods or Goods' %}</span>
             <span class="small fst-italic text-muted" hidden id="hint-for-service">{% trans 'Only select Services' %}</span>
+            <span class="small fst-italic text-muted" hidden id="hint-for-goods">{% trans 'Only select Goods' %}</span>
         </div>
     </div>
     <div class="col-6 col-md-4 col-lg-2">
@@ -162,7 +163,7 @@
         </div>
     </div>
     <div class="row mt-5">
-        <div class="col-12 col-md-12 col-lg-6">
+        <div class="col-12 col-md-12 col-lg-8">
 {#            <h6 class="text-secondary fw-bold">{% trans 'Labor summary' %}</h6>#}
             <div class="border rounded p-2">
                 <table class="table nowrap w-100" id="labor-summary-table">

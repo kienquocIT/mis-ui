@@ -610,7 +610,7 @@
                         errs => '',
                     ).then(
                         msg => Swal.fire({
-                            title: $.fn.gettext("Some apps will be working wrong"),
+                            title: $.fn.gettext("Some apps will not work correctly"),
                             html: `<p>${msgTmp}</p><br/>${msg}`,
                             icon: 'warning',
                             showConfirmButton: true,
@@ -622,7 +622,7 @@
                 } else if (!hasCurrentCompany) {
                     let msgTmp = $.fn.gettext("Please update the company information in the Current Company Switch section for your account.");
                     Swal.fire({
-                        title: $.fn.gettext("Some apps will be working wrong"),
+                        title: $.fn.gettext("Some apps will not work correctly"),
                         html: `<p>${msgTmp}</p>`,
                         icon: 'warning',
                         showConfirmButton: true,
@@ -659,7 +659,7 @@
                         errs => '',
                     ).then(
                         msg => Swal.fire({
-                            title: $.fn.gettext("Some apps will be working wrong"),
+                            title: $.fn.gettext("Some apps will not work correctly"),
                             html: `<p>${msgTmp}</p><br/>${msg}`,
                             icon: 'warning',
                             showConfirmButton: true,

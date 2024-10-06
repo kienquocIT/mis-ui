@@ -191,7 +191,11 @@ $(function () {
         });
 
         NodeDataTableHandle.tableNode.on('click', '.button-add-in-workflow-employee', function () {
-            NodeLoadDataHandle.loadInWFEmployeeShow(this);
+            let row = this.closest('tr');
+            let check = NodeLoadDataHandle.loadCheckNextNode(row);
+            if (check === true) {
+                NodeLoadDataHandle.loadInWFEmployeeShow(this);
+            }
         });
 
         NodeDataTableHandle.tableNode.on('click', '.btn-add-collab-create', function () {

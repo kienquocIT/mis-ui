@@ -699,8 +699,8 @@
 {% block jsFooter %}
     <script>
         const msgChangeCompany = "{% trans 'Change Company' %}";
-        const msgTitleErrLinked = "{% trans 'Some apps will be working wrong' %}"
-        const msgTextErrLinked = `{% trans "Hasn't link to the employee!" %}`;
+        const msgTitleErrLinked = "{% trans 'Some apps will not work correctly' %}"
+        const msgTextErrLinked = `{% trans "Hasn't been link to the employee!" %}`;
         const msgTextErrLinked2 = "{% trans 'Please switch the current company to the one that already has an employee link or contact the administrator to add an employee to the account.' %}"
         let employeeCurrentData = "{{ data.employee_current_data }}";
         let dataHihi = "{{ data }}";
@@ -1244,7 +1244,6 @@
                 ele$.find('[data-bs-toggle="tooltip"]').tooltip();
             }
             function renderEventItem(data) {
-                console.log('data.category:', data.category);
                 switch (data.category) {
                     case 'EOffice Meeting':
                     case 'Opportunity Meeting':
@@ -1318,6 +1317,10 @@
                 settings: {
                     visibility: {
                         theme: 'light',
+                        monthShort: false,
+                        weekNumbers: true,
+                        today: true,
+                        daysOutside: true,
                     },
                     lang: globeLanguage === 'vi' ? 'vi-VN' : 'en-EN',
                 },

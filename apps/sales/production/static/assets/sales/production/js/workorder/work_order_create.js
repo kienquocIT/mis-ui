@@ -13,6 +13,10 @@ $(function () {
             WorkOrderLoadDataHandle.loadSaveProduct();
         });
 
+        WorkOrderLoadDataHandle.$manualDone.on('click', function () {
+            WorkOrderLoadDataHandle.loadClickManualDone();
+        });
+
         WorkOrderDataTableHandle.$tableMain.on('change', '.table-row-item', function () {
             let row = this.closest('tr');
             WorkOrderLoadDataHandle.loadChangeProduct(row);

@@ -62,8 +62,8 @@ class ProdReportLoadDataHandle {
         ProdReportLoadDataHandle.loadEventValidNum(ProdReportLoadDataHandle.$quantityNG[0]);
         // select2
         ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxType, ProdReportLoadDataHandle.dataType);
-        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxProductionOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
-        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxWorkOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxProductionOrder, [], {'system_status': 3, 'status_production': 1}, null, false, {'res1': 'code', 'res2': 'title'});
+        ProdReportLoadDataHandle.loadInitS2(ProdReportLoadDataHandle.$boxWorkOrder, [], {'system_status': 3, 'status_production': 1}, null, false, {'res1': 'code', 'res2': 'title'});
         // date picker
         $('.date-picker').each(function () {
             $(this).daterangepicker({
@@ -122,6 +122,14 @@ class ProdReportLoadDataHandle {
             }
             for (let task of data?.['task_data']) {
                 task['quantity_actual'] = task?.['quantity'];
+            }
+            for (let dataTask of data?.['task_data']) {
+                if (!dataTask?.['is_task']) {
+                    dataTask['quantity_actual'] = 0;
+                }
+                if (dataTask?.['is_task'] === false) {
+                    dataTask['quantity_actual'] = 0;
+                }
             }
             ProdReportLoadDataHandle.loadAddDtbRows(data?.['task_data']);
         }
@@ -197,6 +205,89 @@ class ProdReportLoadDataHandle {
         return true;
     };
 
+    static loadInfo(row, isInput = false) {
+        if (row.querySelector('.table-row-item') && row.querySelector('.table-row-quantity-actual') && row.querySelector('.btn-info') && row.querySelector('.content-info')) {
+            let eleQuantity = row.querySelector('.table-row-quantity-actual');
+            let contentInfo = row.querySelector('.content-info');
+            let dataProduct = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-item')), $(row.querySelector('.table-row-item')).val());
+            if (dataProduct?.['id']) {
+                let dataParamsIssue = {'goods_issue__system_status': 3, 'product_id': dataProduct?.['id']};
+                let dataParamsReport = {'product_id': dataProduct?.['id']};
+                if (ProdReportLoadDataHandle.$boxType.val() === '0') {
+                    if (ProdReportLoadDataHandle.$boxProductionOrder.val()) {
+                        dataParamsIssue['goods_issue__production_order_id'] = ProdReportLoadDataHandle.$boxProductionOrder.val();
+                        dataParamsReport['production_report__production_order_id'] = ProdReportLoadDataHandle.$boxProductionOrder.val();
+                    }
+                }
+                if (ProdReportLoadDataHandle.$boxType.val() === '1') {
+                    if (ProdReportLoadDataHandle.$boxWorkOrder.val()) {
+                        dataParamsIssue['goods_issue__work_order_id'] = ProdReportLoadDataHandle.$boxWorkOrder.val();
+                        dataParamsReport['production_report__work_order_id'] = ProdReportLoadDataHandle.$boxWorkOrder.val();
+                    }
+                }
+                $.fn.callAjax2({
+                        'url': ProdReportLoadDataHandle.$urls.attr('data-goods-issue-product'),
+                        'method': 'GET',
+                        'data': dataParamsIssue,
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('goods_issue_product') && Array.isArray(data.goods_issue_product)) {
+                                let dataIssue = data.goods_issue_product;
+
+                                $.fn.callAjax2({
+                                        'url': ProdReportLoadDataHandle.$urls.attr('data-production-report-product'),
+                                        'method': 'GET',
+                                        'data': dataParamsReport,
+                                        'isDropdown': true,
+                                    }
+                                ).then(
+                                    (resp) => {
+                                        let data = $.fn.switcherResp(resp);
+                                        if (data) {
+                                            if (data.hasOwnProperty('production_report_product') && Array.isArray(data.production_report_product)) {
+                                                let issue = 0;
+                                                let report = 0;
+                                                for (let dataIssueProduct of dataIssue) {
+                                                    issue += dataIssueProduct?.['issued_quantity'];
+                                                }
+                                                for (let dataReport of data.production_report_product) {
+                                                    report += dataReport?.['quantity_actual'];
+                                                    if (ProdReportLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
+                                                        let pk = $.fn.getPkDetail();
+                                                        if (dataReport?.['production_report']?.['id'] === pk) {
+                                                            report -= dataReport?.['quantity_actual'];
+                                                        }
+                                                    }
+                                                }
+                                                let result = issue - report;
+                                                contentInfo.innerHTML = `<b>${ProdReportLoadDataHandle.$trans.attr('data-available')}: ${result}<b/>`;
+                                                if (eleQuantity.value) {
+                                                    if (parseFloat(eleQuantity.value) > result) {
+                                                        eleQuantity.value = 0;
+                                                        ProdReportStoreHandle.storeRow(row);
+                                                        if (isInput === true) {
+                                                            $.fn.notifyB({description: ProdReportLoadDataHandle.$trans.attr('data-exceed-quantity')}, 'failure');
+                                                        }
+                                                        return false;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+        }
+        return true;
+    };
+
     // Detail
     static loadDetail(data) {
         ProdReportLoadDataHandle.$title.val(data?.['title']);
@@ -267,6 +358,7 @@ class ProdReportDataTableHandle {
             columns: [
                 {
                     targets: 0,
+                    width: '5%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_task'] === true) {
@@ -291,6 +383,7 @@ class ProdReportDataTableHandle {
                 },
                 {
                     targets: 1,
+                    width: '25%',
                     render: (data, type, row) => {
                         if (row?.['is_task'] === true) {
                             return `<b class="table-row-task-title">${row?.['task_title']}</b>`;
@@ -300,6 +393,7 @@ class ProdReportDataTableHandle {
                 },
                 {
                     targets: 2,
+                    width: '15%',
                     render: (data, type, row) => {
                         if (row?.['is_task'] === true) {
                             return ``;
@@ -309,6 +403,7 @@ class ProdReportDataTableHandle {
                 },
                 {
                     targets: 3,
+                    width: '15%',
                     render: (data, type, row) => {
                         if (row?.['is_task'] === true) {
                             return `<span class="table-row-labor">${row?.['quantity'] ? row?.['quantity'] : 0}</span><span class="table-row-uom-labor"> ${row?.['uom_data']?.['title']}</span>`;
@@ -318,11 +413,16 @@ class ProdReportDataTableHandle {
                 },
                 {
                     targets: 4,
+                    width: '20%',
                     render: (data, type, row) => {
                         if (row?.['is_task'] === true) {
                             return `<input type="text" class="form-control valid-number table-row-labor-actual" value="${row?.['quantity_actual']}">`;
                         }
-                        return `<input type="text" class="form-control valid-number table-row-quantity-actual" value="${row?.['quantity_actual']}">`;
+                        return `<div class="d-flex justify-content-between align-items-center">
+                                    <input type="text" class="form-control valid-number table-row-quantity-actual" value="${row?.['quantity_actual']}">
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-info" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="fas fa-info-circle"></i></span></button>
+                                    <div role="menu" class="dropdown-menu content-info"></div>
+                                </div>`;
                     }
                 },
             ],

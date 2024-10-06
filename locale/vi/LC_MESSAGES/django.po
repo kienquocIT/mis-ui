@@ -9071,3 +9071,7 @@ msgstr "Tạo BOM sản xuất"
 #
 msgid "Production BOM list"
 msgstr "Danh sách BOM sản xuất"
+
+#
+msgid "The product does not have project BOM"
+msgstr "Sản phẩm không có định mức nguyên vật liệu dự án"

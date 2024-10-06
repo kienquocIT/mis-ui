@@ -166,13 +166,19 @@
 
 
     <table hidden data-table-id="import-db-form-balance-init" class="nowrap w-100 table mt-1">
-        <thead>
+        <thead class="sticky bg-gold-light-5">
             <tr>
                 <th>#</th>
                 <th>{% trans 'Product' %}</th>
-                <th>{% trans 'UOM' %}</th>
                 <th>{% trans 'Warehouse' %}</th>
-                <th>{% trans 'Quantity' %}</th>
+                <th>
+                    {% trans 'Quantity' %}
+                    <i class="fas fa-info-circle icon-info"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="bottom"
+                       title="{% trans "According to product's inventory UOM" %}">
+                    </i>
+                </th>
                 <th>{% trans 'Pretax value' %}</th>
                 <th>{% trans 'Import status' %}</th>
             </tr>
@@ -192,7 +198,11 @@
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
     <script id="list-import-db-form">[
-        {"id": "import-db-form-balance-init", "name": "Balance init import table"}
+        {
+            "id": "import-db-form-balance-init",
+            "name": "Balance init import table",
+            "col_type": "ttttmt"
+        }
     ]</script>
 {% endblock %}
 

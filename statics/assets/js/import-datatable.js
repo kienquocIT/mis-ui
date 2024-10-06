@@ -23,7 +23,11 @@ $(document).ready(function () {
         const list_import_db_table = JSON.parse($('#list-import-db-form').text().trim())
         $('#import-db-form-select-table').html('<option></option>')
         for (let i = 0; i < list_import_db_table.length; i++) {
-            $('#import-db-form-select-table').append(`<option value="${list_import_db_table[i]?.['id']}">${list_import_db_table[i]?.['name']}</option>`)
+            $('#import-db-form-select-table').append(
+                `<option value="${list_import_db_table[i]?.['id']}"
+                         data-col-type="${list_import_db_table[i]?.['col_type']}"
+                >${list_import_db_table[i]?.['name']}</option>`
+            )
         }
     })
 
@@ -44,8 +48,17 @@ $(document).ready(function () {
 
                 for (let i = from_index; i <= to_index; i++) {
                     let tds = ``
+                    let col_type = $('#import-db-form-select-table').find('option:selected').attr('data-col-type')
                     for (let j = 0; j < data[i].length; j++) {
-                        tds += `<td>${data[i][j]}</td>`
+                        if (col_type[j+1] === 't') {
+                            tds += `<td><input class="form-control" value="${data[i][j]}"></td>`
+                        }
+                        else if (col_type[j+1] === 'm') {
+                            tds += `<td><input class="form-control mask-money" value="${data[i][j]}"></td>`
+                        }
+                        else {
+                            tds += `<td>-</td>`
+                        }
                     }
                     preview_table.find('tbody').append(`<tr>
                         <td>${i-from_index+1}</td>
@@ -55,6 +68,7 @@ $(document).ready(function () {
                             <i hidden class="status-error text-danger fw-bold bi bi-x-lg"></i>
                         </td>
                     </tr>`)
+                    $.fn.initMaskMoney2()
                 }
             }
         }
@@ -84,10 +98,10 @@ $(document).ready(function () {
                 $('#import-db-form'),
                 {
                     'balance_data': {
-                        'product_code': $(this).find('td:eq(1)').text(),
-                        'warehouse_code': $(this).find('td:eq(3)').text(),
-                        'quantity': $(this).find('td:eq(4)').text(),
-                        'value': $(this).find('td:eq(5)').text(),
+                        'product_code': $(this).find('td:eq(1) input').val(),
+                        'warehouse_code': $(this).find('td:eq(2) input').val(),
+                        'quantity': $(this).find('td:eq(3) input').val(),
+                        'value': $(this).find('td:eq(4) input').attr('value'),
                         'data_sn': JSON.parse('[]'),
                         'data_lot': JSON.parse('[]'),
                     }
@@ -107,11 +121,8 @@ $(document).ready(function () {
                                     $(this).find('.status-error').prop('hidden', true)
                                     Swal.fire({
                                         html:
-                                        `<div class="d-flex align-items-center">
-                                            <i class="ri-checkbox-line me-2 fs-3 text-success"></i>
-                                            <h5 class="text-success mb-0">${trans_db_script.attr('data-trans-done')}</h5>
-                                        </div>
-                                        <p class="mt-2 text-start">${trans_db_script.attr('data-trans-reload')}</p>`,
+                                        `<h5 class="text-success">${trans_db_script.attr('data-trans-done')}</h5>
+                                        <h6 class="text-muted">${trans_db_script.attr('data-trans-reload')}</h6>`,
                                     })
                                 }
                                 else {

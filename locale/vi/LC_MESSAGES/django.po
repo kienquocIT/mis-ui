@@ -8806,11 +8806,11 @@ msgstr "Hãy cân nhắc cẩn thận khi xóa số dư đã khởi tạo. Hệ 
 
 #
 msgid "After the stock activities have occurred, the Inventory Reports will be run in the order of the configured accounting periods. Make sure that the Opening Balance is created before these activities take place to avoid reporting errors."
-msgstr "Sau khi các hoạt động nhập-xuất kho được diễn ra, các Báo Cáo Kho sẽ được chạy theo thứ tự của kì kế toán được cấu hình. Đảm bảo rằng, số dư đầu kì này được khởi tạo trước khi các hoạt động nhập-xuất kho diễn ra để tránh sai sót số liệu trong báo cáo."
+msgstr "Sau khi các hoạt động nhập-xuất kho diễn ra, các Báo Cáo Kho sẽ chạy theo thứ tự của kì kế toán được cấu hình. Đảm bảo rằng SDDK này được khởi tạo trước khi các hoạt động nhập-xuất kho diễn ra để tránh sai sót số liệu báo cáo."
 
 #
 msgid "The initial balance will be inserted from the month of starting to use the software."
-msgstr "Số dư đầu kì sẽ được chèn bắt đầu từ tháng sử dụng phần mềm đã cài đặt."
+msgstr "SDDK sẽ được chèn bắt đầu từ tháng sử dụng phần mềm đã cài đặt."
 
 #
 msgid "If the data changes after the time of starting to use the software (not recommended). Re-run all reports from that month to now to update them correctly."
@@ -9045,8 +9045,12 @@ msgid "To row"
 msgstr "Đến hàng"
 
 #
-msgid "The default line 0 is the title of the table, the title of the table in the Excel file is not necessarily the same as the title of the table in the feature."
-msgstr "Dòng 0 mặc định là tiêu đề của bảng, tiêu đề của bảng trong file Excel không nhất thiết phải giống với tiêu đề của bảng trong chức năng."
+msgid "The first column is the index column, the last column gives us the import status."
+msgstr "Cột đầu tiên là cột thứ tự, cột cuối cùng là trạng thái nhập dữ liệu."
+
+#
+msgid "The title of the table in the Excel file is not necessarily the same as the title of the table in the feature."
+msgstr "Tiêu đề của bảng trong file Excel không nhất thiết phải giống với tiêu đề của bảng trong chức năng."
 
 #
 msgid "Production BOM"
@@ -9075,3 +9079,23 @@ msgstr "Danh sách BOM sản xuất"
 #
 msgid "The product does not have project BOM"
 msgstr "Sản phẩm không có định mức nguyên vật liệu dự án"
+
+#
+msgid "According to product's inventory UOM"
+msgstr "Theo đơn vị lưu kho của sản phẩm"
+
+#
+msgid "Import status"
+msgstr "Trạng thái nhập"
+
+#
+msgid "Select datatable"
+msgstr "Chọn bảng dữ liệu"
+
+#
+msgid "Import Done!"
+msgstr "Nhập liệu hoàn tất!"
+
+#
+msgid "Reload this page to see the update."
+msgstr "Tải lại trang để xem cập nhập."

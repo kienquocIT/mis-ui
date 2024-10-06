@@ -61,50 +61,53 @@
             data-trans-delete="{% trans 'Delete' %}"
             data-trans-cancel="{% trans 'Cancel' %}"
     ></script>
-    <form id="form-balance" hidden
-          data-method="PUT"
-          data-url="{% url 'PeriodsConfigDetailAPI' '0' %}"
-          data-redirect-url="{% url 'BalanceInitList' %}">
-        {% csrf_token %}
-        <div class="row">
-            <div class="col-12">
-                <div class="alert alert-warning alert-wth-icon alert-dismissible fade show" role="alert">
-                    <span class="alert-icon-wrap"><i class="fas fa-exclamation-triangle"></i></span>
-                    <p>{% trans 'After the stock activities have occurred, the Inventory Reports will be run in the order of the configured accounting periods. Make sure that the Opening Balance is created before these activities take place to avoid reporting errors.' %}</p>
-                    <p>{% trans 'The initial balance will be inserted from the month of starting to use the software.' %}</p>
-                    <p>{% trans 'If the data changes after the time of starting to use the software (not recommended). Re-run all reports from that month to now to update them correctly.' %}</p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-warning alert-wth-icon alert-dismissible fade show" role="alert">
+                <span class="alert-icon-wrap"><i class="fas fa-exclamation-triangle"></i></span>
+                <p>{% trans 'After the stock activities have occurred, the Inventory Reports will be run in the order of the configured accounting periods. Make sure that the Opening Balance is created before these activities take place to avoid reporting errors.' %}</p>
+                <p>{% trans 'The initial balance will be inserted from the month of starting to use the software.' %}</p>
+                <p>{% trans 'If the data changes after the time of starting to use the software (not recommended). Re-run all reports from that month to now to update them correctly.' %}</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
-{#        {% include 'extends/import-datatable/button-import-db.html' %}#}
-        <div class="row mt-3">
+    </div>
+    <div class="row mt-3">
+        {% include 'extends/import-datatable/button-import-db.html' %}
+        <script class="import-db-url" data-url="{% url 'ImportBalanceInitDBAPIViews' '0' %}"></script>
+        <form id="form-balance" hidden
+              data-method="POST"
+              data-url="{% url 'BalanceInitListAPI' %}"
+              data-url-delete="{% url 'PeriodsConfigDetailAPI' '0' %}"
+              data-redirect-url="{% url 'BalanceInitList' %}">
+            {% csrf_token %}
             <div class="col-12">
-                <table class="table nowrap w-100" id="table-balance-item"
-                       data-method="GET"
-                       data-url="{% url 'BalanceInitListAPI' %}"
-                >
-                    <thead>
-                        <th class="w-30">{% trans 'Product' %}</th>
-                        <th class="w-15">{% trans 'UoM' %}</th>
-                        <th class="w-20">{% trans 'Warehouse' %}</th>
-                        <th class="w-15">{% trans 'Quantity' %}</th>
-                        <th class="w-15">{% trans 'Pretax value' %}</th>
-                        <th class="w-5 text-right"></th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <button type="button"
-                        id="btn-add-balance"
-                        class="btn btn-outline-primary mt-3"
-                        data-bs-toggle="modal" data-bs-target="#modal-add-balance"
-                >
-                    <i class="fas fa-plus-circle"></i>
-                    {% trans 'Add balance' %}
-                </button>
-            </div>
+            <table class="table nowrap w-100" id="table-balance-item"
+                   data-method="GET"
+                   data-url="{% url 'BalanceInitListAPI' %}"
+            >
+                <thead>
+                    <th class="w-30">{% trans 'Product' %}</th>
+                    <th class="w-15">{% trans 'UoM' %}</th>
+                    <th class="w-20">{% trans 'Warehouse' %}</th>
+                    <th class="w-15">{% trans 'Quantity' %}</th>
+                    <th class="w-15">{% trans 'Pretax value' %}</th>
+                    <th class="w-5 text-right"></th>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button type="button"
+                    id="btn-add-balance"
+                    class="btn btn-outline-primary mt-3"
+                    data-bs-toggle="modal" data-bs-target="#modal-add-balance"
+            >
+                <i class="fas fa-plus-circle"></i>
+                {% trans 'Add balance' %}
+            </button>
         </div>
-        <div class="modal fade" id="modal-add-balance" tabindex="-1" role="dialog" aria-labelledby="modal-add-balance" aria-hidden="true">
+        </form>
+    </div>
+    <div class="modal fade" id="modal-add-balance" tabindex="-1" role="dialog" aria-labelledby="modal-add-balance" aria-hidden="true">
             <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -153,7 +156,6 @@
                 </div>
             </div>
         </div>
-    </form>
 
     <div class="row" id="notify-div" hidden>
         <div class="col-12">

@@ -9033,8 +9033,8 @@ msgid "Import datatable from excel"
 msgstr "Nhập bảng từ excel"
 
 #
-msgid "Make sure that the tables in your Excel file have the same column order as the feature you are importing."
-msgstr "Đảm bảo rằng bảng trong file Excel của bạn có thứ tự cột giống như chức năng cần nhập."
+msgid "Make sure that the tables in your Excel file have the same COLUMN ORDER as the feature you are importing."
+msgstr "Đảm bảo rằng bảng trong file Excel của bạn có THỨ TỰ CỘT giống như chức năng cần nhập."
 
 #
 msgid "From row"

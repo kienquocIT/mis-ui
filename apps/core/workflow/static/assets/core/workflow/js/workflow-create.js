@@ -79,9 +79,17 @@ $(function () {
                     }
                 if (associate_data_submit.length <= 0) {  // check required data association
                     $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-association')}, 'failure');
-                    return false
+                    return false;
                 }
                 _form.dataForm['association'] = associate_data_submit;
+            }
+            if (!_form.dataForm.hasOwnProperty('node')) {
+                $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
+                return false;
+            }
+            if (!_form.dataForm.hasOwnProperty('association')) {
+                $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-association')}, 'failure');
+                return false;
             }
             let submitFields = [
                 'title',

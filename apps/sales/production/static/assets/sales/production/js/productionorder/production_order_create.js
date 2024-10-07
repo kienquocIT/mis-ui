@@ -5,6 +5,10 @@ $(function () {
         let formSubmit = $('#frm_production_order');
         ProdOrderLoadDataHandle.loadInitPage();
 
+        ProdOrderLoadDataHandle.$boxType.on('change', function () {
+            ProdOrderLoadDataHandle.loadBOM();
+        });
+
         ProdOrderLoadDataHandle.$boxProd.on('change', function () {
             ProdOrderLoadDataHandle.loadBOM();
             let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxProd, ProdOrderLoadDataHandle.$boxProd.val());

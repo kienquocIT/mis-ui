@@ -49,7 +49,7 @@ $(document).ready(function () {
                         {
                             className: 'wrap-text',
                             render: (data, type, row) => {
-                                return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-soft-primary w-15 balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
+                                return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-soft-primary w-25 balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
                             }
                         },
                         {
@@ -217,8 +217,8 @@ $(document).ready(function () {
             frm.dataForm['warehouse_id'] = wh_id
 
             return {
-                url: frm.dataUrl.format_url_with_uuid(period_setup_sw_start_using_time.replace(/^"(.*)"$/, '$1')),
-                method: frm.dataMethod,
+                url: $(frmEle).attr('data-url-delete').format_url_with_uuid(period_setup_sw_start_using_time.replace(/^"(.*)"$/, '$1')),
+                method: 'PUT',
                 data: frm.dataForm,
                 urlRedirect: frm.dataUrlRedirect,
             };
@@ -493,68 +493,74 @@ $(document).ready(function () {
             $('.item-quantity:first-child').val(sum_quantity)
         });
 
-        function combinesData(frmEle, for_update=false) {
+        function combinesData(frmEle, data) {
             let frm = new SetupFormSubmit($(frmEle));
 
-            let balance_data = []
-            dtb_balance_init_item_Ele.find('tbody .new-row-data').each(function() {
-                balance_data.push({
-                    'product_id': $(this).find('.balance-item').attr('data-item-id'),
-                    'warehouse_id': $(this).find('.balance-wh').attr('data-wh-id'),
-                    'quantity': $(this).find('.balance-quantity').text(),
-                    'value': $(this).find('.balance-value').attr('data-init-money'),
-                    'data_sn': $(this).find('.data-sn').text() ? JSON.parse($(this).find('.data-sn').text()) : [],
-                    'data_lot': $(this).find('.data-lot').text() ? JSON.parse($(this).find('.data-lot').text()) : [],
-                })
-            })
-            frm.dataForm['balance_data'] = balance_data;
-
-            if (for_update) {
-                let pk = $.fn.getPkDetail();
-                return {
-                    url: frmEle.attr('data-url-detail').format_url_with_uuid(pk),
-                    method: frm.dataMethod,
-                    data: frm.dataForm,
-                    urlRedirect: frm.dataUrlRedirect,
-                };
-            }
             return {
-                url: frm.dataUrl.format_url_with_uuid(period_setup_sw_start_using_time.replace(/^"(.*)"$/, '$1')),
+                url: frm.dataUrl,
                 method: frm.dataMethod,
-                data: frm.dataForm,
+                data: data,
                 urlRedirect: frm.dataUrlRedirect,
             };
         }
 
         form_balance_Ele.submit(function (event) {
             event.preventDefault();
-            let data = combinesData($(this));
-            // console.log(data)
-            if (data) {
-                WindowControl.showLoading();
-                $.fn.callAjax2(data)
-                    .then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyB({description: "Successfully"}, 'success')
-                                setTimeout(() => {
-                                    window.location.replace($(this).attr('data-redirect-url'));
-                                    location.reload.bind(location);
-                                }, 1000);
-                            }
-                        },
-                        (errs) => {
-                            setTimeout(
-                                () => {
-                                    WindowControl.hideLoading();
-                                },
-                                1000
-                            )
-                            $.fn.notifyB({description: errs.data.errors}, 'failure');
+
+            let no_new_row = dtb_balance_init_item_Ele.find('tbody .new-row-data').length
+            let count = 0
+            dtb_balance_init_item_Ele.find('tbody .new-row-data').each(function() {
+                let data = combinesData(
+                    form_balance_Ele,
+                    {
+                        'balance_data': {
+                            'product_id': $(this).find('.balance-item').attr('data-item-id'),
+                            'warehouse_id': $(this).find('.balance-wh').attr('data-wh-id'),
+                            'quantity': $(this).find('.balance-quantity').text(),
+                            'value': $(this).find('.balance-value').attr('data-init-money'),
+                            'data_sn': $(this).find('.data-sn').text() ? JSON.parse($(this).find('.data-sn').text()) : [],
+                            'data_lot': $(this).find('.data-lot').text() ? JSON.parse($(this).find('.data-lot').text()) : [],
                         }
-                    )
-            }
+                    }
+                );
+                // console.log(data)
+                if (data) {
+                    WindowControl.showLoading();
+                    $.fn.callAjax2(data)
+                        .then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyB({description: "Successfully"}, 'success')
+                                    count += 1
+                                    if (count === no_new_row) {
+                                        setTimeout(() => {
+                                            window.location.replace(form_balance_Ele.attr('data-redirect-url'));
+                                            location.reload.bind(location);
+                                        }, 1000);
+                                    }
+                                    else {
+                                        setTimeout(
+                                            () => {
+                                                WindowControl.hideLoading();
+                                            },
+                                            1000
+                                        )
+                                    }
+                                }
+                            },
+                            (errs) => {
+                                setTimeout(
+                                    () => {
+                                        WindowControl.hideLoading();
+                                    },
+                                    1000
+                                )
+                                $.fn.notifyB({description: errs.data.errors}, 'failure');
+                            }
+                        )
+                }
+            })
         })
     }
     else {

@@ -1851,7 +1851,7 @@ class NodeSubmitHandle {
                                 dataInForm['app_property'] = $(IFArea?.querySelector('.box-in-form-property')).val();
                             } else {
                                 $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-                                return false
+                                return false;
                             }
                             let zoneAllData = IFArea.querySelector('.checkbox-node-zone-all');
                             if (zoneAllData) {
@@ -1877,7 +1877,7 @@ class NodeSubmitHandle {
                                 dataOutForm['employee_list'] = JSON.parse($(OFArea?.querySelector('.node-out-form-employee-submit')).val());
                             } else {
                                 $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-                                return false
+                                return false;
                             }
                             let zoneAllData = OFArea.querySelector('.checkbox-node-zone-all');
                             if (zoneAllData) {
@@ -1893,6 +1893,10 @@ class NodeSubmitHandle {
                             }
                             if ($(OFArea?.querySelector('.node-zone-hidden-submit')).val()) {
                                 dataOutForm['zone_hidden'] = JSON.parse($(OFArea?.querySelector('.node-zone-hidden-submit')).val());
+                            }
+                            if (dataOutForm <= 0) {
+                                $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
+                                return false;
                             }
                             dataRow['collab_out_form'] = dataOutForm;
                             if (is_flowchart === true) {
@@ -1933,11 +1937,15 @@ class NodeSubmitHandle {
                                             })
                                         } else {
                                             $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-                                            return false
+                                            return false;
                                         }
                                     }
                                 }
                             });
+                            if (dataInWF <= 0) {
+                                $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
+                                return false;
+                            }
                             dataRow['collab_in_workflow'] = dataInWF;
                             if (is_flowchart === true) {
                                 total_in_runtime = dataInWF.length;

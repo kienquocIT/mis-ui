@@ -46,7 +46,9 @@ class WorkOrderCreate(View):
         breadcrumb='WORK_ORDER_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        ctx = {}
+        ctx = {
+            'list_from_app': 'production.workorder.create',
+        }
         return ctx, status.HTTP_200_OK
 
 
@@ -97,6 +99,7 @@ class WorkOrderUpdate(View):
     def get(self, request, pk, *args, **kwargs):
         ctx = {
             'data': {'doc_id': pk},
+            'list_from_app': 'production.workorder.edit',
         }
         return ctx, status.HTTP_200_OK
 

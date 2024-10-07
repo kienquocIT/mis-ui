@@ -21,7 +21,7 @@ class ProdOrderLoadDataHandle {
     static dataType = [
         {'id': 0, 'title': ProdOrderLoadDataHandle.$trans.attr('data-production')},
         {'id': 1, 'title': ProdOrderLoadDataHandle.$trans.attr('data-assembly')},
-        {'id': 2, 'title': ProdOrderLoadDataHandle.$trans.attr('data-disassembly')}
+        {'id': 2, 'title': ProdOrderLoadDataHandle.$trans.attr('data-disassembly')},
     ];
     static dataStatus = [
         {'id': 0, 'title': ProdOrderLoadDataHandle.$trans.attr('data-planned')},
@@ -58,7 +58,7 @@ class ProdOrderLoadDataHandle {
         // select2
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxType, ProdOrderLoadDataHandle.dataType);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, ProdOrderLoadDataHandle.dataStatus);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [], {'general_product_types_mapped__is_finished_goods': true, 'bom_product__opportunity_id__isnull': true});
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [], {'general_product_types_mapped__is_finished_goods': true, 'bom_product__isnull': false, 'bom_product__opportunity_id__isnull': true});
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
@@ -93,6 +93,7 @@ class ProdOrderLoadDataHandle {
 
     static loadBOM() {
         if (ProdOrderLoadDataHandle.$boxProd.val()) {
+            WindowControl.showLoading();
             $.fn.callAjax2({
                     'url': ProdOrderLoadDataHandle.$urls.attr('data-md-bom'),
                     'method': 'GET',
@@ -109,9 +110,9 @@ class ProdOrderLoadDataHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('bom_order_list') && Array.isArray(data.bom_order_list)) {
+                            ProdOrderDataTableHandle.$tableMain.DataTable().clear().draw();
                             if (data.bom_order_list.length > 0) {
                                 ProdOrderLoadDataHandle.loadAddDtbRows(ProdOrderLoadDataHandle.loadSetupBOM(data.bom_order_list[0]));
-
                                 let multi = 1;
                                 if (ProdOrderLoadDataHandle.$quantity) {
                                     multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
@@ -119,6 +120,7 @@ class ProdOrderLoadDataHandle {
                                 ProdOrderLoadDataHandle.$time.val(`${data.bom_order_list[0]?.['sum_time'] * multi}`);
                                 ProdOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data.bom_order_list[0]));
                             }
+                            WindowControl.hideLoading();
                         }
                     }
                 }
@@ -135,6 +137,7 @@ class ProdOrderLoadDataHandle {
 
     static loadSetupBOM(data) {
         let result = [];
+        let BOMtype = parseFloat(ProdOrderLoadDataHandle.$boxType.val());
         for (let task of data?.['bom_task']) {  // task
             let tool_list = [];
             for (let tool of data?.['bom_tool']) {
@@ -149,7 +152,14 @@ class ProdOrderLoadDataHandle {
             for (let material of data?.['bom_material']) {
                 if (material?.['bom_task']?.['id'] === task?.['id']) {
                     material['task_order'] = task?.['order'];
-                    result.push(material);
+                    if ([0, 1].includes(BOMtype)) {
+                        result.push(material);
+                    }
+                    if (BOMtype === 2) {
+                        if (material?.['is_disassembly'] === true) {
+                            result.push(material);
+                        }
+                    }
                 }
             }
         }

@@ -1487,7 +1487,7 @@ class PaymentHandle {
                     if (option === 'detail') {
                         new PrintTinymceControl().render('1010563f-7c94-42f9-ba99-63d5d26a1aca', data, false);
                     }
-                    // console.log(data)
+                    console.log(data)
                     DETAIL_DATA = data;
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);

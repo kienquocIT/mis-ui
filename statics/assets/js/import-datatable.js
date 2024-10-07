@@ -21,6 +21,10 @@ $(document).ready(function () {
     });
 
     $('#btn-import-datatable-from-excel').on('click', function () {
+        $('#import-db-form').attr('data-method', $(this).closest('.has-import-db-form').find('.import-db-form-url').attr('data-get-method'))
+        $('#import-db-form').attr('data-url', $(this).closest('.has-import-db-form').find('.import-db-form-url').attr('data-get-url'))
+        $('#import-db-form').attr('data-redirect-url', $(this).closest('.has-import-db-form').find('.import-db-form-url').attr('data-get-redirect-url'))
+
         $('#import-db-form-select-table').html('<option></option>')
         for (let i = 0; i < list_import_db_table.length; i++) {
             $('#import-db-form-select-table').append(

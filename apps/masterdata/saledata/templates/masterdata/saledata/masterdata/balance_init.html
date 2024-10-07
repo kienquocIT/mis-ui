@@ -74,9 +74,13 @@
             </div>
         </div>
     </div>
-    <div class="row mt-3">
+    <div class="has-import-db-form row mt-3">
         {% include 'extends/import-datatable/button-import-db.html' %}
-        <script class="import-db-url" data-url="{% url 'ImportBalanceInitDBAPIViews' '0' %}"></script>
+        <script class="import-db-form-url"
+                data-get-method="POST"
+                data-get-url="{% url 'BalanceInitListAPIImportDB' %}"
+                data-get-redirect-url="{% url 'BalanceInitList' %}"
+        ></script>
         <form id="form-balance" hidden
               data-method="POST"
               data-url="{% url 'BalanceInitListAPI' %}"

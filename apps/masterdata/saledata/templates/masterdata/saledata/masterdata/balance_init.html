@@ -74,13 +74,13 @@
             </div>
         </div>
     </div>
-    <div class=" row mt-3">
-{#        {% include 'extends/import-datatable/button-import-db.html' %}#}
-{#        <script class="import-db-form-url"#}
-{#                data-get-method="POST"#}
-{#                data-get-url="{% url 'BalanceInitListAPIImportDB' %}"#}
-{#                data-get-redirect-url="{% url 'BalanceInitList' %}"#}
-{#        ></script>#}
+    <div class="has-import-db-form row mt-3">
+        {% include 'extends/import-datatable/button-import-db.html' %}
+        <script class="import-db-form-url"
+                data-get-method="POST"
+                data-get-url="{% url 'BalanceInitListAPIImportDB' %}"
+                data-get-redirect-url="{% url 'BalanceInitList' %}"
+        ></script>
         <div class="col-12">
             <form id="form-balance" hidden
                   data-method="POST"
@@ -122,7 +122,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="has-import-db-form modal-body">
+                <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
@@ -154,12 +154,6 @@
                             </table>
                         </div>
                     </div>
-                    {% include 'extends/import-datatable/button-import-db.html' %}
-                    <script class="import-db-form-url"
-                            data-get-method="POST"
-                            data-get-url="{% url 'BalanceInitListAPIImportDB' %}"
-                            data-get-redirect-url="{% url 'BalanceInitList' %}"
-                    ></script>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>

@@ -361,11 +361,11 @@ function LoadDetailIA(option) {
                 }
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
-                console.log(data)
+                // console.log(data)
 
                 titleInput.val(data.title);
                 dateInput.val(moment(data?.['date_created'].split(' ')[0]).format('DD/MM/YYYY'));
-                statusInput.val(data.state ? statusInput.attr('data-trans-finished') : statusInput.attr('data-trans-opening'));
+                statusInput.val(data.state);
                 LoadWarehouseSelectBox(data?.['warehouses']);
                 LoadInChargeSelectBox(data?.['employees_in_charge']);
 

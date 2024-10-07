@@ -63,7 +63,7 @@ $(document).ready(function () {
                         data: 'state',
                         className: 'wrap-text text-center w-10',
                         render: (data, type, row) => {
-                            return `<span class="${['badge-soft-light', 'badge-soft-success'][data]} badge w-100">${[dtb.attr('data-trans-opening'), dtb.attr('data-trans-finished')][data]}</span>`
+                            return `<span class="text-muted">${data}</span>`
                         }
                     },
                 ],

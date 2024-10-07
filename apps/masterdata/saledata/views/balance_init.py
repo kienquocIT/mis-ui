@@ -26,7 +26,18 @@ class BalanceInitList(View):
                             {
                                 "id": "import-db-form-balance-init",
                                 "name": _("Balance init datatable"),
-                                "col_type": "ttttmt"
+                                "col_type": "ttttmt",
+                                "data_format": {
+                                    "key": "balance_data",
+                                    "value_list": [
+                                        {"col_key": "product_code", "col_index": 1},
+                                        {"col_key": "warehouse_code", "col_index": 2},
+                                        {"col_key": "quantity", "col_index": 3},
+                                        {"col_key": "value", "col_index": 4},
+                                        {"col_key": "data_sn", "col_index": -1, "data_default": []},
+                                        {"col_key": "data_lot", "col_index": -1, "data_default": []},
+                                    ]
+                                }
                             }
                         ]
                     },

@@ -27,9 +27,11 @@ $(document).ready(function () {
 
         $('#import-db-form-select-table').html('<option></option>')
         for (let i = 0; i < list_import_db_table.length; i++) {
+            let data_format = JSON.stringify(list_import_db_table[i]?.['data_format'])
             $('#import-db-form-select-table').append(
                 `<option value="${list_import_db_table[i]?.['id']}"
                          data-col-type="${list_import_db_table[i]?.['col_type']}"
+                         data-format='${data_format}'
                 >${list_import_db_table[i]?.['name']}</option>`
             )
         }
@@ -83,15 +85,29 @@ $(document).ready(function () {
         }
     }
 
-    function combinesDataImportDB(frmEle, data) {
-        let frm = new SetupFormSubmit($(frmEle));
-
-        return {
-            url: frm.dataUrl,
-            method: frm.dataMethod,
-            data: data,
-            urlRedirect: frm.dataUrlRedirect,
-        };
+    function combinesDataImportDB(row) {
+        // prepare data
+        let col_type = $('#import-db-form-select-table').find('option:selected').attr('data-col-type')
+        let col_data_format_string = $('#import-db-form-select-table').find('option:selected').attr('data-format')
+        let col_data_format = col_data_format_string ? JSON.parse(col_data_format_string) : {}
+        let key = col_data_format?.['key']
+        let value_list = col_data_format?.['value_list']
+        let data_combined = {}
+        data_combined[key] = {}
+        for (let i = 0; i < value_list.length; i++) {
+            let col_index = parseInt(value_list[i]['col_index'])
+            if (col_index >= 0) {
+                if (col_type[col_index] === 't') {
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index}) input`).val()
+                } else if (col_type[col_index] === 'm') {
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index}) input`).attr('value')
+                }
+            }
+            else {
+                data_combined[key][value_list[i]['col_key']] = value_list[i]['data_default']
+            }
+        }
+        return data_combined
     }
 
     $('#import-db-form').submit(function (event) {
@@ -100,19 +116,13 @@ $(document).ready(function () {
         let no_new_row = preview_table.find('tbody tr').length
         let count = 0
         preview_table.find('tbody tr').each(function() {
-            let data = combinesDataImportDB(
-                $('#import-db-form'),
-                {
-                    'balance_data': {
-                        'product_code': $(this).find('td:eq(1) input').val(),
-                        'warehouse_code': $(this).find('td:eq(2) input').val(),
-                        'quantity': $(this).find('td:eq(3) input').val(),
-                        'value': $(this).find('td:eq(4) input').attr('value'),
-                        'data_sn': JSON.parse('[]'),
-                        'data_lot': JSON.parse('[]'),
-                    }
-                }
-            );
+            let frm = new SetupFormSubmit($('#import-db-form'));
+            let data = {
+                url: frm.dataUrl,
+                method: frm.dataMethod,
+                data: combinesDataImportDB($(this)),
+                urlRedirect: frm.dataUrlRedirect,
+            };
             // console.log(data)
             if (data) {
                 $.fn.callAjax2(data)

@@ -74,13 +74,13 @@
             </div>
         </div>
     </div>
-    <div class="has-import-db-form row mt-3">
-        {% include 'extends/import-datatable/button-import-db.html' %}
-        <script class="import-db-form-url"
-                data-get-method="POST"
-                data-get-url="{% url 'BalanceInitListAPIImportDB' %}"
-                data-get-redirect-url="{% url 'BalanceInitList' %}"
-        ></script>
+    <div class=" row mt-3">
+{#        {% include 'extends/import-datatable/button-import-db.html' %}#}
+{#        <script class="import-db-form-url"#}
+{#                data-get-method="POST"#}
+{#                data-get-url="{% url 'BalanceInitListAPIImportDB' %}"#}
+{#                data-get-redirect-url="{% url 'BalanceInitList' %}"#}
+{#        ></script>#}
         <div class="col-12">
             <form id="form-balance" hidden
                   data-method="POST"
@@ -114,54 +114,60 @@
         </div>
     </div>
     <div class="modal fade" id="modal-add-balance" tabindex="-1" role="dialog" aria-labelledby="modal-add-balance" aria-hidden="true">
-            <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">{% trans 'Add balance' %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="select-wh" class="form-label required">{% trans 'Select warehouse' %}</label>
-                                    <select id="select-wh" class="form-select select2" data-method="GET" data-url="{% url 'WareHouseListAPI' %}"></select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <table class="table nowrap w-100" id="table-add-item-wh"
-                                       data-method="GET"
-                                       data-url="{% url 'ProductListAPI' %}"
-                                >
-                                    <thead>
-                                        <th class="w-40">{% trans 'Product' %}</th>
-                                        <th class="w-10">{% trans 'UoM' %}</th>
-                                        <th class="w-25">{% trans 'Quantity' %}</th>
-                                        <th class="w-25">{% trans 'Pretax value' %}</th>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td class="w-40"><select class="form-select select2 item-obj"></select></td>
-                                        <td class="w-10"><span class="item-uom"></span></td>
-                                        <td class="w-25"><input type="number" class="form-control item-quantity"></td>
-                                        <td class="w-25"><input class="form-control item-value mask-money"></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+        <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{% trans 'Add balance' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="has-import-db-form modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="select-wh" class="form-label required">{% trans 'Select warehouse' %}</label>
+                                <select id="select-wh" class="form-select select2" data-method="GET" data-url="{% url 'WareHouseListAPI' %}"></select>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                        <button type="button" id="save-modal" class="btn btn-primary">{% trans 'Save' %}</button>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <table class="table nowrap w-100" id="table-add-item-wh"
+                                   data-method="GET"
+                                   data-url="{% url 'ProductListAPI' %}"
+                            >
+                                <thead>
+                                    <th class="w-40">{% trans 'Product' %}</th>
+                                    <th class="w-10">{% trans 'UoM' %}</th>
+                                    <th class="w-25">{% trans 'Quantity' %}</th>
+                                    <th class="w-25">{% trans 'Pretax value' %}</th>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="w-40"><select class="form-select select2 item-obj"></select></td>
+                                    <td class="w-10"><span class="item-uom"></span></td>
+                                    <td class="w-25"><input type="number" class="form-control item-quantity"></td>
+                                    <td class="w-25"><input class="form-control item-value mask-money"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                    {% include 'extends/import-datatable/button-import-db.html' %}
+                    <script class="import-db-form-url"
+                            data-get-method="POST"
+                            data-get-url="{% url 'BalanceInitListAPIImportDB' %}"
+                            data-get-redirect-url="{% url 'BalanceInitList' %}"
+                    ></script>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="button" id="save-modal" class="btn btn-primary">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>
+    </div>
     <div class="row" id="notify-div" hidden>
         <div class="col-12">
             <div class="alert bg-yellow-light-4" role="alert">
@@ -171,6 +177,7 @@
     </div>
 
 
+    {% include 'extends/import-datatable/modal-import-db.html' %}
     <table hidden data-table-id="import-db-form-balance-init" class="nowrap w-100 table mt-1">
         <thead class="sticky bg-gold-light-5">
             <tr>

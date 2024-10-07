@@ -36,6 +36,7 @@ class BalanceInitList(View):
                                         {"col_key": "value", "col_index": 4},
                                         {"col_key": "data_sn", "col_index": -1, "data_default": []},
                                         {"col_key": "data_lot", "col_index": -1, "data_default": []},
+                                        # {"col_key": "goods_receipt_id", "col_index": -2, "ele_id": '#goods_receipt_ele', "get_value": True, "get_text": False, "get_attr": ""},
                                     ]
                                 }
                             }

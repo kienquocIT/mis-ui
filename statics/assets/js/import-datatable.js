@@ -104,7 +104,20 @@ $(document).ready(function () {
                 }
             }
             else {
-                data_combined[key][value_list[i]['col_key']] = value_list[i]['data_default']
+                if (col_index === -1) {
+                    data_combined[key][value_list[i]['col_key']] = value_list[i]['data_default']
+                }
+                else if (col_index === -2) {
+                    if (value_list[i]['get_value'] && !value_list[i]['get_text'] && value_list[i]['get_attr'] === '') {
+                        data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).val()
+                    }
+                    else if (!value_list[i]['get_value'] && value_list[i]['get_text'] && value_list[i]['get_attr'] === '') {
+                        data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).text()
+                    }
+                    else if (!value_list[i]['get_value'] && !value_list[i]['get_text'] && value_list[i]['get_attr'] !== '') {
+                        data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).attr(value_list[i]['get_attr'])
+                    }
+                }
             }
         }
         return data_combined

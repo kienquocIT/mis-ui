@@ -9103,3 +9103,7 @@ msgstr "Tải lại trang để xem cập nhập."
 #
 msgid "Can not import some rows"
 msgstr "Không thể nhập liệu một số dòng"
+
+#
+msgid "Balance init datatable"
+msgstr "Bảng dữ liệu Số dư đầu kì"

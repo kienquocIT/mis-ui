@@ -1,10 +1,9 @@
-import requests
-import xmltodict
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, MDConfigMsg, PermCheck, SaleMsg
+from django.utils.translation import gettext_lazy as _
+from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg
 
 
 class BalanceInitList(View):
@@ -26,7 +25,7 @@ class BalanceInitList(View):
                         'list_import_db_form': [
                             {
                                 "id": "import-db-form-balance-init",
-                                "name": "Balance init import table",
+                                "name": _("Balance init datatable"),
                                 "col_type": "ttttmt"
                             }
                         ]

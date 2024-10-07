@@ -255,6 +255,7 @@ class WorkOrderLoadDataHandle {
     static loadBOM() {
         if (WorkOrderLoadDataHandle.$product.attr('data-detail')) {
             let dataProduct = JSON.parse(WorkOrderLoadDataHandle.$product.attr('data-detail'));
+            WindowControl.showLoading();
             $.fn.callAjax2({
                     'url': WorkOrderLoadDataHandle.$urls.attr('data-md-bom'),
                     'method': 'GET',
@@ -281,6 +282,7 @@ class WorkOrderLoadDataHandle {
                                 WorkOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data.bom_order_list[0]));
                                 WorkOrderLoadDataHandle.loadChangeQuantity();
                             }
+                            WindowControl.hideLoading();
                         }
                     }
                 }

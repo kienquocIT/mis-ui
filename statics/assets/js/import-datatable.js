@@ -1,6 +1,7 @@
 $(document).ready(function () {
     let preview_table = null
     const trans_db_script = $('#import-db-trans-script')
+    const list_import_db_table = JSON.parse($('#list_import_db_form').text().trim())
 
     $('#import-db-form-input-file').on('change', function () {
         const input = event.target;
@@ -20,7 +21,6 @@ $(document).ready(function () {
     });
 
     $('#btn-import-datatable-from-excel').on('click', function () {
-        const list_import_db_table = JSON.parse($('#list-import-db-form').text().trim())
         $('#import-db-form-select-table').html('<option></option>')
         for (let i = 0; i < list_import_db_table.length; i++) {
             $('#import-db-form-select-table').append(

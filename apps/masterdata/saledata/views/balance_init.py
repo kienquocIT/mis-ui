@@ -21,7 +21,16 @@ class BalanceInitList(View):
         for item in resp.result:
             if item['software_start_using_time']:
                 return {
-                    'data': {'period_setup_sw_start_using_time': item['id']},
+                    'data': {
+                        'period_setup_sw_start_using_time': item['id'],
+                        'list_import_db_form': [
+                            {
+                                "id": "import-db-form-balance-init",
+                                "name": "Balance init import table",
+                                "col_type": "ttttmt"
+                            }
+                        ]
+                    },
                 }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 

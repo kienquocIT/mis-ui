@@ -43,6 +43,8 @@
 {% endblock %}
 {% block pageContent %}
     {{ data.data.period_setup_sw_start_using_time | json_script:"period_setup_sw_start_using_time" }}
+    {{ data.data.list_import_db_form | json_script:"list_import_db_form" }}
+
     <script id="trans-script"
             data-trans-input-lot="{% trans 'Input LOT' %}"
             data-trans-lot-no="{% trans 'Lot number' %}"
@@ -197,12 +199,5 @@
     <script src="{% static 'assets/js/masterdata/saledata/masterdata/balance_init.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
-    <script id="list-import-db-form">[
-        {
-            "id": "import-db-form-balance-init",
-            "name": "Balance init import table",
-            "col_type": "ttttmt"
-        }
-    ]</script>
 {% endblock %}
 

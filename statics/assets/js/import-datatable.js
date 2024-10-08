@@ -123,59 +123,63 @@ $(document).ready(function () {
         return data_combined
     }
 
+    async function processRow(row, frm, count, no_new_row) {
+        let data = {
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: combinesDataImportDB(row),
+            urlRedirect: frm.dataUrlRedirect,
+        };
+
+        try {
+            let resp = await $.fn.callAjax2(data);  // Đợi AJAX hoàn tất
+            let resultData = $.fn.switcherResp(resp);
+
+            if (resultData) {
+                count += 1;
+                row.find('.status-none').prop('hidden', true);
+                row.find('.status-ok').prop('hidden', false);
+                row.find('.status-error').prop('hidden', true);
+
+                if (count === no_new_row) {
+                    Swal.fire({
+                        html: `<h5 class="text-success">${trans_db_script.attr('data-trans-done')}</h5>
+                               <h6 class="text-muted">${trans_db_script.attr('data-trans-reload')}</h6>`,
+                    });
+                }
+            }
+        } catch (errs) {
+            row.find('.status-none').prop('hidden', true);
+            row.find('.status-error').prop('hidden', false);
+            row.find('.status-ok').prop('hidden', true);
+
+            for (let key in errs.data.errors) {
+                row.find('.err-title').text(errs.data.errors[key]);
+            }
+
+            Swal.fire({
+                html: `<h5 class="text-danger">${trans_db_script.attr('data-trans-err')}</h5>`,
+            });
+            $.fn.notifyB({ description: errs.data.errors }, 'failure');
+        }
+    }
+
+    async function processAllRows() {
+        let count = 0;
+        let no_new_row = preview_table.find('tbody tr').length;
+        let frm = new SetupFormSubmit($('#import-db-form'));
+
+        // Duyệt qua từng hàng và đợi từng AJAX hoàn tất trước khi tiếp tục
+        for (let i = 0; i < no_new_row; i++) {
+            let row = preview_table.find('tbody tr').eq(i);  // Lấy hàng hiện tại
+            await processRow(row, frm, count, no_new_row);   // Đợi AJAX hoàn thành cho từng hàng
+        }
+    }
+
     $('#import-db-form').submit(function (event) {
         event.preventDefault();
 
-        let no_new_row = preview_table.find('tbody tr').length
-        let count = 0
-        preview_table.find('tbody tr').each(function() {
-            let frm = new SetupFormSubmit($('#import-db-form'));
-            let data = {
-                url: frm.dataUrl,
-                method: frm.dataMethod,
-                data: combinesDataImportDB($(this)),
-                urlRedirect: frm.dataUrlRedirect,
-            };
-            // console.log(data)
-            if (data) {
-                $.fn.callAjax2(data)
-                    .then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                count += 1
-                                if (count === no_new_row) {
-                                    $(this).find('.status-none').prop('hidden', true)
-                                    $(this).find('.status-ok').prop('hidden', false)
-                                    $(this).find('.status-error').prop('hidden', true)
-                                    Swal.fire({
-                                        html:
-                                        `<h5 class="text-success">${trans_db_script.attr('data-trans-done')}</h5>
-                                        <h6 class="text-muted">${trans_db_script.attr('data-trans-reload')}</h6>`,
-                                    })
-                                }
-                                else {
-                                    $(this).find('.status-none').prop('hidden', true)
-                                    $(this).find('.status-ok').prop('hidden', false)
-                                    $(this).find('.status-error').prop('hidden', true)
-                                }
-                            }
-                        },
-                        (errs) => {
-                            $(this).find('.status-none').prop('hidden', true)
-                            $(this).find('.status-error').prop('hidden', false)
-                            $(this).find('.status-ok').prop('hidden', true)
-                            for (let key in errs.data.errors) {
-                                $(this).find('.err-title').text(errs.data.errors[key])
-                            }
-                            Swal.fire({
-                                html:
-                                `<h5 class="text-danger">${trans_db_script.attr('data-trans-err')}</h5>`,
-                            })
-                            $.fn.notifyB({description: errs.data.errors}, 'failure');
-                        }
-                    )
-            }
-        })
+        // Gọi hàm xử lý tất cả các hàng
+        processAllRows();
     })
 })

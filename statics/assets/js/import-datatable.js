@@ -57,10 +57,10 @@ $(document).ready(function () {
                     let col_type = $('#import-db-form-select-table').find('option:selected').attr('data-col-type')
                     for (let j = 0; j < col_type.length; j++) {
                         if (col_type[j+1] === 't') {
-                            tds += `<td><input class="form-control" value="${data[i][j]}"></td>`
+                            tds += `<td><input class="form-control" value="${data[i][j] ? data[i][j] : ''}"></td>`
                         }
                         else if (col_type[j+1] === 'm') {
-                            tds += `<td><input class="form-control mask-money" value="${data[i][j]}"></td>`
+                            tds += `<td><input class="form-control mask-money" value="${data[i][j] ? data[i][j] : ''}"></td>`
                         }
                         else {
                             tds += `<td>-</td>`

@@ -19,6 +19,8 @@ $(function () {
                 if (dataUOM && dataUOMGr?.['id']) {
                     ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM, [dataUOM], {'group': dataUOMGr?.['id']});
                 }
+                // check product type
+                ProdOrderLoadDataHandle.$boxWH.removeAttr('readonly');
                 if (data?.['general_information']?.['product_type']) {
                     for (let productType of data?.['general_information']?.['product_type']) {
                         if (productType?.['is_service'] === true) {

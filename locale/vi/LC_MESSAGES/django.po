@@ -9107,3 +9107,7 @@ msgstr "Không thể nhập liệu một số dòng"
 #
 msgid "Balance init datatable"
 msgstr "Bảng dữ liệu Số dư đầu kì"
+
+#
+msgid "Node association"
+msgstr "Liên kết trạm"

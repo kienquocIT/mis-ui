@@ -265,48 +265,50 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-lg-6">
-                                <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-lot" hidden>
-                                    <table
-                                        id="datable-delivery-wh-lot"
-                                        class="table nowrap w-100"
-                                        data-url="{% url "WarehouseLotListAPI" %}"
-                                        data-url-regis="{% url "GReItemProductWarehouseLotListAPI" %}"
-                                        data-method="GET"
-                                    >
-                                        <thead>
-                                        <tr class="bg-light">
-                                            <th>{% trans 'Lot number' %}</th>
-                                            <th>{% trans 'Quantity' %}</th>
-                                            <th>{% trans 'UOM' %}</th>
-                                            <th>{% trans 'Exp date' %}</th>
-                                            <th>{% trans 'Mfg date' %}</th>
-                                            <th>{% trans 'Deliver' %}</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-serial" hidden>
-                                    <table
-                                        id="datable-delivery-wh-serial"
-                                        class="table nowrap w-100"
-                                        data-url="{% url "WarehouseSerialListAPI" %}"
-                                        data-url-regis="{% url "GReItemProductWarehouseSerialListAPI" %}"
-                                        data-method="GET"
-                                    >
-                                        <thead>
-                                        <tr class="bg-light">
-                                            <th></th>
-                                            <th>{% trans 'Vendor serial no.' %}</th>
-                                            <th>{% trans 'Serial no.' %}</th>
-                                            <th>{% trans 'Warranty start' %}</th>
-                                            <th>{% trans 'Warranty end' %}</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
+                                <div class="row">
+                                    <div data-simplebar class="nicescroll-bar" id="scroll-table-lot" hidden>
+                                        <table
+                                            id="datable-delivery-wh-lot"
+                                            class="table nowrap w-100"
+                                            data-url="{% url "WarehouseLotListAPI" %}"
+                                            data-url-regis="{% url "GReItemProductWarehouseLotListAPI" %}"
+                                            data-method="GET"
+                                        >
+                                            <thead>
+                                            <tr class="bg-light">
+                                                <th>{% trans 'Lot number' %}</th>
+                                                <th>{% trans 'Quantity' %}</th>
+                                                <th>{% trans 'UOM' %}</th>
+                                                <th>{% trans 'Exp date' %}</th>
+                                                <th>{% trans 'Mfg date' %}</th>
+                                                <th>{% trans 'Deliver' %}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div data-simplebar class="nicescroll-bar" id="scroll-table-serial" hidden>
+                                        <table
+                                            id="datable-delivery-wh-serial"
+                                            class="table nowrap w-100"
+                                            data-url="{% url "WarehouseSerialListAPI" %}"
+                                            data-url-regis="{% url "GReItemProductWarehouseSerialListAPI" %}"
+                                            data-method="GET"
+                                        >
+                                            <thead>
+                                            <tr class="bg-light">
+                                                <th></th>
+                                                <th>{% trans 'Vendor serial no.' %}</th>
+                                                <th>{% trans 'Serial no.' %}</th>
+                                                <th>{% trans 'Warranty start' %}</th>
+                                                <th>{% trans 'Warranty end' %}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>

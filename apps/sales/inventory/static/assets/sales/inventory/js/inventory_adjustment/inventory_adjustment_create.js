@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    new $x.cls.file($('#attachment')).init({'name': 'attachment'});
+
     IAHandle.LoadPage();
 
     $('#frm_inventory_adjustment_create').submit(function (event) {

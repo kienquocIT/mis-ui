@@ -15,35 +15,19 @@
         <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
             <div class="accordion-body">
                 <div class="row">
-                    <div class="col-12 col-md-8 col-lg-6">
+                    <div class="col-12 col-md-9 col-lg-8">
                         <div class="form-group">
                             <label for="title" class="form-label required">{% trans 'Title' %}</label>
                             <input type="text" class="form-control" id="title">
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 col-lg-2">
+                    <div class="col-12 col-md-3 col-lg-2">
                         <div class="form-group">
                             <label for="date" class="form-label">{% trans 'Date created' %}</label>
                             <input type="text" class="form-control form-control-line" id="date">
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-4">
-                        <div class="form-group">
-                            <label for="status" class="form-label">{% trans 'Status' %}</label>
-                            <div class="row">
-                                <div class="col-4">
-                                    <input type="text" data-trans-finished="{% trans 'Finished' %}" data-trans-opening="{% trans 'Not finished' %}" class="form-control form-control-line" id="status" value="{% trans 'Not finished' %}">
-                                </div>
-                                <div class="col-8">
-                                    <div class="btn-group w-100" role="group" aria-label="Basic example">
-                                        <button id="start-ia" type="button" class="btn btn-outline-secondary">{% trans 'Start IA' %}</button>
-                                        <button id="done-ia" type="button" class="btn btn-outline-secondary" disabled>{% trans 'Done IA' %}</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-12 col-lg-6">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <div class="form-group">
                             <label for="warehouse-select-box" class="form-label required">{% trans 'Warehouse' %}</label>
                             <select class="form-select select2 select-multiple"
@@ -53,7 +37,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-6">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <div class="form-group">
                             <label for="in-charge-select-box" class="form-label required">{% trans 'In charge' %}</label>
                             <select class="form-select select2 select-multiple"
@@ -61,6 +45,19 @@
                                     data-method="GET"
                                     id="in-charge-select-box" multiple>
                             </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <label for="status" class="form-label">{% trans 'Action' %}</label>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="btn-group w-100" role="group" aria-label="Basic example">
+                                        <button id="start-ia" type="button" class="btn btn-default"><span><span class="icon"><span class="feather-icon"><i class="fas fa-tasks"></i></span></span><span>{% trans 'Start IA' %}</span></span></button>
+                                        <button id="done-ia" type="button" class="btn btn-default"><span><span class="icon"><span class="feather-icon"><i class="fas fa-check"></i></span></span><span>{% trans 'Done IA' %}</span></span></button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

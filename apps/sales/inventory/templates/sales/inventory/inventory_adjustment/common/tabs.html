@@ -13,13 +13,11 @@
         <ul class="nav nav-tabs nav-icon nav-light">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_line_detail">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-justify-left"></i></span></span>
                     <span class="nav-link-text">{% trans 'Line Detail' %}</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_block_attachment">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="file-text"></i></span></span>
                     <span class="nav-link-text">{% trans 'Attachment' %}</span>
                 </a>
             </li>
@@ -42,7 +40,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12" style="overflow: auto; max-height: 30vh">
+                    <div class="col-12" style="overflow: auto; max-height: 50vh">
                         <table data-url="{% url "WareHouseListAPI" %}"
                                data-warehouse-product-list="{% url 'WarehouseGetProductsListAPI' %}"
                                data-uom-list="{% url 'UnitOfMeasureListAPI' %}"

@@ -327,8 +327,14 @@ class IAHandle {
 
                     $.fn.initMaskMoney2();
 
+                    new $x.cls.file($('#attachment')).init({
+                        enable_download: option === 'detail',
+                        enable_edit: option !== 'detail',
+                        data: data.attachment,
+                        name: 'attachment'
+                    })
+
                     IAHandle.Disable(option);
-                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
     }

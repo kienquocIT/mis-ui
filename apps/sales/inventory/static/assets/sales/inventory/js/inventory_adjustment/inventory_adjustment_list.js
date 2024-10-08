@@ -60,7 +60,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'state',
+                        data: 'state_detail',
                         className: 'wrap-text text-center w-10',
                         render: (data, type, row) => {
                             return `<span class="text-muted">${data}</span>`

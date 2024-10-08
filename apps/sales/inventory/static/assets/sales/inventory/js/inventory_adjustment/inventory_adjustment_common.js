@@ -1,16 +1,16 @@
-let titleInput = $('#title')
-let warehouseSelectBox = $('#warehouse-select-box')
-let dateInput = $('#date')
-let statusInput = $('#status')
-let inChargeSelectBox = $('#in-charge-select-box')
-let tableLineDetailTbody = $('#table-line-detail tbody')
-let tableSelectProduct = $('#table-select-products')
-let addRowLineDetailBtn = $('#btn-add-row-line-detail')
-let fileInput = $('#input-file-now')
-let selectProductBtn = $('#btn-select-product')
-let selectAllProductBtn = $('#selected_all_product')
-let get_increase_items_btn = $('#get-increase-items-btn')
-let get_decrease_items_btn = $('#get-decrease-items-btn')
+const titleInput = $('#title')
+const warehouseSelectBox = $('#warehouse-select-box')
+const dateInput = $('#date')
+const state_detail_Ele = $('#state-detail')
+const script_trans = $('#trans_script')
+const inChargeSelectBox = $('#in-charge-select-box')
+const tableLineDetailTbody = $('#table-line-detail tbody')
+const tableSelectProduct = $('#table-select-products')
+const addRowLineDetailBtn = $('#btn-add-row-line-detail')
+const selectProductBtn = $('#btn-select-product')
+const selectAllProductBtn = $('#selected_all_product')
+const get_increase_items_btn = $('#get-increase-items-btn')
+const get_decrease_items_btn = $('#get-decrease-items-btn')
 let LIST_WAREHOUSE_PRODUCT = []
 
 class IALoadPage {
@@ -55,7 +55,7 @@ class IALoadPage {
 }
 
 class IAAction {
-    static LoadTableSelectProduct(warehouse_list) {
+    static LoadTableSelectProduct() {
         let warehouses_products_list_ajax = $.fn.callAjax2({
                 url: $('#url_script').attr('data-url-warehouse-product-list'),
                 data: {},
@@ -69,7 +69,7 @@ class IAAction {
                         let data_dict = {};
                         for (let i = 0; i < data?.['warehouses_products_list'].length; i++) {
                             let warehouse_temp = data?.['warehouses_products_list'][i];
-                            if (warehouse_list.includes(warehouse_temp['id'])) {
+                            if (warehouseSelectBox.val().includes(warehouse_temp['id'])) {
                                 for (let j = 0; j < warehouse_temp['product_list'].length; j++) {
                                     let product_temp = warehouse_temp['product_list'];
                                     let data_temp = {
@@ -255,86 +255,102 @@ class IAHandle {
         }
         return false;
     }
-    static LoadDetailIA(option) {
+    static LoadDetailIA(option, data_params={}, action='') {
         let pk = $.fn.getPkDetail()
         let url_loaded = $('#frm_inventory_adjustment_detail').attr('data-url-detail').replace(0, pk);
-        $.fn.callAjax(url_loaded, 'GET').then(
+        $.fn.callAjax(url_loaded, 'GET', data_params).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    data = data?.['inventory_adjustment_detail'];
-                    if (option === 'detail') {
-                        new PrintTinymceControl().render('c5de0a7d-bea3-4f39-922f-06a40a060aba', data, false);
+                    if (action) {
+                        location.reload()
                     }
-                    $.fn.compareStatusShowPageAction(data);
-                    $x.fn.renderCodeBreadcrumb(data);
-                    // console.log(data)
+                    else {
+                        data = data?.['inventory_adjustment_detail'];
+                        if (option === 'detail') {
+                            new PrintTinymceControl().render('c5de0a7d-bea3-4f39-922f-06a40a060aba', data, false);
+                        }
+                        $.fn.compareStatusShowPageAction(data);
+                        $x.fn.renderCodeBreadcrumb(data);
+                        // console.log(data)
 
-                    titleInput.val(data.title);
-                    dateInput.val(moment(data?.['date_created'].split(' ')[0]).format('DD/MM/YYYY'));
-                    statusInput.val(data.state);
-                    IALoadPage.LoadWarehouseSelectBox(data?.['warehouses']);
-                    IALoadPage.LoadInChargeSelectBox(data?.['employees_in_charge']);
+                        if (data?.['state'] === 1) {
+                            $('#start-ia').prop('disabled', true)
+                            $('.hidden-col').prop('hidden', false)
+                        }
 
-                    for (let i = 0; i < data?.['inventory_adjustment_item_mapped'].length; i++) {
-                        let data_row = data?.['inventory_adjustment_item_mapped'][i];
-                        let checked = '';
-                        let class_ctn = '';
-                        if (data_row?.['select_for_action']) {
-                            checked = 'checked';
-                            class_ctn = 'highlight-border-left-primary';
+                        if (data?.['state'] === 2) {
+                            $('#start-ia').prop('disabled', true)
+                            $('#done-ia').prop('disabled', true)
+                            $('.hidden-col').prop('hidden', false)
                         }
-                        let done = '';
-                        if (data_row?.['action_status']) {
-                            done = '<i class="fas fa-check"></i>';
-                        }
-                        let difference = parseFloat(data_row?.['count']) - parseFloat(data_row?.['book_quantity']);
-                        let action_type = '';
-                        let disabled_select = '';
-                        if (data_row?.['action_status']) {
-                            disabled_select = 'disabled readonly';
-                        }
-                        if (difference !== 0) {
-                            if (difference < 0) {
-                                difference = '(' + difference * -1 + ')';
-                                action_type = '<span class="text-danger"><i class="bi bi-arrow-down"></i></span>';
+
+                        titleInput.val(data.title);
+                        dateInput.val(moment(data?.['date_created'].split(' ')[0]).format('DD/MM/YYYY'));
+                        state_detail_Ele.val(data?.['state_detail']);
+                        IALoadPage.LoadWarehouseSelectBox(data?.['warehouses']);
+                        IALoadPage.LoadInChargeSelectBox(data?.['employees_in_charge']);
+
+                        for (let i = 0; i < data?.['inventory_adjustment_item_mapped'].length; i++) {
+                            let data_row = data?.['inventory_adjustment_item_mapped'][i];
+                            let checked = '';
+                            let class_ctn = '';
+                            if (data_row?.['select_for_action']) {
+                                checked = 'checked';
+                                class_ctn = 'highlight-border-left-primary';
                             }
-                            if (difference > 0) {
-                                action_type = '<span class="text-primary"><i class="bi bi-arrow-up"></i></span>';
+                            let done = '';
+                            if (data_row?.['action_status']) {
+                                done = '<i class="fas fa-check"></i>';
                             }
+                            let difference = parseFloat(data_row?.['count']) - parseFloat(data_row?.['book_quantity']);
+                            let action_type = '';
+                            let disabled_select = '';
+                            if (data_row?.['action_status']) {
+                                disabled_select = 'disabled readonly';
+                            }
+                            if (difference !== 0) {
+                                if (difference < 0) {
+                                    difference = '(' + difference * -1 + ')';
+                                    action_type = '<span class="text-danger"><i class="bi bi-arrow-down"></i></span>';
+                                }
+                                if (difference > 0) {
+                                    action_type = '<span class="text-primary"><i class="bi bi-arrow-up"></i></span>';
+                                }
+                            }
+                            tableLineDetailTbody.append(`
+                                <tr class="${class_ctn}">
+                                    <td>${i + 1}</td>
+                                    <td data-item-id="${data_row?.['id']}" data-product-warehouse-id="${data_row?.['product_warehouse_mapped_id']}" data-id="${data_row?.['product_mapped']?.['id']}" class="text-muted product_id_td"><span class="badge badge-soft-primary">${data_row?.['product_mapped']?.['code']}</span> ${data_row?.['product_mapped']?.['title']}</td>
+                                    <td data-id="${data_row?.['warehouse_mapped']?.['id']}" class="warehouse_id_td"><span class="badge badge-soft-blue">${data_row?.['warehouse_mapped']?.['code']}</span> ${data_row?.['warehouse_mapped']?.['title']}</td>
+                                    <td data-id="${data_row?.['uom_mapped']?.['id']}" class="uom_id_td">${data_row?.['uom_mapped']?.['title']}</td>
+                                    <td class="quantity-td">${data_row?.['book_quantity']}</td>
+                                    <td ${data?.['state'] === 0 ? 'hidden' : ''}><input ${disabled_select} class="form-control count-input" type="number" placeholder="Number" value="${data_row?.['count']}"></td>
+                                    <td ${data?.['state'] === 0 ? 'hidden' : ''} class="difference_td">${difference}</td>
+                                    <td ${data?.['state'] === 0 ? 'hidden' : ''} class="text-center issued_receipted_td">${data_row?.['issued_receipted_quantity']}</td>
+                                    <td hidden class="text-center">
+                                        <span class="form-check">
+                                            <input ${disabled_select} type="checkbox" class="form-check-input selected_for_actions" ${checked}>
+                                            <label class="form-check-label"></label>
+                                        </span>
+                                    </td>
+                                    <td ${data?.['state'] === 0 ? 'hidden' : ''} class="text-center action_type_td">${action_type}</td>
+                                    <td ${data?.['state'] === 0 ? 'hidden' : ''} class="text-center text-success">${done}</td>
+                                </tr>
+                            `)
                         }
-                        tableLineDetailTbody.append(`
-                            <tr class="${class_ctn}">
-                                <td>${i+1}</td>
-                                <td data-item-id="${data_row?.['id']}" data-product-warehouse-id="${data_row?.['product_warehouse_mapped_id']}" data-id="${data_row?.['product_mapped']?.['id']}" class="text-muted product_id_td"><span class="badge badge-soft-primary">${data_row?.['product_mapped']?.['code']}</span> ${data_row?.['product_mapped']?.['title']}</td>
-                                <td data-id="${data_row?.['warehouse_mapped']?.['id']}" class="warehouse_id_td"><span class="badge badge-soft-blue">${data_row?.['warehouse_mapped']?.['code']}</span> ${data_row?.['warehouse_mapped']?.['title']}</td>
-                                <td data-id="${data_row?.['uom_mapped']?.['id']}" class="uom_id_td">${data_row?.['uom_mapped']?.['title']}</td>
-                                <td class="quantity-td">${data_row?.['book_quantity']}</td>
-                                <td><input ${disabled_select} class="form-control count-input" type="number" placeholder="Number" value="${data_row?.['count']}"></td>
-                                <td class="text-center difference_td">${difference}</td>
-                                <td class="text-center issued_receipted_td">${data_row?.['issued_receipted_quantity']}</td>
-                                <td hidden class="text-center">
-                                    <span class="form-check">
-                                        <input ${disabled_select} type="checkbox" class="form-check-input selected_for_actions" ${checked}>
-                                        <label class="form-check-label"></label>
-                                    </span>
-                                </td>
-                                <td class="text-center action_type_td">${action_type}</td>
-                                <td class="text-center text-success">${done}</td>
-                            </tr>
-                        `)
+
+                        $.fn.initMaskMoney2();
+
+                        new $x.cls.file($('#attachment')).init({
+                            enable_download: option === 'detail',
+                            enable_edit: option !== 'detail',
+                            data: data.attachment,
+                            name: 'attachment'
+                        })
+
+                        IAHandle.Disable(option);
                     }
-
-                    $.fn.initMaskMoney2();
-
-                    new $x.cls.file($('#attachment')).init({
-                        enable_download: option === 'detail',
-                        enable_edit: option !== 'detail',
-                        data: data.attachment,
-                        name: 'attachment'
-                    })
-
-                    IAHandle.Disable(option);
                 }
             })
     }
@@ -346,7 +362,7 @@ addRowLineDetailBtn.on('click', async function () {
     }
     else {
         selectAllProductBtn.prop('checked', false);
-        IAAction.LoadTableSelectProduct(warehouseSelectBox.val());
+        IAAction.LoadTableSelectProduct();
     }
 })
 
@@ -369,7 +385,7 @@ selectProductBtn.on('click', async function () {
                 <td data-id="${selected_product[i]?.['warehouse_id']}" class="warehouse_id_td"><span class="badge badge-soft-blue">${selected_product[i]?.['warehouse_code']}</span> ${selected_product[i]?.['warehouse_title']}</td>
                 <td data-id="${selected_product[i]?.['product_inventory_uom_id']}" class="uom_id_td">${selected_product[i]?.['product_inventory_uom_title']}</td>
                 <td class="quantity-td">${selected_product[i]?.['available_amount']}</td>
-                <td><input class="form-control count-input" type="number" placeholder="Number" value="${selected_product[i]?.['available_amount']}"></td>
+                <td hidden><input class="form-control count-input" type="number" placeholder="Number" value="${selected_product[i]?.['available_amount']}"></td>
                 <td class="difference_td text-center">0</td>
                 <td class="text-center issued_receipted_td">0</td>
                 <td hidden class="text-center">
@@ -498,4 +514,46 @@ get_decrease_items_btn.on('click', function () {
 
 $(document).on('input', '.selected_for_actions', function () {
     $(this).closest('tr').toggleClass('highlight-border-left-primary', $(this).is(':checked'));
+})
+
+$('#start-ia').on('click', function () {
+    Swal.fire({
+		html: `<h5 class="text-primary">${script_trans.attr('data-trans-start-ia')}</h5><p class="small">${script_trans.attr('data-trans-start-ia-sub')}</p>`,
+		customClass: {
+			confirmButton: 'btn text-primary',
+			cancelButton: 'btn text-gray',
+			container:'swal2-has-bg',
+			actions:'w-100'
+		},
+		showCancelButton: true,
+		buttonsStyling: false,
+		confirmButtonText: script_trans.attr('data-trans-change-ok'),
+		cancelButtonText: script_trans.attr('data-trans-change-no'),
+		reverseButtons: true
+	}).then((result) => {
+		if (result.value) {
+            IAHandle.LoadDetailIA('detail', {'start_ia': true}, 'start_ia')
+		}
+	})
+})
+
+$('#done-ia').on('click', function () {
+    Swal.fire({
+		html: `<h5 class="text-success">${script_trans.attr('data-trans-done-ia')}</h5><p class="small">${script_trans.attr('data-trans-done-ia-sub')}</p>`,
+		customClass: {
+			confirmButton: 'btn text-success',
+			cancelButton: 'btn text-gray',
+			container:'swal2-has-bg',
+			actions:'w-100'
+		},
+		showCancelButton: true,
+		buttonsStyling: false,
+		confirmButtonText: script_trans.attr('data-trans-change-ok'),
+		cancelButtonText: script_trans.attr('data-trans-change-no'),
+		reverseButtons: true
+	}).then((result) => {
+		if (result.value) {
+            IAHandle.LoadDetailIA('detail', {'done_ia': true}, 'done_ia')
+		}
+	})
 })

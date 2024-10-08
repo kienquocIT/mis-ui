@@ -26,6 +26,13 @@
             data-url-warehouse-product-list="{% url 'WareHouseListForInventoryAdjustmentAPI' %}"
     ></script>
 
+    <script id="trans_script"
+            data-trans-change-ok="{% trans 'OK' %}"
+            data-trans-change-no="{% trans 'Cancel' %}"
+            data-trans-start-ia="{% trans 'Start this inventory adjustment?' %}"
+            data-trans-start-ia-sub="{% trans 'All warehousing activities on the system will be stopped until all inventory adjustment documents are completed.' %}"
+    ></script>
+
     <form data-method="PUT" data-url-redirect="{% url "InventoryAdjustmentDetail" pk=0 %}"
           data-url-list="{% url 'InventoryAdjustmentListAPI' %}"
           data-url-detail="{% url 'InventoryAdjustmentDetailAPI' pk=0 %}"

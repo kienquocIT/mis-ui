@@ -9111,3 +9111,11 @@ msgstr "Bảng dữ liệu Số dư đầu kì"
 #
 msgid "Node association"
 msgstr "Liên kết trạm"
+
+#
+msgid "Self input"
+msgstr "Tự nhập"
+
+#
+msgid "Undelivered"
+msgstr "Chưa giao"

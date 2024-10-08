@@ -8,12 +8,21 @@ $(document).ready(function () {
                 number_free_row += 1
             }
         })
-        $('#to-index').val(parseInt($('#from-index').val()) + number_free_row - 1).prop('disabled', true).prop('readonly', true)
+        $('#to-index').val(parseInt($('#from-index').val()) + number_free_row - 1)
     })
 
     $('#from-index').on('change', function () {
         if ($(this).val()) {
-            $('#to-index').val(parseInt($('#from-index').val()) + number_free_row - 1).prop('disabled', true).prop('readonly', true)
+            $('#to-index').val(parseInt($('#from-index').val()) + number_free_row - 1)
+        }
+    })
+
+    $('#to-index').on('change', function () {
+        if ($(this).val() && $('#from-index').val()) {
+            if (parseInt($(this).val()) - parseInt($('#from-index').val()) >= number_free_row) {
+                $.fn.notifyB({description: 'Invalid max number'}, 'failure');
+                $('#to-index').val(parseInt($('#from-index').val()) + number_free_row - 1)
+            }
         }
     })
 })

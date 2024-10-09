@@ -299,7 +299,7 @@ class IAHandle {
                                 checked = 'checked';
                                 class_ctn = 'highlight-border-left-primary';
                             }
-                            let done = '';
+                            let done = '--';
                             if (data_row?.['action_status']) {
                                 done = '<i class="fas fa-check"></i>';
                             }
@@ -325,7 +325,7 @@ class IAHandle {
                                     <td data-id="${data_row?.['warehouse_mapped']?.['id']}" class="warehouse_id_td"><span class="badge badge-soft-blue">${data_row?.['warehouse_mapped']?.['code']}</span> ${data_row?.['warehouse_mapped']?.['title']}</td>
                                     <td data-id="${data_row?.['uom_mapped']?.['id']}" class="uom_id_td">${data_row?.['uom_mapped']?.['title']}</td>
                                     <td class="quantity-td">${data_row?.['book_quantity']}</td>
-                                    <td ${data?.['state'] === 0 ? 'hidden' : ''}><input ${disabled_select} class="form-control count-input" type="number" placeholder="Number" value="${data_row?.['count']}"></td>
+                                    <td ${data?.['state'] === 0 ? 'hidden' : ''}><input step="0.01" ${disabled_select} class="form-control count-input" type="number" placeholder="Number" value="${data_row?.['count']}"></td>
                                     <td ${data?.['state'] === 0 ? 'hidden' : ''} class="difference_td">${difference}</td>
                                     <td ${data?.['state'] === 0 ? 'hidden' : ''} class="text-center issued_receipted_td">${data_row?.['issued_receipted_quantity']}</td>
                                     <td hidden class="text-center">
@@ -335,7 +335,7 @@ class IAHandle {
                                         </span>
                                     </td>
                                     <td ${data?.['state'] === 0 ? 'hidden' : ''} class="text-center action_type_td">${action_type}</td>
-                                    <td ${data?.['state'] === 0 ? 'hidden' : ''} class="text-center text-success">${done}</td>
+                                    <td ${data?.['state'] === 0 ? 'hidden' : ''} class="text-center ${done !== '--' ? 'text-success' : 'text-muted'}">${done}</td>
                                 </tr>
                             `)
                         }
@@ -385,17 +385,17 @@ selectProductBtn.on('click', async function () {
                 <td data-id="${selected_product[i]?.['warehouse_id']}" class="warehouse_id_td"><span class="badge badge-soft-blue">${selected_product[i]?.['warehouse_code']}</span> ${selected_product[i]?.['warehouse_title']}</td>
                 <td data-id="${selected_product[i]?.['product_inventory_uom_id']}" class="uom_id_td">${selected_product[i]?.['product_inventory_uom_title']}</td>
                 <td class="quantity-td">${selected_product[i]?.['available_amount']}</td>
-                <td hidden><input class="form-control count-input" type="number" placeholder="Number" value="${selected_product[i]?.['available_amount']}"></td>
-                <td class="difference_td text-center">0</td>
-                <td class="text-center issued_receipted_td">0</td>
+                <td hidden><input step="0.01" class="form-control count-input" type="number" placeholder="Number" value="${selected_product[i]?.['available_amount']}"></td>
+                <td hidden class="difference_td text-center">0</td>
+                <td hidden class="text-center issued_receipted_td">0</td>
                 <td hidden class="text-center">
                     <span class="form-check">
                         <input type="checkbox" disabled class="form-check-input selected_for_actions">
                         <label class="form-check-label"></label>
                     </span>
                 </td>
-                <td class="action_type_td text-center"></td>
-                <td></td>
+                <td hidden class="action_type_td text-center"></td>
+                <td hidden></tdhidden>
             </tr>
         `)
     }
@@ -417,14 +417,13 @@ $(document).on('input', '.count-input', function () {
     else {
         $(this).closest('tr').find('.selected_for_actions').attr('disabled', false);
         if (difference < 0) {
-        difference = '(' + difference * -1 + ')';
-        action_type = '<span class="text-danger"><i class="bi bi-arrow-down"></i></span>';
-    }
+            difference = '(' + difference.toFixed(2) * -1 + ')';
+            action_type = '<span class="text-danger"><i class="bi bi-arrow-down"></i></span>';
+        }
         if (difference > 0) {
             action_type = '<span class="text-primary"><i class="bi bi-arrow-up"></i></span>';
         }
     }
-    $(this).val(parseFloat($(this).val() ? $(this).val() : 0));
     $(this).closest('tr').find('.difference_td').html(difference);
     $(this).closest('tr').find('.action_type_td').html(action_type);
 })

@@ -16,19 +16,6 @@ $(function () {
 
         function loadDbl(data) {
             $table.DataTableDefault({
-                ajax: {
-                    url: $table.attr('data-url'),
-                    // dataSrc: 'data.report_product_list',
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let dataResult = resp.data['report_product_list'] ? resp.data['report_product_list'] : [];
-                            storeLoadInitByDataFiscalYear();
-                            return dataResult;
-                        }
-                        return [];
-                    },
-                },
                 data: data ? data : [],
                 autoWidth: true,
                 scrollX: true,
@@ -158,7 +145,6 @@ $(function () {
                     }
                     row.classList.add(cls);
                     row.classList.add('collapse');
-                    // row.classList.add('show');
                 }
             }
             $table.DataTable().rows().every(function () {
@@ -226,6 +212,8 @@ $(function () {
                     result.push(dataByProduct[keyProduct]['customer_data'][keyCus]);
                 }
             }
+            $table.DataTable().destroy();
+            loadDbl();
             $table.DataTable().clear().draw();
             $table.DataTable().rows.add(result).draw();
             loadSetCollapse();
@@ -259,6 +247,7 @@ $(function () {
             eleNetIncome.attr('data-init-money', String(newNetIncome));
         }
         loadDbl();
+        storeLoadInitByDataFiscalYear();
 
         function storeLoadInitByDataFiscalYear() {
             $.fn.callAjax2({

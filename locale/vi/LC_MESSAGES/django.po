@@ -9119,3 +9119,7 @@ msgstr "Tự nhập"
 #
 msgid "Undelivered"
 msgstr "Chưa giao"
+
+#
+msgid "Now"
+msgstr "ngay bây giờ"

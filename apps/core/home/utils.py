@@ -135,6 +135,11 @@ PLAN_APP_OF_SALE = {
             list_view_name='ContractApprovalList', detail_view_name='ContractApprovalDetail'
         ).data,
     },
+    'distributionplan': {
+        'distributionplan': ReverseUrlCommon(
+            list_view_name='DistributionPlanList', detail_view_name='DistributionPlanDetail',
+        ).data,
+    },
     'purchasing': {
         'purchasequotationrequest': ReverseUrlCommon(
             list_view_name='PurchaseQuotationRequestList', detail_view_name='PurchaseQuotationRequestDetail',

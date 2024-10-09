@@ -7,7 +7,7 @@
         z-index: 999;
     }
     #modal-import-datatable-from-excel .sticky {
-        background-color: rgba(153, 203, 207, var(--bs-bg-opacity)) !important
+        background-color: #e9ecef !important
     }
 </style>
 
@@ -68,7 +68,7 @@
                             >
                                 {% csrf_token %}
                                 <div id="progress-container" class="progress progress-bar-xs">
-                                    <div id="progress-bar" class="progress-bar bg-primary-light-3" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div id="progress-bar" class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                                 <div id="import-db-form-modal-table" style="max-height: 50vh; overflow: auto"></div>
                             </form>

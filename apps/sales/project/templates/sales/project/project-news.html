@@ -8,44 +8,31 @@
 
     <link href="{% static 'assets/project/css/activities.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
-
 {% block pageAction %}
 {% endblock %}
 
 {% block pageContent %}
     <div class="container">
         <div class="row">
-            <div class="col-md-12 col-xs-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <div class="d-flex">
-                                <div class="w-60p">
-                                    <div class="avatar avatar-rounded avatar-grey">
-{#                                        <img src="{% static 'assets/images/systems/person-avt.png' %}" alt="user" class="avatar-img">#}
-	                                    <span class="initial-wrap">NA</span>
-                                    </div>
-                                </div>
-                                <div class="w-80"><span class="txt-link">Nguyen Van A</span> Created a Task in <span class="txt-link">
-                                    Project Nuclear power
-                                </span>
-                                </div>
-                            </div>
-                        </h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the card's content.</p>
-                        {% include 'comment/extends/custom-comment-input.html' %}
-                    </div>
-                </div>
+            <div class="col-md-12 col-xs-12 wrap_comment">
             </div>
         </div>
     </div>
+    <div class="box_comment hidden">
+        {% include 'comment/extends/custom-comment-input.html' %}
+    </div>
+    {% include 'comment/extends/emoji_combobox.html' %}
 {% endblock %}
 
 {% block dataHiddenGroup %}
-    <input type="hidden" id="url-factory" aria-label="url-factory" >
+    <input type="hidden" id="url-factory" aria-label="url-factory"
+    data-comment-list="{% url 'ProjectActivitiesListAPI' %}"
+    data-comment-create="{% url 'ProjectCommentListAPI' %}"
+    >
     <input type="hidden" id="trans-factory" aria-label="trans-factory">
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'comment/js/plugin/txtarea-caret-position.js' %}"></script>
+
     <script src="{% static 'comment/js/comment-custom.js' %}"></script>
 {% endblock %}

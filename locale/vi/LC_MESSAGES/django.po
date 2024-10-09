@@ -8871,3 +8871,15 @@ msgstr "Nhập hàng cho"
 #
 msgid "Report for"
 msgstr "Báo cáo cho"
+
+#
+msgid "Project activities"
+msgstr "Hoạt động của dự án"
+
+#
+msgid "leave your comment..."
+msgstr "Viết bình luận..."
+
+#
+msgid "Project comment"
+msgstr "Bình luận"

@@ -681,6 +681,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROJECT_WORK_EXPENSE_LIST = StringUrl('project/work-expense-list')
     PROJECT_BASELINE = StringUrl('project/baseline/list')
     PROJECT_BASELINE_DETAIL = StringUrl('project/baseline/detail')
+    PROJECT_NEWS_LIST = StringUrl('project/news')
+    PROJECT_COMMENT_LIST = StringUrl('project/new/{news_id}/comments')
 
     # Folder
     FOLDER_LIST = StringUrl('attachment/folder/list')

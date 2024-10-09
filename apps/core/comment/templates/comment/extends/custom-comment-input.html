@@ -1,19 +1,30 @@
 {% load static i18n %}
-<div class="custom_comment">
-    <div type="text" class="form-control input_txt">
-        <textarea placeholder="{% trans 'leave your comment...' %}"></textarea>
-    </div>
-    <a href="#" class="btn send_btn"><i class="fa-solid fa-paper-plane"></i></a>
-    <a href="#" class="btn emoji_btn"><i class="fa-solid fa-face-smile"></i></a>
-</div>
-<div class="emoji_wrapbox" data-url="/static/comment/js/emoji_data.json">
-    <div class="input_wrap_search">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="search_emoji" placeholder="{% trans 'Search' %}">
-        <a href="#" class="close_btn_search"><i class="fa-regular fa-circle-xmark"></i></a>
-    </div>
-    <div class="emoji-category-nav"></div>
-    <div class="emoji-body">
-        <ul class="emoji-list"></ul>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">
+            <div class="d-flex">
+                <div class="w-60p">
+                    <div class="avatar avatar-rounded avatar-grey">
+                        <img src="{% static 'assets/images/systems/person-avt.png' %}" alt="user" class="avatar-img">
+                    </div>
+                </div>
+                <div class="w-80 heading_txt">
+                    <span class="txt-link">Nguyen Van A</span> Created a Task in
+                    <span class="txt-link">Project Nuclear power</span>
+                </div>
+            </div>
+        </h5>
+        <p class="card-text"></p>
+        <div class="content_comment hidden"></div>
+        <div class="custom_comment hidden">
+            <div type="text" class="form-control input_txt">
+                <textarea placeholder="{% trans 'leave your comment...' %}"></textarea>
+            </div>
+            <a href="#" class="btn send_btn"><i class="fa-solid fa-paper-plane"></i></a>
+            <a href="#" class="btn emoji_btn"><i class="fa-solid fa-face-smile"></i></a>
+        </div>
+        <div class="icon_wrap">
+            <i class="fa-regular fa-comment-dots"></i> <span>0</span>
+        </div>
     </div>
 </div>

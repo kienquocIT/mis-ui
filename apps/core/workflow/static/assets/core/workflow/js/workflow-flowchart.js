@@ -102,7 +102,7 @@ function clickConnection(connect) {
     $("#next-node-association .formsets").html('')
     $('#form-create-condition [name="node_in"]').val(node_in)
     $('#form-create-condition [name="node_out"]').val(node_out)
-    $("#next-node-association").modal('show');
+    // $("#next-node-association").modal('show');
 
     // render modal popup of connection
     let data_cond = FlowJsP.getAssociate

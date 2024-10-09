@@ -12,17 +12,117 @@
     {% csrf_token %}
 
     <div class="row">
-        <div class="col-12 col-md-3 col-lg-3">
-            <div class="mb-2"><b class="text-light">{% trans 'Revenue' %}</b></div>
-            <h5><span class="mask-money fw-bold text-primary" id="report-product-revenue" data-init-money="0"></span></h5>
-        </div>
-        <div class="col-12 col-md-3 col-lg-3">
-            <div class="mb-2"><b class="text-light">{% trans 'Gross profit' %}</b></div>
-            <h5><span class="mask-money fw-bold text-primary" id="report-product-gross-profit" data-init-money="0"></span></h5>
-        </div>
-        <div class="col-12 col-md-3 col-lg-3">
-            <div class="mb-2"><b class="text-light">{% trans 'Net income' %}</b></div>
-            <h5><span class="mask-money fw-bold text-primary" id="report-product-net-income" data-init-money="0"></span></h5>
+        <div class="card">
+            <div class="card-header card-header-action h-40p">
+                <span class="badge badge-secondary badge-outline badge-sm">
+                    <span>
+                        <span class="icon"><span class="feather-icon"><i class="fas fa-filter"></i></span></span>
+                        {% trans 'Filter' %}
+                    </span>
+                </span>
+                <div class="card-action-wrap">
+                    <a class="btn btn-xs btn-icon btn-rounded btn-flush-dark flush-soft-hover"  data-bs-toggle="collapse" href="#collapse_1" aria-expanded="true"><span class="icon"><span class="feather-icon"><i data-feather="chevron-down"></i></span></span></a>
+                </div>
+            </div>
+            <div id="collapse_1" class="collapse show">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label" for="box-report-product-category">{% trans 'Category' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="box-report-product-category"
+                                        data-url="{% url "ProductCategoryListAPI" %}"
+                                        data-method="GET"
+                                        data-link-detail=""
+                                        name="product_category"
+                                        data-keyResp="product_category_list"
+                                        multiple
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label" for="box-report-product-product">{% trans 'Product' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="box-report-product-product"
+                                        data-url="{% url "ProductListAPI" %}"
+                                        data-method="GET"
+                                        data-link-detail="{% url "ProductDetail" 1 %}"
+                                        name="product"
+                                        data-keyResp="product_list"
+                                        multiple
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label" for="box-report-product-group">{% trans 'Group' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="box-report-product-group"
+                                        data-url="{% url "GroupListAPI" %}"
+                                        data-method="GET"
+                                        data-link-detail="{% url "GroupDetail" 1 %}"
+                                        name="group"
+                                        data-keyResp="group_list"
+                                        multiple
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label" for="box-report-product-employee">{% trans 'Employee' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="box-report-product-employee"
+                                        data-url="{% url "EmployeeListAPI" %}"
+                                        data-method="GET"
+                                        data-link-detail="{% url "EmployeeDetail" 1 %}"
+                                        name="employee"
+                                        data-keyResp="employee_list"
+                                        data-keyText="full_name"
+                                        multiple
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label" for="report-product-date-from">{% trans 'From' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="date_from" id="report-product-date-from"
+                                           class="form-control date-picker" autocomplete="off">
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label" for="report-product-date-to">{% trans 'To' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="date_from" id="report-product-date-to"
+                                           class="form-control date-picker" autocomplete="off">
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="d-flex justify-content-end mt-5">
+                                <button type="button" class="btn btn-primary" id="btn-apply-filter">{% trans 'Apply' %}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -30,156 +130,42 @@
 
     <div class="row">
         <div class="col-12 col-md-2 col-lg-2">
-            <div class="card">
-                <div class="card-header card-header-action bg-grey-light-5 h-40p">
-                    <span class="badge badge-secondary badge-outline badge-sm">
-                        <span>
-                            <span class="icon"><span class="feather-icon"><i class="fas fa-filter"></i></span></span>
-                            {% trans 'Filter' %}
-                        </span>
-                    </span>
-                    <div class="card-action-wrap">
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="card">
-                        <div class="row">
-                            <div class="col-12 col-md-9 col-lg-9">
-                                <div class="card-body">
-                                    <div><small class="card-text text-light">{% trans 'View by' %}</small></div>
-                                    <div id="card-filter-vb"></div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
-                                <div class="btn-group dropend">
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-caret-right"></i></span></button>
-                                    <div class="dropdown-menu w-300p">
-                                        <div class="form-group">
-                                            <label class="form-label" for="box-report-product-category">{% trans 'Category' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="box-report-product-category"
-                                                    data-url="{% url "ProductCategoryListAPI" %}"
-                                                    data-method="GET"
-                                                    data-link-detail=""
-                                                    name="product_category"
-                                                    data-keyResp="product_category_list"
-                                                    multiple
-                                            ></select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="box-report-product-product">{% trans 'Product' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="box-report-product-product"
-                                                    data-url="{% url "ProductListAPI" %}"
-                                                    data-method="GET"
-                                                    data-link-detail="{% url "ProductDetail" 1 %}"
-                                                    name="product"
-                                                    data-keyResp="product_list"
-                                                    multiple
-                                            ></select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="box-report-product-group">{% trans 'Group' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="box-report-product-group"
-                                                    data-url="{% url "GroupListAPI" %}"
-                                                    data-method="GET"
-                                                    data-link-detail="{% url "GroupDetail" 1 %}"
-                                                    name="group"
-                                                    data-keyResp="group_list"
-                                                    multiple
-                                            ></select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="box-report-product-employee">{% trans 'Employee' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="box-report-product-employee"
-                                                    data-url="{% url "EmployeeListAPI" %}"
-                                                    data-method="GET"
-                                                    data-link-detail="{% url "EmployeeDetail" 1 %}"
-                                                    name="employee"
-                                                    data-keyResp="employee_list"
-                                                    data-keyText="full_name"
-                                                    multiple
-                                            ></select>
-                                        </div>
-                                        <div class="d-flex justify-content-end mt-2">
-                                            <button type="button" class="btn btn-secondary btn-sm mr-2" id="btn-cancel-vb">{% trans 'Cancel' %}</button>
-                                            <button type="button" class="btn btn-primary btn-sm" id="btn-apply-vb">{% trans 'Apply' %}</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="row">
-                            <div class="col-12 col-md-9 col-lg-9">
-                                <div class="card-body">
-                                    <div><small class="card-text text-light">{% trans 'Date' %}</small></div>
-                                    <div id="card-filter-date"></div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
-                                <div class="btn-group dropend">
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-caret-right"></i></span></button>
-                                    <div class="dropdown-menu w-300p">
-                                        <div class="form-group w-60">
-                                            <label class="form-label" for="report-product-date-from">{% trans 'From' %}</label>
-                                            <div class="input-affix-wrapper">
-                                                <input type="text" name="date_from" id="report-product-date-from"
-                                                       class="form-control date-picker" autocomplete="off">
-                                                <div class="input-suffix">
-                                                    <i class="fas fa-calendar-alt"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group w-60">
-                                            <label class="form-label" for="report-product-date-to">{% trans 'To' %}</label>
-                                            <div class="input-affix-wrapper">
-                                                <input type="text" name="date_from" id="report-product-date-to"
-                                                       class="form-control date-picker" autocomplete="off">
-                                                <div class="input-suffix">
-                                                    <i class="fas fa-calendar-alt"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-end mt-2">
-                                            <button type="button" class="btn btn-secondary btn-sm mr-2" id="btn-cancel-date">{% trans 'Cancel' %}</button>
-                                            <button type="button" class="btn btn-primary btn-sm" id="btn-apply-date">{% trans 'Apply' %}</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="mb-2"><b class="text-light">{% trans 'Revenue' %}</b></div>
+            <h5><span class="mask-money fw-bold text-primary" id="report-product-revenue" data-init-money="0"></span></h5>
         </div>
-        <div class="col-12 col-md-10 col-lg-10">
-            <table
-                    id="table_report_product_list"
-                    class="table nowrap min-w-1000p w-100 mb-5"
-                    data-url="{% url 'ReportProductListAPI' %}"
-                    data-method="get"
-            >
-                <thead>
-                <tr class="bg-light">
-                    <th>{% trans 'Product' %}</th>
-                    <th>{% trans 'Category' %}</th>
-                    <th>{% trans 'Revenue' %}</th>
-                    <th>{% trans 'Gross profit' %}</th>
-                    <th>{% trans 'Net income' %}</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+        <div class="col-12 col-md-2 col-lg-2">
+            <div class="mb-2"><b class="text-light">{% trans 'Gross profit' %}</b></div>
+            <h5><span class="mask-money fw-bold text-primary" id="report-product-gross-profit" data-init-money="0"></span></h5>
         </div>
+        <div class="col-12 col-md-2 col-lg-2">
+            <div class="mb-2"><b class="text-light">{% trans 'Net income' %}</b></div>
+            <h5><span class="mask-money fw-bold text-primary" id="report-product-net-income" data-init-money="0"></span></h5>
+        </div>
+    </div>
+
+    <div class="row">
+        <table
+                id="table_report_product_list"
+                class="table nowrap min-w-1500p w-100 mb-5"
+                data-url="{% url 'ReportProductListAPI' %}"
+                data-method="get"
+        >
+            <thead>
+            <tr class="bg-light">
+                <th>{% trans 'Product' %}</th>
+                <th>{% trans 'Category' %}</th>
+                <th>{% trans 'UOM' %}</th>
+                <th>{% trans 'Quantity' %}</th>
+                <th>{% trans 'Revenue' %}</th>
+                <th>{% trans 'Gross profit' %}</th>
+                <th>{% trans 'Rate' %}</th>
+                <th>{% trans 'Net income' %}</th>
+                <th>{% trans 'Rate' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
 
 {% endblock %}

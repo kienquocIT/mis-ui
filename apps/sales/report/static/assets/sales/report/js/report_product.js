@@ -33,10 +33,10 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength: 50,
-                columns: [  // (1000p)
+                columns: [
                     {
                         targets: 0,
-                        width: '30%',
+                        width: '25%',
                         render: (data, type, row) => {
                             return `<span class="badge badge-soft-success">${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}</span>
                                     <span>${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}</span>`;
@@ -44,30 +44,58 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '15%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<p>${row?.['product']?.['general_product_category']?.['title'] ? row?.['product']?.['general_product_category']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '18%',
+                        width: '5%',
+                        render: (data, type, row) => {
+                            return `<p>${row?.['product']?.['uom']?.['title'] ? row?.['product']?.['uom']?.['title'] : ''}</p>`;
+                        }
+                    },
+                    {
+                        targets: 3,
+                        width: '5%',
+                        render: (data, type, row) => {
+                            return `<p>${row?.['quantity'] ? row?.['quantity'] : 0}</p>`;
+                        }
+                    },
+                    {
+                        targets: 4,
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
-                        targets: 3,
-                        width: '18%',
+                        targets: 5,
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
-                        targets: 4,
-                        width: '18%',
+                        targets: 6,
+                        width: '5%',
+                        render: (data, type, row) => {
+                            return `<span class="table-row-rate-gross-profit">${row?.['rate_gross_profit'] ? row?.['rate_gross_profit'] : 0} %</span>`;
+                        }
+                    },
+                    {
+                        targets: 7,
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
+                        }
+                    },
+                    {
+                        targets: 8,
+                        width: '5%',
+                        render: (data, type, row) => {
+                            return `<span class="table-row-rate-net-income">${row?.['rate_net_income'] ? row?.['rate_net_income'] : 0} %</span>`;
                         }
                     },
                 ],
@@ -103,10 +131,13 @@ $(function () {
                         dataByProduct[data?.['product']?.['id']]['revenue'] += data?.['revenue'];
                         dataByProduct[data?.['product']?.['id']]['gross_profit'] += data?.['gross_profit'];
                         dataByProduct[data?.['product']?.['id']]['net_income'] += data?.['net_income'];
+                        dataByProduct[data?.['product']?.['id']]['quantity'] += data?.['quantity'];
                     }
                 }
             }
             for (let keyProduct in dataByProduct) {
+                dataByProduct[keyProduct]['rate_gross_profit'] = Math.round(dataByProduct[keyProduct]?.['gross_profit'] / dataByProduct[keyProduct]?.['revenue'] * 100);
+                dataByProduct[keyProduct]['rate_net_income'] = Math.round(dataByProduct[keyProduct]?.['net_income'] / dataByProduct[keyProduct]?.['revenue'] * 100);
                 result.push(dataByProduct[keyProduct]);
             }
             $table.DataTable().clear().draw();
@@ -351,8 +382,8 @@ $(function () {
             loadTotal();
         });
 
-        $('#btn-apply-vb, #btn-apply-date').on('click', function () {
-            this.closest('.dropdown-menu').classList.remove('show');
+        $('#btn-apply-filter').on('click', function () {
+            // this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
             let listViewBy = [];
             let listDate = [];

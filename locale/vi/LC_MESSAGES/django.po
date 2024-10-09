@@ -9109,6 +9109,18 @@ msgid "Balance init datatable"
 msgstr "Bảng dữ liệu Số dư đầu kì"
 
 #
+msgid "Node association"
+msgstr "Liên kết trạm"
+
+#
+msgid "Self input"
+msgstr "Tự nhập"
+
+#
+msgid "Undelivered"
+msgstr "Chưa giao"
+
+#
 msgid "Start IA"
 msgstr "Bắt đầu kiểm kê"
 

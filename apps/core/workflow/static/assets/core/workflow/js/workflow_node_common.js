@@ -1101,7 +1101,7 @@ class NodeDataTableHandle {
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_system'] === true) {
-                            return `<b><span class="table-row-title text-primary mr-1" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span></b><i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${NodeLoadDataHandle.transEle.attr('data-system-node')}"></i>`;
+                            return `<b><span class="table-row-title mr-1" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span></b><i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${NodeLoadDataHandle.transEle.attr('data-system-node')}"></i>`;
                         } else {
                             let form = $('#form-create_workflow');
                             if (form.attr('data-method') !== 'GET') {

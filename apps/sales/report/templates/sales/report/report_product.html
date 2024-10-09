@@ -13,7 +13,7 @@
 
     <div class="row">
         <div class="card">
-            <div class="card-header card-header-action bg-grey-light-5 h-40p">
+            <div class="card-header card-header-action h-40p">
                 <span class="badge badge-secondary badge-outline badge-sm">
                     <span>
                         <span class="icon"><span class="feather-icon"><i class="fas fa-filter"></i></span></span>
@@ -27,7 +27,7 @@
             <div id="collapse_1" class="collapse show">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-12 col-md-4 col-lg-4">
+                        <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label" for="box-report-product-category">{% trans 'Category' %}</label>
                                 <select
@@ -42,7 +42,7 @@
                                 ></select>
                             </div>
                         </div>
-                        <div class="col-12 col-md-4 col-lg-4">
+                        <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label" for="box-report-product-product">{% trans 'Product' %}</label>
                                 <select
@@ -57,7 +57,7 @@
                                 ></select>
                             </div>
                         </div>
-                        <div class="col-12 col-md-4 col-lg-4">
+                        <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label" for="box-report-product-group">{% trans 'Group' %}</label>
                                 <select
@@ -72,7 +72,7 @@
                                 ></select>
                             </div>
                         </div>
-                        <div class="col-12 col-md-4 col-lg-4">
+                        <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label" for="box-report-product-employee">{% trans 'Employee' %}</label>
                                 <select
@@ -88,39 +88,37 @@
                                 ></select>
                             </div>
                         </div>
-
-
-
-
-                        <div class="d-flex justify-content-end mt-2">
-                            <button type="button" class="btn btn-secondary btn-sm mr-2" id="btn-cancel-vb">{% trans 'Cancel' %}</button>
-                            <button type="button" class="btn btn-primary btn-sm" id="btn-apply-vb">{% trans 'Apply' %}</button>
-                        </div>
                     </div>
                     <div class="row">
-                        <div class="form-group w-60">
-                            <label class="form-label" for="report-product-date-from">{% trans 'From' %}</label>
-                            <div class="input-affix-wrapper">
-                                <input type="text" name="date_from" id="report-product-date-from"
-                                       class="form-control date-picker" autocomplete="off">
-                                <div class="input-suffix">
-                                    <i class="fas fa-calendar-alt"></i>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label" for="report-product-date-from">{% trans 'From' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="date_from" id="report-product-date-from"
+                                           class="form-control date-picker" autocomplete="off">
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group w-60">
-                            <label class="form-label" for="report-product-date-to">{% trans 'To' %}</label>
-                            <div class="input-affix-wrapper">
-                                <input type="text" name="date_from" id="report-product-date-to"
-                                       class="form-control date-picker" autocomplete="off">
-                                <div class="input-suffix">
-                                    <i class="fas fa-calendar-alt"></i>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label" for="report-product-date-to">{% trans 'To' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="date_from" id="report-product-date-to"
+                                           class="form-control date-picker" autocomplete="off">
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-end mt-2">
-                            <button type="button" class="btn btn-secondary btn-sm mr-2" id="btn-cancel-date">{% trans 'Cancel' %}</button>
-                            <button type="button" class="btn btn-primary btn-sm" id="btn-apply-date">{% trans 'Apply' %}</button>
+
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="d-flex justify-content-end mt-5">
+                                <button type="button" class="btn btn-primary" id="btn-apply-filter">{% trans 'Apply' %}</button>
+                            </div>
                         </div>
                     </div>
                 </div>

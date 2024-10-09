@@ -36,7 +36,7 @@ $(function () {
                 columns: [
                     {
                         targets: 0,
-                        width: '20%',
+                        width: '25%',
                         render: (data, type, row) => {
                             return `<span class="badge badge-soft-success">${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}</span>
                                     <span>${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}</span>`;
@@ -44,7 +44,7 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '15%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<p>${row?.['product']?.['general_product_category']?.['title'] ? row?.['product']?.['general_product_category']?.['title'] : ''}</p>`;
                         }
@@ -60,7 +60,7 @@ $(function () {
                         targets: 3,
                         width: '5%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['product']?.['stock'] ? row?.['product']?.['stock'] : 0}</p>`;
+                            return `<p>${row?.['quantity'] ? row?.['quantity'] : 0}</p>`;
                         }
                     },
                     {
@@ -81,7 +81,7 @@ $(function () {
                         targets: 6,
                         width: '5%',
                         render: (data, type, row) => {
-                            return `<span class="table-row-rate">0</span>`;
+                            return `<span class="table-row-rate-gross-profit">${row?.['rate_gross_profit'] ? row?.['rate_gross_profit'] : 0} %</span>`;
                         }
                     },
                     {
@@ -95,7 +95,7 @@ $(function () {
                         targets: 8,
                         width: '5%',
                         render: (data, type, row) => {
-                            return `<span class="table-row-rate">0</span>`;
+                            return `<span class="table-row-rate-net-income">${row?.['rate_net_income'] ? row?.['rate_net_income'] : 0} %</span>`;
                         }
                     },
                 ],
@@ -131,10 +131,13 @@ $(function () {
                         dataByProduct[data?.['product']?.['id']]['revenue'] += data?.['revenue'];
                         dataByProduct[data?.['product']?.['id']]['gross_profit'] += data?.['gross_profit'];
                         dataByProduct[data?.['product']?.['id']]['net_income'] += data?.['net_income'];
+                        dataByProduct[data?.['product']?.['id']]['quantity'] += data?.['quantity'];
                     }
                 }
             }
             for (let keyProduct in dataByProduct) {
+                dataByProduct[keyProduct]['rate_gross_profit'] = Math.round(dataByProduct[keyProduct]?.['gross_profit'] / dataByProduct[keyProduct]?.['revenue'] * 100);
+                dataByProduct[keyProduct]['rate_net_income'] = Math.round(dataByProduct[keyProduct]?.['net_income'] / dataByProduct[keyProduct]?.['revenue'] * 100);
                 result.push(dataByProduct[keyProduct]);
             }
             $table.DataTable().clear().draw();
@@ -379,8 +382,8 @@ $(function () {
             loadTotal();
         });
 
-        $('#btn-apply-vb, #btn-apply-date').on('click', function () {
-            this.closest('.dropdown-menu').classList.remove('show');
+        $('#btn-apply-filter').on('click', function () {
+            // this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
             let listViewBy = [];
             let listDate = [];

@@ -146,24 +146,24 @@ $(document).ready(function () {
             let col_index = parseInt(value_list[i]['col_index'])
             if (col_index >= 0) {
                 if (col_type[col_index] === 't') {
-                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index}) input`).val()
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index}) input`).val() ? row.find(`td:eq(${col_index}) input`).val() : null
                 } else if (col_type[col_index] === 'm') {
-                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index}) input`).attr('value')
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index}) input`).attr('value') ? row.find(`td:eq(${col_index}) input`).attr('value') : null
                 }
             }
             else {
                 if (col_index === -1) {
-                    data_combined[key][value_list[i]['col_key']] = value_list[i]['data_default']
+                    data_combined[key][value_list[i]['col_key']] = value_list[i]['data_default'] ? value_list[i]['data_default'] : null
                 }
                 else if (col_index === -2) {
                     if (value_list[i]['get_value'] && !value_list[i]['get_text'] && value_list[i]['get_attr'] === '') {
-                        data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).val()
+                        data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).val() ? $(value_list[i]['ele_id']).val() : null
                     }
                     else if (!value_list[i]['get_value'] && value_list[i]['get_text'] && value_list[i]['get_attr'] === '') {
-                        data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).text()
+                        data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).text() ? $(value_list[i]['ele_id']).text() : null
                     }
                     else if (!value_list[i]['get_value'] && !value_list[i]['get_text'] && value_list[i]['get_attr'] !== '') {
-                        data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).attr(value_list[i]['get_attr'])
+                        data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).attr(value_list[i]['get_attr']) ? $(value_list[i]['ele_id']).attr(value_list[i]['get_attr']) : null
                     }
                 }
             }

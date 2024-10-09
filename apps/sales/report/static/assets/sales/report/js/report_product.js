@@ -212,9 +212,7 @@ $(function () {
                     result.push(dataByProduct[keyProduct]['customer_data'][keyCus]);
                 }
             }
-            $table.DataTable().destroy();
-            loadDbl();
-            // $table.DataTable().clear().draw();
+            $table.DataTable().clear().draw();
             $table.DataTable().rows.add(result).draw();
             loadSetCollapse();
             // init money

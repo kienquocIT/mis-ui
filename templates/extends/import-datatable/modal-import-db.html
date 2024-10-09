@@ -5,6 +5,7 @@
         position: sticky;
         top: 0;
         z-index: 999;
+        background-color: rgba(153, 203, 207, var(--bs-bg-opacity)) !important
     }
 </style>
 
@@ -36,7 +37,7 @@
                         <div class="col-12 col-md-6 col-lg-4">
                             <div class="form-group">
                                 <label for="import-db-form-input-file" class="form-label required">{% trans 'Click here to upload file' %}</label>
-                                <input class="form-control text-primary" type="file" id="import-db-form-input-file">
+                                <input class="form-control" type="file" id="import-db-form-input-file">
                             </div>
                         </div>
                         <div class="col-12 col-md-3 col-lg-2">
@@ -51,6 +52,9 @@
                                 <input class="form-control" type="number" min="1" value="5" id="to-index">
                             </div>
                         </div>
+                        <div class="col-12">
+                            <button id="import-db-form-load-file-btn" type="button" class="btn btn-primary btn-sm">{% trans 'Load File Data' %}</button>
+                        </div>
                     </div>
                     <div class="row mt-3">
 {#                        form will be appear here#}
@@ -61,8 +65,10 @@
                                   data-redirect-url=""
                             >
                                 {% csrf_token %}
-                                <span class="badge badge-light">{% trans 'Preview' %}</span>
-                                <div id="import-db-form-modal-table" style="max-height: 60vh; overflow: auto"></div>
+                                <div id="progress-container" class="progress progress-bar-xs">
+                                    <div id="progress-bar" class="progress-bar bg-primary-light-3" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div id="import-db-form-modal-table" style="max-height: 50vh; overflow: auto"></div>
                             </form>
                         </div>
                     </div>

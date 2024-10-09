@@ -1,10 +1,10 @@
 $(document).ready(function () {
-    LoadDetailIA('update');
+    IAHandle.LoadDetailIA('update');
 
     let pk = $.fn.getPkDetail();
     $('#frm_inventory_adjustment_detail').submit(function (event) {
         event.preventDefault();
-        let combinesData = new InventoryAdjustmentHandle().combinesDataUpdate($(this));
+        let combinesData = IAHandle.CombinesDataUpdate($(this));
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)

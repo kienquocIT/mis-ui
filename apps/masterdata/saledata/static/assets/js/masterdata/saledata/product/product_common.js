@@ -955,7 +955,7 @@ function LoadDetailProduct(option) {
                     loadGeneralProductType(general_information['general_product_types_mapped']);
                     loadGeneralProductCategory(general_information['product_category']);
                     loadGeneralUoMGroup(general_information['uom_group']);
-                    $('#general-select-box-traceability-method').val(general_information['traceability_method']);
+                    $('#general-select-box-traceability-method').val(general_information['traceability_method']).prop('disabled', true)
                     if (Object.keys(general_information['product_size']).length !== 0) {
                         lengthEle.val(general_information['product_size']['length']);
                         widthEle.val(general_information['product_size']['width']);

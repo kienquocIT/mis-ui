@@ -9119,3 +9119,43 @@ msgstr "Tự nhập"
 #
 msgid "Undelivered"
 msgstr "Chưa giao"
+
+#
+msgid "Start IA"
+msgstr "Bắt đầu kiểm kê"
+
+#
+msgid "Done IA"
+msgstr "Kiểm kê hoàn tất"
+
+#
+msgid "Created IA"
+msgstr "Tạo kiểm kê"
+
+#
+msgid "Start this inventory adjustment?"
+msgstr "Bắt đầu phiếu kiểm kê này?"
+
+#
+msgid "All warehousing activities on the system will be stopped (for products by warehouse in this IA) until all inventory adjustment documents are completed."
+msgstr "Mọi hoạt động nhập-xuất kho trên hệ thống sẽ bị ngừng lại (đối với các sản phẩm theo kho trong phiếu kiểm kê này) cho đến khi tất cả các phiếu kiểm kê được hoàn tất."
+
+#
+msgid "IA Created"
+msgstr "Đã tạo kiểm kê"
+
+#
+msgid "IA Working"
+msgstr "Đang kiểm kê"
+
+#
+msgid "IA Done"
+msgstr "Kiểm kê hoàn tất"
+
+#
+msgid "Done this inventory adjustment?"
+msgstr "Hoàn tất phiếu kiểm kê này?"
+
+#
+msgid "Once you are done, you can create all warehousing activities related to this IA."
+msgstr "Một khi phiếu đã hoàn tất, bạn có thể thực hiện các hoạt động nhập-xuất kho có tham chiếu tới phiếu này"

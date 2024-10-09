@@ -1,9 +1,11 @@
 $(document).ready(function () {
-    new InventoryAdjustmentHandle().load();
+    new $x.cls.file($('#attachment')).init({'name': 'attachment'});
+
+    IAHandle.LoadPage();
 
     $('#frm_inventory_adjustment_create').submit(function (event) {
         event.preventDefault();
-        let combinesData = new InventoryAdjustmentHandle().combinesDataCreate($(this));
+        let combinesData = IAHandle.CombinesDataCreate($(this));
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)

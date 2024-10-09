@@ -55,7 +55,7 @@ $(function () {
                 columns: [
                     {
                         targets: 0,
-                        width: '5%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<div class="d-flex">
                                         <span class="badge badge-primary mr-2">${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</span>
@@ -65,7 +65,7 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '12%',
+                        width: '20%',
                         render: (data, type, row) => {
                             return `<span class="badge badge-soft-success">${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</span>
                                     <span>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</span>`;
@@ -73,7 +73,7 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '3%',
+                        width: '5%',
                         render: (data, type, row) => {
                             if (row?.['date_approved']) {
                                 return `<p>${moment(row?.['date_approved'] ? row?.['date_approved'] : '').format('DD/MM/YYYY')}</p>`;
@@ -84,7 +84,7 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '12%',
+                        width: '20%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</p>`;
                         }
@@ -345,8 +345,8 @@ $(function () {
             loadTotal();
         });
 
-        $('#btn-apply-vb, #btn-apply-date').on('click', function () {
-            this.closest('.dropdown-menu').classList.remove('show');
+        $('#btn-apply-filter').on('click', function () {
+            // this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
             dataParams['is_initial'] = false;
             let listViewBy = [];

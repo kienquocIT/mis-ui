@@ -1,5 +1,6 @@
 // LoadData
 class NodeLoadDataHandle {
+    static $form = $('#form-create_workflow');
     static btnAddNode = $('#btn-add-new-node-create');
     static nodeModalTitleEle = $('#modal-node-name-create');
     static nodeModalDescriptionEle = $('#modal-node-description-create');
@@ -34,14 +35,14 @@ class NodeLoadDataHandle {
         }
     ];
     static dataSource = [
-        {'id': 3, 'title': 'In workflow'},
-        {'id': 2, 'title': 'Out form'},
+        {'id': 3, 'title': NodeLoadDataHandle.transEle.attr('data-type-src-3')},
+        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-type-src-2')},
         // {'id': 1, 'title': 'In form'},
     ];
     static dataSourceJSON = {
         // 1: {'id': 1, 'title': 'In form'},
-        2: {'id': 2, 'title': 'Out form'},
-        3: {'id': 3, 'title': 'In workflow'},
+        2: {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-type-src-2')},
+        3: {'id': 3, 'title': NodeLoadDataHandle.transEle.attr('data-type-src-3')},
     };
     static dataInWFOption = [
         {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-employee')},
@@ -53,6 +54,29 @@ class NodeLoadDataHandle {
         {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-2nd-manager')},
         {'id': 1, 'title': NodeLoadDataHandle.transEle.attr('data-select-1st-manager')},
     ];
+
+    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
+        let opts = {'allowClear': isClear};
+        $ele.empty();
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                return $(`<span>${res1} ${res2}</span>`);
+            }
+        }
+        $ele.initSelect2(opts);
+        return true;
+    };
 
     static loadSystemNode() {
         NodeDataTableHandle.dataTableNode();
@@ -259,7 +283,8 @@ class NodeLoadDataHandle {
         NodeDataTableHandle.dataTableCollabInWFEmployee($(tableInWFEmployee));
         // init select2
         if (row.querySelector('.box-list-source')) {
-            NodeLoadDataHandle.loadBoxListSource($(row.querySelector('.box-list-source')));
+            // NodeLoadDataHandle.loadBoxListSource($(row.querySelector('.box-list-source')));
+            NodeLoadDataHandle.loadInitS2($(row.querySelector('.box-list-source')), NodeLoadDataHandle.dataSource);
         }
         if (row.querySelector('.box-in-form-property')) {
             NodeLoadDataHandle.loadBoxPropertyEmployee($(row.querySelector('.box-in-form-property')));
@@ -277,7 +302,11 @@ class NodeLoadDataHandle {
             NodeLoadDataHandle.loadBoxPosition($(row.querySelector('.box-in-workflow-position')));
         }
         if (row.querySelector('.box-in-workflow-employee')) {
-            NodeLoadDataHandle.loadBoxEmployee($(row.querySelector('.box-in-workflow-employee')));
+            // NodeLoadDataHandle.loadBoxEmployee($(row.querySelector('.box-in-workflow-employee')));
+            NodeLoadDataHandle.loadInitS2($(row.querySelector('.box-in-workflow-employee')), [], {
+                    'receipt_status__in': [0, 1, 2].join(','),
+                    'system_status': 3
+                }, null, false, {'res1': 'code', 'res2': 'full_name'});
         }
         return true;
     };
@@ -534,11 +563,18 @@ class NodeLoadDataHandle {
         for (let area of row.querySelectorAll('.collab-area')) {
             area.setAttribute('hidden', 'true');
         }
+        let eleNoteSrc = row.querySelector('.box-list-source-note');
         if ($(ele).val() === '1') {
             row.querySelector('.collab-in-form-area').removeAttribute('hidden');
         } else if ($(ele).val() === '2') {
+            if (eleNoteSrc) {
+                eleNoteSrc.innerHTML = NodeLoadDataHandle.transEle.attr('data-type-src-note') + ': ' + NodeLoadDataHandle.transEle.attr('data-type-src-2-note');
+            }
             row.querySelector('.collab-out-form-area').removeAttribute('hidden');
         } else if ($(ele).val() === '3') {
+            if (eleNoteSrc) {
+                eleNoteSrc.innerHTML = NodeLoadDataHandle.transEle.attr('data-type-src-note') + ': ' + NodeLoadDataHandle.transEle.attr('data-type-src-3-note');
+            }
             row.querySelector('.collab-in-workflow-area').removeAttribute('hidden');
         }
         NodeLoadDataHandle.loadZoneDD(row, true); // reset zones
@@ -648,11 +684,60 @@ class NodeLoadDataHandle {
                         'is_edit_all_zone': is_edit_all_zone,
                     }
                     $(table).DataTable().row.add(data).draw().node();
-                    // update zoneHiddenEmployee for validate zone hidden
-                    // NodeValidateHandle.validateZoneHiddenEmployeeSetup(dataEmployee?.['id'], zoneHidden);
                 }
             }
         }
+        return true;
+    };
+
+    static loadCheckNextNode(row) {
+        if (NodeLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
+            // check next node
+            let $eleAssociate = $('#node-associate');
+            let nodeData = NodeSubmitHandle.setupDataSubmit();
+            if ($eleAssociate.val() && nodeData.length > 0) {
+                let associate_temp = $eleAssociate.val().replaceAll('\\', '');
+                if (associate_temp) {
+                    let associate_data_submit = [];
+                    let associate_data_json = JSON.parse(associate_temp);
+                    for (let key in associate_data_json) {
+                        let item = associate_data_json[key]
+                        if (typeof item.node_in === "object") {
+                            // case from detail page update workflow if node_in is not order number
+                            item.node_in = item.node_in.order
+                            item.node_out = item.node_out.order
+                        }
+                        if (item?.['node_in'] && item?.['node_out']) {
+                            associate_data_submit.push(item);
+                        }
+                    }
+                    // get next node list then check type of that node, if type OF then raise error
+                    let nextNodeList = [];
+                    let eleTitle = row?.querySelector('.table-row-title');
+                    if (eleTitle) {
+                        let dataRowRaw = eleTitle.getAttribute('data-row');
+                        if (dataRowRaw) {
+                            let dataRow = JSON.parse(dataRowRaw);
+                            let order = parseInt(dataRow?.['order']);
+                            for (let associate of associate_data_submit) {
+                                if (associate?.['node_in'] === order) {
+                                    nextNodeList.push(associate?.['node_out']);
+                                }
+                            }
+                        }
+                    }
+                    for (let nextNode of nextNodeList) {
+                        for (let node of nodeData) {
+                            if (node?.['order'] === nextNode && node?.['option_collaborator'] === 1) {
+                                $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-validate-next-node')}, 'failure');
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     };
 
     static loadDoneFailAction(ele) {
@@ -1016,7 +1101,7 @@ class NodeDataTableHandle {
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_system'] === true) {
-                            return `<b><span class="table-row-title text-primary mr-1" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span></b><i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${NodeLoadDataHandle.transEle.attr('data-system-node')}"></i>`;
+                            return `<b><span class="table-row-title mr-1" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span></b><i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${NodeLoadDataHandle.transEle.attr('data-system-node')}"></i>`;
                         } else {
                             let form = $('#form-create_workflow');
                             if (form.attr('data-method') !== 'GET') {
@@ -1077,7 +1162,7 @@ class NodeDataTableHandle {
                                         </div>
                                     </div>`;
                         } else {
-                            return `<div class="row align-items-center">
+                            return `<div class="row align-items-center" hidden>
                                         <div class="d-flex align-items-center">
                                             <button 
                                                 type="button"
@@ -1127,7 +1212,7 @@ class NodeDataTableHandle {
                                                         <div class="modal-body modal-body-collab">
                                                             <div class="row collab-common-area">
                                                                 <div class="form-group form-group-data-source">
-                                                                    <label class="form-label required">${NodeLoadDataHandle.transEle.attr('data-list-source')}</label>
+                                                                    <label class="form-label required">${NodeLoadDataHandle.transEle.attr('data-type')}</label>
                                                                     <select
                                                                         class="form-select box-list-source"
                                                                         data-url=""
@@ -1138,6 +1223,9 @@ class NodeDataTableHandle {
                                                                         required
                                                                     >
                                                                     </select>
+                                                                    <small class="form-text text-muted box-list-source-note">
+                                                                        ${NodeLoadDataHandle.transEle.attr('data-type-src-note')}: ${NodeLoadDataHandle.transEle.attr('data-type-src-2-note')}
+                                                                    </small>
                                                                 </div>
                                                             </div>
                                                             <div class="row collab-area collab-in-form-area mb-5" hidden>
@@ -1187,7 +1275,7 @@ class NodeDataTableHandle {
                                                                             </span>
                                                                         </span>
                                                                     </div>
-                                                                    <div class="offcanvas offcanvas-end w-50 mt-4" tabindex="-1" id="${idOutFormCanvas}" aria-labelledby="${idOutFormCanvas}">
+                                                                    <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="${idOutFormCanvas}" aria-labelledby="${idOutFormCanvas}">
                                                                         <div class="offcanvas-header">
                                                                             <h5 id="offcanvasRightLabel">${NodeLoadDataHandle.transEle.attr('data-add-employee')}</h5>
                                                                         </div>
@@ -1200,6 +1288,7 @@ class NodeDataTableHandle {
                                                                                 <thead>
                                                                                 <tr class="bg-light">
                                                                                     <th class="w-30">${NodeLoadDataHandle.transEle.attr('data-select-employee')}</th>
+                                                                                    <th class="w-30">${NodeLoadDataHandle.transEle.attr('data-select-group')}</th>
                                                                                     <th class="w-40">${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
                                                                                 </tr>
                                                                                 </thead>
@@ -1239,27 +1328,41 @@ class NodeDataTableHandle {
                                                                 </div>
                                                             </div>
                                                             <div class="row collab-area collab-in-workflow-area mb-5" hidden>
-                                                                <div class="row">
-                                                                    <div class="col-2">
-                                                                        <button
-                                                                                type="button"
-                                                                                class="btn btn-outline-primary btn-sm"
-                                                                                data-bs-toggle="offcanvas"
-                                                                                data-bs-target="#${idInWFCanvas}"
-                                                                                aria-controls="${idInWFCanvas}"
-                                                                        >
-                                                                            <span><span>${NodeLoadDataHandle.transEle.attr('data-add-new')}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="col-10"></div>
+                                                                <table
+                                                                    class="table nowrap w-100 table-in-workflow-employee"
+                                                                >
+                                                                    <thead>
+                                                                    <tr class="bg-light">
+                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
+                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-select-position')}</th>
+                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
+                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
+                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
+                                                                        <th class="w-5"></th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    </tbody>
+                                                                </table>
+                                                                
+                                                                <div class="d-flex justify-content-start">
+                                                                    <button
+                                                                            type="button"
+                                                                            class="btn btn-outline-primary btn-sm"
+                                                                            data-bs-toggle="offcanvas"
+                                                                            data-bs-target="#${idInWFCanvas}"
+                                                                            aria-controls="${idInWFCanvas}"
+                                                                    >
+                                                                        <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${NodeLoadDataHandle.transEle.attr('data-add-new')}</span></span>
+                                                                    </button>
                                                                 </div>
-                                                                <div class="offcanvas offcanvas-end w-60 mt-4" tabindex="-1" id="${idInWFCanvas}" aria-labelledby="${idInWFCanvas}">
+                                                                <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="${idInWFCanvas}" aria-labelledby="${idInWFCanvas}">
                                                                     <div class="offcanvas-header">
                                                                         <h5 id="offcanvasRightLabel">${NodeLoadDataHandle.transEle.attr('data-add-employee')}</h5>
                                                                     </div>
                                                                     <div class="offcanvas-body form-group">
                                                                         <div class="form-group">
-                                                                            <label class="form-label">Select option</label>
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-config-according')}</label>
                                                                             <select
                                                                                 class="form-select box-in-workflow-option"
                                                                                 data-url=""
@@ -1278,7 +1381,7 @@ class NodeDataTableHandle {
                                                                             >
                                                                             </select>
                                                                         </div>
-                                                                        <div class="form-group employee-area" hidden>
+                                                                        <div class="form-group" hidden>
                                                                             <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-select-company')}</label>
                                                                             <select 
                                                                                 class="form-control box-in-workflow-company"
@@ -1288,7 +1391,7 @@ class NodeDataTableHandle {
                                                                             >
                                                                             </select>
                                                                         </div>
-                                                                        <div class="form-group employee-area" hidden>
+                                                                        <div class="form-group" hidden>
                                                                             <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-select-role')}</label>
                                                                             <select 
                                                                                 class="form-control box-in-workflow-role"
@@ -1327,7 +1430,7 @@ class NodeDataTableHandle {
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="form-group">
+                                                                        <div class="form-group" hidden>
                                                                             <label class="form-label">
                                                                                 ${NodeLoadDataHandle.transEle.attr('data-description')}
                                                                             </label>
@@ -1350,22 +1453,6 @@ class NodeDataTableHandle {
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <table
-                                                                    class="table nowrap w-100 table-in-workflow-employee"
-                                                                >
-                                                                    <thead>
-                                                                    <tr class="bg-light">
-                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
-                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-select-position')}</th>
-                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
-                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
-                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
-                                                                        <th class="w-5"></th>
-                                                                    </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                    </tbody>
-                                                                </table>
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
@@ -1429,7 +1516,7 @@ class NodeDataTableHandle {
                                         </div>
                                     </div>`;
                             } else {
-                                return `<div class="row align-items-center">
+                                return `<div class="row align-items-center" hidden>
                                         <div class="d-flex align-items-center">
                                             <button 
                                                 type="button"
@@ -1533,8 +1620,7 @@ class NodeDataTableHandle {
     static dataTableCollabOutFormEmployee($table, data) {
         $table.DataTableDefault({
             data: data ? data : [],
-            // paginate: false,
-            // info: false,
+            pageLength: 8,
             columns: [
                 {
                     targets: 0,
@@ -1562,9 +1648,15 @@ class NodeDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
+                        return `<span class="badge badge-soft-blue">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
                         if (row.hasOwnProperty('role') && Array.isArray(row?.['role'])) {
                             let result = [];
-                            row?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-primary mb-1 mr-1">` + item?.['title'] + `</span>`) : null);
+                            row?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-pink mb-1 mr-1">` + item?.['title'] + `</span>`) : null);
                             return result.join(" ");
                         }
                         return '';
@@ -1602,7 +1694,7 @@ class NodeDataTableHandle {
                     render: (data, type, row) => {
                         if (row?.['employee'].hasOwnProperty('role') && Array.isArray(row?.['employee']?.['role'])) {
                             let result = [];
-                            row?.['employee']?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-primary mb-1 mr-1">${item?.['title']}</span>`) : null);
+                            row?.['employee']?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-pink mb-1 mr-1">${item?.['title']}</span>`) : null);
                             return result.join(" ");
                         }
                         return '';
@@ -1702,7 +1794,7 @@ class NodeSubmitHandle {
                             // check data actions
                             if (dataRow['actions'].length <= 0) {
                                 $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-                                return false
+                                return false;
                             }
                             let zoneAllData = initialArea.querySelector('.checkbox-node-zone-all');
                             if (zoneAllData) {
@@ -1734,7 +1826,7 @@ class NodeSubmitHandle {
                             dataRow['title'] = eleTitle.value;
                         } else {
                             $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-                            return false
+                            return false;
                         }
                         let eleRemark = row?.querySelector('.table-row-remark');
                         if (eleRemark) {
@@ -1743,7 +1835,7 @@ class NodeSubmitHandle {
                         // check data actions
                         if (dataRow['actions'].length <= 0) {
                             $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-                            return false
+                            return false;
                         }
                         // reset data collab_in_form, collab_out_form, collab_in_workflow when update
                         dataRow['collab_in_form'] = {};
@@ -1759,7 +1851,7 @@ class NodeSubmitHandle {
                                 dataInForm['app_property'] = $(IFArea?.querySelector('.box-in-form-property')).val();
                             } else {
                                 $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-                                return false
+                                return false;
                             }
                             let zoneAllData = IFArea.querySelector('.checkbox-node-zone-all');
                             if (zoneAllData) {
@@ -1785,7 +1877,7 @@ class NodeSubmitHandle {
                                 dataOutForm['employee_list'] = JSON.parse($(OFArea?.querySelector('.node-out-form-employee-submit')).val());
                             } else {
                                 $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-                                return false
+                                return false;
                             }
                             let zoneAllData = OFArea.querySelector('.checkbox-node-zone-all');
                             if (zoneAllData) {
@@ -1801,6 +1893,10 @@ class NodeSubmitHandle {
                             }
                             if ($(OFArea?.querySelector('.node-zone-hidden-submit')).val()) {
                                 dataOutForm['zone_hidden'] = JSON.parse($(OFArea?.querySelector('.node-zone-hidden-submit')).val());
+                            }
+                            if (dataOutForm <= 0) {
+                                $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
+                                return false;
                             }
                             dataRow['collab_out_form'] = dataOutForm;
                             if (is_flowchart === true) {
@@ -1841,11 +1937,15 @@ class NodeSubmitHandle {
                                             })
                                         } else {
                                             $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-                                            return false
+                                            return false;
                                         }
                                     }
                                 }
                             });
+                            if (dataInWF <= 0) {
+                                $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
+                                return false;
+                            }
                             dataRow['collab_in_workflow'] = dataInWF;
                             if (is_flowchart === true) {
                                 total_in_runtime = dataInWF.length;

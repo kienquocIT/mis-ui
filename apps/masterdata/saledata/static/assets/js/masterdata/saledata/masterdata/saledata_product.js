@@ -10,6 +10,17 @@ $(document).ready(function () {
             }
         },
         {
+            data: 'code',
+            className: 'wrap-text w-30',
+            render: (data, type, row) => {
+                if (row.is_default) {
+                    return `<span class="badge badge-secondary">${row.code}</span>`
+                } else {
+                    return `<span class="badge badge-primary">${row.code}</span>`
+                }
+            }
+        },
+        {
             data: 'title',
             className: 'wrap-text w-45',
             render: (data, type, row, meta) => {
@@ -157,8 +168,19 @@ $(document).ready(function () {
                             }
                         },
                         {
+                            data: 'code',
+                            className: 'wrap-text w-30',
+                            render: (data, type, row) => {
+                                if (row.is_default) {
+                                    return `<span class="badge badge-secondary">${row.code}</span>`
+                                } else {
+                                    return `<span class="badge badge-primary">${row.code}</span>`
+                                }
+                            }
+                        },
+                        {
                             data: 'title',
-                            className: 'wrap-text w-80',
+                            className: 'wrap-text w-50',
                             render: (data, type, row, meta) => {
                                 if (row.is_default) {
                                     return `<span><b>${row.title}</b></span>`
@@ -294,7 +316,7 @@ $(document).ready(function () {
     // change select box unit measure group
     $('#select-box-unit-measure-group').on('change', function () {
         let obj = SelectDDControl.get_data_from_idx($(this), $(this).val());
-        let data_referenced = obj?.['referenced_unit'].title;
+        let data_referenced = obj?.['referenced_unit']?.['title'];
         let group_name = $(this).find('option:selected').attr('group-name');
 
         let input_rounding_ele = $('#inp-rounding')
@@ -306,7 +328,8 @@ $(document).ready(function () {
         let ratio_ele = $('#ratio-unit');
         let label_ele = $('#label-referenced-unit');
         let checkbox_ele = $('#check-referenced-unit');
-        if (data_referenced === undefined) {
+        console.log(data_referenced)
+        if (!data_referenced) {
             $('#inp-code').prop('readonly', false);
             name_unit_ele.prop('readonly', false);
 
@@ -455,7 +478,7 @@ $(document).ready(function () {
             let frm_data = frm.dataForm;
             let data_url = frm.dataUrl;
 
-            frm_data['is_referenced_unit'] = !!$('#check-referenced-unit').is(':checked');
+            frm_data['is_referenced_unit'] = $('#check-referenced-unit').prop('checked');
 
             $.fn.callAjax2({
                 'url': data_url,
@@ -467,7 +490,12 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyB({description: "Tạo mới"}, 'success')
                         $('#modal-unit-measure').modal('hide');
-                        $('#datatable-unit-measure-list').DataTable().ajax.reload();
+                        if (frm_data['is_referenced_unit']) {
+                            location.reload()
+                        }
+                        else {
+                            $('#datatable-unit-measure-list').DataTable().ajax.reload();
+                        }
                     }
                 },
                 (errs) => {
@@ -646,6 +674,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_type')) {
+                        $('#inp-edit-code').val(data?.['product_type'].code);
                         $('#inp-edit-name').val(data?.['product_type'].title);
                         $('#inp-edit-description').val(data?.['product_type'].description);
                     }
@@ -670,6 +699,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category')) {
+                        $('#inp-edit-code').val(data.product_category.code);
                         $('#inp-edit-name').val(data.product_category.title);
                         $('#inp-edit-description').val(data.product_category.description);
                     }
@@ -694,6 +724,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
+                        $('#inp-code-uomgroup').val(data.uom_group.code);
                         $('#inp-edit-name-uom-group').val(data.uom_group.title);
                     }
                 }
@@ -708,6 +739,9 @@ $(document).ready(function () {
     let frm_edit_product_expense = $('#form-edit-product-and-expense')
     new SetupFormSubmit(frm_edit_product_expense).validate({
         rules: {
+            code: {
+                required: true,
+            },
             title: {
                 required: true,
             }

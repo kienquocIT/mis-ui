@@ -5,24 +5,46 @@ $(function () {
         let formSubmit = $('#frm_production_report');
         ProdReportLoadDataHandle.loadInitPage();
 
+        ProdReportLoadDataHandle.$boxType.on('change', function () {
+            ProdReportLoadDataHandle.loadCustomAreaByType();
+        });
+
         ProdReportLoadDataHandle.$boxProductionOrder.on('change', function () {
-            ProdReportLoadDataHandle.loadChangeProductionOrder();
+            ProdReportLoadDataHandle.loadChangeProductionWorkOrder();
+        });
+
+        ProdReportLoadDataHandle.$boxWorkOrder.on('change', function () {
+            ProdReportLoadDataHandle.loadChangeProductionWorkOrder();
         });
 
         ProdReportDataTableHandle.$tableMain.on('change', '.table-row-labor-actual, .table-row-quantity-actual', function () {
             let row = this.closest('tr');
-           ProdReportStoreHandle.storeRow(row);
+            if (this.classList.contains('table-row-quantity-actual')) {
+                ProdReportLoadDataHandle.loadInfo(row, true);
+            }
+            ProdReportStoreHandle.storeRow(row);
+        });
+
+        ProdReportDataTableHandle.$tableMain.on('click', '.btn-info', function () {
+            let row = this.closest('tr');
+            ProdReportLoadDataHandle.loadInfo(row);
         });
 
 // SUBMIT FORM
         formSubmit.submit(function (e) {
             e.preventDefault();
             let _form = new SetupFormSubmit(formSubmit);
-            ProdReportSubmitHandle.setupDataSubmit(_form);
+            let result = ProdReportSubmitHandle.setupDataSubmit(_form);
+            if (result === false) {
+                return false;
+            }
             let submitFields = [
                 'title',
+                'production_report_type',
                 'production_order_id',
                 'production_order_data',
+                'work_order_id',
+                'work_order_data',
                 'product_id',
                 'product_data',
                 'quantity',

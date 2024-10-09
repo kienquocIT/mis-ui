@@ -143,6 +143,28 @@ class ProductionOrderDetailAPIForGIS(APIView):
         return resp.auto_return(key_success='production_order_detail')
 
 
+class WorkOrderListAPIForGIS(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GIS_WORK_ORDER_LIST).get(data)
+        return resp.auto_return(key_success='work_order_list')
+
+
+class WorkOrderDetailAPIForGIS(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.GIS_WORK_ORDER_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='work_order_detail')
+
+
 class ProductWarehouseListAPIForGIS(APIView):
     @mask_view(
         auth_require=True,
@@ -174,3 +196,14 @@ class ProductWarehouseSerialListAPIForGIS(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.GIS_SERIAL_LIST).get(data)
         return resp.auto_return(key_success='warehouse_serial_list')
+
+
+class GoodsIssueProductListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_ISSUE_PRODUCT_LIST).get(data)
+        return resp.auto_return(key_success='goods_issue_product')

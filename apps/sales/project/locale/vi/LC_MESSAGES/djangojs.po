@@ -246,9 +246,5 @@ msgid "Close Project"
 msgstr "Đóng dự án"
 
 #
-msgid "Close Project"
-msgstr "Đóng dự án"
-
-#
 msgid "Reply"
 msgstr "Trả lời"

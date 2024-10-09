@@ -76,6 +76,7 @@ check_tab_sale.change(function () {
 check_tab_purchase.change(function () {
     $('#tab_purchase input, #tab_purchase select').val('')
     $('#tab_purchase').find('.row').prop('hidden', !check_tab_purchase.is(':checked'))
+    $.fn.initMaskMoney2()
 });
 
 available_notify_checkboxEle.on('change', function () {
@@ -188,11 +189,6 @@ function loadGeneralProductType(product_type_list) {
             else if (has_service) {
                 $('#notify-inventory').prop('hidden', false)
                 check_tab_inventory.prop('checked', false).prop('disabled', true)
-            }
-            else {
-                check_tab_inventory.prop('checked', false).prop('disabled', false)
-                check_tab_sale.prop('checked', false).prop('disabled', false)
-                check_tab_purchase.prop('checked', false).prop('disabled', false)
             }
         }
     })
@@ -655,7 +651,7 @@ function Disable(option) {
         $('.form-control').prop('disabled', true).css({color: 'black'});
         $('.form-select').prop('disabled', true).css({color: 'black'});
         $('.select2').prop('disabled', true);
-        $('input').prop('disabled', true);
+        $('form input').prop('disabled', true);
         btn_Add_Line_Variant_Attributes.prop('disabled', true);
     }
 }
@@ -822,10 +818,13 @@ function getDataForm() {
         data['inventory_uom'] = $('#inventory-select-box-uom-name option:selected').attr('value');
         data['inventory_level_min'] = parseFloat($('#inventory-level-min').val());
         data['inventory_level_max'] = parseFloat($('#inventory-level-max').val());
+        data['valuation_method'] = $('#valuation-method').val()
+        data['standard_price'] = $('#standard_price').attr('value')
     } else {
         data['inventory_uom'] = null;
         data['inventory_level_min'] = null;
         data['inventory_level_max'] = null;
+        data['standard_price'] = 0
     }
 
     if (check_tab_purchase.is(':checked') === true) {
@@ -833,8 +832,8 @@ function getDataForm() {
         data['purchase_default_uom'] = $('#purchase-select-box-default-uom option:selected').attr('value');
         data['purchase_tax'] = $('#purchase-select-box-tax-code option:selected').attr('value');
     } else {
-        data['purchase_default_uom'] = null;
-        data['purchase_tax'] = null;
+        data['purchase_default_uom'] = null
+        data['purchase_tax'] = null
     }
 
     if (!data['product_types_mapped_list'].length > 0 || !data['general_product_category'] || !data['general_uom_group']) {
@@ -882,16 +881,16 @@ function getDataForm() {
 
 class ProductHandle {
     load() {
-        loadGeneralProductType();
-        loadGeneralProductCategory();
-        loadGeneralUoMGroup();
-        loadSaleTaxCode();
-        loadPurchaseTaxCode();
-        loadSaleDefaultUom();
-        loadSalePriceListForSaleOnline(null, []);
-        loadInventoryDefaultUom();
-        loadPurchaseDefaultUom();
-        loadBaseItemUnit();
+        loadGeneralProductType()
+        loadGeneralProductCategory()
+        loadGeneralUoMGroup()
+        loadSaleTaxCode()
+        loadPurchaseTaxCode()
+        loadSaleDefaultUom()
+        loadSalePriceListForSaleOnline(null, [])
+        loadInventoryDefaultUom()
+        loadPurchaseDefaultUom()
+        loadBaseItemUnit()
     }
 
     combinesData(frmEle, for_update = false) {
@@ -1005,6 +1004,8 @@ function LoadDetailProduct(option) {
                     loadInventoryDefaultUom(inventory_information['uom']);
                     $('#inventory-level-min').val(inventory_information['inventory_level_min']);
                     $('#inventory-level-max').val(inventory_information['inventory_level_max']);
+                    $('#valuation-method').val(inventory_information['valuation_method'])
+                    $('#standard_price').attr('value', inventory_information['standard_price'])
 
                     loadWareHouseListDetail(product_detail['product_warehouse_detail']);
                     let data_overview = [];
@@ -1178,7 +1179,6 @@ function LoadDetailProduct(option) {
                 if (product_detail['product_variant_item_list'].length > 0) {
                  $('#table-variant-items-div').prop('hidden', false);
                 }
-
 
                 $.fn.initMaskMoney2();
 

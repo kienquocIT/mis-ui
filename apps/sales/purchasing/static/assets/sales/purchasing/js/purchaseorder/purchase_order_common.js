@@ -8,6 +8,8 @@ class POLoadDataHandle {
     static eleDivTablePOProductAdd = $('#table-purchase-order-product-add-area');
     static eleDivTablePRProduct = $('#table-purchase-request-product-area');
     static eleDivTablePRProductMerge = $('#table-purchase-request-product-merge-area');
+    static $btnAddProduct = $('#btn-add-product-purchase-order');
+    static $btnAddShipping = $('#btn-add-shipping-purchase-order');
     static transEle = $('#app-trans-factory');
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -100,7 +102,7 @@ class POLoadDataHandle {
                 let tax = ele[0].closest('tr').querySelector('.table-row-tax');
                 // load Description
                 if (description) {
-                    description.innerHTML = data?.['description'];
+                    description.innerHTML = data?.['description'] ? data?.['description'] : '--';
                 }
                 // load UOM
                 if (uom && Object.keys(data?.['unit_of_measure']).length !== 0 && Object.keys(data?.['uom_group']).length !== 0) {
@@ -465,11 +467,13 @@ class POLoadDataHandle {
             $(eleTotal).attr('data-init-money', String(0));
             eleTotalRaw.value = 0;
         }
+        POCalculateHandle.calculateTable($tableProductPR);
         $.fn.initMaskMoney2();
         return true;
     };
 
-    static loadAddRowTableProductAdd() {
+    static loadAddRowTableProductAdd(type = 0) {
+        // type: {0: product, 1: shipping}
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let order = 1;
@@ -495,6 +499,9 @@ class POLoadDataHandle {
             'product_subtotal_price': 0,
             'order': order,
         }
+        if (type === 1) {
+            data['is_shipping'] = true;
+        }
         POLoadDataHandle.eleDivTablePOProductRequest[0].setAttribute('hidden', 'true');
         POLoadDataHandle.eleDivTablePOProductAdd[0].removeAttribute('hidden');
         tablePurchaseOrderProductRequest.DataTable().clear().draw();
@@ -505,13 +512,12 @@ class POLoadDataHandle {
     };
 
     static loadDataRowTable($table) {
-        if (!$table[0].querySelector('.dataTables_empty')) {
-            for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
-                let row = $table[0].tBodies[0].rows[i];
-                let table_id = $table[0].id;
-                POLoadDataHandle.loadDataRow(row, table_id);
-            }
-        }
+        let table_id = $table[0].id;
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            POLoadDataHandle.loadDataRow(row, table_id);
+        });
+        return true;
     };
 
     static loadDataRow(row) {
@@ -523,12 +529,6 @@ class POLoadDataHandle {
             POLoadDataHandle.loadBoxProduct($(row.querySelector('.table-row-item')));
             POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom-order-actual')), [], {'group': dataRow?.['uom_order_actual']?.['uom_group']?.['id']});
             POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')));
-            // $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']).trigger('change');
-            // let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
-            // if (boxRender) {
-            //     boxRender.innerHTML = dataRow?.['product']?.['title'];
-            //     boxRender.setAttribute('title', dataRow?.['product']?.['title']);
-            // }
             if (dataRow?.['product']?.['id']) {
                 POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product']]);
             }
@@ -1235,7 +1235,18 @@ class PODataTableHandle {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('purchase_request_sale_list')) {
-                        return resp.data['purchase_request_sale_list'] ? resp.data['purchase_request_sale_list'] : []
+                        let fnData = [];
+                        for (let prData of resp.data['purchase_request_sale_list']) {
+                            if ([1, 2, 3].includes(prData?.['request_for'])) {
+                                fnData.push(prData);
+                            }
+                            if (prData?.['request_for'] === 0) {
+                                if (prData?.['sale_order']?.['is_deal_close'] === false) {
+                                    fnData.push(prData);
+                                }
+                            }
+                        }
+                        return fnData;
                     }
                     throw Error('Call data raise errors.')
                 },
@@ -1559,7 +1570,7 @@ class PODataTableHandle {
                                             data-method="${PODataTableHandle.productInitEle.attr('data-method')}"
                                             data-keyResp="product_sale_list"
                                             required
-                                            disabled
+                                            readonly
                                         >
                                         </select>
                                     </div>
@@ -1577,7 +1588,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '5%',
+                    width: '7%',
                     render: (data, type, row) => {
                         let dataStr = JSON.stringify(row?.['uom_order_request']).replace(/"/g, "&quot;");
                         return `<span class="table-row-uom-order-request" id="${row?.['uom_order_request']?.['id']}">${row?.['uom_order_request']?.['title']}<input type="hidden" class="data-info" value="${dataStr}"></span>`;
@@ -1624,7 +1635,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '15.625%',
+                    width: '14.625%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <div class="dropend">
@@ -1675,7 +1686,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 10,
-                    width: '14.0625%',
+                    width: '13.0625%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
@@ -1719,10 +1730,18 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     width: '17%',
-                    render: () => {
+                    render: (data, type, row) => {
+                        if (row?.['is_shipping'] === true) {
+                            return `<input type="text" class="form-control table-row-shipping" value="${row?.['shipping_title'] ? row?.['shipping_title'] : ''}">`;
+                        }
                         return `<div class="row table-row-item-area">
                                     <div class="col-12 col-md-12 col-lg-12">
-                                        <select class="form-select table-row-item"></select>
+                                        <select 
+                                            class="form-select table-row-item"
+                                            data-url="${PODataTableHandle.productInitEle.attr('data-url')}"
+                                            data-method="GET"
+                                            data-keyResp="product_sale_list"
+                                        ></select>
                                     </div>
                                 </div>`;
                     },
@@ -1731,9 +1750,16 @@ class PODataTableHandle {
                     targets: 2,
                     width: '12%',
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                    <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
-                                </div>`;
+                        if (row?.['is_shipping'] === true) {
+                            return `<input type="text" class="form-control table-row-description" value="">`;
+                        }
+                        let des = '--';
+                        if (row?.['product']?.['description']) {
+                            if (row?.['product']?.['description'] !== '') {
+                                des = row?.['product']?.['description'];
+                            }
+                        }
+                        return `<div class="row"><p class="table-row-description">${des}</p></div>`;
                     }
                 },
                 {
@@ -1937,46 +1963,52 @@ class POCalculateHandle {
         if (table.id === 'datable-purchase-order-product-request') {
             tableWrapper = document.getElementById('datable-purchase-order-product-request_wrapper');
         }
+        let elePretaxAmount = table.querySelector('.purchase-order-product-pretax-amount');
+        let eleTaxes = table.querySelector('.purchase-order-product-taxes');
+        let eleTotal = table.querySelector('.purchase-order-product-total');
+        let elePretaxAmountRaw = table.querySelector('.purchase-order-product-pretax-amount-raw');
+        let eleTaxesRaw = table.querySelector('.purchase-order-product-taxes-raw');
+        let eleTotalRaw = table.querySelector('.purchase-order-product-total-raw');
+        let finalRevenueBeforeTaxAdd = table.querySelector('.purchase-order-final-revenue-before-tax');
+        let pretaxAmount = 0;
+        let taxAmount = 0;
         if (tableWrapper) {
             let tableFt = tableWrapper.querySelector('.dataTables_scrollFoot');
-            let pretaxAmount = 0;
-            let taxAmount = 0;
-            let elePretaxAmount = tableFt.querySelector('.purchase-order-product-pretax-amount');
-            let eleTaxes = tableFt.querySelector('.purchase-order-product-taxes');
-            let eleTotal = tableFt.querySelector('.purchase-order-product-total');
-            let elePretaxAmountRaw = tableFt.querySelector('.purchase-order-product-pretax-amount-raw');
-            let eleTaxesRaw = tableFt.querySelector('.purchase-order-product-taxes-raw');
-            let eleTotalRaw = tableFt.querySelector('.purchase-order-product-total-raw');
-            let finalRevenueBeforeTaxAdd = tableFt.querySelector('.purchase-order-final-revenue-before-tax');
-            if (elePretaxAmount && eleTaxes && eleTotal) {
-                let tableLen = table.tBodies[0].rows.length;
-                for (let i = 0; i < tableLen; i++) {
-                    let row = table.tBodies[0].rows[i];
-                    // calculate Pretax Amount
-                    let subtotalRaw = row.querySelector('.table-row-subtotal-raw');
-                    if (subtotalRaw) {
-                        if (subtotalRaw.value) {
-                            pretaxAmount += parseFloat(subtotalRaw.value)
-                        }
-                    }
-                    // calculate Tax Amount
-                    let subTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
-                    if (subTaxAmountRaw) {
-                        if (subTaxAmountRaw.value) {
-                            taxAmount += parseFloat(subTaxAmountRaw.value)
-                        }
+
+            elePretaxAmount = tableFt.querySelector('.purchase-order-product-pretax-amount');
+            eleTaxes = tableFt.querySelector('.purchase-order-product-taxes');
+            eleTotal = tableFt.querySelector('.purchase-order-product-total');
+            elePretaxAmountRaw = tableFt.querySelector('.purchase-order-product-pretax-amount-raw');
+            eleTaxesRaw = tableFt.querySelector('.purchase-order-product-taxes-raw');
+            eleTotalRaw = tableFt.querySelector('.purchase-order-product-total-raw');
+            finalRevenueBeforeTaxAdd = tableFt.querySelector('.purchase-order-final-revenue-before-tax');
+        }
+        if (elePretaxAmount && eleTaxes && eleTotal) {
+            $(table).DataTable().rows().every(function () {
+                let row = this.node();
+                // calculate Pretax Amount
+                let subtotalRaw = row.querySelector('.table-row-subtotal-raw');
+                if (subtotalRaw) {
+                    if (subtotalRaw.value) {
+                        pretaxAmount += parseFloat(subtotalRaw.value)
                     }
                 }
-                let totalFinal = (pretaxAmount + taxAmount);
-                $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
-                elePretaxAmountRaw.value = pretaxAmount;
-                finalRevenueBeforeTaxAdd.value = pretaxAmount;
-                $(eleTaxes).attr('data-init-money', String(taxAmount));
-                eleTaxesRaw.value = taxAmount;
-                $(eleTotal).attr('data-init-money', String(totalFinal));
-                eleTotalRaw.value = totalFinal;
-            }
-
+                // calculate Tax Amount
+                let subTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
+                if (subTaxAmountRaw) {
+                    if (subTaxAmountRaw.value) {
+                        taxAmount += parseFloat(subTaxAmountRaw.value)
+                    }
+                }
+            });
+            let totalFinal = (pretaxAmount + taxAmount);
+            $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
+            elePretaxAmountRaw.value = pretaxAmount;
+            finalRevenueBeforeTaxAdd.value = pretaxAmount;
+            $(eleTaxes).attr('data-init-money', String(taxAmount));
+            eleTaxesRaw.value = taxAmount;
+            $(eleTotal).attr('data-init-money', String(totalFinal));
+            eleTotalRaw.value = totalFinal;
         }
         $.fn.initMaskMoney2();
         return true;
@@ -2035,10 +2067,11 @@ class POCalculateHandle {
     };
 
     static calculateTable(table) {
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
-            POCalculateHandle.calculateMain(table, row)
-        }
+        table.DataTable().rows().every(function () {
+            let row = this.node();
+            POCalculateHandle.calculateMain(table, row);
+        });
+        return true;
     };
 
     // payment stage
@@ -2260,7 +2293,7 @@ class POSubmitHandle {
                                 'quantity_origin': quantity_origin,
                                 'quantity_order_origin': quantity_order_origin,
                                 'remain_origin': remain_origin,
-                                'product_unit_price': 0,
+                                'product_unit_price': dataRow?.['unit_price'],
                                 'product_tax_title': '',
                                 'product_tax_amount': 0,
                                 'product_subtotal_price': 0,
@@ -2322,7 +2355,6 @@ class POSubmitHandle {
             let eleProduct = row.querySelector('.table-row-item');
             if (eleProduct) { // PRODUCT
                 let dataInfo = {};
-                let is_allow_gr = false;
                 if ($(eleProduct).val()) {
                     dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                 }
@@ -2330,11 +2362,6 @@ class POSubmitHandle {
                     rowData['product'] = dataInfo?.['id'];
                     rowData['product_title'] = dataInfo?.['title'];
                     rowData['product_code'] = dataInfo?.['code'];
-                    if (dataInfo.hasOwnProperty('product_choice') && Array.isArray(dataInfo?.['product_choice'])) {
-                        if (dataInfo?.['product_choice'].includes(1)) {  // product allow inventory
-                            is_allow_gr = true;
-                        }
-                    }
                 }
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
@@ -2379,9 +2406,7 @@ class POSubmitHandle {
                 if (eleQuantityOrder) {
                     if (eleQuantityOrder.value) {
                         rowData['product_quantity_order_actual'] = parseFloat(eleQuantityOrder.value);
-                        if (is_allow_gr === true) {
-                            rowData['gr_remain_quantity'] = parseFloat(eleQuantityOrder.value);
-                        }
+                        rowData['gr_remain_quantity'] = parseFloat(eleQuantityOrder.value);
                     }
                 }
                 let stock = row.querySelector('.table-row-stock');

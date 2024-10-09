@@ -6,11 +6,15 @@ const add_new_variable_expense_btn = $('#add-new-variable-expense')
 const product_box = $('#product')
 const suppliers_box = $('#suppliers')
 const no_of_months_box = $('#no-of-months')
+const no_month_box = $('.no-month')
 const start_date_box = $('#start-date')
 const product_price_box = $('#product-price')
 const break_event_point_box = $('#break-event-point')
+const break_event_point_all_box = $('#break-event-point-all')
 const expected_number_box = $('#expected-number')
+const expected_number_all_box = $('#expected-number-all')
 const net_income_box = $('#net-income')
+const net_income_all_box = $('#net-income-all')
 const rate_box = $('#rate')
 const plan_des_box = $('#plan-des')
 const script_url = $('#script-url')
@@ -200,6 +204,13 @@ function deleteRow(table, currentRow) {
     row.remove().draw();
 }
 
+no_of_months_box.on('change', function () {
+    no_month_box.text(no_of_months_box.val() ? no_of_months_box.val() : 0)
+    expected_number_all_box.val(expected_number_box.val() ? parseFloat(expected_number_box.val()) * parseFloat(no_of_months_box.val()) : 0)
+    calculate_break_event_point()
+    calculate_net_income()
+})
+
 add_new_fixed_expense_btn.on('click', function () {
     addRow(fixed_costs_table, {})
     let row_added = fixed_costs_table.find('tbody tr:last-child')
@@ -228,7 +239,10 @@ function calculate_break_event_point() {
     variable_costs_table.find('tbody tr').each(function () {
         sum_variable_cost += $(this).find('.variable-cost-value').attr('value') ? parseFloat($(this).find('.variable-cost-value').attr('value')) : 0
     })
-    break_event_point_box.val(product_price_value !== sum_variable_cost ? (sum_fixed_cost / (product_price_value - sum_variable_cost)).toFixed(2) : 0)
+    let break_event_point = (sum_fixed_cost / (product_price_value - sum_variable_cost)).toFixed(2)
+    let break_event_point_all = (break_event_point * parseFloat(no_of_months_box.val())).toFixed(2)
+    break_event_point_box.val(product_price_value !== sum_variable_cost ? parseFloat(break_event_point) : 0)
+    break_event_point_all_box.val(product_price_value !== sum_variable_cost ? parseFloat(break_event_point_all) : 0)
 }
 
 function calculate_net_income() {
@@ -244,6 +258,7 @@ function calculate_net_income() {
     })
     let net_income_value = expected_number_value * (product_price_value - sum_variable_cost) - sum_fixed_cost
     net_income_box.attr('value', net_income_value)
+    net_income_all_box.attr('value', net_income_value * parseFloat(no_of_months_box.val()))
     $.fn.initMaskMoney2()
 
     let rate_value = expected_number_value * product_price_value !== 0 ? (net_income_value * 100 / (expected_number_value * product_price_value)).toFixed(2) : 0
@@ -267,6 +282,7 @@ product_price_box.on("change", function () {
 
 expected_number_box.on("change", function () {
     calculate_net_income()
+    expected_number_all_box.val(expected_number_box.val() ? parseFloat(expected_number_box.val()) * parseFloat(no_of_months_box.val()) : 0)
 })
 
 class DistributionPlanHandle {
@@ -344,12 +360,16 @@ function LoadDetailDP(option) {
                 loadSupplier(data?.['supplier_list'])
                 start_date_box.val(moment(data?.['start_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                 no_of_months_box.val(data?.['no_of_month'])
+                no_month_box.text(data?.['no_of_month'])
                 loadFixedCostsTable(data?.['fixed_cost_list'], option)
                 loadVariableCostsTable(data?.['variable_cost_list'], option)
                 product_price_box.attr('value', data?.['product_price'])
                 break_event_point_box.val(data?.['break_event_point'])
+                break_event_point_all_box.val(data?.['break_event_point'] * data?.['no_of_month'])
                 expected_number_box.val(data?.['expected_number'])
+                expected_number_all_box.val(data?.['expected_number'] * data?.['no_of_month'])
                 net_income_box.attr('value', data?.['net_income'])
+                net_income_all_box.attr('value', data?.['net_income'] * data?.['no_of_month'])
                 rate_box.attr('value', data?.['rate'])
 
                 plan_des_box.val(data?.['plan_description'])

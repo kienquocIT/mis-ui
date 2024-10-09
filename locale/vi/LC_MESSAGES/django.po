@@ -123,7 +123,7 @@ msgstr "Đăng ký"
 
 
 #: .\apps\core\account\templates\core\account\user_create.html:115
-msgid "Username to login "
+msgid "Username to login"
 msgstr "Tên tài khoản để đăng nhập"
 
 #: .\apps\core\account\templates\core\account\user_create.html:122
@@ -227,11 +227,11 @@ msgid "Change Company"
 msgstr "Thay đổi công ty"
 
 #
-msgid "Hasn't link to the employee!"
+msgid "Hasn't been link to the employee!"
 msgstr "Tài khoản người dùng chưa có liên kết nhân viên"
 
 #
-msgid "Some apps will be working wrong"
+msgid "Some apps will not work correctly"
 msgstr "Một số ứng dụng sẽ không hoạt động"
 
 msgid "Please switch the current company to the one that already has an employee link or contact the administrator to add an employee to the account."
@@ -323,7 +323,7 @@ msgid "Use a strong password with at least 6 characters, including a mix of lowe
 msgstr "Sử dụng mật khẩu mạnh có ít nhất 6 ký tự, bao gồm kết hợp chữ thường, chữ hoa, số và ký hiệu."
 
 #: .\apps\core\auths\templates\auths\login.html:139
-msgid "Creat new account to MIS"
+msgid "Creat new account in MIS"
 msgstr "Tạo mới tài khoản trên MIS"
 
 #
@@ -1888,7 +1888,7 @@ msgid "After is required!"
 msgstr "Trường \"Sau khi\" là bắt buộc"
 
 #
-msgid "Percent do not math with before setup"
+msgid "The percentage is not calculated before setup"
 msgstr "Phần trăm không được tính toán trước khi thiết lập"
 
 #
@@ -2944,7 +2944,7 @@ msgid "contains"
 msgstr "chứa"
 
 #
-msgid "does not contains"
+msgid "does not contain"
 msgstr "không chứa"
 
 #
@@ -5189,7 +5189,7 @@ msgstr "Làm lại"
 
 #
 msgid "Import"
-msgstr "Đưa vào"
+msgstr "Nhập vào"
 
 #
 msgid "Import Data"
@@ -7162,7 +7162,7 @@ msgstr "Xuất hàng"
 
 #
 msgid "Goods transfer"
-msgstr "Điều chuyển hàng hoá"
+msgstr "Điều chuyển hàng"
 
 #
 msgid "Inventory adjustment create"
@@ -7189,8 +7189,8 @@ msgid "Select inventory adjustment"
 msgstr "Chọn phiếu kiểm kê kho"
 
 #
-msgid "Input later"
-msgstr "Nhập sau"
+msgid "Input data later"
+msgstr "Nhập liệu sau"
 
 #
 msgid "Vendor serial no."
@@ -7250,7 +7250,7 @@ msgstr "Đợi nhập"
 
 #
 msgid "PR code"
-msgstr "Mã PR"
+msgstr "Mã YCMH"
 
 #
 msgid "Merge same product in 1 line, convert to reference unit if there is more 1 UOM"
@@ -7482,7 +7482,7 @@ msgstr "Các loại chi phí"
 
 #
 msgid "Internal Labor Items"
-msgstr "Các loại chi phí nhân công"
+msgstr "Chi phí nhân công nội bộ"
 
 #
 msgid "Invoice form config"
@@ -8806,11 +8806,11 @@ msgstr "Hãy cân nhắc cẩn thận khi xóa số dư đã khởi tạo. Hệ 
 
 #
 msgid "After the stock activities have occurred, the Inventory Reports will be run in the order of the configured accounting periods. Make sure that the Opening Balance is created before these activities take place to avoid reporting errors."
-msgstr "Sau khi các hoạt động nhập-xuất kho được diễn ra, các Báo Cáo Kho sẽ được chạy theo thứ tự của kì kế toán được cấu hình. Đảm bảo rằng, số dư đầu kì này được khởi tạo trước khi các hoạt động nhập-xuất kho diễn ra để tránh sai sót số liệu trong báo cáo."
+msgstr "Sau khi các hoạt động nhập-xuất kho diễn ra, các Báo Cáo Kho sẽ chạy theo thứ tự của kì kế toán được cấu hình. Đảm bảo rằng SDDK này được khởi tạo trước khi các hoạt động nhập-xuất kho diễn ra để tránh sai sót số liệu báo cáo."
 
 #
 msgid "The initial balance will be inserted from the month of starting to use the software."
-msgstr "Số dư đầu kì sẽ được chèn bắt đầu từ tháng sử dụng phần mềm đã cài đặt."
+msgstr "SDDK sẽ được chèn bắt đầu từ tháng sử dụng phần mềm đã cài đặt."
 
 #
 msgid "If the data changes after the time of starting to use the software (not recommended). Re-run all reports from that month to now to update them correctly."
@@ -8870,6 +8870,255 @@ msgstr "Nhập hàng cho"
 
 #
 msgid "Report for"
+msgstr "Báo cáo cho"
+
+#
+msgid "For production order"
+msgstr "Cho lệnh sản xuất"
+
+#
+msgid "For work order"
+msgstr "Cho yêu cầu sản xuất"
+
+#
+msgid "Finished quantity is required"
+msgstr "Số lượng hoàn thành là bắt buộc"
+
+#
+msgid "General production"
+msgstr "Sản xuất chung"
+
+#
+msgid "Production for orders"
+msgstr "Sản xuất cho đơn hàng"
+
+#
+msgid "Select production report"
+msgstr "Chọn báo cáo sản xuất"
+
+#
+msgid "Goods receipt to warehouse"
+msgstr "Nhập hàng vào kho"
+
+#
+msgid "month"
+msgstr "tháng"
+
+#
+msgid "months"
+msgstr "tháng"
+
+#
+msgid "Only select Finished goods"
+msgstr "Chỉ chọn Thành phẩm"
+
+#
+msgid "Only select Services"
+msgstr "Chỉ chọn Dịch vụ"
+
+#
+msgid "Select Finished goods or Services"
+msgstr "Chọn Thành phẩm hoặc Dịch vụ"
+
+#
+msgid "One collaborator"
+msgstr "Một cộng tác viên"
+
+#
+msgid "Many collaborators"
+msgstr "Nhiều cộng tác viên"
+
+#
+msgid "Config according to"
+msgstr "Cấu hình theo"
+
+#
+msgid "Ordered before"
+msgstr "Đã đặt"
+
+#
+msgid "Assembly"
+msgstr "Lắp ráp"
+
+#
+msgid "Disassembly"
+msgstr "Tháo rời"
+
+#
+msgid "Select Finished goods or Goods"
+msgstr "Chọn Thành phẩm hoặc Hàng hóa"
+
+#
+msgid "Standard cost"
+msgstr "Giá tiêu chuẩn"
+
+#
+msgid "References in the BOM"
+msgstr "Để tham chiếu trong BOM"
+
+#
+msgid "The product is in the design stage for another project"
+msgstr "Sản phẩm đang trong giai đoạn thiết kế cho dự án khác"
+
+#
+msgid "The quantity must be greater than 0"
+msgstr "Số lượng phải lớn hơn 0"
+
+#
+msgid "Start with"
+msgstr "Bắt đầu với"
+
+#
+msgid "Exceed quantity"
+msgstr "Vượt quá số lượng"
+
+#
+msgid "At this node"
+msgstr "Khi đến trạm này"
+
+#
+msgid "Only one collaborator (select in list below) will action, approve the document"
+msgstr "Chỉ một cộng tác viên (chọn trong danh sách dưới đây) sẽ thao tác, phê duyệt phiếu"
+
+#
+msgid "All collaborators (according to configuration below) will action, approve the document"
+msgstr "Tất cả cộng tác viên (theo cấu hình dưới đây) sẽ cùng thao tác, phê duyệt phiếu"
+
+#
+msgid "The product is only used for project sale"
+msgstr "Sản phẩm chỉ dùng cho bán hàng dự án"
+
+#
+msgid "Only one collaborator can be configured at this node because the next node needs to select a collaborator"
+msgstr "Chỉ được cấu hình một cộng tác viên tại trạm này vì trạm tiếp theo cần chọn cộng tác viên"
+
+#
+msgid "Close/ open production order"
+msgstr "Đóng/ mở lệnh sản xuất"
+
+#
+msgid "Close/ open work order"
+msgstr "Đóng/ mở yêu cầu sản xuất"
+
+#
+msgid "Status close/ open"
+msgstr "Trạng thái đóng/ mở"
+
+#
+msgid "Open"
+msgstr "Mở"
+
+#
+msgid "Issue this time"
+msgstr "Xuất lần này"
+
+#
+msgid "WH Code"
+msgstr "Mã kho"
+
+#
+msgid "WH Name"
+msgstr "Tên kho"
+
+#
+msgid "lower letters, numbers, underscores or hyphens"
+msgstr "chữ cái viết thường, số, dấu gạch dưới hoặc dấu gạch nối"
+
+#
+msgid "SALE ORDER"
+msgstr "ĐƠN HÀNG"
+
+#
+msgid "Import datatable from excel"
+msgstr "Nhập bảng từ excel"
+
+#
+msgid "Make sure that the tables in your Excel file have the same COLUMN ORDER as the feature you are importing."
+msgstr "Đảm bảo rằng bảng trong file Excel của bạn có THỨ TỰ CỘT giống như chức năng cần nhập."
+
+#
+msgid "From row"
+msgstr "Từ hàng"
+
+#
+msgid "To row"
+msgstr "Đến hàng"
+
+#
+msgid "The first column is the index column, the last column gives us the import status."
+msgstr "Cột đầu tiên là cột thứ tự, cột cuối cùng là trạng thái nhập dữ liệu."
+
+#
+msgid "The title of the table in the Excel file is not necessarily the same as the title of the table in the feature."
+msgstr "Tiêu đề của bảng trong file Excel không nhất thiết phải giống với tiêu đề của bảng trong chức năng."
+
+#
+msgid "Production BOM"
+msgstr "BOM sản xuất"
+
+#
+msgid "Project BOM"
+msgstr "BOM dự án"
+
+#
+msgid "Project BOM create"
+msgstr "Tạo BOM dự án"
+
+#
+msgid "Project BOM list"
+msgstr "Danh sách BOM dự án"
+
+#
+msgid "Production BOM create"
+msgstr "Tạo BOM sản xuất"
+
+#
+msgid "Production BOM list"
+msgstr "Danh sách BOM sản xuất"
+
+#
+msgid "The product does not have project BOM"
+msgstr "Sản phẩm không có định mức nguyên vật liệu dự án"
+
+#
+msgid "According to product's inventory UOM"
+msgstr "Theo đơn vị lưu kho của sản phẩm"
+
+#
+msgid "Import status"
+msgstr "Trạng thái nhập"
+
+#
+msgid "Select datatable"
+msgstr "Chọn bảng dữ liệu"
+
+#
+msgid "Import Done!"
+msgstr "Nhập liệu hoàn tất!"
+
+#
+msgid "Reload this page to see the update."
+msgstr "Tải lại trang để xem cập nhập."
+
+#
+msgid "Can not import some rows"
+msgstr "Không thể nhập liệu một số dòng"
+
+#
+msgid "Balance init datatable"
+msgstr "Bảng dữ liệu Số dư đầu kì"
+
+#
+msgid "Node association"
+msgstr "Liên kết trạm"
+
+#
+msgid "Self input"
+msgstr "Tự nhập"
+
+#
+msgid "Undelivered"
+msgstr "Chưa giao"
 msgstr "Báo cáo cho"
 
 #

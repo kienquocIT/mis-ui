@@ -13,6 +13,10 @@ $(function () {
             WorkOrderLoadDataHandle.loadSaveProduct();
         });
 
+        WorkOrderLoadDataHandle.$manualDone.on('click', function () {
+            WorkOrderLoadDataHandle.loadClickManualDone();
+        });
+
         WorkOrderDataTableHandle.$tableMain.on('change', '.table-row-item', function () {
             let row = this.closest('tr');
             WorkOrderLoadDataHandle.loadChangeProduct(row);
@@ -55,7 +59,10 @@ $(function () {
         formSubmit.submit(function (e) {
             e.preventDefault();
             let _form = new SetupFormSubmit(formSubmit);
-            WorkOrderSubmitHandle.setupDataSubmit(_form);
+            let result = WorkOrderSubmitHandle.setupDataSubmit(_form);
+            if (result === false) {
+                return false;
+            }
             let submitFields = [
                 'title',
                 'bom_id',

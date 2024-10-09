@@ -34,6 +34,9 @@ class GISLoadPage {
         })
     }
     static LoadIA(data) {
+        if (data) {
+            IAEle.prop('disabled', true)
+        }
         IAEle.initSelect2({
             data: data,
             ajax: {
@@ -72,44 +75,111 @@ class GISLoadPage {
             }
         })
     }
-    static LoadPO(data) {
-        POEle.initSelect2({
-            data: data,
-            ajax: {
-                data: {'system_status': 3},
-                url: POEle.attr('data-url'),
-                method: 'GET',
+    static LoadPOWO(data) {
+        if (data) {
+            POEle.prop('disabled', true)
+        }
+        let po_dataParam = {'system_status': 3}
+        let po_list_ajax = $.fn.callAjax2({
+            url: POEle.attr('data-url-po'),
+            data: po_dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('production_order_list')) {
+                    return data?.['production_order_list'];
+                }
+                return {};
             },
-            keyResp: 'production_order_list',
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            if (POEle.val()) {
-                let dataParam = {}
-                let po_list_ajax = $.fn.callAjax2({
-                    url: `${script_url.attr('data-url-po').replace('/0', `/${POEle.val()}`)}`,
-                    data: dataParam,
-                    method: 'GET'
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && typeof data === 'object' && data.hasOwnProperty('production_order_detail')) {
-                            return data?.['production_order_detail'];
-                        }
-                        return {};
-                    },
-                    (errs) => {
-                        console.log(errs);
-                    }
-                )
-
-                Promise.all([po_list_ajax]).then(
-                    (results) => {
-                        console.log(results[0]?.['task_data'])
-                        return results[0] ? GISLoadTab.DrawTablePOItems(results[0]?.['task_data']) : GISLoadTab.DrawTablePOItems([])
-                    })
+            (errs) => {
+                console.log(errs);
             }
-        })
+        )
+
+        let wo_dataParam = {'system_status': 3}
+        let wo_list_ajax = $.fn.callAjax2({
+            url: POEle.attr('data-url-wo'),
+            data: wo_dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('work_order_list')) {
+                    return data?.['work_order_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([po_list_ajax, wo_list_ajax]).then(
+            (results) => {
+                POEle.initSelect2({
+                    data: data ? data : results[0].concat(results[1]),
+                    templateResult: function (state) {
+                        let type_html = `<span class="badge badge-soft-primary">${state?.['data']?.['app'] ? state?.['data']?.['app'] : "--"}</span>`
+                        return $(`${type_html} <span>${state?.['data']?.['title']}</span>`);
+                    },
+                    keyResp: 'production_order_list',
+                    keyId: 'id',
+                    keyText: 'title',
+                }).on('change', function () {
+                    if (POEle.val()) {
+                        let selected = SelectDDControl.get_data_from_idx(POEle, POEle.val())
+                        if (selected?.['type'] === 0) {
+                            let dataParam = {}
+                            let po_detail_ajax = $.fn.callAjax2({
+                                url: `${script_url.attr('data-url-po').replace('/0', `/${POEle.val()}`)}`,
+                                data: dataParam,
+                                method: 'GET'
+                            }).then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    if (data && typeof data === 'object' && data.hasOwnProperty('production_order_detail')) {
+                                        return data?.['production_order_detail'];
+                                    }
+                                    return {};
+                                },
+                                (errs) => {
+                                    console.log(errs);
+                                }
+                            )
+
+                            Promise.all([po_detail_ajax]).then(
+                                (results) => {
+                                    return results[0] ? GISLoadTab.DrawTablePOItems(results[0]?.['task_data']) : GISLoadTab.DrawTablePOItems([])
+                                })
+                        } else {
+                            let dataParam = {}
+                            let wo_detail_ajax = $.fn.callAjax2({
+                                url: `${script_url.attr('data-url-wo').replace('/0', `/${POEle.val()}`)}`,
+                                data: dataParam,
+                                method: 'GET'
+                            }).then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    if (data && typeof data === 'object' && data.hasOwnProperty('work_order_detail')) {
+                                        return data?.['work_order_detail'];
+                                    }
+                                    return {};
+                                },
+                                (errs) => {
+                                    console.log(errs);
+                                }
+                            )
+
+                            Promise.all([wo_detail_ajax]).then(
+                                (results) => {
+                                    console.log(results[0])
+                                    return results[0] ? GISLoadTab.DrawTablePOItems(results[0]?.['task_data']) : GISLoadTab.DrawTablePOItems([])
+                                })
+                        }
+                    }
+                })
+            })
     }
 }
 
@@ -200,7 +270,7 @@ class GISLoadTab {
             ],
         })
     }
-    static DrawTablePOItems(data_list=[]) {
+    static DrawTablePOItems(data_list=[], option='create') {
         POItemTable.DataTable().clear().destroy()
         POItemTable.DataTableDefault({
             dom: 't',
@@ -228,7 +298,7 @@ class GISLoadTab {
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-blue">${row?.['warehouse_mapped']?.['code'] ? row?.['warehouse_mapped']?.['code'] : ''}</span> ${row?.['warehouse_mapped']?.['title'] ? row?.['warehouse_mapped']?.['title'] : ''}`;
+                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 selected-warehouse"></select>`;
                     }
                 },
                 {
@@ -286,6 +356,13 @@ class GISLoadTab {
                     }
                 },
             ],
+            initComplete: function () {
+                if (data_list.length > 0) {
+                    POItemTable.find('tbody tr').each(function (index) {
+                        GISAction.LoadWarehouse($(this).find('.selected-warehouse'), data_list[index]?.['warehouse_mapped'])
+                    })
+                }
+            }
         })
     }
     static DrawTableItemsLOT(data_list=[], selected_list=[]) {
@@ -426,12 +503,35 @@ class GISLoadTab {
 }
 
 class GISAction {
+    static LoadWarehouse(ele, data) {
+        ele.initSelect2({
+            data: data,
+            ajax: {
+                data: {},
+                url: script_url.attr('data-url-warehouse-list'),
+                method: 'GET',
+            },
+            keyResp: 'warehouse_list',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {
+            if (ele.val()) {
+                let warehouse_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
+                ele.closest('tr').find('.select-detail').attr('data-wh-id', warehouse_selected?.['id'])
+                ele.closest('tr').find('.select-detail').attr('data-wh-code', warehouse_selected?.['code'])
+                ele.closest('tr').find('.select-detail').attr('data-wh-title', warehouse_selected?.['title'])
+                ele.closest('tr').find('.selected-quantity').val(0)
+                ele.closest('tr').find('.lot-data-script').text('[]')
+                ele.closest('tr').find('.sn-data-script').text('[]')
+            }
+        })
+    }
     static DisabledDetailPage(option) {
         if (option === 'detail') {
             $('.form-control').prop('readonly', true);
             $('.form-select').prop('disabled', true);
             $('.select2').prop('disabled', true);
-            $('input').prop('disabled', true);
+            $('form input').prop('disabled', true);
         }
     }
 }
@@ -460,6 +560,7 @@ class GISHandle {
                         done_lot.remove()
                     }
 
+                    $('input[name="issue-type"]').prop('disabled', true)
                     $('#title').val(data?.['title'])
                     $('#date_created').val(moment(data?.['date_created'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $('#note').val(data?.['note'])
@@ -469,16 +570,37 @@ class GISHandle {
                         GISLoadPage.LoadIA(data?.['inventory_adjustment'])
                         $('#inventory-adjustment-select-space').prop('hidden', false)
                         GISLoadTab.DrawTableIAItems(data?.['detail_data_ia'])
+                        IAItemTableDiv.prop('hidden', false)
+                        POItemTableDiv.prop('hidden', true)
                     }
                     else if (data?.['goods_issue_type'] === 1) {
                     }
                     else if (data?.['goods_issue_type'] === 2) {
                         $('#for-production').prop('checked', true)
-                        GISLoadPage.LoadPO(data?.['production_order'])
-                        $('#inventory-adjustment-select-space').prop('hidden', true)
-                        $('#production-order-select-space').prop('hidden', false)
-                        GISLoadTab.DrawTableIAItems(data?.['detail_data_po'])
+                        if (Object.keys(data?.['production_order']).length > 0) {
+                            GISLoadPage.LoadPOWO(data?.['production_order'])
+                            $('#inventory-adjustment-select-space').prop('hidden', true)
+                            $('#production-order-select-space').prop('hidden', false)
+                            GISLoadTab.DrawTablePOItems(data?.['detail_data_po'])
+                            IAItemTableDiv.prop('hidden', true)
+                            POItemTableDiv.prop('hidden', false)
+                        }
+                        else {
+                            GISLoadPage.LoadPOWO(data?.['work_order'])
+                            $('#inventory-adjustment-select-space').prop('hidden', true)
+                            $('#production-order-select-space').prop('hidden', false)
+                            GISLoadTab.DrawTablePOItems(data?.['detail_data_wo'], option)
+                            IAItemTableDiv.prop('hidden', true)
+                            POItemTableDiv.prop('hidden', false)
+                        }
                     }
+
+                    new $x.cls.file($('#attachment')).init({
+                        enable_download: option === 'detail',
+                        enable_edit: option !== 'detail',
+                        data: data.attachment,
+                        name: 'attachment'
+                    })
 
                     GISAction.DisabledDetailPage(option);
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
@@ -491,6 +613,7 @@ class GISHandle {
         frm.dataForm['title'] = $('#title').val()
         let detail_data_ia = []
         let detail_data_po = []
+        let detail_data_wo = []
         if ($('#for-ia').prop('checked')) {
             frm.dataForm['goods_issue_type'] = 0
             frm.dataForm['inventory_adjustment_id'] = IAEle.val()
@@ -514,27 +637,50 @@ class GISHandle {
         }
         else if ($('#for-production').prop('checked')) {
             frm.dataForm['goods_issue_type'] = 2
-            frm.dataForm['production_order_id'] = POEle.val()
-            POItemTable.find('tbody tr').each(function () {
-                let row = $(this);
-                detail_data_po.push({
-                    'production_order_item_id': row.find('.select-detail').attr('data-item-id'),
-                    'product_id': row.find('.select-detail').attr('data-prd-id'),
-                    'warehouse_id': row.find('.select-detail').attr('data-wh-id'),
-                    'uom_id': row.find('.select-detail').attr('data-uom-id'),
-                    'before_quantity': row.find('.before-quantity').text(),
-                    'remain_quantity': row.find('.remain-quantity').text(),
-                    'issued_quantity': row.find('.selected-quantity').val(),
-                    'lot_data': row.find('.lot-data-script').text() ? JSON.parse(row.find('.lot-data-script').text()) : [],
-                    'sn_data': row.find('.sn-data-script').text() ? JSON.parse(row.find('.sn-data-script').text()) : []
+            let selected = SelectDDControl.get_data_from_idx(POEle, POEle.val())
+            if (selected?.['type'] === 0) {
+                frm.dataForm['production_order_id'] = POEle.val()
+                POItemTable.find('tbody tr').each(function () {
+                    let row = $(this);
+                    detail_data_po.push({
+                        'production_order_item_id': row.find('.select-detail').attr('data-item-id'),
+                        'product_id': row.find('.select-detail').attr('data-prd-id'),
+                        'warehouse_id': row.find('.select-detail').attr('data-wh-id'),
+                        'uom_id': row.find('.select-detail').attr('data-uom-id'),
+                        'before_quantity': row.find('.before-quantity').text(),
+                        'remain_quantity': 0,
+                        'issued_quantity': row.find('.selected-quantity').val(),
+                        'lot_data': row.find('.lot-data-script').text() ? JSON.parse(row.find('.lot-data-script').text()) : [],
+                        'sn_data': row.find('.sn-data-script').text() ? JSON.parse(row.find('.sn-data-script').text()) : []
+                    })
                 })
-            })
+            }
+            else {
+                frm.dataForm['work_order_id'] = POEle.val()
+                POItemTable.find('tbody tr').each(function () {
+                    let row = $(this);
+                    detail_data_wo.push({
+                        'work_order_item_id': row.find('.select-detail').attr('data-item-id'),
+                        'product_id': row.find('.select-detail').attr('data-prd-id'),
+                        'warehouse_id': row.find('.select-detail').attr('data-wh-id'),
+                        'uom_id': row.find('.select-detail').attr('data-uom-id'),
+                        'before_quantity': row.find('.before-quantity').text(),
+                        'remain_quantity': 0,
+                        'issued_quantity': row.find('.selected-quantity').val(),
+                        'lot_data': row.find('.lot-data-script').text() ? JSON.parse(row.find('.lot-data-script').text()) : [],
+                        'sn_data': row.find('.sn-data-script').text() ? JSON.parse(row.find('.sn-data-script').text()) : []
+                    })
+                })
+            }
         }
         frm.dataForm['note'] = $('#note').val()
         frm.dataForm['detail_data_ia'] = detail_data_ia;
         frm.dataForm['detail_data_po'] = detail_data_po;
+        frm.dataForm['detail_data_wo'] = detail_data_wo;
 
-        console.log(frm)
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
+
+        // console.log(frm)
         return frm
     }
 }
@@ -549,7 +695,7 @@ $('input[name="issue-type"]').on('change', function () {
         POItemTableDiv.prop('hidden', true)
     }
     else if ($('#for-production').prop('checked')) {
-        GISLoadPage.LoadPO()
+        GISLoadPage.LoadPOWO()
         GISLoadTab.DrawTablePOItems()
         $('#inventory-adjustment-select-space').prop('hidden', true)
         $('#production-order-select-space').prop('hidden', false)
@@ -559,75 +705,22 @@ $('input[name="issue-type"]').on('change', function () {
 })
 
 $(document).on("click", '.select-detail', function () {
-    DetailBtn = $(this)
-    if ($(this).attr('data-prd-type') === '0') {
-        let dataParam = {
-            'product_id': $(this).attr('data-prd-id'),
-            'warehouse_id': $(this).attr('data-wh-id')
-        }
-        let prd_wh = $.fn.callAjax2({
-            url: NONETable.attr('data-url-prd-wh'),
-            data: dataParam,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('warehouse_products_list')) {
-                    return data?.['warehouse_products_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
+    if ($(this).attr('data-prd-id') !== 'undefined' && $(this).attr('data-wh-id') !== 'undefined') {
+        DetailBtn = $(this)
+        if ($(this).attr('data-prd-type') === '0') {
+            let dataParam = {
+                'product_id': $(this).attr('data-prd-id'),
+                'warehouse_id': $(this).attr('data-wh-id')
             }
-        )
-
-        Promise.all([prd_wh]).then(
-            (results) => {
-                LOTTable.DataTable().clear().destroy()
-                SNTable.DataTable().clear().destroy()
-                NONETable.prop('hidden', false)
-                SNTable.prop('hidden', true)
-                SNTableNotify.prop('hidden', true)
-                LOTTable.prop('hidden', true)
-                done_none.prop('hidden', false)
-                done_sn.prop('hidden', true)
-                done_lot.prop('hidden', true)
-                $('#stock-quantity').val(results[0].length ? results[0][0]?.['stock_amount'] : 0)
-                $('#issue-quantity').val($(this).closest('tr').find('.selected-quantity').val())
-            })
-    }
-    else if ($(this).attr('data-prd-type') === '1') {
-        let flag = true
-        let dataParam = {}
-        if (IS_DONE_GIS) {
-            let detail_string_list = $(this).closest('td').find('.lot-data-script').text() ? JSON.parse($(this).closest('td').find('.lot-data-script').text()) : []
-            if (detail_string_list.length === 0) {
-                flag = false
-            }
-            else {
-                let detail_string_list_id = []
-                for (let i = 0; i < detail_string_list.length; i++) {
-                    detail_string_list_id.push(detail_string_list[i]?.['lot_id'])
-                }
-                dataParam['detail_list'] = JSON.stringify(detail_string_list_id).slice(1, -1).replaceAll('"', '')
-            }
-        }
-        else {
-            dataParam['product_warehouse__product_id'] = $(this).attr('data-prd-id')
-            dataParam['product_warehouse__warehouse_id'] = $(this).attr('data-wh-id')
-        }
-
-        if (flag) {
-            let prd_wh_lot = $.fn.callAjax2({
-                url: LOTTable.attr('data-lot-url'),
+            let prd_wh = $.fn.callAjax2({
+                url: NONETable.attr('data-url-prd-wh'),
                 data: dataParam,
                 method: 'GET'
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('warehouse_lot_list')) {
-                        return data?.['warehouse_lot_list'];
+                    if (data && typeof data === 'object' && data.hasOwnProperty('warehouse_products_list')) {
+                        return data?.['warehouse_products_list'];
                     }
                     return {};
                 },
@@ -636,114 +729,179 @@ $(document).on("click", '.select-detail', function () {
                 }
             )
 
-            Promise.all([prd_wh_lot]).then(
+            Promise.all([prd_wh]).then(
                 (results) => {
-                    NONETable.prop('hidden', true)
+                    LOTTable.DataTable().clear().destroy()
+                    SNTable.DataTable().clear().destroy()
+                    NONETable.prop('hidden', false)
                     SNTable.prop('hidden', true)
                     SNTableNotify.prop('hidden', true)
-                    LOTTable.prop('hidden', false)
-                    done_none.prop('hidden', true)
+                    LOTTable.prop('hidden', true)
+                    done_none.prop('hidden', false)
                     done_sn.prop('hidden', true)
-                    done_lot.prop('hidden', false)
-                    $('#amount-balance-lot').text(DetailBtn.closest('tr').find('.remain-quantity').text() + ' ' + $(this).attr('data-uom-title')).attr('data-value', $(this).attr('data-remain-quantity'))
-                    SNTable.DataTable().clear().destroy()
-                    let filter_lot = []
-                    for (let i = 0; i < results[0].length; i++) {
-                        if (results[0][i]?.['quantity_import'] > 0) {
-                            filter_lot.push(results[0][i])
-                        }
-                    }
-                    let selected_list = DetailBtn.closest('tr').find('.lot-data-script').text() ? JSON.parse(DetailBtn.closest('tr').find('.lot-data-script').text()) : []
-                    GISLoadTab.DrawTableItemsLOT(filter_lot, selected_list)
+                    done_lot.prop('hidden', true)
+                    $('#stock-quantity').val(results[0].length ? results[0][0]?.['stock_amount'] : 0)
+                    $('#issue-quantity').val($(this).closest('tr').find('.selected-quantity').val())
                 })
+        }
+        else if ($(this).attr('data-prd-type') === '1') {
+            let flag = true
+            let dataParam = {}
+            if (IS_DONE_GIS) {
+                let detail_string_list = $(this).closest('td').find('.lot-data-script').text() ? JSON.parse($(this).closest('td').find('.lot-data-script').text()) : []
+                if (detail_string_list.length === 0) {
+                    flag = false
+                } else {
+                    let detail_string_list_id = []
+                    for (let i = 0; i < detail_string_list.length; i++) {
+                        detail_string_list_id.push(detail_string_list[i]?.['lot_id'])
+                    }
+                    dataParam['detail_list'] = JSON.stringify(detail_string_list_id).slice(1, -1).replaceAll('"', '')
+                }
+            } else {
+                dataParam['product_warehouse__product_id'] = $(this).attr('data-prd-id')
+                dataParam['product_warehouse__warehouse_id'] = $(this).attr('data-wh-id')
+            }
+
+            if (flag) {
+                let prd_wh_lot = $.fn.callAjax2({
+                    url: LOTTable.attr('data-lot-url'),
+                    data: dataParam,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('warehouse_lot_list')) {
+                            return data?.['warehouse_lot_list'];
+                        }
+                        return {};
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+
+                Promise.all([prd_wh_lot]).then(
+                    (results) => {
+                        NONETable.prop('hidden', true)
+                        SNTable.prop('hidden', true)
+                        SNTableNotify.prop('hidden', true)
+                        LOTTable.prop('hidden', false)
+                        done_none.prop('hidden', true)
+                        done_sn.prop('hidden', true)
+                        done_lot.prop('hidden', false)
+                        $('#amount-balance-lot').text(DetailBtn.closest('tr').find('.remain-quantity').text() + ' ' + $(this).attr('data-uom-title')).attr('data-value', $(this).attr('data-remain-quantity'))
+                        SNTable.DataTable().clear().destroy()
+                        let filter_lot = []
+                        for (let i = 0; i < results[0].length; i++) {
+                            if (results[0][i]?.['quantity_import'] > 0) {
+                                filter_lot.push(results[0][i])
+                            }
+                        }
+                        let selected_list = DetailBtn.closest('tr').find('.lot-data-script').text() ? JSON.parse(DetailBtn.closest('tr').find('.lot-data-script').text()) : []
+                        GISLoadTab.DrawTableItemsLOT(filter_lot, selected_list)
+                    })
+            }
+        }
+        else if ($(this).attr('data-prd-type') === '2') {
+            let flag = true
+            let dataParam = {}
+            if (IS_DONE_GIS) {
+                let detail_string_list = $(this).closest('td').find('.sn-data-script').text() ? JSON.parse($(this).closest('td').find('.sn-data-script').text()) : []
+                if (detail_string_list.length === 0) {
+                    flag = false
+                }
+                dataParam['detail_list'] = JSON.stringify(detail_string_list).slice(1, -1).replaceAll('"', '')
+            } else {
+                dataParam['product_warehouse__product_id'] = $(this).attr('data-prd-id')
+                dataParam['product_warehouse__warehouse_id'] = $(this).attr('data-wh-id')
+                dataParam['is_delete'] = false
+            }
+
+            if (flag) {
+                let prd_wh_serial = $.fn.callAjax2({
+                    url: SNTable.attr('data-sn-url'),
+                    data: dataParam,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('warehouse_serial_list')) {
+                            return data?.['warehouse_serial_list'];
+                        }
+                        return {};
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+
+                Promise.all([prd_wh_serial]).then(
+                    (results) => {
+                        NONETable.prop('hidden', true)
+                        SNTable.prop('hidden', false)
+                        SNTableNotify.prop('hidden', false)
+                        LOTTable.prop('hidden', true)
+                        done_none.prop('hidden', true)
+                        done_sn.prop('hidden', false)
+                        done_lot.prop('hidden', true)
+                        $('#amount-balance-sn').text(DetailBtn.closest('tr').find('.remain-quantity').text() + ' ' + $(this).attr('data-uom-title')).attr('data-value', $(this).attr('data-remain-quantity'))
+                        LOTTable.DataTable().clear().destroy()
+                        let selected_list = DetailBtn.closest('tr').find('.sn-data-script').text() ? JSON.parse(DetailBtn.closest('tr').find('.sn-data-script').text()) : []
+                        GISLoadTab.DrawTableItemsSN(results[0], selected_list)
+                    })
+            }
         }
     }
-    else if ($(this).attr('data-prd-type') === '2') {
-        let flag = true
-        let dataParam = {}
-        if (IS_DONE_GIS) {
-            let detail_string_list = $(this).closest('td').find('.sn-data-script').text() ? JSON.parse($(this).closest('td').find('.sn-data-script').text()) : []
-            if (detail_string_list.length === 0) {
-                flag = false
-            }
-            dataParam['detail_list'] = JSON.stringify(detail_string_list).slice(1, -1).replaceAll('"', '')
+    else {
+        if ($(this).attr('data-prd-id') === 'undefined') {
+            $.fn.notifyB({description: "Product is required."}, 'warning')
         }
-        else {
-            dataParam['product_warehouse__product_id'] = $(this).attr('data-prd-id')
-            dataParam['product_warehouse__warehouse_id'] = $(this).attr('data-wh-id')
-            dataParam['is_delete'] = false
-        }
-
-        if (flag) {
-            let prd_wh_serial = $.fn.callAjax2({
-                url: SNTable.attr('data-sn-url'),
-                data: dataParam,
-                method: 'GET'
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('warehouse_serial_list')) {
-                        return data?.['warehouse_serial_list'];
-                    }
-                    return {};
-                },
-                (errs) => {
-                    console.log(errs);
-                }
-            )
-
-            Promise.all([prd_wh_serial]).then(
-                (results) => {
-                    NONETable.prop('hidden', true)
-                    SNTable.prop('hidden', false)
-                    SNTableNotify.prop('hidden', false)
-                    LOTTable.prop('hidden', true)
-                    done_none.prop('hidden', true)
-                    done_sn.prop('hidden', false)
-                    done_lot.prop('hidden', true)
-                    $('#amount-balance-sn').text(DetailBtn.closest('tr').find('.remain-quantity').text() + ' ' + $(this).attr('data-uom-title')).attr('data-value', $(this).attr('data-remain-quantity'))
-                    LOTTable.DataTable().clear().destroy()
-                    let selected_list = DetailBtn.closest('tr').find('.sn-data-script').text() ? JSON.parse(DetailBtn.closest('tr').find('.sn-data-script').text()) : []
-                    GISLoadTab.DrawTableItemsSN(results[0], selected_list)
-                })
+        if ($(this).attr('data-wh-id') === 'undefined') {
+            $.fn.notifyB({description: "Warehouse is required."}, 'warning')
         }
     }
 })
 
 $('#issue-quantity').on('change', function () {
-    const limit = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
-    let selected = parseFloat($(this).val())
-    if (selected > limit) {
-        $.fn.notifyB({description: "Issue quantity is invalid."}, 'warning')
-        $(this).val(0)
+    if (!$('#for-production').prop('checked')) {
+        const limit = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
+        let selected = parseFloat($(this).val())
+        if (selected > limit) {
+            $.fn.notifyB({description: "Issue quantity is invalid."}, 'warning')
+            $(this).val(0)
+        }
     }
 })
 
 $(document).on("change", '.sn-checkbox', function () {
-    const limit = parseFloat($('#amount-balance-sn').attr('data-value'))
-    let selected = $('.sn-checkbox:checked').length
-    $('#amount-selected-sn').text(selected)
-    if (selected >= limit) {
-        $('.sn-checkbox').prop('disabled', true)
-        $('.sn-checkbox:checked').prop('disabled', IS_DETAIL_PAGE)
-    }
-    else {
-        $('.sn-checkbox').prop('disabled', IS_DETAIL_PAGE)
+    if (!$('#for-production').prop('checked')) {
+        const limit = parseFloat($('#amount-balance-sn').attr('data-value'))
+        let selected = $('.sn-checkbox:checked').length
+        $('#amount-selected-sn').text(selected)
+        if (selected >= limit) {
+            $('.sn-checkbox').prop('disabled', true)
+            $('.sn-checkbox:checked').prop('disabled', IS_DETAIL_PAGE)
+        } else {
+            $('.sn-checkbox').prop('disabled', IS_DETAIL_PAGE)
+        }
     }
 })
 
 $(document).on("change", '.lot-input', function () {
-    let old_value = parseInt($(this).val())
-    const limit = parseFloat($('#amount-balance-lot').attr('data-value'))
-    let selected = 0
-    $('.lot-input').each(function () {
-        selected += $(this).val() ? parseFloat($(this).val()) : 0
-    })
-    $('#amount-selected-lot').text(selected)
-    if (selected > limit) {
-        $.fn.notifyB({description: "Issue quantity is invalid."}, 'warning')
-        $(this).val(0)
-        $('#amount-selected-lot').text(selected - old_value)
+    if (!$('#for-production').prop('checked')) {
+        let old_value = parseInt($(this).val())
+        const limit = parseFloat($('#amount-balance-lot').attr('data-value'))
+        let selected = 0
+        $('.lot-input').each(function () {
+            selected += $(this).val() ? parseFloat($(this).val()) : 0
+        })
+        $('#amount-selected-lot').text(selected)
+        if (selected > limit) {
+            $.fn.notifyB({description: "Issue quantity is invalid."}, 'warning')
+            $(this).val(0)
+            $('#amount-selected-lot').text(selected - old_value)
+        }
     }
 })
 
@@ -751,19 +909,37 @@ done_none.on('click', function () {
     let issue_quantity = parseFloat($('#issue-quantity').val())
     let stock_quantity = parseFloat($('#stock-quantity').val())
     let limit_quantity = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
-    if (issue_quantity <= stock_quantity && issue_quantity <= limit_quantity) {
-        DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
-        detail_modal.modal('hide')
+    if (!$('#for-production').prop('checked')) {
+        if (issue_quantity <= stock_quantity && issue_quantity <= limit_quantity) {
+            DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
+            detail_modal.modal('hide')
+        } else {
+            $.fn.notifyB({description: 'Issue quantity value is not valid.'}, 'failure')
+        }
     }
     else {
-        $.fn.notifyB({description: 'Issue quantity value is not valid.'}, 'failure')
+        DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
+        detail_modal.modal('hide')
     }
 })
 
 done_sn.on('click', function () {
     let issue_quantity = $('.sn-checkbox:checked').length
     let remain_quantity = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
-    if (issue_quantity <= remain_quantity) {
+    if (!$('#for-production').prop('checked')) {
+        if (issue_quantity <= remain_quantity) {
+            DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
+            let sn_data = []
+            $('.sn-checkbox:checked').each(function () {
+                sn_data.push($(this).attr('data-sn-id'))
+            })
+            DetailBtn.closest('tr').find('.sn-data-script').text(JSON.stringify(sn_data))
+            detail_modal.modal('hide')
+        } else {
+            $.fn.notifyB({description: 'Issue quantity value is not valid.'}, 'failure')
+        }
+    }
+    else {
         DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
         let sn_data = []
         $('.sn-checkbox:checked').each(function () {
@@ -771,9 +947,6 @@ done_sn.on('click', function () {
         })
         DetailBtn.closest('tr').find('.sn-data-script').text(JSON.stringify(sn_data))
         detail_modal.modal('hide')
-    }
-    else {
-        $.fn.notifyB({description: 'Issue quantity value is not valid.'}, 'failure')
     }
 })
 
@@ -783,7 +956,29 @@ done_lot.on('click', function () {
         issue_quantity += $(this).val() ? parseFloat($(this).val()) : 0
     })
     let remain_quantity = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
-    if (issue_quantity <= remain_quantity) {
+    if (!$('#for-production').prop('checked')) {
+        if (issue_quantity <= remain_quantity) {
+            DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
+            let lot_data = []
+            $('.lot-input').each(function () {
+                let quantity = $(this).val() ? parseFloat($(this).val()) : 0
+                let old_quantity = $(this).closest('tr').find('.limit-quantity').text() ? parseFloat($(this).closest('tr').find('.limit-quantity').text()) : 0
+                if (quantity > 0) {
+                    lot_data.push({
+                        'lot_id': $(this).attr('data-lot-id'),
+                        'old_quantity': old_quantity,
+                        'quantity': quantity
+                    })
+                }
+            })
+            DetailBtn.closest('tr').find('.lot-data-script').text(JSON.stringify(lot_data))
+            detail_modal.modal('hide')
+        }
+        else {
+            $.fn.notifyB({description: 'Issue quantity value is not valid.'}, 'failure')
+        }
+    }
+    else {
         DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
         let lot_data = []
         $('.lot-input').each(function () {
@@ -799,8 +994,5 @@ done_lot.on('click', function () {
         })
         DetailBtn.closest('tr').find('.lot-data-script').text(JSON.stringify(lot_data))
         detail_modal.modal('hide')
-    }
-    else {
-        $.fn.notifyB({description: 'Issue quantity value is not valid.'}, 'failure')
     }
 })

@@ -56,7 +56,7 @@
                                 <div class="input-group">
                                     <div class="input-affix-wrapper">
                                         <div class="input-prefix">
-                                            <i class="fas fa-file-import text-primary"></i>
+                                            <i class="fas fa-file-import text-dark"></i>
                                         </div>
                                         <select
                                             class="form-select"
@@ -75,31 +75,33 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="box-production-order">{% trans 'Production order' %}</label>
-                                <select
-                                    class="form-select"
-                                    id="box-production-order"
-                                    data-url="{% url "ProductionOrderDDListAPI" %}"
-                                    data-method="GET"
-                                    name="production_order_id"
-                                    data-keyResp="production_order_dd"
-                                    required
-                                    readonly
-                                ></select>
+                            <div class="custom-area" id="custom-area-0">
+                                <div class="form-group">
+                                    <label class="form-label required" for="box-production-order">{% trans 'Production order' %}</label>
+                                    <select
+                                        class="form-select"
+                                        id="box-production-order"
+                                        data-url="{% url "ProductionOrderDDListAPI" %}"
+                                        data-method="GET"
+                                        name="production_order"
+                                        data-keyResp="production_order_dd"
+                                        readonly
+                                    ></select>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label required" for="box-work-order">{% trans 'Work order' %}</label>
-                                <select
-                                    class="form-select"
-                                    id="box-work-order"
-                                    data-url="{% url "WorkOrderDDListAPI" %}"
-                                    data-method="GET"
-                                    name=work_order_id"
-                                    data-keyResp="work_order_dd"
-                                    readonly
-                                    hidden
-                                ></select>
+                            <div class="custom-area" id="custom-area-1" hidden>
+                                <div class="form-group">
+                                    <label class="form-label required" for="box-work-order">{% trans 'Work order' %}</label>
+                                    <select
+                                        class="form-select"
+                                        id="box-work-order"
+                                        data-url="{% url "WorkOrderDDListAPI" %}"
+                                        data-method="GET"
+                                        name=work_order"
+                                        data-keyResp="work_order_dd"
+                                        readonly
+                                    ></select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -126,7 +128,7 @@
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label class="form-label" for="warehouse">{% trans 'Warehouse' %}</label>
+                                <label class="form-label" for="warehouse">{% trans 'Goods receipt to warehouse' %}</label>
                                 <input type="text" class="form-control form-control-line mt-1" id="warehouse" data-detail="" readonly>
                             </div>
                         </div>
@@ -138,8 +140,8 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label class="form-label required" for="quantity-ng">{% trans 'Not good quantity' %}</label>
-                                <input type="text" class="form-control valid-number" id="quantity-ng" name="quantity_ng" value="0" required readonly>
+                                <label class="form-label" for="quantity-ng">{% trans 'Not good quantity' %}</label>
+                                <input type="text" class="form-control valid-number" id="quantity-ng" name="quantity_ng" value="0" readonly>
                             </div>
                         </div>
                     </div>
@@ -178,6 +180,11 @@
     <input
         type="text"
         id="app-trans-factory"
+        data-for-po="{% trans 'General production' %}"
+        data-for-wo="{% trans 'Production for orders' %}"
+        data-available="{% trans 'Available' %}"
+        data-exceed-quantity="{% trans 'Exceed quantity' %}"
+        data-validate-quantity="{% trans 'The quantity must be greater than 0' %}"
     >
     <input
         type="text"
@@ -185,6 +192,8 @@
         data-md-product="{% url 'ProductForSaleListAPI' %}"
         data-md-uom="{% url 'UnitOfMeasureListAPI' %}"
         data-md-pwh="{% url 'WarehouseGetProductsListAPI' %}"
+        data-goods-issue-product="{% url 'GoodsIssueProductListAPI' %}"
+        data-production-report-product="{% url 'ProductionReportProductListAPI' %}"
     >
     {{ data.employee_current|json_script:'employee_current' }}
 {% endblock %}

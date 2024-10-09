@@ -11,18 +11,82 @@
 {% block pageContent %}
     {% csrf_token %}
 
-    <div class="row">
-        <div class="col-12 col-md-3 col-lg-3">
-            <div class="mb-2"><b class="text-light">{% trans 'Revenue' %}</b></div>
-            <h5><span class="mask-money fw-bold text-primary" id="report-revenue-revenue" data-init-money="0"></span></h5>
+    <div class="card">
+        <div class="card-header card-header-action bg-grey-light-5 h-40p">
+            <span class="badge badge-secondary badge-outline badge-sm">
+                <span>
+                    <span class="icon"><span class="feather-icon"><i class="fas fa-filter"></i></span></span>
+                    {% trans 'Filter' %}
+                </span>
+            </span>
+            <div class="card-action-wrap">
+                <a class="btn btn-xs btn-icon btn-rounded btn-flush-dark flush-soft-hover"  data-bs-toggle="collapse" href="#collapse_1" aria-expanded="true"><span class="icon"><span class="feather-icon"><i data-feather="chevron-down"></i></span></span></a>
+            </div>
         </div>
-        <div class="col-12 col-md-3 col-lg-3">
-            <div class="mb-2"><b class="text-light">{% trans 'Gross profit' %}</b></div>
-            <h5><span class="mask-money fw-bold text-primary" id="report-revenue-gross-profit" data-init-money="0"></span></h5>
-        </div>
-        <div class="col-12 col-md-3 col-lg-3">
-            <div class="mb-2"><b class="text-light">{% trans 'Net income' %}</b></div>
-            <h5><span class="mask-money fw-bold text-primary" id="report-revenue-net-income" data-init-money="0"></span></h5>
+        <div id="collapse_1" class="collapse show">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label" for="box-report-revenue-group">{% trans 'Group' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-report-revenue-group"
+                                    data-url="{% url "GroupListAPI" %}"
+                                    data-method="GET"
+                                    data-link-detail="{% url "GroupDetail" 1 %}"
+                                    name="group"
+                                    data-keyResp="group_list"
+                                    multiple
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label" for="box-report-revenue-employee">{% trans 'Employee' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-report-revenue-employee"
+                                    data-url="{% url "EmployeeListAPI" %}"
+                                    data-method="GET"
+                                    name="employee"
+                                    data-keyResp="employee_list"
+                                    data-keyText="full_name"
+                                    multiple
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="form-group">
+                            <label class="form-label" for="report-revenue-date-from">{% trans 'From' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="date_from" id="report-revenue-date-from"
+                                       class="form-control date-picker" autocomplete="off">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="form-group">
+                            <label class="form-label" for="report-revenue-date-to">{% trans 'To' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="date_from" id="report-revenue-date-to"
+                                       class="form-control date-picker" autocomplete="off">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary mt-5" id="btn-apply-filter">{% trans 'Apply' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -30,131 +94,40 @@
 
     <div class="row">
         <div class="col-12 col-md-2 col-lg-2">
-            <div class="card">
-                <div class="card-header card-header-action bg-grey-light-5 h-40p">
-                    <span class="badge badge-secondary badge-outline badge-sm">
-                        <span>
-                            <span class="icon"><span class="feather-icon"><i class="fas fa-filter"></i></span></span>
-                            {% trans 'Filter' %}
-                        </span>
-                    </span>
-                    <div class="card-action-wrap">
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="card">
-                        <div class="row">
-                            <div class="col-12 col-md-9 col-lg-9">
-                                <div class="card-body">
-                                    <div><small class="card-text text-light">{% trans 'View by' %}</small></div>
-                                    <div id="card-filter-vb"></div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
-                                <div class="btn-group dropend">
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-caret-right"></i></span></button>
-                                    <div class="dropdown-menu w-300p">
-                                        <div class="form-group">
-                                            <label class="form-label" for="box-report-revenue-group">{% trans 'Group' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="box-report-revenue-group"
-                                                    data-url="{% url "GroupListAPI" %}"
-                                                    data-method="GET"
-                                                    data-link-detail="{% url "GroupDetail" 1 %}"
-                                                    name="group"
-                                                    data-keyResp="group_list"
-                                                    multiple
-                                            ></select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="box-report-revenue-employee">{% trans 'Employee' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="box-report-revenue-employee"
-                                                    data-url="{% url "EmployeeListAPI" %}"
-                                                    data-method="GET"
-                                                    name="employee"
-                                                    data-keyResp="employee_list"
-                                                    data-keyText="full_name"
-                                                    multiple
-                                            ></select>
-                                        </div>
-                                        <div class="d-flex justify-content-end mt-2">
-                                            <button type="button" class="btn btn-secondary btn-sm mr-2" id="btn-cancel-vb">{% trans 'Cancel' %}</button>
-                                            <button type="button" class="btn btn-primary btn-sm" id="btn-apply-vb">{% trans 'Apply' %}</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="row">
-                            <div class="col-12 col-md-9 col-lg-9">
-                                <div class="card-body">
-                                    <div><small class="card-text text-light">{% trans 'Date' %}</small></div>
-                                    <div id="card-filter-date"></div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
-                                <div class="btn-group dropend">
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-caret-right"></i></span></button>
-                                    <div class="dropdown-menu w-300p">
-                                        <div class="form-group w-60">
-                                            <label class="form-label" for="report-revenue-date-from">{% trans 'From' %}</label>
-                                            <div class="input-affix-wrapper">
-                                                <input type="text" name="date_from" id="report-revenue-date-from"
-                                                       class="form-control date-picker" autocomplete="off">
-                                                <div class="input-suffix">
-                                                    <i class="fas fa-calendar-alt"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group w-60">
-                                            <label class="form-label" for="report-revenue-date-to">{% trans 'To' %}</label>
-                                            <div class="input-affix-wrapper">
-                                                <input type="text" name="date_from" id="report-revenue-date-to"
-                                                       class="form-control date-picker" autocomplete="off">
-                                                <div class="input-suffix">
-                                                    <i class="fas fa-calendar-alt"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-end mt-2">
-                                            <button type="button" class="btn btn-secondary btn-sm mr-2" id="btn-cancel-date">{% trans 'Cancel' %}</button>
-                                            <button type="button" class="btn btn-primary btn-sm" id="btn-apply-date">{% trans 'Apply' %}</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="mb-2"><b class="text-light">{% trans 'Revenue' %}</b></div>
+            <h5><span class="mask-money fw-bold text-primary" id="report-revenue-revenue" data-init-money="0"></span></h5>
         </div>
-        <div class="col-12 col-md-10 col-lg-10">
-            <table
-                    id="table_report_revenue_list"
-                    class="table nowrap min-w-1280p w-100 mb-5"
-                    data-url="{% url 'ReportRevenueListAPI' %}"
-                    data-method="get"
-            >
-                <thead>
-                <tr class="bg-light">
-                    <th>{% trans 'Employee' %}</th>
-                    <th>{% trans 'Sale order' %}</th>
-                    <th>{% trans 'Date' %}</th>
-                    <th>{% trans 'Customer' %}</th>
-                    <th>{% trans 'Revenue' %}</th>
-                    <th>{% trans 'Gross profit' %}</th>
-                    <th>{% trans 'Net income' %}</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+        <div class="col-12 col-md-2 col-lg-2">
+            <div class="mb-2"><b class="text-light">{% trans 'Gross profit' %}</b></div>
+            <h5><span class="mask-money fw-bold text-primary" id="report-revenue-gross-profit" data-init-money="0"></span></h5>
         </div>
+        <div class="col-12 col-md-2 col-lg-2">
+            <div class="mb-2"><b class="text-light">{% trans 'Net income' %}</b></div>
+            <h5><span class="mask-money fw-bold text-primary" id="report-revenue-net-income" data-init-money="0"></span></h5>
+        </div>
+    </div>
+
+    <div class="row">
+        <table
+                id="table_report_revenue_list"
+                class="table nowrap min-w-1280p w-100 mb-5"
+                data-url="{% url 'ReportRevenueListAPI' %}"
+                data-method="get"
+        >
+            <thead>
+            <tr class="bg-light">
+                <th>{% trans 'Employee' %}</th>
+                <th>{% trans 'Sale order' %}</th>
+                <th>{% trans 'Date' %}</th>
+                <th>{% trans 'Customer' %}</th>
+                <th>{% trans 'Revenue' %}</th>
+                <th>{% trans 'Gross profit' %}</th>
+                <th>{% trans 'Net income' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
 
 {% endblock %}

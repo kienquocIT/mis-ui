@@ -23,7 +23,8 @@ from apps.sales.inventory.views import (
     GReItemListAPI, GReItemAvailableQuantityAPI, GoodsRegisBorrowListAPI, NoneGReItemBorrowListAPI,
     NoneGReItemBorrowDetailAPI, NoneGReItemAvailableQuantityAPI, ProductionOrderListAPIForGIS,
     ProductionOrderDetailAPIForGIS, InventoryAdjustmentListAPIForGIS, InventoryAdjustmentDetailAPIForGIS,
-    ProductWarehouseSerialListAPIForGIS, ProductWarehouseLotListAPIForGIS, ProductWarehouseListAPIForGIS
+    ProductWarehouseSerialListAPIForGIS, ProductWarehouseLotListAPIForGIS, ProductWarehouseListAPIForGIS,
+    WorkOrderListAPIForGIS, WorkOrderDetailAPIForGIS, GoodsIssueProductListAPI
 )
 
 urlpatterns = [
@@ -89,6 +90,16 @@ urlpatterns += [
         name='ProductionOrderDetailAPIForGIS'
     ),
     path(
+        'work-order-for-gis/list/api',
+        WorkOrderListAPIForGIS.as_view(),
+        name='WorkOrderListAPIForGIS'
+    ),
+    path(
+        'work-order-for-gis/detail/api/<str:pk>',
+        WorkOrderDetailAPIForGIS.as_view(),
+        name='WorkOrderDetailAPIForGIS'
+    ),
+    path(
         'prd-wh-list-for-gis/list/api',
         ProductWarehouseListAPIForGIS.as_view(),
         name='ProductWarehouseListAPIForGIS'
@@ -103,6 +114,7 @@ urlpatterns += [
         ProductWarehouseSerialListAPIForGIS.as_view(),
         name='ProductWarehouseSerialListAPIForGIS'
     ),
+    path('goods-issue-product/api/list', GoodsIssueProductListAPI.as_view(), name='GoodsIssueProductListAPI'),
 ]
 
 # goods return

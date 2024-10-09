@@ -42,4 +42,13 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchase_request/pr_common.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchase_request/pr_detail.js' %}"></script>
+
+    <script src="{% static 'printer/print.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#print-document').on('click', function () {
+                PrintTinymceControl.open_modal();
+            });
+        })
+    </script>
 {% endblock %}

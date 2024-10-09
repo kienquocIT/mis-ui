@@ -126,6 +126,7 @@ $(document).ready(function () {
 
     function LoadItemsSelectBox(ele, data) {
         ele.initSelect2({
+            placeholder: trans_script.attr('data-trans-all'),
             allowClear: true,
             ajax: {
                 url: ele.attr('data-url'),
@@ -144,6 +145,7 @@ $(document).ready(function () {
 
     function LoadWarehouseSelectBox(ele, data) {
         ele.initSelect2({
+            placeholder: trans_script.attr('data-trans-all'),
             allowClear: true,
             ajax: {
                 url: ele.attr('data-url'),
@@ -1276,7 +1278,7 @@ $(document).ready(function () {
                         })
                     }
                 }
-                console.log(data_view_list)
+                // console.log(data_view_list)
 
                 RenderTableViewProductWarehouse($('#view-prd-wh-table'), data_view_list)
             })

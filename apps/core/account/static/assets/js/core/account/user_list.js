@@ -72,7 +72,7 @@ $(function () {
                 width: '20%',
                 'data': 'username',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-soft-primary">${data}</span>`;
+                    return `<span class="text-primary">${data}</span>`;
                 }
             },
             {

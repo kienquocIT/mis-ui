@@ -11,14 +11,16 @@ $(function () {
         let btnAddProduct = $('#btn-add-product-quotation-create');
 
         // Load inits
+        QuotationLoadDataHandle.loadCustomCss();
         QuotationLoadDataHandle.loadInitCustomer();
         QuotationLoadDataHandle.loadBoxQuotationCustomer();
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         QuotationLoadDataHandle.loadInitDate();
 
-        QuotationLoadDataHandle.loadInitQuotationProduct();
+        // QuotationLoadDataHandle.loadInitQuotationProduct();
         // init dataTable
+        QuotationDataTableHandle.dataTableSelectProduct();
         QuotationDataTableHandle.dataTableProduct();
         QuotationDataTableHandle.dataTableCost();
         QuotationDataTableHandle.dataTableExpense();
@@ -127,8 +129,13 @@ $(function () {
 
 // Action on click button add product
         btnAddProduct.on('click', function (e) {
-            QuotationLoadDataHandle.loadAddRowProduct();
+            QuotationLoadDataHandle.loadModalSProduct();
+            // QuotationLoadDataHandle.loadAddRowProduct();
             indicatorHandle.loadQuotationIndicator();
+        });
+
+        QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
+            QuotationLoadDataHandle.loadNewProduct();
         });
 
 // Action on click select2 product
@@ -400,15 +407,17 @@ $(function () {
         });
 
 // ******** Action on change data of table row EXPENSE => calculate data for row & calculate data total
-        tableExpense.on('change', '.table-row-item, .table-row-labor-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
+        tableExpense.on('change', '.table-row-item, .table-row-labor-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
             if (this.classList.contains('table-row-labor-item')) {
-                if ($(this).val()) {
-                    let dataSelected = SelectDDControl.get_data_from_idx($(this), $(this).val());
-                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataSelected?.['expense_item']]);
-                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataSelected?.['uom']]);
-                    if (dataSelected?.['price_list'].length > 0) {
-                       $(row.querySelector('.table-row-price')).attr('value', String(dataSelected?.['price_list'][0]?.['price_value']));
+                QuotationLoadDataHandle.loadChangeLabor(this);
+            }
+            if (this.classList.contains('table-row-uom')) {
+                if (row.querySelector('.table-row-labor-item')) {
+                    let dataLabor = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-labor-item')), $(row.querySelector('.table-row-labor-item')).val());
+                    let dataUOM = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-uom')), $(row.querySelector('.table-row-uom')).val());
+                    if (dataLabor && dataUOM) {
+                        QuotationLoadDataHandle.loadPriceLabor(row, dataLabor, dataUOM?.['id']);
                     }
                 }
             }
@@ -604,8 +613,7 @@ $(function () {
 
         function checkElementValuesBeforeLoadDataCopy() {
             let element0 = $('#data-copy-quotation-detail').val();
-            let element1 = $('#data-init-quotation-create-tables-product').val();
-            if (element0 && element1) {
+            if (element0) {
                 loadDataCopyTo(JSON.parse(element0));  // call loadDataCopyTo() if all condition pass
             } else {
                 setTimeout(checkElementValuesBeforeLoadDataCopy, 1000);  // call again after 1s if condition not pass yet

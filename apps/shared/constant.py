@@ -102,3 +102,8 @@ DEPENDENCIES_TYPE = (
     (0, _("Start to start")),
     (1, _("Finish to start"))
 )
+
+CLOSE_OPEN_STATUS = (
+    (0, _("Close")),
+    (1, _("Open")),
+)

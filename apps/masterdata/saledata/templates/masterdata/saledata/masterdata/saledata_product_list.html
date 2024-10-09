@@ -36,31 +36,33 @@
         <div class="col-12 col-md-3 col-lg-3">
             <ul class="nav flex-column nav-light nav-pills nav-vertical" id="tab-select-table">
                 <li class="nav-item">
-                    <a
-                            class="nav-link active product-and-expense" data-bs-toggle="tab"
-                            data-collapse="section-product-type"
-                    >
+                    <a  href="#section-product-type"
+                        class="nav-link active product-and-expense"
+                        data-bs-toggle="tab"
+                        data-collapse="section-product-type">
                         <span class="nav-link-text">{% trans 'Product Type' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a
-                            class="nav-link product-and-expense" data-bs-toggle="tab"
-                            data-collapse="section-product-category"
-                    >
+                    <a href="#section-product-category"
+                       class="nav-link product-and-expense" data-bs-toggle="tab"
+                       data-collapse="section-product-category">
                         <span class="nav-link-text">{% trans 'Product Category' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link unit-measure" data-bs-toggle="tab" data-collapse="section-unit-measure">
+                    <a href="#section-unit-measure"
+                       class="nav-link unit-measure"
+                       data-bs-toggle="tab"
+                       data-collapse="section-unit-measure">
                         <span class="nav-link-text">{% trans 'Unit Of Measure' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a
-                            class="nav-link unit-measure-group" data-bs-toggle="tab"
-                            data-collapse="section-unit-measure-group"
-                    >
+                    <a href="#section-unit-measure-group"
+                       class="nav-link unit-measure-group"
+                       data-bs-toggle="tab"
+                       data-collapse="section-unit-measure-group">
                         <span class="nav-link-text">{% trans 'Unit Of Measure Group' %}</span>
                     </a>
                 </li>
@@ -75,6 +77,7 @@
                        data-method="GET">
                     <thead>
                     <th></th>
+                    <th>{% trans "Code" %}</th>
                     <th>{% trans "Name" %}</th>
                     <th>{% trans "Description" %}</th>
                     <th>{% trans "Action" %}</th>
@@ -91,6 +94,7 @@
                 >
                     <thead>
                     <th></th>
+                    <th>{% trans "Code" %}</th>
                     <th>{% trans "Name" %}</th>
                     <th>{% trans "Description" %}</th>
                     <th>{% trans "Action" %}</th>
@@ -125,6 +129,7 @@
                 >
                     <thead>
                     <th></th>
+                    <th>{% trans "Code" %}</th>
                     <th>{% trans "Name" %}</th>
                     <th>{% trans "Action" %}</th>
                     </thead>
@@ -154,19 +159,26 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="form-group">
-                                <label class="form-label required">{% trans "Name" %}</label>
-                                <input  required
-                                        class="form-control" type="text" name="title"
-                                        placeholder="Input name"
-                                >
+                            <div class="col-12 col-lg-4 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label required">{% trans "Code" %}</label>
+                                    <input required class="form-control" type="text" name="code" placeholder="CODE01"
+                                           oninput="this.value=this.value.toUpperCase()">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">{% trans "Description" %}</label>
-                                <textarea class="form-control" type="text" name="description"></textarea>
+                            <div class="col-12 col-lg-8 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label required">{% trans "Name" %}</label>
+                                    <input  required
+                                            class="form-control" type="text" name="title" placeholder="Input name"
+                                    >
+                                </div>
                             </div>
                         </div>
-
+                        <div class="form-group">
+                                <label class="form-label">{% trans "Description" %}</label>
+                                <textarea class="form-control" type="text" name="description"></textarea>
+                        </div>
                         <div class="modal-footer">
                             <button
                                     type="button" class="btn btn-secondary"
@@ -326,12 +338,18 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="form-group">
-                                <label class="form-label required">{% trans "Name" %}</label>
-                                <input required
-                                        class="form-control" type="text" name="title"
-                                        placeholder="Input name"
-                                >
+                            <div class="col-12 col-lg-4 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label required">{% trans "Code" %}</label>
+                                    <input required class="form-control" type="text" name="code" placeholder="CODE01"
+                                           oninput="this.value=this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-8 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label required">{% trans "Name" %}</label>
+                                    <input required class="form-control" type="text" name="title" placeholder="Input name">
+                                </div>
                             </div>
                         </div>
 
@@ -499,23 +517,34 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
+                            <div class="col-12 col-lg-8 col-md-6">
+
                             <div class="form-group inp-can-edit" id="inp-edit-name-div">
-                                <label class="form-label required">{% trans "Name" %}</label>
-                                <input required
-                                        class="form-control inp-can-edit" type="text" name="title"
-                                        placeholder="Input name" id="inp-edit-name"
-                                >
-                                <span></span>
+                                    <label class="form-label required">{% trans "Code" %}</label>
+                                <input required class="form-control inp-can-edit" type="text" name="code"
+                                       id="inp-edit-code" placeholder="CODE01"
+                                       oninput="this.value=this.value.toUpperCase()">
+                                </div>
+                                </div>
+                            <div class="col-12 col-lg-8 col-md-6">
+                                <div class="form-group inp-can-edit" id="inp-edit-name-div">
+                                    <label class="form-label required">{% trans "Name" %}</label>
+                                    <input required
+                                            class="form-control inp-can-edit" type="text" name="title"
+                                            placeholder="Input name" id="inp-edit-name"
+                                    >
+                                    <span></span>
+                                </div>
                             </div>
-                            <div class="form-group inp-can-edit" id="inp-edit-description-div">
+
+                        </div>
+                        <div class="form-group inp-can-edit" id="inp-edit-description-div">
                                 <label class="form-label">{% trans "Description" %}</label>
                                 <textarea
                                         class="form-control inp-can-edit" type="text" name="description"
                                         id="inp-edit-description"
                                 ></textarea>
                             </div>
-                        </div>
-
                         <div class="modal-footer">
                             <button
                                     type="button" class="btn btn-secondary"
@@ -552,13 +581,21 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="form-group inp-can-edit" id="inp-edit-name-uom-group-div">
-                                <label class="form-label required">{% trans "Name" %}</label>
-                                <input required
-                                        class="form-control inp-can-edit" type="text" name="title"
-                                        id="inp-edit-name-uom-group"
-                                        placeholder="Input name"
-                                >
+                            <div class="col-12 col-lg-4 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label required">{% trans "Code" %}</label>
+                                    <input required class="form-control" type="text" name="code" placeholder="CODE01"
+                                           id="inp-code-uomgroup"
+                                           oninput="this.value=this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-8 col-md-6">
+                                <div class="form-group inp-can-edit" id="inp-edit-name-uom-group-div">
+                                    <label class="form-label required">{% trans "Name" %}</label>
+                                    <input required class="form-control inp-can-edit" type="text" name="title"
+                                           id="inp-edit-name-uom-group" placeholder="Input name"
+                                    >
+                                </div>
                             </div>
                         </div>
 

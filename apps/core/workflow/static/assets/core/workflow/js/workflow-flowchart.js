@@ -102,7 +102,7 @@ function clickConnection(connect) {
     $("#next-node-association .formsets").html('')
     $('#form-create-condition [name="node_in"]').val(node_in)
     $('#form-create-condition [name="node_out"]').val(node_out)
-    $("#next-node-association").modal('show');
+    // $("#next-node-association").modal('show');
 
     // render modal popup of connection
     let data_cond = FlowJsP.getAssociate
@@ -953,7 +953,7 @@ class NodeHandler {
         if (dataNodeOut?.['collaborators']?.['option'] === 1) {
             if (dataNodeIn?.['collaborators']?.['total_in_runtime'] > 1) {
                 state = false;
-                msgFailed = "Node in put must have only one collaborator";
+                msgFailed = $('#node-trans-factory').attr('data-validate-next-node');
             }
         }
 

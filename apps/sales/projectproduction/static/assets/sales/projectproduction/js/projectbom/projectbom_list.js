@@ -10,7 +10,7 @@ $(document).ready(function () {
                 reloadCurrency: true,
                 ajax: {
                     data: {
-                        'bom_type': 4
+                        'for_opp_space': true
                     },
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -73,7 +73,7 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text w-15 text-center',
                         'render': (data, type, row) => {
-                            return `<span>${row?.['sum_time']} (h)</span>`;
+                            return `<span>${parseFloat(row?.['sum_time'].toFixed(2))} (h)</span>`;
                         }
                     },
                     {

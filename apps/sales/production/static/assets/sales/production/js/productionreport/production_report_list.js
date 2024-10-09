@@ -50,6 +50,18 @@ $(function () {
                     },
                     {
                         targets: 3,
+                        width: '15%',
+                        render: (data, type, row) => {
+                            let type_data = [
+                                "warning badge-outline",
+                                "success badge-outline",
+                            ]
+                            let typeTxt = JSON.parse($('#pr_type').text())
+                            return `<span class="badge badge-${type_data[row?.['production_report_type']]}">${typeTxt[row?.['production_report_type']][1]}</span>`;
+                        }
+                    },
+                    {
+                        targets: 4,
                         className: 'action-center',
                         width: '5%',
                         render: (data, type, row) => {

@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
-from apps.shared.constant import SYSTEM_STATUS
+from apps.shared.constant import SYSTEM_STATUS, CLOSE_OPEN_STATUS
 
 
 def create_production_order(request, url, msg):
@@ -35,7 +35,7 @@ class ProductionOrderList(View):
         breadcrumb='PRODUCTION_ORDER_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
+        return {'stt_sys': SYSTEM_STATUS, 'stt_cp': CLOSE_OPEN_STATUS}, status.HTTP_200_OK
 
 
 class ProductionOrderCreate(View):
@@ -84,6 +84,7 @@ class ProductionOrderDetail(View):
     def get(self, request, pk, *args, **kwargs):
         return {
                    'data': {'doc_id': pk},
+                   'employee_current': request.user.employee_current_data,
                }, status.HTTP_200_OK
 
 
@@ -97,6 +98,7 @@ class ProductionOrderUpdate(View):
     def get(self, request, pk, *args, **kwargs):
         ctx = {
             'data': {'doc_id': pk},
+            'employee_current': request.user.employee_current_data,
         }
         return ctx, status.HTTP_200_OK
 
@@ -133,3 +135,16 @@ class ProductionOrderDDListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCTION_ORDER_DD_LIST).get(data)
         return resp.auto_return(key_success='production_order_dd')
+
+
+class ProductionOrderManualDoneListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_production_order(
+            request=request,
+            url=ApiURL.PRODUCTION_ORDER_MANUAL_DONE_LIST,
+            msg=SaleMsg.PRODUCTION_ORDER_UPDATE
+        )

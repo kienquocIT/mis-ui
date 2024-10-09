@@ -20,8 +20,8 @@
 {% endblock %}
 {% block pageContent %}
     <div class="row">
-        <div class="col-12 col-md-3 col-lg-3">
-            <ul class="nav flex-column nav-light nav-pills nav-vertical" id="tab-select-table">
+        <div class="col-12 col-md-2 col-lg-2">
+            <ul class="nav flex-column nav-light nav-pills nav-pills-soft nav-vertical" id="tab-select-table">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" data-collapse="section-salutation">
                         <span class="nav-link-text">{% trans 'Salutations' %}</span>
@@ -35,7 +35,7 @@
             </ul>
         </div>
         <div class="col-12 col-md-1 col-lg-1"></div>
-        <div class="col-12 col-md-8 col-lg-8">
+        <div class="col-12 col-md-9 col-lg-9">
             <div class="lookup-data" id="section-salutation" style="display: block; position: relative; width: 100%;">
                 <table id="datatable_salutation_list" class="table nowrap w-100" data-method="GET"
                        data-url="{% url "SalutationListAPI" %}">

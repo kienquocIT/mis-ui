@@ -762,9 +762,9 @@ class SpaceItem:
                 MenusCRM.TASK,
             ],
         ),
-        'dms': SpaceCommon(
-            'DMS',
-            'dms',
+        'kms': SpaceCommon(
+            'KMS',
+            'kms',
             icon='<i class="far fa-folder-open"></i>',
             menus=[
                 MenuDMS.WORK_SPACE,
@@ -892,7 +892,7 @@ class SpaceGroup:
     SPACE = SpaceCommon(
         'Space', 'space', child=[
             SpaceItem.mapping['crm'],
-            SpaceItem.mapping['dms'],
+            SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
             SpaceItem.mapping['forms'],
             SpaceItem.mapping['hrm'],

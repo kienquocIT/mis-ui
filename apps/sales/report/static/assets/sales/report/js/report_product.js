@@ -214,7 +214,7 @@ $(function () {
             }
             $table.DataTable().destroy();
             loadDbl();
-            $table.DataTable().clear().draw();
+            // $table.DataTable().clear().draw();
             $table.DataTable().rows.add(result).draw();
             loadSetCollapse();
             // init money
@@ -246,6 +246,7 @@ $(function () {
             eleGrossProfit.attr('data-init-money', String(newGrossProfit));
             eleNetIncome.attr('data-init-money', String(newNetIncome));
         }
+
         loadDbl();
         storeLoadInitByDataFiscalYear();
 
@@ -349,30 +350,6 @@ $(function () {
             return '';
         }
 
-        function loadBoxEmployee() {
-            boxEmployee.empty();
-            let dataParams = {};
-            if (boxGroup.val()) {
-                dataParams['group_id__in'] = boxGroup.val().join(',');
-            }
-            boxEmployee.initSelect2({
-                'dataParams': dataParams,
-                'allowClear': true,
-            });
-        }
-
-        function loadBoxProduct() {
-            boxProduct.empty();
-            let dataParams = {};
-            if (boxCategory.val()) {
-                dataParams['category_id__in'] = boxCategory.val().join(',');
-            }
-            boxProduct.initSelect2({
-                'dataParams': dataParams,
-                'allowClear': true,
-            });
-        }
-
         function loadFilter(listData, $eleShow) {
             if (listData.length > 0) {
                 $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
@@ -399,13 +376,36 @@ $(function () {
 
         // load init
         function initData() {
-            boxGroup.initSelect2({'allowClear': true,});
-            boxProduct.initSelect2({'allowClear': true,});
-            boxCategory.initSelect2({'allowClear': true,});
-            loadBoxEmployee();
+            loadInitS2(boxGroup, [], {}, null, true);
+            loadInitS2(boxEmployee, [], {}, null, true);
+            loadInitS2(boxCategory, [], {}, null, true);
+            loadInitS2(boxProduct, [], {}, null, true);
         }
 
         initData();
+
+        function loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
+        let opts = {'allowClear': isClear};
+        $ele.empty();
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                return $(`<span>${res1} ${res2}</span>`);
+            }
+        }
+        $ele.initSelect2(opts);
+        return true;
+    };
 
         // init date picker
         $('.date-picker').each(function () {
@@ -437,25 +437,11 @@ $(function () {
 
         // Events
         boxGroup.on('change', function() {
-            loadBoxEmployee();
-            $table.DataTable().clear().draw();
-            loadTotal();
-        });
-
-        boxEmployee.on('change', function() {
-            $table.DataTable().clear().draw();
-            loadTotal();
+            loadInitS2(boxEmployee, [], {'group_id__in': boxGroup.val().join(',')}, null, true);
         });
 
         boxCategory.on('change', function() {
-            loadBoxProduct();
-            $table.DataTable().clear().draw();
-            loadTotal();
-        });
-
-        boxProduct.on('change', function() {
-            $table.DataTable().clear().draw();
-            loadTotal();
+            loadInitS2(boxProduct, [], {'category_id__in': boxCategory.val().join(',')}, null, true);
         });
 
         $('#btn-apply-filter').on('click', function () {

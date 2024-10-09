@@ -43,6 +43,7 @@
 {#    </button>#}
 {% endblock %}
 {% block pageContent %}
+    {{ data.data.list_import_db_form | json_script:"list_import_db_form" }}
     <script id="trans-url"
             data-trans-all="{% trans 'Default all' %}"
             data-trans-delivered="{% trans 'is not in stock' %}"
@@ -138,7 +139,7 @@
         </div>
     </form>
 
-    <div class="modal fade" id="modal-serial" tabindex="-1" role="dialog" aria-labelledby="modal-serial" aria-hidden="true">
+    <div class="modal fade has-import-db-form" id="modal-serial" tabindex="-1" role="dialog" aria-labelledby="modal-serial" aria-hidden="true">
         <div class="modal-dialog modal-lg min-w-1280p" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -148,6 +149,15 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div id="import-button">
+                        {% include 'extends/import-datatable/button-import-db.html' %}
+                        <script class="import-db-form-url"
+                              data-get-method="POST"
+                              data-get-url="{% url 'GoodsDetailAPIImportDB' %}"
+                              data-get-redirect-url="{% url 'GoodsDetail' %}"
+                        ></script>
+                    </div>
+
                     <form id="form-serial" data-method="POST"
                           data-url="{% url 'GoodsDetailAPI' %}"
                           data-url-redirect="{% url 'GoodsDetail' %}"
@@ -185,6 +195,67 @@
             </div>
         </div>
     </div>
+
+    {% include 'extends/import-datatable/modal-import-db.html' %}
+    <table hidden data-table-id="import-db-form-goods-detail" class="nowrap w-100 table mt-1">
+        <thead class="sticky bg-gold-light-5">
+            <tr>
+                <th>#</th>
+                <th>
+                    {% trans 'Vendor serial No.' %}
+                    <i class="fas fa-info-circle icon-info"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="bottom"
+                       title="{% trans "" %}">
+                    </i>
+                </th>
+                <th>
+                    {% trans 'Serial No.' %}
+                    <i class="fas fa-info-circle icon-info"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="bottom"
+                       title="{% trans "" %}">
+                    </i>
+                </th>
+                <th>
+                    {% trans 'Expired date' %}
+                    <i class="fas fa-info-circle icon-info"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="bottom"
+                       title="{% trans "" %}">
+                    </i>
+                </th>
+                <th>
+                    {% trans 'Mfr date' %}
+                    <i class="fas fa-info-circle icon-info"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="bottom"
+                       title="{% trans "" %}">
+                    </i>
+                </th>
+                <th>
+                    {% trans 'Warranty start' %}
+                    <i class="fas fa-info-circle icon-info"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="bottom"
+                       title="{% trans "" %}">
+                    </i>
+                </th>
+                <th>
+                    {% trans 'Warranty end' %}
+                    <i class="fas fa-info-circle icon-info"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="bottom"
+                       title="{% trans "" %}">
+                    </i>
+                </th>
+                 <th>{% trans 'Import status' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
 {% endblock %}
 {% block dataHiddenGroup %}
 {% endblock %}
@@ -194,4 +265,7 @@
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 
     <script src="{% static 'assets/sales/inventory/js/goods_detail/goods_detail.js' %}"></script>
+    <script src="{% static 'assets/js/xlsx-0.18.5.full.min.js' %}"></script>
+    <script src="{% static 'assets/js/import-datatable.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/goods_detail/goods_detail_import.js' %}"></script>
 {% endblock %}

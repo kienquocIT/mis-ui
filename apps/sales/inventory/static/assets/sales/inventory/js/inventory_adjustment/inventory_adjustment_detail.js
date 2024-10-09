@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    LoadDetailIA('detail');
+    IAHandle.LoadDetailIA('detail');
 })

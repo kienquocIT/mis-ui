@@ -79,19 +79,6 @@ $(document).ready(function () {
                 },
             },
             {
-                data: 'state',
-                class: 'text-center',
-                width: '10%',
-                render: (data, type, row, meta) => {
-                    const stateMap = {
-                        0: 'warning',
-                        1: 'info',
-                        2: 'success',
-                    }
-                    return `<span class="badge badge-${stateMap[data]} badge-outline">${letStateChoices[data]}</span>`;
-                }
-            },
-            {
                 width: '10%',
                 render: (data, type, row) => {
                     let sttTxt = JSON.parse($('#stt_sys').text())
@@ -103,6 +90,19 @@ $(document).ready(function () {
                         "danger",
                     ]
                     return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
+                }
+            },
+            {
+                data: 'state',
+                class: 'text-center',
+                width: '10%',
+                render: (data, type, row, meta) => {
+                    const stateMap = {
+                        0: 'warning',
+                        1: 'info',
+                        2: 'success',
+                    }
+                    return `<span class="badge badge-${stateMap[data]} badge-outline">${letStateChoices[data]}</span>`;
                 }
             },
             {

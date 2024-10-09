@@ -334,7 +334,7 @@ class PaymentAction {
     }
     static DisabledDetailPage(option) {
         if (option === 'detail') {
-            $('input').prop('disabled', true).prop('readonly', true)
+            $('form input').prop('disabled', true).prop('readonly', true)
             $('select').prop('disabled', true).prop('readonly', true)
             $('.select2').prop('disabled', true);
             $('#btn-add-row-line-detail').prop('disabled', true);
@@ -450,6 +450,7 @@ class PaymentLoadTab {
     }
     static LoadTax(ele, data) {
         ele.initSelect2({
+            allowClear: true,
             ajax: {
                 url: tableLineDetail.attr('data-url-tax-list'),
                 method: 'GET',
@@ -1486,7 +1487,7 @@ class PaymentHandle {
                     if (option === 'detail') {
                         new PrintTinymceControl().render('1010563f-7c94-42f9-ba99-63d5d26a1aca', data, false);
                     }
-                    // console.log(data)
+                    console.log(data)
                     DETAIL_DATA = data;
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);

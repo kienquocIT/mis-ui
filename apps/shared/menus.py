@@ -324,7 +324,7 @@ class MenusCRM:
         icon='<i class="bi bi-nut-fill"></i>',
     )
     PROJECT_BOM = MenuCommon(
-        name='Opportunity bill of material', code='menu_project_bom_list', view_name='ProjectBOMList',
+        name='Project BOM', code='menu_project_bom_list', view_name='ProjectBOMList',
         icon='<i class="fas fa-dice"></i>',
     )
     PRICING = MenuCommon(
@@ -677,7 +677,7 @@ class MenusProduction:
         name='Production', code='menu_purchase_activities', view_name='', icon='<i class="bi bi-robot"></i>',
         child=[
             MenuCommon(
-                name='Bill of material', code='menu_bom_list', view_name='BOMList',
+                name='Production BOM', code='menu_bom_list', view_name='BOMList',
                 icon='<i class="fab fa-connectdevelop"></i>',
             ),
             MenuCommon(

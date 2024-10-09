@@ -44,7 +44,8 @@ $(async function () {
                 $(titleMdl).empty();
                 $(titleMdl).append(`${$trans.attr('data-title-mdl')} (${prod_data?.['product_data']?.['title']})`);
             }
-
+            let $eleUndelivered = $('#undelivered');
+            $eleUndelivered.empty().html(`${prod_data?.['remaining_quantity']}`);
             let dataParam = {'product_id': prod_data?.['product_data']?.['id']};
             let keyResp = 'warehouse_products_list';
 
@@ -317,27 +318,27 @@ $(async function () {
         };
 
         loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
-        let opts = {'allowClear': isClear};
-        $ele.empty();
-        if (data.length > 0) {
-            opts['data'] = data;
-        }
-        if (Object.keys(dataParams).length !== 0) {
-            opts['dataParams'] = dataParams;
-        }
-        if ($modal) {
-            opts['dropdownParent'] = $modal;
-        }
-        if (Object.keys(customRes).length !== 0) {
-            opts['templateResult'] = function (state) {
-                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
-                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
-                return $(`<span>${res1} ${res2}</span>`);
+            let opts = {'allowClear': isClear};
+            $ele.empty();
+            if (data.length > 0) {
+                opts['data'] = data;
             }
-        }
-        $ele.initSelect2(opts);
-        return true;
-    };
+            if (Object.keys(dataParams).length !== 0) {
+                opts['dataParams'] = dataParams;
+            }
+            if ($modal) {
+                opts['dropdownParent'] = $modal;
+            }
+            if (Object.keys(customRes).length !== 0) {
+                opts['templateResult'] = function (state) {
+                    let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                    let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                    return $(`<span>${res1} ${res2}</span>`);
+                }
+            }
+            $ele.initSelect2(opts);
+            return true;
+        };
 
         setupDataPW(dataSrc, prod_data, config, type) {
             let finalData = [];
@@ -633,6 +634,11 @@ $(async function () {
             let eleTotalPicked = $table[0].querySelector('.total-picked');
             let totalAvailable = 0;
             let totalPicked = 0;
+            let undelivered = 0;
+            let $eleUndelivered = $('#undelivered');
+            if ($eleUndelivered.html()) {
+                undelivered = parseFloat($eleUndelivered.html());
+            }
             if (eleTotalPicked) {
                 $table.DataTable().rows().every(function () {
                     let row = this.node();
@@ -647,6 +653,19 @@ $(async function () {
                     }
                 });
                 eleTotalPicked.innerHTML = String(totalPicked);
+                if (totalPicked > undelivered) {
+                    let eleWHChecked = $table[0].querySelector('.table-row-checkbox:checked');
+                    if (eleWHChecked) {
+                        if (eleWHChecked.closest('tr')) {
+                            if (eleWHChecked.closest('tr').querySelector('.table-row-picked')) {
+                                eleWHChecked.closest('tr').querySelector('.table-row-picked').value = '0';
+                                prodTable.setupTotal();
+                            }
+                        }
+                    }
+                    $.fn.notifyB({description: $trans.attr('data-exceed-undelivered-quantity')}, 'failure');
+                    return false;
+                }
             }
             return true;
         };
@@ -821,7 +840,7 @@ $(async function () {
                 let value = parseFloat(ele.value);
                 let valueLotInit = parseFloat(row?.querySelector('.table-row-quantity-init')?.innerHTML);
                 if (value > valueLotInit) {
-                    $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
+                    $.fn.notifyB({description: $trans.attr('data-exceed-available-quantity')}, 'failure');
                     ele.value = '0';
                     prodTable.loadQuantityDeliveryByLot(ele);
                     return false;
@@ -838,7 +857,7 @@ $(async function () {
                     $('#datable-delivery-wh-lot').DataTable().rows().every(function () {
                         let row = this.node();
                         let rowLotData = this.data();
-                        let valueLotInit= row?.querySelector('.table-row-quantity-init')?.innerHTML;
+                        let valueLotInit = row?.querySelector('.table-row-quantity-init')?.innerHTML;
                         let valueLotInput = row?.querySelector('.table-row-quantity-delivery')?.value;
                         newQuantity += parseFloat(valueLotInput);
                         if (parseFloat(valueLotInput) > 0 && parseFloat(valueLotInput) <= parseFloat(valueLotInit)) {
@@ -851,6 +870,12 @@ $(async function () {
                     });
                     if (newQuantity <= valStock && newQuantity <= valAvb) {
                         eleWHInput.value = newQuantity;
+                        let setTotal = prodTable.setupTotal();
+                        if (setTotal === false) {
+                            ele.value = '0';
+                            prodTable.loadQuantityDeliveryByLot(ele);
+                            return false;
+                        }
                         // store new row data & redraw row
                         let rowIndex = tableWH.DataTable().row(rowChecked).index();
                         let $row = tableWH.DataTable().row(rowIndex);
@@ -860,7 +885,7 @@ $(async function () {
                         rowData['is_checked'] = true;
                         tableWH.DataTable().row(rowIndex).data(rowData).draw();
                     } else {
-                        $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
+                        $.fn.notifyB({description: $trans.attr('data-exceed-available-quantity')}, 'failure');
                         ele.value = '0';
                         prodTable.loadQuantityDeliveryByLot(ele);
                         return false;
@@ -1070,6 +1095,12 @@ $(async function () {
                     });
                     if (newQuantity <= valStock && newQuantity <= valAvb) {
                         eleWHInput.value = newQuantity;
+                        let setTotal = prodTable.setupTotal();
+                        if (setTotal === false) {
+                            ele.checked = false;
+                            prodTable.loadQuantityDeliveryBySerial(ele);
+                            return false;
+                        }
                         // store new row data & redraw row
                         let rowIndex = tableWH.DataTable().row(rowChecked).index();
                         let $row = tableWH.DataTable().row(rowIndex);
@@ -1079,7 +1110,7 @@ $(async function () {
                         rowData['is_checked'] = true;
                         tableWH.DataTable().row(rowIndex).data(rowData).draw();
                     } else {
-                        $.fn.notifyB({description: $trans.attr('data-exceed-quantity')}, 'failure');
+                        $.fn.notifyB({description: $trans.attr('data-exceed-available-quantity')}, 'failure');
                         ele.checked = false;
                         prodTable.loadQuantityDeliveryBySerial(ele);
                         return false;
@@ -1151,7 +1182,7 @@ $(async function () {
                     for (let item of dataLogistics){
                         htmlTemp += `<div class="col mb-3 text-right txt-cl-black wrap_logistic"><textarea disabled class="form-control mb-2 txt-cl-black" data-id="${
                             item?.id ? item.id : item
-                        }">${item?.full_address ? item.full_address : item}</textarea><button class="btn btn-primary btn_logistics_choise">${
+                        }">${item?.full_address ? item.full_address : item}</textarea><button type="button" class="btn btn-primary btn_logistics_choise">${
                             $trans.attr('data-select_address')}</button></div>`
                     }
                     $(this).find('.modal-body').html(htmlTemp)

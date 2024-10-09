@@ -9,7 +9,8 @@ from apps.masterdata.saledata.views.accounts import (
     IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail,
     AccountDetail, AccountGroupListAPI, AccountGroupCreateAPI, AccountGroupDetailAPI, AccountForSaleListAPI
 )
-from apps.masterdata.saledata.views.balance_init import BalanceInitList, BalanceInitListAPI
+from apps.masterdata.saledata.views.balance_init import BalanceInitList, BalanceInitListAPI, \
+    ImportBalanceInitDBAPIViews, BalanceInitListAPIImportDB
 from apps.masterdata.saledata.views.budget_plan_config import BudgetPlanConfigList, BudgetPlanConfigListAPI, \
     ListCanViewCompanyBudgetPlanAPI, ListCanLockBudgetPlanAPI
 from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
@@ -321,12 +322,16 @@ urlpatterns += [
 
 urlpatterns += [
     path(
-        'balance_init', BalanceInitList.as_view(),
+        'balance-init', BalanceInitList.as_view(),
         name='BalanceInitList'
     ),
     path(
-        'balance_init/api', BalanceInitListAPI.as_view(),
+        'balance-init/api', BalanceInitListAPI.as_view(),
         name='BalanceInitListAPI'
+    ),
+    path(
+        'balance-init-import-db/api', BalanceInitListAPIImportDB.as_view(),
+        name='BalanceInitListAPIImportDB'
     ),
 ]
 
@@ -339,4 +344,11 @@ urlpatterns += [
     path('inventory-import-config', InventoryInteractConfigList.as_view(), name='InventoryInteractConfigList'),
     path('inventory-import-config/api', InventoryInteractConfigListAPI.as_view(), name='InventoryInteractConfigListAPI'),
     path('inventory-import-config/api/<str:pk>', InventoryInteractConfigDetailAPI.as_view(), name='InventoryInteractConfigDetailAPI'),
+]
+
+urlpatterns += [
+    path(
+        'masterdata/import-balance-data-init-db/api/<str:pk>', ImportBalanceInitDBAPIViews.as_view(),
+        name='ImportBalanceInitDBAPIViews'
+    ),
 ]

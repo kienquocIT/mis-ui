@@ -188,13 +188,16 @@ $(function () {
         });
 
         // Action on click button add product
-        $('#btn-add-product-purchase-order').on('click', function() {
-            POLoadDataHandle.loadAddRowTableProductAdd();
+        POLoadDataHandle.$btnAddProduct.on('click', function() {
+            if (POLoadDataHandle.PRDataEle.val()) {
+                $('#btn-warning-add-product').click();
+            } else {
+                POLoadDataHandle.loadAddRowTableProductAdd();
+            }
         });
 
-        // Action on click button add product if request
-        $('#btn-add-product-purchase-order-if-request').on('click', function() {
-            $('#btn-warning-add-product').click();
+        POLoadDataHandle.$btnAddShipping.on('click', function () {
+            POLoadDataHandle.loadAddRowTableProductAdd(1);
         });
 
         // Action on click btn continue to add product

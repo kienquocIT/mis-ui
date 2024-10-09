@@ -14,13 +14,14 @@ class ProdOrderLoadDataHandle {
     static $boxWH = $('#box-warehouse');
     static $boxSO = $('#box-so');
     static $boxGroup = $('#box-group');
+    static $manualDone = $('#manual-done');
     static $trans = $('#app-trans-factory');
     static $urls = $('#app-urls-factory');
     static $dataBOM = $('#data-bom');
     static dataType = [
         {'id': 0, 'title': ProdOrderLoadDataHandle.$trans.attr('data-production')},
         {'id': 1, 'title': ProdOrderLoadDataHandle.$trans.attr('data-assembly')},
-        {'id': 2, 'title': ProdOrderLoadDataHandle.$trans.attr('data-disassembly')}
+        {'id': 2, 'title': ProdOrderLoadDataHandle.$trans.attr('data-disassembly')},
     ];
     static dataStatus = [
         {'id': 0, 'title': ProdOrderLoadDataHandle.$trans.attr('data-planned')},
@@ -57,7 +58,7 @@ class ProdOrderLoadDataHandle {
         // select2
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxType, ProdOrderLoadDataHandle.dataType);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, ProdOrderLoadDataHandle.dataStatus);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [], {'general_product_types_mapped__is_finished_goods': true, 'bom_product__opportunity_id__isnull': true});
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [], {'general_product_types_mapped__is_finished_goods': true, 'bom_product__isnull': false, 'bom_product__opportunity_id__isnull': true});
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
@@ -92,12 +93,15 @@ class ProdOrderLoadDataHandle {
 
     static loadBOM() {
         if (ProdOrderLoadDataHandle.$boxProd.val()) {
+            WindowControl.showLoading();
             $.fn.callAjax2({
                     'url': ProdOrderLoadDataHandle.$urls.attr('data-md-bom'),
                     'method': 'GET',
                     'data': {
                         'product_id': ProdOrderLoadDataHandle.$boxProd.val(),
                         'opportunity_id__isnull': true,
+                        'bom_type__in': [0, 2, 3, 4].join(','),
+                        'system_status': 3,
                     },
                     'isDropdown': true,
                 }
@@ -106,9 +110,9 @@ class ProdOrderLoadDataHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('bom_order_list') && Array.isArray(data.bom_order_list)) {
+                            ProdOrderDataTableHandle.$tableMain.DataTable().clear().draw();
                             if (data.bom_order_list.length > 0) {
                                 ProdOrderLoadDataHandle.loadAddDtbRows(ProdOrderLoadDataHandle.loadSetupBOM(data.bom_order_list[0]));
-
                                 let multi = 1;
                                 if (ProdOrderLoadDataHandle.$quantity) {
                                     multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
@@ -116,6 +120,7 @@ class ProdOrderLoadDataHandle {
                                 ProdOrderLoadDataHandle.$time.val(`${data.bom_order_list[0]?.['sum_time'] * multi}`);
                                 ProdOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data.bom_order_list[0]));
                             }
+                            WindowControl.hideLoading();
                         }
                     }
                 }
@@ -132,6 +137,7 @@ class ProdOrderLoadDataHandle {
 
     static loadSetupBOM(data) {
         let result = [];
+        let BOMtype = parseFloat(ProdOrderLoadDataHandle.$boxType.val());
         for (let task of data?.['bom_task']) {  // task
             let tool_list = [];
             for (let tool of data?.['bom_tool']) {
@@ -146,7 +152,14 @@ class ProdOrderLoadDataHandle {
             for (let material of data?.['bom_material']) {
                 if (material?.['bom_task']?.['id'] === task?.['id']) {
                     material['task_order'] = task?.['order'];
-                    result.push(material);
+                    if ([0, 1].includes(BOMtype)) {
+                        result.push(material);
+                    }
+                    if (BOMtype === 2) {
+                        if (material?.['is_disassembly'] === true) {
+                            result.push(material);
+                        }
+                    }
                 }
             }
         }
@@ -185,87 +198,6 @@ class ProdOrderLoadDataHandle {
             }
         }
         return true;
-    };
-
-    static loadDDProduct($ele, dataProduct) {
-        let result = [];
-        $.fn.callAjax2({
-                'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
-                'method': 'GET',
-                'data': {
-                    'general_product_types_mapped__is_material': true
-                },
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                        result = result.concat(data.product_sale_list);
-                        $.fn.callAjax2({
-                                'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
-                                'method': 'GET',
-                                'data': {
-                                    'general_product_types_mapped__is_finished_goods': true,
-                                },
-                                'isDropdown': true,
-                            }
-                        ).then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                                        result = result.concat(data.product_sale_list);
-                                        ProdOrderLoadDataHandle.loadInitS2($ele, result);
-                                        // $.fn.callAjax2({
-                                        //         'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
-                                        //         'method': 'GET',
-                                        //         'data': {
-                                        //             'general_product_types_mapped__is_goods': true,
-                                        //         },
-                                        //         'isDropdown': true,
-                                        //     }
-                                        // ).then(
-                                        //     (resp) => {
-                                        //         let data = $.fn.switcherResp(resp);
-                                        //         if (data) {
-                                        //             if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                                        //                 result = result.concat(data.product_sale_list);
-                                        //                 ProdOrderLoadDataHandle.loadInitS2($ele, result);
-                                        //                 if (dataProduct) {
-                                        //                     $.fn.callAjax2({
-                                        //                             'url': ProdOrderLoadDataHandle.$urls.attr('data-md-product'),
-                                        //                             'method': 'GET',
-                                        //                             'data': {'id': dataProduct?.['id']},
-                                        //                             'isDropdown': true,
-                                        //                         }
-                                        //                     ).then(
-                                        //                         (resp) => {
-                                        //                             let data = $.fn.switcherResp(resp);
-                                        //                             if (data) {
-                                        //                                 if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                                        //                                     if (data.product_sale_list.length > 0) {
-                                        //                                         ProdOrderLoadDataHandle.loadInitS2($ele, [data.product_sale_list[0]]);
-                                        //                                     }
-                                        //                                 }
-                                        //                             }
-                                        //                         }
-                                        //                     )
-                                        //                 }
-                                        //             }
-                                        //         }
-                                        //     }
-                                        // )
-                                    }
-                                }
-                            }
-                        )
-                    }
-                }
-            }
-        )
-        // ProdOrderLoadDataHandle.loadInitS2($ele, result);
     };
 
     static loadDD($table) {
@@ -433,16 +365,68 @@ class ProdOrderLoadDataHandle {
         return true;
     };
 
+    static loadClickManualDone() {
+        if (ProdOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            let status_production = 1;
+            if (ProdOrderLoadDataHandle.$manualDone[0].checked === true) {
+                status_production = 2;
+            }
+            WindowControl.showLoading();
+            $.fn.callAjax2(
+                {
+                    'url': ProdOrderLoadDataHandle.$urls.attr('data-manual-done'),
+                    'method': "POST",
+                    'data': {'production_order_id': $.fn.getPkDetail(), 'status_production': status_production},
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 3000);
+                    }
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                }
+            )
+        }
+        return true;
+    };
+
     // Detail
     static loadDetail(data) {
         ProdOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data?.['bom_data']));
+        let empCurrent = JSON.parse($('#employee_current').text());
         ProdOrderLoadDataHandle.$title.val(data?.['title']);
         ProdOrderLoadDataHandle.$quantity.val(data?.['quantity']);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [data?.['product_data']], {'general_product_types_mapped__is_finished_goods': true});
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM, [data?.['uom_data']]);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH, [data?.['warehouse_data']]);
+        if (data?.['product_data']?.['id']) {
+            ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [data?.['product_data']], {'general_product_types_mapped__is_finished_goods': true});
+        }
+        if (data?.['uom_data']?.['id']) {
+           ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM, [data?.['uom_data']]);
+        }
+        if (data?.['warehouse_data']?.['id']) {
+            ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH, [data?.['warehouse_data']]);
+        }
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO, data?.['sale_order_data']);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxGroup, [data?.['group_data']]);
+        if (data?.['group_data']?.['id']) {
+            ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxGroup, [data?.['group_data']]);
+        }
+        if (data?.['status_production'] !== 0) {
+            ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, ProdOrderLoadDataHandle.dataStatus);
+            ProdOrderLoadDataHandle.$boxStatus.val(data?.['status_production']).trigger('change');
+            if (data?.['system_status'] === 3) {
+                ProdOrderLoadDataHandle.$manualDone.removeAttr('disabled');
+            }
+            if (data?.['status_production'] === 2) {
+                ProdOrderLoadDataHandle.$manualDone[0].checked = true;
+            }
+        }
         let date_start = '';
         if (data?.['date_start']) {
             date_start = data?.['date_start'];

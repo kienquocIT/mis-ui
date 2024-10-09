@@ -79,7 +79,7 @@
                                         id="box-production-order"
                                         data-url="{% url "ProductionOrderDDListAPI" %}"
                                         data-method="GET"
-                                        name="production_order_id"
+                                        name="production_order"
                                         data-keyResp="production_order_dd"
                                     ></select>
                                 </div>
@@ -92,7 +92,7 @@
                                         id="box-work-order"
                                         data-url="{% url "WorkOrderDDListAPI" %}"
                                         data-method="GET"
-                                        name=work_order_id"
+                                        name=work_order"
                                         data-keyResp="work_order_dd"
                                     ></select>
                                 </div>
@@ -176,6 +176,8 @@
         id="app-trans-factory"
         data-for-po="{% trans 'General production' %}"
         data-for-wo="{% trans 'Production for orders' %}"
+        data-available="{% trans 'Available' %}"
+        data-exceed-quantity="{% trans 'Exceed quantity' %}"
         data-validate-quantity="{% trans 'The quantity must be greater than 0' %}"
     >
     <input
@@ -184,6 +186,8 @@
         data-md-product="{% url 'ProductForSaleListAPI' %}"
         data-md-uom="{% url 'UnitOfMeasureListAPI' %}"
         data-md-pwh="{% url 'WarehouseGetProductsListAPI' %}"
+        data-goods-issue-product="{% url 'GoodsIssueProductListAPI' %}"
+        data-production-report-product="{% url 'ProductionReportProductListAPI' %}"
     >
     {{ data.employee_current|json_script:'employee_current' }}
 {% endblock %}

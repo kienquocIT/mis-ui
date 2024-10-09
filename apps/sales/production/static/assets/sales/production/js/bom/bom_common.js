@@ -62,6 +62,22 @@ class BOMLoadPage {
             keyText: 'title',
         })
     }
+    static LoadGoodsProduct(ele, data) {
+        ele.initSelect2({
+            ajax: {
+                data: {'general_product_types_mapped__is_goods': true},
+                url: ele.attr('data-url'),
+                method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                return resp.data[keyResp];
+            },
+            data: (data ? data : null),
+            keyResp: 'product_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
 }
 
 class BOMLoadTab {
@@ -368,7 +384,7 @@ class BOMLoadTab {
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<input disabled readonly class="form-control mask-money material-unit-price" value="${row?.['subtotal_price'] ? row?.['subtotal_price'] : 0}">`;
+                        return `<input disabled readonly class="form-control mask-money material-subtotal-price" value="${row?.['subtotal_price'] ? row?.['subtotal_price'] : 0}">`;
                     }
                 },
                 {
@@ -431,7 +447,7 @@ class BOMLoadTab {
                     ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge badge-light material-code w-100')
                     ele.closest('tr').find('.material-code').closest('a').attr('href', '').addClass('disabled')
                 }
-                BOMLoadTab.LoadUOM(ele.closest('tr').find('.material-uom'), material_selected?.['general_uom_group'], material_selected?.['sale_default_uom'])
+                BOMLoadTab.LoadUOM(ele.closest('tr').find('.material-uom'), material_selected?.['general_uom_group'], material_selected?.['inventory_uom'])
                 ele.closest('tr').find('.material-unit-price').attr('value', material_selected?.['standard_price'])
                 let quantity = parseFloat(ele.closest('tr').find('.material-quantity').val())
                 ele.closest('tr').find('.material-subtotal-price').attr('value', parseFloat(material_selected?.['standard_price']) * quantity)
@@ -714,7 +730,7 @@ class BOMAction {
     static Calculate_BOM_sum_price() {
         let sum_price = 0
         labor_summary_table.find('tbody tr').each(function () {
-            sum_price += parseFloat($(this).find('.labor-summary-subtotal-price').attr('data-init-money'))
+            sum_price += $(this).find('.labor-summary-subtotal-price').attr('data-init-money') ? parseFloat($(this).find('.labor-summary-subtotal-price').attr('data-init-money')) : 0
         })
         if (is_outsourcing.prop('checked')) {
             material_table_outsourcing.find('tbody tr').each(function () {
@@ -722,9 +738,16 @@ class BOMAction {
             })
         }
         else {
-            material_table.find('tbody tr').each(function () {
-                sum_price += $(this).find('.material-subtotal-price').attr('value') ? parseFloat($(this).find('.material-subtotal-price').attr('value')) : 0
-            })
+            if (!$('#for-sale').prop('checked')) {
+                material_table.find('tbody tr').each(function () {
+                    sum_price += $(this).find('.material-subtotal-price').attr('value') ? parseFloat($(this).find('.material-subtotal-price').attr('value')) : 0
+                })
+            }
+            else {
+                material_table_outsourcing.find('tbody tr').each(function () {
+                    sum_price += $(this).find('.material-subtotal-price').attr('value') ? parseFloat($(this).find('.material-subtotal-price').attr('value')) : 0
+                })
+            }
         }
         priceEle.attr('value', sum_price)
         $.fn.initMaskMoney2()
@@ -916,6 +939,9 @@ class BOMHandle {
         if ($('#for-service').prop('checked')) {
             frm.dataForm['bom_type'] = 1
         }
+        if ($('#for-sale').prop('checked')) {
+            frm.dataForm['bom_type'] = 2
+        }
         frm.dataForm['product_id'] = productEle.val()
         frm.dataForm['sum_price'] = priceEle.attr('value')
         frm.dataForm['sum_time'] = timeEle.val()
@@ -925,66 +951,82 @@ class BOMHandle {
         let bom_material_component_data = []
         let bom_tool_data = []
         if (!is_outsourcing.prop('checked')) {
-            process_description_table.find('tbody tr').each(function () {
-                bom_process_data.push({
-                    'order': $(this).find('td:eq(0)').text(),
-                    'task_name': $(this).find('.process-task-name').val(),
-                    'labor_id': $(this).find('.process-labor').val(),
-                    'quantity': $(this).find('.process-quantity').val(),
-                    'uom_id': $(this).find('.process-uom').val(),
-                    'unit_price': $(this).find('.process-unit-price').attr('value'),
-                    'subtotal_price': $(this).find('.process-subtotal-price').attr('value'),
-                    'note': $(this).find('.process-note').val()
+            if (!$('#for-sale').prop('checked')) {
+                process_description_table.find('tbody tr').each(function () {
+                    bom_process_data.push({
+                        'order': $(this).find('td:eq(0)').text(),
+                        'task_name': $(this).find('.process-task-name').val(),
+                        'labor_id': $(this).find('.process-labor').val(),
+                        'quantity': $(this).find('.process-quantity').val(),
+                        'uom_id': $(this).find('.process-uom').val(),
+                        'unit_price': $(this).find('.process-unit-price').attr('value'),
+                        'subtotal_price': $(this).find('.process-subtotal-price').attr('value'),
+                        'note': $(this).find('.process-note').val()
+                    })
                 })
-            })
-            labor_summary_table.find('tbody tr').each(function (index) {
-                bom_summary_process_data.push({
-                    'order': parseInt(index) + 1,
-                    'labor_id': $(this).find('.labor-summary-labor').attr('data-labor-id'),
-                    'quantity': $(this).find('.labor-summary-quantity').text(),
-                    'uom_id': $(this).find('.labor-summary-uom').attr('data-uom-id'),
-                    'unit_price': $(this).find('.labor-summary-unit-price').attr('data-init-money'),
-                    'subtotal_price': $(this).find('.labor-summary-subtotal-price').attr('data-init-money'),
+                labor_summary_table.find('tbody tr').each(function (index) {
+                    bom_summary_process_data.push({
+                        'order': parseInt(index) + 1,
+                        'labor_id': $(this).find('.labor-summary-labor').attr('data-labor-id'),
+                        'quantity': $(this).find('.labor-summary-quantity').text(),
+                        'uom_id': $(this).find('.labor-summary-uom').attr('data-uom-id'),
+                        'unit_price': $(this).find('.labor-summary-unit-price').attr('data-init-money'),
+                        'subtotal_price': $(this).find('.labor-summary-subtotal-price').attr('data-init-money'),
+                    })
                 })
-            })
-            process_description_table.find('tbody tr').each(function () {
-                let process_index = $(this).find('td:eq(0)').text()
-                let material_order = 0
-                material_table.find(`tbody .material-for-task-${process_index}`).each(function () {
-                    if ($(this).find('.material-group').length === 0) {
-                        material_order += 1
-                        bom_material_component_data.push({
-                            'bom_process_order': process_index,
-                            'order': material_order,
-                            'material_id': $(this).find('.material-item').val(),
-                            'quantity': $(this).find('.material-quantity').val(),
-                            'standard_price': $(this).find('.material-unit-price').attr('value'),
-                            'subtotal_price': $(this).find('.material-subtotal-price').attr('value'),
-                            'uom_id': $(this).find('.material-uom').val(),
-                            'disassemble': $(this).find('.material-disassemble').prop('checked'),
-                            'note': $(this).find('.material-note').val(),
-                            'replacement_data': $(this).find('.replacement-material-script').text() ? JSON.parse($(this).find('.replacement-material-script').text()) : []
-                        })
-                    }
+                process_description_table.find('tbody tr').each(function () {
+                    let process_index = $(this).find('td:eq(0)').text()
+                    let material_order = 0
+                    material_table.find(`tbody .material-for-task-${process_index}`).each(function () {
+                        if ($(this).find('.material-group').length === 0) {
+                            material_order += 1
+                            bom_material_component_data.push({
+                                'bom_process_order': process_index,
+                                'order': material_order,
+                                'material_id': $(this).find('.material-item').val(),
+                                'quantity': $(this).find('.material-quantity').val(),
+                                'standard_price': $(this).find('.material-unit-price').attr('value'),
+                                'subtotal_price': $(this).find('.material-subtotal-price').attr('value'),
+                                'uom_id': $(this).find('.material-uom').val(),
+                                'disassemble': $(this).find('.material-disassemble').prop('checked'),
+                                'note': $(this).find('.material-note').val(),
+                                'replacement_data': $(this).find('.replacement-material-script').text() ? JSON.parse($(this).find('.replacement-material-script').text()) : []
+                            })
+                        }
+                    })
                 })
-            })
-            process_description_table.find('tbody tr').each(function () {
-                let process_index = $(this).find('td:eq(0)').text()
-                let tool_order = 0
-                tools_table.find(`tbody .tool-for-task-${process_index}`).each(function () {
-                    if ($(this).find('.tool-group').length === 0) {
-                        tool_order += 1
-                        bom_tool_data.push({
-                            'bom_process_order': process_index,
-                            'order': tool_order,
-                            'tool_id': $(this).find('.tool-item').val(),
-                            'quantity': $(this).find('.tool-quantity').val(),
-                            'uom_id': $(this).find('.tool-uom').val(),
-                            'note': $(this).find('.tool-note').val(),
-                        })
-                    }
+                process_description_table.find('tbody tr').each(function () {
+                    let process_index = $(this).find('td:eq(0)').text()
+                    let tool_order = 0
+                    tools_table.find(`tbody .tool-for-task-${process_index}`).each(function () {
+                        if ($(this).find('.tool-group').length === 0) {
+                            tool_order += 1
+                            bom_tool_data.push({
+                                'bom_process_order': process_index,
+                                'order': tool_order,
+                                'tool_id': $(this).find('.tool-item').val(),
+                                'quantity': $(this).find('.tool-quantity').val(),
+                                'uom_id': $(this).find('.tool-uom').val(),
+                                'note': $(this).find('.tool-note').val(),
+                            })
+                        }
+                    })
                 })
-            })
+            }
+            else {
+                material_table_outsourcing.find(`tbody tr`).each(function (index) {
+                    bom_material_component_data.push({
+                        'order': index + 1,
+                        'material_id': $(this).find('.material-item').val(),
+                        'quantity': $(this).find('.material-quantity').val(),
+                        'standard_price': $(this).find('.material-unit-price').attr('value'),
+                        'subtotal_price': $(this).find('.material-subtotal-price').attr('value'),
+                        'uom_id': $(this).find('.material-uom').val(),
+                        'disassemble': $(this).find('.material-disassemble').prop('checked'),
+                        'note': $(this).find('.material-note').val(),
+                    })
+                })
+            }
         }
         else {
             frm.dataForm['for_outsourcing'] = true
@@ -1019,7 +1061,7 @@ class BOMHandle {
                     data = data['bom_detail'];
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    // console.log(data)
+                    console.log(data)
 
                     if (data?.['bom_type'] === 0) {
                         $('#for-production').prop('checked', true)
@@ -1027,63 +1069,79 @@ class BOMHandle {
                     if (data?.['bom_type'] === 1) {
                         $('#for-service').prop('checked', true)
                     }
+                    if (data?.['bom_type'] === 2) {
+                        $('#for-sale').prop('checked', true)
+                    }
 
                     BOMLoadPage.LoadFinishGoodsAndGoods(productEle, data?.['product'])
                     priceEle.attr('value', data?.['sum_price'])
                     timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
 
                     if (!data?.['for_outsourcing']) {
-                        BOMLoadTab.LoadProcessDescriptionTable(data?.['bom_process_data'], option)
-                        BOMLoadTab.LoadLaborSummaryTable(data?.['bom_summary_process_data'])
+                        if (data?.['bom_type'] !== 2) {
+                            BOMLoadTab.LoadProcessDescriptionTable(data?.['bom_process_data'], option)
+                            BOMLoadTab.LoadLaborSummaryTable(data?.['bom_summary_process_data'])
 
-                        material_table.find('tbody').html('')
-                        tools_table.find('tbody').html('')
-                        for (let i = 0; i < data?.['bom_process_data'].length; i++) {
-                            let process_row_index = i + 1
-                            let process_task_name = data?.['bom_process_data'][i]?.['task_name']
-                            BOMAction.Add_or_Update_material_group(process_row_index, process_task_name)
-                            BOMAction.Add_or_Update_tool_group(process_row_index, process_task_name)
+                            material_table.find('tbody').html('')
+                            tools_table.find('tbody').html('')
+                            for (let i = 0; i < data?.['bom_process_data'].length; i++) {
+                                let process_row_index = i + 1
+                                let process_task_name = data?.['bom_process_data'][i]?.['task_name']
+                                BOMAction.Add_or_Update_material_group(process_row_index, process_task_name)
+                                BOMAction.Add_or_Update_tool_group(process_row_index, process_task_name)
 
-                            for (let j = 0; j < data?.['bom_material_component_data'].length; j++) {
-                                if (process_row_index === parseInt(data?.['bom_material_component_data'][j]?.['bom_process_order'])) {
-                                    let new_material_row = BOMAction.Create_material_row(process_row_index)
-                                    material_table.append(new_material_row)
-                                    let material_selected = data?.['bom_material_component_data'][j]
-                                    new_material_row.find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['material']?.['id'])
-                                    new_material_row.find('.replacement-material-script').text(material_selected?.['replacement_data'] ? JSON.stringify(material_selected?.['replacement_data']) : '[]')
-                                    BOMLoadTab.LoadMaterial(new_material_row.find('.material-item'), material_selected?.['material'])
-                                    new_material_row.find('.material-code').text(material_selected?.['material']?.['code'])
-                                    new_material_row.find('.material-quantity').val(material_selected?.['quantity'])
-                                    new_material_row.find('.material-unit-price').attr('value', material_selected?.['standard_price'])
-                                    new_material_row.find('.material-subtotal-price').attr('value', material_selected?.['subtotal_price'])
-                                    BOMLoadTab.LoadUOM(
-                                        new_material_row.find('.material-uom'),
-                                        material_selected?.['uom']?.['group_id'],
-                                        material_selected?.['uom']
-                                    )
-                                    new_material_row.find('.material-disassemble').prop('checked', material_selected?.['disassemble'])
-                                    new_material_row.find('.material-note').val(material_selected?.['note'])
-                                    new_material_row.find('.del-row-material').prop('disabled', option === 'detail')
+                                for (let j = 0; j < data?.['bom_material_component_data'].length; j++) {
+                                    if (process_row_index === parseInt(data?.['bom_material_component_data'][j]?.['bom_process_order'])) {
+                                        let new_material_row = BOMAction.Create_material_row(process_row_index)
+                                        material_table.append(new_material_row)
+                                        let material_selected = data?.['bom_material_component_data'][j]
+                                        new_material_row.find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['material']?.['id'])
+                                        new_material_row.find('.replacement-material-script').text(material_selected?.['replacement_data'] ? JSON.stringify(material_selected?.['replacement_data']) : '[]')
+                                        BOMLoadTab.LoadMaterial(new_material_row.find('.material-item'), material_selected?.['material'])
+                                        new_material_row.find('.material-code').text(material_selected?.['material']?.['code'])
+                                        new_material_row.find('.material-quantity').val(material_selected?.['quantity'])
+                                        new_material_row.find('.material-unit-price').attr('value', material_selected?.['standard_price'])
+                                        new_material_row.find('.material-subtotal-price').attr('value', material_selected?.['subtotal_price'])
+                                        BOMLoadTab.LoadUOM(
+                                            new_material_row.find('.material-uom'),
+                                            material_selected?.['uom']?.['group_id'],
+                                            material_selected?.['uom']
+                                        )
+                                        new_material_row.find('.material-disassemble').prop('checked', material_selected?.['disassemble'])
+                                        new_material_row.find('.material-note').val(material_selected?.['note'])
+                                        new_material_row.find('.del-row-material').prop('disabled', option === 'detail')
+                                    }
+                                }
+
+                                for (let k = 0; k < data?.['bom_tool_data'].length; k++) {
+                                    if (process_row_index === parseInt(data?.['bom_tool_data'][k]?.['bom_process_order'])) {
+                                        let new_tool_row = BOMAction.Create_tool_row(process_row_index)
+                                        tools_table.append(new_tool_row)
+                                        let tool_selected = data?.['bom_tool_data'][k]
+                                        BOMLoadTab.LoadTool(new_tool_row.find('.tool-item'), tool_selected?.['tool'])
+                                        new_tool_row.find('.tool-code').text(tool_selected?.['tool']?.['code'])
+                                        new_tool_row.find('.tool-quantity').val(tool_selected?.['quantity'])
+                                        BOMLoadTab.LoadUOM(
+                                            new_tool_row.find('.tool-uom'),
+                                            tool_selected?.['uom']?.['group_id'],
+                                            tool_selected?.['uom']
+                                        )
+                                        new_tool_row.find('.tool-note').val(tool_selected?.['note'])
+                                        new_tool_row.find('.del-row-tool').prop('disabled', option === 'detail')
+                                    }
                                 }
                             }
-
-                            for (let k = 0; k < data?.['bom_tool_data'].length; k++) {
-                                if (process_row_index === parseInt(data?.['bom_tool_data'][k]?.['bom_process_order'])) {
-                                    let new_tool_row = BOMAction.Create_tool_row(process_row_index)
-                                    tools_table.append(new_tool_row)
-                                    let tool_selected = data?.['bom_tool_data'][k]
-                                    BOMLoadTab.LoadTool(new_tool_row.find('.tool-item'), tool_selected?.['tool'])
-                                    new_tool_row.find('.tool-code').text(tool_selected?.['tool']?.['code'])
-                                    new_tool_row.find('.tool-quantity').val(tool_selected?.['quantity'])
-                                    BOMLoadTab.LoadUOM(
-                                        new_tool_row.find('.tool-uom'),
-                                        tool_selected?.['uom']?.['group_id'],
-                                        tool_selected?.['uom']
-                                    )
-                                    new_tool_row.find('.tool-note').val(tool_selected?.['note'])
-                                    new_tool_row.find('.del-row-tool').prop('disabled', option === 'detail')
-                                }
-                            }
+                        }
+                        else {
+                            is_outsourcing.prop('checked', false)
+                            normal_production_space.prop('hidden', true)
+                            outsourcing_production_space.prop('hidden', false)
+                            material_table.find('tbody').html('')
+                            tools_table.find('tbody').html('')
+                            priceEle.attr('value', data?.['sum_price'])
+                            timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
+                            $.fn.initMaskMoney2()
+                            BOMLoadTab.LoadOutsourcingMaterialTable(data?.['bom_material_component_data'], option)
                         }
                     }
                     else {
@@ -1092,8 +1150,8 @@ class BOMHandle {
                         outsourcing_production_space.prop('hidden', false)
                         material_table.find('tbody').html('')
                         tools_table.find('tbody').html('')
-                        priceEle.attr('value', 0)
-                        timeEle.val(0)
+                        priceEle.attr('value', data?.['sum_price'])
+                        timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
                         $.fn.initMaskMoney2()
                         BOMLoadTab.LoadOutsourcingMaterialTable(data?.['bom_material_component_data'], option)
                     }
@@ -1184,6 +1242,23 @@ $('input[name="bom-type"]').on('change', function() {
                 normal_production_space.prop('hidden', false)
                 is_outsourcing.prop('checked', false)
                 outsourcing_production_space.prop('hidden', true)
+                BOMLoadTab.LoadOutsourcingMaterialTable()
+                BOMLoadTab.LoadProcessDescriptionTable()
+                BOMLoadTab.LoadLaborSummaryTable()
+                material_table.find('tbody').html('')
+                tools_table.find('tbody').html('')
+                priceEle.attr('value', 0)
+                timeEle.val(0)
+                $.fn.initMaskMoney2()
+            }
+            else if ($('#for-sale').prop('checked')) {
+                BOMLoadPage.LoadGoodsProduct(productEle)
+                $('#hint-for-finished-goods').prop('hidden', true)
+                $('#hint-for-service').prop('hidden', true)
+                $('#hint-for-goods').prop('hidden', false)
+                normal_production_space.prop('hidden', true)
+                is_outsourcing.prop('checked', false)
+                outsourcing_production_space.prop('hidden', false)
                 BOMLoadTab.LoadOutsourcingMaterialTable()
                 BOMLoadTab.LoadProcessDescriptionTable()
                 BOMLoadTab.LoadLaborSummaryTable()
@@ -1299,6 +1374,7 @@ $(document).on("change", '.replacement-checkbox', function () {
 $(document).on("change", '.material-quantity', function () {
     let unit_price = parseFloat($(this).closest('tr').find('.material-unit-price').attr('value'))
     let quantity = parseFloat($(this).val())
+    console.log(unit_price, quantity)
     $(this).closest('tr').find('.material-subtotal-price').attr('value', unit_price * quantity)
     BOMAction.Calculate_BOM_sum_price()
     $.fn.initMaskMoney2()

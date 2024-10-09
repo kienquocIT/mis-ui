@@ -43,11 +43,11 @@ $(document).ready(function () {
         pageLength:50,
         columns: [
             {
-                data: 'title',
+                data: 'title_i18n',
                 targets: 0,
                 width: "20%",
                 render: (data, type, row) => {
-                    return `<button class="btn-collapse-app-wf btn btn-icon btn-rounded mr-1"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> ${data}`;
+                    return `<button class="btn-collapse-app-wf btn btn-icon btn-rounded mr-1"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${data}</b>`;
                 }
             }, {
                 data: 'mode',

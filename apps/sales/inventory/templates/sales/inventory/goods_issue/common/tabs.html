@@ -9,7 +9,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link disabled" data-bs-toggle="tab" href="#tab-attachment" id="link-tab-sale">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab-attachment" id="link-tab-sale">
                     <span class="nav-link-text">{% trans 'Attachment' %}</span>
                 </a>
             </li>
@@ -28,9 +28,9 @@
                             <th class="w-15">{% trans 'Warehouse' %}</th>
                             <th class="w-10">{% trans 'UoM' %}</th>
                             <th class="w-10">{% trans 'Sum' %}</th>
-                            <th class="w-10">{% trans 'Issued before' %}</th>
+                            <th class="w-10">{% trans 'Issued' %}</th>
                             <th class="w-10">{% trans 'Remain' %}</th>
-                            <th class="w-15">{% trans 'Selected' %}</th>
+                            <th class="w-15">{% trans 'Issue this time' %}</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
@@ -47,16 +47,24 @@
                             <th class="w-15">{% trans 'Warehouse' %}</th>
                             <th class="w-10">{% trans 'UoM' %}</th>
                             <th class="w-10">{% trans 'Sum' %}</th>
-                            <th class="w-10">{% trans 'Issued before' %}</th>
-                            <th class="w-10">{% trans 'Remain' %}</th>
-                            <th class="w-15">{% trans 'Selected' %}</th>
+                            <th class="w-10">{% trans 'Issued' %}</th>
+                            <th class="w-10">{% trans 'Difference' %}</th>
+                            <th class="w-15">{% trans 'Issue this time' %}</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
             </div>
-            <div class="tab-pane fade" id="tab-attachment"></div>
+            <div class="tab-pane fade" id="tab-attachment">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="w-100" id="attachment">
+                            {% include 'extends/files/all.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

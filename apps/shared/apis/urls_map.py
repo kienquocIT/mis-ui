@@ -225,7 +225,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     IMPORT_SALEDATA_INDUSTRY = StringUrl('import-data/saledata/industry')
     IMPORT_SALEDATA_PAYMENT_TERM = StringUrl('import-data/saledata/payment-term')
     IMPORT_SALEDATA_PRODUCT_UOMGROUP = StringUrl('import-data/saledata/product/uomgroup')
-
+    IMPORT_SALEDATA_PRODUCT_PRODUCT_TYPE = StringUrl('import-data/saledata/product/product-type')
+    IMPORT_SALEDATA_PRODUCT_PRODUCT_CATEGORY = StringUrl('import-data/saledata/product/product-category')
+    IMPORT_SALEDATA_PRODUCT_UOM = StringUrl('import-data/saledata/product/uom')
+    IMPORT_SALEDATA_PRODUCT = StringUrl('import-data/saledata/product')
+    IMPORT_SALEDATA_PRICE_TAX_CATEGORY = StringUrl('import-data/saledata/price/tax-category')
+    IMPORT_SALEDATA_PRICE_TAX = StringUrl('import-data/saledata/price/tax')
     # HR
 
     # WORKFLOW
@@ -561,6 +566,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GIS_NONE_LIST = StringUrl('inventory/prd-wh-list-for-gis/list')
     GIS_LOT_LIST = StringUrl('inventory/lot-list-for-gis/list')
     GIS_SERIAL_LIST = StringUrl('inventory/serial-list-for-gis/list')
+    GOODS_ISSUE_PRODUCT_LIST = StringUrl('inventory/goods-issue-product/list')
 
     # Sale Order List for Purchasing Staff
     SALE_ORDER_LIST_FOR_PURCHASING_STAFF = StringUrl('saleorder/purchasing-staff/list')
@@ -573,6 +579,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REPORT_CASHFLOW_LIST = StringUrl('report/cashflow/list')
     REPORT_INVENTORY_DETAIL_LIST = StringUrl('report/inventory-detail/list')
     BALANCE_INIT_LIST = StringUrl('report/balance-init/list')
+    BALANCE_INIT_LIST_IMPORT_DB = StringUrl('report/balance-init-import-db/list')
     REPORT_INVENTORY_LIST = StringUrl('report/inventory/list')
     REPORT_INVENTORY_PRD_WH_VIEW_LIST = StringUrl('report/product-warehouse-view/list')
     REPORT_GENERAL_LIST = StringUrl('report/general/list')
@@ -709,14 +716,17 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCTION_ORDER_LIST = StringUrl('production/production-order/list')
     PRODUCTION_ORDER_DETAIL = StringUrl('production/production-order')
     PRODUCTION_ORDER_DD_LIST = StringUrl('production/production-order-dd/list')
+    PRODUCTION_ORDER_MANUAL_DONE_LIST = StringUrl('production/production-order-manual-done/list')
 
     # Production report
     PRODUCTION_REPORT_LIST = StringUrl('production/production-report/list')
     PRODUCTION_REPORT_DETAIL = StringUrl('production/production-report')
     PRODUCTION_REPORT_DD_LIST = StringUrl('production/production-report-dd/list')
     PRODUCTION_REPORT_GR_LIST = StringUrl('production/production-report-gr/list')
+    PRODUCTION_REPORT_PRODUCT_LIST = StringUrl('production/production-report-product/list')
 
-    # Production order
+    # Work order
     WORK_ORDER_LIST = StringUrl('production/work-order/list')
     WORK_ORDER_DETAIL = StringUrl('production/work-order')
     WORK_ORDER_DD_LIST = StringUrl('production/work-order-dd/list')
+    WORK_ORDER_MANUAL_DONE_LIST = StringUrl('production/work-order-manual-done/list')

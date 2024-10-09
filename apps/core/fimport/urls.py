@@ -8,6 +8,8 @@ from apps.core.fimport.views.core import (
 from apps.core.fimport.views.saledata import (
     SaleDataContactImportAPI, SalutationImportAPI, CurrencyImportAPI, AccountGroupImportAPI, AccountTypeImportAPI,
     IndustryImportAPI, PaymentTermImportAPI, SaleDataAccountImportAPI, ProductUOMGroupImportAPI,
+    ProductProductTypeImportAPI, ProductProductCategoryImportAPI, PriceTaxCategoryImportAPI, ProductUOMImportAPI,
+    PriceTaxImportAPI, ProductImportAPI,
 )
 
 urlpatterns = [
@@ -30,4 +32,12 @@ urlpatterns = [
     path('saledata/contact', SaleDataContactImportAPI.as_view(), name='SaleDataContactImportAPI'),
     path('saledata/account', SaleDataAccountImportAPI.as_view(), name='SaleDataAccountImportAPI'),
     path('saledata/product/uomgroup', ProductUOMGroupImportAPI.as_view(), name='ProductUOMGroupImportAPI'),
+    path('saledata/product/product-type', ProductProductTypeImportAPI.as_view(), name='ProductProductTypeImportAPI'),
+    path('saledata/product/product-category', ProductProductCategoryImportAPI.as_view(),
+         name='ProductProductCategoryImportAPI'),
+    path('saledata/product/uom', ProductUOMImportAPI.as_view(), name='ProductUOMImportAPI'),
+    path('saledata/product', ProductImportAPI.as_view(), name='ProductImportAPI'),
+    path('saledata/price/tax-category', PriceTaxCategoryImportAPI.as_view(), name='PriceTaxCategoryImportAPI'),
+    path('saledata/price/tax', PriceTaxImportAPI.as_view(), name='PriceTaxImportAPI')
+
 ]

@@ -63,7 +63,7 @@
                 <li class="nav-item">
                     <a class="nav-link" data-href="#tab_next_node">
                         <span class="nav-icon-wrap mr-1"><i class="fas fa-project-diagram"></i></span>
-                        <span class="nav-link-text">{% trans 'Exit/Next node condition' %}</span>
+                        <span class="nav-link-text">{% trans 'Node association' %}</span>
                     </a>
                 </li>
             </ul>
@@ -343,6 +343,11 @@
         data-type-src-2="{% trans 'One collaborator' %}"
         data-type-src-3="{% trans 'Many collaborators' %}"
         data-config-according="{% trans 'Config according to' %}"
+        data-type="{% trans 'Type' %}"
+        data-type-src-note="{% trans 'At this node' %}"
+        data-type-src-2-note="{% trans 'Only one collaborator (select in list below) will action, approve the document' %}"
+        data-type-src-3-note="{% trans 'All collaborators (according to configuration below) will action, approve the document' %}"
+        data-validate-next-node="{% trans 'Only one collaborator can be configured at this node because the next node needs to select a collaborator' %}"
     >
 
 

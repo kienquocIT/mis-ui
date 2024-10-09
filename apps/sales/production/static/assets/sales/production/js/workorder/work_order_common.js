@@ -11,6 +11,7 @@ class WorkOrderLoadDataHandle {
     static $boxSO = $('#box-so');
     static $boxWH = $('#box-warehouse');
     static $boxGroup = $('#box-group');
+    static $manualDone = $('#manual-done');
     static $btnEditProd = $('#btn-edit-product');
     static $btnSaveProd = $('#btn-save-product');
 
@@ -254,12 +255,15 @@ class WorkOrderLoadDataHandle {
     static loadBOM() {
         if (WorkOrderLoadDataHandle.$product.attr('data-detail')) {
             let dataProduct = JSON.parse(WorkOrderLoadDataHandle.$product.attr('data-detail'));
+            WindowControl.showLoading();
             $.fn.callAjax2({
                     'url': WorkOrderLoadDataHandle.$urls.attr('data-md-bom'),
                     'method': 'GET',
                     'data': {
                         'product_id': dataProduct?.['id'],
-                        'opportunity_id__isnull': false,
+                        // 'opportunity_id__isnull': false,
+                        // 'bom_type__in': [0, 2, 3, 4].join(','),
+                        'system_status': 3,
                     },
                     'isDropdown': true,
                 }
@@ -278,6 +282,7 @@ class WorkOrderLoadDataHandle {
                                 WorkOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data.bom_order_list[0]));
                                 WorkOrderLoadDataHandle.loadChangeQuantity();
                             }
+                            WindowControl.hideLoading();
                         }
                     }
                 }
@@ -495,6 +500,39 @@ class WorkOrderLoadDataHandle {
         return true;
     };
 
+    static loadClickManualDone() {
+        if (WorkOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            let status_production = 1;
+            if (WorkOrderLoadDataHandle.$manualDone[0].checked === true) {
+                status_production = 2;
+            }
+            WindowControl.showLoading();
+            $.fn.callAjax2(
+                {
+                    'url': WorkOrderLoadDataHandle.$urls.attr('data-manual-done'),
+                    'method': "POST",
+                    'data': {'work_order_id': $.fn.getPkDetail(), 'status_production': status_production},
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 3000);
+                    }
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                }
+            )
+        }
+        return true;
+    };
+
     // Detail
     static loadDetail(data) {
         WorkOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data?.['bom_data']));
@@ -522,6 +560,16 @@ class WorkOrderLoadDataHandle {
         }
         if (data?.['group_data']?.['id']) {
             WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxGroup, [data?.['group_data']]);
+        }
+        if (data?.['status_production'] !== 0) {
+            WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxStatus, WorkOrderLoadDataHandle.dataStatus);
+            WorkOrderLoadDataHandle.$boxStatus.val(data?.['status_production']).trigger('change');
+            if (data?.['system_status'] === 3) {
+                WorkOrderLoadDataHandle.$manualDone.removeAttr('disabled');
+            }
+            if (data?.['status_production'] === 2) {
+                WorkOrderLoadDataHandle.$manualDone[0].checked = true;
+            }
         }
         let date_start = '';
         if (data?.['date_start']) {

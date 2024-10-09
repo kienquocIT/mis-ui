@@ -271,6 +271,17 @@ $(document).ready(function () {
                             }
                         },
                         {
+                            data: 'code',
+                            className: 'wrap-text w-30',
+                            render: (data, type, row) => {
+                                if (row.is_default) {
+                                    return `<span class="badge badge-secondary">${row.code}</span>`
+                                } else {
+                                    return `<span class="badge badge-primary">${row.code}</span>`
+                                }
+                            }
+                        },
+                        {
                             data: 'title',
                             className: 'wrap-text w-40',
                             render: (data, type, row, meta) => {
@@ -347,6 +358,9 @@ $(document).ready(function () {
     let form_create_tax_category = $('#form-create-tax-category')
     new SetupFormSubmit(form_create_tax_category).validate({
         rules: {
+            code:{
+                required: true
+            },
             title: {
                 required: true,
             }
@@ -476,6 +490,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_category')) {
+                        $('#tax-category-code').val(data?.['tax_category'].code)
                         $('#tax-category-title').val(data?.['tax_category'].title)
                         $('#tax-category-description').val(data?.['tax_category'].description)
                     }
@@ -536,6 +551,9 @@ $(document).ready(function () {
     let form_update_tax_category = $('#form-update-tax-category')
     new SetupFormSubmit(form_update_tax_category).validate({
         rules: {
+            code:{
+                required: true,
+            },
             title: {
                 required: true,
             }

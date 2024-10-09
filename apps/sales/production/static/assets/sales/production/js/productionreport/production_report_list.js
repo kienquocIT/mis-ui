@@ -53,8 +53,8 @@ $(function () {
                         width: '15%',
                         render: (data, type, row) => {
                             let type_data = [
-                                "blue badge-outline",
-                                "pink badge-outline",
+                                "warning badge-outline",
+                                "success badge-outline",
                             ]
                             let typeTxt = JSON.parse($('#pr_type').text())
                             return `<span class="badge badge-${type_data[row?.['production_report_type']]}">${typeTxt[row?.['production_report_type']][1]}</span>`;

@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
-from apps.shared.constant import SYSTEM_STATUS
+from apps.shared.constant import SYSTEM_STATUS, CLOSE_OPEN_STATUS
 
 
 def create_work_order(request, url, msg):
@@ -35,7 +35,7 @@ class WorkOrderList(View):
         breadcrumb='WORK_ORDER_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
+        return {'stt_sys': SYSTEM_STATUS, 'stt_cp': CLOSE_OPEN_STATUS}, status.HTTP_200_OK
 
 
 class WorkOrderCreate(View):
@@ -46,7 +46,9 @@ class WorkOrderCreate(View):
         breadcrumb='WORK_ORDER_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        ctx = {}
+        ctx = {
+            'list_from_app': 'production.workorder.create',
+        }
         return ctx, status.HTTP_200_OK
 
 
@@ -97,6 +99,7 @@ class WorkOrderUpdate(View):
     def get(self, request, pk, *args, **kwargs):
         ctx = {
             'data': {'doc_id': pk},
+            'list_from_app': 'production.workorder.edit',
         }
         return ctx, status.HTTP_200_OK
 
@@ -133,3 +136,16 @@ class WorkOrderDDListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.WORK_ORDER_DD_LIST).get(data)
         return resp.auto_return(key_success='work_order_dd')
+
+
+class WorkOrderManualDoneListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_work_order(
+            request=request,
+            url=ApiURL.WORK_ORDER_MANUAL_DONE_LIST,
+            msg=SaleMsg.WORK_ORDER_UPDATE
+        )

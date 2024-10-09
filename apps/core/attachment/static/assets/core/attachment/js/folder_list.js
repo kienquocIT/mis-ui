@@ -19,10 +19,11 @@ $(function () {
         loadAction();
         loadAjaxFolder(0);
 
-        // ACTIONS
-        // $uploadFile.on('click', function () {
-        //     $('#uploadOpen').click();
-        // });
+        // file
+        new $x.cls.file($('#attachment')).init({
+            name: 'attachment',
+            enable_edit: true,
+        });
 
         // FOLDER TREE
         $folderTree.on('mouseenter', '.folder-btn', function () {

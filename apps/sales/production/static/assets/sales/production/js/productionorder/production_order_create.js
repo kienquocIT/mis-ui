@@ -5,6 +5,10 @@ $(function () {
         let formSubmit = $('#frm_production_order');
         ProdOrderLoadDataHandle.loadInitPage();
 
+        ProdOrderLoadDataHandle.$boxType.on('change', function () {
+            ProdOrderLoadDataHandle.loadBOM();
+        });
+
         ProdOrderLoadDataHandle.$boxProd.on('change', function () {
             ProdOrderLoadDataHandle.loadBOM();
             let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxProd, ProdOrderLoadDataHandle.$boxProd.val());
@@ -15,6 +19,8 @@ $(function () {
                 if (dataUOM && dataUOMGr?.['id']) {
                     ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM, [dataUOM], {'group': dataUOMGr?.['id']});
                 }
+                // check product type
+                ProdOrderLoadDataHandle.$boxWH.removeAttr('readonly');
                 if (data?.['general_information']?.['product_type']) {
                     for (let productType of data?.['general_information']?.['product_type']) {
                         if (productType?.['is_service'] === true) {
@@ -36,6 +42,10 @@ $(function () {
             if (dataBOM?.['sum_time']) {
                 ProdOrderLoadDataHandle.$time.val(`${parseInt(dataBOM?.['sum_time']) * multi}`);
             }
+        });
+
+        ProdOrderLoadDataHandle.$manualDone.on('click', function () {
+            ProdOrderLoadDataHandle.loadClickManualDone();
         });
 
         ProdOrderDataTableHandle.$tableMain.on('change', '.table-row-item', function () {

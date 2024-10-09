@@ -60,7 +60,7 @@ class GoodsDetailAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UPDATE_GOODS_DETAIL_DATA_LIST).post(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.CREATE_UPDATE_GOODS_DETAIL_DATA).post(request.data)
         resp.result['message'] = SaleMsg.GOODS_DETAIL_UPDATE
         return resp.auto_return(status_success=status.HTTP_201_CREATED)
 
@@ -71,6 +71,6 @@ class GoodsDetailAPIImportDB(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UPDATE_GOODS_DETAIL_DATA_LIST_IMPORT_DB).post(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.CREATE_GOODS_DETAIL_DATA_IMPORT_DB).post(request.data)
         resp.result['message'] = SaleMsg.GOODS_DETAIL_UPDATE
         return resp.auto_return(status_success=status.HTTP_201_CREATED)

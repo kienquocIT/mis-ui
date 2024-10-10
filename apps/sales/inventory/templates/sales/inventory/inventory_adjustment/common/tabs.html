@@ -1,17 +1,23 @@
 {% load i18n %}
 
+<style>
+    .sticky {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+</style>
+
 <div class="row mt-5">
     <div class="col-12">
         <ul class="nav nav-tabs nav-icon nav-light">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_line_detail">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-justify-left"></i></span></span>
                     <span class="nav-link-text">{% trans 'Line Detail' %}</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_block_attachment">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="file-text"></i></span></span>
                     <span class="nav-link-text">{% trans 'Attachment' %}</span>
                 </a>
             </li>
@@ -34,24 +40,25 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
+                    <div class="col-12" style="overflow: auto; max-height: 50vh">
                         <table data-url="{% url "WareHouseListAPI" %}"
                                data-warehouse-product-list="{% url 'WarehouseGetProductsListAPI' %}"
                                data-uom-list="{% url 'UnitOfMeasureListAPI' %}"
                                data-method="GET"
                                class="table nowrap w-100" id="table-line-detail">
-                            <thead>
+                            <thead class="sticky bg-primary-light-5">
                                 <tr>
+                                    <th></th>
                                     <th>{% trans 'Product name' %}</th>
                                     <th>{% trans 'Warehouse' %}</th>
                                     <th>{% trans 'Unit Of Measure' %}</th>
                                     <th>{% trans 'Booked quantity' %}</th>
-                                    <th class="required">{% trans 'Counted quantity' %}</th>
-                                    <th class="text-center">{% trans 'Difference' %}</th>
-                                    <th class="text-center">{% trans 'Issued' %} / {% trans 'Receipted' %}</th>
+                                    <th hidden class="hidden-col required">{% trans 'Counted quantity' %}</th>
+                                    <th hidden class="hidden-col">{% trans 'Difference' %}</th>
+                                    <th hidden class="hidden-col text-center">{% trans 'Issued' %} / {% trans 'Receipted' %}</th>
                                     <th hidden class="text-center">{% trans 'Select for actions' %}</th>
-                                    <th class="text-center">{% trans 'Action type' %}</th>
-                                    <th class="text-center">{% trans 'Action status' %}</th>
+                                    <th hidden class="hidden-col text-center">{% trans 'Action type' %}</th>
+                                    <th hidden class="hidden-col text-center">{% trans 'Action status' %}</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -62,7 +69,9 @@
             <div class="tab-pane fade" id="tab_block_attachment">
                 <div class="row">
                     <div class="col-12">
-                        <input type="file" id="input-file-now" class="dropify">
+                        <div class="w-100" id="attachment">
+                            {% include 'extends/files/all.html' %}
+                        </div>
                     </div>
                 </div>
             </div>

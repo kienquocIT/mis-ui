@@ -98,7 +98,8 @@ class InventoryAdjustmentDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.INVENTORY_ADJUSTMENT_DETAIL.fill_key(pk=pk)).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.INVENTORY_ADJUSTMENT_DETAIL.fill_key(pk=pk)).get(data)
         return resp.auto_return(key_success='inventory_adjustment_detail')
 
     @mask_view(

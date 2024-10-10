@@ -17,129 +17,115 @@
 {% endblock %}
 {% block pageAction %}
     {% include 'extends/systems/page_actions.html' with is_create=True create_link='#' create_attr='class="btn-show-modal" data-bs-toggle="modal" data-bs-target="#modal-product-and-expense"' %}
-
-{#    <a#}
-{#            href="{% url 'SaleDataImportDataList' %}"#}
-{#    >#}
-{#        <button class="btn btn-outline-primary">#}
-{#                <span>#}
-{#                    <span>{% trans 'Import Data' %}</span>#}
-{#                    <span class="icon">#}
-{#                        <i class="fa-solid fa-file-import"></i>#}
-{#                    </span>#}
-{#                </span>#}
-{#        </button>#}
-{#    </a>#}
 {% endblock %}
 {% block pageContent %}
     <div class="row">
-        <div class="col-12 col-md-3 col-lg-3">
-            <ul class="nav flex-column nav-light nav-pills nav-vertical" id="tab-select-table">
+        <div class="col-12 col-md-2 col-lg-2">
+            <ul class="nav flex-column nav-light nav-pills nav-pills-soft nav-vertical" id="tab-select-table">
                 <li class="nav-item">
-                    <a  href="#section-product-type"
+                    <a  href="#section_product_type"
                         class="nav-link active product-and-expense"
                         data-bs-toggle="tab"
-                        data-collapse="section-product-type">
+                        data-collapse="section_product_type">
                         <span class="nav-link-text">{% trans 'Product Type' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#section-product-category"
+                    <a href="#section_product_category"
                        class="nav-link product-and-expense" data-bs-toggle="tab"
-                       data-collapse="section-product-category">
+                       data-collapse="section_product_category">
                         <span class="nav-link-text">{% trans 'Product Category' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#section-unit-measure"
+                    <a href="#section_unit_of_measure"
                        class="nav-link unit-measure"
                        data-bs-toggle="tab"
-                       data-collapse="section-unit-measure">
+                       data-collapse="section_unit_of_measure">
                         <span class="nav-link-text">{% trans 'Unit Of Measure' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#section-unit-measure-group"
+                    <a href="#section_unit_of_measure_group"
                        class="nav-link unit-measure-group"
                        data-bs-toggle="tab"
-                       data-collapse="section-unit-measure-group">
+                       data-collapse="section_unit_of_measure_group">
                         <span class="nav-link-text">{% trans 'Unit Of Measure Group' %}</span>
                     </a>
                 </li>
             </ul>
         </div>
         <div class="col-12 col-md-1 col-lg-1"></div>
-        <div class="col-12 col-md-8 col-lg-8">
-            <div class="lookup-data" id="section-product-type" style="display: block">
-                <table id="datatable-product-type-list" class="table nowrap w-100"
-                       data-url="{% url "ProductTypeListAPI" %}"
-                       data-url-detail="{% url "ProductTypeDetailAPI" pk=0 %}"
-                       data-method="GET">
-                    <thead>
-                    <th></th>
-                    <th>{% trans "Code" %}</th>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "Description" %}</th>
-                    <th>{% trans "Action" %}</th>
-                    </thead>
-                </table>
-            </div>
-
-            <div class="lookup-data" id="section-product-category" style="display: none">
-                <table
-                        id="datatable-product-category-list" class="table nowrap w-100"
-                        data-url="{% url "ProductCategoryListAPI" %}"
-                        data-url-detail="{% url "ProductCategoryDetailAPI" pk=0 %}"
-                        data-method="GET"
-                >
-                    <thead>
-                    <th></th>
-                    <th>{% trans "Code" %}</th>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "Description" %}</th>
-                    <th>{% trans "Action" %}</th>
-                    </thead>
-                </table>
-            </div>
-
-            <div class="lookup-data" id="section-unit-measure" style="display: none; overflow-x: hidden; overflow-y: auto; height: 80vh">
-                <table
-                        id="datatable-unit-measure-list" class="table nowrap w-100"
-                        data-url="{% url "UnitOfMeasureListAPI" %}"
-                        data-url-detail="{% url "UnitOfMeasureDetailAPI" pk=0 %}"
-                        data-method="GET"
-                >
-                    <thead>
-                    <th></th>
-                    <th>{% trans "Code" %}</th>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "UoM Group" %}</th>
-                    <th>{% trans "Is referenced unit" %}</th>
-                    <th>{% trans "Action" %}</th>
-                    </thead>
-                </table>
-            </div>
-
-            <div class="lookup-data" id="section-unit-measure-group" style="display: none">
-                <table
-                        id="datatable-unit-measure-group-list" class="table nowrap w-100"
-                        data-url="{% url "UnitOfMeasureGroupListAPI" %}"
-                        data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
-                        data-method="GET"
-                >
-                    <thead>
-                    <th></th>
-                    <th>{% trans "Code" %}</th>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "Action" %}</th>
-                    </thead>
-                </table>
+        <div class="col-12 col-md-9 col-lg-9">
+            <div class="tab-content">
+                <div class="tab-pane fade show active lookup-data" id="section_product_type">
+                    <table id="datatable-product-type-list" class="table nowrap w-100"
+                           data-url="{% url "ProductTypeListAPI" %}"
+                           data-url-detail="{% url "ProductTypeDetailAPI" pk=0 %}"
+                           data-method="GET">
+                        <thead>
+                        <th></th>
+                        <th>{% trans "Code" %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Description" %}</th>
+                        <th>{% trans "Action" %}</th>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tab-pane fade lookup-data" id="section_product_category">
+                    <table
+                            id="datatable-product-category-list" class="table nowrap w-100"
+                            data-url="{% url "ProductCategoryListAPI" %}"
+                            data-url-detail="{% url "ProductCategoryDetailAPI" pk=0 %}"
+                            data-method="GET"
+                    >
+                        <thead>
+                        <th></th>
+                        <th>{% trans "Code" %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Description" %}</th>
+                        <th>{% trans "Action" %}</th>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tab-pane fade lookup-data" id="section_unit_of_measure">
+                    <table
+                            id="datatable-unit-measure-list" class="table nowrap w-100"
+                            data-url="{% url "UnitOfMeasureListAPI" %}"
+                            data-url-detail="{% url "UnitOfMeasureDetailAPI" pk=0 %}"
+                            data-method="GET"
+                    >
+                        <thead>
+                        <th></th>
+                        <th>{% trans "Code" %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "UoM Group" %}</th>
+                        <th>{% trans "Is referenced unit" %}</th>
+                        <th>{% trans "Action" %}</th>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tab-pane fade lookup-data" id="section_unit_of_measure_group">
+                    <table
+                            id="datatable-unit-measure-group-list" class="table nowrap w-100"
+                            data-url="{% url "UnitOfMeasureGroupListAPI" %}"
+                            data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
+                            data-method="GET"
+                    >
+                        <thead>
+                        <th></th>
+                        <th>{% trans "Code" %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Action" %}</th>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
     <form
-            id="form-create-product-and-expense" data-method="POST" data-lookup="section-product-type"
+            id="form-create-product-and-expense" data-method="POST" data-lookup="section_product_type"
             data-url-product-type="{% url "ProductTypeListAPI" %} "
             data-url-product-category="{% url "ProductCategoryListAPI" %} "
     >

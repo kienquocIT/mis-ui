@@ -1722,7 +1722,10 @@ class ListeningEventController {
     }
 
     tabHashUrl() {
-        $('.nav-tabs a[data-bs-toggle="tab"]').filter(function () {
+        $(`
+            .nav.nav-tabs a[data-bs-toggle="tab"],
+            .nav.flex-column a[data-bs-toggle="tab"]
+        `).filter(function () {
             return this.hash === location.hash;
         }).each(function () {
             if ($(this).length > 0) {

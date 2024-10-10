@@ -1,19 +1,21 @@
-let titleInput = $('#title')
-let warehouseSelectBox = $('#warehouse-select-box')
-let dateInput = $('#date')
-let statusInput = $('#status')
-let inChargeSelectBox = $('#in-charge-select-box')
-let tableLineDetailTbody = $('#table-line-detail tbody')
-let tableSelectProduct = $('#table-select-products')
-let addRowLineDetailBtn = $('#btn-add-row-line-detail')
-let fileInput = $('#input-file-now')
-let selectProductBtn = $('#btn-select-product')
-let selectAllProductBtn = $('#selected_all_product')
-let get_increase_items_btn = $('#get-increase-items-btn')
-let get_decrease_items_btn = $('#get-decrease-items-btn')
+const titleInput = $('#title')
+const warehouseSelectBox = $('#warehouse-select-box')
+const dateInput = $('#date')
+const state_detail_Ele = $('#state-detail')
+const script_trans = $('#trans_script')
+const inChargeSelectBox = $('#in-charge-select-box')
+const tableLineDetailTbody = $('#table-line-detail tbody')
+const tableSelectProduct = $('#table-select-products')
+const addRowLineDetailBtn = $('#btn-add-row-line-detail')
+const selectProductBtn = $('#btn-select-product')
+const selectAllProductBtn = $('#selected_all_product')
+const get_increase_items_btn = $('#get-increase-items-btn')
+const get_decrease_items_btn = $('#get-decrease-items-btn')
 let LIST_WAREHOUSE_PRODUCT = []
 
-dateInput.daterangepicker({
+class IALoadPage {
+    static LoadDateCreated() {
+        dateInput.daterangepicker({
     singleDatePicker: true,
     timepicker: false,
     showDropdowns: false,
@@ -25,6 +27,334 @@ dateInput.daterangepicker({
     drops: 'up',
     autoApply: true,
 });
+    }
+    static LoadWarehouseSelectBox(data) {
+        warehouseSelectBox.initSelect2({
+            ajax: {
+                url: warehouseSelectBox.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'warehouse_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
+    static LoadInChargeSelectBox(data) {
+        inChargeSelectBox.initSelect2({
+            ajax: {
+                url: inChargeSelectBox.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'employee_list',
+            keyId: 'id',
+            keyText: 'full_name',
+        })
+    }
+}
+
+class IAAction {
+    static LoadTableSelectProduct() {
+        let warehouses_products_list_ajax = $.fn.callAjax2({
+                url: $('#url_script').attr('data-url-warehouse-product-list'),
+                data: {},
+                method: 'GET'
+            }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data?.['warehouses_products_list']) {
+                        let data_list = [];
+                        let data_dict = {};
+                        for (let i = 0; i < data?.['warehouses_products_list'].length; i++) {
+                            let warehouse_temp = data?.['warehouses_products_list'][i];
+                            if (warehouseSelectBox.val().includes(warehouse_temp['id'])) {
+                                for (let j = 0; j < warehouse_temp['product_list'].length; j++) {
+                                    let product_temp = warehouse_temp['product_list'];
+                                    let data_temp = {
+                                        'product_warehouse_id': product_temp[j]['id'],
+                                        'warehouse_id': warehouse_temp['id'],
+                                        'warehouse_code': warehouse_temp['code'],
+                                        'warehouse_title': warehouse_temp['title'],
+                                        'warehouse_is_active': warehouse_temp['is_active'],
+                                        'warehouse_remarks': warehouse_temp['remarks'],
+                                        'product_id': product_temp[j]['product']['id'],
+                                        'product_code': product_temp[j]['product']['code'],
+                                        'product_title': product_temp[j]['product']['title'],
+                                        'product_inventory_uom_id': product_temp[j]['inventory_uom']['id'],
+                                        'product_inventory_uom_title': product_temp[j]['inventory_uom']['title'],
+                                        'available_amount': product_temp[j]['available_amount'],
+                                    }
+                                    data_list.push(data_temp)
+                                    data_dict[product_temp[j]['id']] = data_temp;
+                                }
+                            }
+                        }
+                        LIST_WAREHOUSE_PRODUCT = data_list;
+                        $('#data-product-warehouse').text(JSON.stringify(data_dict));
+                        return data_list;
+                    } else {
+                        return [];
+                    }
+                }
+                return [];
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([warehouses_products_list_ajax]).then(
+            (results) => {
+                tableSelectProduct.find('tbody').html('')
+                let index = 0
+                for (const item of results[0]) {
+                    index += 1
+                    tableSelectProduct.find('tbody').append(`
+                        <tr>
+                            <td>${index}</td>
+                            <td>
+                                <span class="form-check">
+                                    <input type="checkbox" class="form-check-input selected_product" data-warehouse-id="${item?.['warehouse_id']}" data-product-id="${item?.['product_id']}" data-id="${item?.['product_warehouse_id']}">
+                                    <label class="form-check-label"></label>
+                                </span>
+                            </td>
+                            <td><span class="badge badge-soft-blue">${item?.['warehouse_code']}</span> ${item?.['warehouse_title']}</td>
+                            <td><span class="badge badge-soft-primary">${item?.['product_code']}</span> ${item?.['product_title']}</span></td>
+                        </tr>
+                    `)
+                }
+            })
+    }
+}
+
+class IAHandle {
+    static LoadPage() {
+        IALoadPage.LoadDateCreated()
+        IALoadPage.LoadWarehouseSelectBox()
+        IALoadPage.LoadInChargeSelectBox()
+    }
+    static Disable(option) {
+        if (option === 'detail') {
+            $('.form-control').prop('disabled', true).prop('readonly', true);
+            $('.form-select').prop('disabled', true).prop('readonly', true);
+            $('.select2').prop('disabled', true);
+            $('#collapse-area input').prop('disabled', true);
+            $('#btn-add-row-line-detail').prop('disabled', true)
+        }
+        if (option === 'update') {
+            $('#collapse-area .form-control').prop('disabled', true).prop('readonly', true);
+            $('#collapse-area .form-select').prop('disabled', true).prop('readonly', true);
+            $('#collapse-area .select2').prop('disabled', true);
+            $('#collapse-area input').prop('disabled', true);
+        }
+    }
+    static GetDataFormCreate() {
+        let data = {}
+
+        data['title'] = titleInput.val();
+        if (data['title'] === '') {
+            $.fn.notifyB({description: 'Title must not be NULL'}, 'failure');
+            return false
+        }
+        data['date_created'] = dateInput.val();
+        if (data['date'] === '') {
+            $.fn.notifyB({description: 'Date must not be NULL'}, 'failure');
+            return false
+        }
+        data['ia_warehouses_data'] = warehouseSelectBox.val();
+        if (data['ia_warehouses_data'].length <= 0) {
+            $.fn.notifyB({description: 'Warehouse must not be NULL'}, 'failure');
+            return false
+        }
+        data['ia_employees_in_charge'] = inChargeSelectBox.val();
+        if (data['ia_employees_in_charge'].length <= 0) {
+            $.fn.notifyB({description: 'Employee in charge must not be NULL'}, 'failure');
+            return false
+        }
+
+        let ia_items_data_list = [];
+        let product_dict = JSON.parse($('#data-product-warehouse').text());
+        tableLineDetailTbody.find('tr').each(function () {
+            let product_obj = product_dict[$(this).find('.product_id_td').attr('data-id')];
+            let book_quantity = parseFloat(product_obj.available_amount)
+            let count = parseFloat($(this).find('.count-input').val())
+            let select_for_action = $(this).find('.selected_for_actions').is(':checked');
+            let action_status = 0;
+            let action_type = (count > book_quantity) ? 2 : (count < book_quantity) ? 1 : 0;
+            ia_items_data_list.push({
+                'product_warehouse_id': product_obj.product_warehouse_id,
+                'product_mapped_id': product_obj.product_id,
+                'warehouse_mapped_id': product_obj.warehouse_id,
+                'uom_mapped_id': product_obj.product_inventory_uom_id,
+                'book_quantity': product_obj.available_amount,
+                'count': count,
+                'action_type': action_type,
+                'select_for_action': select_for_action,
+                'action_status': action_status
+            })
+        });
+
+        data['ia_items_data'] = ia_items_data_list;
+
+        return data
+    }
+    static GetDataFormUpdate() {
+        let data = {}
+
+        data['title'] = titleInput.val();
+
+        data['ia_employees_in_charge'] = inChargeSelectBox.val();
+        if (data['ia_employees_in_charge'].length <= 0) {
+            $.fn.notifyB({description: 'Employee in charge must not be NULL'}, 'failure');
+            return false
+        }
+
+        let ia_items_data_list = [];
+        tableLineDetailTbody.find('tr').each(function () {
+            let book_quantity = parseFloat($(this).find('.quantity-td').text())
+            let count = parseFloat($(this).find('.count-input').val())
+            let action_type = (count > book_quantity) ? 2 : (count < book_quantity) ? 1 : 0;
+            ia_items_data_list.push({
+                'id': $(this).find('.product_id_td').attr('data-item-id'),
+                'count': count,
+                'action_type': action_type,
+                'select_for_action': $(this).find('.selected_for_actions').is(':checked'),
+            })
+        });
+
+        data['ia_items_data'] = ia_items_data_list;
+
+        return data
+    }
+    static CombinesDataCreate(frmEle) {
+        let dataForm = IAHandle.GetDataFormCreate();
+        if (dataForm) {
+            let frm = new SetupFormSubmit($(frmEle));
+            return {
+                url: frm.dataUrl,
+                method: frm.dataMethod,
+                data: dataForm,
+                urlRedirect: frm?.['urlRedirect'],
+            };
+        }
+        return false;
+    }
+    static CombinesDataUpdate(frmEle) {
+        let dataForm = IAHandle.GetDataFormUpdate();
+        if (dataForm) {
+            let frm = new SetupFormSubmit($(frmEle));
+            let pk = $.fn.getPkDetail()
+            return {
+                url: frm.dataUrl.format_url_with_uuid(pk),
+                method: frm.dataMethod,
+                data: dataForm,
+                urlRedirect: frm?.['urlRedirect'],
+            };
+        }
+        return false;
+    }
+    static LoadDetailIA(option, data_params={}, action='') {
+        let pk = $.fn.getPkDetail()
+        let url_loaded = $('#frm_inventory_adjustment_detail').attr('data-url-detail').replace(0, pk);
+        $.fn.callAjax(url_loaded, 'GET', data_params).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (action) {
+                        location.reload()
+                    }
+                    else {
+                        data = data?.['inventory_adjustment_detail'];
+                        if (option === 'detail') {
+                            new PrintTinymceControl().render('c5de0a7d-bea3-4f39-922f-06a40a060aba', data, false);
+                        }
+                        $.fn.compareStatusShowPageAction(data);
+                        $x.fn.renderCodeBreadcrumb(data);
+                        // console.log(data)
+
+                        if (data?.['state'] === 1) {
+                            $('#start-ia').prop('disabled', true)
+                            $('.hidden-col').prop('hidden', false)
+                        }
+
+                        if (data?.['state'] === 2) {
+                            $('#start-ia').prop('disabled', true)
+                            $('#done-ia').prop('disabled', true)
+                            $('.hidden-col').prop('hidden', false)
+                        }
+
+                        titleInput.val(data.title);
+                        dateInput.val(moment(data?.['date_created'].split(' ')[0]).format('DD/MM/YYYY'));
+                        state_detail_Ele.val(data?.['state_detail']);
+                        IALoadPage.LoadWarehouseSelectBox(data?.['warehouses']);
+                        IALoadPage.LoadInChargeSelectBox(data?.['employees_in_charge']);
+
+                        for (let i = 0; i < data?.['inventory_adjustment_item_mapped'].length; i++) {
+                            let data_row = data?.['inventory_adjustment_item_mapped'][i];
+                            let checked = '';
+                            let class_ctn = '';
+                            if (data_row?.['select_for_action']) {
+                                checked = 'checked';
+                                class_ctn = 'highlight-border-left-primary';
+                            }
+                            let done = '--';
+                            if (data_row?.['action_status']) {
+                                done = '<i class="fas fa-check"></i>';
+                            }
+                            let difference = parseFloat(data_row?.['count']) - parseFloat(data_row?.['book_quantity']);
+                            let action_type = '';
+                            let disabled_select = '';
+                            if (data_row?.['action_status']) {
+                                disabled_select = 'disabled readonly';
+                            }
+                            if (difference !== 0) {
+                                if (difference < 0) {
+                                    difference = '(' + difference * -1 + ')';
+                                    action_type = '<span class="text-danger"><i class="bi bi-arrow-down"></i></span>';
+                                }
+                                if (difference > 0) {
+                                    action_type = '<span class="text-primary"><i class="bi bi-arrow-up"></i></span>';
+                                }
+                            }
+                            tableLineDetailTbody.append(`
+                                <tr class="${class_ctn}">
+                                    <td>${i + 1}</td>
+                                    <td data-item-id="${data_row?.['id']}" data-product-warehouse-id="${data_row?.['product_warehouse_mapped_id']}" data-id="${data_row?.['product_mapped']?.['id']}" class="text-muted product_id_td"><span class="badge badge-soft-primary">${data_row?.['product_mapped']?.['code']}</span> ${data_row?.['product_mapped']?.['title']}</td>
+                                    <td data-id="${data_row?.['warehouse_mapped']?.['id']}" class="warehouse_id_td"><span class="badge badge-soft-blue">${data_row?.['warehouse_mapped']?.['code']}</span> ${data_row?.['warehouse_mapped']?.['title']}</td>
+                                    <td data-id="${data_row?.['uom_mapped']?.['id']}" class="uom_id_td">${data_row?.['uom_mapped']?.['title']}</td>
+                                    <td class="quantity-td">${data_row?.['book_quantity']}</td>
+                                    <td ${data?.['state'] === 0 ? 'hidden' : ''}><input step="0.01" ${disabled_select} class="form-control count-input" type="number" placeholder="Number" value="${data_row?.['count']}"></td>
+                                    <td ${data?.['state'] === 0 ? 'hidden' : ''} class="difference_td">${difference}</td>
+                                    <td ${data?.['state'] === 0 ? 'hidden' : ''} class="text-center issued_receipted_td">${data_row?.['issued_receipted_quantity']}</td>
+                                    <td hidden class="text-center">
+                                        <span class="form-check">
+                                            <input ${disabled_select} type="checkbox" class="form-check-input selected_for_actions" ${checked}>
+                                            <label class="form-check-label"></label>
+                                        </span>
+                                    </td>
+                                    <td ${data?.['state'] === 0 ? 'hidden' : ''} class="text-center action_type_td">${action_type}</td>
+                                    <td ${data?.['state'] === 0 ? 'hidden' : ''} class="text-center ${done !== '--' ? 'text-success' : 'text-muted'}">${done}</td>
+                                </tr>
+                            `)
+                        }
+
+                        $.fn.initMaskMoney2();
+
+                        new $x.cls.file($('#attachment')).init({
+                            enable_download: option === 'detail',
+                            enable_edit: option !== 'detail',
+                            data: data.attachment,
+                            name: 'attachment'
+                        })
+
+                        IAHandle.Disable(option);
+                    }
+                }
+            })
+    }
+}
 
 addRowLineDetailBtn.on('click', async function () {
     if (warehouseSelectBox.val().length < 1) {
@@ -32,7 +362,7 @@ addRowLineDetailBtn.on('click', async function () {
     }
     else {
         selectAllProductBtn.prop('checked', false);
-        LoadTableSelectProduct(warehouseSelectBox.val());
+        IAAction.LoadTableSelectProduct();
     }
 })
 
@@ -50,21 +380,22 @@ selectProductBtn.on('click', async function () {
     for (let i = 0; i < selected_product.length; i++) {
         tableLineDetailTbody.append(`
             <tr>
+                <td>${i+1}</td>
                 <td data-id="${selected_product[i]?.['product_warehouse_id']}" class="text-muted product_id_td"><span class="badge badge-soft-primary">${selected_product[i]?.['product_code']}</span> ${selected_product[i]?.['product_title']}</td>
                 <td data-id="${selected_product[i]?.['warehouse_id']}" class="warehouse_id_td"><span class="badge badge-soft-blue">${selected_product[i]?.['warehouse_code']}</span> ${selected_product[i]?.['warehouse_title']}</td>
                 <td data-id="${selected_product[i]?.['product_inventory_uom_id']}" class="uom_id_td">${selected_product[i]?.['product_inventory_uom_title']}</td>
                 <td class="quantity-td">${selected_product[i]?.['available_amount']}</td>
-                <td><input class="form-control count-input" type="number" placeholder="Number" value="${selected_product[i]?.['available_amount']}"></td>
-                <td class="difference_td text-center">0</td>
-                <td class="text-center issued_receipted_td">0</td>
+                <td hidden><input step="0.01" class="form-control count-input" type="number" placeholder="Number" value="${selected_product[i]?.['available_amount']}"></td>
+                <td hidden class="difference_td text-center">0</td>
+                <td hidden class="text-center issued_receipted_td">0</td>
                 <td hidden class="text-center">
                     <span class="form-check">
                         <input type="checkbox" disabled class="form-check-input selected_for_actions">
                         <label class="form-check-label"></label>
                     </span>
                 </td>
-                <td class="action_type_td text-center"></td>
-                <td></td>
+                <td hidden class="action_type_td text-center"></td>
+                <td hidden></tdhidden>
             </tr>
         `)
     }
@@ -86,29 +417,16 @@ $(document).on('input', '.count-input', function () {
     else {
         $(this).closest('tr').find('.selected_for_actions').attr('disabled', false);
         if (difference < 0) {
-        difference = '(' + difference * -1 + ')';
-        action_type = '<span class="text-danger"><i class="bi bi-arrow-down"></i></span>';
-    }
+            difference = '(' + difference.toFixed(2) * -1 + ')';
+            action_type = '<span class="text-danger"><i class="bi bi-arrow-down"></i></span>';
+        }
         if (difference > 0) {
             action_type = '<span class="text-primary"><i class="bi bi-arrow-up"></i></span>';
         }
     }
-    $(this).val(parseFloat($(this).val() ? $(this).val() : 0));
     $(this).closest('tr').find('.difference_td').html(difference);
     $(this).closest('tr').find('.action_type_td').html(action_type);
 })
-
-fileInput.dropify({
-    messages: {
-        'default': 'Drag and drop your file here.',
-    },
-    tpl: {
-        message: '<div class="dropify-message">' +
-            '<span class="file-icon"></span>' +
-            '<h5>{{ default }}</h5>' +
-            '</div>',
-    }
-});
 
 selectAllProductBtn.on('click', function () {
     if ($(this).is(':checked')) {
@@ -122,308 +440,6 @@ selectAllProductBtn.on('click', function () {
         })
     }
 })
-
-function LoadWarehouseSelectBox(data) {
-    warehouseSelectBox.initSelect2({
-        ajax: {
-            url: warehouseSelectBox.attr('data-url'),
-            method: 'GET',
-        },
-        data: (data ? data : null),
-        keyResp: 'warehouse_list',
-        keyId: 'id',
-        keyText: 'title',
-    })
-}
-
-function LoadInChargeSelectBox(data) {
-    inChargeSelectBox.initSelect2({
-        ajax: {
-            url: inChargeSelectBox.attr('data-url'),
-            method: 'GET',
-        },
-        data: (data ? data : null),
-        keyResp: 'employee_list',
-        keyId: 'id',
-        keyText: 'full_name',
-    })
-}
-
-function LoadTableSelectProduct(warehouse_list) {
-    let warehouses_products_list_ajax = $.fn.callAjax2({
-            url: $('#url_script').attr('data-url-warehouse-product-list'),
-            data: {},
-            method: 'GET'
-        }).then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (data?.['warehouses_products_list']) {
-                    let data_list = [];
-                    let data_dict = {};
-                    for (let i = 0; i < data?.['warehouses_products_list'].length; i++) {
-                        let warehouse_temp = data?.['warehouses_products_list'][i];
-                        if (warehouse_list.includes(warehouse_temp['id'])) {
-                            for (let j = 0; j < warehouse_temp['product_list'].length; j++) {
-                                let product_temp = warehouse_temp['product_list'];
-                                let data_temp = {
-                                    'product_warehouse_id': product_temp[j]['id'],
-                                    'warehouse_id': warehouse_temp['id'],
-                                    'warehouse_code': warehouse_temp['code'],
-                                    'warehouse_title': warehouse_temp['title'],
-                                    'warehouse_is_active': warehouse_temp['is_active'],
-                                    'warehouse_remarks': warehouse_temp['remarks'],
-                                    'product_id': product_temp[j]['product']['id'],
-                                    'product_code': product_temp[j]['product']['code'],
-                                    'product_title': product_temp[j]['product']['title'],
-                                    'product_inventory_uom_id': product_temp[j]['inventory_uom']['id'],
-                                    'product_inventory_uom_title': product_temp[j]['inventory_uom']['title'],
-                                    'available_amount': product_temp[j]['available_amount'],
-                                }
-                                data_list.push(data_temp)
-                                data_dict[product_temp[j]['id']] = data_temp;
-                            }
-                        }
-                    }
-                    LIST_WAREHOUSE_PRODUCT = data_list;
-                    $('#data-product-warehouse').text(JSON.stringify(data_dict));
-                    return data_list;
-                } else {
-                    return [];
-                }
-            }
-            return [];
-        },
-        (errs) => {
-            console.log(errs);
-        }
-    )
-
-    Promise.all([warehouses_products_list_ajax]).then(
-        (results) => {
-            tableSelectProduct.find('tbody').html('')
-            for (const item of results[0]) {
-                tableSelectProduct.find('tbody').append(`
-                    <tr>
-                        <td>
-                            <span class="form-check">
-                                <input type="checkbox" class="form-check-input selected_product" data-warehouse-id="${item?.['warehouse_id']}" data-product-id="${item?.['product_id']}" data-id="${item?.['product_warehouse_id']}">
-                                <label class="form-check-label"></label>
-                            </span>
-                        </td>
-                        <td><span class="badge badge-soft-blue">${item?.['warehouse_code']}</span> ${item?.['warehouse_title']}</td>
-                        <td><span class="badge badge-soft-primary">${item?.['product_code']}</span> ${item?.['product_title']}</span></td>
-                    </tr>
-                `)
-            }
-        })
-}
-
-function getDataFormCreate() {
-    let data = {}
-
-    data['title'] = titleInput.val();
-    if (data['title'] === '') {
-        $.fn.notifyB({description: 'Title must not be NULL'}, 'failure');
-        return false
-    }
-    data['date_created'] = dateInput.val();
-    if (data['date'] === '') {
-        $.fn.notifyB({description: 'Date must not be NULL'}, 'failure');
-        return false
-    }
-    data['ia_warehouses_data'] = warehouseSelectBox.val();
-    if (data['ia_warehouses_data'].length <= 0) {
-        $.fn.notifyB({description: 'Warehouse must not be NULL'}, 'failure');
-        return false
-    }
-    data['ia_employees_in_charge'] = inChargeSelectBox.val();
-    if (data['ia_employees_in_charge'].length <= 0) {
-        $.fn.notifyB({description: 'Employee in charge must not be NULL'}, 'failure');
-        return false
-    }
-
-    let ia_items_data_list = [];
-    let product_dict = JSON.parse($('#data-product-warehouse').text());
-    tableLineDetailTbody.find('tr').each(function () {
-        let product_obj = product_dict[$(this).find('.product_id_td').attr('data-id')];
-        let book_quantity = parseFloat(product_obj.available_amount)
-        let count = parseFloat($(this).find('.count-input').val())
-        let select_for_action = $(this).find('.selected_for_actions').is(':checked');
-        let action_status = 0;
-        let action_type = (count > book_quantity) ? 2 : (count < book_quantity) ? 1 : 0;
-        ia_items_data_list.push({
-            'product_warehouse_id': product_obj.product_warehouse_id,
-            'product_mapped_id': product_obj.product_id,
-            'warehouse_mapped_id': product_obj.warehouse_id,
-            'uom_mapped_id': product_obj.product_inventory_uom_id,
-            'book_quantity': product_obj.available_amount,
-            'count': count,
-            'action_type': action_type,
-            'select_for_action': select_for_action,
-            'action_status': action_status
-        })
-    });
-
-    data['ia_items_data'] = ia_items_data_list;
-
-    return data
-}
-
-function getDataFormUpdate() {
-    let data = {}
-
-    data['title'] = titleInput.val();
-
-    data['ia_employees_in_charge'] = inChargeSelectBox.val();
-    if (data['ia_employees_in_charge'].length <= 0) {
-        $.fn.notifyB({description: 'Employee in charge must not be NULL'}, 'failure');
-        return false
-    }
-
-    let ia_items_data_list = [];
-    tableLineDetailTbody.find('tr').each(function () {
-        let book_quantity = parseFloat($(this).find('.quantity-td').text())
-        let count = parseFloat($(this).find('.count-input').val())
-        let action_type = (count > book_quantity) ? 2 : (count < book_quantity) ? 1 : 0;
-        ia_items_data_list.push({
-            'id': $(this).find('.product_id_td').attr('data-item-id'),
-            'count': count,
-            'action_type': action_type,
-            'select_for_action': $(this).find('.selected_for_actions').is(':checked'),
-        })
-    });
-
-    data['ia_items_data'] = ia_items_data_list;
-
-    return data
-}
-
-class InventoryAdjustmentHandle {
-    load() {
-        LoadWarehouseSelectBox();
-        LoadInChargeSelectBox();
-    }
-    combinesDataCreate(frmEle) {
-        let dataForm = getDataFormCreate();
-        if (dataForm) {
-            let frm = new SetupFormSubmit($(frmEle));
-            return {
-                url: frm.dataUrl,
-                method: frm.dataMethod,
-                data: dataForm,
-                urlRedirect: frm?.['urlRedirect'],
-            };
-        }
-        return false;
-    }
-    combinesDataUpdate(frmEle) {
-        let dataForm = getDataFormUpdate();
-        if (dataForm) {
-            let frm = new SetupFormSubmit($(frmEle));
-            let pk = $.fn.getPkDetail()
-            return {
-                url: frm.dataUrl.format_url_with_uuid(pk),
-                method: frm.dataMethod,
-                data: dataForm,
-                urlRedirect: frm?.['urlRedirect'],
-            };
-        }
-        return false;
-    }
-}
-
-function Disable(option) {
-    if (option === 'detail') {
-        $('.form-control').prop('disabled', true).prop('readonly', true);
-        $('.form-select').prop('disabled', true).prop('readonly', true);
-        $('.select2').prop('disabled', true);
-        $('#collapse-area input').prop('disabled', true);
-    }
-    if (option === 'update') {
-        $('#collapse-area .form-control').prop('disabled', true).prop('readonly', true);
-        $('#collapse-area .form-select').prop('disabled', true).prop('readonly', true);
-        $('#collapse-area .select2').prop('disabled', true);
-        $('#collapse-area input').prop('disabled', true);
-    }
-}
-
-function LoadDetailIA(option) {
-    let pk = $.fn.getPkDetail()
-    let url_loaded = $('#frm_inventory_adjustment_detail').attr('data-url-detail').replace(0, pk);
-    $.fn.callAjax(url_loaded, 'GET').then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                data = data?.['inventory_adjustment_detail'];
-                if (option === 'detail') {
-                    new PrintTinymceControl().render('c5de0a7d-bea3-4f39-922f-06a40a060aba', data, false);
-                }
-                $.fn.compareStatusShowPageAction(data);
-                $x.fn.renderCodeBreadcrumb(data);
-                console.log(data)
-
-                titleInput.val(data.title);
-                dateInput.val(moment(data?.['date_created'].split(' ')[0]).format('DD/MM/YYYY'));
-                statusInput.val(data.state ? statusInput.attr('data-trans-finished') : statusInput.attr('data-trans-opening'));
-                LoadWarehouseSelectBox(data?.['warehouses']);
-                LoadInChargeSelectBox(data?.['employees_in_charge']);
-
-                for (let i = 0; i < data?.['inventory_adjustment_item_mapped'].length; i++) {
-                    let data_row = data?.['inventory_adjustment_item_mapped'][i];
-                    let checked = '';
-                    let class_ctn = '';
-                    if (data_row?.['select_for_action']) {
-                        checked = 'checked';
-                        class_ctn = 'highlight-border-left-primary';
-                    }
-                    let done = '';
-                    if (data_row?.['action_status']) {
-                        done = '<i class="fas fa-check"></i>';
-                    }
-                    let difference = parseFloat(data_row?.['count']) - parseFloat(data_row?.['book_quantity']);
-                    let action_type = '';
-                    let disabled_select = '';
-                    if (data_row?.['action_status']) {
-                        disabled_select = 'disabled readonly';
-                    }
-                    if (difference !== 0) {
-                        if (difference < 0) {
-                            difference = '(' + difference * -1 + ')';
-                            action_type = '<span class="text-danger"><i class="bi bi-arrow-down"></i></span>';
-                        }
-                        if (difference > 0) {
-                            action_type = '<span class="text-primary"><i class="bi bi-arrow-up"></i></span>';
-                        }
-                    }
-                    tableLineDetailTbody.append(`
-                        <tr class="${class_ctn}">
-                            <td data-item-id="${data_row?.['id']}" data-product-warehouse-id="${data_row?.['product_warehouse_mapped_id']}" data-id="${data_row?.['product_mapped']?.['id']}" class="text-muted product_id_td"><span class="badge badge-soft-primary">${data_row?.['product_mapped']?.['code']}</span> ${data_row?.['product_mapped']?.['title']}</td>
-                            <td data-id="${data_row?.['warehouse_mapped']?.['id']}" class="warehouse_id_td"><span class="badge badge-soft-blue">${data_row?.['warehouse_mapped']?.['code']}</span> ${data_row?.['warehouse_mapped']?.['title']}</td>
-                            <td data-id="${data_row?.['uom_mapped']?.['id']}" class="uom_id_td">${data_row?.['uom_mapped']?.['title']}</td>
-                            <td class="quantity-td">${data_row?.['book_quantity']}</td>
-                            <td><input ${disabled_select} class="form-control count-input" type="number" placeholder="Number" value="${data_row?.['count']}"></td>
-                            <td class="text-center difference_td">${difference}</td>
-                            <td class="text-center issued_receipted_td">${data_row?.['issued_receipted_quantity']}</td>
-                            <td hidden class="text-center">
-                                <span class="form-check">
-                                    <input ${disabled_select} type="checkbox" class="form-check-input selected_for_actions" ${checked}>
-                                    <label class="form-check-label"></label>
-                                </span>
-                            </td>
-                            <td class="text-center action_type_td">${action_type}</td>
-                            <td class="text-center text-success">${done}</td>
-                        </tr>
-                    `)
-                }
-
-                $.fn.initMaskMoney2();
-
-                Disable(option);
-                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
-            }
-        })
-}
 
 get_increase_items_btn.on('click', function () {
     let increase_items = [];
@@ -497,4 +513,46 @@ get_decrease_items_btn.on('click', function () {
 
 $(document).on('input', '.selected_for_actions', function () {
     $(this).closest('tr').toggleClass('highlight-border-left-primary', $(this).is(':checked'));
+})
+
+$('#start-ia').on('click', function () {
+    Swal.fire({
+		html: `<h5 class="text-primary">${script_trans.attr('data-trans-start-ia')}</h5><p class="small">${script_trans.attr('data-trans-start-ia-sub')}</p>`,
+		customClass: {
+			confirmButton: 'btn text-primary',
+			cancelButton: 'btn text-gray',
+			container:'swal2-has-bg',
+			actions:'w-100'
+		},
+		showCancelButton: true,
+		buttonsStyling: false,
+		confirmButtonText: script_trans.attr('data-trans-change-ok'),
+		cancelButtonText: script_trans.attr('data-trans-change-no'),
+		reverseButtons: true
+	}).then((result) => {
+		if (result.value) {
+            IAHandle.LoadDetailIA('detail', {'start_ia': true}, 'start_ia')
+		}
+	})
+})
+
+$('#done-ia').on('click', function () {
+    Swal.fire({
+		html: `<h5 class="text-success">${script_trans.attr('data-trans-done-ia')}</h5><p class="small">${script_trans.attr('data-trans-done-ia-sub')}</p>`,
+		customClass: {
+			confirmButton: 'btn text-success',
+			cancelButton: 'btn text-gray',
+			container:'swal2-has-bg',
+			actions:'w-100'
+		},
+		showCancelButton: true,
+		buttonsStyling: false,
+		confirmButtonText: script_trans.attr('data-trans-change-ok'),
+		cancelButtonText: script_trans.attr('data-trans-change-no'),
+		reverseButtons: true
+	}).then((result) => {
+		if (result.value) {
+            IAHandle.LoadDetailIA('detail', {'done_ia': true}, 'done_ia')
+		}
+	})
 })

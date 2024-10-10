@@ -57,10 +57,10 @@ $(document).ready(function () {
         $('.btn-show-modal').attr('data-bs-target', '#modal-product-and-expense')
         let section = $(this).attr('data-collapse');
         switch (section) {
-            case 'section-product-type':
+            case 'section_product_type':
                 loadProductType()
                 break;
-            case 'section-product-category':
+            case 'section_product_category':
                 loadProDuctCategory()
                 break;
         }
@@ -393,9 +393,9 @@ $(document).ready(function () {
             let frm_data = frm.dataForm;
             let lookup = $(form).attr('data-lookup');
             let data_url = ''
-            if (lookup === 'section-product-type') {
+            if (lookup === 'section_product_type') {
                 data_url = $('#form-create-product-and-expense').attr('data-url-product-type');
-            } else if (lookup === 'section-product-category') {
+            } else if (lookup === 'section_product_category') {
                 data_url = $('#form-create-product-and-expense').attr('data-url-product-category');
             }
             $.fn.callAjax2({
@@ -408,9 +408,9 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyB({description: "Tạo mới"}, 'success')
                         $('#modal-product-and-expense').modal('hide');
-                        if (lookup === 'section-product-type') {
+                        if (lookup === 'section_product_type') {
                             $('#datatable-product-type-list').DataTable().ajax.reload();
-                        } else if (lookup === 'section-product-category') {
+                        } else if (lookup === 'section_product_category') {
                             $('#datatable-product-category-list').DataTable().ajax.reload();
                         }
                     }
@@ -760,9 +760,9 @@ $(document).ready(function () {
                         $.fn.notifyB({description: $('#base-trans-factory').data('msg-update')}, 'success')
                         $('#modal-detail-product-and-expense').modal('hide');
                         let activeEle = $('#tab-select-table li a.active');
-                        if (activeEle.attr('data-collapse') === 'section-product-type') {
+                        if (activeEle.attr('data-collapse') === 'section_product_type') {
                             $('#datatable-product-type-list').DataTable().ajax.reload();
-                        } else if (activeEle.attr('data-collapse') === 'section-product-category') {
+                        } else if (activeEle.attr('data-collapse') === 'section_product_category') {
                             $('#datatable-product-category-list').DataTable().ajax.reload();
                         }
                     }

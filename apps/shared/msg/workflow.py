@@ -23,3 +23,5 @@ class WorkflowMsg:  # pylint: disable=too-few-public-methods
     MATH_TYPE_ON_BEFORE = _("is on or before")
     MATH_TYPE_ON_AFTER = _("is on or after")
     MATH_TYPE_WITHIN = _("is within")
+    LOGIC_AND = _("And")
+    LOGIC_OR = _("Or")

@@ -58,7 +58,7 @@
         <div class="col-12 col-md-1 col-lg-1"></div>
         <div class="col-12 col-md-9 col-lg-9">
             <div class="tab-content">
-                <div class="tab-pane fade show active lookup-data" id="section_product_type" style="display: block">
+                <div class="tab-pane fade show active lookup-data" id="section_product_type">
                     <table id="datatable-product-type-list" class="table nowrap w-100"
                            data-url="{% url "ProductTypeListAPI" %}"
                            data-url-detail="{% url "ProductTypeDetailAPI" pk=0 %}"
@@ -72,7 +72,7 @@
                         </thead>
                     </table>
                 </div>
-                <div class="tab-pane fade lookup-data" id="section_product_category" style="display: none">
+                <div class="tab-pane fade lookup-data" id="section_product_category">
                     <table
                             id="datatable-product-category-list" class="table nowrap w-100"
                             data-url="{% url "ProductCategoryListAPI" %}"
@@ -88,7 +88,7 @@
                         </thead>
                     </table>
                 </div>
-                <div class="tab-pane fade lookup-data" id="section_unit_of_measure" style="display: none; overflow-x: hidden; overflow-y: auto; height: 80vh">
+                <div class="tab-pane fade lookup-data" id="section_unit_of_measure" style="overflow-x: hidden; overflow-y: auto; max-height: 50vh">
                     <table
                             id="datatable-unit-measure-list" class="table nowrap w-100"
                             data-url="{% url "UnitOfMeasureListAPI" %}"
@@ -96,16 +96,19 @@
                             data-method="GET"
                     >
                         <thead>
-                        <th></th>
-                        <th>{% trans "Code" %}</th>
-                        <th>{% trans "Name" %}</th>
-                        <th>{% trans "UoM Group" %}</th>
-                        <th>{% trans "Is referenced unit" %}</th>
-                        <th>{% trans "Action" %}</th>
+                        <tr>
+                            <th></th>
+                            <th>{% trans "Code" %}</th>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "UoM Group" %}</th>
+                            <th>{% trans "Is referenced unit" %}</th>
+                            <th>{% trans "Action" %}</th>
+                        </tr>
                         </thead>
+                        <tbody></tbody>
                     </table>
                 </div>
-                <div class="tab-pane fade lookup-data" id="section_unit_of_measure_group" style="display: none">
+                <div class="tab-pane fade lookup-data" id="section_unit_of_measure_group">
                     <table
                             id="datatable-unit-measure-group-list" class="table nowrap w-100"
                             data-url="{% url "UnitOfMeasureGroupListAPI" %}"

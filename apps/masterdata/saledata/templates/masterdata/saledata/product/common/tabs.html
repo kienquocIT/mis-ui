@@ -235,13 +235,19 @@
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="inventory-level-min" class="form-label">{% trans "Inventory Level Min" %}</label>
-                    <input id="inventory-level-min" type="number" class="form-control" min="0" step="1">
+                    <div class="input-group">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">MIN</span>
+                        <input id="inventory-level-min" type="number" class="form-control" min="0" step="1">
+                    </div>
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="inventory-level-max" class="form-label">{% trans "Inventory Level Max" %}</label>
-                    <input id="inventory-level-max" type="number" class="form-control" min="0" step="1">
+                    <div class="input-group">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">MAX</span>
+                        <input id="inventory-level-max" type="number" class="form-control" min="0" step="1">
+                    </div>
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-2">
@@ -263,36 +269,40 @@
             </div>
         </div>
         <div hidden class="row">
-            <div class="col-12 col-md-9 col-lg-6 mt-5">
-                <span class="text-muted">* {% trans 'Product overview' %}</span>
-                <table id="datatable-warehouse-overview" class="table table-advance nowrap w-100">
-                    <thead>
-                        <tr>
-                            <th>{% trans "Stock" %}</th>
-                            <th>{% trans "Sale order" %}</th>
-                            <th>{% trans "Purchase" %}</th>
-                            <th>{% trans "Production" %}</th>
-                            <th>{% trans "Available" %}</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div class="col-12 col-md-9 col-lg-6 mt-5">
-                <span class="text-muted">* {% trans 'Product warehouse detail' %}</span>
-                <table id="datatable-warehouse-list" class="table table-advance nowrap w-100"
-                       data-url="{% url "WareHouseListAPI" %}"
-                       data-method="GET">
-                    <thead>
-                        <tr>
-                            <th>{% trans "WH Code" %}</th>
-                            <th>{% trans "WH Name" %}</th>
-                            <th>{% trans "Stock" %}</th>
-                            <th>{% trans "Cost" %}</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="col-12 mt-5">
+                <div class="row">
+                    <div class="col-12 col-md-9 col-lg-6">
+                        <span class="text-muted text-decoration-underline">* {% trans 'Product overview' %}</span>
+                        <table id="datatable-warehouse-overview" class="table table-advance nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th>{% trans "Stock" %}</th>
+                                    <th>{% trans "Sale order" %}</th>
+                                    <th>{% trans "Purchase" %}</th>
+                                    <th>{% trans "Production" %}</th>
+                                    <th>{% trans "Available" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="col-12 col-md-9 col-lg-6">
+                        <span class="text-muted text-decoration-underline">* {% trans 'Product warehouse detail' %}</span>
+                        <table id="datatable-warehouse-list" class="table table-advance nowrap w-100"
+                               data-url="{% url "WareHouseListAPI" %}"
+                               data-method="GET">
+                            <thead>
+                                <tr>
+                                    <th>{% trans "WH Code" %}</th>
+                                    <th>{% trans "WH Name" %}</th>
+                                    <th>{% trans "Stock" %}</th>
+                                    <th>{% trans "Cost" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

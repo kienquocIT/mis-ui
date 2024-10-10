@@ -24,9 +24,9 @@ class ParameterFrom(forms.Form):
 
         self.fields['left_cond'].widget.attrs.update(
             {
-                'class': 'dropdown-select_two',
+                'class': 'form-select',
                 'data-multiple': 'false',
-                'data-prefix': 'application_property_list',
+                'data-keyResp': 'application_property_list',
                 'data-url': reverse("ApplicationPropertyListAPI"),
             }
         )

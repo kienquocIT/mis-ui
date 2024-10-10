@@ -53,22 +53,22 @@
         <div class="col-12 col-lg-2 col-md-2">
             <ul class="nav flex-column nav-light nav-pills nav-pills-soft nav-vertical" id="tab-select-table">
                 <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" data-collapse="section-currency">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#section-currency" data-collapse="section-currency">
                         <span class="nav-link-text">{% trans 'Currency' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" data-collapse="section-tax">
+                    <a class="nav-link" data-bs-toggle="tab" href="#section-tax" data-collapse="section-tax">
                         <span class="nav-link-text">{% trans 'Tax' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" data-collapse="section-tax-category">
+                    <a class="nav-link" data-bs-toggle="tab" href="#section-tax-category" data-collapse="section-tax-category">
                         <span class="nav-link-text">{% trans 'Tax Category' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" data-collapse="section-payment-terms">
+                    <a class="nav-link" data-bs-toggle="tab" href="#section-payment-terms" data-collapse="section-payment-terms">
                         <span class="nav-link-text">{% trans 'Payment Terms' %}</span>
                     </a>
                 </li>
@@ -76,150 +76,148 @@
         </div>
         <div class="col-12 col-lg-1 col-md-1"></div>
         <div class="col-12 col-lg-9 col-md-9">
-            <div class="lookup-data" id="section-currency" style="display: block">
-                <div class="row">
-                    <div class="col-12 text-left">
-                        <button id="sync-from-VCB-button" type="button" data-method="PUT" data-url="{% url "SyncSellingRateWithVCB" pk=0 %}" class="btn btn-sm btn-soft-success">
-                            <span>
-                                {% trans 'Sync with VCB' %}
-                                <span class="icon ml-1">
-                                    <img style="height: 20px; width: 20px" src="https://th.bing.com/th?id=ODLS.e7251d40-a200-429a-b20a-69524cf4921d" alt="">
-                                </span>
-                            </span>
-                        </button>
-                    </div>
-                </div>
-
-                <table id="datatable-currency" class="table nowrap w-100"
-                       data-url="{% url "CurrencyListAPI" %}"
-                       data-method="GET">
-                    <thead>
-                    <th></th>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "Abbreviation" %}</th>
-                    <th>{% trans "Selling rate" %}</th>
-                    </thead>
-                </table>
-            </div>
-
-            <div class="lookup-data" id="section-tax" style="display: none">
-                <table id="datatable-tax" class="table nowrap w-100"
-                       data-url="{% url "TaxListAPI" %}" data-url-detail="{% url "TaxDetailAPI" pk=0 %}"
-                       data-method="GET">
-                    <thead>
-                    <th></th>
-                    <th>{% trans "Code" %}</th>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "Type" %}</th>
-                    <th>{% trans "Category" %}</th>
-                    <th>{% trans "Rate" %}</th>
-                    <th>{% trans "Action" %}</th>
-                    </thead>
-                </table>
-            </div>
-
-            <div class="lookup-data" id="section-tax-category" style="display: none">
-                <table id="datatable-tax-category" class="table nowrap w-100"
-                       data-url="{% url "TaxCategoryListAPI" %}" data-url-detail="{% url "TaxCategoryDetailAPI" pk=0 %}"
-                       data-method="GET">
-                    <thead>
-                    <th></th>
-                    <th>{% trans "Code" %}</th>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "Description" %}</th>
-                    <th>{% trans "Action" %}</th>
-                    </thead>
-                </table>
-            </div>
-
-            <div class="lookup-data" id="section-payment-terms" style="display: none">
-                <table id="datatable-payment-terms" class="table nowrap w-100 mb-5"
-                       data-url="{% url "PaymentsTermsListAPI" %}"
-                       data-method="GET" data-redirect="{% url 'PriceMasterDataList' %}#section-payment-terms"
-                >
-                    <thead>
-                        <th>#</th>
-                        <th>{% trans "Name" %}
-                            <i
-                                    class="fas fa-info-circle icon-info"
-                                    data-bs-toggle="tooltip" data-bs-placement="bottom" title=""
-                                    data-bs-original-title="{% trans 'Click on title to move detail page.' %}."
-                            ></i>
-                        </th>
-                        <th>{% trans 'Code' %}</th>
-                        <th>{% trans "Transaction Type" %}</th>
-                        <th>{% trans 'Action' %}</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-
-            <div class="lookup-data" id="section-create-payment-terms" style="display: none">
-                <form id="form-create-payment-term" data-method="POST" data-url="{% url 'PaymentsTermsListAPI' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="payment_terms_id">
+            <div class="tab-content">
+                <div class="tab-pane fade show active lookup-data" id="section-currency">
                     <div class="row">
-                        <div class="col-sm-12 col-md-6 col-lg-4">
-                            <div class="form-group">
-                                <label class="form-label required" for="inp-name">{% trans "Name" %}</label>
-                                <input class="form-control" name="title" id="inp-name" placeholder="{% trans '30-30-40 Split Payment' %}" type="text" required>
-                            </div>
-                        </div>
-                        <div class=" col-sm-12 col-md-6 col-lg-4">
-                            <div class="form-group">
-                                <label class="form-label required" for="inp-code">{% trans "Code" %}</label>
-                                <input
-                                        class="form-control"
-                                        name="code"
-                                        id="inp-code"
-                                        placeholder="TT-30-30-40"
-                                        type="text" required
-                                        minlength="1" maxlength="100"
-                                />
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-12 col-lg-4">
-                            <div class="form-group">
-                                <label class="form-label required" for="inp-apply-for">{% trans "Apply for" %}</label>
-                                <select class="form-select" name="apply_for" required id="inp-apply-for">
-                                    <option value="0">{% trans "Sale" %}</option>
-                                    <option value="1">{% trans "Purchase" %}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label" for="inp-remarks">{% trans "Description" %}</label>
-                                <textarea class="form-control" name="remark" placeholder="{% trans 'Payment in 3 installments' %}" rows="3" id="inp-remarks"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-lg-3 col-xs-12">
-                            <button
-                                    class="btn btn-flush-success"
-                                    data-bs-toggle="modal" data-bs-target="#modal-add-table"
-                                    type="button"
-                            >
-                                <span><span class="icon"><i class="far fa-plus-square"></i></span><span>{% trans 'Add new line' %}</span></span>
+                        <div class="col-12 text-left">
+                            <button id="sync-from-VCB-button" type="button" data-method="PUT" data-url="{% url "SyncSellingRateWithVCB" pk=0 %}" class="btn btn-sm btn-soft-success">
+                                <span>
+                                    {% trans 'Sync with VCB' %}
+                                    <span class="icon ml-1">
+                                        <img style="height: 20px; width: 20px" src="https://th.bing.com/th?id=ODLS.e7251d40-a200-429a-b20a-69524cf4921d" alt="">
+                                    </span>
+                                </span>
                             </button>
                         </div>
                     </div>
-                    <div class="row">
-                        <table id="table_terms" class="table nowrap w-100 mb-5">
-                            <thead>
+
+                    <table id="datatable-currency" class="table nowrap w-100"
+                           data-url="{% url "CurrencyListAPI" %}"
+                           data-method="GET">
+                        <thead>
+                        <th></th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Abbreviation" %}</th>
+                        <th>{% trans "Selling rate" %}</th>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tab-pane fade lookup-data" id="section-tax">
+                    <table id="datatable-tax" class="table nowrap w-100"
+                           data-url="{% url "TaxListAPI" %}" data-url-detail="{% url "TaxDetailAPI" pk=0 %}"
+                           data-method="GET">
+                        <thead>
+                        <th></th>
+                        <th>{% trans "Code" %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Type" %}</th>
+                        <th>{% trans "Category" %}</th>
+                        <th>{% trans "Rate" %}</th>
+                        <th>{% trans "Action" %}</th>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tab-pane fade lookup-data" id="section-tax-category">
+                    <table id="datatable-tax-category" class="table nowrap w-100"
+                           data-url="{% url "TaxCategoryListAPI" %}" data-url-detail="{% url "TaxCategoryDetailAPI" pk=0 %}"
+                           data-method="GET">
+                        <thead>
+                        <th></th>
+                        <th>{% trans "Code" %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Description" %}</th>
+                        <th>{% trans "Action" %}</th>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tab-pane fade lookup-data" id="section-payment-terms">
+                    <table id="datatable-payment-terms" class="table nowrap w-100 mb-5"
+                           data-url="{% url "PaymentsTermsListAPI" %}"
+                           data-method="GET" data-redirect="{% url 'PriceMasterDataList' %}#section-payment-terms"
+                    >
+                        <thead>
                             <th>#</th>
-                            <th>{% trans "Value" %}</th>
-                            <th>{% trans "Value type" %}</th>
-                            <th>{% trans "No of days" %}</th>
-                            <th>{% trans "day type" %}</th>
-                            <th>{% trans "after" %}</th>
+                            <th>{% trans "Name" %}
+                                <i
+                                        class="fas fa-info-circle icon-info"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom" title=""
+                                        data-bs-original-title="{% trans 'Click on title to move detail page.' %}."
+                                ></i>
+                            </th>
+                            <th>{% trans 'Code' %}</th>
+                            <th>{% trans "Transaction Type" %}</th>
                             <th>{% trans 'Action' %}</th>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </form>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade lookup-data" id="section-create-payment-terms">
+                    <form id="form-create-payment-term" data-method="POST" data-url="{% url 'PaymentsTermsListAPI' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="payment_terms_id">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 col-lg-4">
+                                <div class="form-group">
+                                    <label class="form-label required" for="inp-name">{% trans "Name" %}</label>
+                                    <input class="form-control" name="title" id="inp-name" placeholder="{% trans '30-30-40 Split Payment' %}" type="text" required>
+                                </div>
+                            </div>
+                            <div class=" col-sm-12 col-md-6 col-lg-4">
+                                <div class="form-group">
+                                    <label class="form-label required" for="inp-code">{% trans "Code" %}</label>
+                                    <input
+                                            class="form-control"
+                                            name="code"
+                                            id="inp-code"
+                                            placeholder="TT-30-30-40"
+                                            type="text" required
+                                            minlength="1" maxlength="100"
+                                    />
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-lg-4">
+                                <div class="form-group">
+                                    <label class="form-label required" for="inp-apply-for">{% trans "Apply for" %}</label>
+                                    <select class="form-select" name="apply_for" required id="inp-apply-for">
+                                        <option value="0">{% trans "Sale" %}</option>
+                                        <option value="1">{% trans "Purchase" %}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="inp-remarks">{% trans "Description" %}</label>
+                                    <textarea class="form-control" name="remark" placeholder="{% trans 'Payment in 3 installments' %}" rows="3" id="inp-remarks"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-lg-3 col-xs-12">
+                                <button
+                                        class="btn btn-flush-success"
+                                        data-bs-toggle="modal" data-bs-target="#modal-add-table"
+                                        type="button"
+                                >
+                                    <span><span class="icon"><i class="far fa-plus-square"></i></span><span>{% trans 'Add new line' %}</span></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <table id="table_terms" class="table nowrap w-100 mb-5">
+                                <thead>
+                                <th>#</th>
+                                <th>{% trans "Value" %}</th>
+                                <th>{% trans "Value type" %}</th>
+                                <th>{% trans "No of days" %}</th>
+                                <th>{% trans "day type" %}</th>
+                                <th>{% trans "after" %}</th>
+                                <th>{% trans 'Action' %}</th>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

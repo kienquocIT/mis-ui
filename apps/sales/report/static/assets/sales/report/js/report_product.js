@@ -16,44 +16,58 @@ $(function () {
 
         function loadDbl(data) {
             $table.DataTableDefault({
-                ajax: {
-                    url: $table.attr('data-url'),
-                    // dataSrc: 'data.report_product_list',
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let dataResult = resp.data['report_product_list'] ? resp.data['report_product_list'] : [];
-                            storeLoadInitByDataFiscalYear();
-                            return dataResult;
-                        }
-                        return [];
-                    },
-                },
                 data: data ? data : [],
                 autoWidth: true,
                 scrollX: true,
-                pageLength: 50,
+                // pageLength: 50,
+                paging: false,
+                info: false,
                 columns: [
                     {
                         targets: 0,
                         width: '25%',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-soft-success">${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}</span>
+                            let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                            if (row?.['is_product'] === true) {
+                                let target = ".cl-" + row?.['product']?.['id'].replace(/-/g, "");
+                                return `<button 
+                                        type="button" 
+                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-xs table-row-task cl-parent" 
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="${target}"
+                                        data-bs-placement="top"
+                                        aria-expanded="true"
+                                        aria-controls="newGroup"
+                                        data-group-order="${row?.['product']?.['id']}"
+                                        data-row="${dataRow}"
+                                    >
+                                        <span class="icon"><i class="fas fa-chevron-right"></i></span>
+                                    </button>
+                                    <span class="badge badge-soft-success">${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}</span>
                                     <span>${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}</span>`;
+                            }
+                            return `<span class="badge badge-secondary badge-outline cl-child" data-row="${dataRow}">${row?.['sale_order']?.['customer']?.['code'] ? row?.['sale_order']?.['customer']?.['code'] : ''}</span>
+                                    <span>${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</span>`;
                         }
                     },
                     {
                         targets: 1,
                         width: '10%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['product']?.['general_product_category']?.['title'] ? row?.['product']?.['general_product_category']?.['title'] : ''}</p>`;
+                            if (row?.['is_product'] === true) {
+                                return `<p>${row?.['product']?.['general_product_category']?.['title'] ? row?.['product']?.['general_product_category']?.['title'] : ''}</p>`;
+                            }
+                            return ``;
                         }
                     },
                     {
                         targets: 2,
                         width: '5%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['product']?.['uom']?.['title'] ? row?.['product']?.['uom']?.['title'] : ''}</p>`;
+                            if (row?.['is_product'] === true) {
+                                return `<p>${row?.['product']?.['uom']?.['title'] ? row?.['product']?.['uom']?.['title'] : ''}</p>`;
+                            }
+                            return ``;
                         }
                     },
                     {
@@ -120,18 +134,71 @@ $(function () {
             }
         }
 
+        function loadSetCollapse() {
+            for (let child of $table[0].querySelectorAll('.cl-child')) {
+                if (child.getAttribute('data-row')) {
+                    let dataRow = JSON.parse(child.getAttribute('data-row'));
+                    let row = child.closest('tr');
+                    let cls = '';
+                    if (dataRow?.['product']?.['id']) {
+                        cls = 'cl-' + dataRow?.['product']?.['id'].replace(/-/g, "");
+                    }
+                    row.classList.add(cls);
+                    row.classList.add('collapse');
+                }
+            }
+            $table.DataTable().rows().every(function () {
+                let row = this.node();
+                if (row.querySelector('.cl-parent')) {
+                    row.querySelector('.cl-parent').addEventListener('click', function () {
+                        $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
+                    });
+                }
+            });
+
+
+            return true;
+        }
+
         function setupDataLoadTable(dataList) {
             let result = [];
             let dataByProduct = {};
             for (let data of dataList) {
                 if (data?.['product']?.['id']) {
                     if (!dataByProduct.hasOwnProperty(data?.['product']?.['id'])) {
+                        data['is_product'] = true;
                         dataByProduct[data?.['product']?.['id']] = data;
+                        dataByProduct[data?.['product']?.['id']]['customer_data'] = {};
+                        dataByProduct[data?.['product']?.['id']]['customer_data'][data?.['sale_order']?.['customer']?.['id']] = {
+                            'sale_order': data?.['sale_order'],
+                            'product': data?.['product'],
+                            'revenue': data?.['revenue'],
+                            'gross_profit': data?.['gross_profit'],
+                            'net_income': data?.['net_income'],
+                            'quantity': data?.['quantity'],
+                        };
                     } else {
                         dataByProduct[data?.['product']?.['id']]['revenue'] += data?.['revenue'];
                         dataByProduct[data?.['product']?.['id']]['gross_profit'] += data?.['gross_profit'];
                         dataByProduct[data?.['product']?.['id']]['net_income'] += data?.['net_income'];
                         dataByProduct[data?.['product']?.['id']]['quantity'] += data?.['quantity'];
+                        // setup customer
+                        if (!dataByProduct[data?.['product']?.['id']]['customer_data'].hasOwnProperty(data?.['sale_order']?.['customer']?.['id'])) {
+                            dataByProduct[data?.['product']?.['id']]['customer_data'][data?.['sale_order']?.['customer']?.['id']] = {
+                                'sale_order': data?.['sale_order'],
+                                'product': data?.['product'],
+                                'revenue': data?.['revenue'],
+                                'gross_profit': data?.['gross_profit'],
+                                'net_income': data?.['net_income'],
+                                'quantity': data?.['quantity'],
+                                'is_customer': true,
+                            }
+                        } else {
+                            dataByProduct[data?.['product']?.['id']]['customer_data'][data?.['sale_order']?.['customer']?.['id']]['revenue'] += data?.['revenue'];
+                            dataByProduct[data?.['product']?.['id']]['customer_data'][data?.['sale_order']?.['customer']?.['id']]['gross_profit'] += data?.['gross_profit'];
+                            dataByProduct[data?.['product']?.['id']]['customer_data'][data?.['sale_order']?.['customer']?.['id']]['net_income'] += data?.['net_income'];
+                            dataByProduct[data?.['product']?.['id']]['customer_data'][data?.['sale_order']?.['customer']?.['id']]['quantity'] += data?.['quantity'];
+                        }
                     }
                 }
             }
@@ -139,9 +206,15 @@ $(function () {
                 dataByProduct[keyProduct]['rate_gross_profit'] = Math.round(dataByProduct[keyProduct]?.['gross_profit'] / dataByProduct[keyProduct]?.['revenue'] * 100);
                 dataByProduct[keyProduct]['rate_net_income'] = Math.round(dataByProduct[keyProduct]?.['net_income'] / dataByProduct[keyProduct]?.['revenue'] * 100);
                 result.push(dataByProduct[keyProduct]);
+                for (let keyCus in dataByProduct[keyProduct]['customer_data']) {
+                    dataByProduct[keyProduct]['customer_data'][keyCus]['rate_gross_profit'] = Math.round(dataByProduct[keyProduct]['customer_data'][keyCus]?.['gross_profit'] / dataByProduct[keyProduct]['customer_data'][keyCus]?.['revenue'] * 100);
+                    dataByProduct[keyProduct]['customer_data'][keyCus]['rate_net_income'] = Math.round(dataByProduct[keyProduct]['customer_data'][keyCus]?.['net_income'] / dataByProduct[keyProduct]['customer_data'][keyCus]?.['revenue'] * 100);
+                    result.push(dataByProduct[keyProduct]['customer_data'][keyCus]);
+                }
             }
             $table.DataTable().clear().draw();
             $table.DataTable().rows.add(result).draw();
+            loadSetCollapse();
             // init money
             $.fn.initMaskMoney2();
             loadTotal();
@@ -171,7 +244,9 @@ $(function () {
             eleGrossProfit.attr('data-init-money', String(newGrossProfit));
             eleNetIncome.attr('data-init-money', String(newNetIncome));
         }
+
         loadDbl();
+        storeLoadInitByDataFiscalYear();
 
         function storeLoadInitByDataFiscalYear() {
             $.fn.callAjax2({
@@ -273,30 +348,6 @@ $(function () {
             return '';
         }
 
-        function loadBoxEmployee() {
-            boxEmployee.empty();
-            let dataParams = {};
-            if (boxGroup.val()) {
-                dataParams['group_id__in'] = boxGroup.val().join(',');
-            }
-            boxEmployee.initSelect2({
-                'dataParams': dataParams,
-                'allowClear': true,
-            });
-        }
-
-        function loadBoxProduct() {
-            boxProduct.empty();
-            let dataParams = {};
-            if (boxCategory.val()) {
-                dataParams['category_id__in'] = boxCategory.val().join(',');
-            }
-            boxProduct.initSelect2({
-                'dataParams': dataParams,
-                'allowClear': true,
-            });
-        }
-
         function loadFilter(listData, $eleShow) {
             if (listData.length > 0) {
                 $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
@@ -323,13 +374,36 @@ $(function () {
 
         // load init
         function initData() {
-            boxGroup.initSelect2({'allowClear': true,});
-            boxProduct.initSelect2({'allowClear': true,});
-            boxCategory.initSelect2({'allowClear': true,});
-            loadBoxEmployee();
+            loadInitS2(boxGroup, [], {}, null, true);
+            loadInitS2(boxEmployee, [], {}, null, true);
+            loadInitS2(boxCategory, [], {}, null, true);
+            loadInitS2(boxProduct, [], {}, null, true);
         }
 
         initData();
+
+        function loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
+        let opts = {'allowClear': isClear};
+        $ele.empty();
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                return $(`<span>${res1} ${res2}</span>`);
+            }
+        }
+        $ele.initSelect2(opts);
+        return true;
+    };
 
         // init date picker
         $('.date-picker').each(function () {
@@ -361,25 +435,11 @@ $(function () {
 
         // Events
         boxGroup.on('change', function() {
-            loadBoxEmployee();
-            $table.DataTable().clear().draw();
-            loadTotal();
-        });
-
-        boxEmployee.on('change', function() {
-            $table.DataTable().clear().draw();
-            loadTotal();
+            loadInitS2(boxEmployee, [], {'group_id__in': boxGroup.val().join(',')}, null, true);
         });
 
         boxCategory.on('change', function() {
-            loadBoxProduct();
-            $table.DataTable().clear().draw();
-            loadTotal();
-        });
-
-        boxProduct.on('change', function() {
-            $table.DataTable().clear().draw();
-            loadTotal();
+            loadInitS2(boxProduct, [], {'category_id__in': boxCategory.val().join(',')}, null, true);
         });
 
         $('#btn-apply-filter').on('click', function () {

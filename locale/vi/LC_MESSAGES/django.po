@@ -9159,3 +9159,7 @@ msgstr "Hoàn tất phiếu kiểm kê này?"
 #
 msgid "Once you are done, you can create all warehousing activities related to this IA."
 msgstr "Một khi phiếu đã hoàn tất, bạn có thể thực hiện các hoạt động nhập-xuất kho có tham chiếu tới phiếu này"
+
+#
+msgid "Now"
+msgstr "ngay bây giờ"

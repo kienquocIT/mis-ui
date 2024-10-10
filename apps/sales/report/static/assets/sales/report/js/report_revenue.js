@@ -55,7 +55,7 @@ $(function () {
                 columns: [
                     {
                         targets: 0,
-                        width: '5%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<div class="d-flex">
                                         <span class="badge badge-primary mr-2">${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</span>
@@ -65,7 +65,7 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '12%',
+                        width: '20%',
                         render: (data, type, row) => {
                             return `<span class="badge badge-soft-success">${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</span>
                                     <span>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</span>`;
@@ -73,7 +73,7 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '3%',
+                        width: '5%',
                         render: (data, type, row) => {
                             if (row?.['date_approved']) {
                                 return `<p>${moment(row?.['date_approved'] ? row?.['date_approved'] : '').format('DD/MM/YYYY')}</p>`;
@@ -84,7 +84,7 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '12%',
+                        width: '20%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</p>`;
                         }
@@ -260,18 +260,6 @@ $(function () {
             return '';
         }
 
-        function loadBoxEmployee() {
-            boxEmployee.empty();
-            let dataParams = {};
-            if (boxGroup.val()) {
-                dataParams['group_id__in'] = boxGroup.val().join(',');
-            }
-            boxEmployee.initSelect2({
-                'dataParams': dataParams,
-                'allowClear': true,
-            });
-        }
-
         function loadFilter(listData, $eleShow) {
             if (listData.length > 0) {
                 $eleShow.html(`<div><small class="text-primary">${listData.join(" - ")}</small></div>`);
@@ -298,12 +286,35 @@ $(function () {
 
         // load init
         function initData() {
-            boxGroup.initSelect2({'allowClear': true,});
-            loadBoxEmployee();
+            loadInitS2(boxGroup, [], {}, null, true);
+            loadInitS2(boxEmployee, [], {}, null, true);
             btnView.click();
         }
 
         initData();
+
+        function loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
+        let opts = {'allowClear': isClear};
+        $ele.empty();
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                return $(`<span>${res1} ${res2}</span>`);
+            }
+        }
+        $ele.initSelect2(opts);
+        return true;
+    };
 
         // init date picker
         $('.date-picker').each(function () {
@@ -316,7 +327,7 @@ $(function () {
                     format: 'DD/MM/YYYY',
                 },
                 maxYear: parseInt(moment().format('YYYY'), 10),
-                drops: 'up',
+                drops: 'down',
                 autoApply: true,
                 autoUpdateInput: false,
             }).on('apply.daterangepicker', function (ev, picker) {
@@ -335,18 +346,11 @@ $(function () {
 
         // Events
         boxGroup.on('change', function() {
-            loadBoxEmployee();
-            $table.DataTable().clear().draw();
-            loadTotal();
+            loadInitS2(boxEmployee, [], {'group_id__in': boxGroup.val().join(',')}, null, true);
         });
 
-        boxEmployee.on('change', function() {
-            $table.DataTable().clear().draw();
-            loadTotal();
-        });
-
-        $('#btn-apply-vb, #btn-apply-date').on('click', function () {
-            this.closest('.dropdown-menu').classList.remove('show');
+        $('#btn-apply-filter').on('click', function () {
+            // this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
             dataParams['is_initial'] = false;
             let listViewBy = [];

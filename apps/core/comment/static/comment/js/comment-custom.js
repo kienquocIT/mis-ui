@@ -262,13 +262,13 @@ class CommentHandle {
             })
         }
         function callData(data, elm){
-            let $empUrl = $('#employee-mention')
+            let $empUrl = $('#employee-mention'), $prjData = elm.closest('.card').find('.prj_info').attr('data-project')
             $.fn.callAjax2({
                 'url': $empUrl.attr('data-url'),
                 'method': 'get',
                 'data': {
                     'search': data,
-                    'list_from_app': 'project.project.view',
+                    'list_from_prj': $prjData,
                 }
             })
                 .then(
@@ -307,7 +307,10 @@ class CommentHandle {
         elm.on('keydown', function(event){
             if (event.key === 'Enter')
                 elm.css('height', elm.height() + 21)
-            if (elm[0].selectionStart === 0) elm.css('height', 20)
+            if (elm[0].selectionStart === 0){
+                elm.css('height', 20)
+                $(this).data('data-mention', [])
+            }
             let caret = getCaretCoordinates(elm[0], elm[0].selectionEnd);
 
             // reset height when delete all text
@@ -317,10 +320,8 @@ class CommentHandle {
             // delete employee when user erase mention
             let strArray = event.target.value.split(" ");
             const lastStr = strArray[strArray.length - 1];
-
             if (event.key === 'Backspace' && lastStr.includes('@') && lastStr.length <= 3){
                 let mention_lst = $(this).data('data-mention')
-                console.log('before', mention_lst)
                 for (let idx in mention_lst){
                     const emp = mention_lst[idx]
                     if (!strArray.includes(emp.code)){
@@ -328,7 +329,6 @@ class CommentHandle {
                         break;
                     }
                 }
-                console.log('after', mention_lst)
                 $(this).data('data-mention', mention_lst)
             }
 
@@ -399,7 +399,7 @@ class CommentHandle {
                     $('.wrap_comment .card').each(function () {
                         const TxtArea = $(this).find('.input_txt textarea')
                         CommentHandle.RunMentionTextarea(TxtArea)
-                    })
+                    });
                 },
                 (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
             )

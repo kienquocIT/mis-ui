@@ -9119,7 +9119,6 @@ msgstr "Tự nhập"
 #
 msgid "Undelivered"
 msgstr "Chưa giao"
-msgstr "Báo cáo cho"
 
 #
 msgid "Project activities"

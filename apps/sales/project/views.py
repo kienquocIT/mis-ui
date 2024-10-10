@@ -540,6 +540,7 @@ class ProjectActivities(View):
         template='sales/project/project-news.html',
         breadcrumb='PROJECT_ACTIVITIES',
         menu_active='menu_project_activities',
+        jsi18n='project_home'
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

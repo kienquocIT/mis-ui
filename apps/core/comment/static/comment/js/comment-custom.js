@@ -369,7 +369,7 @@ class CommentHandle {
                         // short name
                         cmtTemp.find('.heading_txt').html(`
                             <span class="txt-link">${item.employee_inherit.full_name}</span> ${item['title']} <b>"${
-                            item['document_title']}"</b> in <span class="txt-link prj_info" data-project="${item.project.id}">${item.project.title}</span>.<p></p>`)
+                            item['document_title']}"</b> ${$.fn.gettext('in')} <span class="txt-link prj_info" data-project="${item.project.id}">${item.project.title}</span>.<p></p>`)
                         cmtTemp.find('.card-text').val(item.msg)
                         cmtTemp.find('.heading_txt p').append('<i class="fa-regular fa-clock"></i>' + checkTime(item.date_created))
                         cmtTemp.attr('data-id', item.id)

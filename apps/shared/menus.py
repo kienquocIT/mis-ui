@@ -664,7 +664,7 @@ class MenusProject:
         icon='<i class="bi bi-signpost-fill"></i>',
     )
     ACTIVITIES = MenuCommon(
-        name='Project Activities', code='menu_project_activities', view_name='ProjectActivities',
+        name='Project activities', code='menu_project_activities', view_name='ProjectActivities',
         icon='<i class="fa-solid fa-fire-flame-curved"></i>',
     )
 

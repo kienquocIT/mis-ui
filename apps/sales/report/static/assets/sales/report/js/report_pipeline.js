@@ -21,21 +21,21 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength: 50,
-                columns: [  // 120,120,120,240,120,120,120,120,200,200,200,60,60,60,60 (1920p)
+                columns: [
                     {
                         targets: 0,
-                        width: '4%',
+                        width: '6%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 0) {
                                 return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
                             } else {
-                                return `<div class="row"><span class="badge badge-indigo badge-outline">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span></div>`;
+                                return `<span class="badge badge-indigo badge-outline">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span>`;
                             }
                         }
                     },
                     {
                         targets: 1,
-                        width: '5%',
+                        width: '6%',
                         render: (data, type, row) => {
                             if (row?.['employee_inherit']?.['full_name']) {
                                 let target = `.cl-emp-${row?.['employee_inherit']?.['id'].replace(/-/g, "")}`;
@@ -60,11 +60,11 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '6.25%',
+                        width: '6%',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['code'] && row?.['employee_inherit_id']) {
                                 let dataGr = 'cl-emp-' + row?.['employee_inherit_id'].replace(/-/g, "");
-                                return `<div class="group-emp-child" data-group-target="${dataGr}"><span class="badge badge-secondary badge-sm">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span><p>${row?.['opportunity']?.['title'] ? row?.['opportunity']?.['title'] : ''}</p></div>`;
+                                return `<div class="group-emp-child" data-group-target="${dataGr}"><span class="badge badge-secondary mr-1">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span><span>${row?.['opportunity']?.['title'] ? row?.['opportunity']?.['title'] : ''}</span></div>`;
                             }
                             return `<p></p>`;
 
@@ -72,21 +72,21 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '12%',
+                        width: '6%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['customer']?.['title'] ? row?.['opportunity']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 4,
-                        width: '6.25%',
+                        width: '6%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['stage']?.['indicator'] ? row?.['opportunity']?.['stage']?.['indicator'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 5,
-                        width: '6.25%',
+                        width: '4%',
                         render: (data, type, row) => {
                             if ([0, 1, 2].includes(row?.['type_group_by'])) {
                                 return `<p></p>`;
@@ -104,7 +104,7 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '6.25%',
+                        width: '4%',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['open_date']) {
                                 return `<p>${moment(row?.['opportunity']?.['open_date'] ? row?.['opportunity']?.['open_date'] : '').format('DD/MM/YYYY')}</p>`;
@@ -115,7 +115,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '6.25%',
+                        width: '4%',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['close_date']) {
                                 return `<p>${moment(row?.['opportunity']?.['close_date'] ? row?.['opportunity']?.['close_date'] : '').format('DD/MM/YYYY')}</p>`;
@@ -126,7 +126,7 @@ $(function () {
                     },
                     {
                         targets: 8,
-                        width: '11%',
+                        width: '8%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span></b>`;
@@ -136,7 +136,7 @@ $(function () {
                     },
                     {
                         targets: 9,
-                        width: '11%',
+                        width: '8%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['forecast_value'])}"></span></b>`;
@@ -146,7 +146,7 @@ $(function () {
                     },
                     {
                         targets: 10,
-                        width: '11%',
+                        width: '8%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span></b>`;
@@ -156,7 +156,7 @@ $(function () {
                     },
                     {
                         targets: 11,
-                        width: '2%',
+                        width: '6%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p></b>`;
@@ -166,7 +166,7 @@ $(function () {
                     },
                     {
                         targets: 12,
-                        width: '2%',
+                        width: '6%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['email'] ? row?.['opportunity']?.['email'] : '0'}</p></b>`;
@@ -176,7 +176,7 @@ $(function () {
                     },
                     {
                         targets: 13,
-                        width: '2%',
+                        width: '6%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p></b>`;
@@ -186,7 +186,7 @@ $(function () {
                     },
                     {
                         targets: 14,
-                        width: '2%',
+                        width: '6%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p></b>`;
@@ -500,7 +500,7 @@ $(function () {
                             let currentDate = new Date();
                             let currentMonth = currentDate.getMonth() + 1;
                             boxMonth.val(currentMonth).trigger('change');
-                            $('#btn-apply-vb').click();
+                            $('#btn-apply-filter').click();
                         }
                     }
                 }
@@ -639,18 +639,6 @@ $(function () {
             return dateObject.toISOString().slice(0, 19).replace('T', ' ');
         }
 
-        function loadBoxEmployee() {
-            boxEmployee.empty();
-            let dataParams = {};
-            if (boxGroup.val()) {
-                dataParams['group_id__in'] = boxGroup.val().join(',');
-            }
-            boxEmployee.initSelect2({
-                'dataParams': dataParams,
-                'allowClear': true,
-            });
-        }
-
         function loadBoxQuarter() {
             if (eleFiscalYear.val()) {
                 let data = [];
@@ -732,12 +720,35 @@ $(function () {
 
         // load init
         function initData() {
-            boxGroup.initSelect2({'allowClear': true,});
-            loadBoxEmployee();
+            loadInitS2(boxGroup, [], {}, null, true);
+            loadInitS2(boxEmployee, [], {}, null, true);
             storeDataFiscalYear();
         }
 
         initData();
+
+        function loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
+            let opts = {'allowClear': isClear};
+            $ele.empty();
+            if (data.length > 0) {
+                opts['data'] = data;
+            }
+            if (Object.keys(dataParams).length !== 0) {
+                opts['dataParams'] = dataParams;
+            }
+            if ($modal) {
+                opts['dropdownParent'] = $modal;
+            }
+            if (Object.keys(customRes).length !== 0) {
+                opts['templateResult'] = function (state) {
+                    let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                    let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                    return $(`<span>${res1} ${res2}</span>`);
+                }
+            }
+            $ele.initSelect2(opts);
+            return true;
+        }
 
         // init date picker
         $('.date-picker').each(function () {
@@ -768,13 +779,8 @@ $(function () {
         });
 
         // Events
-        boxGroup.on('change', function() {
-            loadBoxEmployee();
-            $table.DataTable().clear().draw();
-        });
-
-        boxEmployee.on('change', function() {
-            $table.DataTable().clear().draw();
+        boxGroup.on('change', function () {
+            loadInitS2(boxEmployee, [], {'group_id__in': boxGroup.val().join(',')}, null, true);
         });
 
         $('input[type=radio].check-period').on('click', function () {
@@ -786,8 +792,8 @@ $(function () {
             }
         });
 
-        $('#btn-apply-vb, #btn-apply-date').on('click', function () {
-            this.closest('.dropdown-menu').classList.remove('show');
+        $('#btn-apply-filter').on('click', function () {
+            // this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
             let listViewBy = [];
             let listDate = [];

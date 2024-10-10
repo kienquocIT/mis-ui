@@ -9175,3 +9175,19 @@ msgstr "Không quay lại tại trạm chấp thuận"
 #
 msgid "Cannot connect itself"
 msgstr "Không thể liên kết chính nó"
+
+#
+msgid "Add new attribute"
+msgstr "Thêm thuộc tính"
+
+#
+msgid "Add Variant Value"
+msgstr "Thêm biến thể"
+
+#
+msgid "Attribute name"
+msgstr "Tên thuộc tính"
+
+#
+msgid "Value name"
+msgstr "Tên biến thể"

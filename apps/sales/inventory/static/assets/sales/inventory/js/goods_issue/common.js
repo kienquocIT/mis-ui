@@ -150,6 +150,7 @@ class GISLoadPage {
 
                             Promise.all([po_detail_ajax]).then(
                                 (results) => {
+                                    console.log(results[0])
                                     return results[0] ? GISLoadTab.DrawTablePOItems(results[0]?.['task_data']) : GISLoadTab.DrawTablePOItems([])
                                 })
                         } else {
@@ -648,7 +649,7 @@ class GISHandle {
                         'warehouse_id': row.find('.select-detail').attr('data-wh-id'),
                         'uom_id': row.find('.select-detail').attr('data-uom-id'),
                         'before_quantity': row.find('.before-quantity').text(),
-                        'remain_quantity': 0,
+                        'remain_quantity': row.find('.remain-quantity').text(),
                         'issued_quantity': row.find('.selected-quantity').val(),
                         'lot_data': row.find('.lot-data-script').text() ? JSON.parse(row.find('.lot-data-script').text()) : [],
                         'sn_data': row.find('.sn-data-script').text() ? JSON.parse(row.find('.sn-data-script').text()) : []
@@ -665,7 +666,7 @@ class GISHandle {
                         'warehouse_id': row.find('.select-detail').attr('data-wh-id'),
                         'uom_id': row.find('.select-detail').attr('data-uom-id'),
                         'before_quantity': row.find('.before-quantity').text(),
-                        'remain_quantity': 0,
+                        'remain_quantity': row.find('.remain-quantity').text(),
                         'issued_quantity': row.find('.selected-quantity').val(),
                         'lot_data': row.find('.lot-data-script').text() ? JSON.parse(row.find('.lot-data-script').text()) : [],
                         'sn_data': row.find('.sn-data-script').text() ? JSON.parse(row.find('.sn-data-script').text()) : []

@@ -414,7 +414,7 @@ class Conditions {
                     });
                     // call init select2 for left_cond
                     let left_cond = elm_sub_formset_row.find('[name*="-left_cond"]')
-                    left_cond.attr('data-params', JSON.stringify({"application": $('#select-box-features').val()}))
+                    left_cond.attr('data-params', JSON.stringify({"application": $('#select-box-features').val(), 'is_sale_indicator': false, 'parent_n__isnull': true}))
                     initSelectBox(left_cond)
 
                     // datatype on change

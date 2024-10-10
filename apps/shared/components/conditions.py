@@ -3,11 +3,12 @@ from django import forms
 from django.forms import formset_factory
 from django.urls import reverse
 
+from .. import WorkflowMsg
 from ..form_custom import MultiForm
 
 LOGIC_CONDITION = [
-    ('AND', 'And'),
-    ('OR', 'Or')
+    ('AND', WorkflowMsg.LOGIC_AND),
+    ('OR', WorkflowMsg.LOGIC_OR)
 ]
 
 

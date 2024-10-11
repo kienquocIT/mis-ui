@@ -35,6 +35,7 @@
 {% block pageContent %}
     {{ data.data.current_period | json_script:"current_period" }}
     {{ data.data.definition_inventory_valuation | json_script:"definition_inventory_valuation" }}
+    {{ data.data.is_project | json_script:"is_project" }}
 
     <script id="trans-script"
             data-trans-m1th="{% trans 'January' %}"
@@ -105,7 +106,7 @@
                         <div class="col-12 col-lg-2 col-md-6">
                             <div class="form-group">
                                 <label for="project-select" class="form-label">{% trans 'Project' %}</label>
-                                <select disabled class="form-select select2" id="project-select"
+                                <select class="form-select select2" id="project-select"
                                         data-url="{% url 'SaleOrderListAPI' %}"
                                         data-method="GET"
                                 ></select>

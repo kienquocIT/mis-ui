@@ -2174,6 +2174,8 @@ class WFRTControl {
             return true;
         }
         if (!IDRuntime) {  // create document, run WF by @decorator_run_workflow in API
+            // check next node
+            let checkAssociate = WFAssociateControl.checkNextNode(_form.dataForm);
             // select save status before select collaborator
             Swal.fire({
                 title: $.fn.transEle.attr('data-select-save-status'),
@@ -2203,6 +2205,12 @@ class WFRTControl {
                         let saveStatus = eleChecked.getAttribute('data-status');
                         if (saveStatus) {
                             _form.dataForm['system_status'] = parseInt(saveStatus);
+                            if (_form.dataForm['system_status'] === 1) {
+                                if (checkAssociate?.['id']) {
+                                    _form.dataForm['next_association_id'] = checkAssociate?.['id'];
+                                    WFRTControl.setCollabOFCreate(checkAssociate?.['node_out']?.['collab_out_form']);
+                                }
+                            }
                             WFRTControl.submitCheckCollabNextNode(_form);
                         }
                     } else {
@@ -2525,6 +2533,7 @@ class WFRTControl {
                                     }
                                     // collab out form handler
                                     WFRTControl.setCollabOFCreate(workflow_current['collab_out_form']);
+                                    WFRTControl.setAssociateCreate(workflow_current['association']);
                                 }
                             }
                             if (WFconfig?.['mode'] === 0) {
@@ -2922,6 +2931,38 @@ class WFRTControl {
         }
     }
 
+    static getAssociateData() {
+        // typeWF 0: dataCreate, 1: dataRuntime
+        let typeWF = 0;
+        if (window.location.href.includes('/detail/')) {
+            typeWF = 1;
+        }
+        if (window.location.href.includes('/update/')) {
+            let eleStatus = $('#systemStatus');
+            if (eleStatus && eleStatus.length > 0) {
+                if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
+                    typeWF = 1;
+                }
+            }
+        }
+        let $associateCreate = $('#idxAssociateCreate');
+        let dataCreate = [];
+        let $associateRuntime = $('#idxAssociateRuntime');
+        let dataRuntime = [];
+        if ($associateCreate && $associateCreate.length > 0) {
+            dataCreate = JSON.parse($associateCreate.text());
+        }
+        if ($associateRuntime && $associateRuntime.length > 0) {
+            dataRuntime = JSON.parse($associateRuntime.text());
+        }
+        if (typeWF === 0) {
+            return dataCreate;
+        }
+        if (typeWF === 1) {
+            return dataRuntime;
+        }
+    }
+
     static getZoneKeyData() {
         let itemEle = $('#idxZonesKeyData');
         if (itemEle) {
@@ -2990,6 +3031,17 @@ class WFRTControl {
                 $collab.empty().html(`${JSON.stringify(collabOutFormData)}`);
             } else {
                 $('html').append(`<script class="hidden" id="idxCollabOFCreate">${JSON.stringify(collabOutFormData)}</script>`);
+            }
+        }
+    }
+
+    static setAssociateCreate(associateData) {
+        if (associateData && Array.isArray(associateData)) {
+            let $associate = $('#idxAssociateCreate');
+            if ($associate && $associate.length > 0) {
+                $associate.empty().html(`${JSON.stringify(associateData)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxAssociateCreate">${JSON.stringify(associateData)}</script>`);
             }
         }
     }
@@ -3171,6 +3223,78 @@ class WFRTControl {
         if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible"))
             WFRTControl.changePropertiesElementIsZone($(ele$).next('.select2-container').find('.select2-selection'), config)
     }
+
+}
+
+class WFAssociateControl {
+
+    static checkNextNode(dataForm) {
+        let associateData = WFRTControl.getAssociateData();
+        let check = false;
+        for (let assoData of associateData) {
+            let listCheck = [];
+            for (let condition of assoData?.['condition']) {
+                let left = null;
+                let right = null;
+                if (typeof condition === 'object' && condition !== null) {
+                    if (dataForm?.[condition?.['left_cond']?.['code']]) {
+                        left = dataForm?.[condition?.['left_cond']?.['code']];
+                    }
+                    if (condition?.['right_cond']) {
+                        right = condition?.['right_cond'];
+                        if (condition?.['left_cond']?.['type'] === 6) {
+                            right = parseFloat(condition?.['right_cond']);
+                        }
+                    }
+                    if (left !== null && right !== null) {
+                        let isMatch = false;
+                        if (condition?.['operator'] === 'is') {
+                            isMatch = left === right;
+                            listCheck.push(isMatch);
+                        }
+                        if (condition?.['operator'] === '<=') {
+                            isMatch = left <= right;
+                            listCheck.push(isMatch);
+                        }
+                        if (condition?.['operator'] === '>') {
+                            isMatch = left > right;
+                            listCheck.push(isMatch);
+                        }
+                    }
+                }
+                if (typeof condition === 'string') {
+                    if (condition === "AND") {
+                        listCheck.push("and");
+                    }
+                }
+            }
+            if (listCheck.length % 2 !== 0) {
+                check = WFAssociateControl.evaluateLogic(listCheck);
+            } else {
+                listCheck.pop();
+                check = listCheck[0];
+            }
+            if (check === true) {
+                return assoData;
+            }
+        }
+        return {};
+    };
+
+    static evaluateLogic(conditions) {
+        let result = conditions[0];  // Start with the first value
+        for (let i = 1; i < conditions.length; i += 2) {
+            let operator = conditions[i];     // Get the operator ("and" or "or")
+            let nextValue = conditions[i + 1];  // Get the next value (true/false)
+            // Apply the logical operator
+            if (operator === "and") {
+                result = result && nextValue;
+            } else if (operator === "or") {
+                result = result || nextValue;
+            }
+        }
+        return result;
+    };
 
 }
 

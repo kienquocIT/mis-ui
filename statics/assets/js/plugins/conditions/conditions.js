@@ -440,7 +440,7 @@ class Conditions {
                     });
                     // call init select2 for left_cond
                     let left_cond = elm_sub_formset_row.find('[name*="-left_cond"]')
-                    $this.loadInitS2(left_cond, [], {"application": $('#select-box-features').val(), 'is_sale_indicator': false, 'parent_n__isnull': true}, $('#next-node-association'));
+                    $this.loadInitS2(left_cond, [], {"application": $('#select-box-features').val(), 'is_wf_condition': true}, $('#next-node-association'));
                     // left_cond.attr('data-params', JSON.stringify({"application": $('#select-box-features').val(), 'is_sale_indicator': false, 'parent_n__isnull': true}))
                     // initSelectBox(left_cond)
 

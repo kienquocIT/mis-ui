@@ -2206,9 +2206,14 @@ class WFRTControl {
                         if (saveStatus) {
                             _form.dataForm['system_status'] = parseInt(saveStatus);
                             if (_form.dataForm['system_status'] === 1) {
-                                if (checkAssociate?.['id']) {
-                                    _form.dataForm['next_association_id'] = checkAssociate?.['id'];
-                                    WFRTControl.setCollabOFCreate(checkAssociate?.['node_out']?.['collab_out_form']);
+                                if (typeof checkAssociate === 'object' && checkAssociate !== null) {
+                                    if (checkAssociate?.['id']) {
+                                        _form.dataForm['next_association_id'] = checkAssociate?.['id'];
+                                        WFRTControl.setCollabOFCreate(checkAssociate?.['node_out']?.['collab_out_form']);
+                                    } else {
+                                        $.fn.notifyB({description: $.fn.transEle.attr('data-node-condition-fail')}, 'failure');
+                                        return false;
+                                    }
                                 }
                             }
                             WFRTControl.submitCheckCollabNextNode(_form);
@@ -3230,8 +3235,11 @@ class WFAssociateControl {
 
     static checkNextNode(dataForm) {
         let associateData = WFRTControl.getAssociateData();
+        if (associateData.length === 1) {  // 1 node, no check condition
+            return associateData[0];
+        }
         let check = false;
-        for (let assoData of associateData) {
+        for (let assoData of associateData) {  // many nodes, check condition
             let listCheck = [];
             for (let condition of assoData?.['condition']) {
                 let left = null;
@@ -3272,7 +3280,11 @@ class WFAssociateControl {
                 check = WFAssociateControl.evaluateLogic(listCheck);
             } else {
                 listCheck.pop();
-                check = listCheck[0];
+                if (listCheck.length === 1) {
+                    check = listCheck[0];
+                } else {
+                    check = WFAssociateControl.evaluateLogic(listCheck);
+                }
             }
             if (check === true) {
                 return assoData;

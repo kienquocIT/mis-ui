@@ -1828,7 +1828,7 @@ class QuotationLoadDataHandle {
         // Check promotion -> re calculate
         QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
         // Load indicator
-        indicatorHandle.loadQuotationIndicator();
+        indicatorHandle.loadIndicator();
         // Set form novalidate
         $form[0].setAttribute('novalidate', 'novalidate');
         QuotationLoadDataHandle.loadCheckDataCopy();
@@ -3357,7 +3357,8 @@ class QuotationDataTableHandle {
                     targets: 0,
                     width: '1%',
                     render: (data, type, row, meta) => {
-                        return `<span class="table-row-order" data-value="${(meta.row + 1)}" data-zone="quotation_indicators_data">${(meta.row + 1)}</span>`
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-order" data-row="${dataRow}" data-value="${(meta.row + 1)}" data-zone="quotation_indicators_data">${(meta.row + 1)}</span>`
                     }
                 },
                 {
@@ -3406,7 +3407,8 @@ class QuotationDataTableHandle {
                     targets: 0,
                     width: '1%',
                     render: (data, type, row, meta) => {
-                        return `<span class="table-row-order" data-value="${(meta.row + 1)}" data-zone="sale_order_indicators_data">${(meta.row + 1)}</span>`
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-order" data-row="${dataRow}" data-value="${(meta.row + 1)}" data-zone="sale_order_indicators_data">${(meta.row + 1)}</span>`
                     }
                 },
                 {
@@ -4142,7 +4144,7 @@ class QuotationCheckConfigHandle {
 
 // Indicator
 class indicatorHandle {
-    static loadQuotationIndicator() {
+    static loadIndicator() {
         let $ele = $('#quotation-indicator-data');
         if (!$ele.val()) {
             let url = $ele.attr('data-url');
@@ -4271,9 +4273,9 @@ class indicatorHandle {
                 if (formSubmit.attr('data-method') === 'POST') {
                     if (dataDetailCopy?.['quotation_indicators_data']) {
                         for (let quotation_indicator of dataDetailCopy?.['quotation_indicators_data']) {
-                            if (indicator.title === quotation_indicator.indicator.title) {
-                                quotationValue = quotation_indicator.indicator_value;
-                                differenceValue = (value - quotation_indicator.indicator_value);
+                            if (indicator?.['title'] === quotation_indicator?.['indicator']?.['title']) {
+                                quotationValue = quotation_indicator?.['indicator_value'];
+                                differenceValue = (value - quotation_indicator?.['indicator_value']);
                                 break;
                             }
                         }
@@ -4281,9 +4283,9 @@ class indicatorHandle {
                 } else {
                     if (dataDetail?.['quotation']?.['quotation_indicators_data']) {
                         for (let quotation_indicator of dataDetail?.['quotation']?.['quotation_indicators_data']) {
-                            if (indicator.title === quotation_indicator.indicator.title) {
-                                quotationValue = quotation_indicator.indicator_value;
-                                differenceValue = (value - quotation_indicator.indicator_value);
+                            if (indicator?.['title'] === quotation_indicator?.['indicator']?.['title']) {
+                                quotationValue = quotation_indicator?.['indicator_value'];
+                                differenceValue = (value - quotation_indicator?.['indicator_value']);
                                 break;
                             }
                         }
@@ -4293,20 +4295,22 @@ class indicatorHandle {
             // append result
             result_list.push({
                 'indicator': {
-                    'id': indicator.id,
-                    'title': indicator.title,
+                    'id': indicator?.['id'],
+                    'title': indicator?.['title'],
+                    'code': indicator?.['code'],
                 },
                 'quotation_indicator': {
-                    'id': indicator.id,
-                    'title': indicator.title,
+                    'id': indicator?.['id'],
+                    'title': indicator?.['title'],
+                    'code': indicator?.['code'],
                 },
-                'order': indicator.order,
+                'order': indicator?.['order'],
                 'indicator_value': value,
                 'indicator_rate': rateValue,
                 'quotation_indicator_value': quotationValue,
                 'difference_indicator_value': differenceValue,
             });
-            result_json[indicator.order] = {
+            result_json[indicator?.['order']] = {
                 'indicator_value': value,
                 'indicator_rate': rateValue
             }
@@ -6116,29 +6120,35 @@ class QuotationSubmitHandle {
         let $table = $('#datable-quotation-create-indicator');
         $table.DataTable().rows().every(function () {
             let row = this.node();
-            let indicator = row.querySelector('.table-row-title').getAttribute('data-id');
-            let indicator_value = row.querySelector('.table-row-value').getAttribute('data-value');
-            let indicator_rate = row.querySelector('.table-row-rate').getAttribute('data-value');
-            let order = row.querySelector('.table-row-order').getAttribute('data-value');
-            if (!$table.hasClass('sale-order')) { // QUOTATION INDICATOR
-                result.push({
-                    'indicator': indicator,
-                    'indicator_value': parseFloat(indicator_value),
-                    'indicator_rate': parseFloat(indicator_rate),
-                    'order': parseInt(order),
-                })
-            } else { // SALE ORDER INDICATOR
-                let quotation_indicator_value = row.querySelector('.table-row-quotation-value').getAttribute('data-value');
-                let difference_indicator_rate = row.querySelector('.table-row-difference-value').getAttribute('data-value');
-                result.push({
-                    'quotation_indicator': indicator,
-                    'indicator_value': parseFloat(indicator_value),
-                    'indicator_rate': parseFloat(indicator_rate),
-                    'quotation_indicator_value': parseFloat(quotation_indicator_value),
-                    'difference_indicator_value': parseFloat(difference_indicator_rate),
-                    'order': parseInt(order),
-                })
+            if (row.querySelector('.table-row-order')) {
+                if (row.querySelector('.table-row-order').getAttribute('data-row')) {
+                    let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
+                    let indicator = row.querySelector('.table-row-title').getAttribute('data-id');
+                    let indicator_value = row.querySelector('.table-row-value').getAttribute('data-value');
+                    let indicator_rate = row.querySelector('.table-row-rate').getAttribute('data-value');
+                    let order = row.querySelector('.table-row-order').getAttribute('data-value');
+                    if (!$table.hasClass('sale-order')) { // QUOTATION INDICATOR
+                        result.push({
+                            'indicator': indicator,
+                            'indicator_value': parseFloat(indicator_value),
+                            'indicator_rate': parseFloat(indicator_rate),
+                            'order': parseInt(order),
+                        })
+                    } else { // SALE ORDER INDICATOR
+                        let quotation_indicator_value = row.querySelector('.table-row-quotation-value').getAttribute('data-value');
+                        let difference_indicator_rate = row.querySelector('.table-row-difference-value').getAttribute('data-value');
+                        result.push({
+                            'quotation_indicator': indicator,
+                            'indicator_value': parseFloat(indicator_value),
+                            'indicator_rate': parseFloat(indicator_rate),
+                            'quotation_indicator_value': parseFloat(quotation_indicator_value),
+                            'difference_indicator_value': parseFloat(difference_indicator_rate),
+                            'order': parseInt(order),
+                        })
+                    }
+                }
             }
+
         });
         return result
     };
@@ -6336,6 +6346,17 @@ class QuotationSubmitHandle {
         let quotation_indicators_data_setup = QuotationSubmitHandle.setupDataIndicator();
         if (quotation_indicators_data_setup.length > 0) {
             _form.dataForm[quotation_indicators_data] = quotation_indicators_data_setup;
+            for (let indicator of quotation_indicators_data_setup) {
+                if (indicator?.['code'] === "IN0001") {
+                    _form.dataForm['indicator_revenue'] = indicator?.['indicator_value'];
+                }
+                if (indicator?.['code'] === "IN0003") {
+                    _form.dataForm['indicator_gross_profit'] = indicator?.['indicator_value'];
+                }
+                if (indicator?.['code'] === "IN0006") {
+                    _form.dataForm['indicator_net_income'] = indicator?.['indicator_value'];
+                }
+            }
         }
         // payment stage
         if (is_sale_order === true) {

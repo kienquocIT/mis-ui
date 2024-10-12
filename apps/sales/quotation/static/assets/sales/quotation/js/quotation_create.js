@@ -130,8 +130,7 @@ $(function () {
 // Action on click button add product
         btnAddProduct.on('click', function (e) {
             QuotationLoadDataHandle.loadModalSProduct();
-            // QuotationLoadDataHandle.loadAddRowProduct();
-            indicatorHandle.loadQuotationIndicator();
+            indicatorHandle.loadIndicator();
         });
 
         QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
@@ -769,7 +768,7 @@ $(function () {
 // INDICATORS
         $('#tab-indicator').on('click', function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
-                indicatorHandle.loadQuotationIndicator();
+                indicatorHandle.loadIndicator();
                 QuotationLoadDataHandle.loadSetWFRuntimeZone();
             }
         });
@@ -778,7 +777,7 @@ $(function () {
         $('#btn-refresh-quotation-indicator').on('click', function () {
             let transEle = $('#app-trans-factory');
             document.getElementById('quotation-indicator-data').value = "";
-            indicatorHandle.loadQuotationIndicator();
+            indicatorHandle.loadIndicator();
             $.fn.notifyB({description: transEle.attr('data-refreshed')}, 'success');
         });
 
@@ -884,7 +883,7 @@ $(function () {
             }
             let _form = new SetupFormSubmit(formSubmit);
             // Load again indicator when Submit
-            indicatorHandle.loadQuotationIndicator();
+            indicatorHandle.loadIndicator();
             QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
             let keyHidden = WFRTControl.getZoneHiddenKeyData();
             if (keyHidden) {
@@ -972,6 +971,10 @@ $(function () {
                     'sale_order_expenses_data',
                     // indicator tab
                     'sale_order_indicators_data',
+                    // indicators
+                    'indicator_revenue',
+                    'indicator_gross_profit',
+                    'indicator_net_income',
                     // payment stage tab
                     'sale_order_payment_stage',
                     // abstract

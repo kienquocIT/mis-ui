@@ -2098,7 +2098,7 @@ class WFRTControl {
 
     static callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect) {
         // check next node
-        let checkAssociate = WFAssociateControl.checkNextNode(dataSubmit);
+        let checkAssociate = WFAssociateControl.checkNextNode(WFRTControl.getRuntimeDocData());
         if (typeof checkAssociate === 'object' && checkAssociate !== null) {
             if (checkAssociate?.['id']) {
                 dataSubmit['next_association_id'] = checkAssociate?.['id'];
@@ -2890,6 +2890,14 @@ class WFRTControl {
         }
     }
 
+    static getRuntimeDocData() {
+        let itemEle = $('#idxRuntimeDoc');
+        if (itemEle) {
+            return JSON.parse(itemEle.val());
+        }
+        return {};
+    }
+
     static getZoneData() {
         let itemEle = $('#idxZonesData');
         if (itemEle) {
@@ -3000,6 +3008,17 @@ class WFRTControl {
             return JSON.parse(itemEle.text());
         }
         return [];
+    }
+
+    static setRuntimeDoc(docData) {
+        if (typeof docData === 'object' && docData !== null) {
+            let $RuntimeDoc = $('#idxRuntimeDoc');
+            if ($RuntimeDoc && $RuntimeDoc.length > 0) {
+                $RuntimeDoc.val(`${JSON.stringify(docData)}`);
+            } else {
+                $('html').append(`<input class="hidden" id="idxRuntimeDoc" value="${JSON.stringify(docData).replace(/"/g, "&quot;")}">`);
+            }
+        }
     }
 
     static setZoneData(zonesData) {
@@ -3121,6 +3140,7 @@ class WFRTControl {
 
     static compareStatusShowPageAction(resultDetail) {
         let $realActions = $('#idxRealAction');
+        WFRTControl.setRuntimeDoc(resultDetail);
         switch (resultDetail?.['system_status']) {
             case 1:  // created
                 $realActions.addClass('hidden');
@@ -3142,7 +3162,6 @@ class WFRTControl {
             default:
                 break
         }
-        // $('#idxRealAction').removeClass('hidden');
     }
 
     static changePropertiesElementIsZone(ele$, opts) {

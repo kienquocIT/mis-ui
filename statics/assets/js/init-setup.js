@@ -2097,6 +2097,17 @@ class WFRTControl {
     }
 
     static callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect) {
+        // check next node
+        let checkAssociate = WFAssociateControl.checkNextNode(dataSubmit);
+        if (typeof checkAssociate === 'object' && checkAssociate !== null) {
+            if (checkAssociate?.['id']) {
+                dataSubmit['next_association_id'] = checkAssociate?.['id'];
+                WFRTControl.setCollabOFRuntime(checkAssociate?.['node_out']?.['collab_out_form']);
+            } else {
+                $.fn.notifyB({description: $.fn.transEle.attr('data-node-condition-fail')}, 'failure');
+                return false;
+            }
+        }
         let collabOutForm = WFRTControl.getCollabOutFormData();
         if (collabOutForm && collabOutForm.length > 0) {
             Swal.fire({
@@ -2505,8 +2516,8 @@ class WFRTControl {
                                 }
                             }
                         }
-                        // collab out form handler
-                        WFRTControl.setCollabOFRuntime(actionMySelf['collab_out_form']);
+                        // association handler
+                        WFRTControl.setAssociateRuntime(actionMySelf?.['association']);
                     }
                 }
             })
@@ -2536,8 +2547,7 @@ class WFRTControl {
                                     if (window.location.href.includes('/create')) {
                                         WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
                                     }
-                                    // collab out form handler
-                                    WFRTControl.setCollabOFCreate(workflow_current['collab_out_form']);
+                                    // association handler
                                     WFRTControl.setAssociateCreate(workflow_current['association']);
                                 }
                             }
@@ -3036,6 +3046,17 @@ class WFRTControl {
                 $collab.empty().html(`${JSON.stringify(collabOutFormData)}`);
             } else {
                 $('html').append(`<script class="hidden" id="idxCollabOFCreate">${JSON.stringify(collabOutFormData)}</script>`);
+            }
+        }
+    }
+
+    static setAssociateRuntime(associateData) {
+        if (associateData && Array.isArray(associateData)) {
+            let $associate = $('#idxAssociateRuntime');
+            if ($associate && $associate.length > 0) {
+                $associate.empty().html(`${JSON.stringify(associateData)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxAssociateRuntime">${JSON.stringify(associateData)}</script>`);
             }
         }
     }

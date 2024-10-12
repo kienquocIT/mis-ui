@@ -3365,7 +3365,7 @@ class QuotationDataTableHandle {
                     targets: 1,
                     width: '40%',
                     render: (data, type, row) => {
-                        return `<b class="table-row-title" data-id="${row?.['indicator']?.['id']}" data-zone="quotation_indicators_data">${row?.['indicator']?.['title']}</b>`
+                        return `<b class="table-row-title" data-id="${row?.['indicator_data']?.['id']}" data-zone="quotation_indicators_data">${row?.['indicator_data']?.['title']}</b>`
                     }
                 },
                 {
@@ -3415,35 +3415,35 @@ class QuotationDataTableHandle {
                     targets: 1,
                     width: '20%',
                     render: (data, type, row) => {
-                        return `<b class="table-row-title" data-id="${row.quotation_indicator.id}" data-zone="sale_order_indicators_data">${row.quotation_indicator.title}</b>`
+                        return `<b class="table-row-title" data-id="${row?.['quotation_indicator_data']?.['id']}" data-zone="sale_order_indicators_data">${row?.['quotation_indicator_data']?.['title']}</b>`
                     }
                 },
                 {
                     targets: 2,
                     width: '20%',
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-quotation-value" data-init-money="${parseFloat(row.quotation_indicator_value)}" data-value="${row.quotation_indicator_value}" data-zone="sale_order_indicators_data"></span>`
+                        return `<span class="mask-money table-row-quotation-value" data-init-money="${parseFloat(row?.['quotation_indicator_value'])}" data-value="${row?.['quotation_indicator_value']}" data-zone="sale_order_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 3,
                     width: '20%',
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row.indicator_value)}" data-value="${row.indicator_value}" data-zone="sale_order_indicators_data"></span>`
+                        return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['indicator_value'])}" data-value="${row?.['indicator_value']}" data-zone="sale_order_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 4,
                     width: '20%',
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-difference-value" data-init-money="${parseFloat(row.difference_indicator_value)}" data-value="${row.difference_indicator_value}" data-zone="sale_order_indicators_data"></span>`
+                        return `<span class="mask-money table-row-difference-value" data-init-money="${parseFloat(row?.['difference_indicator_value'])}" data-value="${row?.['difference_indicator_value']}" data-zone="sale_order_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 5,
                     width: '15%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-rate" data-value="${row.indicator_rate}" data-zone="sale_order_indicators_data">${row.indicator_rate} %</span>`
+                        return `<span class="table-row-rate" data-value="${row?.['indicator_rate']}" data-zone="sale_order_indicators_data">${row?.['indicator_rate']} %</span>`
                     }
                 }
             ],
@@ -4294,12 +4294,14 @@ class indicatorHandle {
             }
             // append result
             result_list.push({
-                'indicator': {
+                'indicator': indicator?.['id'],
+                'indicator_data': {
                     'id': indicator?.['id'],
                     'title': indicator?.['title'],
                     'code': indicator?.['code'],
                 },
-                'quotation_indicator': {
+                'quotation_indicator': indicator?.['id'],
+                'quotation_indicator_data': {
                     'id': indicator?.['id'],
                     'title': indicator?.['title'],
                     'code': indicator?.['code'],
@@ -6130,6 +6132,7 @@ class QuotationSubmitHandle {
                     if (!$table.hasClass('sale-order')) { // QUOTATION INDICATOR
                         result.push({
                             'indicator': indicator,
+                            'indicator_data': dataRow?.['indicator_data'],
                             'indicator_value': parseFloat(indicator_value),
                             'indicator_rate': parseFloat(indicator_rate),
                             'order': parseInt(order),
@@ -6139,6 +6142,7 @@ class QuotationSubmitHandle {
                         let difference_indicator_rate = row.querySelector('.table-row-difference-value').getAttribute('data-value');
                         result.push({
                             'quotation_indicator': indicator,
+                            'quotation_indicator_data': dataRow?.['quotation_indicator_data'],
                             'indicator_value': parseFloat(indicator_value),
                             'indicator_rate': parseFloat(indicator_rate),
                             'quotation_indicator_value': parseFloat(quotation_indicator_value),
@@ -6148,7 +6152,6 @@ class QuotationSubmitHandle {
                     }
                 }
             }
-
         });
         return result
     };
@@ -6346,14 +6349,18 @@ class QuotationSubmitHandle {
         let quotation_indicators_data_setup = QuotationSubmitHandle.setupDataIndicator();
         if (quotation_indicators_data_setup.length > 0) {
             _form.dataForm[quotation_indicators_data] = quotation_indicators_data_setup;
+            let keyInd = "indicator_data";
+            if (is_sale_order === true) {
+                keyInd = "quotation_indicator_data";
+            }
             for (let indicator of quotation_indicators_data_setup) {
-                if (indicator?.['code'] === "IN0001") {
+                if (indicator?.[keyInd]?.['code'] === "IN0001") {
                     _form.dataForm['indicator_revenue'] = indicator?.['indicator_value'];
                 }
-                if (indicator?.['code'] === "IN0003") {
+                if (indicator?.[keyInd]?.['code'] === "IN0003") {
                     _form.dataForm['indicator_gross_profit'] = indicator?.['indicator_value'];
                 }
-                if (indicator?.['code'] === "IN0006") {
+                if (indicator?.[keyInd]?.['code'] === "IN0006") {
                     _form.dataForm['indicator_net_income'] = indicator?.['indicator_value'];
                 }
             }

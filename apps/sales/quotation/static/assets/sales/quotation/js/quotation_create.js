@@ -930,6 +930,10 @@ $(function () {
                 'is_customer_confirm',
                 // indicator tab
                 'quotation_indicators_data',
+                // indicators
+                'indicator_revenue',
+                'indicator_gross_profit',
+                'indicator_net_income',
                 // abstract
                 'system_status',
                 'next_node_collab_id',

@@ -33,6 +33,9 @@ class Conditions {
                         if (!$(this).attr('data-formset-form-deleted')) {
                             /*** get data form from sub-formset ***/
                             let left_cond = $(this).find('select[name*="-left_cond"]').val();
+                            if ($(this).find('select[name*="-left_cond"]').val()) {
+                                left_cond = SelectDDControl.get_data_from_idx($(this).find('select[name*="-left_cond"]'), $(this).find('select[name*="-left_cond"]').val());
+                            }
                             let operator = $(this).find('select[name*="-math"]').val();
                             let right_cond = $(this).find('[name*="-right_cond"]').val();
                             /*** push sub-formset to array temp ***/
@@ -211,6 +214,29 @@ class Conditions {
         }
     }
 
+    loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
+        let opts = {'allowClear': isClear};
+        $ele.empty();
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                return $(`<span>${res1} ${res2}</span>`);
+            }
+        }
+        $ele.initSelect2(opts);
+        return true;
+    };
+
     /***
      * get list data type from WF_DATATYPE and render option for select fo math element
      * @param value Object key of data type
@@ -233,9 +259,9 @@ class Conditions {
      * @param select element of left condition
      */
     generatorHTMLRightDropdownBox(left_info, idx, elm_sub_formset_row=null, select){
-        let _type = left_info.type
-        let _code = left_info.code
-        let properties = left_info.properties;
+        let _type = left_info?.['data']?.['type'];
+        let _code = left_info?.['data']?.['code'];
+        let properties = left_info?.['data']?.['properties'];
         let opt_select = '';
         let dropdown = {};
         let md_url = '',
@@ -297,7 +323,7 @@ class Conditions {
             right_cond = select.parents('[data-subformset-form]').find('[name*="-right_cond"]')
             right_cond.attr({
                 'data-virtual': JSON.stringify(virtual),
-                'data-onload': JSON.stringify([left_info]),
+                'data-onload': JSON.stringify([left_info?.['data']]),
                 'data-params': params,
                 'data-url': select.attr('data-url'),
                 'data-prefix': select.attr('data-prefix'),
@@ -414,8 +440,9 @@ class Conditions {
                     });
                     // call init select2 for left_cond
                     let left_cond = elm_sub_formset_row.find('[name*="-left_cond"]')
-                    left_cond.attr('data-params', JSON.stringify({"application": $('#select-box-features').val(), 'is_sale_indicator': false, 'parent_n__isnull': true}))
-                    initSelectBox(left_cond)
+                    $this.loadInitS2(left_cond, [], {"application": $('#select-box-features').val(), 'is_sale_indicator': false, 'parent_n__isnull': true}, $('#next-node-association'));
+                    // left_cond.attr('data-params', JSON.stringify({"application": $('#select-box-features').val(), 'is_sale_indicator': false, 'parent_n__isnull': true}))
+                    // initSelectBox(left_cond)
 
                     // datatype on change
                     left_cond.on("select2:select", function (e) {

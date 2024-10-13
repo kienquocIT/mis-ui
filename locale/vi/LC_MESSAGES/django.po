@@ -9177,6 +9177,18 @@ msgid "Cannot connect itself"
 msgstr "Không thể liên kết chính nó"
 
 #
+msgid "Project activities"
+msgstr "Hoạt động của dự án"
+
+#
+msgid "leave your comment..."
+msgstr "Viết bình luận..."
+
+#
+msgid "Project comment"
+msgstr "Bình luận"
+
+#
 msgid "Add new attribute"
 msgstr "Thêm thuộc tính"
 

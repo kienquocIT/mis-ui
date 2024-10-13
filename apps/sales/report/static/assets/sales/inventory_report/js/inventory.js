@@ -536,7 +536,7 @@ $(document).ready(function () {
                     table.find(`.${so_code_class}:eq(0)`).closest('tr').before(`
                         <tr>
                             <td rowspan="${number_row}" class="text-center">
-                                <span class="text-danger fw-bold"><i class="bi bi-clipboard-check"></i>&nbsp;${so_code_class.split('-')[3]}</span>
+                                <span class="text-danger fw-bold">${so_code_class.split('-')[3]}</span>
                             </td>
                         </tr>
                     `)
@@ -647,8 +647,8 @@ $(document).ready(function () {
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_list')) {
-                        return data?.['report_inventory_list'];
+                    if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_cost_list')) {
+                        return data?.['report_inventory_cost_list'];
                     }
                     return {};
                 },
@@ -845,8 +845,8 @@ $(document).ready(function () {
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_list')) {
-                        return data?.['report_inventory_list'];
+                    if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_cost_list')) {
+                        return data?.['report_inventory_cost_list'];
                     }
                     return {};
                 },
@@ -1232,8 +1232,8 @@ $(document).ready(function () {
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_prd_wh_list')) {
-                    return data?.['report_inventory_prd_wh_list'];
+                if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_cost_wh_detail')) {
+                    return data?.['report_inventory_cost_wh_detail'];
                 }
                 return {};
             },

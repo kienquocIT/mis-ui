@@ -110,7 +110,7 @@ class ReportInventoryDetailList(View):
         auth_require=True,
         template='sales/inventory_report/items_detail_report.html',
         menu_active='menu_items_detail_report',
-        breadcrumb='REPORT_INVENTORY_DETAIL_LIST_PAGE',
+        breadcrumb='REPORT_INVENTORY_STOCK_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
@@ -133,8 +133,8 @@ class ReportInventoryDetailListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_INVENTORY_DETAIL_LIST).get(data)
-        return resp.auto_return(key_success='report_inventory_detail_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_INVENTORY_STOCK_LIST).get(data)
+        return resp.auto_return(key_success='report_inventory_stock_list')
 
 
 # REPORT INVENTORY
@@ -144,7 +144,7 @@ class ReportInventoryList(View):
         auth_require=True,
         template='sales/inventory_report/inventory_report.html',
         menu_active='menu_inventory_report',
-        breadcrumb='REPORT_INVENTORY_LIST_PAGE',
+        breadcrumb='REPORT_INVENTORY_COST_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
@@ -173,8 +173,8 @@ class ReportInventoryListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_INVENTORY_LIST).get(data)
-        return resp.auto_return(key_success='report_inventory_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_INVENTORY_COST_LIST).get(data)
+        return resp.auto_return(key_success='report_inventory_cost_list')
 
 
 class ReportInventoryProductWarehouseViewAPI(APIView):
@@ -185,8 +185,8 @@ class ReportInventoryProductWarehouseViewAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_INVENTORY_PRD_WH_VIEW_LIST).get(data)
-        return resp.auto_return(key_success='report_inventory_prd_wh_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_INVENTORY_COST_WH_DETAIL).get(data)
+        return resp.auto_return(key_success='report_inventory_cost_wh_detail')
 
 
 class GetQRCodeLotInfoAPI(APIView):

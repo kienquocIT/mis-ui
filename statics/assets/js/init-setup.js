@@ -2342,37 +2342,38 @@ class WFRTControl {
         }
     }
 
-    static submitCheckAssociation(_form, associationData, checkType, dataRTConfig = {}) {
+    static submitCheckAssociation(_form, associationData, submitType, dataRTConfig = {}) {
         let dataSubmit = {};
-        if (checkType === 0) {
+        let typeCheck = 0;  // 0: pass condition, 1: fail condition
+        if (submitType === 0) {
             dataSubmit = _form.dataForm;
         }
-        if (checkType === 1) {
+        if (submitType === 1) {
             dataSubmit = _form;
         }
-        if (Array.isArray(associationData) && associationData.length > 0) {
-            if (associationData.length === 1) {
-                if (associationData[0]?.['id']) {
-                    dataSubmit['next_association_id'] = associationData[0]?.['id'];
-                    if (checkType === 0) {
+        if (associationData.hasOwnProperty('check') && associationData.hasOwnProperty('data')) {
+            if (associationData?.['data'].length === 1) {
+                if (associationData?.['check'] === true) {
+                    dataSubmit['next_association_id'] = associationData?.['data'][0]?.['id'];
+                    if (submitType === 0) {
                         WFRTControl.setCollabOFCreate(associationData[0]?.['node_out']?.['collab_out_form']);
                         WFRTControl.submitCheckCollabNextNode(_form);
                         return true;
                     }
-                    if (checkType === 1) {
+                    if (submitType === 1) {
                         WFRTControl.setCollabOFRuntime(associationData[0]?.['node_out']?.['collab_out_form']);
                         WFRTControl.submitActionApprove(dataRTConfig, dataSubmit);
                         return true;
                     }
-                } else {
-                    $.fn.notifyB({description: $.fn.transEle.attr('data-node-condition-fail')}, 'failure');
-                    return false;
+                }
+                if (associationData?.['check'] === false) {
+                    typeCheck = 1;
                 }
             }
             // select association
             Swal.fire({
                 title: $.fn.transEle.attr('data-select-association'),
-                html: String(WFRTControl.setupHTMLSelectAssociation(associationData)),
+                html: String(WFRTControl.setupHTMLSelectAssociation(associationData?.['data'], typeCheck)),
                 allowOutsideClick: false,
                 showConfirmButton: true,
                 confirmButtonText: $.fn.transEle.attr('data-confirm'),
@@ -2398,12 +2399,12 @@ class WFRTControl {
                         if (eleChecked.getAttribute('data-detail')) {
                             let association = JSON.parse(eleChecked.getAttribute('data-detail'));
                             dataSubmit['next_association_id'] = association?.['id'];
-                            if (checkType === 0) {
+                            if (submitType === 0) {
                                 WFRTControl.setCollabOFCreate(association?.['node_out']?.['collab_out_form']);
                                 WFRTControl.submitCheckCollabNextNode(_form);
                                 return true;
                             }
-                            if (checkType === 1) {
+                            if (submitType === 1) {
                                 WFRTControl.setCollabOFRuntime(association?.['node_out']?.['collab_out_form']);
                                 WFRTControl.submitActionApprove(dataRTConfig, dataSubmit);
                                 return true;
@@ -2416,7 +2417,7 @@ class WFRTControl {
                 }
             });
         } else {
-            $.fn.notifyB({description: $.fn.transEle.attr('data-node-condition-fail')}, 'failure');
+            $.fn.notifyB({description: $.fn.transEle.attr('data-no-next-node')}, 'failure');
             return false;
         }
     }
@@ -2467,12 +2468,17 @@ class WFRTControl {
         }
     }
 
-    static setupHTMLSelectAssociation(AssociationData) {
+    static setupHTMLSelectAssociation(AssociationData, type) {
         let htmlCustom = ``;
+        let commonTxt = $.fn.transEle.attr('data-select-association-type-1');
+        if (type === 1) {
+            commonTxt = $.fn.transEle.attr('data-select-association-type-2');
+        }
         let typeMapTxt = {
             1: $.fn.transEle.attr('data-node-type-1'),
             2: $.fn.transEle.attr('data-node-type-2'),
         }
+        htmlCustom += `<p class="mb-4">${commonTxt}</p>`;
         for (let associate of AssociationData) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
                                 <div class="d-flex align-items-center">
@@ -3407,9 +3413,11 @@ class WFAssociateControl {
     static checkNextNode(dataForm) {
         let result = [];
         let associateData = WFRTControl.getAssociateData();
-        // if (associateData.length === 1) {  // 1 node, no check condition
-        //     return associateData;
-        // }
+        if (associateData.length === 1) {  // check node system
+            if (["approved"].includes(associateData[0]?.['node_out']?.['code'])) {
+                return {'check': true, 'data': associateData};
+            }
+        }
         let check = false;
         for (let assoData of associateData) {  // many nodes, check condition
             let listCheck = [];
@@ -3466,7 +3474,10 @@ class WFAssociateControl {
                 result.push(assoData);
             }
         }
-        return result;
+        if (result.length > 0) {  // return result (have association pass condition)
+            return {'check': check, 'data': result};
+        }
+        return {'check': check, 'data': associateData};  // return associateData (not any association pass condition)
     };
 
     static evaluateLogic(conditions) {

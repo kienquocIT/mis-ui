@@ -101,7 +101,7 @@ class Conditions {
 
         /*** append left condition ***/
         let left_cond = `parameter-${elm_idx}-left_cond`;
-        if (value.hasOwnProperty('left_cond') && value.left_cond){
+        if (value.hasOwnProperty('left_cond') && value.left_cond) {
             let isDetail = this.getPropertyList[value.left_cond];
             $elm_cond.find('select[name="' + left_cond + '"]').attr('data-onload', JSON.stringify(isDetail))
             initSelectBox($elm_cond.find('select[name="' + left_cond + '"]'))
@@ -110,17 +110,20 @@ class Conditions {
         /*** append operator ***/
         let math = `parameter-${elm_idx}-math`;
         // change math option
-        this.changeParameter(this.getPropertyList[value.left_cond].type, $elm_cond)
-        if (value.hasOwnProperty('math') && value.operator)
+        this.changeParameter(this.getPropertyList[value.left_cond?.['id']].type, $elm_cond)
+        if (value.hasOwnProperty('operator') && value.operator)
             $elm_cond.find('select[name="' + math + '"]').val(value.operator)
 
         /*** append right condition ***/
         let right_cond = `parameter-${elm_idx}-right_cond`;
-        if (value.hasOwnProperty('right_cond') && value.right_cond){
-            this.generatorHTMLRightDropdownBox(this.getPropertyList[value.left_cond], idx, $elm_cond, $elm_cond.find('select[name="' + left_cond + '"]'));
-            $elm_cond.find('select[name="' + right_cond + '"]').val(value.right_cond)
+        if (value.hasOwnProperty('right_cond') && value.right_cond) {
+            this.generatorHTMLRightDropdownBox(this.getPropertyList[value.left_cond?.['id']], idx, $elm_cond, $elm_cond.find('select[name="' + left_cond + '"]'));
+            if ([1, 2, 6].includes(value.left_cond?.['type'])) {
+                $elm_cond.find('input[name="parameter-' + idx + '-right_cond"]').val(value.right_cond);
+            } else {
+                $elm_cond.find('select[name="' + right_cond + '"]').val(value.left_cond?.['id']).trigger('change');
+            }
         }
-
     }
 
     loopData(data_list = [], elm_form = null) {
@@ -189,7 +192,7 @@ class Conditions {
         for (let val of data_condition_temp){ // for in list condition
             if (val !== 'AND' && val !== 'OR'){ // check if val is not string logic
                 if (typeof val === 'object'){ // if val is object (one condition)
-                    IDList.push(val.left_cond)
+                    IDList.push(val.left_cond?.['id'])
                 }
                 else{ // else val is list many condition
                     for (let child of val){
@@ -202,7 +205,30 @@ class Conditions {
             application: $('[name="application"]').val(),
             id__in: IDList.join(","),
         };
-        let isData = await $.fn.callAjax($('#url-factory').data('app-property'), 'GET', params)
+        // $.fn.callAjax2({
+        //         'url': $('#url-factory').data('app-property'),
+        //         'method': "GET",
+        //         'data': params,
+        //     }
+        // ).then(
+        //     (resp) => {
+        //         let data = $.fn.switcherResp(resp);
+        //         if (data) {
+        //             if (data.hasOwnProperty('application_property_list') && Array.isArray(data.application_property_list)) {
+        //                 let isData = data.application_property_list;
+        //             }
+        //         }
+        //     }
+        // )
+
+
+        let isData = await $.fn.callAjax2({
+                'url': $('#url-factory').data('app-property'),
+                'method': "GET",
+                'data': params,
+                'cache': true,
+            }
+        )
         if (isData) {
             $.fn.switcherResp(isData)
             let proList = {}
@@ -259,9 +285,9 @@ class Conditions {
      * @param select element of left condition
      */
     generatorHTMLRightDropdownBox(left_info, idx, elm_sub_formset_row=null, select){
-        let _type = left_info?.['data']?.['type'];
-        let _code = left_info?.['data']?.['code'];
-        let properties = left_info?.['data']?.['properties'];
+        let _type = left_info?.['type'];
+        let _code = left_info?.['code'];
+        let properties = left_info?.['properties'];
         let opt_select = '';
         let dropdown = {};
         let md_url = '',
@@ -292,10 +318,14 @@ class Conditions {
                 +`data-url="${md_url}"></select>`,
         };
         // render html to column 3
-        if (_type === 2 || _type === 4 || _type === 6){
+        if ([1, 2, 6].includes(_type)){
             let int = _type === 6 ? 1 : _type;
             elm_sub_formset_row.find('.child-formset .flex-row').eq(2).html(html_temp[int]);
         }
+        // if (_type === 2 || _type === 4 || _type === 6){
+        //     let int = _type === 6 ? 1 : _type;
+        //     elm_sub_formset_row.find('.child-formset .flex-row').eq(2).html(html_temp[int]);
+        // }
         else {
             let right_cond = select.parents('[data-subformset-form]').find('[name*="-right_cond"]');
             left_info.selected = true
@@ -323,7 +353,7 @@ class Conditions {
             right_cond = select.parents('[data-subformset-form]').find('[name*="-right_cond"]')
             right_cond.attr({
                 'data-virtual': JSON.stringify(virtual),
-                'data-onload': JSON.stringify([left_info?.['data']]),
+                'data-onload': JSON.stringify([left_info]),
                 'data-params': params,
                 'data-url': select.attr('data-url'),
                 'data-prefix': select.attr('data-prefix'),
@@ -332,6 +362,7 @@ class Conditions {
             initSelectBox(right_cond)
             // on change right condition
             right_cond.on("select2:select", function (e) {
+                debugger
                 const right_data = e.params.data;
                 if (right_data.type !== 5) {
                     let r_idx = right_data.type === 6 ? 1 : right_data.type
@@ -364,6 +395,7 @@ class Conditions {
                 maxYear: parseInt(moment().format('YYYY'), 10)
             });
         // on change value left condition change dropdown math
+        this.loadInitS2(select, [left_info], {"application": $('#select-box-features').val(), 'is_wf_condition': true}, $('#next-node-association'));
         this.changeParameter(_type, elm_sub_formset_row)
     }
 
@@ -451,7 +483,7 @@ class Conditions {
                         let is_index = $(this).parents('[data-subformset-form]').index()
                         // init right condition HTML follow by left condition
                         let $select = $(this);
-                        $this.generatorHTMLRightDropdownBox(_data, is_index, elm_sub_formset_row, $select)
+                        $this.generatorHTMLRightDropdownBox(_data?.['data'], is_index, elm_sub_formset_row, $select)
                     });
 
                 });

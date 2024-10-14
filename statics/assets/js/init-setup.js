@@ -2478,10 +2478,10 @@ class WFRTControl {
             1: $.fn.transEle.attr('data-node-type-1'),
             2: $.fn.transEle.attr('data-node-type-2'),
         }
-        htmlCustom += `<p class="mb-4">${commonTxt}</p>`;
+        htmlCustom += `<div class="d-flex mb-5"><i class="fas fa-exclamation-triangle"></i><span>${commonTxt}</span></div>`;
         for (let associate of AssociationData) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
-                                <div class="d-flex align-items-center">
+                                <div class="d-flex align-items-center justify-content-between">
                                     <i class="fas fa-th mr-2"></i>
                                     <span class="mr-2">${associate?.['node_out']?.['title']}</span>
                                     <span class="badge badge-soft-success">${typeMapTxt[associate?.['node_out']?.['option_collaborator']]}</span>
@@ -2498,7 +2498,7 @@ class WFRTControl {
         let htmlCustom = ``;
         for (let collab of collabOutForm) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
-                                <div class="d-flex align-items-center">
+                                <div class="d-flex align-items-center justify-content-between">
                                     <i class="fas fa-user mr-2"></i>
                                     <span class="mr-2">${collab?.['full_name']}</span>
                                     <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>

@@ -1281,7 +1281,7 @@ class FileUtils {
 class ListeningEventController {
     switchCompany() {
         const btnSwitch$ = $('#btn-call-switch-company');
-        $('#switchMyCompany').on('shown.bs.modal', function (){
+        $('#switchMyCompany').on('show.bs.modal', function (){
             if ($(this).attr('data-loaded') !== 'true'){
                 $(this).attr('data-loaded', 'true');
                 $.fn.callAjax2({

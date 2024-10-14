@@ -3084,8 +3084,8 @@ msgid "Switch Company"
 msgstr "Chuyển đổi công ty"
 
 #
-msgid "Manage Account"
-msgstr "Quản Lý Tài Khoản"
+msgid "Manage account"
+msgstr "Quản lý tài khoản"
 
 #
 msgid "Profile"

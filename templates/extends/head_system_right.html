@@ -224,7 +224,7 @@
             {{ base|render_avatar_tag:True|safe }}
         </div>
     </button>
-    <div class="dropdown-menu dropdown-menu-end">
+    <div class="dropdown-menu dropdown-menu-end mr-1">
         <div class="p-2">
             <div class="media mb-1">
                 <div class="media-head me-2">
@@ -247,29 +247,61 @@
             <div class="w-100 d-flex">
                 <a
                         href="{% url 'MyProfileView' %}"
-                        class="m-1"
+                        class="m-1 flex-1"
                         data-bs-toggle="tooltip"
                         title="{% trans 'My profile' %}"
                 >
-                    <button class="btn btn-xs btn-outline-primary w-100">
+                    <button class="btn btn-xs btn-soft-primary w-100">
                         <i class="fa-solid fa-address-card"></i>
                     </button>
                 </a>
                 <a
                         href="{% url 'ChangePasswordView' %}"
-                        class="m-1"
+                        class="m-1 flex-1"
                         data-bs-toggle="tooltip"
                         title="{% trans 'Change password' %}"
                 >
-                    <button class="btn btn-xs btn-outline-primary w-100"><i
-                            class="fa-solid fa-key"
-                    ></i></button>
+                    <button class="btn btn-xs btn-soft-primary w-100">
+                        <i class="fa-solid fa-key"></i>
+                    </button>
+                </a>
+                <a
+                        class="m-1 flex-1"
+                        href="#"
+                        data-bs-toggle="tooltip"
+                        title="{% trans 'Language' %}"
+                >
+                    <button
+                            class="btn btn-xs btn-soft-primary w-100"
+                            id="link-language"
+                            data-url="{% url 'MyLanguageAPI' %}"
+                            data-value="{{ base.language }}"
+                    >
+                        {% if base.language == 'vi' %}
+                            <img src="{% static 'assets/images/systems/flags/vietnam-36x36.png' %}" alt="vietnam" style="width: 1rem;">
+                        {% else %}
+                            {{ base.language|upper }}
+                        {% endif %}
+                    </button>
                 </a>
             </div>
         </div>
+        <a
+                id="link-logout1" class="w-100 btn btn-soft-danger"
+                href="{% url 'AuthLogout' %}?next={{ request.path }}"
+        >
+            <span>
+                <span class="icon">
+                    <span class="feather-icon">
+                        <i data-feather="log-out"></i>
+                    </span>
+                </span>
+                <span>{% trans 'Sign Out' %}</span>
+            </span>
+        </a>
         <div class="dropdown-divider"></div>
         <h6 class="dropdown-header">
-            {% trans 'Manage Account' %}
+            {% trans 'Manage account' %}
         </h6>
         <span
                 class="d-none"
@@ -296,7 +328,10 @@
                         id="btnChangeCurrentCompany"
                         data-bs-toggle="modal"
                         data-bs-target="#switchMyCompany"
-                > {{ base.company_current_data.code }} - {{ base.company_current_data.title }} </span>
+                >
+                    {{ base.company_current_data.title }}
+                    <small>({{ base.company_current_data.code }})</small>
+                </span>
             </a>
             {% if base.employee_current_data %}
                 <a
@@ -319,30 +354,10 @@
             {% endif %}
         {% endif %}
 
-        <a
-                id="link-language" class="dropdown-item" href="#"
-                data-bs-toggle="tooltip" data-bs-placement="left"
-                title="{% trans 'Language' %}"
-                data-url="{% url 'MyLanguageAPI' %}"
-                data-value="{{ base.language }}"
-        >
-            <span class="dropdown-icon feather-icon">
-                <i data-feather="globe"></i>
-            </span>
-            <span>{{ base.language|language_full_name }}</span>
-        </a>
-
-        <a
-                id="link-logout" class="dropdown-item"
-                href="{% url 'AuthLogout' %}?next={{ request.path }}"
-        >
-            <span class="dropdown-icon feather-icon">
-                <i data-feather="log-out"></i>
-            </span>
-            <span>{% trans 'Sign Out' %}</span>
-        </a>
-
         <div class="dropdown-divider"></div>
+        <h6 class="dropdown-header">
+            {% trans 'Issues and Supports' %}
+        </h6>
         <a
                 class="dropdown-item" href="#" data-bs-toggle="modal"
                 data-bs-target="#modalRaiseTicket"

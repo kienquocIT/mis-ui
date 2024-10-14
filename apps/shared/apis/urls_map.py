@@ -341,6 +341,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCTS_FOR_PRICE_LIST = StringUrl('saledata/update-products-for-price-list/{pk}')
     PRICE_LIST_DELETE_PRODUCT = StringUrl('saledata/delete-products-for-price-list/{pk}')
     PRODUCT_ADD_FROM_PRICE_LIST = StringUrl('saledata/create-product-from-price-list/{pk}')
+    PRODUCT_ADD_FROM_PRICE_LIST_IMPORT = StringUrl('saledata/create-product-from-price-list-import')
     DELETE_CURRENCY_FROM_PRICE_LIST = StringUrl('saledata/delete-currency-from-price-list/{pk}')
 
     # payment terms

@@ -1280,13 +1280,71 @@ class FileUtils {
 
 class ListeningEventController {
     switchCompany() {
-        $('#btn-call-switch-company').click(function () {
+        const btnSwitch$ = $('#btn-call-switch-company');
+        $('#switchMyCompany').on('shown.bs.modal', function (){
+            if ($(this).attr('data-loaded') !== 'true'){
+                $(this).attr('data-loaded', 'true');
+                $.fn.callAjax2({
+                    url: $(btnSwitch$).attr('data-url'),
+                    isLoading: true,
+                }).then((resp) => {
+                    const data = $.fn.switcherResp(resp);
+                    if (data){
+                        const companyList = data?.['company_list'] || [];
+                        const body$ = $('#body-call-switch-company');
+                        if (Array.isArray(companyList) && companyList.length > 0){
+                            companyList.map(
+                                item => {
+                                    let logo = '';
+                                    if (item.logo) logo = `
+                                    <img
+                                        class="brand-img img-fluid" src="${item.logo}" alt="brand"
+                                        style="height: 3rem; margin: 0 1rem;"
+                                    >
+                                `;
+                                    body$.append(`
+                                    <div class="company_switch_item p-3">
+                                        <div class="form-check d-flex align-items-center">
+                                            <input
+                                                id="company_switch_id_${item.id}"
+                                                name="switch_current_company"
+                                                class="form-check-input"
+                                                value="${item.id}"
+                                                type="radio"
+                                                ${item?.['is_current'] === true ? 'checked' : ''}
+                                            >
+                                            <label
+                                                    class="form-check-label ${item?.['is_current'] === true ? 'text-success' : ''}"
+                                                    for="company_switch_id_${item.id}"
+                                            >
+                                                ${logo}
+                                                ${item.code} - ${item.title}
+                                            </label>
+                                        </div>
+                                    </div>
+                                `)
+                                }
+                            )
+                            ListeningEventController.listenImageLoad(body$.find('img'));
+                            $('.company_switch_item').on('click', function (){
+                                const inp$ = $(this).find('input[name="switch_current_company"]');
+                                if (inp$.length > 0){
+                                    inp$.prop("checked", true).trigger('change');
+                                }
+                            })
+                        }
+                    }
+                });
+            }
+        })
+        btnSwitch$.click(function () {
             let current_company_id = $('#company-current-id').attr('data-id');
             let company_id_selected = $("input[name='switch_current_company']:checked").val();
             if (current_company_id !== company_id_selected) {
                 $.fn.callAjax2({
-                    url: $(this).attr('data-url'),
-                    method: $(this).attr('data-method'),
+                    url: $(btnSwitch$).attr('data-url'),
+                    method: 'PUT',
+                    isLoading: true,
                     data: {
                         'company': company_id_selected
                     },
@@ -1295,11 +1353,10 @@ class ListeningEventController {
                         'description': resp.data.detail
                     }, 'success');
                     setTimeout(() => {
-                        $('#link-logout')[0].click();
+                        window.location.href = '/';
                     }, 1200);
                 });
-            }
-            $('#switchMyCompany').modal('toggle');
+            } else $('#switchMyCompany').modal('toggle');
         });
     }
 
@@ -5718,7 +5775,6 @@ class ExcelJSController {
         } else throw Error('Create Workbook: The library is not found');
     }
 }
-
 
 class DateTimeControl {
     static defaultFormatDatetime = 'YYYY-MM-DD hh:mm:ss';

@@ -6878,7 +6878,7 @@ msgstr "Báo cáo tồn kho"
 
 #
 msgid "Items Detail Report"
-msgstr "Báo cáo chi tiết mặt hàng"
+msgstr "Báo cáo nhâp-xuất hàng"
 
 #
 msgid "Add group"
@@ -7534,7 +7534,7 @@ msgstr "Báo cáo tồn kho"
 
 #
 msgid "Items detail report"
-msgstr "Báo cáo chi tiết mặt hàng"
+msgstr "Báo cáo nhập-xuất hàng"
 
 #
 msgid "Please cancel current quotation"
@@ -9187,3 +9187,19 @@ msgstr "Viết bình luận..."
 #
 msgid "Project comment"
 msgstr "Bình luận"
+
+#
+msgid "Add new attribute"
+msgstr "Thêm thuộc tính"
+
+#
+msgid "Add Variant Value"
+msgstr "Thêm biến thể"
+
+#
+msgid "Attribute name"
+msgstr "Tên thuộc tính"
+
+#
+msgid "Value name"
+msgstr "Tên biến thể"

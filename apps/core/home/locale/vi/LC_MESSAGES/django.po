@@ -95,7 +95,7 @@ msgstr "Hiển thị báo cáo công việc"
 
 #
 msgid "Show summary task"
-msgstr "Hiển thị biểu ồ tổng hợp công việc"
+msgstr "Hiển thị biểu đồ tổng hợp công việc"
 
 #
 msgid "Show calendar"

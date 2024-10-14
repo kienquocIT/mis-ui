@@ -107,7 +107,7 @@ class SetupFormSubmit {
         return rs;
     }
 
-    constructor(formSelected, urlDefault = null, urlRedirectDefault = null, dataMethodDefault = null) {
+    constructor(formSelected, urlDefault = null, urlRedirectDefault = null, dataMethodDefault = 'POST') {
         this.formSelected = formSelected;
 
         // URL call API
@@ -121,7 +121,7 @@ class SetupFormSubmit {
                 this.dataMethod = dataMethodDefault
             } else {
                 if ($.fn.isDebug()) {
-                    console.log(this.formSelected)
+                    console.log(this.formSelected, 'Data Method do not support! It is ' + this.dataMethod)
                 }
                 throw ('Data Method do not support! It is ' + this.dataMethod);
             }

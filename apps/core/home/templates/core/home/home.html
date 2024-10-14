@@ -282,7 +282,7 @@
             <i class="fa-solid fa-gear"></i>
         </span>
     </div>
-    <div class="row mb-3">
+    <div class="row mb-3" style="display: none;">
         <div class="col col-sm-12 col-md-6 col-lg-6 col-xl-9 mb-3">
             <div
                     id="my-task-summary-report"
@@ -456,7 +456,7 @@
             </div>
         </div>
     </div>
-    <div class="row mb-3" id="task-list-group">
+    <div class="row mb-3" style="display: none;" id="task-list-group">
         <div class="col-12 mb-3">
             <div class="card card-border mb-0 h-100">
                 <div class="card-header card-header-action">
@@ -1488,36 +1488,59 @@
                 }
             })
 
-            let stateShow = {};
-            setupInp$.each(function (){
-                const name = $(this).attr('name');
-                let state = localStorage.getItem(name);
-                if (state !== '1' && state !== '0') state = '1';
-                stateShow[name] = state === '1';
-            })
-            const taskReport$ = $('#my-task-summary-report');
-            const taskSummary$ = $('#my-task-by-status').closest('.row');
-            const calendar$ = $('.calendar-group');
-            const bookmark$ = $('#boxBookmarkDisplay');
-            const taskList$ = $('#task-list-group');
+            function applyShowHomeUI(){
+                let stateShow = {};
+                setupInp$.each(function (){
+                    const name = $(this).attr('name');
+                    let state = localStorage.getItem(name);
+                    if (state !== '1' && state !== '0') state = '1';
+                    stateShow[name] = state === '1';
+                })
+                const taskReport$ = $('#my-task-summary-report');
+                const taskSummary$ = $('#my-task-by-status').closest('.row');
+                const calendar$ = $('.calendar-group');
+                const bookmark$ = $('#boxBookmarkDisplay');
+                const taskList$ = $('#task-list-group');
 
-            if (stateShow.show_report_task === false && stateShow.show_summary_task === false){
-                taskReport$.closest('.col').hide(0).siblings('div').alterClass('col-*').addClass('col-12');
-            } else if (stateShow.show_report_task === false) {
-                taskReport$.hide(0);
-            } else if (stateShow.show_summary_task === false){
-                taskSummary$.hide(0);
+                if (stateShow.show_report_task === false && stateShow.show_summary_task === false){
+                    taskReport$.closest('.col').hide(0).siblings('div').addClass('w-100');
+                } else {
+                    taskReport$.closest('.col').show(0).siblings('div').removeClass('w-100')
+                    if (stateShow.show_report_task === false) {
+                        taskReport$.hide(0);
+                    } else {
+                        taskReport$.show(0);
+                    }
+                    if (stateShow.show_summary_task === false){
+                        taskSummary$.hide(0);
+                    } else {
+                        taskSummary$.show(0);
+                    }
+                }
+                if (stateShow.show_calendar === false && stateShow.show_bookmark === false){
+                    calendar$.closest('.col').hide(0).siblings('div').addClass('w-100');
+                } else {
+                    calendar$.closest('.col').show(0).siblings('div').removeClass('w-100');
+                    if (stateShow.show_calendar === false) {
+                        calendar$.hide(0);
+                    } else {
+                        calendar$.show(0);
+                    }
+                    if (stateShow.show_bookmark === false) {
+                        bookmark$.closest('.bookmark-group').hide(0);
+                    } else {
+                        bookmark$.closest('.bookmark-group').show(0);
+                    }
+                }
+                if (stateShow.show_task_list === false){
+                    taskList$.hide(0);
+                } else {
+                    taskList$.show(0);
+                }
             }
-            if (stateShow.show_calendar === false && stateShow.show_bookmark === false){
-                calendar$.closest('.col').hide(0).siblings('div').alterClass('col-*').addClass('col-12');
-            } else if (stateShow.show_calendar === false) {
-                calendar$.hide(0);
-            } else if (stateShow.show_bookmark === false) {
-                bookmark$.closest('.bookmark-group').hide(0);
-            }
-            if (stateShow.show_task_list === false){
-                taskList$.hide(0);
-            }
+
+            applyShowHomeUI();
+            btnSettingHome$.siblings('.row').show(0);
         })
     </script>
 {% endblock %}

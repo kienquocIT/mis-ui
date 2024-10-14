@@ -40,7 +40,7 @@ class AuthLoginSelectTenant(APIView):
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
             if resp.state is True:
                 return redirect(request.query_params.get('next', reverse('HomeView')))
-        session_flush()
+        session_flush(request=request)
         return render(
             request,
             'auths/select_tenant.html' if settings.UI_ALLOW_SHOW_SELECT_TENANT else 'auths/select_tenant_deny.html',
@@ -88,7 +88,7 @@ class AuthLogin(APIView):
         frm.is_valid()
         resp = ServerAPI(request=request, user=None, url=ApiURL.login).post(frm.cleaned_data)
         if resp.state is True:
-            user = User.regis_with_api_result(resp.result)
+            user = User.regis_with_api_result(api_result=resp.result, random_passwd=True)
             if user:
                 if not frm.cleaned_data.get('remember'):
                     request.session.set_expiry(0)
@@ -169,6 +169,11 @@ class SwitchCompanyCurrentView(APIView):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.SWITCH_COMPANY).put(request.data)
         if hasattr(request.user, 'id'):
             CacheController().delete(f'user_obj_${str(request.user.id)}')
+        if resp.state is True:
+            user_data = resp.result.get('user_data', {})
+            user_obj = User.user_get_user_then_update_object_related(api_result=user_data)
+            if user_obj:
+                user_obj.user_update_data(api_result=user_data)
         return resp.auto_return()
 
 

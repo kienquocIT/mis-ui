@@ -1280,6 +1280,12 @@ class FileUtils {
 
 class ListeningEventController {
     switchCompany() {
+        $('.company_switch_item').on('click', function (){
+            const inp$ = $(this).find('input[name="switch_current_company"]');
+            if (inp$.length > 0){
+                inp$.prop("checked", true).trigger('change');
+            }
+        })
         $('#btn-call-switch-company').click(function () {
             let current_company_id = $('#company-current-id').attr('data-id');
             let company_id_selected = $("input[name='switch_current_company']:checked").val();
@@ -1287,6 +1293,7 @@ class ListeningEventController {
                 $.fn.callAjax2({
                     url: $(this).attr('data-url'),
                     method: $(this).attr('data-method'),
+                    isLoading: true,
                     data: {
                         'company': company_id_selected
                     },
@@ -1295,11 +1302,10 @@ class ListeningEventController {
                         'description': resp.data.detail
                     }, 'success');
                     setTimeout(() => {
-                        $('#link-logout')[0].click();
+                        window.location.href = '/';
                     }, 1200);
                 });
-            }
-            $('#switchMyCompany').modal('toggle');
+            } else $('#switchMyCompany').modal('toggle');
         });
     }
 

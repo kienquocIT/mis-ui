@@ -165,6 +165,11 @@ class TenantLoginChoice(APIView):
 
 class SwitchCompanyCurrentView(APIView):
     @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.SWITCH_COMPANY).get()
+        return resp.auto_return(key_success='company_list')
+
+    @mask_view(login_require=True, is_api=True)
     def put(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.SWITCH_COMPANY).put(request.data)
         if hasattr(request.user, 'id'):

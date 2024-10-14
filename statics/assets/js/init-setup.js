@@ -2097,54 +2097,49 @@ class WFRTControl {
     }
 
     static callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect) {
+        let dataRTConfig = {
+            'urlBase': urlBase, 'taskID': taskID, 'dataSuccessReload': dataSuccessReload, 'urlRedirect': urlRedirect
+        }
         // check next node
-        let checkAssociate = WFAssociateControl.checkNextNode(WFRTControl.getRuntimeDocData());
-        if (typeof checkAssociate === 'object' && checkAssociate !== null) {
-            if (checkAssociate?.['id']) {
-                dataSubmit['next_association_id'] = checkAssociate?.['id'];
-                WFRTControl.setCollabOFRuntime(checkAssociate?.['node_out']?.['collab_out_form']);
-            } else {
-                $.fn.notifyB({description: $.fn.transEle.attr('data-node-condition-fail')}, 'failure');
-                return false;
-            }
-        }
-        let collabOutForm = WFRTControl.getCollabOutFormData();
-        if (collabOutForm && collabOutForm.length > 0) {
-            Swal.fire({
-                title: $.fn.transEle.attr('data-select-next-node-collab'),
-                html: String(WFRTControl.setupHTMLSelectCollab(collabOutForm)),
-                allowOutsideClick: false,
-                showConfirmButton: true,
-                confirmButtonText: $.fn.transEle.attr('data-confirm'),
-                showCancelButton: true,
-                cancelButtonText: $.fn.transEle.attr('data-cancel'),
-                didOpen: () => {
-                    // Add event listener after the modal is shown
-                    let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
-                    checkboxes.forEach((checkbox) => {
-                        checkbox.addEventListener('click', function () {
-                            let checked = checkbox.checked;
-                            for (let eleCheck of checkboxes) {
-                                eleCheck.checked = false;
-                            }
-                            checkbox.checked = checked;
-                        });
-                    });
-                }
-            }).then((result) => {
-                if (result.dismiss === Swal.DismissReason.timer || result.value) {
-                    let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
-                    if (eleChecked) {
-                        dataSubmit['next_node_collab_id'] = eleChecked.getAttribute('data-id');
-                        return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
-                    } else {
-                        return "You need to select one person!";
-                    }
-                }
-            });
-        } else {
-            return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
-        }
+        let associationData = WFAssociateControl.checkNextNode(WFRTControl.getRuntimeDocData());
+        WFRTControl.submitCheckAssociation(dataSubmit, associationData, 1, dataRTConfig);
+        // let collabOutForm = WFRTControl.getCollabOutFormData();
+        // if (collabOutForm && collabOutForm.length > 0) {
+        //     Swal.fire({
+        //         title: $.fn.transEle.attr('data-select-next-node-collab'),
+        //         html: String(WFRTControl.setupHTMLSelectCollab(collabOutForm)),
+        //         allowOutsideClick: false,
+        //         showConfirmButton: true,
+        //         confirmButtonText: $.fn.transEle.attr('data-confirm'),
+        //         showCancelButton: true,
+        //         cancelButtonText: $.fn.transEle.attr('data-cancel'),
+        //         didOpen: () => {
+        //             // Add event listener after the modal is shown
+        //             let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
+        //             checkboxes.forEach((checkbox) => {
+        //                 checkbox.addEventListener('click', function () {
+        //                     let checked = checkbox.checked;
+        //                     for (let eleCheck of checkboxes) {
+        //                         eleCheck.checked = false;
+        //                     }
+        //                     checkbox.checked = checked;
+        //                 });
+        //             });
+        //         }
+        //     }).then((result) => {
+        //         if (result.dismiss === Swal.DismissReason.timer || result.value) {
+        //             let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
+        //             if (eleChecked) {
+        //                 dataSubmit['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+        //                 return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
+        //             } else {
+        //                 return "You need to select one person!";
+        //             }
+        //         }
+        //     });
+        // } else {
+        //     return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
+        // }
     }
 
     static callWFSubmitForm(_form) {
@@ -2186,7 +2181,7 @@ class WFRTControl {
         }
         if (!IDRuntime) {  // create document, run WF by @decorator_run_workflow in API
             // check next node
-            let checkAssociate = WFAssociateControl.checkNextNode(_form.dataForm);
+            let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
             // select save status before select collaborator
             Swal.fire({
                 title: $.fn.transEle.attr('data-select-save-status'),
@@ -2217,17 +2212,8 @@ class WFRTControl {
                         if (saveStatus) {
                             _form.dataForm['system_status'] = parseInt(saveStatus);
                             if (_form.dataForm['system_status'] === 1) {
-                                if (typeof checkAssociate === 'object' && checkAssociate !== null) {
-                                    if (checkAssociate?.['id']) {
-                                        _form.dataForm['next_association_id'] = checkAssociate?.['id'];
-                                        WFRTControl.setCollabOFCreate(checkAssociate?.['node_out']?.['collab_out_form']);
-                                    } else {
-                                        $.fn.notifyB({description: $.fn.transEle.attr('data-node-condition-fail')}, 'failure');
-                                        return false;
-                                    }
-                                }
+                                WFRTControl.submitCheckAssociation(_form, associationData, 0);
                             }
-                            WFRTControl.submitCheckCollabNextNode(_form);
                         }
                     } else {
                         $.fn.notifyB({description: $.fn.transEle.attr('data-need-one-option')}, 'failure');
@@ -2312,6 +2298,129 @@ class WFRTControl {
         )
     }
 
+    static submitActionApprove(dataRTConfig, dataSubmit) {
+        let urlBase = dataRTConfig?.['urlBase'];
+        let taskID = dataRTConfig?.['taskID'];
+        let dataSuccessReload = dataRTConfig?.['dataSuccessReload'];
+        let urlRedirect = dataRTConfig?.['urlRedirect'];
+        let collabOutForm = WFRTControl.getCollabOutFormData();
+        if (collabOutForm && collabOutForm.length > 0) {
+            Swal.fire({
+                title: $.fn.transEle.attr('data-select-next-node-collab'),
+                html: String(WFRTControl.setupHTMLSelectCollab(collabOutForm)),
+                allowOutsideClick: false,
+                showConfirmButton: true,
+                confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                showCancelButton: true,
+                cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                didOpen: () => {
+                    // Add event listener after the modal is shown
+                    let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.addEventListener('click', function () {
+                            let checked = checkbox.checked;
+                            for (let eleCheck of checkboxes) {
+                                eleCheck.checked = false;
+                            }
+                            checkbox.checked = checked;
+                        });
+                    });
+                }
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                    let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
+                    if (eleChecked) {
+                        dataSubmit['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+                        return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
+                    } else {
+                        return "You need to select one person!";
+                    }
+                }
+            });
+        } else {
+            return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
+        }
+    }
+
+    static submitCheckAssociation(_form, associationData, checkType, dataRTConfig = {}) {
+        let dataSubmit = {};
+        if (checkType === 0) {
+            dataSubmit = _form.dataForm;
+        }
+        if (checkType === 1) {
+            dataSubmit = _form;
+        }
+        if (Array.isArray(associationData) && associationData.length > 0) {
+            if (associationData.length === 1) {
+                if (associationData[0]?.['id']) {
+                    dataSubmit['next_association_id'] = associationData[0]?.['id'];
+                    if (checkType === 0) {
+                        WFRTControl.setCollabOFCreate(associationData[0]?.['node_out']?.['collab_out_form']);
+                        WFRTControl.submitCheckCollabNextNode(_form);
+                        return true;
+                    }
+                    if (checkType === 1) {
+                        WFRTControl.setCollabOFRuntime(associationData[0]?.['node_out']?.['collab_out_form']);
+                        WFRTControl.submitActionApprove(dataRTConfig, dataSubmit);
+                        return true;
+                    }
+                } else {
+                    $.fn.notifyB({description: $.fn.transEle.attr('data-node-condition-fail')}, 'failure');
+                    return false;
+                }
+            }
+            // select association
+            Swal.fire({
+                title: $.fn.transEle.attr('data-select-association'),
+                html: String(WFRTControl.setupHTMLSelectAssociation(associationData)),
+                allowOutsideClick: false,
+                showConfirmButton: true,
+                confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                showCancelButton: true,
+                cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                didOpen: () => {
+                    // Add event listener after the modal is shown
+                    let checkboxes = document.querySelectorAll('.checkbox-next-association');
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.addEventListener('click', function () {
+                            let checked = checkbox.checked;
+                            for (let eleCheck of checkboxes) {
+                                eleCheck.checked = false;
+                            }
+                            checkbox.checked = checked;
+                        });
+                    });
+                }
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                    let eleChecked = document.querySelector('.checkbox-next-association:checked');
+                    if (eleChecked) {
+                        if (eleChecked.getAttribute('data-detail')) {
+                            let association = JSON.parse(eleChecked.getAttribute('data-detail'));
+                            dataSubmit['next_association_id'] = association?.['id'];
+                            if (checkType === 0) {
+                                WFRTControl.setCollabOFCreate(association?.['node_out']?.['collab_out_form']);
+                                WFRTControl.submitCheckCollabNextNode(_form);
+                                return true;
+                            }
+                            if (checkType === 1) {
+                                WFRTControl.setCollabOFRuntime(association?.['node_out']?.['collab_out_form']);
+                                WFRTControl.submitActionApprove(dataRTConfig, dataSubmit);
+                                return true;
+                            }
+                        }
+                    } else {
+                        $.fn.notifyB({description: $.fn.transEle.attr('data-need-one-option')}, 'failure');
+                        return false;
+                    }
+                }
+            });
+        } else {
+            $.fn.notifyB({description: $.fn.transEle.attr('data-node-condition-fail')}, 'failure');
+            return false;
+        }
+    }
+
     static submitCheckCollabNextNode(_form) {
         let collabOutForm = WFRTControl.getCollabOutFormData();
         if (collabOutForm && collabOutForm.length > 0) {  // Have collaborator -> select collaborator then submit
@@ -2358,6 +2467,27 @@ class WFRTControl {
         }
     }
 
+    static setupHTMLSelectAssociation(AssociationData) {
+        let htmlCustom = ``;
+        let typeMapTxt = {
+            1: $.fn.transEle.attr('data-node-type-1'),
+            2: $.fn.transEle.attr('data-node-type-2'),
+        }
+        for (let associate of AssociationData) {
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-th mr-2"></i>
+                                    <span class="mr-2">${associate?.['node_out']?.['title']}</span>
+                                    <span class="badge badge-soft-success">${typeMapTxt[associate?.['node_out']?.['option_collaborator']]}</span>
+                                </div>
+                                <div class="form-check form-check-theme ms-3">
+                                    <input type="radio" class="form-check-input checkbox-next-association" data-detail="${JSON.stringify(associate).replace(/"/g, "&quot;")}">
+                                </div>
+                            </div>`;
+        }
+        return htmlCustom;
+    }
+
     static setupHTMLSelectCollab(collabOutForm) {
         let htmlCustom = ``;
         for (let collab of collabOutForm) {
@@ -2388,7 +2518,7 @@ class WFRTControl {
         };
         let statusMapColor = {
             0: "text-secondary",
-            1: "text-primary",
+            1: "text-secondary",
         };
         for (let status of statusList) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
@@ -3272,12 +3402,14 @@ class WFRTControl {
 }
 
 class WFAssociateControl {
+    // Handle every thing about Runtime Association
 
     static checkNextNode(dataForm) {
+        let result = [];
         let associateData = WFRTControl.getAssociateData();
-        if (associateData.length === 1) {  // 1 node, no check condition
-            return associateData[0];
-        }
+        // if (associateData.length === 1) {  // 1 node, no check condition
+        //     return associateData;
+        // }
         let check = false;
         for (let assoData of associateData) {  // many nodes, check condition
             let listCheck = [];
@@ -3311,26 +3443,30 @@ class WFAssociateControl {
                     }
                 }
                 if (typeof condition === 'string') {
-                    if (condition === "AND") {
-                        listCheck.push("and");
+                    if (["AND", "OR"].includes(condition)) {
+                        listCheck.push(condition.toLowerCase());
                     }
                 }
             }
-            if (listCheck.length % 2 !== 0) {
-                check = WFAssociateControl.evaluateLogic(listCheck);
+            if (listCheck.length === 0) {
+                result.push(assoData);
             } else {
-                listCheck.pop();
-                if (listCheck.length === 1) {
-                    check = listCheck[0];
-                } else {
+                if (listCheck.length % 2 !== 0) {
                     check = WFAssociateControl.evaluateLogic(listCheck);
+                } else {
+                    listCheck.pop();
+                    if (listCheck.length === 1) {
+                        check = listCheck[0];
+                    } else {
+                        check = WFAssociateControl.evaluateLogic(listCheck);
+                    }
                 }
             }
             if (check === true) {
-                return assoData;
+                result.push(assoData);
             }
         }
-        return {};
+        return result;
     };
 
     static evaluateLogic(conditions) {

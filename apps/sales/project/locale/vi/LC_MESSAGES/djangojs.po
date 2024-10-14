@@ -244,3 +244,11 @@ msgstr "Bởi Trạng thái"
 #
 msgid "Close Project"
 msgstr "Đóng dự án"
+
+#
+msgid "Reply"
+msgstr "Trả lời"
+
+#
+msgid "in"
+msgstr "trong"

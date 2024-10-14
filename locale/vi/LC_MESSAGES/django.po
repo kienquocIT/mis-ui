@@ -9163,3 +9163,27 @@ msgstr "Một khi phiếu đã hoàn tất, bạn có thể thực hiện các h
 #
 msgid "Now"
 msgstr "ngay bây giờ"
+
+#
+msgid "Must go through approval node"
+msgstr "Phải đi qua trạm chấp thuận"
+
+#
+msgid "No return at approval node"
+msgstr "Không quay lại tại trạm chấp thuận"
+
+#
+msgid "Cannot connect itself"
+msgstr "Không thể liên kết chính nó"
+
+#
+msgid "Project activities"
+msgstr "Hoạt động của dự án"
+
+#
+msgid "leave your comment..."
+msgstr "Viết bình luận..."
+
+#
+msgid "Project comment"
+msgstr "Bình luận"

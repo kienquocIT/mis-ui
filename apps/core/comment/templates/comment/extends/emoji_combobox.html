@@ -1,0 +1,14 @@
+{% load static i18n %}
+<div class="emoji_wrapbox" data-url="/static/comment/js/emoji_data.json">
+    <div class="input_wrap_search hidden" disabled>
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <label for="search_emoji"></label><input type="text" id="search_emoji" placeholder="{% trans 'Search' %}">
+        <a href="#" class="close_btn_search"><i class="fa-regular fa-circle-xmark"></i></a>
+    </div>
+    <div class="emoji-category-nav"></div>
+    <div class="emoji-body emoji-font">
+    </div>
+</div>
+<div class="modal-mention hidden">
+    <ul class="form-control" id="employee-mention" data-url="{% url "EmployeeListAPI" %}"></ul>
+</div>

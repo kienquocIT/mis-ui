@@ -88,7 +88,7 @@
                         </thead>
                     </table>
                 </div>
-                <div class="tab-pane fade lookup-data" id="section_unit_of_measure">
+                <div class="tab-pane fade lookup-data" id="section_unit_of_measure" style="overflow-x: hidden; overflow-y: auto; max-height: 50vh">
                     <table
                             id="datatable-unit-measure-list" class="table nowrap w-100"
                             data-url="{% url "UnitOfMeasureListAPI" %}"
@@ -96,13 +96,16 @@
                             data-method="GET"
                     >
                         <thead>
-                        <th></th>
-                        <th>{% trans "Code" %}</th>
-                        <th>{% trans "Name" %}</th>
-                        <th>{% trans "UoM Group" %}</th>
-                        <th>{% trans "Is referenced unit" %}</th>
-                        <th>{% trans "Action" %}</th>
+                        <tr>
+                            <th></th>
+                            <th>{% trans "Code" %}</th>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "UoM Group" %}</th>
+                            <th>{% trans "Is referenced unit" %}</th>
+                            <th>{% trans "Action" %}</th>
+                        </tr>
                         </thead>
+                        <tbody></tbody>
                     </table>
                 </div>
                 <div class="tab-pane fade lookup-data" id="section_unit_of_measure_group">

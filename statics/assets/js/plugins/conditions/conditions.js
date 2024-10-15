@@ -16,6 +16,11 @@ class Conditions {
             'url': Conditions.$url.attr('data-md-account'),
             'keyResp': 'account_sale_list',
             'keyText': 'name',
+        },
+        'hr.Employee': {
+            'url': Conditions.$url.attr('data-md-employee'),
+            'keyResp': 'employee_list',
+            'keyText': 'full_name',
         }
     }
 
@@ -47,6 +52,12 @@ class Conditions {
                             }
                             let operator = $(this).find('select[name*="-math"]').val();
                             let right_cond = $(this).find('[name*="-right_cond"]').val();
+                            if (left_cond?.['type'] === 5) {
+                                let dataRC = SelectDDControl.get_data_from_idx($(this).find('[name*="-right_cond"]'), $(this).find('[name*="-right_cond"]').val());
+                                if (dataRC) {
+                                    right_cond = dataRC;
+                                }
+                            }
                             /*** push sub-formset to array temp ***/
                             sub_formset_temp.push({
                                 left_cond: left_cond,
@@ -130,7 +141,7 @@ class Conditions {
             if ([1, 2, 6].includes(value.left_cond?.['type'])) {
                 $elm_cond.find('input[name="parameter-' + idx + '-right_cond"]').val(value.right_cond);
             } else {
-                $elm_cond.find('select[name="' + right_cond + '"]').val(value.left_cond?.['id']).trigger('change');
+                this.loadInitS2($elm_cond.find('select[name="' + right_cond + '"]'), [value.right_cond]);
             }
         }
     }

@@ -3427,12 +3427,22 @@ class WFAssociateControl {
                 let left = null;
                 let right = null;
                 if (typeof condition === 'object' && condition !== null) {
+                    // if (Array.isArray(condition)) {
+                    //
+                    // } else {
+                    //
+                    // }
+
                     if (condition?.['left_cond']) {
-                        // left = dataForm?.[condition?.['left_cond']?.['code']];
                         left = WFAssociateControl.findKey(dataForm, condition?.['left_cond']?.['code']);
                     }
                     if (condition?.['right_cond']) {
                         right = condition?.['right_cond'];
+                        if (condition?.['left_cond']?.['type'] === 5) {
+                            if (condition?.['right_cond']?.['id']) {
+                                right = condition?.['right_cond']?.['id'];
+                            }
+                        }
                         if (condition?.['left_cond']?.['type'] === 6) {
                             right = parseFloat(condition?.['right_cond']);
                         }
@@ -3494,10 +3504,88 @@ class WFAssociateControl {
             }
         }
         if (result.length > 0) {  // return result (have association pass condition)
-            return {'check': check, 'data': result};
+            return {'check': true, 'data': result};
         }
-        return {'check': check, 'data': associateData};  // return associateData (not any association pass condition)
+        return {'check': false, 'data': associateData};  // return associateData (not any association pass condition)
     };
+
+    // static rec() {
+    //     let check = false;
+    //     let listCheck = [];
+    //     for (let condition of assoData?.['condition']) {
+    //         let left = null;
+    //         let right = null;
+    //         if (typeof condition === 'object' && condition !== null) {
+    //             if (condition?.['left_cond']) {
+    //                 left = WFAssociateControl.findKey(dataForm, condition?.['left_cond']?.['code']);
+    //             }
+    //             if (condition?.['right_cond']) {
+    //                 right = condition?.['right_cond'];
+    //                 if (condition?.['left_cond']?.['type'] === 5) {
+    //                     if (condition?.['right_cond']?.['id']) {
+    //                         right = condition?.['right_cond']?.['id'];
+    //                     }
+    //                 }
+    //                 if (condition?.['left_cond']?.['type'] === 6) {
+    //                     right = parseFloat(condition?.['right_cond']);
+    //                 }
+    //             }
+    //             if (left !== null && right !== null) {
+    //                 let isMatch = false;
+    //                 if (condition?.['operator'] === 'is') {
+    //                     isMatch = left === right;
+    //                     listCheck.push(isMatch);
+    //                 }
+    //                 if (condition?.['operator'] === '=') {
+    //                     isMatch = left === right;  // Strict equality
+    //                     listCheck.push(isMatch);
+    //                 }
+    //                 if (condition?.['operator'] === '<') {
+    //                     isMatch = left < right;  // Less than
+    //                     listCheck.push(isMatch);
+    //                 }
+    //                 if (condition?.['operator'] === '<=') {
+    //                     isMatch = left <= right;  // Less than or equal to
+    //                     listCheck.push(isMatch);
+    //                 }
+    //                 if (condition?.['operator'] === '>') {
+    //                     isMatch = left > right;  // Greater than
+    //                     listCheck.push(isMatch);
+    //                 }
+    //                 if (condition?.['operator'] === '>=') {
+    //                     isMatch = left >= right;  // Greater than or equal to
+    //                     listCheck.push(isMatch);
+    //                 }
+    //                 if (condition?.['operator'] === '!=') {
+    //                     isMatch = left !== right;  // Not equal
+    //                     listCheck.push(isMatch);
+    //                 }
+    //             }
+    //         }
+    //         if (typeof condition === 'string') {
+    //             if (["AND", "OR"].includes(condition)) {
+    //                 listCheck.push(condition.toLowerCase());
+    //             }
+    //         }
+    //     }
+    //     if (listCheck.length === 0) {
+    //         result.push(assoData);
+    //     } else {
+    //         if (listCheck.length % 2 !== 0) {
+    //             check = WFAssociateControl.evaluateLogic(listCheck);
+    //         } else {
+    //             listCheck.pop();
+    //             if (listCheck.length === 1) {
+    //                 check = listCheck[0];
+    //             } else {
+    //                 check = WFAssociateControl.evaluateLogic(listCheck);
+    //             }
+    //         }
+    //         if (check === true) {
+    //             result.push(assoData);
+    //         }
+    //     }
+    // }
 
     static findKey(dataForm, key) {
         if (!key.includes("__")) {

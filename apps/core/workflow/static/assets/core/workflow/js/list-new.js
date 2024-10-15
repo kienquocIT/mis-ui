@@ -198,6 +198,7 @@ $(document).ready(function () {
                 let placeGetData = $('#url-factory');
                 let urlData = placeGetData.attr('data-url-workflow-list');
                 let urlWorkflowDetail = placeGetData.attr('data-url-workflow-detail');
+                let urlWorkflowUpdate = placeGetData.attr('data-url-workflow-update');
                 $('#' + idTbl).DataTableDefault({
                     "url-detail": urlWorkflowDetail,
                     ajax: {
@@ -242,7 +243,7 @@ $(document).ready(function () {
                         }, {
                             title: $transFact.attr('data-action'),
                             render: (data, type, row, meta) => {
-                                let btnEdit = `<a href="${SetupFormSubmit.getUrlDetailWithID(urlWorkflowDetail, row.id)}"><button class="btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="far fa-edit"></i></span></button></a>`
+                                let btnEdit = `<a href="${SetupFormSubmit.getUrlDetailWithID(urlWorkflowUpdate, row.id)}"><button class="btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="far fa-edit"></i></span></button></a>`
                                 let btnDelete = `<button class="btn-delete-wf btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
                                 let btnSend = `<button class="btn-change-wf-doc btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="far fa-paper-plane"></i></span></button>`
                                 return btnEdit + btnDelete + btnSend;

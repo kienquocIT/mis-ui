@@ -42,13 +42,14 @@
 }
 .emoji_wrapbox{
     width: 322px;
-    height:438px;
+    height: 438px;
     border-radius: 10px;
     box-shadow: 0 0 8px 0 rgb(0 0 0 / 10%);
     padding: 15px 10px;
     position: fixed;
     display: none;
     background: #fff;
+    z-index: 1;
 }
 .emoji_wrapbox.is_showed{
     display: block;
@@ -311,4 +312,14 @@
 }
 .item-comment .animated > p:not(:last-child){
     background: rgb(0 125 136 / 10%);
+}
+.empty-data{
+    text-align: center;
+    display: flex;
+    width:100%;
+    height: 80px;
+    background: #fff;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
 }

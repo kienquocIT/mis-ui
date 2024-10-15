@@ -85,19 +85,18 @@ class CommentHandle {
                 }
             }
             let avatar, avtClass = 'avatar-xs';
-            if (data['reply_from_id']) avtClass = 'avatar-xxs'
+            if (data?.['reply_from_id'] || data?.['reply_from']) avtClass = 'avatar-xxs'
             if (data.employee_inherit.avatar_img)
                 avatar = `<div class="avatar avatar-rounded avatar-grey ${avtClass}"><img src="${data.employee_inherit.avatar_img}" alt="user" class="avatar-img"></div>`
             else avatar = $x.fn.renderAvatar(data.employee_inherit, avtClass +' avatar-' +
                 $x.fn.randomColor(), "", "full_name")
 
             let cmtBtn = `<a href="#" class="reply-cmt">${$.fn.gettext('Reply')}</a>`,
-                childCmt = '<div class="child-comment"></div>'
-            if (data['reply_from_id'] !== null){
+                childCmt = '<div class="child-comment"></div>';
+            if (data?.['reply_from_id'] !== null && data?.['reply_from'] !== null){
                 cmtBtn = ''
                 childCmt = ''
             }
-
             return `<div class="item-comment" data-msg-id="${data.id}">${avatar}<div><p class="cmt-name" data-self="${JSON.stringify(data.employee_inherit).replaceAll('"', "'")}">`+
                 `${data.employee_inherit.full_name}</p><p>${messages.join(" ")}</p>`+
                 `<p class="nav-cmt">${moment(data.date_created).fromNow(true)}${cmtBtn}</p></div>${childCmt}</div>`
@@ -375,7 +374,8 @@ class CommentHandle {
                         cmtHTML += cmtTemp.prop('outerHTML')
                     }
                     // render feed
-                    $('.wrap_comment').html(cmtHTML)
+                    let $wrapCmt = $('.wrap_comment')
+                    $wrapCmt.html(cmtHTML)
 
                     // load emoji for comment popup
                     CommentHandle.load_emoji()
@@ -398,6 +398,13 @@ class CommentHandle {
                         const TxtArea = $(this).find('.input_txt textarea')
                         CommentHandle.RunMentionTextarea(TxtArea)
                     });
+                    // if empty data render
+                    if (comment_lst.length === 0){
+                        $wrapCmt.html(`<div class="empty-data">${
+                            $.fn.gettext('Project activities is empty')
+                        }</div>`)
+                    }
+
                 },
                 (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
             )

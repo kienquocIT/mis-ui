@@ -122,22 +122,23 @@ class Conditions {
         /*** append left condition ***/
         let left_cond = `parameter-${elm_idx}-left_cond`;
         if (value.hasOwnProperty('left_cond') && value.left_cond) {
-            let isDetail = this.getPropertyList[value.left_cond];
-            $elm_cond.find('select[name="' + left_cond + '"]').attr('data-onload', JSON.stringify(isDetail))
-            initSelectBox($elm_cond.find('select[name="' + left_cond + '"]'))
+            // let isDetail = this.getPropertyList[value.left_cond];
+            // $elm_cond.find('select[name="' + left_cond + '"]').attr('data-onload', JSON.stringify(isDetail))
+            // initSelectBox($elm_cond.find('select[name="' + left_cond + '"]'))
+            this.loadInitS2($elm_cond.find('select[name="' + left_cond + '"]'), [value.left_cond]);
         }
 
         /*** append operator ***/
         let math = `parameter-${elm_idx}-math`;
         // change math option
-        this.changeParameter(this.getPropertyList[value.left_cond?.['id']].type, $elm_cond)
+        this.changeParameter(value.left_cond?.['type'], $elm_cond)
         if (value.hasOwnProperty('operator') && value.operator)
             $elm_cond.find('select[name="' + math + '"]').val(value.operator)
 
         /*** append right condition ***/
         let right_cond = `parameter-${elm_idx}-right_cond`;
         if (value.hasOwnProperty('right_cond') && value.right_cond) {
-            this.generatorHTMLRightDropdownBox(this.getPropertyList[value.left_cond?.['id']], idx, $elm_cond, $elm_cond.find('select[name="' + left_cond + '"]'));
+            this.generatorHTMLRightDropdownBox(value.left_cond, idx, $elm_cond, $elm_cond.find('select[name="' + left_cond + '"]'));
             if ([1, 2, 6].includes(value.left_cond?.['type'])) {
                 $elm_cond.find('input[name="parameter-' + idx + '-right_cond"]').val(value.right_cond);
             } else {

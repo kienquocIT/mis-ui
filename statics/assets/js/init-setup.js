@@ -3420,82 +3420,104 @@ class WFAssociateControl {
                 return {'check': true, 'data': associateData};
             }
         }
-        let check = false;
         for (let assoData of associateData) {  // many nodes, check condition
-            let listCheck = [];
+            let check = false;
+            let listLogic = [];
             for (let condition of assoData?.['condition']) {
-                let left = null;
-                let right = null;
-                if (typeof condition === 'object' && condition !== null) {
-                    // if (Array.isArray(condition)) {
-                    //
-                    // } else {
-                    //
-                    // }
-
-                    if (condition?.['left_cond']) {
-                        left = WFAssociateControl.findKey(dataForm, condition?.['left_cond']?.['code']);
+                if (Array.isArray(condition)) {
+                    let checkSub = false;
+                    let listLogicSub = [];
+                    for (let subCond of condition) {
+                        listLogicSub.push(WFAssociateControl.compareLogic(subCond, dataForm));
                     }
-                    if (condition?.['right_cond']) {
-                        right = condition?.['right_cond'];
-                        if (condition?.['left_cond']?.['type'] === 5) {
-                            if (condition?.['right_cond']?.['id']) {
-                                right = condition?.['right_cond']?.['id'];
+                    if (listLogicSub.length === 0) {
+                        listLogic.push(true);
+                    } else {
+                        if (listLogicSub.length % 2 !== 0) {
+                            checkSub = WFAssociateControl.evaluateLogic(listLogicSub);
+                        } else {
+                            listLogicSub.pop();
+                            if (listLogicSub.length === 1) {
+                                checkSub = listLogicSub[0];
+                            } else {
+                                checkSub = WFAssociateControl.evaluateLogic(listLogicSub);
                             }
                         }
-                        if (condition?.['left_cond']?.['type'] === 6) {
-                            right = parseFloat(condition?.['right_cond']);
-                        }
+                        listLogic.push(checkSub);
                     }
-                    if (left !== null && right !== null) {
-                        let isMatch = false;
-                        if (condition?.['operator'] === 'is') {
-                            isMatch = left === right;
-                            listCheck.push(isMatch);
-                        }
-                        if (condition?.['operator'] === '=') {
-                            isMatch = left === right;  // Strict equality
-                            listCheck.push(isMatch);
-                        }
-                        if (condition?.['operator'] === '<') {
-                            isMatch = left < right;  // Less than
-                            listCheck.push(isMatch);
-                        }
-                        if (condition?.['operator'] === '<=') {
-                            isMatch = left <= right;  // Less than or equal to
-                            listCheck.push(isMatch);
-                        }
-                        if (condition?.['operator'] === '>') {
-                            isMatch = left > right;  // Greater than
-                            listCheck.push(isMatch);
-                        }
-                        if (condition?.['operator'] === '>=') {
-                            isMatch = left >= right;  // Greater than or equal to
-                            listCheck.push(isMatch);
-                        }
-                        if (condition?.['operator'] === '!=') {
-                            isMatch = left !== right;  // Not equal
-                            listCheck.push(isMatch);
-                        }
-                    }
+                } else {
+                    listLogic.push(WFAssociateControl.compareLogic(condition, dataForm));
                 }
-                if (typeof condition === 'string') {
-                    if (["AND", "OR"].includes(condition)) {
-                        listCheck.push(condition.toLowerCase());
-                    }
-                }
+
+
+
+
+                // let left = null;
+                // let right = null;
+                // if (typeof condition === 'object' && condition !== null) {
+                //     if (condition?.['left_cond']) {
+                //         left = WFAssociateControl.findKey(dataForm, condition?.['left_cond']?.['code']);
+                //     }
+                //     if (condition?.['right_cond']) {
+                //         right = condition?.['right_cond'];
+                //         if (condition?.['left_cond']?.['type'] === 5) {
+                //             if (condition?.['right_cond']?.['id']) {
+                //                 right = condition?.['right_cond']?.['id'];
+                //             }
+                //         }
+                //         if (condition?.['left_cond']?.['type'] === 6) {
+                //             right = parseFloat(condition?.['right_cond']);
+                //         }
+                //     }
+                //     if (left !== null && right !== null) {
+                //         let isMatch = false;
+                //         if (condition?.['operator'] === 'is') {
+                //             isMatch = left === right;
+                //             listCheck.push(isMatch);
+                //         }
+                //         if (condition?.['operator'] === '=') {
+                //             isMatch = left === right;  // Strict equality
+                //             listCheck.push(isMatch);
+                //         }
+                //         if (condition?.['operator'] === '<') {
+                //             isMatch = left < right;  // Less than
+                //             listCheck.push(isMatch);
+                //         }
+                //         if (condition?.['operator'] === '<=') {
+                //             isMatch = left <= right;  // Less than or equal to
+                //             listCheck.push(isMatch);
+                //         }
+                //         if (condition?.['operator'] === '>') {
+                //             isMatch = left > right;  // Greater than
+                //             listCheck.push(isMatch);
+                //         }
+                //         if (condition?.['operator'] === '>=') {
+                //             isMatch = left >= right;  // Greater than or equal to
+                //             listCheck.push(isMatch);
+                //         }
+                //         if (condition?.['operator'] === '!=') {
+                //             isMatch = left !== right;  // Not equal
+                //             listCheck.push(isMatch);
+                //         }
+                //     }
+                // }
+                // if (typeof condition === 'string') {
+                //     if (["AND", "OR"].includes(condition)) {
+                //         listCheck.push(condition.toLowerCase());
+                //     }
+                // }
             }
-            if (listCheck.length === 0) {
+            if (listLogic.length === 0) {
                 result.push(assoData);
             } else {
-                if (listCheck.length % 2 !== 0) {
-                    check = WFAssociateControl.evaluateLogic(listCheck);
+                if (listLogic.length % 2 !== 0) {
+                    check = WFAssociateControl.evaluateLogic(listLogic);
                 } else {
-                    listCheck.pop();
-                    if (listCheck.length === 1) {
-                        check = listCheck[0];
+                    listLogic.pop();
+                    if (listLogic.length === 1) {
+                        check = listLogic[0];
                     } else {
-                        check = WFAssociateControl.evaluateLogic(listCheck);
+                        check = WFAssociateControl.evaluateLogic(listLogic);
                     }
                 }
                 if (check === true) {
@@ -3509,83 +3531,63 @@ class WFAssociateControl {
         return {'check': false, 'data': associateData};  // return associateData (not any association pass condition)
     };
 
-    // static rec() {
-    //     let check = false;
-    //     let listCheck = [];
-    //     for (let condition of assoData?.['condition']) {
-    //         let left = null;
-    //         let right = null;
-    //         if (typeof condition === 'object' && condition !== null) {
-    //             if (condition?.['left_cond']) {
-    //                 left = WFAssociateControl.findKey(dataForm, condition?.['left_cond']?.['code']);
-    //             }
-    //             if (condition?.['right_cond']) {
-    //                 right = condition?.['right_cond'];
-    //                 if (condition?.['left_cond']?.['type'] === 5) {
-    //                     if (condition?.['right_cond']?.['id']) {
-    //                         right = condition?.['right_cond']?.['id'];
-    //                     }
-    //                 }
-    //                 if (condition?.['left_cond']?.['type'] === 6) {
-    //                     right = parseFloat(condition?.['right_cond']);
-    //                 }
-    //             }
-    //             if (left !== null && right !== null) {
-    //                 let isMatch = false;
-    //                 if (condition?.['operator'] === 'is') {
-    //                     isMatch = left === right;
-    //                     listCheck.push(isMatch);
-    //                 }
-    //                 if (condition?.['operator'] === '=') {
-    //                     isMatch = left === right;  // Strict equality
-    //                     listCheck.push(isMatch);
-    //                 }
-    //                 if (condition?.['operator'] === '<') {
-    //                     isMatch = left < right;  // Less than
-    //                     listCheck.push(isMatch);
-    //                 }
-    //                 if (condition?.['operator'] === '<=') {
-    //                     isMatch = left <= right;  // Less than or equal to
-    //                     listCheck.push(isMatch);
-    //                 }
-    //                 if (condition?.['operator'] === '>') {
-    //                     isMatch = left > right;  // Greater than
-    //                     listCheck.push(isMatch);
-    //                 }
-    //                 if (condition?.['operator'] === '>=') {
-    //                     isMatch = left >= right;  // Greater than or equal to
-    //                     listCheck.push(isMatch);
-    //                 }
-    //                 if (condition?.['operator'] === '!=') {
-    //                     isMatch = left !== right;  // Not equal
-    //                     listCheck.push(isMatch);
-    //                 }
-    //             }
-    //         }
-    //         if (typeof condition === 'string') {
-    //             if (["AND", "OR"].includes(condition)) {
-    //                 listCheck.push(condition.toLowerCase());
-    //             }
-    //         }
-    //     }
-    //     if (listCheck.length === 0) {
-    //         result.push(assoData);
-    //     } else {
-    //         if (listCheck.length % 2 !== 0) {
-    //             check = WFAssociateControl.evaluateLogic(listCheck);
-    //         } else {
-    //             listCheck.pop();
-    //             if (listCheck.length === 1) {
-    //                 check = listCheck[0];
-    //             } else {
-    //                 check = WFAssociateControl.evaluateLogic(listCheck);
-    //             }
-    //         }
-    //         if (check === true) {
-    //             result.push(assoData);
-    //         }
-    //     }
-    // }
+    static compareLogic(condition, dataForm) {
+        let left = null;
+        let right = null;
+        if (typeof condition === 'object' && condition !== null) {
+            if (condition?.['left_cond']) {
+                left = WFAssociateControl.findKey(dataForm, condition?.['left_cond']?.['code']);
+            }
+            if (condition?.['right_cond']) {
+                right = condition?.['right_cond'];
+                if (condition?.['left_cond']?.['type'] === 5) {
+                    if (condition?.['right_cond']?.['id']) {
+                        right = condition?.['right_cond']?.['id'];
+                    }
+                }
+                if (condition?.['left_cond']?.['type'] === 6) {
+                    right = parseFloat(condition?.['right_cond']);
+                }
+            }
+            if (left !== null && right !== null) {
+                let isMatch = false;
+                if (condition?.['operator'] === 'is') {
+                    isMatch = left === right;
+                    return isMatch;
+                }
+                if (condition?.['operator'] === '=') {
+                    isMatch = left === right;  // Strict equality
+                    return isMatch;
+                }
+                if (condition?.['operator'] === '<') {
+                    isMatch = left < right;  // Less than
+                    return isMatch;
+                }
+                if (condition?.['operator'] === '<=') {
+                    isMatch = left <= right;  // Less than or equal to
+                    return isMatch;
+                }
+                if (condition?.['operator'] === '>') {
+                    isMatch = left > right;  // Greater than
+                    return isMatch;
+                }
+                if (condition?.['operator'] === '>=') {
+                    isMatch = left >= right;  // Greater than or equal to
+                    return isMatch;
+                }
+                if (condition?.['operator'] === '!=') {
+                    isMatch = left !== right;  // Not equal
+                    return isMatch;
+                }
+            }
+        }
+        if (typeof condition === 'string') {
+            if (["AND", "OR"].includes(condition)) {
+                return condition.toLowerCase();
+            }
+        }
+
+    };
 
     static findKey(dataForm, key) {
         if (!key.includes("__")) {

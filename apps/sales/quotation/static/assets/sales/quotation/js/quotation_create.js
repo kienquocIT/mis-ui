@@ -900,6 +900,7 @@ $(function () {
                 'title',
                 'opportunity_id',
                 'customer',
+                'customer_data',
                 'contact',
                 'employee_inherit_id',
                 'payment_term',

@@ -2356,12 +2356,12 @@ class WFRTControl {
                 if (associationData?.['check'] === true) {
                     dataSubmit['next_association_id'] = associationData?.['data'][0]?.['id'];
                     if (submitType === 0) {
-                        WFRTControl.setCollabOFCreate(associationData[0]?.['node_out']?.['collab_out_form']);
+                        WFRTControl.setCollabOFCreate(associationData?.['data'][0]?.['node_out']?.['collab_out_form']);
                         WFRTControl.submitCheckCollabNextNode(_form);
                         return true;
                     }
                     if (submitType === 1) {
-                        WFRTControl.setCollabOFRuntime(associationData[0]?.['node_out']?.['collab_out_form']);
+                        WFRTControl.setCollabOFRuntime(associationData?.['data'][0]?.['node_out']?.['collab_out_form']);
                         WFRTControl.submitActionApprove(dataRTConfig, dataSubmit);
                         return true;
                     }
@@ -2471,14 +2471,16 @@ class WFRTControl {
     static setupHTMLSelectAssociation(AssociationData, type) {
         let htmlCustom = ``;
         let commonTxt = $.fn.transEle.attr('data-select-association-type-1');
+        let commonImg = `<i class="far fa-lightbulb text-yellow"></i>`;
         if (type === 1) {
             commonTxt = $.fn.transEle.attr('data-select-association-type-2');
+            commonImg = `<i class="fas fa-exclamation-triangle text-red"></i>`;
         }
         let typeMapTxt = {
             1: $.fn.transEle.attr('data-node-type-1'),
             2: $.fn.transEle.attr('data-node-type-2'),
         }
-        htmlCustom += `<div class="d-flex mb-5"><i class="fas fa-exclamation-triangle"></i><span>${commonTxt}</span></div>`;
+        htmlCustom += `<div class="d-flex mb-5">${commonImg}<span>${commonTxt}</span></div>`;
         for (let associate of AssociationData) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
                                 <div class="d-flex align-items-center justify-content-between">
@@ -3412,7 +3414,7 @@ class WFAssociateControl {
 
     static checkNextNode(dataForm) {
         let result = [];
-        let associateData = WFRTControl.getAssociateData();
+        let associateData = WFRTControl.getAssociateData().reverse();
         if (associateData.length === 1) {  // check node system
             if (["approved"].includes(associateData[0]?.['node_out']?.['code'])) {
                 return {'check': true, 'data': associateData};
@@ -3425,8 +3427,9 @@ class WFAssociateControl {
                 let left = null;
                 let right = null;
                 if (typeof condition === 'object' && condition !== null) {
-                    if (dataForm?.[condition?.['left_cond']?.['code']]) {
-                        left = dataForm?.[condition?.['left_cond']?.['code']];
+                    if (condition?.['left_cond']) {
+                        // left = dataForm?.[condition?.['left_cond']?.['code']];
+                        left = WFAssociateControl.findKey(dataForm, condition?.['left_cond']?.['code']);
                     }
                     if (condition?.['right_cond']) {
                         right = condition?.['right_cond'];
@@ -3440,12 +3443,28 @@ class WFAssociateControl {
                             isMatch = left === right;
                             listCheck.push(isMatch);
                         }
+                        if (condition?.['operator'] === '=') {
+                            isMatch = left === right;  // Strict equality
+                            listCheck.push(isMatch);
+                        }
+                        if (condition?.['operator'] === '<') {
+                            isMatch = left < right;  // Less than
+                            listCheck.push(isMatch);
+                        }
                         if (condition?.['operator'] === '<=') {
-                            isMatch = left <= right;
+                            isMatch = left <= right;  // Less than or equal to
                             listCheck.push(isMatch);
                         }
                         if (condition?.['operator'] === '>') {
-                            isMatch = left > right;
+                            isMatch = left > right;  // Greater than
+                            listCheck.push(isMatch);
+                        }
+                        if (condition?.['operator'] === '>=') {
+                            isMatch = left >= right;  // Greater than or equal to
+                            listCheck.push(isMatch);
+                        }
+                        if (condition?.['operator'] === '!=') {
+                            isMatch = left !== right;  // Not equal
                             listCheck.push(isMatch);
                         }
                     }
@@ -3469,15 +3488,25 @@ class WFAssociateControl {
                         check = WFAssociateControl.evaluateLogic(listCheck);
                     }
                 }
-            }
-            if (check === true) {
-                result.push(assoData);
+                if (check === true) {
+                    result.push(assoData);
+                }
             }
         }
         if (result.length > 0) {  // return result (have association pass condition)
             return {'check': check, 'data': result};
         }
         return {'check': check, 'data': associateData};  // return associateData (not any association pass condition)
+    };
+
+    static findKey(dataForm, key) {
+        if (!key.includes("__")) {
+            return dataForm?.[key];
+        }
+        if (key.includes("__")) {
+            let listSub = key.split("__");
+            return listSub.reduce((acc, curr) => acc?.[curr], dataForm);
+        }
     };
 
     static evaluateLogic(conditions) {

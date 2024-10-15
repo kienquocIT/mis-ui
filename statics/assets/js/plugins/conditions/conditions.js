@@ -10,6 +10,15 @@ class Conditions {
     get getPropertyList(){
         return this.propertyList
     }
+    static $url = $('#app-url-factory');
+    static appMapUrl = {
+        'saledata.Account': {
+            'url': Conditions.$url.attr('data-md-account'),
+            'keyResp': 'account_sale_list',
+            'keyText': 'name',
+        }
+    }
+
     /***
      * handle action click button submit of formset modal
      * @param elm_target element of action on click
@@ -205,25 +214,8 @@ class Conditions {
             application: $('[name="application"]').val(),
             id__in: IDList.join(","),
         };
-        // $.fn.callAjax2({
-        //         'url': $('#url-factory').data('app-property'),
-        //         'method': "GET",
-        //         'data': params,
-        //     }
-        // ).then(
-        //     (resp) => {
-        //         let data = $.fn.switcherResp(resp);
-        //         if (data) {
-        //             if (data.hasOwnProperty('application_property_list') && Array.isArray(data.application_property_list)) {
-        //                 let isData = data.application_property_list;
-        //             }
-        //         }
-        //     }
-        // )
-
-
         let isData = await $.fn.callAjax2({
-                'url': $('#url-factory').data('app-property'),
+                'url': Conditions.$url.data('app-property'),
                 'method': "GET",
                 'data': params,
                 'cache': true,
@@ -288,6 +280,7 @@ class Conditions {
         let _type = left_info?.['type'];
         let _code = left_info?.['code'];
         let properties = left_info?.['properties'];
+        let app_label = left_info?.['content_type'];
         let opt_select = '';
         let dropdown = {};
         let md_url = '',
@@ -355,11 +348,17 @@ class Conditions {
                 'data-virtual': JSON.stringify(virtual),
                 'data-onload': JSON.stringify([left_info]),
                 'data-params': params,
-                'data-url': select.attr('data-url'),
+                'data-url': Conditions.appMapUrl[app_label]?.['url'],
+                'data-method': "GET",
+                'data-keyResp': Conditions.appMapUrl[app_label]?.['keyResp'],
+                'data-keyText': Conditions.appMapUrl[app_label]?.['keyText'],
                 'data-prefix': select.attr('data-prefix'),
                 'data-multiple': 'false'
             })
-            initSelectBox(right_cond)
+            // initSelectBox(right_cond)
+            this.loadInitS2(right_cond, [], {}, $('#next-node-association'));
+
+
             // on change right condition
             right_cond.on("select2:select", function (e) {
                 debugger

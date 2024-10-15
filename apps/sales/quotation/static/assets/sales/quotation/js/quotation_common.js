@@ -6228,6 +6228,13 @@ class QuotationSubmitHandle {
 
             }
         }
+        if (QuotationLoadDataHandle.customerSelectEle.val()) {
+            let data = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
+            if (data) {
+                _form.dataForm['customer_data'] = data;
+            }
+        }
+
         if (is_sale_order === false) {
             _form.dataForm['is_customer_confirm'] = $('#quotation-customer-confirm')[0].checked;
         }

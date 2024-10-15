@@ -14,8 +14,7 @@
 {% block pageContent %}
     <div class="container">
         <div class="row">
-            <div class="col-md-12 col-xs-12 wrap_comment">
-            </div>
+            <div class="col-md-12 col-xs-12 wrap_comment"></div>
         </div>
     </div>
     <div class="box_comment hidden">
@@ -28,16 +27,13 @@
     <input type="hidden" id="url-factory" aria-label="url-factory"
     data-comment-list="{% url 'ProjectActivitiesListAPI' %}"
     data-comment-create="{% url 'ProjectCommentListAPI' %}"
+    data-comment-detail="{% url 'ProjectCommentDetailAPI' 1%}"
     >
     <input type="hidden" id="trans-factory" aria-label="trans-factory">
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'comment/js/plugin/txtarea-caret-position.js' %}"></script>
+
     <script src="{% static 'comment/js/comment-custom.js' %}"></script>
-    <script>
-        $(document).ready(function () {
-            // run init comment custom
-            CommentHandle.init();
-        });
-    </script>
+    <script src="{% static 'comment/js/comment-custom-detail.js' %}"></script>
 {% endblock %}

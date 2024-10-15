@@ -254,16 +254,21 @@
 }
 .cmt-name{
     background:rgb(255 255 255 / 50%);
-    padding: 8px 6px 0 6px;
+    padding: 12px 10px 0 10px;
     border-radius: 8px 8px 0 0;
-    box-shadow: 2px 2px 5px rgb(0 0 0 / 4%)
+    /*box-shadow: 2px 2px 5px rgb(0 0 0 / 4%)*/
+    border: solid 1px #e7e7e7;
+    border-bottom: 0;
 }
 
 .cmt-name + p{
     background:rgb(255 255 255 / 50%);
-    padding: 0 6px 4px 6px;
+    padding: 0 10px 6px 10px;
     border-radius: 0 0 8px 8px;
-    box-shadow: 2px 2px 5px rgb(0 0 0 / 4%)
+    white-space: pre-wrap;
+    /*box-shadow: 2px 2px 5px rgb(0 0 0 / 4%);*/
+    border: solid 1px #e7e7e7;
+    border-top: 0;
 }
 .child-comment{
     flex-basis: 100%;
@@ -285,6 +290,9 @@
 .child-comment .item-comment{
     position: relative;
 }
+.item-comment > div:nth-child(2){
+    max-width: 1200px;
+}
 .child-comment .item-comment:after{
     content: "";
     width: 22px;
@@ -300,4 +308,7 @@
 }
 .child-comment .item-comment > div:nth-child(2){
     max-width: 1179px;
+}
+.item-comment .animated > p:not(:last-child){
+    background: rgb(0 125 136 / 10%);
 }

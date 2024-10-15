@@ -800,6 +800,11 @@ class NotifyController {
                         }
                     } else {
                         base$.removeClass('mention');
+
+                        // handle when notify is project activities
+                        if (data.doc_app === 'project.activities'){
+                            base$.find('.item-data-msg').html(data.title);
+                        }
                     }
                     break
             }

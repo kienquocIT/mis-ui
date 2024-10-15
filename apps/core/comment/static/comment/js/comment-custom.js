@@ -1,8 +1,3 @@
-$(document).ready(function () {
-    // run init comment custom
-    CommentHandle.init();
-});
-
 function checkTime(data){
     const momentDateData = moment(data), momentDateNow = moment(),
         sevenDaysAgo = momentDateNow.clone().subtract(7, 'days');
@@ -143,11 +138,16 @@ class CommentHandle {
                         $.fn.notifyB({description: data_res.message}, 'success')
                         $(this).removeClass('disabled')
                         data_res.mentions = mention
-                        if (elm)
-                            elm.find('.child-comment').append(CommentHandle.replaceToHTMLComment(data_res))
+                        if (elm){
+                            let $child_comment = elm.find('.child-comment')
+                            $child_comment.append(CommentHandle.replaceToHTMLComment(data_res))
+                            const height = elm.height() - 24 - $('.item-comment[data-msg-id="' + data_res.id + '"]', $child_comment).height()
+                                - elm.find('.rep_comment_input').height() - 20;
+                            $('.child-height', $child_comment).css('height', height +'px')
+                        }
                         else $thisDiv.find('.content_comment').append(CommentHandle.replaceToHTMLComment(data_res))
 
-                        $thisDiv.find('.input_txt textarea').val('')
+                        $thisDiv.find('.input_txt textarea').val('').css('height', 20)
                         // run click reply
                         CommentHandle.ClickReply()
                     }
@@ -191,7 +191,7 @@ class CommentHandle {
                         for (let item in htmlChild){
                             const $child_comment = $(`[data-msg-id="${item}"]`, $elm).find('.child-comment')
                             $child_comment.append(htmlChild[item])
-                            const height = $child_comment.height() - 24 - $('.item-comment:last-child', $child_comment).height()
+                            const height = $(`[data-msg-id="${item}"]`, $elm).height() - 24 - $('.item-comment:last-child', $child_comment).height()
                             $child_comment.append(`<span class="child-height" style="height: ${height}px"></span>`)
                         }
                         // run click reply
@@ -257,7 +257,7 @@ class CommentHandle {
                 crtVal = crtVal.split(" ");
                 crtVal.pop();
                 crtVal.push('@'+$(this).attr('data-code'))
-                txtareaElm.val(crtVal.join(" "))
+                txtareaElm.val(crtVal.join(" ") + ' ').focus()
                 $('.modal-mention').addClass('hidden')
             })
         }
@@ -351,9 +351,7 @@ class CommentHandle {
         $.fn.callAjax2({
             'url': $elmUrl.attr('data-comment-list'),
             'method': 'get',
-            'data': {'page': page,
-            'list_from_app': 'project.project.view',
-            }
+            'data': {'page': page, 'list_from_app': 'project.project.view'}
         })
             .then(
                 (resp) => {
@@ -386,7 +384,7 @@ class CommentHandle {
                     // load action submit comment
                     CommentHandle.CreateMessages()
                     // click show popup emoji
-                    let $btn = $('.emoji_btn')
+                    let $btn = $('.emoji_btn');
                     $btn.on('click', function (e) {
                         let $wrap = $('.emoji_wrapbox');
                         let x = e.clientX;

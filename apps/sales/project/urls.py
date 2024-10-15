@@ -6,7 +6,7 @@ from apps.sales.project.views import ProjectList, ProjectCreate, ProjectCreateAP
     ProjectUpdateOrderAPI, ProjectTaskListAPI, ProjectGroupDDListAPI, ProjectTaskDetailAPI, ProjectWorkExpenseAPI, \
     ProjectListBaselineAPI, ProjectBaselineDetail, ProjectBaselineDetailAPI, ProjectHome, ProjectConfig, \
     ProjectConfigAPI, ProjectExpenseListAPI, ProjectListBaseline, ProjectWorkList, ProjectActivities, \
-    ProjectActivitiesListAPI, ProjectCommentListAPI
+    ProjectActivitiesListAPI, ProjectCommentListAPI, ProjectActivitiesCommentDetail, ProjectCommentDetailFlowsAPI
 
 urlpatterns = [
     # project
@@ -62,7 +62,14 @@ urlpatterns = [
 
     # project activities
     path('activities/list', ProjectActivities.as_view(), name='ProjectActivities'),
+    path(
+        'activities/comment/detail/<str:pk>', ProjectActivitiesCommentDetail.as_view(),
+        name='ProjectActivitiesCommentDetail'
+    ),
     path('activities/list-api', ProjectActivitiesListAPI.as_view(), name='ProjectActivitiesListAPI'),
     path('activities/comment-api', ProjectCommentListAPI.as_view(), name='ProjectCommentListAPI'),
+    path(
+        'activities/comment/detail-api/<str:pk>', ProjectCommentDetailFlowsAPI.as_view(), name='ProjectCommentDetailAPI'
+    ),
 
 ]

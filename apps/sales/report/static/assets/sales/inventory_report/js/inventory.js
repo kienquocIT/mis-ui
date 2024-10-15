@@ -16,6 +16,7 @@ $(document).ready(function () {
         periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
     }
     const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
+    const $is_project = $('#is_project').text()
     let PERIODIC_CLOSED = false
 
     function get_final_date_of_current_month(filter_year, filter_month) {
@@ -165,6 +166,7 @@ $(document).ready(function () {
     LoadWarehouseSelectBox(warehouses_select_Ele)
 
     function LoadProjectSelectBox(ele, data) {
+        ele.prop('disabled', $is_project !== 'true')
         ele.initSelect2({
             allowClear: true,
             ajax: {
@@ -173,14 +175,14 @@ $(document).ready(function () {
             },
             templateResult: function(data) {
                 let ele = $('<div class="row"></div>');
-                ele.append(`<div class="col-6"><span class="badge badge-soft-primary">${data.data?.['code']}</span>&nbsp;&nbsp;&nbsp;${data.data?.['title']}</div>
-                            <div class="col-6 fst-italic"><span class="badge badge-soft-blue badge-sm">${data.data?.['opportunity']?.['code']}</span>&nbsp;&nbsp;&nbsp;${data.data?.['opportunity']?.['title']}</div>`);
+                ele.append(`<div class="col-9"><span class="badge badge-soft-primary">${data.data?.['code']}</span>&nbsp;&nbsp;&nbsp;${data.data?.['title']}</div>
+                            <div class="col-3"><span class="badge badge-soft-blue badge-sm">${data.data?.['opportunity']?.['code']}</span></div>`);
                 return ele;
             },
             data: (data ? data : null),
             keyResp: 'sale_order_list',
             keyId: 'id',
-            keyText: 'title',
+            keyText: 'code',
         }).on('change', function () {})
     }
     LoadProjectSelectBox(project_select_Ele)
@@ -534,7 +536,7 @@ $(document).ready(function () {
                     table.find(`.${so_code_class}:eq(0)`).closest('tr').before(`
                         <tr>
                             <td rowspan="${number_row}" class="text-center">
-                                <span class="text-danger fw-bold"><i class="bi bi-clipboard-check"></i>&nbsp;${so_code_class.split('-')[3]}</span>
+                                <span class="text-danger fw-bold">${so_code_class.split('-')[3]}</span>
                             </td>
                         </tr>
                     `)
@@ -645,8 +647,8 @@ $(document).ready(function () {
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_list')) {
-                        return data?.['report_inventory_list'];
+                    if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_cost_list')) {
+                        return data?.['report_inventory_cost_list'];
                     }
                     return {};
                 },
@@ -843,8 +845,8 @@ $(document).ready(function () {
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_list')) {
-                        return data?.['report_inventory_list'];
+                    if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_cost_list')) {
+                        return data?.['report_inventory_cost_list'];
                     }
                     return {};
                 },
@@ -1230,8 +1232,8 @@ $(document).ready(function () {
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_prd_wh_list')) {
-                    return data?.['report_inventory_prd_wh_list'];
+                if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_cost_wh_detail')) {
+                    return data?.['report_inventory_cost_wh_detail'];
                 }
                 return {};
             },

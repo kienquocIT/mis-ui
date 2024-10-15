@@ -213,7 +213,7 @@ class User(AuthUser):
     @staticmethod
     def exist_key(dict_data):
         key_required = []
-        for key in ['id', 'username', 'first_name', 'last_name', 'token']:
+        for key in ['id', 'username', 'first_name', 'last_name']:
             if key not in dict_data:
                 key_required.append(key)
         if key_required:
@@ -276,7 +276,50 @@ class User(AuthUser):
                 return company_obj
         return None
 
-    def user_update_data(self, api_result):
+    def user_update_token(self, api_result, commit=True):
+        self.access_token = api_result['token']['access_token']
+        self.refresh_token = api_result['token']['refresh_token']
+        if commit is True:
+            self.save()
+        return self
+
+    @classmethod
+    def user_get_user_then_update_object_related(cls, api_result):
+        tenant_obj = cls.tenant_create_or_update(
+            tenant_current_data=api_result.get('tenant_current', {})
+        )
+        company_obj = cls.company_create_or_update(
+            tenant_obj=tenant_obj,
+            company_current_data=api_result.get('company_current', {}),
+        )
+
+        user_id = api_result['id']
+        username = api_result['username']
+        username_auth = api_result['username_auth']
+        try:
+            user, created = User.objects.get_or_create(
+                username_auth=username_auth,
+                defaults={
+                    'user_id': user_id,
+                    'username_auth': username_auth,
+                    'username': username,
+                    'tenant': tenant_obj,
+                    'company': company_obj,
+                }
+            )
+            if created is True:
+                user.update_update_random_passwd(commit=False)
+        except Exception as err:
+            msg_err = f'The regis user process raise exception over happy case. (msg: {str(err)})'
+            print(msg_err)
+            return None
+
+        user.user_id = user_id
+        user.tenant = tenant_obj
+        user.company = company_obj
+        return user
+
+    def user_update_data(self, api_result, commit=True):
         self.first_name = api_result['first_name']
         self.last_name = api_result['last_name']
         self.email = api_result.get('email', '')
@@ -291,48 +334,27 @@ class User(AuthUser):
         self.employee_current_data = api_result.get('employee_current', {})
         self.avatar = api_result.get('employee_current', {}).get('avatar_img', None)
         self.companies_data = api_result.get('companies', [])
-        self.access_token = api_result['token']['access_token']
-        self.refresh_token = api_result['token']['refresh_token']
         self.last_login = timezone.now()
+        if commit is True:
+            self.save()
+        return self
+
+    def update_update_random_passwd(self, commit=True):
         self.set_password(RandomGenerate.get_string(length=32, allow_special=True))
-        self.save()
+        if commit is True:
+            self.save()
         return self
 
     @classmethod
-    def regis_with_api_result(cls, api_result):
+    def regis_with_api_result(cls, api_result, random_passwd=False):
         state_check, key_require = cls.exist_key(api_result)
         if state_check:
-            tenant_obj = cls.tenant_create_or_update(
-                tenant_current_data=api_result.get('tenant_current', {})
-            )
-            company_obj = cls.company_create_or_update(
-                tenant_obj=tenant_obj,
-                company_current_data=api_result.get('company_current', {}),
-            )
-
-            user_id = api_result['id']
-            username = api_result['username']
-            username_auth = api_result['username_auth']
-            try:
-                user, _created = User.objects.get_or_create(
-                    username_auth=username_auth,
-                    defaults={
-                        'user_id': user_id,
-                        'username_auth': username_auth,
-                        'username': username,
-                        'tenant': tenant_obj,
-                        'company': company_obj,
-                    }
-                )
-            except Exception as err:
-                msg_err = f'The regis user process raise exception over happy case. (msg: {str(err)})'
-                print(msg_err)
-                return None
-
-            user.user_id = user_id
-            user.tenant = tenant_obj
-            user.company = company_obj
-            user.user_update_data(api_result=api_result)
-            return user
-        print(f'Required key in value API: {", ".join(key_require)}')
+            user = cls.user_get_user_then_update_object_related(api_result=api_result)
+            if user:
+                user.user_update_data(api_result=api_result, commit=False)
+                user.user_update_token(api_result=api_result, commit=False)
+                if random_passwd is True:
+                    user.update_update_random_passwd(commit=False)
+                user.save()
+                return user
         return None

@@ -57,8 +57,8 @@ WORKFLOW_TYPE = {
         {"value": "<", "text": "<"},
         {"value": ">=", "text": "≥"},
         {"value": "<=", "text": "≤"},
-        {"value": "is_empty", "text": WorkflowMsg.MATH_TYPE_IS_EMPTY},
-        {"value": "is_not_empty", "text": WorkflowMsg.MATH_TYPE_IS_NOT_EMPTY},
+        # {"value": "is_empty", "text": WorkflowMsg.MATH_TYPE_IS_EMPTY},
+        # {"value": "is_not_empty", "text": WorkflowMsg.MATH_TYPE_IS_NOT_EMPTY},
     ],
 
 }

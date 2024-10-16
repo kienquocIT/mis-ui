@@ -122,18 +122,8 @@ class Conditions {
         /*** append left condition ***/
         let left_cond = `parameter-${elm_idx}-left_cond`;
         if (value.hasOwnProperty('left_cond') && value.left_cond) {
-            // let isDetail = this.getPropertyList[value.left_cond];
-            // $elm_cond.find('select[name="' + left_cond + '"]').attr('data-onload', JSON.stringify(isDetail))
-            // initSelectBox($elm_cond.find('select[name="' + left_cond + '"]'))
-            this.loadInitS2($elm_cond.find('select[name="' + left_cond + '"]'), [value.left_cond]);
+            this.loadInitS2($elm_cond.find('select[name="' + left_cond + '"]'), [value.left_cond], {"application": $('#select-box-features').val(), 'is_wf_condition': true}, $('#next-node-association'));
         }
-
-        /*** append operator ***/
-        let math = `parameter-${elm_idx}-math`;
-        // change math option
-        this.changeParameter(value.left_cond?.['type'], $elm_cond)
-        if (value.hasOwnProperty('operator') && value.operator)
-            $elm_cond.find('select[name="' + math + '"]').val(value.operator)
 
         /*** append right condition ***/
         let right_cond = `parameter-${elm_idx}-right_cond`;
@@ -141,9 +131,25 @@ class Conditions {
             this.generatorHTMLRightDropdownBox(value.left_cond, idx, $elm_cond, $elm_cond.find('select[name="' + left_cond + '"]'));
             if ([1, 2, 6].includes(value.left_cond?.['type'])) {
                 $elm_cond.find('input[name="parameter-' + idx + '-right_cond"]').val(value.right_cond);
-            } else {
+            }
+            if ([5].includes(value.left_cond?.['type'])) {
+                let app_label = value.left_cond?.['content_type'];
+                $elm_cond.find('select[name="' + right_cond + '"]').attr({
+                    'data-url': Conditions.appMapUrl[app_label]?.['url'],
+                    'data-method': "GET",
+                    'data-keyResp': Conditions.appMapUrl[app_label]?.['keyResp'],
+                    'data-keyText': Conditions.appMapUrl[app_label]?.['keyText'],
+                })
                 this.loadInitS2($elm_cond.find('select[name="' + right_cond + '"]'), [value.right_cond]);
             }
+        }
+
+        /*** append operator ***/
+        let math = `parameter-${elm_idx}-math`;
+        // change math option
+        this.changeParameter(value.left_cond?.['type'], $elm_cond)
+        if (value.hasOwnProperty('operator') && value.operator) {
+            $elm_cond.find('select[name="' + math + '"]').val(value.operator).trigger('change');
         }
     }
 
@@ -273,12 +279,14 @@ class Conditions {
      * @param elm element per row of formset
      */
     changeParameter(value, elm) {
-        let tempHtml = '';
-        elm.find('[name*="-math"]').html('');
-        for (let item of WF_DATATYPE[value]) {
-            tempHtml += `<option value="${item.value}">${item.text}</option>`;
+        for (let typeData of WF_DATATYPE[value]) {
+            typeData['id'] = typeData?.['value'];
+            typeData['title'] = typeData?.['text'];
         }
-        elm.find('[name*="-math"]').append(tempHtml);
+        this.loadInitS2(elm.find('[name*="-math"]'), WF_DATATYPE[value]);
+        if (WF_DATATYPE[value].length > 0) {
+            elm.find('[name*="-math"]').val(WF_DATATYPE[value][0]?.['id']).trigger('change');
+        }
     }
 
     /***
@@ -327,11 +335,7 @@ class Conditions {
             let int = _type === 6 ? 1 : _type;
             elm_sub_formset_row.find('.child-formset .flex-row').eq(2).html(html_temp[int]);
         }
-        // if (_type === 2 || _type === 4 || _type === 6){
-        //     let int = _type === 6 ? 1 : _type;
-        //     elm_sub_formset_row.find('.child-formset .flex-row').eq(2).html(html_temp[int]);
-        // }
-        else {
+        if ([5].includes(_type)) {
             let right_cond = select.parents('[data-subformset-form]').find('[name*="-right_cond"]');
             left_info.selected = true
             let virtual = {
@@ -367,7 +371,6 @@ class Conditions {
                 'data-prefix': select.attr('data-prefix'),
                 'data-multiple': 'false'
             })
-            // initSelectBox(right_cond)
             this.loadInitS2(right_cond, [], {}, $('#next-node-association'));
 
 
@@ -407,7 +410,7 @@ class Conditions {
             });
         // on change value left condition change dropdown math
         this.loadInitS2(select, [left_info], {"application": $('#select-box-features').val(), 'is_wf_condition': true}, $('#next-node-association'));
-        this.changeParameter(_type, elm_sub_formset_row)
+        this.changeParameter(_type, elm_sub_formset_row);
     }
 
     /*** init formset for condition

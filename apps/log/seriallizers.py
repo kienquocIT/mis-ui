@@ -39,15 +39,11 @@ class TicketErrorCreateSerializer(serializers.ModelSerializer):
         )
 
         # create ticket images
-        img = []
-        for x in attachments:
-            img.append(
-                TicketLogAttachments(
-                    ticket=obj,
-                    img=x
-                )
+        for img_data in attachments:
+            TicketLogAttachments.objects.create(
+                ticket=obj,
+                img=img_data
             )
-        TicketLogAttachments.objects.bulk_create(img)
         return obj
 
     class Meta:

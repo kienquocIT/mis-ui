@@ -106,7 +106,15 @@ function clickConnection(connect) {
 
     // render modal popup of connection
     let data_cond = FlowJsP.getAssociate
-    data_cond = data_cond[node_in+'_'+node_out]
+    data_cond = data_cond[node_in + '_' + node_out]
+
+    let $eleAssociate = $('#node-associate');
+    let associate_temp = $eleAssociate.val().replaceAll('\\', '');
+    if (associate_temp) {
+        let associate_data_json = JSON.parse(associate_temp);
+        data_cond = associate_data_json[node_in + '_' + node_out];
+    }
+
     condition.loadCondition($formset_cond, data_cond.condition)
 }
 

@@ -112,7 +112,11 @@ class Conditions {
     appendData(form_elm = null, value = null, idx = 0, sub_idx_arr = 0) {
         let elm_idx = idx
         let $elm_cond = form_elm.find('[data-subformset-body] .formset:not([data-formset-form-deleted])').eq(idx);
-        if (sub_idx_arr !== 0) elm_idx = sub_idx_arr
+        if (sub_idx_arr !== 0) {  // if child formset
+            elm_idx = sub_idx_arr
+        } else {  // if parent formset
+            $elm_cond = form_elm.find('[data-subformset-body] .formset:not([data-formset-form-deleted])').eq(0);
+        }
         /*** append logic to html ***/
         let logic_formset = `condition-${elm_idx}-logic`;
         if (value.hasOwnProperty('logic_next') && value.logic)

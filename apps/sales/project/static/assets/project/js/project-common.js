@@ -1087,6 +1087,7 @@ class ProjectWorkExpenseHandle {
                 tax: {},
                 sub_total: 0,
                 sub_total_after_tax: 0,
+                is_service: false
             }]
             crtTable.rows.add(temp).draw()
         })

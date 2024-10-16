@@ -23,7 +23,7 @@
 
 {% block pageContent %}
     <!-- from-->
-    <form class="container-fluid mt-4" id="project_form" method="post" data-method="put" autocomplete="off"
+    <form class="container-fluid mt-4 form-detail" id="project_form" method="post" data-method="put" autocomplete="off"
           data-url-detail="{% url "ProjectDetailAPI" data.pk %}" data-url="{% url "ProjectEditAPI" data.pk %}">
         <input type="hidden" id="id">
         <div class="collapse show" id="toggle-ud">

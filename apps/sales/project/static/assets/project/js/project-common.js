@@ -861,7 +861,7 @@ class ProjectWorkExpenseHandle {
             + `<button type="button" class="btn btn-outline-orange btn-sm ml-2 btn-reset-service">${$.fn.gettext('Reset')}</button>`;
         }
 
-        if (check_page_version) $addBtn = ''
+        if (check_page_version || $formElm.hasClass('form-detail')) $addBtn = ''
         trElm.after(
             `<tr class="work-expense-wrap"><td colspan="4"><div class="WE-content hidden-simple">${$addBtn + dtlSub}</div></td></tr>`
         );
@@ -917,8 +917,15 @@ class ProjectWorkExpenseHandle {
                         if (row.hasOwnProperty('id')) htmlOpt = `<option value="${row?.id}" selected>${row.title}</option>`
                         let HTML = `<select class="form-select select_uom" data-url="${$URLFactory.attr('data-uom')}"
                                     data-method="get" data-keyResp="unit_of_measure" required>${htmlOpt}</select>`
-                        if (data?.['is_labor'])
-                            HTML = `<select class="form-select select_uom_labor" disabled>${htmlOpt}</select>`
+                        if (data?.['is_labor']){
+                            if (data.expense_name?.['price_list']){
+                                htmlOpt = ''
+                                for (let item of data.expense_name?.['price_list']){
+                                    htmlOpt += `<option value="${item?.uom.id}" ${row?.id === item?.uom.id ? 'selected' : ''}>${item?.uom.title}</option>`
+                                }
+                            }
+                            HTML = `<select class="form-select select_uom_labor">${htmlOpt}</select>`
+                        }
                         return HTML
                     }
                 },
@@ -983,8 +990,16 @@ class ProjectWorkExpenseHandle {
                 $('.expense_labor_name', row).on('select2:select', function (e) {
                     data.expense_name = e.params.data.data
                     data.expense_item = data.expense_name.expense_item
-                    data.expense_price = data.expense_name['price_list'][0]?.price_value || 0
+                    data.expense_price = 0
                     data.uom = data.expense_name.uom
+                    if(data.expense_name['price_list']){
+                        for (let item of data.expense_name['price_list']){
+                            if (item.uom.id === data.uom.id){
+                                data.expense_price = item.price_value
+                                break;
+                            }
+                        }
+                    }
                     crtTable.row(index).data(data).draw(false)
                 })
 
@@ -993,6 +1008,27 @@ class ProjectWorkExpenseHandle {
                     let data_item = e.params.data.data
                     if ($(this).hasClass('expense_item')) data.expense_item = data_item
                     else data.uom = data_item
+                })
+
+                // on change UOM
+                $('.select_uom_labor', row).on('change', function (e) {
+                    const thisValue = this.value
+                    data.expense_price = 0
+                    if(data.expense_name['price_list']){
+                        for (let item of data.expense_name['price_list']){
+                            if (item.uom.id === thisValue){
+                                data.expense_price = item.price_value
+                                data.uom = item.uom
+                                if (data.quantity) data.sub_total = data.expense_price * data.quantity
+                                if (data?.tax && Object.keys(data.tax).length > 0 && data.tax.rate !== 0)
+                                    data.sub_total_after_tax = data.tax.rate / 100 * data.sub_total
+                                else data.sub_total_after_tax = data.sub_total
+                                break;
+                            }
+                        }
+                    }
+                    crtTable.row(index).data(data).draw(false)
+                    ProjectWorkExpenseHandle.calcSubTotal(crtTable.data().toArray(), trElm)
                 })
 
                 // on change EXPENSE NAME

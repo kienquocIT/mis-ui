@@ -281,7 +281,17 @@ class HomeChart {
                 },
                 min: 1,
                 max: 12,
-                range: 11
+                range: 11,
+                tickPlacement: 'on'
+            },
+            markers: {
+                size: 4,
+                colors: ["#FFA41B"],
+                strokeColors: "#fff",
+                strokeWidth: 2,
+                hover: {
+                    size: 7,
+                }
             },
             yaxis: {
                 tickAmount: 5,

@@ -185,7 +185,7 @@ class Conditions {
                         let reorder_idx = subform_text.split('-')
                         this.appendData(elm_subform, child, child_eq, parseInt(reorder_idx[1]))
                     } else {
-                        let logic_formset = `-${idx_child}-type`;
+                        let logic_formset = `-${0}-type`;
                         elm_subform.find('select[name*="' + logic_formset + '"]').val(child)
                     }
                 }

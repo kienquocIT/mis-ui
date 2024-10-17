@@ -568,12 +568,19 @@ $(async function () {
                         e.preventDefault();
                         let eleAvailable = row.querySelector('.table-row-available');
                         if (parseFloat(this.value) > 0 && eleAvailable) {
+                            let setTotal = prodTable.setupTotal();
+                            if (setTotal === false) {
+                                this.value = '0';
+                                data['picked'] = this.value;
+                                $table.DataTable().row(index).data(data).draw();
+                                return false;
+                            }
                             if (parseFloat(this.value) > parseFloat(eleAvailable.innerHTML)) {
                                 $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
                                 this.value = 0;
                                 data['picked'] = this.value;
                                 $table.DataTable().row(index).data(data).draw();
-                                return false
+                                return false;
                             }
                             data['picked'] = this.value
                             $table.DataTable().row(index).data(data).draw();

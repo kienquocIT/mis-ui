@@ -1436,7 +1436,14 @@ $(document).ready(function () {
                 }
 
                 // for task
-                Task_in_opps.init(opportunity_detail_data, OpportunityActivity.loadDblActivityLogs)
+                const $form = $('#formOpportunityTask')
+                Task_in_opps.init(opportunity_detail_data)
+                SetupFormSubmit.validate($form, {
+                    errorClass: 'is-invalid cl-red',
+                    submitHandler: function (){
+                        TaskSubmitFuncOpps($form, OpportunityActivity.loadDblActivityLogs)
+                    }
+                })
 
                 // event create related features
                 $('#dropdown-menu-relate-app #create-advance-payment-shortcut').on('click', function () {

@@ -4,14 +4,15 @@ __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI',
            'ProjectMemberDetailAPI', 'ProjectUpdateOrderAPI', 'ProjectTaskListAPI', 'ProjectGroupDDListAPI',
            'ProjectTaskDetailAPI', 'ProjectWorkExpenseAPI', 'ProjectListBaselineAPI', 'ProjectBaselineDetail',
            'ProjectBaselineDetailAPI', 'ProjectHome', 'ProjectConfig', 'ProjectConfigAPI', 'ProjectExpenseListAPI',
-           'ProjectListBaseline', 'ProjectWorkList', 'ProjectActivities'
+           'ProjectListBaseline', 'ProjectWorkList', 'ProjectActivities', 'ProjectActivitiesListAPI',
+           'ProjectCommentListAPI', 'ProjectActivitiesCommentDetail', 'ProjectCommentDetailFlowsAPI'
            ]
 
 from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, SYSTEM_STATUS, InputMappingProperties
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, SYSTEM_STATUS
 from apps.shared.constant import DEPENDENCIES_TYPE
 from apps.shared.msg import BaseMsg
 
@@ -539,6 +540,72 @@ class ProjectActivities(View):
         template='sales/project/project-news.html',
         breadcrumb='PROJECT_ACTIVITIES',
         menu_active='menu_project_activities',
+        jsi18n='project_home'
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+class ProjectActivitiesCommentDetail(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/project/project-comment-detail.html',
+        breadcrumb='PROJECT_ACTIVITIES',
+        menu_active='menu_project_activities',
+        jsi18n='project_home'
+    )
+    def get(self, request, *args, pk, **kwargs):
+        return {'pk': pk}, status.HTTP_200_OK
+
+
+class ProjectActivitiesListAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_NEWS_LIST).get()
+        return resp.auto_return(key_success='project_activities_list')
+
+
+class ProjectCommentListAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(
+            user=request.user, url=ApiURL.PROJECT_COMMENT_LIST.fill_key(news_id=params.get('news', None))
+        ).get()
+        return resp.auto_return(key_success='messages_list')
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *args, **kwargs):
+        news_id = request.data.get('news', None)
+        if not news_id:
+            raise ValueError('News activities not found')
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_COMMENT_LIST.fill_key(news_id=news_id)).post(
+            request.data
+        )
+        if resp.state:
+            resp.result['message'] = f'{SaleMsg.PROJECT_COMMENT} {BaseMsg.CREATE} {BaseMsg.SUCCESS}'
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class ProjectCommentDetailFlowsAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_NEWS_COMMENT_FLOWS.fill_key(pk=pk)).get()
+        return resp.auto_return()

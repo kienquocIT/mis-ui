@@ -177,10 +177,10 @@ $(document).ready(function () {
                         }
                         else if (row?.['row_type'] === 'wh') {
                             return `
-                                    <span class="badge badge-sm badge-primary badge-pill">
+                                    <span class="badge badge-sm badge-soft-secondary badge-pill">
                                         ${row?.['warehouse_code']}
                                     </span>&nbsp;
-                                    <span class="text-primary fw-bold wh-of-${row?.['product_id']}">${row?.['warehouse_title']}</span>
+                                    <span class="text-secondary fw-bold wh-of-${row?.['product_id']}">${row?.['warehouse_title']}</span>
                             `
                         }
                         return ``
@@ -226,7 +226,7 @@ $(document).ready(function () {
                             return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill sum-current-quantity-${row?.['product_id']}-${row?.['sale_order_id']}"></span>`
                         }
                         else if (row?.['row_type'] === 'wh') {
-                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-primary sum-current-quantity-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}">${row?.['ending_balance_quantity']}</span>`
+                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-secondary sum-current-quantity-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}">${row?.['ending_balance_quantity']}</span>`
                         }
                         return ``
                     }
@@ -241,10 +241,10 @@ $(document).ready(function () {
                             return `<span style="font-size: medium" class="badge badge-pill text-secondary mask-money current-cost-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}" data-init-money="${row?.['current_cost']}"></span>`
                         }
                         else if (row?.['row_type'] === 'prd') {
-                            return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill mask-money sum-current-cost-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money=""></span>`
+                            return `<span style="font-size: medium" class="badge badge-pill badge badge-soft-secondary badge-outline badge-pill mask-money sum-current-cost-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money=""></span>`
                         }
                         else if (row?.['row_type'] === 'wh') {
-                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-primary mask-money sum-current-cost-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money="${row?.['ending_balance_cost']}"></span>`
+                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-secondary mask-money sum-current-cost-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money="${row?.['ending_balance_cost']}"></span>`
                         }
                         return ``
                     }
@@ -262,7 +262,7 @@ $(document).ready(function () {
                             return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill mask-money sum-current-value-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money=""></span>`
                         }
                         else if (row?.['row_type'] === 'wh') {
-                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-primary mask-money sum-current-value-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money="${row?.['ending_balance_value']}"></span>`
+                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-secondary mask-money sum-current-value-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money="${row?.['ending_balance_value']}"></span>`
                         }
                         return ``
                     }
@@ -345,9 +345,9 @@ $(document).ready(function () {
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_detail_list')) {
-                        // console.log(data?.['report_inventory_detail_list'])
-                        return data?.['report_inventory_detail_list'];
+                    if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_stock_list')) {
+                        // console.log(data?.['report_inventory_stock_list'])
+                        return data?.['report_inventory_stock_list'];
                     }
                     return {};
                 },
@@ -595,8 +595,8 @@ $(document).ready(function () {
                     }).then(
                         (resp) => {
                             let data = $.fn.switcherResp(resp);
-                            if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_detail_list')) {
-                                return data?.['report_inventory_detail_list'];
+                            if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_stock_list')) {
+                                return data?.['report_inventory_stock_list'];
                             }
                             return {};
                         },

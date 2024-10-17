@@ -244,3 +244,15 @@ msgstr "Bởi Trạng thái"
 #
 msgid "Close Project"
 msgstr "Đóng dự án"
+
+#
+msgid "Reply"
+msgstr "Trả lời"
+
+#
+msgid "in"
+msgstr "trong"
+
+#
+msgid "Project activities is empty"
+msgstr "Không có hoạt động nào"

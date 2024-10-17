@@ -575,77 +575,77 @@ class MenusReport:
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     SALE_REPORT = MenuCommon(
-        name='Sale reports', code='menu_sale_reports', view_name='', icon='<i class="fas fa-stream"></i>',
+        name='Sale reports', code='menu_sale_reports', view_name='', icon='<i class="fas fa-balance-scale"></i>',
         child=[
             MenuCommon(
                 name='Pipeline report',
                 code='menu_report_pipeline_list',
                 view_name='ReportPipelineList',
-                icon='<i class="fas fa-funnel-dollar"></i>',
+                icon='<i class="bi bi-dot"></i>',
             ),
             MenuCommon(
                 name='Revenue report',
                 code='menu_report_revenue_list',
                 view_name='ReportRevenueList',
-                icon='<i class="fas fa-comment-dollar"></i>',
+                icon='<i class="bi bi-dot"></i>',
             ),
             MenuCommon(
                 name='General revenue report',
                 code='menu_report_general_list',
                 view_name='ReportGeneralList',
-                icon='<i class="fas fa-comments-dollar"></i>',
+                icon='<i class="bi bi-dot"></i>',
             ),
             MenuCommon(
                 name='Product report',
                 code='menu_report_product_list',
                 view_name='ReportProductList',
-                icon='<i class="fas fa-box-open"></i>',
+                icon='<i class="bi bi-dot"></i>',
             ),
             MenuCommon(
                 name='Customer report',
                 code='menu_report_customer_list',
                 view_name='ReportCustomerList',
-                icon='<i class="fas fa-user-tie"></i>',
+                icon='<i class="bi bi-dot"></i>',
             ),
             MenuCommon(
                 name='Cashflow report',
                 code='menu_report_cashflow_list',
                 view_name='ReportCashflowList',
-                icon='<i class="fas fa-hand-holding-usd"></i>',
+                icon='<i class="bi bi-dot"></i>',
             ),
             MenuCommon(
                 name='Budget report',
                 code='menu_budget_report',
                 view_name='BudgetReportList',
-                icon='<i class="fas fa-wallet"></i>',
+                icon='<i class="bi bi-dot"></i>',
             ),
         ],
     )
     INVENTORY_REPORT = MenuCommon(
-        name='Inventory reports', code='menu_inventory_reports', view_name='', icon='<i class="fas fa-stream"></i>',
+        name='Inventory reports', code='menu_inventory_reports', view_name='', icon='<i class="fas fa-warehouse"></i>',
         child=[
             MenuCommon(
                 name='Inventory report',
                 code='menu_inventory_report',
                 view_name='ReportInventoryList',
-                icon='<i class="fas fa-cubes"></i>',
+                icon='<i class="bi bi-dot"></i>',
             ),
             MenuCommon(
                 name='Items detail report',
                 code='menu_items_detail_report',
                 view_name='ReportInventoryDetailList',
-                icon='<i class="fas fa-cube"></i>',
+                icon='<i class="bi bi-dot"></i>',
             ),
         ],
     )
     PURCHASING_REPORT = MenuCommon(
-        name='Purchasing reports', code='menu_purchasing_reports', view_name='', icon='<i class="fas fa-stream"></i>',
+        name='Purchasing reports', code='menu_purchasing_reports', view_name='', icon='<i class="fas fa-boxes"></i>',
         child=[
             MenuCommon(
                 name='Purchase order report',
                 code='menu_po_report',
                 view_name='PurchaseOrderReportList',
-                icon='<i class="bi bi-ui-checks"></i>',
+                icon='<i class="bi bi-dot"></i>',
             ),
         ],
     )
@@ -664,7 +664,7 @@ class MenusProject:
         icon='<i class="bi bi-signpost-fill"></i>',
     )
     ACTIVITIES = MenuCommon(
-        name='Project Activities', code='menu_project_activities', view_name='ProjectActivities',
+        name='Project activities', code='menu_project_activities', view_name='ProjectActivities',
         icon='<i class="fa-solid fa-fire-flame-curved"></i>',
     )
 
@@ -839,7 +839,7 @@ class SpaceItem:
         'report': SpaceCommon(
             'Report',
             'report',
-            icon='<i class="fas fa-chart-line"></i>',
+            icon='<i class="fas fa-table"></i>',
             menus=[
                 MenusReport.HOME,
                 MenusReport.SALE_REPORT,

@@ -1,8 +1,3 @@
-$(document).ready(function () {
-    // run init comment custom
-    CommentHandle.init();
-});
-
 function checkTime(data){
     const momentDateData = moment(data), momentDateNow = moment(),
         sevenDaysAgo = momentDateNow.clone().subtract(7, 'days');
@@ -90,19 +85,18 @@ class CommentHandle {
                 }
             }
             let avatar, avtClass = 'avatar-xs';
-            if (data['reply_from_id']) avtClass = 'avatar-xxs'
+            if (data?.['reply_from_id'] || data?.['reply_from']) avtClass = 'avatar-xxs'
             if (data.employee_inherit.avatar_img)
                 avatar = `<div class="avatar avatar-rounded avatar-grey ${avtClass}"><img src="${data.employee_inherit.avatar_img}" alt="user" class="avatar-img"></div>`
             else avatar = $x.fn.renderAvatar(data.employee_inherit, avtClass +' avatar-' +
                 $x.fn.randomColor(), "", "full_name")
 
             let cmtBtn = `<a href="#" class="reply-cmt">${$.fn.gettext('Reply')}</a>`,
-                childCmt = '<div class="child-comment"></div>'
-            if (data['reply_from_id'] !== null){
+                childCmt = '<div class="child-comment"></div>';
+            if (data?.['reply_from_id'] !== null && data?.['reply_from'] !== null){
                 cmtBtn = ''
                 childCmt = ''
             }
-
             return `<div class="item-comment" data-msg-id="${data.id}">${avatar}<div><p class="cmt-name" data-self="${JSON.stringify(data.employee_inherit).replaceAll('"', "'")}">`+
                 `${data.employee_inherit.full_name}</p><p>${messages.join(" ")}</p>`+
                 `<p class="nav-cmt">${moment(data.date_created).fromNow(true)}${cmtBtn}</p></div>${childCmt}</div>`
@@ -118,7 +112,7 @@ class CommentHandle {
             $(this).addClass('disabled')
             let data_req = {
                 "news": $thisDiv.attr('data-id'),
-                "msg": $thisDiv.find('.input_txt textarea').val()
+                "msg": elm ? $thisDiv.find('.rep_comment_input textarea').val() : $thisDiv.find('.custom_comment .input_txt textarea')
             }
             if (!data_req.msg) {
                 $(this).removeClass('disabled')
@@ -143,11 +137,16 @@ class CommentHandle {
                         $.fn.notifyB({description: data_res.message}, 'success')
                         $(this).removeClass('disabled')
                         data_res.mentions = mention
-                        if (elm)
-                            elm.find('.child-comment').append(CommentHandle.replaceToHTMLComment(data_res))
+                        if (elm){
+                            let $child_comment = elm.find('.child-comment')
+                            $child_comment.append(CommentHandle.replaceToHTMLComment(data_res))
+                            const height = elm.height() - 24 - $('.item-comment[data-msg-id="' + data_res.id + '"]', $child_comment).height()
+                                - elm.find('.rep_comment_input').height() - 20;
+                            $('.child-height', $child_comment).css('height', height +'px')
+                        }
                         else $thisDiv.find('.content_comment').append(CommentHandle.replaceToHTMLComment(data_res))
 
-                        $thisDiv.find('.input_txt textarea').val('')
+                        $thisDiv.find('.input_txt textarea').val('').css('height', 20)
                         // run click reply
                         CommentHandle.ClickReply()
                     }
@@ -191,7 +190,7 @@ class CommentHandle {
                         for (let item in htmlChild){
                             const $child_comment = $(`[data-msg-id="${item}"]`, $elm).find('.child-comment')
                             $child_comment.append(htmlChild[item])
-                            const height = $child_comment.height() - 24 - $('.item-comment:last-child', $child_comment).height()
+                            const height = $(`[data-msg-id="${item}"]`, $elm).height() - 24 - $('.item-comment:last-child', $child_comment).height()
                             $child_comment.append(`<span class="child-height" style="height: ${height}px"></span>`)
                         }
                         // run click reply
@@ -257,7 +256,7 @@ class CommentHandle {
                 crtVal = crtVal.split(" ");
                 crtVal.pop();
                 crtVal.push('@'+$(this).attr('data-code'))
-                txtareaElm.val(crtVal.join(" "))
+                txtareaElm.val(crtVal.join(" ") + ' ').focus()
                 $('.modal-mention').addClass('hidden')
             })
         }
@@ -351,9 +350,7 @@ class CommentHandle {
         $.fn.callAjax2({
             'url': $elmUrl.attr('data-comment-list'),
             'method': 'get',
-            'data': {'page': page,
-            'list_from_app': 'project.project.view',
-            }
+            'data': {'page': page, 'list_from_app': 'project.project.view'}
         })
             .then(
                 (resp) => {
@@ -377,7 +374,8 @@ class CommentHandle {
                         cmtHTML += cmtTemp.prop('outerHTML')
                     }
                     // render feed
-                    $('.wrap_comment').html(cmtHTML)
+                    let $wrapCmt = $('.wrap_comment')
+                    $wrapCmt.html(cmtHTML)
 
                     // load emoji for comment popup
                     CommentHandle.load_emoji()
@@ -386,7 +384,7 @@ class CommentHandle {
                     // load action submit comment
                     CommentHandle.CreateMessages()
                     // click show popup emoji
-                    let $btn = $('.emoji_btn')
+                    let $btn = $('.emoji_btn');
                     $btn.on('click', function (e) {
                         let $wrap = $('.emoji_wrapbox');
                         let x = e.clientX;
@@ -400,6 +398,13 @@ class CommentHandle {
                         const TxtArea = $(this).find('.input_txt textarea')
                         CommentHandle.RunMentionTextarea(TxtArea)
                     });
+                    // if empty data render
+                    if (comment_lst.length === 0){
+                        $wrapCmt.html(`<div class="empty-data">${
+                            $.fn.gettext('Project activities is empty')
+                        }</div>`)
+                    }
+
                 },
                 (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
             )

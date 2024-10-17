@@ -107,7 +107,7 @@ class SetupFormSubmit {
         return rs;
     }
 
-    constructor(formSelected, urlDefault = null, urlRedirectDefault = null, dataMethodDefault = null) {
+    constructor(formSelected, urlDefault = null, urlRedirectDefault = null, dataMethodDefault = 'POST') {
         this.formSelected = formSelected;
 
         // URL call API
@@ -121,7 +121,7 @@ class SetupFormSubmit {
                 this.dataMethod = dataMethodDefault
             } else {
                 if ($.fn.isDebug()) {
-                    console.log(this.formSelected)
+                    console.log(this.formSelected, 'Data Method do not support! It is ' + this.dataMethod)
                 }
                 throw ('Data Method do not support! It is ' + this.dataMethod);
             }
@@ -800,6 +800,11 @@ class NotifyController {
                         }
                     } else {
                         base$.removeClass('mention');
+
+                        // handle when notify is project activities
+                        if (data.doc_app === 'project.activities'){
+                            base$.find('.item-data-msg').html(data.title);
+                        }
                     }
                     break
             }

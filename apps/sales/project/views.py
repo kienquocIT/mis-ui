@@ -5,7 +5,7 @@ __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI',
            'ProjectTaskDetailAPI', 'ProjectWorkExpenseAPI', 'ProjectListBaselineAPI', 'ProjectBaselineDetail',
            'ProjectBaselineDetailAPI', 'ProjectHome', 'ProjectConfig', 'ProjectConfigAPI', 'ProjectExpenseListAPI',
            'ProjectListBaseline', 'ProjectWorkList', 'ProjectActivities', 'ProjectActivitiesListAPI',
-           'ProjectCommentListAPI'
+           'ProjectCommentListAPI', 'ProjectActivitiesCommentDetail', 'ProjectCommentDetailFlowsAPI'
            ]
 
 from django.views import View
@@ -546,6 +546,18 @@ class ProjectActivities(View):
         return {}, status.HTTP_200_OK
 
 
+class ProjectActivitiesCommentDetail(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/project/project-comment-detail.html',
+        breadcrumb='PROJECT_ACTIVITIES',
+        menu_active='menu_project_activities',
+        jsi18n='project_home'
+    )
+    def get(self, request, *args, pk, **kwargs):
+        return {'pk': pk}, status.HTTP_200_OK
+
+
 class ProjectActivitiesListAPI(APIView):
     @mask_view(
         login_require=True,
@@ -585,4 +597,15 @@ class ProjectCommentListAPI(APIView):
         if resp.state:
             resp.result['message'] = f'{SaleMsg.PROJECT_COMMENT} {BaseMsg.CREATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class ProjectCommentDetailFlowsAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_NEWS_COMMENT_FLOWS.fill_key(pk=pk)).get()
         return resp.auto_return()

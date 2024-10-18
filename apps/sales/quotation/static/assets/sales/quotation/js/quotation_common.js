@@ -2488,7 +2488,7 @@ class QuotationDataTableHandle {
                         } else if (itemType === 1) {  // PROMOTION
                             des = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '--';
                         }
-                        return `<div class="row"><p class="table-row-description" data-zone="${dataZone}">${des}</p></div>`;
+                        return `<div class="row"><textarea class="table-row-description form-control" rows="2" readonly>${des}</textarea></div>`;
                     }
                 },
                 {

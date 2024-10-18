@@ -2417,6 +2417,16 @@ class WFRTControl {
             dataSubmit = _form;
         }
         if (associationData.hasOwnProperty('check') && associationData.hasOwnProperty('data')) {
+            if (associationData?.['data'].length <= 0) {  // Not apply WF
+                if (submitType === 0) {
+                    WFRTControl.submitCheckCollabNextNode(_form);
+                    return true;
+                }
+                if (submitType === 1) {
+                    WFRTControl.submitActionApprove(dataRTConfig, dataSubmit);
+                    return true;
+                }
+            }
             if (associationData?.['data'].length === 1) {
                 if (associationData?.['check'] === true) {
                     dataSubmit['next_association_id'] = associationData?.['data'][0]?.['id'];
@@ -3513,64 +3523,6 @@ class WFAssociateControl {
                 } else {
                     listLogic.push(WFAssociateControl.compareLogic(condition, dataForm));
                 }
-
-
-
-
-                // let left = null;
-                // let right = null;
-                // if (typeof condition === 'object' && condition !== null) {
-                //     if (condition?.['left_cond']) {
-                //         left = WFAssociateControl.findKey(dataForm, condition?.['left_cond']?.['code']);
-                //     }
-                //     if (condition?.['right_cond']) {
-                //         right = condition?.['right_cond'];
-                //         if (condition?.['left_cond']?.['type'] === 5) {
-                //             if (condition?.['right_cond']?.['id']) {
-                //                 right = condition?.['right_cond']?.['id'];
-                //             }
-                //         }
-                //         if (condition?.['left_cond']?.['type'] === 6) {
-                //             right = parseFloat(condition?.['right_cond']);
-                //         }
-                //     }
-                //     if (left !== null && right !== null) {
-                //         let isMatch = false;
-                //         if (condition?.['operator'] === 'is') {
-                //             isMatch = left === right;
-                //             listCheck.push(isMatch);
-                //         }
-                //         if (condition?.['operator'] === '=') {
-                //             isMatch = left === right;  // Strict equality
-                //             listCheck.push(isMatch);
-                //         }
-                //         if (condition?.['operator'] === '<') {
-                //             isMatch = left < right;  // Less than
-                //             listCheck.push(isMatch);
-                //         }
-                //         if (condition?.['operator'] === '<=') {
-                //             isMatch = left <= right;  // Less than or equal to
-                //             listCheck.push(isMatch);
-                //         }
-                //         if (condition?.['operator'] === '>') {
-                //             isMatch = left > right;  // Greater than
-                //             listCheck.push(isMatch);
-                //         }
-                //         if (condition?.['operator'] === '>=') {
-                //             isMatch = left >= right;  // Greater than or equal to
-                //             listCheck.push(isMatch);
-                //         }
-                //         if (condition?.['operator'] === '!=') {
-                //             isMatch = left !== right;  // Not equal
-                //             listCheck.push(isMatch);
-                //         }
-                //     }
-                // }
-                // if (typeof condition === 'string') {
-                //     if (["AND", "OR"].includes(condition)) {
-                //         listCheck.push(condition.toLowerCase());
-                //     }
-                // }
             }
             if (listLogic.length === 0) {
                 result.push(assoData);

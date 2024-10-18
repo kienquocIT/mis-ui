@@ -50,7 +50,7 @@ class TicketLog(models.Model):
 class TicketLogAttachments(models.Model):
     id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
     ticket = models.ForeignKey(TicketLog, on_delete=models.CASCADE)
-    img = models.FileField(upload_to='ticket')
+    img = models.ImageField(upload_to='ticket')
 
     date_created = models.DateTimeField(verbose_name='date created', default=timezone.now, editable=False)
 

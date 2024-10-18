@@ -112,7 +112,7 @@ class CommentHandle {
             $(this).addClass('disabled')
             let data_req = {
                 "news": $thisDiv.attr('data-id'),
-                "msg": $thisDiv.find('.input_txt textarea').val()
+                "msg": elm ? $thisDiv.find('.rep_comment_input textarea').val() : $thisDiv.find('.custom_comment .input_txt textarea')
             }
             if (!data_req.msg) {
                 $(this).removeClass('disabled')

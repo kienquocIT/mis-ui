@@ -4801,7 +4801,7 @@ msgstr "Website của tôi"
 
 #
 msgid "Working calendar update successfully"
-msgstr "Lịch làm việc cập nhập thành công"
+msgstr "Lịch làm việc cập nhật thành công"
 
 #
 msgid "Working year create successfully"
@@ -4817,7 +4817,7 @@ msgstr "Tạo ngày lễ thành công"
 
 #
 msgid "The holiday has been updated successfully"
-msgstr "Cập nhập ngày lễ thành công"
+msgstr "Cập nhật ngày lễ thành công"
 
 #
 msgid "The holiday deleted"
@@ -4829,7 +4829,7 @@ msgstr "Yêu cầu nghỉ phép tạo thành công"
 
 #
 msgid "Leave available update successfully"
-msgstr "danh sách số dư cập nhập thành công"
+msgstr "danh sách số dư cập nhật thành công"
 
 #
 msgid "Increase"
@@ -5454,7 +5454,7 @@ msgstr "Ngành nghề"
 
 #
 msgid "Update permit"
-msgstr "Cập nhập quyền"
+msgstr "Cập nhật quyền"
 
 #
 msgid "Sale Activities"
@@ -6582,7 +6582,7 @@ msgstr "Tháng bắt đầu"
 
 #
 msgid "Update period"
-msgstr "Cập nhập kỳ kế toán"
+msgstr "Cập nhật kỳ kế toán"
 
 #
 msgid "New period"
@@ -7042,7 +7042,7 @@ msgstr "Tạo HĐ điện tử"
 
 #
 msgid "Update invoice"
-msgstr "Cập nhập HĐ điện tử"
+msgstr "Cập nhật HĐ điện tử"
 
 #
 msgid "View invoice"
@@ -7174,7 +7174,7 @@ msgstr "Chi tiết phiếu Điều chỉnh tồn kho"
 
 #
 msgid "Inventory adjustment update"
-msgstr "Cập nhập phiếu Điều chỉnh tồn kho"
+msgstr "Cập nhật phiếu Điều chỉnh tồn kho"
 
 #
 msgid "Inventory adjustment list"
@@ -7778,7 +7778,7 @@ msgstr "Chi tiết phiếu đăng ký hàng"
 
 #
 msgid "Goods registration update"
-msgstr "Cập nhập phiếu đăng ký hàng"
+msgstr "Cập nhật phiếu đăng ký hàng"
 
 #
 msgid "Registered"
@@ -8814,7 +8814,7 @@ msgstr "SDDK sẽ được chèn bắt đầu từ tháng sử dụng phần m�
 
 #
 msgid "If the data changes after the time of starting to use the software (not recommended). Re-run all reports from that month to now to update them correctly."
-msgstr "Nếu dữ liệu có sự thay đổi sau thời gian bắt đầu sử dụng phần mềm (không khuyến khích). Hãy chạy lại tất cả các báo cáo từ tháng đó đến nay để cập nhập lại chính xác."
+msgstr "Nếu dữ liệu có sự thay đổi sau thời gian bắt đầu sử dụng phần mềm (không khuyến khích). Hãy chạy lại tất cả các báo cáo từ tháng đó đến nay để cập nhật lại chính xác."
 
 #
 msgid "Pretax value"
@@ -9098,7 +9098,7 @@ msgstr "Nhập liệu hoàn tất!"
 
 #
 msgid "Reload this page to see the update."
-msgstr "Tải lại trang để xem cập nhập."
+msgstr "Tải lại trang để xem cập nhật."
 
 #
 msgid "Can not import some rows"

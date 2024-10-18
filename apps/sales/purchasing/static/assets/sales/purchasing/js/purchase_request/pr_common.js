@@ -342,7 +342,7 @@ function LoadSaleOrderTable() {
         useDataServer: true,
         rowIdx: true,
         paging: false,
-        scrollY: '20vh',
+        scrollY: '40vh',
         scrollX: '100vh',
         scrollCollapse: true,
         ajax: {
@@ -400,7 +400,7 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
         tableSaleOrderProduct.DataTableDefault({
             rowIdx: true,
             paging: false,
-            scrollY: '20vh',
+            scrollY: '40vh',
             scrollX: '100vh',
             scrollCollapse: true,
             data: [],
@@ -443,7 +443,7 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
             useDataServer: true,
             rowIdx: true,
             paging: false,
-            scrollY: '20vh',
+            scrollY: '40vh',
             scrollX: '100vh',
             scrollCollapse: true,
             ajax: {
@@ -518,7 +518,7 @@ function LoadDistributionTable() {
         useDataServer: true,
         rowIdx: true,
         paging: false,
-        scrollY: '20vh',
+        scrollY: '40vh',
         scrollX: '100vh',
         scrollCollapse: true,
         ajax: {
@@ -576,7 +576,7 @@ function LoadDistributionProductTable(distribution_id=null) {
         tableDistributionProduct.DataTableDefault({
             rowIdx: true,
             paging: false,
-            scrollY: '20vh',
+            scrollY: '40vh',
             scrollX: '100vh',
             scrollCollapse: true,
             data: [],
@@ -619,7 +619,7 @@ function LoadDistributionProductTable(distribution_id=null) {
             useDataServer: true,
             rowIdx: true,
             paging: false,
-            scrollY: '20vh',
+            scrollY: '40vh',
             scrollX: '100vh',
             scrollCollapse: true,
             ajax: {

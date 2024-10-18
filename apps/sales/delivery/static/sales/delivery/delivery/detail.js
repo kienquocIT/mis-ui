@@ -1286,6 +1286,20 @@ $(async function () {
                     $('#selectEmployeeInherit').initSelect2().val(res.employee_inherit.id).trigger('change')
                 }
                 $('#textareaRemarks').val(res.remarks)
+
+                // reset data stock
+                if ($form.attr('data-method').toLowerCase() === 'put') {
+                    if (res.hasOwnProperty('products') && Array.isArray(res?.['products'])) {
+                        for (let product of res?.['products']) {
+                            if (product.hasOwnProperty('delivery_data') && Array.isArray(product?.['delivery_data'])) {
+                                for (let deliData of product?.['delivery_data']) {
+                                    deliData['stock'] = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 prodTable.setProdList = res.products
                 prodTable.setProdConfig = res?.['config_at_that_point']
 

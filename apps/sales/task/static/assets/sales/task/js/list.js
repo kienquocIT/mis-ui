@@ -252,7 +252,7 @@ $(function () {
                     // parse data
                     const strData = JSON.parse(elmUpdate.attr('data-task'))
                     elmUpdate.remove()
-                    // lấy data vừa update cập nhập vào danh sách task trước đó
+                    // lấy data vừa update cập nhật vào danh sách task trước đó
                     let taskData = kanban.getTaskList
                     let sameSTT = true
                     let old_stt

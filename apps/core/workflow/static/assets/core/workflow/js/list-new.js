@@ -226,7 +226,11 @@ $(document).ready(function () {
                             title: $transFact.attr('data-date-applied'),
                             data: 'date_applied',
                             render: (data, type, row, meta) => {
-                                return data ? data : '_';
+                                let dateApplied = '--';
+                                if (data) {
+                                    dateApplied = moment(data).format('DD/MM/YYYY');
+                                }
+                                return dateApplied;
                             }
                         }, {
                             title: $transFact.attr('data-active'),

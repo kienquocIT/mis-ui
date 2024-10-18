@@ -16,9 +16,8 @@ $(document).ready(function(){
             {
                 data: 'baseline',
                 width: '3%',
-                render:  (row, type, data) => {
-                    let btn = `<button class="btn-sh-baseline btn-flush-primary btn btn-icon btn-rounded flush-soft-hover" ${row.count === 0 ? 'disabled': ''}><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button>`
-                    return btn
+                render:  (row) => {
+                    return `<button class="btn-sh-baseline btn-flush-primary btn btn-icon btn-rounded flush-soft-hover" ${row.count === 0 ? 'disabled': ''}><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button>`
                 }
             },
             {
@@ -134,16 +133,16 @@ $(document).ready(function(){
             for (let item of d.reverse()){
                 let url = $('#url-factory').attr('data-baseline-url').format_url_with_uuid(item.id)
                 let badge = `<span class="badge-child badge-child-blue justify-content-center">${item.version}</span>`
-                tr += `<tr><td style="width:3%;min-width:38px"></td>`+
-                    `   <td style="width:7%;min-width:63px"><a href="${url}" target="_blank"><span class="badge badge-outline badge-soft-primary position-relative">${item.code}${badge}</span><a/></td>`+
-                    `   <td style="width:25%;min-width:265px"><span>${item.title}</span></td>`+
-                    `   <td style="width:10%;text-align:center;min-width:109px"><span>${item['project_pm'].full_name}</span></td>`+
-                    `   <td style="width:15%;text-align:center;min-width:163px"><span>${moment(item.start_date).format('DD/MM/YYYY')}</span></td>`+
-                    `   <td style="width:15%;text-align:center;min-width:170px"><span>${moment(item.finish_date).format('DD/MM/YYYY')}</span></td>`+
-                    `   <td style="width:10%;text-align:center;min-width:115px"><span>${item['completion_rate']}%</span></td>`+
-                    `   <td style="width:5%;text-align:center;min-width:71px"><span>${item.works['all']} (${item.works['completed']})</span></td>`+
-                    `   <td style="width:5%;text-align:center;min-width:66.7px"><span>${item['tasks']?.['all']} (${item['tasks']?.['completed']})</span></td>`+
-                    ` <td style="width:5%;min-width:38px"></td></tr>`
+                tr += `<tr><td style="width: 3%"> </td>`+
+                    `   <td style="width: 7%"><a href="${url}" target="_blank"><span class="badge badge-outline badge-soft-primary position-relative">${item.code}${badge}</span><a/></td>`+
+                    `   <td style="width: 25%"><span>${item.title}</span></td>`+
+                    `   <td style="width: 17%;text-align:center"><span>${item['project_pm'].full_name}</span></td>`+
+                    `   <td style="width: 10%;text-align:center"><span>${moment(item.start_date).format('DD/MM/YYYY')}</span></td>`+
+                    `   <td style="width: 10%;text-align:center"><span>${moment(item.finish_date).format('DD/MM/YYYY')}</span></td>`+
+                    `   <td style="width: 10%;text-align:center"><span>${item['completion_rate']}%</span></td>`+
+                    `   <td style="width: 5%;text-align:center"><span>${item['works']['all']} (${item['works']['completed']})</span></td>`+
+                    `   <td style="width: 5%;text-align:center"><span>${item['tasks']?.['all']} (${item['tasks']?.['completed']})</span></td>`+
+                    ` <td style="width: 8%"></td></tr>`
             }
             return `<div class="wrap-baseline"><table class="table nowrap w-100 min-w-1500p">${tr}</table></div>`
         }

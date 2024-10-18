@@ -23,6 +23,7 @@ $(document).ready(function(){
         'method': 'get',
         'data': {page: 1, pageSize: 100}
     }, 'Trigger_expense');
+
     $(document).on('Trigger_expense', function(){
         const $elm = $('#Trigger_expense')
         const project_list = $elm.data('Trigger_expense')
@@ -278,6 +279,19 @@ class HomeChart {
                 axisBorder: {
                     show: false,
                 },
+                min: 1,
+                max: 12,
+                range: 11,
+                tickPlacement: 'on'
+            },
+            markers: {
+                size: 4,
+                colors: ["#FFA41B"],
+                strokeColors: "#fff",
+                strokeWidth: 2,
+                hover: {
+                    size: 7,
+                }
             },
             yaxis: {
                 tickAmount: 5,
@@ -292,11 +306,10 @@ class HomeChart {
                 width: 2
             }
         };
-        let prj_dict = {}, minDate = new Date(), MaxDate = new Date();
+        let prj_dict = {}, crtYear = new Date().getFullYear(), crtMonth = new Date().getMonth() + 1;
         // convert project list migrate
         for (let item of data){
             const dateCreated = new Date(item.date_created);
-            if (dateCreated < minDate) minDate = dateCreated
             if(dateCreated.getFullYear() in prj_dict)
                 prj_dict[dateCreated.getFullYear()].push(item)
             else
@@ -309,14 +322,16 @@ class HomeChart {
                 name: val,
                 data: []
             };
+
             for (let i = 1; i <= 12; i++){
+                // kiểm tra xem là năm hiện tại thì loop tới tháng hiện tại
+                if (parseInt(val) === crtYear && i === crtMonth + 1) break
                 let child = 0
                 for (let grandChild of item){
                     const dateCreated = new Date(grandChild.date_created)
-                    if (dateCreated.getMonth() === i) child += 1
+                    if (dateCreated.getMonth() + 1 === i) child += 1
                 }
                 temp.data[i-1] = child
-                // if (child === 0 && i > 1) temp.data[i-1] = temp.data[i-2]
             }
             pieOpt.series.push(temp)
         }

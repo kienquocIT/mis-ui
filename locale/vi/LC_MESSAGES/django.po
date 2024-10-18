@@ -8921,12 +8921,12 @@ msgid "Select Finished goods or Services"
 msgstr "Chọn Thành phẩm hoặc Dịch vụ"
 
 #
-msgid "One collaborator"
-msgstr "Một cộng tác viên"
+msgid "One collaborator actions"
+msgstr "Một cộng tác viên thao tác"
 
 #
-msgid "Many collaborators"
-msgstr "Nhiều cộng tác viên"
+msgid "Many collaborators action"
+msgstr "Nhiều cộng tác viên thao tác"
 
 #
 msgid "Config according to"

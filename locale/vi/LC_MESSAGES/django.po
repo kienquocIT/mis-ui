@@ -6874,11 +6874,11 @@ msgstr "Đã trả lại"
 
 #
 msgid "Inventory reports"
-msgstr "Báo cáo tồn kho"
+msgstr "Các báo cáo kho"
 
 #
 msgid "Items Detail Report"
-msgstr "Báo cáo nhâp-xuất hàng"
+msgstr "Báo cáo chi tiết hàng"
 
 #
 msgid "Add group"
@@ -7050,7 +7050,11 @@ msgstr "Xem HĐ điện tử"
 
 #
 msgid "Inventory Report"
-msgstr "Báo cáo tồn kho"
+msgstr "Báo cáo hàng tồn kho"
+
+#
+msgid "Inventory report"
+msgstr "Báo cáo hàng tồn kho"
 
 #
 msgid "Cumulative quantity"
@@ -7529,12 +7533,12 @@ msgid "Asset, tools return list"
 msgstr "Danh sách thu hồi tài sản"
 
 #
-msgid "Inventory report"
-msgstr "Báo cáo tồn kho"
+msgid "Inventory stock report"
+msgstr "Báo cáo hàng tồn kho"
 
 #
 msgid "Items detail report"
-msgstr "Báo cáo nhập - xuất hàng"
+msgstr "Báo cáo chi tiết hàng"
 
 #
 msgid "Please cancel current quotation"

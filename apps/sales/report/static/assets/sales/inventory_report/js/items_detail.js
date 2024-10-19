@@ -132,7 +132,7 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'prd') {
                             let html = `
-                                <span class="product-td badge badge-secondary badge-pill w-25" data-product-id="${row?.['product_id']}">
+                                <span class="product-td badge badge-secondary badge-pill" data-product-id="${row?.['product_id']}">
                                     <a tabindex="0"
                                        data-bs-placement="bottom"
                                        data-bs-toggle="popover"
@@ -153,14 +153,8 @@ $(document).ready(function () {
                             }
                             return html
                         }
-                        return ``
-                    }
-                },
-                {
-                    className: 'text-center',
-                    render: (data, type, row) => {
                         if (row?.['row_type'] === 'log') {
-                            return `${row?.['system_date']}`
+                            return `<span style="font-size: small" class="badge text-muted text-right w-100">${row?.['system_date']}</span>`
                         }
                         return ``
                     }
@@ -271,35 +265,37 @@ $(document).ready(function () {
             initComplete: function(settings, json) {
                 table.find('tbody tr').each(function () {
                     $(this).find('td:eq(0)').css({
-                        'min-width': '400px'
+                        'min-width': '150px'
                     })
                     $(this).find('td:eq(1)').css({
-                        'min-width': '120px'
-                    })
-                    $(this).find('td:eq(2)').css({
                         'min-width': '250px'
                     })
-                    $(this).find('td:eq(3)').css({
+                    $(this).find('td:eq(2)').css({
                         'min-width': '100px'
+                    })
+                    $(this).find('td:eq(3)').css({
+                        'min-width': '150px'
                     })
                     $(this).find('td:eq(4)').css({
                         'min-width': '150px'
                     })
                     $(this).find('td:eq(5)').css({
-                        'min-width': '150px'
-                    })
-                    $(this).find('td:eq(6)').css({
                         'min-width': '100px'
                     })
-                    $(this).find('td:eq(7)').css({
+                    $(this).find('td:eq(6)').css({
                         'min-width': '150px'
                     })
-                    $(this).find('td:eq(8)').css({
+                    $(this).find('td:eq(7)').css({
                         'min-width': '150px'
                     })
                 })
 
                 table.find('.product-td').each(function () {
+                    $(this).closest('td').attr('colspan', 4)
+                    $(this).closest('tr').find('td:eq(1)').remove()
+                    $(this).closest('tr').find('td:eq(2)').remove()
+                    $(this).closest('tr').find('td:eq(3)').remove()
+                    $(this).closest('tr').find('td:eq(4)').remove()
                     let product_id = $(this).attr('data-product-id')
                     let sale_order_id = $(this).closest('tr').find('.sale-order-td').attr('data-so-id')
 

@@ -372,7 +372,7 @@ $(document).ready(function () {
                             'product_lot_number': item?.['product']?.['lot_number'],
                             'sale_order_code': item?.['product']?.['sale_order_code'],
                             'sale_order_id': item?.['sale_order']?.['id'],
-                            'we': trans_script.attr('data-trans-we')
+                            'we': item?.['product']?.['valuation_method'] === 0 ? trans_script.attr('data-trans-fifo') : item?.['product']?.['valuation_method'] === 1 ? trans_script.attr('data-trans-we') : ''
                         })
                         for (const stock_activity of item?.['stock_activities']) {
                             if (warehouses_select_Ele.val().length > 0) {

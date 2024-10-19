@@ -135,7 +135,6 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'prd') {
                             let html = `
-                                <span style="font-size: medium" data-product-id="${row?.['product_id']}" class="product-td text-primary fw-bold">${row?.['product_title']}</span>
                                 <a tabindex="0" href="#"
                                     data-bs-placement="top"
                                     data-bs-toggle="popover"
@@ -151,7 +150,8 @@ $(document).ready(function () {
                                     </div>"
                                     class="popover-prd">
                                     <i class="fas fa-info-circle"></i>
-                                </a>`
+                                </a>
+                                <span style="font-size: medium" data-product-id="${row?.['product_id']}" class="product-td text-primary fw-bold">${row?.['product_title']}</span>`
                             if (row?.['product_lot_number']) {
                                 html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
                             }
